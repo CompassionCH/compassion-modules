@@ -468,12 +468,12 @@ class TestSponsorship(BaseSponsorshipTest):
     def test_number_sponsorships(self):
         partner = self.michel
 
-        def valid(number_sponsorships, has_sponsorships, number_children):
+        def valid(number_sponsorships, has_sponsorships):
             self.assertEqual(partner.number_sponsorships, number_sponsorships)
             self.assertEqual(partner.has_sponsorships, has_sponsorships)
-            self.assertEqual(partner.number_children, number_children)
+            self.assertEqual(partner.number_children, number_sponsorships)
 
-        valid(0, False, 0)
+        valid(0, False)
         child1 = self.create_child('UG18320017')
         child2 = self.create_child('UG08320018')
         sp_group = self.create_group({
@@ -497,21 +497,53 @@ class TestSponsorship(BaseSponsorshipTest):
             },
             [{'amount': 50.0}]
         )
-        valid(0, False, 2)
+        valid(0, False)
         self.validate_sponsorship(sponsorship1)
-        valid(0, False, 2)
+        valid(0, False)
         self.pay_sponsorship(sponsorship1)
-        valid(1, True, 2)
+        valid(1, True)
         sponsorship1.update({'partner_id': self.thomas.id})
-        valid(1, True, 2)
+        valid(1, True)
         sponsorship1.update({'correspondent_id': self.thomas.id})
-        valid(0, False, 1)
+        valid(0, False)
         sponsorship1.update({'partner_id': partner.id})
-        valid(1, True, 1)
+        valid(1, True)
         self.validate_sponsorship(sponsorship2)
         self.pay_sponsorship(sponsorship2)
-        valid(2, True, 1)
+        valid(2, True)
         sponsorship2.signal_workflow('contract_terminated')
-        valid(1, True, 1)
+        valid(1, True)
         sponsorship1.signal_workflow('contract_terminated')
-        valid(0, False, 1)
+        valid(0, False)
+
+    def test_change_partner(self):
+        """ Test changing partner of contract."""
+        partner = self.michel
+        child1 = self.create_child('UG18920017')
+        sp_group = self.create_group({
+            'change_method': 'do_nothing',
+            'partner_id': partner.id,
+            'payment_mode_id': self.payment_mode.id
+        })
+        sponsorship = self.create_contract(
+            {
+                'child_id': child1.id,
+                'group_id': sp_group.id,
+                'partner_id': sp_group.partner_id.id
+            },
+            [{'amount': 50.0}]
+        )
+        self.validate_sponsorship(sponsorship)
+        sponsorship.button_generate_invoices()
+        invoices = sponsorship.mapped('invoice_line_ids.invoice_id')
+        invoice_state = list(set(invoices.mapped('state')))
+        partner_invoice = invoices.mapped('partner_id')
+        self.assertEqual(len(invoice_state), 1)
+        self.assertEqual(invoice_state[0], 'open')
+        self.assertEqual(partner_invoice, partner)
+        # Change partner
+        sponsorship.partner_id = self.thomas
+        invoice_state = list(set(invoices.mapped('state')))
+        self.assertEqual(invoice_state[0], 'open')
+        partner_invoice = invoices.mapped('partner_id')
+        self.assertEqual(partner_invoice, self.thomas)

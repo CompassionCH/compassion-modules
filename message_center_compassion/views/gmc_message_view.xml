@@ -71,6 +71,7 @@
                         <field name="description" colspan="4"/>
                         <field name="headers" colspan="4"/>
                         <field name="content" colspan="4"/>
+                        <field name="answer" colspan="4"/>
                     </group>
 
                 </sheet>

@@ -91,8 +91,9 @@ class PartnerCommunication(models.Model):
         :param refresh_uid: User that refresh
         :return: True
         """
-        if not self.success_story_id.only_when_chosen:
-            self.set_success_story()
+        for job in self:
+            if not job.success_story_id.only_when_chosen:
+                job.set_success_story()
         super(PartnerCommunication, self).refresh_text(refresh_uid)
         return True
 
