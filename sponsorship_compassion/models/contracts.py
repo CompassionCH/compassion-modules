@@ -251,6 +251,14 @@ class SponsorshipContract(models.Model):
             (self - updated_correspondents)._on_language_changed()
 
         if 'partner_id' in vals:
+            # Move invoices to new partner
+            invoices = self.invoice_line_ids.mapped('invoice_id').filtered(
+                lambda i: i.state in ('open', 'draft'))
+            invoices.action_invoice_cancel()
+            invoices.action_invoice_draft()
+            invoices.write({'partner_id': vals['partner_id']})
+            invoices.action_invoice_open()
+            # Update number of sponsorships
             self.mapped('partner_id').update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
