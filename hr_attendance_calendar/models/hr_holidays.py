@@ -50,7 +50,7 @@ class HrHolidays(models.Model):
                 ('date', '<=', rd.date_to)
             ])
             # Add leave in attendance day
-            att_day.leave_ids |= rd
+            att_day.write({'leave_ids': [(4, rd.id)]})
             att_days |= att_day
         return att_days
 

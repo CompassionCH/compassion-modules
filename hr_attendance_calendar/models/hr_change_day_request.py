@@ -93,6 +93,6 @@ class HrChangeDayRequest(models.Model):
     @api.depends('employee_id', 'date1', 'date2', 'forced')
     def _compute_name(self):
         for h in self:
-            h.name = '{}, {}/{}, {} changed'\
+            h.name = u'{}, {}/{}, {} changed'\
                 .format(h.employee_id.display_name, h.date1, h.date2,
                         self.env['hr.employee'].convert_hour_to_time(h.forced))
