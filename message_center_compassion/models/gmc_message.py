@@ -8,22 +8,24 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import re
-
-from ..tools.onramp_connector import OnrampConnector
-from ..mappings import base_mapping as mapping
-
-from odoo import api, models, fields, _
-from odoo.exceptions import UserError
+import traceback
+from datetime import datetime
 
 from odoo.addons.queue_job.job import job, related_action
 
-from datetime import datetime
+from odoo import api, models, fields, _
+from odoo.exceptions import UserError
+from ..mappings import base_mapping as mapping
+from ..tools.onramp_connector import OnrampConnector
 
-import logging
-import traceback
-import simplejson as json
 logger = logging.getLogger(__name__)
+
+try:
+    import simplejson as json
+except ImportError:
+    logger.warning("Please install simplejson")
 
 
 class GmcMessagePoolProcess(models.TransientModel):
@@ -87,8 +89,9 @@ class GmcMessagePool(models.Model):
         'State', readonly=True, default='new', track_visibility='always')
     failure_reason = fields.Text(
         'Failure details', track_visibility='onchange')
-    headers = fields.Text()
-    content = fields.Text()
+    headers = fields.Text(readonly=True)
+    content = fields.Text(readonly=True)
+    answer = fields.Text(readonly=True)
 
     _sql_constraints = [
         ('request_id_uniq', 'UNIQUE(request_id)',
@@ -341,8 +344,10 @@ class GmcMessagePool(models.Model):
                 content_sent = message_data.get(
                     action.connect_outgoing_wrapper, message_data)
                 mess_vals = {
-                    'content': json.dumps(content_sent[i]) if isinstance(
-                        content_sent, list) else json.dumps(content_sent),
+                    'content': json.dumps(
+                        content_sent[i], indent=4, sort_keys=True
+                    ) if isinstance(content_sent, list) else json.dumps(
+                        content_sent, indent=4, sort_keys=True),
                     'request_id': onramp_answer.get('request_id', False)
                 }
                 if result.get('Code', 2000) == 2000:
@@ -353,6 +358,8 @@ class GmcMessagePool(models.Model):
                         getattr(data_objects[i], action.success_method)(
                             *answer_vals)
                         mess_vals['state'] = 'success'
+                        mess_vals['answer'] = json.dumps(
+                            result, indent=4, sort_keys=True)
                     except Exception as e:
                         if action.failure_method:
                             getattr(data_objects[i], action.failure_method)(
@@ -360,6 +367,8 @@ class GmcMessagePool(models.Model):
                         mess_vals.update({
                             'state': 'failure',
                             'failure_reason': e.message,
+                            'answer': json.dumps(
+                                result, indent=4, sort_keys=True)
                         })
                 else:
                     if action.failure_method:
@@ -367,6 +376,8 @@ class GmcMessagePool(models.Model):
                     mess_vals.update({
                         'state': 'failure',
                         'failure_reason': result['Message'],
+                        'answer': json.dumps(
+                            result, indent=4, sort_keys=True)
                     })
                 self[i].write(mess_vals)
         else:
@@ -393,7 +404,8 @@ class GmcMessagePool(models.Model):
         self.write({
             'state': 'failure',
             'failure_reason':
-                '[%s] %s' % (error_code, error_message or 'None')
+                '[%s] %s' % (error_code, error_message or 'None'),
+            'answer': json.dumps(results, indent=4, sort_keys=True)
         })
 
     def _get_url_endpoint(self):

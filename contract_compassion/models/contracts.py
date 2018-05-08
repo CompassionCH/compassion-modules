@@ -78,6 +78,11 @@ class RecurringContract(models.Model):
     group_freq = fields.Char(
         string='Payment frequency', compute='_compute_frequency',
         readonly=True)
+    sponsorship_line_id = fields.Integer(
+        help='Identifies the active sponsorship line of a sponsor.'
+             'When sponsorship is ended but a SUB is made, the SUB will have'
+             'the same line id. Only new sponsorships will have new ids.'
+    )
 
     _sql_constraints = [('parent_id_unique',
                          'UNIQUE(parent_id)',
@@ -210,12 +215,15 @@ class RecurringContract(models.Model):
 
         new_sponsorship = super(RecurringContract, self).create(vals)
 
-        # Set the sub_sponsorship_id in the current parent_id
+        # Set the sub_sponsorship_id in the current parent_id and take
+        # sponsorship line id
         if 'parent_id' in vals and vals['parent_id']:
             sponsorship = self.env['recurring.contract'].\
                 browse(vals['parent_id'])
 
             sponsorship.sub_sponsorship_id = new_sponsorship
+            new_sponsorship.sponsorship_line_id =\
+                sponsorship.sponsorship_line_id
 
         return new_sponsorship
 
@@ -233,7 +241,9 @@ class RecurringContract(models.Model):
         # Set the sub_sponsorship_id in the current parent_id
         if 'parent_id' in vals:
             for sponsorship in self.filtered('parent_id'):
-                sponsorship.parent_id.sub_sponsorship_id = sponsorship
+                parent = sponsorship.parent_id
+                parent.sub_sponsorship_id = sponsorship
+                sponsorship.sponsorship_line_id = parent.sponsorship_line_id
 
         if 'group_id' in vals or 'partner_id' in vals:
             self._on_group_id_changed()
@@ -309,11 +319,19 @@ class RecurringContract(models.Model):
             'activation_date': fields.Date.today()
         })
         self.write({'state': 'active'})
+        last_line_id = self.search(
+            [('sponsorship_line_id', '!=', False)],
+            order='sponsorship_line_id desc',
+            limit=1
+        ).sponsorship_line_id
 
-        # Write payment term in partner property
+        # Write payment term in partner property and sponsorship line id
         for contract in self:
             contract.partner_id.customer_payment_mode_id = \
                 contract.payment_mode_id
+            if contract.child_id and not contract.sponsorship_line_id:
+                last_line_id += 1
+                contract.sponsorship_line_id = last_line_id
         return True
 
     @api.multi

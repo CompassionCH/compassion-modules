@@ -251,12 +251,20 @@ class SponsorshipContract(models.Model):
             (self - updated_correspondents)._on_language_changed()
 
         if 'partner_id' in vals:
-            self.mapped('partner_id')._compute_number_sponsorships()
-            old_partners._compute_number_sponsorships()
+            # Move invoices to new partner
+            invoices = self.invoice_line_ids.mapped('invoice_id').filtered(
+                lambda i: i.state in ('open', 'draft'))
+            invoices.action_invoice_cancel()
+            invoices.action_invoice_draft()
+            invoices.write({'partner_id': vals['partner_id']})
+            invoices.action_invoice_open()
+            # Update number of sponsorships
+            self.mapped('partner_id').update_number_sponsorships()
+            old_partners.update_number_sponsorships()
 
         if 'correspondent_id' in vals:
-            self.mapped('correspondent_id')._compute_number_sponsorships()
-            old_correspondents._compute_number_sponsorships()
+            self.mapped('correspondent_id').update_number_sponsorships()
+            old_correspondents.update_number_sponsorships()
 
         return True
 
@@ -606,26 +614,20 @@ class SponsorshipContract(models.Model):
             gift_contract_lines.mapped('contract_id').signal_workflow(
                 'contract_active')
 
-        self.mapped('partner_id')._compute_number_sponsorships()
-        self.filtered(lambda c: not c.fully_managed).mapped(
-            'correspondent_id')._compute_number_sponsorships()
-
+        partners = self.mapped('partner_id') | self.mapped('correspondent_id')
+        partners.update_number_sponsorships()
         return True
 
     @api.multi
     def contract_cancelled(self):
         res = super(SponsorshipContract, self).contract_cancelled()
-
         self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
-
         return res
 
     @api.multi
     def contract_terminated(self):
         res = super(SponsorshipContract, self).contract_terminated()
-
         self.filtered(lambda c: c.type == 'S')._on_sponsorship_finished()
-
         return res
 
     @api.multi
@@ -820,9 +822,8 @@ class SponsorshipContract(models.Model):
                     ('state', 'in', ['new', 'failure']),
                     ('object_id', '=', sponsorship.id),
                 ]).unlink()
-        self.mapped('partner_id')._compute_number_sponsorships()
-        self.filtered(lambda c: not c.fully_managed).mapped(
-            'correspondent_id')._compute_number_sponsorships()
+        partners = self.mapped('partner_id') | self.mapped('correspondent_id')
+        partners.update_number_sponsorships()
 
     @api.multi
     def _on_change_child_id(self, vals):

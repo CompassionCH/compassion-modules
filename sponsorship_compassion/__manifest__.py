@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
 #    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
-    'version': '10.0.1.0.1',
+    'version': '10.0.1.0.2',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',

@@ -41,15 +41,14 @@ class ResPartner(models.Model):
     receivable_items = fields.Integer(compute='_compute_count_items')
     has_sponsorships = fields.Boolean(compute='_compute_has_sponsorships',
                                       store=True)
-    number_sponsorships = fields.Integer(
-        compute='_compute_number_sponsorships', store=True)
+    number_sponsorships = fields.Integer()
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor'
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
         'compassion.child', 'sponsor_id', 'Sponsored children')
-    number_children = fields.Integer(compute='_compute_children', store=True)
+    number_children = fields.Integer(related='number_sponsorships')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -98,13 +97,7 @@ class ResPartner(models.Model):
                 ('account_id.code', '=', '1050')])
 
     @api.multi
-    @api.depends('sponsored_child_ids')
-    def _compute_children(self):
-        for partner in self:
-            partner.number_children = len(partner.sponsored_child_ids)
-
-    @api.multi
-    def _compute_number_sponsorships(self):
+    def update_number_sponsorships(self):
         for partner in self:
             partner.number_sponsorships = self.env[
                 'recurring.contract'].search_count([
