@@ -42,12 +42,11 @@ class ValidateRevisionWizard(models.TransientModel):
                 'subject_correction':
                 revision.subject_correction or revision.subject,
                 'state': 'submit',
-                'is_corrected': False
             })
         else:
             subject_base = u'[{}] Correction submitted'
             body_base = u'Corrections were proposed. {}'
-            revision.write({'state': 'pending', 'is_corrected': True})
+            revision.write({'state': 'corrected'})
 
         body = body_base.format(self.comments or '').strip()
         subject = subject_base.format(revision.display_name)

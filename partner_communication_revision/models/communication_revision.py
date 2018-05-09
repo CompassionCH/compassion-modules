@@ -63,6 +63,7 @@ class CommunicationRevision(models.Model):
     state = fields.Selection([
         ('pending', 'Pending'),
         ('submit', 'Submitted'),
+        ('corrected', 'Corrected'),
         ('approved', 'Approved'),
         ('active', 'Active'),
     ], default='active')
@@ -105,7 +106,6 @@ class CommunicationRevision(models.Model):
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
     display_name = fields.Char(compute='_compute_display_name')
-    is_corrected = fields.Boolean()
 
     _sql_constraints = [
         ('unique_revision', 'unique(config_id,lang)',
@@ -352,13 +352,19 @@ class CommunicationRevision(models.Model):
         return self.with_context(body=body, subject=subject)._open_validation()
 
     @api.multi
+    def edit_correction(self):
+        return self.write({
+            'state': 'pending',
+            'proposition_text': self.proposition_correction,
+            'proposition_correction': False
+        })
+
+    @api.multi
     def discard_correction(self):
-        subject = '[{}] Revision approved'.format(self.display_name)
-        body = 'The original text for {} was kept. Proposed ' \
-               'corrections were discarded.'.format(self.display_name)
-        if not self.is_master_version:
-            self.approve(subject, body)
-        return self.with_context(body=body, subject=subject)._open_validation()
+        return self.write({
+            'state': 'pending',
+            'proposition_correction': False
+        })
 
     @api.multi
     def approve(self, subject=None, body=None):
@@ -368,7 +374,6 @@ class CommunicationRevision(models.Model):
             'state': 'approved',
             'compare_text': False,
             'compare_subject': False,
-            'is_corrected': False
         })
         subject = self._context.get('subject', subject)
         body = self._context.get('body', body)

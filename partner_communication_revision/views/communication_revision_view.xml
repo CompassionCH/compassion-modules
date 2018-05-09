@@ -76,13 +76,20 @@
                 <header>
                     <field name="is_proposer" invisible="1"/>
                     <field name="is_corrector" invisible="1"/>
-                    <field name="is_corrected" invisible="1"/>
                     <field name="state" widget="statusbar"/>
+                    <!-- Proposition to submit -->
                     <button type="object" name="submit_proposition" string="Submit proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_proposer', '=', False)]}"/>
+
+                    <!-- Proposition to Approve / Corrections to submit-->
                     <button type="object" name="validate_proposition" string="Validate proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}" confirm="This will approve the proposition text."/>
                     <button type="object" name="submit_correction" string="Submit corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'submit'),('is_corrector', '=', False)]}"/>
-                    <button type="object" name="validate_correction" string="Validate corrections" class="oe_highlight" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}" confirm="This will approve the corrections."/>
-                    <button type="object" name="discard_correction" string="Validate my version" attrs="{'invisible': ['|','|', ('state', '!=', 'pending'),('is_proposer', '=', False),('is_corrected', '=', False)]}" confirm="This will discard corrections and approve your version."/>
+
+                    <!-- Corrections to Approve / New Proposition -->
+                    <button type="object" name="validate_correction" string="Approve corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}" confirm="This will approve the corrections."/>
+                    <button type="object" name="edit_correction" string="Edit corrections" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}" confirm="This will discard your original proposition and allow you to edit further the corrected text."/>
+                    <button type="object" name="discard_correction" string="Discard corrections" attrs="{'invisible': ['|', ('state', '!=', 'corrected'),('is_proposer', '=', False)]}" confirm="This will discard corrections and let you start over your proposition."/>
+
+                    <!-- Cancel Approval -->
                     <button type="object" name="cancel_approve" string="Cancel approval" attrs="{'invisible': ['|','|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"/>
                 </header>
                 <sheet>
@@ -113,8 +120,8 @@
                             <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group attrs="{'invisible': [('proposition_correction', '=', False)]}">
-                            <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
-                            <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit"/>
+                            <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit,corrected"/>
+                            <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit,corrected"/>
                         </group>
                         <group string="Compare with other translations" attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}">
                             <field name="compare_lang" attrs="{'invisible': [('is_master_version', '=', True)]}"/>
