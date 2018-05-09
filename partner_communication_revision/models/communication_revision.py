@@ -437,8 +437,11 @@ class CommunicationRevision(models.Model):
         :return: action for opening the revision view
         """
         text = self.with_context(lang=self.lang).body_html
-        self.with_context(
-            no_update=True).simplified_text = self._simplify_text(text)
+        if not self.env.context.get('config_id'):
+            # We don't need to update keywords when accessing the proposition
+            # text (config id in context for that case)
+            self.with_context(
+                no_update=True).simplified_text = self._simplify_text(text)
         form_view = 'partner_communication_revision.revision_form'
         if form_view_mode:
             form_view += '_' + form_view_mode

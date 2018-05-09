@@ -211,15 +211,18 @@ class CommunicationKeyword(models.Model):
     @api.multi
     def unlink(self):
         # Update indexes
+        other_kw = self.env[self._name]
         for keyword in self:
-            other_kw = self.search([
+            other_kw |= self.search([
                 ('type', '=', keyword.type),
                 ('revision_id', '=', keyword.revision_id.id),
-                ('index', '>', keyword.index)
+                ('index', '>', keyword.index),
+                ('id', 'not in', self.ids)
             ])
-            for kw in other_kw:
-                kw.index -= 1
-        return super(CommunicationKeyword, self).unlink()
+        res = super(CommunicationKeyword, self).unlink()
+        for keyword in other_kw.sorted('index'):
+            keyword.index -= 1
+        return res
 
     @api.multi
     def toggle_edit_value(self):
