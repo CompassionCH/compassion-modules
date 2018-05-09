@@ -10,13 +10,16 @@
                     <field name="state" widget="statusbar"/>
                 </header>
             </xpath>
+            <button name="toggle_active" position="before">
+                <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit raw translations" type="object" groups="base.group_system"/>
+            </button>
             <xpath expr="//sheet">
                 <group string="Revisions">
                     <group colspan="2">
                         <field name="revision_number"/>
                         <field name="revision_date"/>
                         <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
-                            <tree colors="blue:state in ('pending','submit');green:state=='approved'">
+                            <tree colors="blue:state in ('pending','submit','corrected');green:state=='approved'">
                                 <field name="config_id" invisible="1"/>
                                 <field name="lang"/>
                                 <field name="user_id"/>

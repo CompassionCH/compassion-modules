@@ -21,7 +21,7 @@ class ValidateRevisionWizard(models.TransientModel):
     )
     state = fields.Selection(related='revision_id.state')
     reviser_name = fields.Char(related='revision_id.user_id.name')
-    corrector_name = fields.Char(related='revision_id.user_id.name')
+    corrector_name = fields.Char(related='revision_id.correction_user_id.name')
     comments = fields.Text()
 
     @api.model
@@ -42,12 +42,11 @@ class ValidateRevisionWizard(models.TransientModel):
                 'subject_correction':
                 revision.subject_correction or revision.subject,
                 'state': 'submit',
-                'is_corrected': False
             })
         else:
             subject_base = u'[{}] Correction submitted'
             body_base = u'Corrections were proposed. {}'
-            revision.write({'state': 'pending', 'is_corrected': True})
+            revision.write({'state': 'corrected'})
 
         body = body_base.format(self.comments or '').strip()
         subject = subject_base.format(revision.display_name)

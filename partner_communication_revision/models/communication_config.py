@@ -50,3 +50,8 @@ class CommunicationConfig(models.Model):
             'target': 'current',
             'context': self.env.context
         }
+
+    @api.multi
+    def open_translation_view(self):
+        return self.env['ir.translation'].translate_fields(
+            'mail.template', self.email_template_id.id, 'body_html')
