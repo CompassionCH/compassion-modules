@@ -21,7 +21,7 @@ class ValidateRevisionWizard(models.TransientModel):
     )
     state = fields.Selection(related='revision_id.state')
     reviser_name = fields.Char(related='revision_id.user_id.name')
-    corrector_name = fields.Char(related='revision_id.user_id.name')
+    corrector_name = fields.Char(related='revision_id.correction_user_id.name')
     comments = fields.Text()
 
     @api.model
