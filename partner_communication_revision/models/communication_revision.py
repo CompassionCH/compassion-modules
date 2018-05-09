@@ -70,6 +70,7 @@ class CommunicationRevision(models.Model):
     subject = fields.Char()
     subject_correction = fields.Char()
     body_html = fields.Html(related='config_id.email_template_id.body_html')
+    raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one('res.users', 'Responsible', domain=[
         ('share', '=', False)], track_visibility='onchange')
@@ -85,6 +86,7 @@ class CommunicationRevision(models.Model):
     keyword_ids = fields.One2many(
         'partner.communication.keyword', 'revision_id', 'Keywords'
     )
+    show_all_keywords = fields.Boolean()
     edit_keyword_ids = fields.One2many(
         'partner.communication.keyword',
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
@@ -129,11 +131,16 @@ class CommunicationRevision(models.Model):
     def _compute_keyword_ids(self):
         for revision in self:
             revision.edit_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == 'code' and k.is_visible)
+                lambda k: (
+                    (revision.show_all_keywords and k.type in ('code', 'var'))
+                    or k.type == 'code'
+                ) and (revision.show_all_keywords or k.is_visible))
             revision.if_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == 'if' and k.is_visible)
+                lambda k: k.type == 'if' and (revision.show_all_keywords or
+                                              k.is_visible))
             revision.for_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: 'for' in k.type and k.is_visible)
+                lambda k: 'for' in k.type and (revision.show_all_keywords or
+                                               k.is_visible))
 
     @api.multi
     def _inverse_keyword_ids(self):
@@ -406,8 +413,22 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def open_translation_view(self):
-        return self.env['ir.translation'].translate_fields(
-            'mail.template', self.config_id.email_template_id.id, 'body_html')
+        # Trick to avoid overriding raw template text changes
+        self.raw_template_edit_mode = True
+        return self.config_id.open_translation_view()
+
+    @api.multi
+    def reload_text(self):
+        text = self.with_context(lang=self.lang).body_html
+        self.raw_template_edit_mode = False
+        self.with_context(
+            no_update=True).simplified_text = self._simplify_text(text)
+
+    @api.multi
+    def toggle_all_keywords(self):
+        for record in self:
+            record.show_all_keywords = not record.show_all_keywords
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -436,12 +457,10 @@ class CommunicationRevision(models.Model):
         :param form_view_mode: Specify a form view.
         :return: action for opening the revision view
         """
-        text = self.with_context(lang=self.lang).body_html
+        # We don't need to update keywords when accessing the proposition
+        # text (config id in context for that case)
         if not self.env.context.get('config_id'):
-            # We don't need to update keywords when accessing the proposition
-            # text (config id in context for that case)
-            self.with_context(
-                no_update=True).simplified_text = self._simplify_text(text)
+            self.reload_text()
         form_view = 'partner_communication_revision.revision_form'
         if form_view_mode:
             form_view += '_' + form_view_mode

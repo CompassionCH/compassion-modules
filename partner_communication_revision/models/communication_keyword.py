@@ -48,7 +48,7 @@ class CommunicationKeyword(models.Model):
     )
     type = fields.Selection(
         [('if', 'If Condition'),
-         ('var', 'Keyword'),
+         ('var', 'Variable'),
          ('code', 'Keyword'),
          ('for', 'Loop'),
          ('for_ul', 'Loop'),

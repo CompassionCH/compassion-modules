@@ -22,12 +22,21 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
-                        <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit template" type="object"/>
+                        <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit template" type="object" groups="base.group_system"/>
+                        <button class="oe_stat_button" name="reload_text" icon="fa-refresh" string="Reload text" type="object" attrs="{'invisible': [('raw_template_edit_mode','=',False)]}"/>
                     </div>
+                    <field name="raw_template_edit_mode" invisible="1"/>
                     <field name="proposition_text" groups="base.group_erp_manager"/>
                     <hr groups="base.group_erp_manager"/>
-                    <field name="simplified_text" widget="html"/>
-                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
+                    <field name="simplified_text" widget="html" attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"/>
+                    <button name="toggle_all_keywords" type="object" class="oe_stat_button">
+                        <field name="show_all_keywords" widget="boolean_button" options='{"terminology": {
+                            "string_true": "All keywords",
+                            "string_false": "Hidden keywords",
+                            "hover_true": "Hide unused keywords",
+                            "hover_false": "Show all keywords"}}'/>
+                    </button>
+                    <button name="refresh_text" type="object" string="Update text" class="sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                         <field name="edit_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree'}"/>
@@ -49,7 +58,7 @@
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
                     <field name="simplified_text" widget="html" readonly="1"/>
-                    <button name="refresh_text" type="object" string="Refresh text" class="oe_highlight sht_refresh_button"/>
+                    <button name="refresh_text" type="object" string="Update text" class="oe_highlight sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                     </group>
