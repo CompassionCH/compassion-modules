@@ -115,7 +115,7 @@ class CommunicationKeyword(models.Model):
         for keyword in self:
             if keyword.type == 'var':
                 raw = keyword.raw_code.split('=')[0].split('% set ')[-1]
-                keyword.short_code = raw.strip()
+                keyword.short_code = 'var-' + raw.strip().replace('.', '-')
             else:
                 raw = keyword.raw_code
                 if keyword.type in ('if', 'for', 'for_ul'):

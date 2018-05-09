@@ -584,7 +584,8 @@ class CommunicationRevision(models.Model):
         :return: simplified text without the if code, keywords found
         """
         # Scan for non-nested % if, % else codes
-        if_pattern = re.compile(r'(% if .*?:)(.*?)(% endif)', flags=re.DOTALL)
+        if_pattern = re.compile(r'(% if .*?:$)(.*?)(% endif)',
+                                flags=re.DOTALL | re.MULTILINE)
         simple_text = text
         keywords = self.env['partner.communication.keyword']
         for match in if_pattern.finditer(text, overlapped=True):
@@ -642,17 +643,17 @@ class CommunicationRevision(models.Model):
         :return: simplified text without the if code, keywords found
         """
         # Regex for finding text wrapped in loops
-        loop_regex = r'(% for .*?:)(.*?)(% endfor)'
-        ul_loop_regex = r'(?:<ul[^<]*?)(% for .*?:)(.*?)(% endfor)(.*?</ul>)'
+        loop_regex = r'(% for .*?:$)(.*?)(% endfor)'
+        ul_loop_regex = r'(?:<ul[^<]*?)(% for .*?:$)(.*?)(% endfor)(.*?</ul>)'
 
         # First scan for ul_loops
-        for_pattern = re.compile(ul_loop_regex, flags=re.DOTALL)
+        for_pattern = re.compile(ul_loop_regex, flags=re.DOTALL | re.MULTILINE)
         simple_text, found_keywords = self._replace_for_type(
             text, nested_position, keyword_number, 'for_ul', for_pattern)
         keyword_number += len(found_keywords)
 
         # Then scan for regular loops
-        for_pattern = re.compile(loop_regex, flags=re.DOTALL)
+        for_pattern = re.compile(loop_regex, flags=re.DOTALL | re.MULTILINE)
         simple_text, keywords = self._replace_for_type(
             simple_text, nested_position, keyword_number, 'for', for_pattern)
         found_keywords |= keywords
@@ -709,12 +710,12 @@ class CommunicationRevision(models.Model):
         html_text = PyQuery(self.simplified_text.replace('\n', ''))
 
         def sort_keywords(kw):
-            # Replace first if-clause, then for-clause, then var, then code
+            # Replace first if/for-clauses, then var, then code
             index = kw.position
-            if kw.type == 'if':
-                index += 3*len(self.body_html) * kw.nested_position
-            elif 'for' in kw.type:
+            if kw.type == 'if' or 'for' in kw.type:
                 index += 2*len(self.body_html) * kw.nested_position
+                # Take if and for in the appearing order in the text
+                index -= kw.position
             elif kw.type == 'var':
                 index += len(self.body_html)
             return index
