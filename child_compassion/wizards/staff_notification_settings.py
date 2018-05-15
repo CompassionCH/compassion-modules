@@ -19,7 +19,9 @@ class StaffNotificationSettings(models.TransientModel):
 
     # Users to notify after Disaster Alert
     disaster_notify_ids = fields.Many2many(
-        'res.partner', string='Disaster Alert',
+        'res.partner', 'staff_disaster_notification_ids',
+        'config_id', 'partner_id',
+        string='Disaster Alert',
         domain=[
             ('user_ids', '!=', False),
             ('user_ids.share', '=', False),
@@ -35,7 +37,7 @@ class StaffNotificationSettings(models.TransientModel):
     @api.model
     def get_default_values(self, _fields):
         param_obj = self.env['ir.config_parameter']
-        res = {'notify_partner_ids': False}
+        res = {}
         partners = param_obj.get_param(
             'child_compassion.disaster_notify_ids', False)
         if partners:
