@@ -48,7 +48,7 @@ class CommunicationKeyword(models.Model):
     )
     type = fields.Selection(
         [('if', 'If Condition'),
-         ('var', 'Keyword'),
+         ('var', 'Variable'),
          ('code', 'Keyword'),
          ('for', 'Loop'),
          ('for_ul', 'Loop'),
@@ -115,7 +115,7 @@ class CommunicationKeyword(models.Model):
         for keyword in self:
             if keyword.type == 'var':
                 raw = keyword.raw_code.split('=')[0].split('% set ')[-1]
-                keyword.short_code = raw.strip()
+                keyword.short_code = 'var-' + raw.strip().replace('.', '-')
             else:
                 raw = keyword.raw_code
                 if keyword.type in ('if', 'for', 'for_ul'):
@@ -211,15 +211,18 @@ class CommunicationKeyword(models.Model):
     @api.multi
     def unlink(self):
         # Update indexes
+        other_kw = self.env[self._name]
         for keyword in self:
-            other_kw = self.search([
+            other_kw |= self.search([
                 ('type', '=', keyword.type),
                 ('revision_id', '=', keyword.revision_id.id),
-                ('index', '>', keyword.index)
+                ('index', '>', keyword.index),
+                ('id', 'not in', self.ids)
             ])
-            for kw in other_kw:
-                kw.index -= 1
-        return super(CommunicationKeyword, self).unlink()
+        res = super(CommunicationKeyword, self).unlink()
+        for keyword in other_kw.sorted('index'):
+            keyword.index -= 1
+        return res
 
     @api.multi
     def toggle_edit_value(self):

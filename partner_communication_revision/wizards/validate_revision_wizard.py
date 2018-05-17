@@ -15,10 +15,9 @@ class ValidateRevisionWizard(models.TransientModel):
     _name = 'partner.communication.validate.proposition'
     _description = 'Validate proposition wizard'
 
-    set_current_translation = fields.Integer(default=1)
     translation_revision_id = fields.Many2one(
         'partner.communication.revision',
-        default=lambda s: s._default_revision())
+        default=lambda s: s._get_translations()[:1])
     translator_user_id = fields.Many2one(
         'res.users', 'Translator',
         domain=[('share', '=', False)],
@@ -33,36 +32,40 @@ class ValidateRevisionWizard(models.TransientModel):
         return [(lang.code, lang.name) for lang in langs]
 
     @api.model
-    def _default_revision(self):
+    def _get_translations(self):
         revision = self.env['partner.communication.revision'].browse(
             self._context['active_id'])
-        other_lang = revision.config_id.revision_ids - revision
-        return other_lang[0]
+        return revision.config_id.revision_ids.filtered(
+            lambda r: not r.user_id)
 
     @api.multi
     def set_translator(self):
         revision = self.env['partner.communication.revision'].browse(
             self._context['active_id'])
-        other_lang = revision.config_id.revision_ids - revision
-        revision_lang = self.translation_revision_id
-        if not revision_lang:
+        other_langs = self._get_translations()
+        if not other_langs:
             revision.approve()
             return True
 
-        revision_lang.write({
+        other_langs[0].write({
             'user_id': self.translator_user_id.id,
             'compare_lang': revision.lang,
             'compare_text': revision.proposition_text,
             'compare_subject': revision.subject,
         })
-        if len(other_lang) > self.set_current_translation:
+        if len(other_langs) > 1:
             self.write({
-                'set_current_translation': self.set_current_translation + 1,
-                'translation_revision_id': other_lang[
-                    self.set_current_translation].id,
+                'translation_revision_id': other_langs[1].id,
                 'translator_user_id': False
             })
             return self._reload()
+        revision.approve()
+        return True
+
+    @api.multi
+    def approve(self):
+        revision = self.env['partner.communication.revision'].browse(
+            self._context['active_id'])
         revision.approve()
         return True
 

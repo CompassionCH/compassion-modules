@@ -63,6 +63,7 @@ class CommunicationRevision(models.Model):
     state = fields.Selection([
         ('pending', 'Pending'),
         ('submit', 'Submitted'),
+        ('corrected', 'Corrected'),
         ('approved', 'Approved'),
         ('active', 'Active'),
     ], default='active')
@@ -70,6 +71,7 @@ class CommunicationRevision(models.Model):
     subject = fields.Char()
     subject_correction = fields.Char()
     body_html = fields.Html(related='config_id.email_template_id.body_html')
+    raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one('res.users', 'Responsible', domain=[
         ('share', '=', False)], track_visibility='onchange')
@@ -85,6 +87,7 @@ class CommunicationRevision(models.Model):
     keyword_ids = fields.One2many(
         'partner.communication.keyword', 'revision_id', 'Keywords'
     )
+    show_all_keywords = fields.Boolean()
     edit_keyword_ids = fields.One2many(
         'partner.communication.keyword',
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
@@ -103,7 +106,6 @@ class CommunicationRevision(models.Model):
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')
     display_name = fields.Char(compute='_compute_display_name')
-    is_corrected = fields.Boolean()
 
     _sql_constraints = [
         ('unique_revision', 'unique(config_id,lang)',
@@ -129,11 +131,16 @@ class CommunicationRevision(models.Model):
     def _compute_keyword_ids(self):
         for revision in self:
             revision.edit_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == 'code' and k.is_visible)
+                lambda k: (
+                    (revision.show_all_keywords and k.type in ('code', 'var'))
+                    or k.type == 'code'
+                ) and (revision.show_all_keywords or k.is_visible))
             revision.if_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == 'if' and k.is_visible)
+                lambda k: k.type == 'if' and (revision.show_all_keywords or
+                                              k.is_visible))
             revision.for_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: 'for' in k.type and k.is_visible)
+                lambda k: 'for' in k.type and (revision.show_all_keywords or
+                                               k.is_visible))
 
     @api.multi
     def _inverse_keyword_ids(self):
@@ -345,13 +352,19 @@ class CommunicationRevision(models.Model):
         return self.with_context(body=body, subject=subject)._open_validation()
 
     @api.multi
+    def edit_correction(self):
+        return self.write({
+            'state': 'pending',
+            'proposition_text': self.proposition_correction,
+            'proposition_correction': False
+        })
+
+    @api.multi
     def discard_correction(self):
-        subject = '[{}] Revision approved'.format(self.display_name)
-        body = 'The original text for {} was kept. Proposed ' \
-               'corrections were discarded.'.format(self.display_name)
-        if not self.is_master_version:
-            self.approve(subject, body)
-        return self.with_context(body=body, subject=subject)._open_validation()
+        return self.write({
+            'state': 'pending',
+            'proposition_correction': False
+        })
 
     @api.multi
     def approve(self, subject=None, body=None):
@@ -361,7 +374,6 @@ class CommunicationRevision(models.Model):
             'state': 'approved',
             'compare_text': False,
             'compare_subject': False,
-            'is_corrected': False
         })
         subject = self._context.get('subject', subject)
         body = self._context.get('body', body)
@@ -406,8 +418,22 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def open_translation_view(self):
-        return self.env['ir.translation'].translate_fields(
-            'mail.template', self.config_id.email_template_id.id, 'body_html')
+        # Trick to avoid overriding raw template text changes
+        self.raw_template_edit_mode = True
+        return self.config_id.open_translation_view()
+
+    @api.multi
+    def reload_text(self):
+        text = self.with_context(lang=self.lang).body_html
+        self.raw_template_edit_mode = False
+        self.with_context(
+            no_update=True).simplified_text = self._simplify_text(text)
+
+    @api.multi
+    def toggle_all_keywords(self):
+        for record in self:
+            record.show_all_keywords = not record.show_all_keywords
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -436,9 +462,10 @@ class CommunicationRevision(models.Model):
         :param form_view_mode: Specify a form view.
         :return: action for opening the revision view
         """
-        text = self.with_context(lang=self.lang).body_html
-        self.with_context(
-            no_update=True).simplified_text = self._simplify_text(text)
+        # We don't need to update keywords when accessing the proposition
+        # text (config id in context for that case)
+        if not self.env.context.get('config_id'):
+            self.reload_text()
         form_view = 'partner_communication_revision.revision_form'
         if form_view_mode:
             form_view += '_' + form_view_mode
@@ -562,7 +589,8 @@ class CommunicationRevision(models.Model):
         :return: simplified text without the if code, keywords found
         """
         # Scan for non-nested % if, % else codes
-        if_pattern = re.compile(r'(% if .*?:)(.*?)(% endif)', flags=re.DOTALL)
+        if_pattern = re.compile(r'(% if .*?:$)(.*?)(% endif)',
+                                flags=re.DOTALL | re.MULTILINE)
         simple_text = text
         keywords = self.env['partner.communication.keyword']
         for match in if_pattern.finditer(text, overlapped=True):
@@ -620,17 +648,17 @@ class CommunicationRevision(models.Model):
         :return: simplified text without the if code, keywords found
         """
         # Regex for finding text wrapped in loops
-        loop_regex = r'(% for .*?:)(.*?)(% endfor)'
-        ul_loop_regex = r'(?:<ul[^<]*?)(% for .*?:)(.*?)(% endfor)(.*?</ul>)'
+        loop_regex = r'(% for .*?:$)(.*?)(% endfor)'
+        ul_loop_regex = r'(?:<ul[^<]*?)(% for .*?:$)(.*?)(% endfor)(.*?</ul>)'
 
         # First scan for ul_loops
-        for_pattern = re.compile(ul_loop_regex, flags=re.DOTALL)
+        for_pattern = re.compile(ul_loop_regex, flags=re.DOTALL | re.MULTILINE)
         simple_text, found_keywords = self._replace_for_type(
             text, nested_position, keyword_number, 'for_ul', for_pattern)
         keyword_number += len(found_keywords)
 
         # Then scan for regular loops
-        for_pattern = re.compile(loop_regex, flags=re.DOTALL)
+        for_pattern = re.compile(loop_regex, flags=re.DOTALL | re.MULTILINE)
         simple_text, keywords = self._replace_for_type(
             simple_text, nested_position, keyword_number, 'for', for_pattern)
         found_keywords |= keywords
@@ -687,12 +715,12 @@ class CommunicationRevision(models.Model):
         html_text = PyQuery(self.simplified_text.replace('\n', ''))
 
         def sort_keywords(kw):
-            # Replace first if-clause, then for-clause, then var, then code
+            # Replace first if/for-clauses, then var, then code
             index = kw.position
-            if kw.type == 'if':
-                index += 3*len(self.body_html) * kw.nested_position
-            elif 'for' in kw.type:
+            if kw.type == 'if' or 'for' in kw.type:
                 index += 2*len(self.body_html) * kw.nested_position
+                # Take if and for in the appearing order in the text
+                index -= kw.position
             elif kw.type == 'var':
                 index += len(self.body_html)
             return index
