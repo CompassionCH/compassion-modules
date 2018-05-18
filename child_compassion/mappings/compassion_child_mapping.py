@@ -171,6 +171,7 @@ class CompassionChildMapping(GenericChildMapping):
     def __init__(self, env):
         super(CompassionChildMapping, self).__init__(env)
         self.CONSTANTS = {'gpid': env.user.country_id.code}
+        self.CONNECT_MAPPING['AgeInYearsAndMonths'] = 'age'
 
     def _process_odoo_data(self, odoo_data):
         if 'gender' in odoo_data:
@@ -201,3 +202,13 @@ class CompassionChildMapping(GenericChildMapping):
                     'child_id': child.id,
                 })
             del odoo_data['revised_value_ids']
+
+    def _convert_connect_data(self, connect_name, value_mapping, value,
+                              relation_search=None):
+        """ Convert age in year. """
+        result = super(CompassionChildMapping, self)._convert_connect_data(
+            connect_name, value_mapping, value, relation_search
+        )
+        if connect_name == 'AgeInYearsAndMonths':
+            result['age'] = int(value.split(' Years')[0])
+        return result
