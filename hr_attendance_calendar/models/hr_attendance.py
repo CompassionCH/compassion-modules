@@ -83,3 +83,15 @@ class HrAttendance(models.Model):
                 attendance_day.compute_breaks()
             attendance_days |= attendance_day
         return attendance_days
+
+
+class AttendanceXivo(models.TransientModel):
+    _name = 'attendance.xivo'
+
+    @api.model
+    def check_in(self):
+        return
+
+    @api.model
+    def check_out(self, act_context=None):
+        return

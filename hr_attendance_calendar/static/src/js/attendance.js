@@ -124,6 +124,13 @@ odoo.define('hr_switzerland.exchange_days_wizard', function(require) {
                 window.find_parent_by_tag_name($('#select_change_day_message'), 'table').css('margin-bottom', '-8px');
             };
 
+            if (this.attendance.check_out) {
+                this.do_action('hr_attendance_extra_hours.check_out_xivo');
+            }
+            else {
+                this.do_action('hr_attendance_extra_hours.check_in_xivo');
+            }
+
             if (!this.attendance.due_hours && !this.attendance.check_out && this.attendance.total_attendance === 0 && !this.attendance.has_change_day_request) {
                 this.do_action('hr_attendance_extra_hours.change_day_wizard');
                 this._super();

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record model="ir.actions.server" id="check_in_xivo">
+        <field name="name">Attendance Xivo check in</field>
+        <field name="model_id" ref="model_attendance_xivo"/>
+        <field name="code">
+            env['attendance.xivo'].check_in()
+        </field>
+    </record>
+    <record model="ir.actions.server" id="check_out_xivo">
+        <field name="name">Attendance Xivo check out</field>
+        <field name="model_id" ref="model_attendance_xivo"/>
+        <field name="code">
+            env['attendance.xivo'].check_out()
+        </field>
+    </record>
+
     <template id="assets_backend" name="attendance assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/hr_attendance_extra_hours/static/src/js/attendance.js"></script>
