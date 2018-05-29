@@ -44,6 +44,7 @@
         'views/sponsorship_contract_group_view.xml',
         'views/invoice_line_view.xml',
         'views/res_partner_view.xml',
+        'views/privacy_statement.xml',
         'views/generate_gift_view.xml',
         'views/account_invoice_split_wizard_view.xml',
         'views/child_view.xml',
@@ -54,6 +55,7 @@
         'workflow/contract_workflow.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',
+        'security/ir.model.access.csv'
     ],
     'demo': [
         'demo/demo_data.yml'
