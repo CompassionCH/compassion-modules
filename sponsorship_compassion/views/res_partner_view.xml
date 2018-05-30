@@ -93,6 +93,20 @@
                     </div>
                 </page>
             </xpath>
+            <xpath expr="//page[last()]" position="after">
+                <page string="Privacy data" name="privacy_data">
+                    <group>
+                        <field name="privacy_statement_id"
+                               context="{'default_partner_id': active_id}">
+                            <tree>
+                                <field name="agreement_date"/>
+                                <field name="version"/>
+                                <button name="open_contract" type="object" icon="fa-external-link"  />
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
             <field name="website" position="after">
                 <field name="send_original"/>
             </field>

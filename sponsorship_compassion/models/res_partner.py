@@ -49,6 +49,8 @@ class ResPartner(models.Model):
     sponsored_child_ids = fields.One2many(
         'compassion.child', 'sponsor_id', 'Sponsored children')
     number_children = fields.Integer(related='number_sponsorships')
+    privacy_statement_id = fields.One2many('privacy.statement.agreement',
+                                           'partner_id')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -117,6 +119,16 @@ class ResPartner(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+
+    @api.model
+    def create(self, vals):
+        rd = super(ResPartner, self).create(vals)
+        statement = self.env['compassion.privacy.statement'].get_current()
+        self.env['privacy.statement.agreement'].create(
+            {'partner_id': rd.id, 'agreement_date': fields.Date.today(),
+             'privacy_statement_id': statement.id})
+        return rd
+
     @api.multi
     def write(self, vals):
         res = super(ResPartner, self).write(vals)
