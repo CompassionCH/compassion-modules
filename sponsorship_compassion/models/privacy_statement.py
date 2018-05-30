@@ -31,6 +31,15 @@ class PrivacyStatement(models.Model):
             'compassion.privacy.statement'].search([], order='date desc',
                                                    limit=1)
 
+    ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.multi
+    @api.depends('version')
+    def _compute_name(self):
+        for rd in self:
+            rd.name = rd.version
+
 
 class PrivacyStatementAgreement(models.Model):
     _name = 'privacy.statement.agreement'
@@ -38,16 +47,6 @@ class PrivacyStatementAgreement(models.Model):
                          'unique(partner,privacy_statement_id',
                          'This partner has already accepted this privacy '
                          'statement')]
-
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-
-    @api.multi
-    @api.depends('version')
-    def _compute_name(self):
-        for rd in self:
-            rd.name = rd.version
 
     ##########################################################################
     #                                 FIELDS                                 #
