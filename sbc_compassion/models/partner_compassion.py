@@ -32,6 +32,15 @@ class ResPartner(models.Model):
                 ('partner_id', '=', partner.id)
             ])
 
+    @api.model
+    def create(self, vals):
+        if 'spoken_lang_ids' not in vals:
+            lang_ids = self.env['res.lang.compassion'].search([
+                ('lang_id.code', '=', vals.get('lang', self.env.lang))
+            ]).ids
+            vals['spoken_lang_ids'] = [(6, 0, lang_ids)]
+        return super(ResPartner, self).create(vals)
+
     @api.multi
     def open_letters(self):
         """ Open the tree view correspondence of partner """
