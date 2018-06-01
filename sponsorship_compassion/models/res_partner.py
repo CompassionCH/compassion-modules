@@ -49,8 +49,8 @@ class ResPartner(models.Model):
     sponsored_child_ids = fields.One2many(
         'compassion.child', 'sponsor_id', 'Sponsored children')
     number_children = fields.Integer(related='number_sponsorships')
-    privacy_statement_id = fields.One2many('privacy.statement.agreement',
-                                           'partner_id')
+    privacy_statement_ids = fields.One2many('privacy.statement.agreement',
+                                            'partner_id')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -85,6 +85,7 @@ class ResPartner(models.Model):
                  ('type', 'not in', ['S', 'SC'])],
                 order='start_date desc').ids
 
+    @api.multi
     def _compute_count_items(self):
         move_line_obj = self.env['account.move.line']
         for partner in self:
@@ -97,6 +98,25 @@ class ResPartner(models.Model):
             partner.receivable_items = move_line_obj.search_count([
                 ('partner_id', '=', partner.id),
                 ('account_id.code', '=', '1050')])
+
+    @api.multi
+    def set_privacy_statement(self, origin):
+        for partner in self:
+            p_statement = self.env[
+                'compassion.privacy.statement'].get_current()
+            contract = self.env['privacy.statement.agreement'].search(
+                [['partner_id', '=', partner.id.id],
+                 ['privacy_statement_id', '=', p_statement.id]],
+                order='agreement_date desc', limit=1)
+            if contract:
+                contract.agreement_date = fields.Date.today()
+                contract.origin_signature = origin
+            else:
+                self.env['privacy.statement.agreement'].create(
+                    {'partner_id': partner.id.id,
+                     'agreement_date': fields.Date.today(),
+                     'privacy_statement_id': p_statement.id,
+                     'origin_signature': origin})
 
     @api.multi
     def update_number_sponsorships(self):
@@ -119,15 +139,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-
-    @api.model
-    def create(self, vals):
-        rd = super(ResPartner, self).create(vals)
-        statement = self.env['compassion.privacy.statement'].get_current()
-        self.env['privacy.statement.agreement'].create(
-            {'partner_id': rd.id, 'agreement_date': fields.Date.today(),
-             'privacy_statement_id': statement.id})
-        return rd
 
     @api.multi
     def write(self, vals):
