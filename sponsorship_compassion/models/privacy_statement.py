@@ -44,7 +44,7 @@ class PrivacyStatement(models.Model):
 class PrivacyStatementAgreement(models.Model):
     _name = 'privacy.statement.agreement'
     _sql_constraints = [('unique_privacy_agreement',
-                         'unique(partner,privacy_statement_id',
+                         'unique(partner_id,privacy_statement_id',
                          'This partner has already accepted this privacy '
                          'statement')]
 
@@ -57,6 +57,10 @@ class PrivacyStatementAgreement(models.Model):
                                            'Privacy statement')
     version = fields.Char(related='privacy_statement_id.version',
                           readonly=True)
+    origin_signature = fields.Selection(
+        [('new_letter', 'Website new letter'),
+         ('new_sponsorship', 'Website new sponsorshiè'),
+         ('first_payment', 'First payment')])
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

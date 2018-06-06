@@ -882,6 +882,13 @@ class SponsorshipContract(models.Model):
                         ])
                     gift_contract_lines.mapped('contract_id').signal_workflow(
                         'contract_active')
+
+                if len(contract.invoice_line_ids.filtered(
+                        lambda i: i.state == 'paid')) == 1:
+                    self.env['res.partner'].browse(
+                        contract.partner_id).set_privacy_statement(
+                        origin='first_payment')
+
         super(SponsorshipContract, self).invoice_paid(invoice)
 
     @api.multi
