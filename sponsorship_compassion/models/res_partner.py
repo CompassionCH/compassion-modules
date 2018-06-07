@@ -105,7 +105,7 @@ class ResPartner(models.Model):
             p_statement = self.env[
                 'compassion.privacy.statement'].get_current()
             contract = self.env['privacy.statement.agreement'].search(
-                [['partner_id', '=', partner.id.id],
+                [['partner_id', '=', partner.id],
                  ['privacy_statement_id', '=', p_statement.id]],
                 order='agreement_date desc', limit=1)
             if contract:
@@ -113,7 +113,7 @@ class ResPartner(models.Model):
                 contract.origin_signature = origin
             else:
                 self.env['privacy.statement.agreement'].create(
-                    {'partner_id': partner.id.id,
+                    {'partner_id': partner.id,
                      'agreement_date': fields.Date.today(),
                      'privacy_statement_id': p_statement.id,
                      'origin_signature': origin})
