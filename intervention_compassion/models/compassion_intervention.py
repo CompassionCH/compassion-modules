@@ -405,10 +405,20 @@ class CompassionIntervention(models.Model):
     @api.multi
     def hold_cancelled(self, intervention_vals=None):
         """ Remove the hold and put intervention in Cancel state. """
-        return self.write({
+        self.write({
             'hold_id': False,
             'state': 'cancel',
         })
+        self.message_post(
+            body="The hold of {} ({}) was just cancelled.".format(
+                self.name, self.intervention_id
+            ),
+            subject="Intervention hold cancelled",
+            partner_ids=self.message_partner_ids.ids,
+            type='comment',
+            subtype='mail.mt_comment',
+            content_subtype='html'
+        )
 
     @api.model
     def auto_subscribe(self):
