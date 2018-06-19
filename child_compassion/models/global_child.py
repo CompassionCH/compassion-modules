@@ -14,6 +14,7 @@ import logging
 from odoo import models, fields, api
 import base64
 import urllib2
+from datetime import datetime, date
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class GenericChild(models.AbstractModel):
     preferred_name = fields.Char()
     gender = fields.Selection([('F', 'Female'), ('M', 'Male')], readonly=True)
     birthdate = fields.Date(readonly=True)
-    age = fields.Integer(readonly=True)
+    age = fields.Integer(readonly=True, compute='_compute_age')
     is_orphan = fields.Boolean(readonly=True)
     is_area_hiv_affected = fields.Boolean()
     beneficiary_state = fields.Selection('_get_availability_state',
@@ -96,6 +97,14 @@ class GenericChild(models.AbstractModel):
 
         del vals['id']
         return vals
+
+    @api.multi
+    def _compute_age(self):
+        for child in self:
+            today = date.today()
+            born = datetime.strptime(child.birthdate, '%Y-%m-%d').date()
+            child.age = today.year - born.year - (
+                    (today.month, today.day) < (born.month, born.day))
 
 
 class GlobalChild(models.TransientModel):
