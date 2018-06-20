@@ -30,7 +30,7 @@
 {
     'name': 'Survey Phone',
     'summary': 'Make the filling of survey by internal users easier.',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.1.0',
     'category': 'Other',
     'sequence': 150,
     'author': 'Compassion CH',
@@ -39,7 +39,8 @@
     'depends': ['survey', 'base_phone'],
     'data': [
         'views/survey_user_input_view.xml',
-        'views/survey_phone.xml'
+        'views/survey_phone.xml',
+        'report/survey_report.xml',
     ],
     'demo': [],
     'installable': True,
