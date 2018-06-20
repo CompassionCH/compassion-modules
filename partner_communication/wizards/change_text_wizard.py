@@ -9,14 +9,13 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields, _
+from odoo import models, api, fields
 from odoo.exceptions import UserError
-
 
 class ChangeTextWizard(models.TransientModel):
     _name = 'partner.communication.change.text.wizard'
 
-    template_text = fields.Html(default=lambda s: s._default_text())
+    template_text = fields.Html(default=lambda s: s._default_text(), sanitize=False)
     state = fields.Char(default='edit')
     preview = fields.Html(readonly=True)
 
@@ -29,11 +28,12 @@ class ChangeTextWizard(models.TransientModel):
         lang = list(set(communications.mapped('partner_id.lang')))
         if len(config) != 1:
             raise UserError(
-                _("You can only update text on one communication type at "
+                ("You can only update text on one communication type at "
                   "time."))
         if len(lang) != 1:
             raise UserError(
-                _("Please update only one language at a time."))
+                ("Please update only one language at a time."))
+
         return config.email_template_id.with_context(lang=lang[0]).body_html
 
     @api.multi
@@ -48,10 +48,13 @@ class ChangeTextWizard(models.TransientModel):
         template = config.email_template_id.with_context(lang=lang)
         if len(config) != 1:
             raise UserError(
-                _("You can only update text on one communication type at "
+                ("You can only update text on one communication type at "
                   "time."))
         new_texts = template.render_template(
-            self.template_text, template.model, communications.ids)
+            self.template_text
+                .replace('% set', '\n% set')
+                .replace('</div>', '\n</div>'),
+            template.model, communications.ids)
         for comm in communications:
             comm.body_html = new_texts[comm.id]
 
