@@ -9,5 +9,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizards
+from . import survey_mail_compose_message

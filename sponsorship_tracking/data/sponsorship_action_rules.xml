@@ -16,7 +16,7 @@
         <field name="trg_date_id" ref="sponsorship_tracking.field_recurring_contract_sds_state_date"/>
         <field name="filter_domain">[('sds_state', '=', 'sub')]</field>
         <field name="trg_date_range">50</field>
-        <field name="trg_date_range_tye">day</field>
+        <field name="trg_date_range_type">day</field>
         <field name="server_action_ids" eval="[(6, 0, [ref('sub_check_action')])]"/>
     </record>
 </odoo>

@@ -9,4 +9,4 @@
 #
 ##############################################################################
 
-from . import survey_user_input, survey_phone
+from . import survey_user_input

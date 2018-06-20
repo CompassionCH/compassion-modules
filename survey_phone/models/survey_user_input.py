@@ -11,7 +11,7 @@
 
 import logging
 
-from odoo import models, fields
+from odoo import api, models, fields, _
 from odoo.addons.base_phone import fields as phone_fields
 logger = logging.getLogger(__name__)
 
@@ -36,3 +36,29 @@ class SurveyUserInput(models.Model):
         :return: Nothing
         """
         self.survey_link = self.survey_id.public_url + '/' + self.token
+
+    def action_view_answers(self):
+        """ Print PDF report instead of redirecting to survey. """
+        return True
+
+
+class SurveyUserInputLine(models.Model):
+    _inherit = 'survey.user_input_line'
+
+    value_converted_text = fields.Text(compute='_compute_value_converted')
+
+    @api.multi
+    def _compute_value_converted(self):
+        """ Retrieve the value as text representation for displaying it."""
+        for answer in self:
+            value = _('Skipped')
+            if not answer.skipped:
+                value = answer.value_text or answer.value_number or \
+                    answer.value_date or answer.value_free_text
+                if not value:
+                    suggested = answer.value_suggested or \
+                        answer.value_suggested_row
+                    if suggested:
+                        value = suggested.value
+
+            answer.value_converted_text = value
