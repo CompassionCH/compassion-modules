@@ -144,7 +144,7 @@ class ResPartner(models.Model):
     def write(self, vals):
         res = super(ResPartner, self).write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
-                       'mandatory_review', 'send_original']
+                       'mandatory_review', 'send_original', 'title']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
                         False)
         if notify and not self.env.context.get('no_upsert'):
