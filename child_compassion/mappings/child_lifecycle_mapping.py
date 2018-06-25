@@ -67,7 +67,7 @@ class LifecycleMapping(OnrampMapping):
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
         """ Convert Future Hopes in List"""
-        if connect_name == 'FutureHopes':
+        if connect_name == 'FutureHopes' and value:
             value = value.split(';')
         return super(LifecycleMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search
