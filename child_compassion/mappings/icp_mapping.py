@@ -165,7 +165,7 @@ class ICPMapping(OnrampMapping):
         """
         Converts primary language to avoid lowercase / uppercase problems
         """
-        if connect_name == 'PrimaryLanguage':
+        if connect_name == 'PrimaryLanguage' and value:
             value = value.lower().title()
         return super(ICPMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search
