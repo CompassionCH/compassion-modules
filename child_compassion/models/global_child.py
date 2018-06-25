@@ -14,7 +14,7 @@ import logging
 from odoo import models, fields, api
 import base64
 import urllib2
-from datetime import datetime, date
+from datetime import date
 
 logger = logging.getLogger(__name__)
 
@@ -100,11 +100,11 @@ class GenericChild(models.AbstractModel):
 
     @api.multi
     def _compute_age(self):
+        today = date.today()
         for child in self:
-            today = date.today()
-            born = datetime.strptime(child.birthdate, '%Y-%m-%d').date()
-            child.age = today.year - born.year - (
-                    (today.month, today.day) < (born.month, born.day))
+            born = fields.Date.from_string(child.birthdate)
+            child.age = today.year - born.year - \
+                ((today.month, today.day) < (born.month, born.day))
 
 
 class GlobalChild(models.TransientModel):

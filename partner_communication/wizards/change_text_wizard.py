@@ -9,13 +9,15 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields
+from odoo import models, api, fields, _
 from odoo.exceptions import UserError
+
 
 class ChangeTextWizard(models.TransientModel):
     _name = 'partner.communication.change.text.wizard'
 
-    template_text = fields.Html(default=lambda s: s._default_text(), sanitize=False)
+    template_text = fields.Html(default=lambda s: s._default_text(),
+                                sanitize=False)
     state = fields.Char(default='edit')
     preview = fields.Html(readonly=True)
 
@@ -27,12 +29,11 @@ class ChangeTextWizard(models.TransientModel):
         config = communications.mapped('config_id')
         lang = list(set(communications.mapped('partner_id.lang')))
         if len(config) != 1:
-            raise UserError(
-                ("You can only update text on one communication type at "
-                  "time."))
+            raise UserError(_("You can only update text "
+                              "on one communication type at time."))
         if len(lang) != 1:
             raise UserError(
-                ("Please update only one language at a time."))
+                _("Please update only one language at a time."))
 
         return config.email_template_id.with_context(lang=lang[0]).body_html
 
@@ -48,8 +49,8 @@ class ChangeTextWizard(models.TransientModel):
         template = config.email_template_id.with_context(lang=lang)
         if len(config) != 1:
             raise UserError(
-                ("You can only update text on one communication type at "
-                  "time."))
+                _("You can only update text on one communication "
+                  "type at time."))
         new_texts = template.render_template(
             self.template_text
                 .replace('% set', '\n% set')
