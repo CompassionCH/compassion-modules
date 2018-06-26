@@ -12,13 +12,6 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-def _find_gender(title):
-    if title in ('Madam', 'Miss'):
-        return 'Female'
-    else:
-        return 'Male'
-
-
 class ResPartnerMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field
     names for the model Res Partner.
@@ -30,7 +23,7 @@ class ResPartnerMapping(OnrampMapping):
     CONNECT_MAPPING = {
         'GlobalID': 'global_id',
         'GPID': 'ref',
-        'Gender': ('title.name', 'res.partner.title'),
+        'Gender': ('title.gender', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
         'PreferredName': 'preferred_name',
         'CommunicationDeliveryPreference': 'send_original',
@@ -39,7 +32,7 @@ class ResPartnerMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Gender': lambda title: _find_gender(title),
+        'Gender': lambda gender: 'Female' if gender == 'F' else 'Male',
         'MandatoryReviewRequired': None,
         'PreferredName': None,
         'CommunicationDeliveryPreference':

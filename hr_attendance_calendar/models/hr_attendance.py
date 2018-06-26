@@ -28,6 +28,24 @@ class HrAttendance(models.Model):
         related='attendance_day_id.has_change_day_request')
 
     ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
+    @api.multi
+    def open_attendance(self):
+        """ Used to bypass opening a attendance in popup mode from
+        hr_attendance_day view. """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Contract',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': self.id,
+            'target': 'current',
+        }
+
+    ##########################################################################
     #                               ORM METHODS                              #
     ##########################################################################
     @api.model
@@ -53,6 +71,9 @@ class HrAttendance(models.Model):
                     # Save attendance to update attendance days after writing
                     # the change.
                     att_day_updated += att
+        if 'check_out' in vals:
+            # Update breaks
+            att_day_updated = self
 
         res = super(HrAttendance, self).write(vals)
         att_day_updated._find_related_day()

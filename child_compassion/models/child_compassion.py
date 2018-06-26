@@ -297,6 +297,8 @@ class CompassionChild(models.Model):
             child.write(vals)
         else:
             child = super(CompassionChild, self).create(vals)
+            # directly fetch picture to have it before get_infos
+            child.update_child_pictures()
         return child
 
     @api.multi
@@ -524,6 +526,7 @@ class CompassionChild(models.Model):
     @api.multi
     def _get_last_pictures(self):
         self.ensure_one()
+
         pictures_obj = self.env['compassion.child.pictures']
         pictures = pictures_obj.create({
             'child_id': self.id,

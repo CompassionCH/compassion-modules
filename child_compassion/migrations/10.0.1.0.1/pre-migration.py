@@ -3,11 +3,20 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Nicolas Badoux <n.badoux@hotmail.com>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from . import models
-from . import wizards
+
+def migrate(cr, version):
+    if not version:
+        return
+
+    # Recompute age of sponsored children
+    cr.execute("""
+UPDATE compassion_child SET age = extract (
+    year from age(birthdate :: timestamp))
+WHERE state = 'P';
+    """)

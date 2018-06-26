@@ -18,7 +18,8 @@ class GiftNotificationSettings(models.TransientModel):
 
     # Users to notify
     gift_notify_ids = fields.Many2many(
-        'res.partner', 'gift_notification_config', 'config_id', 'partner_id',
+        'res.partner', 'staff_gift_notification_ids',
+        'config_id', 'partner_id',
         string='Gift Undeliverable',
         domain=[
             ('user_ids', '!=', False),
