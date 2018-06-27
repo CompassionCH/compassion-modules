@@ -461,12 +461,13 @@ class Correspondence(models.Model):
 
     @api.multi
     def unlink(self):
-        for letter in self:
-            if letter.kit_identifier or letter.state == 'Global Partner ' \
-                                                        'translation queue':
-                raise UserError(
-                    _("You cannot delete a letter which is in "
-                      "translation or already sent to GMC."))
+        if not self.env.context.get('force_delete'):
+            for letter in self:
+                if letter.kit_identifier or \
+                        letter.state == 'Global Partner translation queue':
+                    raise UserError(
+                        _("You cannot delete a letter which is in "
+                          "translation or already sent to GMC."))
         # Remove unsent messages
         gmc_action = self.env.ref('sbc_compassion.create_letter')
         gmc_messages = self.env['gmc.message.pool'].search([

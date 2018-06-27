@@ -8,7 +8,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import random
+import string
+
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 from functools import reduce
 
 
@@ -263,6 +267,69 @@ class ResPartner(models.Model):
     @api.onchange('lastname', 'firstname')
     def onchange_preferred_name(self):
         self.preferred_name = self.firstname or self.name
+
+    @api.multi
+    def forget_me(self):
+        """ Anonymize partner and delete sensitive data.
+        This will call the GDPR Data Protection Request on Connect,
+        Remove all letters and communication history, and attachments.
+        """
+        if self.global_id:
+            action = self.env.ref('sponsorship_compassion.anonymize_partner')
+            message = self.env['gmc.message.pool'].with_context(
+                async_mode=False).create({
+                    'action_id': action.id,
+                    'object_id': self.id,
+                    'partner_id': self.id
+                })
+            if message.state == 'failure':
+                answer = message.get_answer_dict()
+                raise UserError(
+                    answer and answer.get('DataProtection Error',
+                                          message.failure_reason)
+                    or message.failure_reason
+                )
+
+        def _random_str():
+            return ''.join([
+                random.choice(string.ascii_letters) for n in xrange(8)])
+
+        # Anonymize and delete partner data
+        self.with_context(no_upsert=True).write({
+            'name': _random_str(),
+            'firstname': False,
+            'preferred_name': False,
+            'parent_id': False,
+            'image': False,
+            'phone': False,
+            'mobile': False,
+            'email': False,
+            'street': _random_str(),
+            'street2': _random_str(),
+            'website': False,
+            'birthdate': False,
+            'function': False,
+            'category_id': False,
+            'comment': False,
+            'active': False
+        })
+        # Delete message and mail history
+        self.message_ids.unlink()
+        self.env['mail.mail'].search([
+            ('recipient_ids', '=', self.id)
+        ]).unlink()
+        self.env['ir.attachment'].search([
+            ('res_model', '=', 'res.partner'),
+            ('res_id', '=', self.id)
+        ]).unlink()
+        self.bank_ids.unlink()
+        self.privacy_statement_ids.unlink()
+        self.user_ids.sudo().unlink()
+        self.env['gmc.message.pool'].search([
+            ('partner_id', '=', self.id)]).write({
+                'res_name': self.name
+            })
+        return True
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
