@@ -16,8 +16,7 @@ from odoo.exceptions import UserError
 class ChangeTextWizard(models.TransientModel):
     _name = 'partner.communication.change.text.wizard'
 
-    template_text = fields.Html(default=lambda s: s._default_text(),
-                                sanitize=False)
+    template_text = fields.Text(default=lambda s: s._default_text())
     state = fields.Char(default='edit')
     preview = fields.Html(readonly=True)
 
@@ -52,9 +51,7 @@ class ChangeTextWizard(models.TransientModel):
                 _("You can only update text on one communication "
                   "type at time."))
         new_texts = template.render_template(
-            self.template_text
-                .replace('% set', '\n% set')
-                .replace('</div>', '\n</div>'),
+            self.template_text,
             template.model, communications.ids)
         for comm in communications:
             comm.body_html = new_texts[comm.id]
