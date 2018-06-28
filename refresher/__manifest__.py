@@ -26,10 +26,11 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# pylint: disable=C8101
 
 {
     'name': 'refresher',
-    'version': '1.0',
+    'version': '10.0.1.0.0',
     'author': 'Samuel Fringeli',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
@@ -37,7 +38,6 @@
         'templates/assets.xml'
     ],
     'depends': ['web'],
-    'demo': [],
     'installable': True,
     'auto_install': False,
 }
