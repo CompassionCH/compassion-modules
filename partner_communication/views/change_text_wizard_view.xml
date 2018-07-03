@@ -8,7 +8,7 @@
                 <div states="edit">
                     <button name="get_preview" string="Preview" type="object" class="oe_stat_button" icon="fa-search-plus"/>
                     <separator/>
-                    <field name="template_text" widget="text_ckeditor4"/>
+                    <field name="template_text"/>
                 </div>
                 <div states="preview">
                     <button name="edit" string="Edit" type="object" class="oe_stat_button" icon="fa-edit"/>

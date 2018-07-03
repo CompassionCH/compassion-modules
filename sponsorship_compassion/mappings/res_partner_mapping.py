@@ -63,3 +63,26 @@ class ResPartnerMapping(OnrampMapping):
             value = value[3:]
         return super(ResPartnerMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search)
+
+
+class AnonymizePartner(OnrampMapping):
+    ODOO_MODEL = 'res.partner'
+    MAPPING_NAME = 'AnonymizePartner'
+
+    CONNECT_MAPPING = {
+        'GlobalSupporterID': 'global_id',
+        'GP_SupporterID': 'ref',
+    }
+
+    FIELDS_TO_SUBMIT = {
+        'GlobalSupporterID': None,
+        'GP_SupporterID': lambda ref: '65-' + ref,
+        'GP_ID': None,
+        'DataProtection_Type': None
+    }
+
+    CONSTANTS = {
+        # "GP_ID": "Compassion Switzerland",
+        "GP_ID": "CH",
+        "DataProtection_Type": "ForgetMe"
+    }

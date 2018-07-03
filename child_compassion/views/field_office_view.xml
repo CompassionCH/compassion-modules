@@ -65,6 +65,19 @@
                                 </field>
                             </group>
                         </page>
+                        <page string="ICP">
+                            <group>
+                                <field name="icp_hours_week"/>
+                                <field name="icp_meal_week"/>
+                                <field name="icp_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="icp_id"/>
+                                        <field name="suspension"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

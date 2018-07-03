@@ -64,3 +64,11 @@ class ResPartner(models.Model):
             ('lang_id', '=', lang.id)])
         if spoken_lang:
             self.spoken_lang_ids += spoken_lang
+
+    @api.multi
+    def forget_me(self):
+        super(ResPartner, self).forget_me()
+        # Delete correspondence
+        self.env['correspondence'].with_context(force_delete=True).search([
+            ('partner_id', '=', self.id)]).unlink()
+        return True
