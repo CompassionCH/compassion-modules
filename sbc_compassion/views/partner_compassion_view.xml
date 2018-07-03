@@ -9,7 +9,6 @@
                 <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil">
                     <field string="Letters" name="nb_letters" widget="statinfo"/>
                 </button>
-                <button class="oe_inline oe_stat_button" string="Forget me" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
             </xpath>
             <field name="lang" position="after">
                 <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}"/>
