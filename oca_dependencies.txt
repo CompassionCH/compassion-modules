@@ -22,4 +22,4 @@ server-tools
 connector-telephony
 hr
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 10.0
-geospatial https://github.com/CompassionCH/geospatial 10.0-geoengine-partner
+geospatial https://github.com/OCA/geospatial 10.0
