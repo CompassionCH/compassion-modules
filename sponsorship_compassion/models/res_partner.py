@@ -143,6 +143,14 @@ class ResPartner(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        # Put a preferred name
+        partner = super(ResPartner, self).create(vals)
+        if not partner.preferred_name:
+            partner.preferred_name = \
+                partner.firstname or partner.lastname or partner.name
+        return partner
 
     @api.multi
     def write(self, vals):
