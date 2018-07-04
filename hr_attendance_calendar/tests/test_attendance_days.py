@@ -165,15 +165,25 @@ class TestAttendanceDays(SavepointCase):
 
     def create_attendance_days_for_leave_request(self):
         # create attendance days for gilles
+
+        # first day of vacation
         self.env['create.hr.attendance.day'].create({
             'date_from': '2018-07-05 08:00:00',
             'date_to': '2018-07-05 17:00:00',
             'employee_ids': [(4, self.gilles.id)]
         }).create_attendance_day()
 
+        # day in the middle of vacation
         self.env['create.hr.attendance.day'].create({
             'date_from': '2018-07-10 08:00:00',
             'date_to': '2018-07-10 17:00:00',
+            'employee_ids': [(4, self.gilles.id)]
+        }).create_attendance_day()
+
+        # last day of vacation
+        self.env['create.hr.attendance.day'].create({
+            'date_from': '2018-08-06 08:00:00',
+            'date_to': '2018-08-06 17:00:00',
             'employee_ids': [(4, self.gilles.id)]
         }).create_attendance_day()
 
@@ -184,37 +194,23 @@ class TestAttendanceDays(SavepointCase):
         ]).department_id
 
         # create leave request for gilles on the day created before
-        self.env['hr.holidays'].create({
+        return self.env['hr.holidays'].create({
             'employee_id': self.gilles.id,
             'department_id': gilles_department_id,
             'date_from': '2018-07-05',
             'date_to': '2018-08-06',
-            'holiday_status_id': 2, # not sure at all it's correct
-            'state': 'validate',
-            'type': 'add',
+            'holiday_status_id': 4, # not sure at all it's correct
+            'state': 'confirm',
+            'type': 'remove',
             'holiday_type': 'employee',
             'keep_due_hours': False
         })
 
     def test_leave_request(self):
         """ Simply test leave requests """
+
         self.create_attendance_days_for_leave_request()
-        self.create_leave_request()
-
-        # get all holidays from gilles
-        gilles_days = self.env['hr.attendance.day'].search([
-            ('employee_id', '=', self.gilles.id),
-            ('date', '>=', '2018-07-05'),
-            ('date', '<=', '2018-08-06')
-        ])
-
-        # check that due_hours of attendance days during holidays are equal
-        # to 0
-        for g_day in gilles_days:
-            g_day._compute_in_leave()
-            g_day.recompute_due_hours()
-        #   self.assertEqual(g_day.due_hours, 0)
-        # TODO find why we still have due hours when on holidays
+        holidays = self.create_leave_request()
 
         gilles_holidays = self.env['hr.holidays'].search([
             ('employee_id', '=', self.gilles.id),
@@ -225,5 +221,21 @@ class TestAttendanceDays(SavepointCase):
         g_holi = gilles_holidays[0]
         g_holi._onchange_date_from()
 
-        self.assertEqual(g_holi.number_of_days, 22)
+        self.assertEqual(g_holi.number_of_days, -22)
         self.assertEqual(g_holi.holiday_type, 'employee')
+        self.assertEqual(g_holi.employee_id.id, self.gilles.id)
+
+        # validates the leave request
+        holidays.action_approve()
+
+        # get all gilles's attendance days during his holidays
+        gilles_days = self.env['hr.attendance.day'].search([
+            ('employee_id', '=', self.gilles.id),
+            ('date', '>=', '2018-07-05'),
+            ('date', '<=', '2018-08-06')
+        ])
+
+        # check that due_hours of attendance days during holidays are equal
+        # to 0
+        for g_day in gilles_days:
+            self.assertEqual(g_day.due_hours, 0)
