@@ -10,6 +10,7 @@
 from odoo import fields
 from odoo.tests import SavepointCase
 import logging
+import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ class TestAttendanceDays(SavepointCase):
     ##########################################################################
 
     def create_attendance_days(self):
+        # for attendance day testing
         attendances = self.all_attendances
         date_start = attendances[0].check_in
         date_stop = attendances[-1].check_out
@@ -42,6 +44,20 @@ class TestAttendanceDays(SavepointCase):
             'date_from': date_start[:10],
             'date_to': date_stop[:10],
             'employee_ids': [(4, self.gilles.id), (4, self.pieter.id)]
+        }).create_attendance_day()
+
+        # for today hour formatting
+        self.env['create.hr.attendance.day'].create({
+            'date_from': fields.Date.today(),
+            'date_to': fields.Date.today(),
+            'employee_ids': [(4, self.gilles.id)]
+        }).create_attendance_day()
+
+        # for due_hour modification with a write() on forced_due_hours
+        self.env['create.hr.attendance.day'].create({
+            'date_from': '2020-04-04 08:00:00',
+            'date_to': '2020-04-04 17:00:00',
+            'employee_ids': [(4, self.gilles.id)]
         }).create_attendance_day()
 
     def test_normal_case(self):
@@ -66,7 +82,7 @@ class TestAttendanceDays(SavepointCase):
         self.assertEqual(len(p_last_day.break_ids), 1)
         self.assertEqual(p_last_day.break_total, 1)
         self.assertEqual(p_last_day.rule_id, self.env.ref(
-            'hr_attendance_extra_hours.break_rule_3'))
+            'hr_attendance_calendar.break_rule_3'))
         p_date = fields.Date.from_string(p_last_day.date)
         if p_date.weekday() <= 4:
             self.assertEqual(p_last_day.due_hours, 8)
@@ -81,7 +97,7 @@ class TestAttendanceDays(SavepointCase):
             p_date = fields.Date.from_string(p_day.date)
             pieter_balance += p_day.extra_hours
             if p_date.weekday() <= 4 and not p_day.leave_ids.filtered(
-                lambda l: l.state == 'validate'):
+                    lambda l: l.state == 'validate'):
                 self.assertEqual(p_day.due_hours, 8)
                 self.assertEqual(p_day.extra_hours, -8)
             else:
@@ -100,13 +116,44 @@ class TestAttendanceDays(SavepointCase):
         # initial test value
         self.assertEqual(g_att.worked_hours, 1)
 
-        g_att.write({'check_in': '2018-04-04 08:00:00', 'check_out':
-            '2018-04-04 17:00:00'})
+        g_att.write({'check_in': '2018-04-04 08:00:00',
+                     'check_out': '2018-04-04 17:00:00'})
 
         self.assertEqual(g_att.check_in, '2018-04-04 08:00:00')
         self.assertEqual(g_att.check_out, '2018-04-04 17:00:00')
         # worked hours should be computed on the fly
         self.assertEqual(g_att.worked_hours, 9)
+        self.assertEqual(g_att.total_attendance, 9)
+
+        # test annual balance computation
+        self.assertEqual(self.gilles.annual_balance, 0)
+        g_previous_balance = self.gilles.previous_annual_balance
+        g_extra_hours = self.gilles.extra_hours
+        self.gilles._cron_compute_annual_balance()
+        self.assertEqual(self.gilles.annual_balance, g_previous_balance
+                         + g_extra_hours)
+
+        # test formatting of today hour
+        self.gilles._compute_today_hour()
+        self.gilles._compute_today_hour_formatted()
+        self.assertEqual(self.gilles.today_hour_formatted, '29:27')
+
+        # test modification of due_hours with a write() on forced_due_hours
+        forced_due_hours = self.env['hr.forced.due.hours'].create({
+            'employee_id': self.gilles.id,
+            'date': '2020-04-04',
+            'forced_due_hours': 9
+        })
+        forced_due_hours.write({
+            'employee_id': self.gilles.id,
+            'date': '2020-04-04',
+            'forced_due_hours': 6
+        })
+        g_day_changed_due_hours = self.env['hr.attendance.day'].search([
+            ('employee_id', '=', self.gilles.id),
+            ('date', '=', '2020-04-04')
+        ])[0]
+        self.assertEqual(g_day_changed_due_hours.due_hours, 6)
 
     ##########################################################################
     #                         CHANGE DAY REQUEST                             #
@@ -199,7 +246,7 @@ class TestAttendanceDays(SavepointCase):
             'department_id': gilles_department_id,
             'date_from': '2018-07-05',
             'date_to': '2018-08-06',
-            'holiday_status_id': 4, # not sure at all it's correct
+            'holiday_status_id': 4,  # not sure at all it's correct
             'state': 'confirm',
             'type': 'remove',
             'holiday_type': 'employee',
@@ -236,6 +283,11 @@ class TestAttendanceDays(SavepointCase):
         ])
 
         # check that due_hours of attendance days during holidays are equal
-        # to 0
+        # to 0, that they contains a ref to a leave (holiday) and that
+        # total_attendance is correctly computed
         for g_day in gilles_days:
             self.assertEqual(g_day.due_hours, 0)
+            self.assertEqual(len(g_day.leave_ids), 1)
+            g_day._compute_total_attendance()
+            self.assertEqual(g_day.total_attendance,
+                             g_day.attendance_ids.worked_hours)
