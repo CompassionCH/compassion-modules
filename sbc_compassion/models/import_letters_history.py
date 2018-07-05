@@ -113,7 +113,7 @@ class ImportLettersHistory(models.Model):
                     if func.check_file(attachment.name) == 1:
                         tmp += 1
                     # zip case
-                    elif func.isZIP(attachment.name):
+                    elif func.is_zip(attachment.name):
                         # create a tempfile and read it
                         zip_file = BytesIO(base64.b64decode(
                             attachment.with_context(bin_size=False).datas))
@@ -188,7 +188,6 @@ class ImportLettersHistory(models.Model):
             # letters_ids should be empty before this line
             for vals in correspondence_vals:
                 letters.letters_ids.create(vals)
-            letters.mapped('import_line_ids.letter_image').unlink()
             letters.import_line_ids.unlink()
         return True
 
@@ -264,14 +263,8 @@ class ImportLettersHistory(models.Model):
         logger.info("Imported files analysis completed.")
 
     def _analyze_attachment(self, file_data, file_name):
-        line_vals, document_vals = func.analyze_attachment(
+        line_vals = func.analyze_attachment(
             self.env, file_data, file_name, self.template_id)
         for i in xrange(0, len(line_vals)):
             line_vals[i]['import_id'] = self.id
-            letters_line = self.env['import.letter.line'].create(line_vals[i])
-            document_vals[i].update({
-                'res_id': letters_line.id,
-                'res_model': 'import.letter.line'
-            })
-            letters_line.letter_image = self.env['ir.attachment'].create(
-                document_vals[i])
+            self.env['import.letter.line'].create(line_vals[i])

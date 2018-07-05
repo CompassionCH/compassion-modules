@@ -86,7 +86,8 @@ class Correspondence(models.Model):
 
     # 2. Attachments and scans
     ##########################
-    letter_image = fields.Many2one('ir.attachment')
+    letter_image = fields.Binary(attachment=True)
+    file_name = fields.Char()
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
         compute='_compute_letter_format', store=True)
@@ -342,7 +343,7 @@ class Correspondence(models.Model):
     def _compute_letter_format(self):
         for letter in self.filtered('letter_image'):
             ftype = magic.from_buffer(base64.b64decode(
-                letter.letter_image.datas), True)
+                letter.letter_image), True)
             if 'pdf' in ftype:
                 letter.letter_format = 'pdf'
             elif 'tiff' in ftype:
@@ -423,20 +424,23 @@ class Correspondence(models.Model):
                         'Received in the system') == 'Received in the system':
                 vals['state'] = 'Published to Global Partner'
 
-        letter_image = vals.get('letter_image')
-        attachment = False
-        if letter_image and not isinstance(letter_image, (int, long)):
-            attachment, type_ = self._get_letter_attachment(letter_image)
-            vals['letter_image'] = attachment.id
+        type_ = '.pdf'
+        letter_data = False
+        if vals.get('letter_image'):
+            letter_data = base64.b64decode(vals['letter_image'])
+            ftype = magic.from_buffer(letter_data, True).lower()
+            if 'pdf' in ftype:
+                type_ = '.pdf'
+            elif 'tiff' in ftype:
+                type_ = '.tiff'
+            else:
+                raise UserError(
+                    _('You can only attach tiff or pdf files'))
         letter = super(Correspondence, self).create(vals)
-        if attachment:
-            attachment.write({
-                'name': letter.scanned_date + '_' + letter.name + type_,
-                'datas_fname': letter.name,
-                'res_id': letter.id})
+        letter.file_name = letter._get_file_name()
+        if letter_data and type_ == '.pdf':
             # Set the correct number of pages
-            image_data = base64.b64decode(attachment.datas)
-            image_pdf = PdfFileReader(BytesIO(image_data))
+            image_pdf = PdfFileReader(BytesIO(letter_data))
             if letter.nbr_pages < image_pdf.numPages:
                 for i in range(letter.nbr_pages, image_pdf.numPages):
                     letter.page_ids.create({'correspondence_id': letter.id})
@@ -451,12 +455,6 @@ class Correspondence(models.Model):
         """ Keep track of state changes. """
         if 'state' in vals:
             vals['status_date'] = fields.Datetime.now()
-        # Allow to change letter image from the user interface
-        letter_image = vals.get('letter_image')
-        if letter_image and not isinstance(letter_image, (int, long)):
-            self.ensure_one()
-            attachment = self._get_letter_attachment(letter_image, self)[0]
-            vals['letter_image'] = attachment.id
         return super(Correspondence, self).write(vals)
 
     @api.multi
@@ -516,7 +514,7 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         layout = self.b2s_layout_id
-        image_data = base64.b64decode(self.letter_image.datas)
+        image_data = base64.b64decode(self.letter_image)
         text = self.translated_text or self.english_text
         if not text or not layout:
             return False
@@ -612,7 +610,7 @@ class Correspondence(models.Model):
         output_stream = BytesIO()
         final_pdf.write(output_stream)
         output_stream.seek(0)
-        self.letter_image.datas = base64.b64encode(output_stream.read())
+        self.letter_image = base64.b64encode(output_stream.read())
 
         return True
 
@@ -661,7 +659,7 @@ class Correspondence(models.Model):
         onramp = SBCConnector()
         for letter in self.filtered(lambda l: not l.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
-                letter.letter_image.datas, letter.letter_format)
+                letter.letter_image, letter.letter_format)
 
     @api.multi
     def enrich_letter(self, vals):
@@ -699,31 +697,20 @@ class Correspondence(models.Model):
                 raise UserError(
                     _("Image of letter {} was not found remotely.").format(
                         letter.kit_identifier))
-            name = ''
-            if letter.communication_type_ids.ids:
-                name = letter.communication_type_ids[0].with_context(
-                    lang=letter.partner_id.lang).name + ' '
-
-            name += letter.child_id.local_id + ' ' + letter.kit_identifier + \
-                '.pdf'
-            letter.letter_image = self.env['ir.attachment'].create({
-                "name": name,
-                "datas": image_data,
-                'datas_fname': name,
-                'res_model': self._name,
-                'res_id': letter.id,
+            letter.write({
+                'file_name': letter._get_file_name(),
+                'letter_image': image_data
             })
 
     @api.multi
     def attach_original(self):
-        self.mapped('letter_image').unlink()
         self.download_attach_letter_image(type='original_letter_url')
         return True
 
     def get_image(self):
         """ Method for retrieving the image """
         self.ensure_one()
-        data = base64.b64decode(self.letter_image.datas)
+        data = base64.b64decode(self.letter_image)
         return data
 
     def hold_letters(self, message='Project suspended'):
@@ -758,40 +745,15 @@ class Correspondence(models.Model):
         ])
         gmc_messages.write({'state': 'new'})
 
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
-    def _get_letter_attachment(self, image_data, letter=None):
-        """ Method that takes png/pdf binary data, create an ir.attachment
-        with it and returns its id. Useful for creating the letter image.
-
-        :returns (ir.attachement, string): attachment record, file type
-        """
-        # Detect filetype
-        ftype = magic.from_buffer(base64.b64decode(image_data),
-                                  True).lower()
-        if 'pdf' in ftype:
-            type_ = '.pdf'
-        elif 'tiff' in ftype:
-            type_ = '.tiff'
-        else:
-            raise UserError(
-                _('You can only attach tiff or pdf files'))
-        vals = {
-            'name': 'New letter' + type_,
-            'datas_fname': 'New letter' + type_,
-            'res_model': self._name,
-            'datas': image_data
-        }
-        if letter:
-            if letter.letter_image:
-                letter.letter_image.datas = image_data
-                return letter.letter_image, type_
-            else:
-                vals.update({
-                    'name': letter.kit_identifier or
-                    letter.child_id.local_id + '_' + type_,
-                    'datas_fname': letter.name,
-                    'res_id': letter.id
-                })
-        return self.env['ir.attachment'].create(vals), type_
+    @api.multi
+    def _get_file_name(self):
+        self.ensure_one()
+        name = ''
+        if self.communication_type_ids.ids:
+            name = self.communication_type_ids[0].with_context(
+                lang=self.partner_id.lang).name + ' '
+        name += self.child_id.local_id
+        if self.kit_identifier:
+            name += ' ' + self.kit_identifier
+        name += '.' + self.letter_format
+        return name

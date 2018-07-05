@@ -72,17 +72,12 @@ class TestSbcCompassion(BaseSponsorshipTest):
         import_letter.button_import()
         self.assertEqual(len(import_letter.import_line_ids), 6)
 
-        # Template postman with english checked
-        import_line = import_letter.import_line_ids.filtered(
-            lambda r: r.letter_image.name.startswith(
-                'PostmanEnglish'))
-
-        self.assertEqual(import_line.template_id.name, 'Postman')
-
-        # Template dove with english checked from Edward Foster
-        import_line = import_letter.import_line_ids.filtered(
-            lambda r: r.letter_image.name.startswith('DoveQR'))
-
-        self.assertEqual(import_line.template_id.name, 'Dove')
-        self.assertEqual(import_line.partner_id.name, 'Edward Foster')
-        self.assertEqual(import_line.child_id.display_name, 'TT123456789')
+        # Check the import line
+        for line in import_letter.import_line_ids:
+            if line.file_name.startswith('Dove'):
+                self.assertEqual(line.template_id.name, 'Dove')
+                self.assertEqual(line.partner_id.name, 'Edward Foster')
+                self.assertEqual(line.child_id.display_name,
+                                 'TT123456789')
+            if line.file_name.startswith('Postman'):
+                self.assertEqual(line.template_id.name, 'Postman')
