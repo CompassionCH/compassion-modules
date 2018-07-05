@@ -391,11 +391,6 @@ msgid "Destination language"
 msgstr "Langue destination"
 
 #. module: sbc_compassion
-#: field:correspondence.template,detection_result:0
-msgid "Detection result"
-msgstr ""
-
-#. module: sbc_compassion
 #: field:correspondence,direction:0
 msgid "Direction"
 msgstr "Direction"
