@@ -10,7 +10,6 @@
 from odoo import fields
 from odoo.tests import SavepointCase
 import logging
-import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +81,7 @@ class TestAttendanceDays(SavepointCase):
         self.assertEqual(len(p_last_day.break_ids), 1)
         self.assertEqual(p_last_day.break_total, 1)
         self.assertEqual(p_last_day.rule_id, self.env.ref(
-            'hr_attendance_calendar.break_rule_3'))
+            'hr_attendance_extra_hours.break_rule_3'))
         p_date = fields.Date.from_string(p_last_day.date)
         if p_date.weekday() <= 4:
             self.assertEqual(p_last_day.due_hours, 8)
