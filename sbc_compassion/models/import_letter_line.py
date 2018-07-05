@@ -31,8 +31,9 @@ class ImportLetterLine(models.Model):
     child_id = fields.Many2one('compassion.child', 'Child')
     letter_language_id = fields.Many2one(
         'res.lang.compassion', 'Language')
-    letter_image = fields.Many2one('ir.attachment')
-    letter_image_preview = fields.Binary()
+    letter_image = fields.Binary(attachment=True, readonly=True)
+    file_name = fields.Char(readonly=True)
+    letter_image_preview = fields.Binary(attachment=True, readonly=True)
     import_id = fields.Many2one('import.letters.history')
     reviewed = fields.Boolean()
     status = fields.Selection([
@@ -124,7 +125,7 @@ class ImportLetterLine(models.Model):
             vals = line.get_correspondence_metadata()
             vals.update({
                 'sponsorship_id': line.sponsorship_id.id,
-                'letter_image': line.letter_image.datas,
+                'letter_image': line.letter_image,
                 'original_language_id': line.letter_language_id.id,
                 'direction': 'Supporter To Beneficiary',
                 'original_text': line.original_text,

@@ -49,7 +49,7 @@ class RestController(http.Controller):
         else:
             headers.add(
                 'Content-Disposition', 'attachment',
-                filename=correspondence.letter_image.name)
+                filename=correspondence.file_name)
             response = Response(data, content_type='application/pdf',
                                 headers=headers)
         return response

@@ -330,14 +330,12 @@ def keyPointCenter(keypoints):
         return center / N
 
 
-def find_template(img, templates, test=False, resize_ratio=1.0):
+def find_template(img, templates, resize_ratio=1.0):
     """
     Use pattern recognition to detect which template correponds to img.
 
     :param img: Opencv Image to analyze
     :param templates: Collection of all templates
-    :param bool test: Enable the test mode (return an image as the last \
-        parameter). If False, the image is None.
     :returns: Detected template, center position of detected pattern,\
         image showing the detected keypoints for all the template
     :rtype: template, layout, None or np.array
@@ -353,10 +351,6 @@ def find_template(img, templates, test=False, resize_ratio=1.0):
 
     key_img = False
     matching_template = None
-    if test:
-        test_img = []
-    else:
-        test_img = None
 
     i = -1
     for template in templates:
@@ -374,18 +368,6 @@ def find_template(img, templates, test=False, resize_ratio=1.0):
         temp_image = cv2.resize(temp_image, None,
                                 fx=resize_ratio, fy=resize_ratio,
                                 interpolation=cv2.INTER_CUBIC)
-        if test:
-            recognition = patternRecognition(
-                img1, temp_image, full_result=True)
-
-            if recognition is not None:
-                kp1, kp2, good = recognition
-                img3 = cv2.drawMatchesKnn(img1, kp1, temp_image,
-                                          kp2, good, None, flags=2)
-            else:
-                img3 = cv2.drawMatchesKnn(img1, None, temp_image, None, None,
-                                          None, flags=2)
-            test_img.append(img3)
 
         # try to recognize the pattern
         res = patternRecognition(img1, temp_image)
