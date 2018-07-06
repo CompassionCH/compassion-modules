@@ -137,7 +137,7 @@
             <field name="connect_answer_wrapper">InterventionCommitmentResponseList</field>
             <field name="success_method">commitment_created</field>
             <field name="request_type">POST</field>
-            <field name="auto_process">1</field>
+            <field name="auto_process">0</field>
         </record>
 
         <!-- Commitment percent change notification -->
