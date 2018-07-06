@@ -51,11 +51,15 @@ class HoldWizard(models.TransientModel):
         self.ensure_one()
         create_commitment = self.env.ref(
             'intervention_compassion.intervention_create_commitment_action')
-        message = self.env['gmc.message.pool'].with_context(
-            async_mode=False).create({
-                'action_id': create_commitment.id,
-                'object_id': self.id,
-            })
+        # For whatever reason, we have a TransactionRollback issue with this
+        # message. To avoid that, we create and process the message in two
+        # steps and commit in between.
+        message = self.env['gmc.message.pool'].create({
+            'action_id': create_commitment.id,
+            'object_id': self.id,
+        })
+        self.env.cr.commit()  # pylint: disable=invalid-commit
+        message.with_context(async_mode=False).process_messages()
         if message.state == 'failure':
             raise UserError(message.failure_reason)
         return True
