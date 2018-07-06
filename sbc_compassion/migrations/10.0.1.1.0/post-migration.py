@@ -44,5 +44,6 @@ def migrate(env, version):
 
         template.write({
             'pattern_image': pattern_image,
-            'template_image': template_image.encode('base64')
+            'template_image': template_image and template_image.encode(
+                'base64')
         })
