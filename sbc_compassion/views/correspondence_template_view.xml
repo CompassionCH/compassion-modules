@@ -58,9 +58,6 @@
                         <group>
                             <field name="template_image" widget="image" required="1" width="210px" height="297px"/>
                         </group>
-                        <group>
-                            <field name="detection_result" widget="image" width="210px" height="297px"/>
-                        </group>
                     </group>
                 </sheet>
             </form>
