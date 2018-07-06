@@ -10,6 +10,7 @@
 ##############################################################################
 
 import logging
+from datetime import date
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -83,13 +84,14 @@ class RecurringContract(models.Model):
              'When sponsorship is ended but a SUB is made, the SUB will have'
              'the same line id. Only new sponsorships will have new ids.'
     )
+    contract_duration = fields.Integer(compute='_compute_contract_duration',
+                                       help='Contract duration in days')
 
     _sql_constraints = [('parent_id_unique',
                          'UNIQUE(parent_id)',
                          'Unfortunately this sponsorship is already used,'
-                         'please choose a unique one')]
-
-    _sql_constraints = [('sub_sponsorship_id_unique',
+                         'please choose a unique one'),
+                        ('sub_sponsorship_id_unique',
                          'UNIQUE(sub_sponsorship_id)',
                          'Unfortunately this sponsorship is already'
                          'used, please choose a unique one')]
@@ -197,6 +199,19 @@ class RecurringContract(models.Model):
             row['contract_id']: int(row['paidmonth'] or 0) for row in res}
         for contract in self:
             contract.months_paid = dict_contract_id_paidmonth.get(contract.id)
+
+    @api.multi
+    def _compute_contract_duration(self):
+        for contract in self:
+            if not contract.activation_date:
+                contract.contract_duration = 0
+            else:
+                contract_start_date = fields.Date.from_string(
+                    contract.activation_date)
+                end_date = fields.Date.from_string(
+                    contract.end_date) if contract.end_date else date.today()
+                contract.contract_duration = (
+                    end_date - contract_start_date).days
 
     ##########################################################################
     #                              ORM METHODS                               #

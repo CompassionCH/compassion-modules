@@ -16,6 +16,8 @@ from odoo.exceptions import UserError
 from functools import reduce
 
 
+# For more flexibility we have split "res.partner" by functionality
+# pylint: disable=R7980
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -70,6 +72,14 @@ class ResPartner(models.Model):
     privacy_statement_ids = fields.One2many(
         'privacy.statement.agreement', 'partner_id',
         groups='child_compassion.group_sponsorship')
+    member_ids = fields.One2many('res.partner', 'church_id', 'Members',
+                                 domain=[('active', '=', True)])
+    is_church = fields.Boolean(string="Is a Church",
+                               compute='_compute_is_church', store=True)
+    church_member_count = fields.Integer(compute='_compute_is_church',
+                                         store=True)
+    church_id = fields.Many2one('res.partner', 'Church',
+                                domain=[('is_church', '=', True)])
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -77,7 +87,7 @@ class ResPartner(models.Model):
     @api.multi
     def _compute_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
-        ('fully_managed', 'correspondant' or 'payer')
+        ('fully_managed', 'correspondent' or 'payer')
         """
         contract_obj = self.env['recurring.contract']
         for partner in self:
@@ -154,6 +164,23 @@ class ResPartner(models.Model):
     def _compute_has_sponsorships(self):
         for partner in self:
             partner.has_sponsorships = partner.number_sponsorships > 0
+
+    @api.multi
+    @api.depends('category_id', 'member_ids')
+    def _compute_is_church(self):
+        """ Tell if the given Partners are Church Partners
+            (by looking at their categories). """
+
+        # Retrieve all the categories and check if one is Church
+        church_category = self.env['res.partner.category'].with_context(
+            lang='en_US').search([('name', '=', 'Church')], limit=1)
+        for record in self:
+            is_church = False
+            if church_category in record.category_id:
+                is_church = True
+
+            record.church_member_count = len(record.member_ids)
+            record.is_church = is_church
 
     ##########################################################################
     #                              ORM METHODS                               #
