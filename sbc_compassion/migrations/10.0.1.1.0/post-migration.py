@@ -42,8 +42,5 @@ def migrate(env, version):
             template_image = attachment.datas
             attachment.unlink()
 
-        template.write({
-            'pattern_image': pattern_image,
-            'template_image': template_image and template_image.encode(
-                'base64')
-        })
+        template.pattern_image = pattern_image
+        template.template_image = template_image
