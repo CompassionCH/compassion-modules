@@ -135,7 +135,9 @@ class TestAttendanceDays(SavepointCase):
         # test formatting of today hour
         self.gilles._compute_today_hour()
         self.gilles._compute_today_hour_formatted()
-        self.assertEqual(self.gilles.today_hour_formatted, '29:27')
+        self.assertEqual(self.gilles.today_hour_formatted,
+                         '{:02d}:{:02d}'.format(*divmod(int(abs(float(
+                             self.gilles.compute_today_hour()) * 60)), 60)))
 
         # test modification of due_hours with a write() on forced_due_hours
         forced_due_hours = self.env['hr.forced.due.hours'].create({
