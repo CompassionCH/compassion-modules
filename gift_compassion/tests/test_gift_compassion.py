@@ -20,7 +20,7 @@ class TestGifts(BaseSponsorshipTest):
 
     def setUp(cls):
         super(TestGifts, cls).setUp()
-        child = cls.create_child('AB1234567890')
+        child = cls.create_child('AB124456789')
         sp_group = cls.create_group({'partner_id': cls.thomas.id})
 
         cls.sponsorship = cls.create_contract(
@@ -56,23 +56,23 @@ class TestGifts(BaseSponsorshipTest):
             'name': 'Birthday Gift'
         })
         self.assertEqual(gift.get_gift_types(product), {
-                'gift_type': 'Beneficiary Gift',
-                'attribution': 'Sponsorship',
-                'sponsorship_gift_type': 'Birthday',
-            })
+            'gift_type': 'Beneficiary Gift',
+            'attribution': 'Sponsorship',
+            'sponsorship_gift_type': 'Birthday',
+        })
 
         product.write({'name': 'General Gift'})
         self.assertEquals(gift.get_gift_types(product), {
-                'gift_type': 'Beneficiary Gift',
-                'attribution': 'Sponsorship',
-                'sponsorship_gift_type': 'General',
-            })
+            'gift_type': 'Beneficiary Gift',
+            'attribution': 'Sponsorship',
+            'sponsorship_gift_type': 'General',
+        })
 
         product.write({'name': 'Family Gift'})
         self.assertEquals(gift.get_gift_types(product), {
-                'gift_type': 'Family Gift',
-                'attribution': 'Sponsored Child Family',
-            })
+            'gift_type': 'Family Gift',
+            'attribution': 'Sponsored Child Family',
+        })
 
         # test for on_connect
         self.assertEquals(gift.state, 'draft')
