@@ -1,0 +1,38 @@
+<odoo>
+    <data noupdate="1">
+        <record id="template" model="mail.template">
+            <field name="name">Donation - Thank You Letter</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="use_default_to" eval="True"/>
+            <field name="subject">Donation Receipt</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set invoice_lines = object.get_objects()
+                </div>
+                <div>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We thank you for the donation of CHF ${donations[0]}.-
+                    % if donations[1]:
+                        you made for ${donations[1]}.
+                    % else
+                        you made.
+                    % endif
+                    We appreciate your generosity.
+                    <br/>
+                    <br/>
+                    Yours sincerely
+                </div>
+            </field>
+        </record>
+        <record id="test_communication2" model="partner.communication.config">
+            <field name="name">Test communication 2</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="send_mode">partner_preference</field>
+            <field name="send_mode_pref_field">global_communication_delivery_preference</field>
+            <field name="need_call">True</field>
+            <field name="email_template_id" ref="template"/>
+        </record>
+    </data>
+</odoo>

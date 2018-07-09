@@ -20,11 +20,11 @@ class RevisionInstall(models.AbstractModel):
         revision_obj = self.env['partner.communication.revision']
         langs = set(self.env['res.lang'].search([]))
         for config in configs:
-            revision_langs = set(config.revision_ids.mapped('lang'))
-            langs_missing = (lang for lang in langs \
-                             if lang.code not in revision_langs)
+            revision_lang_codes = set(config.revision_ids.mapped('lang'))
+            missing_langs = (lang for lang in langs
+                             if lang.code not in revision_lang_codes)
             revision_date = config.email_template_id.write_date
-            for lang in langs_missing:
+            for lang in missing_langs:
                 revision_obj.create({
                     'lang': lang.code,
                     'config_id': config.id,
