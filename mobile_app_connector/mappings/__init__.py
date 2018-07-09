@@ -9,5 +9,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import mappings
+from . import compassion_child_mapping
