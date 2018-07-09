@@ -142,6 +142,15 @@ class TestGifts(BaseSponsorshipTest):
         self.assertTrue(gift)
         self.assertTrue(gift.is_eligible())
 
+        # gift information
+        self.assertEquals(gift.name, 'Birthday Gift ['
+                          + gift.sponsorship_id.name + ']')
+        # it's a birthday gift, so due_date is 2 month before the birthday
+        self.assertEquals(gift.gift_date, '2018-11-28')
+        self.assertEquals(gift.amount, 50)
+        self.assertEquals(gift.gift_type, 'Beneficiary Gift')
+        self.assertEquals(gift.state, 'draft')
+
         # test create from invoice line function
         self.env['sponsorship.gift'].create_from_invoice_line(
             acc_inv_line)
