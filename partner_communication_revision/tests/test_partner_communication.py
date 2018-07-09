@@ -7,7 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from psycopg2 import IntegrityError
 from odoo.tests.common import TransactionCase
 import logging
 import re
@@ -57,12 +56,12 @@ class TestPartnerCommunicationRevision(TransactionCase):
         self.assertEqual(keyword.replacement, html)
 
     def test_simplifying_revision(self):
+        self.env['partner.communication.revision.install'].install()
         communication = self._load_communication_config(
             'partner_communication_revision.test_communication2')
         revision = communication.revision_ids[0]
 
         revision.reload_text()
-        simplified_text = revision.simplified_text
 
         expected = """<div><spanid="1-var-invoice_lines"></span></div><div>
         <spanid="1-salutation"style="color:white;background-color:darkblue;">
