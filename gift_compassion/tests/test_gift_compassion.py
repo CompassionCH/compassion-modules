@@ -8,7 +8,6 @@
 #
 ##############################################################################
 
-from odoo import fields
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
 
@@ -21,7 +20,7 @@ class TestGifts(BaseSponsorshipTest):
 
     def setUp(cls):
         super(TestGifts, cls).setUp()
-        child = cls.create_child('AB123456789')
+        child = cls.create_child('AB1234567890')
         sp_group = cls.create_group({'partner_id': cls.thomas.id})
 
         cls.sponsorship = cls.create_contract(
