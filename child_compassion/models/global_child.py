@@ -101,7 +101,7 @@ class GenericChild(models.AbstractModel):
     @api.multi
     def _compute_age(self):
         today = date.today()
-        for child in self:
+        for child in self.filtered('birthdate'):
             born = fields.Date.from_string(child.birthdate)
             child.age = today.year - born.year - \
                 ((today.month, today.day) < (born.month, born.day))
