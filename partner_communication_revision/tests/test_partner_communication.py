@@ -63,14 +63,11 @@ class TestPartnerCommunicationRevision(TransactionCase):
 
         revision.reload_text()
 
-        expected = """<div><spanid="1-var-invoice_lines"></span></div><div>
+        expected = """<div><spanid="1-var-partner"></span></div><div>
         <spanid="1-salutation"style="color:white;background-color:darkblue;">
-        [salutation]</span>,<br><br>WethankyouforthedonationofCHF
-        <spanid="2-donations"style="color:white;background-color:darkred;">
-        [donations]</span>.-<spanid="1-donations"style="color:darkblue;">
-        youmadefor<spanid="3-donations"style="color:white;
-        background-color:darkgreen;">[donations]</span>.%elseyoumade.</span>
-        Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
+        [salutation]</span>,<br><br>WethankyouforthedonationofCHF.
+        <spanid="1-partner"style="color:darkblue;">youmadebyemail.%elseyoumade.
+        </span>Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
 
         obtained_normalized = re.sub(r'\s+', '', revision.simplified_text)
         expected_normalized = re.sub(r'\s+', '', expected)

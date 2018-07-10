@@ -8,15 +8,15 @@
             <field name="subject">Donation Receipt</field>
             <field name="body_html" type="html">
                 <div>
-                    % set invoice_lines = object.get_objects()
+                    % set partner = object.get_objects()
                 </div>
                 <div>
                     ${partner.salutation},
                     <br/>
                     <br/>
-                    We thank you for the donation of CHF ${donations[0]}.-
-                    % if donations[1]:
-                        you made for ${donations[1]}.
+                    We thank you for the donation of CHF .
+                    % if partner.partner:
+                        you made by email.
                     % else
                         you made.
                     % endif
