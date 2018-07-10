@@ -194,7 +194,7 @@ class SponsorshipGift(models.Model):
             default = fields.Date.today()
             for invl_write in vals.get('invoice_line_ids', [[3]]):
                 if invl_write[0] == 0:
-                    dates.append(invl_write[2].get('due_date'), default)
+                    dates.append(invl_write[2].get('due_date', default))
                 elif invl_write[0] == 4:
                     dates.append(invl.browse(invl_write[1]).due_date)
                 elif invl_write[0] == 6:
