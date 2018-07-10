@@ -28,7 +28,7 @@
             </field>
         </record>
         <record id="test_communication2" model="partner.communication.config">
-            <field name="name">Test communication 2</field>
+            <field name="name">Test communication 3</field>
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="send_mode">partner_preference</field>
             <field name="send_mode_pref_field">global_communication_delivery_preference</field>

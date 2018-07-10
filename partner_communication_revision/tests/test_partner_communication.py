@@ -72,8 +72,8 @@ class TestPartnerCommunicationRevision(TransactionCase):
         background-color:darkgreen;">[donations]</span>.%elseyoumade.</span>
         Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
 
-        obtained_normalized = re.sub('\s+', '', revision.simplified_text)
-        expected_normalized = re.sub('\s+', '', expected)
+        obtained_normalized = re.sub(r'\s+', '', revision.simplified_text)
+        expected_normalized = re.sub(r'\s+', '', expected)
         self.assertEqual(obtained_normalized, expected_normalized)
 
     def _load_communication_config(self, ref):
