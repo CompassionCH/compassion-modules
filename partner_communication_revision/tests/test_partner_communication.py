@@ -65,9 +65,9 @@ class TestPartnerCommunicationRevision(TransactionCase):
 
         expected = """<div><spanid="1-var-partner"></span></div><div>
         <spanid="1-salutation"style="color:white;background-color:darkblue;">
-        [salutation]</span>,<br><br>WethankyouforthedonationofCHF.
-        <spanid="1-partner"style="color:darkblue;">youmadebyemail.%elseyoumade.
-        </span>Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
+        [salutation]</span>,<br><br>WethankyouforthedonationofCHF
+        <spanid="1-email"style="color:darkblue;">youmadebyemail.</span>
+        Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
 
         obtained_normalized = re.sub(r'\s+', '', revision.simplified_text)
         expected_normalized = re.sub(r'\s+', '', expected)

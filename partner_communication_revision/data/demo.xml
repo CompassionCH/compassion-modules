@@ -14,10 +14,10 @@
                     ${partner.salutation},
                     <br/>
                     <br/>
-                    We thank you for the donation of CHF .
-                    % if partner.partner:
+                    We thank you for the donation of CHF
+                    % if partner.email:
                         you made by email.
-                    % else
+                    % else:
                         you made.
                     % endif
                     We appreciate your generosity.
