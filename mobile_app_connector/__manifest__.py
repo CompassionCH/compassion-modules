@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
-#    @author: Nathan Flückiger
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,15 +28,22 @@
 ##############################################################################
 
 # pylint: disable=C8101
-{'name': 'Geospatial support for compassion projects',
- 'version': '10.0.1.0.0',
- 'category': 'GeoBI',
- 'author': "Fluckiger Nathan",
- 'license': 'AGPL-3',
- 'depends': [
-     'base_geoengine',
-     'child_compassion',
- ],
- 'data': [
-     'views/project_compassion_geoengine_view.xml'
- ]}
+{
+    'name': 'Compassion EU Mobile App Connector',
+    'version': '10.0.1.0.0',
+    'category': 'Other',
+    'author': 'Compassion CH',
+    'license': 'AGPL-3',
+    'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
+    'depends': ['sbc_compassion'],
+    'external_dependencies': {
+        'python': ['simplejson'],
+    },
+    'data': [
+    ],
+    'demo': [
+    ],
+    'development_status': 'Beta',
+    'installable': True,
+    'auto_install': False,
+}
