@@ -59,3 +59,13 @@ class MobileAppJsonRequest(JsonRequest):
         if result is not None and error is None:
             odoo_result.data = simplejson.dumps(result)
         return odoo_result
+
+    def _handle_exception(self, exception):
+        if isinstance(exception, ValueError):
+            code = 400
+            return self._json_response(error={
+                'code': code,
+                'http_code': code,
+                'message': str(exception)
+            })
+        raise exception
