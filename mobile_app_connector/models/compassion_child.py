@@ -54,15 +54,15 @@ class CompassionChild(models.Model):
     def mobile_get_letters(self, userid=None, **other_params):
         """
         Mobile app method:
-        Returns the letters letters from a Child
+        Returns all the letters from a Child
         :param needid: beneficiary id
         :param supgrpid: child id
         """
         partner_id = self._get_required_param('supgrpid', other_params)
         child_id = self._get_required_param('needid', other_params)
         letters = self.env['correspondence'].search([
-            ('partner_id', '=', partner_id),
-            ('child_id', '=', child_id),
+            ('partner_id', '=', int(partner_id)),
+            ('child_id', '=', int(child_id)),
             # todo, check if needed
             ('direction', '=', 'Beneficiary To Supporter')
         ])
@@ -73,3 +73,4 @@ class CompassionChild(models.Model):
     def _get_required_param(self, key, params):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
+        return params[key]

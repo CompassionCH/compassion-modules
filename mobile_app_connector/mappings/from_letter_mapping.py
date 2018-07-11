@@ -21,7 +21,12 @@ class FromLetterMapping(OnrampMapping):
         'DateProcessed': "status_date",
         'FileID': 'uuid',  # Can be a string? int in example
         'FileName': "file_name",
-        'Type': lambda x: 1
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+    def get_connect_data(self, odoo_object, fields_to_submit=None):
+        mapped = super(FromLetterMapping, self) \
+            .get_connect_data(odoo_object, fields_to_submit)
+        mapped['Type'] = 1 # todo figure out what to use here
+        return mapped
