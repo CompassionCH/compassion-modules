@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Nicolas Bornand
 #
 #    The licence is in the file __manifest__.py
 #
@@ -28,5 +28,5 @@ class FromLetterMapping(OnrampMapping):
     def get_connect_data(self, odoo_object, fields_to_submit=None):
         mapped = super(FromLetterMapping, self) \
             .get_connect_data(odoo_object, fields_to_submit)
-        mapped['Type'] = 1 # todo figure out what to use here
+        mapped['Type'] = 1  # todo figure out what to use here
         return mapped
