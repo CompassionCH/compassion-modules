@@ -14,6 +14,8 @@ import logging
 
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
+from ..mappings.from_letter_mapping import FromLetterMapping
+
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +42,34 @@ class CompassionChild(models.Model):
             ('ref', '=', userid),
         ], limit=1)
         children = self.search([
-            ('partner_id', '=', sponsor.id)
+            ('sponsor_id', '=', sponsor.id)
         ])
+
         mapping = MobileChildMapping(self.env)
         for child in children:
             result.append(mapping.get_connect_data(child))
         return result
+
+    @api.model
+    def mobile_get_letters(self, userid=None, **other_params):
+        """
+        Mobile app method:
+        Returns the letters letters from a Child
+        :param needid: beneficiary id
+        :param supgrpid: child id
+        """
+        partner_id = self._get_required_param('supgrpid', other_params)
+        child_id = self._get_required_param('needid', other_params)
+        letters = self.env['correspondence'].search([
+            ('partner_id', '=', partner_id),
+            ('child_id', '=', child_id),
+            # todo, check if needed
+            ('direction', '=', 'Beneficiary To Supporter')
+        ])
+
+        mapper = FromLetterMapping(self.env)
+        return [mapper.get_connect_data(letter) for letter in letters]
+
+    def _get_required_param(self, key, params):
+        if key not in params:
+            raise ValueError('Required parameter {}'.format(key))

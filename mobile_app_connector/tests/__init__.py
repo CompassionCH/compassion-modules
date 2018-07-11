@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-from . import compassion_child_mapping
-from . import from_letter_mapping
+from . import test_mobile_app_connector
+from . import test_mobile_app_http
