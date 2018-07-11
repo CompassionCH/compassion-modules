@@ -30,3 +30,10 @@ class TestMobileAppHttp(HttpCase):
         body_str = self.url_open(url).read()
 
         self.assertEqual(body_str, "[]")
+
+    def test_with_invalid_path(self):
+        url = self.root_url + 'xxx/sponsor_children?userid=25'
+        response = self.url_open(url)
+
+        self.assertEqual(response.code, 404)
+        self.assertEqual(response.msg, "NOT FOUND")

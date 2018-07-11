@@ -25,7 +25,7 @@ class CompassionChild(models.Model):
     _inherit = 'compassion.child'
 
     @api.model
-    def mobile_sponsor_children(self, userid=None, **other_params):
+    def mobile_sponsor_children(self, **other_params):
         """
         Mobile app method:
         Returns the sponsored child list for a given sponsor.
@@ -34,15 +34,14 @@ class CompassionChild(models.Model):
         :return: JSON list of sponsor children data
         """
         result = []
-        if userid is None:
-            return result
+        partner_ref = self._get_required_param('userid', other_params)
 
         sponsor = self.env['res.partner'].search([
             # TODO add filter only portal users
-            ('ref', '=', userid),
+            ('ref', '=', partner_ref),
         ], limit=1)
         children = self.search([
-            ('sponsor_id', '=', sponsor.id)
+            ('partner_id', '=', sponsor.id)
         ])
 
         mapping = MobileChildMapping(self.env)
@@ -51,7 +50,7 @@ class CompassionChild(models.Model):
         return result
 
     @api.model
-    def mobile_get_letters(self, userid=None, **other_params):
+    def mobile_get_letters(self, **other_params):
         """
         Mobile app method:
         Returns all the letters from a Child
@@ -63,7 +62,6 @@ class CompassionChild(models.Model):
         letters = self.env['correspondence'].search([
             ('partner_id', '=', int(partner_id)),
             ('child_id', '=', int(child_id)),
-            # todo, check if needed
             ('direction', '=', 'Beneficiary To Supporter')
         ])
 
