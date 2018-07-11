@@ -11,6 +11,7 @@
 from odoo.tests.common import HttpCase
 import json
 
+
 class TestMobileAppHttp(HttpCase):
 
     def setUp(self):
@@ -27,12 +28,12 @@ class TestMobileAppHttp(HttpCase):
 
     def test_for_valid_requests(self):
         url = self.root_url + 'compassion.child/sponsor_children?userid=25'
-        body_str = self.url_open(url).read()
+        response = self.url_open(url)
 
-        self.assertEqual(body_str, "[]")
+        self.assertEqual(response.code, 200)
 
     def test_with_invalid_path(self):
-        url = self.root_url + 'xxx/sponsor_children?userid=25'
+        url = self.root_url + 'xxx/sponsor_children?userid=7663'
         response = self.url_open(url)
 
         self.assertEqual(response.code, 404)

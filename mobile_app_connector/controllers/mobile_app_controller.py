@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from odoo import http, _
+from odoo import http
 from odoo.http import request
 from werkzeug.exceptions import NotFound
 

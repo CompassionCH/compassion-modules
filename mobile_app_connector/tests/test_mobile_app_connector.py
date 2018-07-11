@@ -38,6 +38,6 @@ class TestMobileAppConnector(BaseSponsorshipTest):
         child.partner_id = partner
 
         res = child.mobile_get_letters(userid=partner.ref, supgrpid=12,
-                                      needid=40)
+                                       needid=40)
 
         self.assertEqual(res, [])
