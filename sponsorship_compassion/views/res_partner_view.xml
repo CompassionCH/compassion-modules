@@ -13,6 +13,7 @@
                 <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child">
                     <field string="Sponsored children" name="number_children" widget="statinfo"/>
                 </button>
+                <button class="oe_inline oe_stat_button" string="Forget me" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">

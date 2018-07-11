@@ -149,6 +149,13 @@ class GmcMessagePool(models.Model):
             new_messages._process_messages()
         return True
 
+    @api.multi
+    def get_answer_dict(self, index=0):
+        answer = json.loads(self[index].answer)
+        if isinstance(answer, list):
+            answer = answer[index]
+        return answer
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -350,7 +357,8 @@ class GmcMessagePool(models.Model):
                         content_sent, indent=4, sort_keys=True),
                     'request_id': onramp_answer.get('request_id', False)
                 }
-                if result.get('Code', 2000) == 2000:
+                if isinstance(result, dict) and result.get('Code',
+                                                           2000) == 2000:
                     # Individual message was successfully processed
                     answer_vals = [object_mapping.get_vals_from_connect(
                         result)]
@@ -370,7 +378,7 @@ class GmcMessagePool(models.Model):
                             'answer': json.dumps(
                                 result, indent=4, sort_keys=True)
                         })
-                else:
+                elif isinstance(result, dict):
                     if action.failure_method:
                         getattr(data_objects[i], action.failure_method)(result)
                     mess_vals.update({
@@ -378,6 +386,12 @@ class GmcMessagePool(models.Model):
                         'failure_reason': result['Message'],
                         'answer': json.dumps(
                             result, indent=4, sort_keys=True)
+                    })
+                else:
+                    # We got a simple string as result, nothing more to do
+                    mess_vals.update({
+                        'state': 'success',
+                        'answer': str(result)
                     })
                 self[i].write(mess_vals)
         else:

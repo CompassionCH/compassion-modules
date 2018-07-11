@@ -72,13 +72,7 @@ msgid "Active"
 msgstr "Actif"
 
 #. module: sbc_compassion
-#: field:test.import.letters.history,csv_file_ids:0
-msgid "Add a CSV file"
-msgstr "Ajouter un fichier CSV"
-
-#. module: sbc_compassion
 #: field:import.letters.history,data:0
-#: field:test.import.letters.history,data:0
 msgid "Add a file"
 msgstr "Ajouter un fichier"
 
@@ -90,7 +84,6 @@ msgstr ""
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letters_history.py:52
 #: selection:import.letters.history,state:0
-#: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Analyzing"
 msgstr "Analyse"
@@ -115,8 +108,6 @@ msgstr ""
 #: field:import.letter.line,attachments_description:0
 #: field:import.letters.history,attachments_description:0
 #: field:import.letters.review,attachments_description:0
-#: field:test.import.letter.line,attachments_description:0
-#: field:test.import.letters.history,attachments_description:0
 msgid "Attachments description"
 msgstr "Description des envois"
 
@@ -184,11 +175,6 @@ msgid "By now equals to reading language. Could be used in the future"
 msgstr ""
 
 #. module: sbc_compassion
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
-msgid "CSV Files"
-msgstr "Fichiers CSV"
-
-#. module: sbc_compassion
 #: help:res.lang.compassion,translatable:0
 msgid "Can be translated by GP"
 msgstr "A traduire via GP"
@@ -197,12 +183,6 @@ msgstr "A traduire via GP"
 #: field:correspondence.template,checkbox_ids:0
 msgid "Checkbox ids"
 msgstr "Checkbox ids"
-
-#. module: sbc_compassion
-#: field:import.letter.line,child_id:0 field:import.letters.review,child_id:0
-#: field:test.import.letter.line,child_id:0
-msgid "Child"
-msgstr "Enfant"
 
 #. module: sbc_compassion
 #: model:ir.actions.act_window,name:sbc_compassion.child_layouts_config_action
@@ -252,8 +232,6 @@ msgstr "Type de communication"
 #: selection:import.letter.config,source:0
 #: selection:import.letter.line,source:0
 #: selection:import.letters.history,source:0
-#: selection:test.import.letter.line,source:0
-#: selection:test.import.letters.history,source:0
 #, python-format
 msgid "Compassion website"
 msgstr "Site Internet"
@@ -352,8 +330,6 @@ msgstr "Total"
 #: field:import.letters.review,create_uid:0
 #: field:letter.image.wizard,create_uid:0
 #: field:res.lang.compassion,create_uid:0
-#: field:test.import.letter.line,create_uid:0
-#: field:test.import.letters.history,create_uid:0
 msgid "Created by"
 msgstr "Créé par"
 
@@ -375,8 +351,6 @@ msgstr "Créé par"
 #: field:import.letters.review,create_date:0
 #: field:letter.image.wizard,create_date:0
 #: field:res.lang.compassion,create_date:0
-#: field:test.import.letter.line,create_date:0
-#: field:test.import.letters.history,create_date:0
 msgid "Created on"
 msgstr "Créé le"
 
@@ -403,7 +377,6 @@ msgstr "Date"
 #. module: sbc_compassion
 #: help:correspondence,message_last_post:0
 #: help:import.letters.history,message_last_post:0
-#: help:test.import.letters.history,message_last_post:0
 msgid "Date of the last message posted on the record."
 msgstr "Date du dernier message enregistré"
 
@@ -416,11 +389,6 @@ msgstr "Préférence d'envoi pour lettres B2S"
 #: view:correspondence:sbc_compassion.view_correspondence_form
 msgid "Destination language"
 msgstr "Langue destination"
-
-#. module: sbc_compassion
-#: field:correspondence.template,detection_result:0
-msgid "Detection result"
-msgstr ""
 
 #. module: sbc_compassion
 #: field:correspondence,direction:0
@@ -446,8 +414,6 @@ msgstr "Direction"
 #: field:import.letters.review,display_name:0 field:ir.http,display_name:0
 #: field:letter.image.wizard,display_name:0
 #: field:res.lang.compassion,display_name:0
-#: field:test.import.letter.line,display_name:0
-#: field:test.import.letters.history,display_name:0
 msgid "Display Name"
 msgstr ""
 
@@ -455,7 +421,6 @@ msgstr ""
 #: code:addons/sbc_compassion/models/import_letters_history.py:55
 #: selection:correspondence.s2b.generator,state:0
 #: selection:import.letters.history,state:0
-#: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Done"
 msgstr "Effectué"
@@ -485,7 +450,6 @@ msgstr ""
 #: code:addons/sbc_compassion/models/import_letters_history.py:51
 #: selection:correspondence.s2b.generator,state:0
 #: selection:import.letters.history,state:0
-#: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Draft"
 msgstr "Brouillon"
@@ -497,8 +461,6 @@ msgstr "Brouillon"
 #: selection:import.letter.config,source:0
 #: selection:import.letter.line,source:0
 #: selection:import.letters.history,source:0
-#: selection:test.import.letter.line,source:0
-#: selection:test.import.letters.history,source:0
 #, python-format
 msgid "E-Mail"
 msgstr "E-Mail"
@@ -520,8 +482,6 @@ msgstr "Edition"
 #: field:import.letter.line,is_encourager:0
 #: field:import.letters.history,is_encourager:0
 #: field:import.letters.review,is_encourager:0
-#: field:test.import.letter.line,is_encourager:0
-#: field:test.import.letters.history,is_encourager:0
 #, python-format
 msgid "Encourager"
 msgstr "Rédacteur tiers"
@@ -535,11 +495,6 @@ msgstr "Texte anglais"
 #: field:correspondence.page,english_translated_text:0
 msgid "English translated text"
 msgstr "Traduction anglais"
-
-#. module: sbc_compassion
-#: field:test.import.letter.line,error:0
-msgid "Error"
-msgstr "Erreur"
 
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/tools/onramp_connector.py:77
@@ -573,7 +528,6 @@ msgstr "'{}' n'est pas un csv valide"
 
 #. module: sbc_compassion
 #: view:import.letters.history:sbc_compassion.import_letters_history_form
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
 msgid "Filename"
 msgstr "Nom de fichier"
 
@@ -584,8 +538,6 @@ msgstr "Fichiers"
 
 #. module: sbc_compassion
 #: field:import.letters.history,import_line_ids:0
-#: field:test.import.letters.history,import_line_ids:0
-#: field:test.import.letters.history,test_import_line_ids:0
 msgid "Files to process"
 msgstr "Fichiers à traiter"
 
@@ -630,7 +582,6 @@ msgstr "Fname"
 #. module: sbc_compassion
 #: field:correspondence,message_follower_ids:0
 #: field:import.letters.history,message_follower_ids:0
-#: field:test.import.letters.history,message_follower_ids:0
 msgid "Followers"
 msgstr "Followers"
 
@@ -688,7 +639,6 @@ msgstr ""
 #. module: sbc_compassion
 #: help:correspondence,message_summary:0
 #: help:import.letters.history,message_summary:0
-#: help:test.import.letters.history,message_summary:0
 msgid ""
 "Holds the Chatter summary (number of messages, ...). This summary is "
 "directly in html format in order to be inserted in kanban views."
@@ -707,8 +657,6 @@ msgstr ""
 #: field:crosscheck.image,id:0 field:import.letter.config,id:0
 #: field:import.letter.line,id:0 field:import.letters.history,id:0
 #: field:import.letters.review,id:0 field:letter.image.wizard,id:0
-#: field:res.lang.compassion,id:0 field:test.import.letter.line,id:0
-#: field:test.import.letters.history,id:0
 msgid "ID"
 msgstr "ID"
 
@@ -720,7 +668,6 @@ msgstr "ISO639-3"
 #. module: sbc_compassion
 #: help:correspondence,message_unread:0
 #: help:import.letters.history,message_unread:0
-#: help:test.import.letters.history,message_unread:0
 msgid "If checked new messages require your attention."
 msgstr "If checked new messages require your attention."
 
@@ -764,13 +711,11 @@ msgstr "Import des Lettres"
 
 #. module: sbc_compassion
 #: field:import.letters.history,import_completed:0
-#: field:test.import.letters.history,import_completed:0
 msgid "Import completed"
 msgstr "Import terminé"
 
 #. module: sbc_compassion
 #: field:correspondence,import_id:0 field:import.letter.line,import_id:0
-#: field:test.import.letter.line,import_id:0
 msgid "Import id"
 msgstr "Import id"
 
@@ -782,7 +727,6 @@ msgstr "Import non valide"
 
 #. module: sbc_compassion
 #: field:import.letters.history,config_id:0
-#: field:test.import.letters.history,config_id:0
 msgid "Import settings"
 msgstr "Paramètres d'importation"
 
@@ -793,7 +737,6 @@ msgstr "Lettres importées"
 
 #. module: sbc_compassion
 #: field:import.letters.history,letters_ids:0
-#: field:test.import.letters.history,letters_ids:0
 msgid "Imported letters"
 msgstr "Lettres importées"
 
@@ -802,8 +745,6 @@ msgstr "Lettres importées"
 #: view:import.letters.history:sbc_compassion.import_letters_history_tree
 #: model:ir.actions.act_window,name:sbc_compassion.action_compassion_import_letters_action
 #: model:ir.ui.menu,name:sbc_compassion.import_letters_menu
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_tree
 msgid "Imports"
 msgstr "Imports"
 
@@ -830,7 +771,6 @@ msgstr "Forcer la vérification du contenu des lettres du parrain"
 #. module: sbc_compassion
 #: field:correspondence,message_is_follower:0
 #: field:import.letters.history,message_is_follower:0
-#: field:test.import.letters.history,message_is_follower:0
 msgid "Is a Follower"
 msgstr "Is a Follower"
 
@@ -853,8 +793,6 @@ msgstr "Langue"
 #: field:correspondence.s2b.generator,language_id:0
 #: field:import.letter.line,letter_language_id:0
 #: field:import.letters.review,language_id:0
-#: field:test.import.letter.line,letter_language_id:0
-#: field:test.import.letter.line,test_letter_language:0
 msgid "Language"
 msgstr "Langue"
 
@@ -871,20 +809,9 @@ msgstr "Langue"
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letter_line.py:39
 #: selection:import.letter.line,status:0
-#: selection:test.import.letter.line,status:0
 #, python-format
 msgid "Language not Detected"
 msgstr "Langue non détectée"
-
-#. module: sbc_compassion
-#: field:test.import.letters.history,lang_ok:0
-msgid "Languages passed"
-msgstr ""
-
-#. module: sbc_compassion
-#: field:test.import.letter.line,lang_preview:0
-msgid "Languages preview"
-msgstr "Aperçu des langues"
 
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/correspondence.py:239
@@ -895,7 +822,6 @@ msgstr "Remerciement grand cadeau"
 #. module: sbc_compassion
 #: field:correspondence,message_last_post:0
 #: field:import.letters.history,message_last_post:0
-#: field:test.import.letters.history,message_last_post:0
 msgid "Last Message Date"
 msgstr "Last Message Date"
 
@@ -918,8 +844,6 @@ msgstr "Last Message Date"
 #: field:import.letters.review,__last_update:0 field:ir.http,__last_update:0
 #: field:letter.image.wizard,__last_update:0
 #: field:res.lang.compassion,__last_update:0
-#: field:test.import.letter.line,__last_update:0
-#: field:test.import.letters.history,__last_update:0
 msgid "Last Modified on"
 msgstr ""
 
@@ -938,8 +862,6 @@ msgstr ""
 #: field:import.letters.history,write_uid:0
 #: field:import.letters.review,write_uid:0
 #: field:letter.image.wizard,write_uid:0 field:res.lang.compassion,write_uid:0
-#: field:test.import.letter.line,write_uid:0
-#: field:test.import.letters.history,write_uid:0
 msgid "Last Updated by"
 msgstr "Modifié par"
 
@@ -960,8 +882,6 @@ msgstr "Modifié par"
 #: field:import.letters.review,write_date:0
 #: field:letter.image.wizard,write_date:0
 #: field:res.lang.compassion,write_date:0
-#: field:test.import.letter.line,write_date:0
-#: field:test.import.letters.history,write_date:0
 msgid "Last Updated on"
 msgstr "Modifié le"
 
@@ -1022,8 +942,6 @@ msgstr ""
 #: model:ir.actions.act_window,name:sbc_compassion.action_gmc_message_create_letter
 #: model:ir.model,name:sbc_compassion.model_correspondence
 #: model:ir.ui.menu,name:sbc_compassion.menu_message_letter_create
-#: selection:test.import.letter.line,source:0
-#: selection:test.import.letters.history,source:0
 #, python-format
 msgid "Letter"
 msgstr "Lettre"
@@ -1061,14 +979,12 @@ msgstr ""
 #. module: sbc_compassion
 #: field:correspondence,letter_image:0 field:import.letter.line,letter_image:0
 #: field:import.letters.review,letter_image:0
-#: field:test.import.letter.line,letter_image:0
 msgid "Letter image"
 msgstr "Image de la lettre"
 
 #. module: sbc_compassion
 #: field:import.letter.line,letter_image_preview:0
 #: view:import.letters.history:sbc_compassion.import_letters_history_form
-#: field:test.import.letter.line,letter_image_preview:0
 msgid "Letter image preview"
 msgstr "Aperçu de la lettre"
 
@@ -1077,7 +993,6 @@ msgstr "Aperçu de la lettre"
 #: model:ir.ui.menu,name:sbc_compassion.menu_sponsorship_letters
 #: view:recurring.contract:sbc_compassion.view_contracts_correspondence_form
 #: view:res.partner:sbc_compassion.view_partner_form_sbc
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
 msgid "Letters"
 msgstr "Lettres"
 
@@ -1094,8 +1009,6 @@ msgstr "Charger les Fichiers"
 #: field:import.letters.history,mandatory_review:0
 #: field:import.letters.review,mandatory_review:0
 #: field:res.partner,mandatory_review:0
-#: field:test.import.letter.line,mandatory_review:0
-#: field:test.import.letters.history,mandatory_review:0
 msgid "Mandatory review"
 msgstr "Vérification Obligatoire"
 
@@ -1162,13 +1075,11 @@ msgstr ""
 #. module: sbc_compassion
 #: field:correspondence,message_ids:0
 #: field:import.letters.history,message_ids:0
-#: field:test.import.letters.history,message_ids:0
 msgid "Messages"
 msgstr "Messages"
 
 #. module: sbc_compassion
 #: help:correspondence,message_ids:0 help:import.letters.history,message_ids:0
-#: help:test.import.letters.history,message_ids:0
 msgid "Messages and communication history"
 msgstr "Messages and communication history"
 
@@ -1234,22 +1145,6 @@ msgid "Missing configuration"
 msgstr ""
 
 #. module: sbc_compassion
-#: code:addons/sbc_compassion/wizards/import_letters_test.py:25
-#: model:ir.model,name:sbc_compassion.model_test_import_letters_history
-#, python-format
-msgid ""
-"Module testing the import of\n"
-"    letters (import.letters.history)"
-msgstr ""
-"Module testing the import of\n"
-"    letters (import.letters.history)"
-
-#. module: sbc_compassion
-#: field:test.import.letters.history,nber_test:0
-msgid "NBER OF FILE"
-msgstr "Nmbre de fichiers"
-
-#. module: sbc_compassion
 #: field:correspondence,name:0 field:correspondence.b2s.layout,name:0
 #: field:correspondence.s2b.generator,name:0
 #: field:correspondence.template,name:0
@@ -1257,8 +1152,6 @@ msgstr "Nmbre de fichiers"
 #: field:correspondence.type,name:0 field:crosscheck.image,name:0
 #: field:import.letter.config,name:0 field:import.letter.line,name:0
 #: field:import.letters.history,name:0 field:res.lang.compassion,name:0
-#: field:test.import.letter.line,name:0
-#: field:test.import.letters.history,name:0
 msgid "Name"
 msgstr "Nom"
 
@@ -1298,15 +1191,12 @@ msgstr "Suivant"
 #: selection:import.letter.config,physical_attachments:0
 #: selection:import.letter.line,physical_attachments:0
 #: selection:import.letters.history,physical_attachments:0
-#: selection:test.import.letter.line,physical_attachments:0
-#: selection:test.import.letters.history,physical_attachments:0
 #, python-format
 msgid "Not sent"
 msgstr "Non envoyé"
 
 #. module: sbc_compassion
 #: field:import.letters.history,nber_letters:0
-#: field:test.import.letters.history,nber_letters:0
 msgid "Number of files"
 msgstr "Nombre de fichiers"
 
@@ -1323,7 +1213,6 @@ msgstr "Nombre de pages"
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letter_line.py:43
 #: selection:import.letter.line,status:0
-#: selection:test.import.letter.line,status:0
 #, python-format
 msgid "OK"
 msgstr "OK"
@@ -1332,7 +1221,6 @@ msgstr "OK"
 #: code:addons/sbc_compassion/models/import_letters_history.py:53
 #: view:import.letters.history:sbc_compassion.import_view_search
 #: selection:import.letters.history,state:0
-#: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Open"
 msgstr "A vérifier"
@@ -1369,7 +1257,6 @@ msgstr "Lien page origniale"
 #: field:correspondence,original_text:0
 #: field:correspondence.page,original_text:0
 #: field:import.letter.line,original_text:0
-#: field:test.import.letter.line,original_text:0
 msgid "Original text"
 msgstr "Texte original"
 
@@ -1418,14 +1305,12 @@ msgstr "Page width"
 #: field:import.letter.line,partner_id:0
 #: field:import.letters.review,partner_id:0
 #: model:ir.model,name:sbc_compassion.model_res_partner
-#: field:test.import.letter.line,partner_id:0
 msgid "Partner"
 msgstr "Partenaire"
 
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letter_line.py:41
 #: selection:import.letter.line,status:0
-#: selection:test.import.letter.line,status:0
 #, python-format
 msgid "Partner or Child not Found"
 msgstr "Partenaire ou Enfant non trouvé"
@@ -1483,8 +1368,6 @@ msgstr "Pattern y min"
 #: field:import.letter.line,physical_attachments:0
 #: field:import.letters.history,physical_attachments:0
 #: field:import.letters.review,physical_attachments:0
-#: field:test.import.letter.line,physical_attachments:0
-#: field:test.import.letters.history,physical_attachments:0
 msgid "Physical attachments"
 msgstr "Attachés physique"
 
@@ -1559,16 +1442,6 @@ msgid "Published state"
 msgstr "Publiée"
 
 #. module: sbc_compassion
-#: field:test.import.letters.history,qr_ok:0
-msgid "QR code passed"
-msgstr ""
-
-#. module: sbc_compassion
-#: field:test.import.letter.line,qr_preview:0
-msgid "QR code preview"
-msgstr "QR code preview"
-
-#. module: sbc_compassion
 #: field:correspondence.template,qrcode_x_max:0
 msgid "Qrcode x max"
 msgstr ""
@@ -1629,7 +1502,6 @@ msgstr ""
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letters_history.py:54
 #: selection:import.letters.history,state:0
-#: selection:test.import.letters.history,state:0
 #, python-format
 msgid "Ready"
 msgstr "Prêt"
@@ -1687,7 +1559,6 @@ msgstr "Vérifier les Imports"
 
 #. module: sbc_compassion
 #: field:import.letter.line,reviewed:0
-#: field:test.import.letter.line,reviewed:0
 msgid "Reviewed"
 msgstr "Vérifié"
 
@@ -1700,11 +1571,6 @@ msgstr "Commentaires de correction"
 #: field:correspondence,rework_reason:0
 msgid "Rework reason"
 msgstr "Remarques de correction"
-
-#. module: sbc_compassion
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
-msgid "Run Test"
-msgstr "Run Test"
 
 #. module: sbc_compassion
 #: view:correspondence.template:sbc_compassion.view_correspondence_template_origin_form
@@ -1779,8 +1645,6 @@ msgstr "Envoyer l'original"
 #: selection:import.letter.config,physical_attachments:0
 #: selection:import.letter.line,physical_attachments:0
 #: selection:import.letters.history,physical_attachments:0
-#: selection:test.import.letter.line,physical_attachments:0
-#: selection:test.import.letters.history,physical_attachments:0
 #, python-format
 msgid "Sent by mail"
 msgstr "Envoyé par courrier"
@@ -1807,8 +1671,6 @@ msgstr "Certaines lettres ne sont pas prêtes"
 #: field:correspondence,source:0 field:correspondence.metadata,source:0
 #: field:import.letter.config,source:0 field:import.letter.line,source:0
 #: field:import.letters.history,source:0
-#: field:test.import.letter.line,source:0
-#: field:test.import.letters.history,source:0
 msgid "Source"
 msgstr "Source"
 
@@ -1842,7 +1704,6 @@ msgstr "Enfant"
 #: field:correspondence,sponsorship_id:0
 #: field:import.letter.line,sponsorship_id:0
 #: field:import.letters.review,sponsorship_id:0
-#: field:test.import.letter.line,sponsorship_id:0
 msgid "Sponsorship"
 msgstr "Parrainage"
 
@@ -1854,7 +1715,6 @@ msgstr ""
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letter_line.py:40
 #: selection:import.letter.line,status:0
-#: selection:test.import.letter.line,status:0
 #, python-format
 msgid "Sponsorship not Found"
 msgstr "Parrainage non trouvé"
@@ -1869,7 +1729,6 @@ msgstr "Parrainages"
 #: view:correspondence:sbc_compassion.correspondence_view_search
 #: field:correspondence,state:0 field:correspondence.s2b.generator,state:0
 #: field:import.letters.history,state:0
-#: field:test.import.letters.history,state:0
 msgid "State"
 msgstr "Etat"
 
@@ -1881,7 +1740,6 @@ msgstr "L'état '{}' n'existe pas"
 
 #. module: sbc_compassion
 #: field:import.letter.line,status:0 field:import.letters.review,state:0
-#: field:test.import.letter.line,status:0
 msgid "Status"
 msgstr "Etat"
 
@@ -1893,7 +1751,6 @@ msgstr "Date Etat"
 #. module: sbc_compassion
 #: field:correspondence,message_summary:0
 #: field:import.letters.history,message_summary:0
-#: field:test.import.letters.history,message_summary:0
 msgid "Summary"
 msgstr "Summary"
 
@@ -1928,8 +1785,6 @@ msgstr "Parrain à Enfant"
 #: field:import.letter.line,template_id:0
 #: field:import.letters.history,template_id:0
 #: field:import.letters.review,template_id:0
-#: field:test.import.letter.line,template_id:0
-#: field:test.import.letters.history,template_id:0
 msgid "Template"
 msgstr "Modèle"
 
@@ -1953,41 +1808,9 @@ msgstr "L'image du modèle est fichue"
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/import_letter_line.py:42
 #: selection:import.letter.line,status:0
-#: selection:test.import.letter.line,status:0
 #, python-format
 msgid "Template not Detected"
 msgstr "Modèle non détecté"
-
-#. module: sbc_compassion
-#: field:test.import.letters.history,template_ok:0
-msgid "Template passed"
-msgstr ""
-
-#. module: sbc_compassion
-#: field:test.import.letter.line,template_preview:0
-msgid "Template preview"
-msgstr "Aperçu du modèle"
-
-#. module: sbc_compassion
-#: view:test.import.letters.history:sbc_compassion.test_import_letters_history_form
-msgid "Test Imported Letters"
-msgstr "Test Imported Letters"
-
-#. module: sbc_compassion
-#: model:ir.actions.act_window,name:sbc_compassion.action_compassion_test_import_letters_action
-#: model:ir.ui.menu,name:sbc_compassion.test_import_letters_menu
-msgid "Test Imports"
-msgstr "Test Imports"
-
-#. module: sbc_compassion
-#: field:test.import.letter.line,test_import_id:0
-msgid "Test import id"
-msgstr "Test import id"
-
-#. module: sbc_compassion
-#: field:test.import.letters.history,test_ok:0
-msgid "Test passed"
-msgstr ""
 
 #. module: sbc_compassion
 #: field:correspondence.template,text_box_height:0
@@ -2103,7 +1926,6 @@ msgstr ""
 #. module: sbc_compassion
 #: field:correspondence,message_unread:0
 #: field:import.letters.history,message_unread:0
-#: field:test.import.letters.history,message_unread:0
 msgid "Unread Messages"
 msgstr "Unread Messages"
 
@@ -2138,14 +1960,12 @@ msgstr "Uuid"
 #. module: sbc_compassion
 #: field:correspondence,website_message_ids:0
 #: field:import.letters.history,website_message_ids:0
-#: field:test.import.letters.history,website_message_ids:0
 msgid "Website Messages"
 msgstr ""
 
 #. module: sbc_compassion
 #: help:correspondence,website_message_ids:0
 #: help:import.letters.history,website_message_ids:0
-#: help:test.import.letters.history,website_message_ids:0
 msgid "Website communication history"
 msgstr ""
 
@@ -2166,8 +1986,6 @@ msgstr "Width of the template in pixels"
 #: selection:import.letter.config,source:0
 #: selection:import.letter.line,source:0
 #: selection:import.letters.history,source:0
-#: selection:test.import.letter.line,source:0
-#: selection:test.import.letters.history,source:0
 #, python-format
 msgid "Written by Compasion"
 msgstr "Ecrit par Compassion"

@@ -26,8 +26,8 @@ class DownloadLetters(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     fname = fields.Char(default=lambda s: s.get_file_name())
-    download_data = fields.Binary(
-        readonly=True, default=lambda s: s.get_letters())
+    download_data = fields.Binary(readonly=True,
+                                  default=lambda s: s.get_letters())
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -41,10 +41,10 @@ class DownloadLetters(models.TransientModel):
         """ Create the zip archive from the selected letters. """
         letters = self.env[self.env.context['active_model']].browse(
             self.env.context['active_ids'])
-        letter_images = letters.mapped('letter_image')
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'w') as zip_data:
-            for letter in letter_images:
-                zip_data.writestr(letter.name, base64.b64decode(letter.datas))
+            for letter in letters:
+                zip_data.writestr(letter.file_name,
+                                  base64.b64decode(letter.letter_image))
         zip_buffer.seek(0)
         return base64.b64encode(zip_buffer.read())

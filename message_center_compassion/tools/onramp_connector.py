@@ -119,9 +119,8 @@ class OnrampConnector(object):
             result['content'] = simplejson.JSONDecoder(strict=False).decode(
                 r.text.replace('\\\\n', '\n'))
         except ValueError:
-            # No valid content returned
-            result['code'] = 204
-            result['Error'] = r.text
+            # No json content returned
+            result['content'] = r.text
         return result
 
     def _encode_params(self, params):

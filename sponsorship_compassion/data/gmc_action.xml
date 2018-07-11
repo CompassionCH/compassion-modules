@@ -11,6 +11,16 @@
             <field name="connect_answer_wrapper">SupporterProfileResponse</field>
             <field name="request_type">POST</field>
         </record>
+        <record id="anonymize_partner" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">AnonymizePartner</field>
+            <field name="mapping_name">AnonymizePartner</field>
+            <field name="model">res.partner</field>
+            <field name="description">This will send a request to anonymize all partner data at GMC.</field>
+            <field name="connect_service">supporters/${object.global_id}/dataprotection</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">true</field>
+        </record>
         <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">
             <field name="direction">out</field>
