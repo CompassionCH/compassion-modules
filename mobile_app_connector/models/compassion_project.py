@@ -30,7 +30,8 @@ class CompassionProject(models.Model):
         """
         result = {
             'ProjectServiceResult': {
-                'Error': None
+                'Error': None,
+                'ICPResponseList': None
             }
         }
         if icpid is None:
