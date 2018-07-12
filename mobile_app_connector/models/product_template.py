@@ -18,7 +18,7 @@ from ..mappings.compassion_donation_mapping import MobileDonationMapping
 logger = logging.getLogger(__name__)
 
 
-class compassionProduct(models.Model):
+class ProductTemplate(models.Model):
 
     _inherit = "product.template"
 

@@ -10,4 +10,5 @@
 ##############################################################################
 
 from . import compassion_child
-from . import compassion_donation
+from . import product_template
+from . import compassion_correspondence
