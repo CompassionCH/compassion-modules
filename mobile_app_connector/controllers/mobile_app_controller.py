@@ -27,4 +27,11 @@ class RestController(http.Controller):
             return request.not_found(_("Unkown API path called."))
 
         handler = getattr(odoo_obj.sudo(), model_method)
-        return handler(**parameters)
+
+        if request.httprequest.method == 'GET':
+            return handler(**parameters)
+        elif request.httprequest.method == 'POST':
+            return handler(request.jsonrequest, **parameters)
+        else:
+            return request.not_found(_("Only POST and GET methods are "
+                                       "supported"))
