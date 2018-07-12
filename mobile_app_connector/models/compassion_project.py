@@ -20,7 +20,7 @@ class CompassionProject(models.Model):
     _inherit = 'compassion.project'
 
     @api.model
-    def mobile_get_project(self, icpid=None, **other_params):
+    def mobile_get_project(self, **other_params):
         """
         Mobile app method:
         Returns the project for a given ICP ID.
@@ -34,10 +34,11 @@ class CompassionProject(models.Model):
                 'ICPResponseList': None
             }
         }
+        icpid = self._get_required_param('icpid', other_params)
         if icpid is None:
             return result
 
-        projects = self.env['compassion.project'].search([
+        projects = self.search([
             ('icp_id', '=', icpid)
         ], limit=1)
 
@@ -45,6 +46,9 @@ class CompassionProject(models.Model):
         if projects:
             result['ProjectServiceResult']['ICPResponseList'] = (
                 mapping.get_connect_data(projects[0]))
-
-        result = result
         return result
+
+    def _get_required_param(self, key, params):
+        if key not in params:
+            raise ValueError('Required parameter {}'.format(key))
+        return params[key]
