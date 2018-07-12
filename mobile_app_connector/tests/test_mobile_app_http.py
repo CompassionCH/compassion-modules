@@ -20,7 +20,7 @@ class TestMobileAppHttp(HttpCase):
         self.opener.addheaders.append(('Content-Type', 'application/json'))
 
     def test_missing_parameters(self):
-        url = self.root_url + 'compassion.child/get_letters'
+        url = self.root_url + 'correspondence/get_letters'
         response = self.url_open(url)
         body_str = response.read()
         error_message = json.loads(body_str)['error']['message']

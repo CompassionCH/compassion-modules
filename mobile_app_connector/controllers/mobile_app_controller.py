@@ -3,7 +3,7 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Emanuel Cino, Nicolas Bornand, Quentin Gigon
 #
 #    The licence is in the file __manifest__.py
 #
@@ -11,7 +11,7 @@
 
 from odoo import http
 from odoo.http import request
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, MethodNotAllowed
 
 
 class RestController(http.Controller):
@@ -28,11 +28,9 @@ class RestController(http.Controller):
             raise NotFound("Unknown API path called.")
 
         handler = getattr(odoo_obj.sudo(), model_method)
-
         if request.httprequest.method == 'GET':
             return handler(**parameters)
         elif request.httprequest.method == 'POST':
             return handler(request.jsonrequest, **parameters)
         else:
-            return request.not_found(_("Only POST and GET methods are "
-                                       "supported"))
+            raise MethodNotAllowed("Only POST and GET methods are supported")

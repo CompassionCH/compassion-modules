@@ -42,7 +42,7 @@ class TestMobileAppConnector(BaseSponsorshipTest):
         self.assertEqual(child_data.get('childNeedkey'), 'UG4239181')
 
     def test_fetch_letters(self):
-        res = self.child.mobile_get_letters(userid=self.partner.ref,
-                                            supgrpid=12, needid=40)
+        res = self.env['correspondence'].mobile_get_letters(
+            userid=self.partner.ref, supgrpid=12, needid=40)
 
         self.assertEqual(res, [])
