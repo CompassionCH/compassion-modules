@@ -9,8 +9,9 @@
 #
 ##############################################################################
 
-from odoo import http, _
+from odoo import http
 from odoo.http import request
+from werkzeug.exceptions import NotFound
 
 
 class RestController(http.Controller):
@@ -24,7 +25,7 @@ class RestController(http.Controller):
         odoo_obj = request.env.get(model)
         model_method = 'mobile_' + method
         if odoo_obj is None or not hasattr(odoo_obj, model_method):
-            return request.not_found(_("Unkown API path called."))
+            raise NotFound("Unknown API path called.")
 
         handler = getattr(odoo_obj.sudo(), model_method)
         return handler(**parameters)

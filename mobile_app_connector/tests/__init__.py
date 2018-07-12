@@ -3,11 +3,11 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Nicolas Bornand
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from . import compassion_child_mapping
-from . import from_letter_mapping
+from . import test_mobile_app_connector
+from . import test_mobile_app_http
