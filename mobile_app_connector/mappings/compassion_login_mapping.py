@@ -35,8 +35,8 @@ class MobileLoginMapping(OnrampMapping):
         'homephone': 'phone',
         'mobilephone': 'mobile',
         'officephone': None,
-        'street1': None,
-        'street2': None,
+        'street1': 'street',
+        'street2': 'street2',
         'street3': None,
         'street4': None,
         'street5': None,
@@ -61,7 +61,7 @@ class MobileLoginMapping(OnrampMapping):
 
     # override get_connect_data to compute value for field 'login_count'
     def get_connect_data(self, odoo_object, fields_to_submit=None):
-        mapped = super(MobileLoginMapping, self) \
-                .get_connect_data(odoo_object, fields_to_submit)
+        mapped = super(MobileLoginMapping, self).get_connect_data(
+            odoo_object, fields_to_submit)
         mapped['login_count'] = len(odoo_object.log_ids)
         return mapped

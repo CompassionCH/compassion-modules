@@ -20,7 +20,7 @@ class CompassionLogin(models.Model):
     _inherit = 'res.users'
 
     @api.model
-    def mobile_login(self, view, username, password, **other_params):
+    def mobile_login(self, **other_params):
         """
         Mobile app method:
         Log a given user.
@@ -30,10 +30,8 @@ class CompassionLogin(models.Model):
         :param other_params: all request parameters
         :return: JSON filled with user's info
         """
-        result = {}
-        if username is None:
-            result['error'] = "Invalid Username or Password."
-            return result
+        username = self._get_required_param('username', other_params)
+        password = self._get_required_param('password', other_params)
 
         user = self.search([
             ('new_password', '=', password),
@@ -41,5 +39,10 @@ class CompassionLogin(models.Model):
         ], limit=1)
 
         mapping = MobileLoginMapping(self.env)
-        result = mapping.get_connect_data(user[0])
+        result = mapping.get_connect_data(user)
         return result
+
+    def _get_required_param(self, key, params):
+        if key not in params:
+            raise ValueError('Required parameter {}'.format(key))
+        return params[key]
