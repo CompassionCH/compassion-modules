@@ -20,24 +20,29 @@ class TestMobileAppConnector(BaseSponsorshipTest):
 
     def setUp(self):
         super(TestMobileAppConnector, self).setUp()
+        self.partner = self.env.ref('base.res_partner_address_10')
+        self.partner.ref = 'myref'
+        self.child = self.create_child('UG4239181')
+        sp_group = self.create_group({'partner_id': self.partner.id})
+        # Associate child and sponsor
+        self.create_contract(
+            {
+                'partner_id': self.partner.id,
+                'group_id': sp_group.id,
+                'child_id': self.child.id,
+            },
+            [{'amount': 50.0}]
+        )
 
     def test_sponsor_children(self):
-        child = self.create_child('UG4239181')
-        partner = self.env.ref('base.res_partner_address_10')
-        partner.ref = 'myref'
-        child.partner_id = partner
-
-        res = child.mobile_sponsor_children(userid=partner.ref)
-
-        self.assertEqual(res, [])
+        res = self.child.mobile_sponsor_children(userid=self.partner.ref)
+        self.assertIsInstance(res, list)
+        self.assertEqual(len(res), 1)
+        child_data = res[0]
+        self.assertEqual(child_data.get('childNeedkey'), 'UG4239181')
 
     def test_fetch_letters(self):
-        child = self.create_child('UG4239181')
-        partner = self.env.ref('base.res_partner_address_10')
-        partner.ref = 'myref'
-        child.partner_id = partner
-
-        res = child.mobile_get_letters(userid=partner.ref, supgrpid=12,
-                                       needid=40)
+        res = self.child.mobile_get_letters(userid=self.partner.ref,
+                                            supgrpid=12, needid=40)
 
         self.assertEqual(res, [])
