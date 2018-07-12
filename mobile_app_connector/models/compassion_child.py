@@ -11,7 +11,6 @@
 
 import logging
 
-
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
 
