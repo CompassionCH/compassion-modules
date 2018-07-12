@@ -38,6 +38,9 @@ class MobileAppJsonRequest(JsonRequest):
     def __init__(self, *args):
         try:
             super(MobileAppJsonRequest, self).__init__(*args)
+            self.params = {
+                key: val for key, val in self.httprequest.args.iteritems()
+            }
         except werkzeug.exceptions.BadRequest as error:
             # Put simply an empty JSON data
             if 'Invalid JSON data' in error.description:
