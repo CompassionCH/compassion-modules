@@ -4,12 +4,14 @@
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Nicolas Bornand <n.badoux@hotmail.com>
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from odoo import http, _
+from odoo import http
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed
 

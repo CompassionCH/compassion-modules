@@ -2,14 +2,11 @@
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Nicolas Badoux <n.badoux@hotmail.com>
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
-import logging
-
 
 from odoo import models, api
 from ..mappings.compassion_project_mapping import MobileProjectMapping
@@ -35,17 +32,15 @@ class CompassionProject(models.Model):
             }
         }
         icpid = self._get_required_param('icpid', other_params)
-        if icpid is None:
-            return result
 
-        projects = self.search([
+        project = self.search([
             ('icp_id', '=', icpid)
         ], limit=1)
 
         mapping = MobileProjectMapping(self.env)
-        if projects:
+        if project:
             result['ProjectServiceResult']['ICPResponseList'] = (
-                mapping.get_connect_data(projects[0]))
+                mapping.get_connect_data(project))
         return result
 
     def _get_required_param(self, key, params):
