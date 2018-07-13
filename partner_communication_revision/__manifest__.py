@@ -49,11 +49,13 @@
         'views/communication_keyword_view.xml',
         'views/cancel_revision_wizard_view.xml',
         'views/submit_revision_wizard_view.xml',
-        'data/install.xml',
+        'data/install.xml'
         # 'views/partner_communication_revision.xml',
     ],
     'qweb': [],
-    'demo': [],
+    'demo': [
+        'data/demo.xml'
+    ],
     'installable': True,
     'auto_install': False
 }

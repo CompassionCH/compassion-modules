@@ -10,7 +10,7 @@
 
 from odoo import models, api
 from ..mappings.compassion_correspondence_mapping import \
-    MobileCorrespondenceMapping
+    MobileCorrespondenceMapping, FromLetterMapping
 
 
 class CompassionCorrespondence(models.Model):
@@ -25,6 +25,14 @@ class CompassionCorrespondence(models.Model):
             :param parameters: all request parameters
             :return: sample response
         """
+        # Validate required parameters
+        self._validate_required_fields([
+            'TemplateID',
+            'Message',
+            'Need',
+            'supporterId',
+            'base64string'
+            ], json_data)
         mapping = MobileCorrespondenceMapping(self.env)
         dict = mapping.get_vals_from_connect(json_data)
         letter = self.env['correspondence'].create(dict)
@@ -33,3 +41,33 @@ class CompassionCorrespondence(models.Model):
             return "Letter Submitted"
         else:
             return "Letter could not be created and was not submitted"
+
+    @api.model
+    def mobile_get_letters(self, **other_params):
+        """
+        Mobile app method:
+        Returns all the letters from a Child
+        :param needid: beneficiary id
+        :param supgrpid: sponsor id
+        """
+        partner_id = self._get_required_param('supgrpid', other_params)
+        child_id = self._get_required_param('needid', other_params)
+        letters = self.search([
+            ('partner_id', '=', int(partner_id)),
+            ('child_id', '=', int(child_id)),
+            ('direction', '=', 'Beneficiary To Supporter')
+        ])
+
+        mapper = FromLetterMapping(self.env)
+        return [mapper.get_connect_data(letter) for letter in letters]
+
+    def _validate_required_fields(self, fields, params):
+        missing = [key for key in fields if key not in params]
+        if missing:
+            raise ValueError(
+                'Required parameters {}'.format(','.join(missing)))
+
+    def _get_required_param(self, key, params):
+        if key not in params:
+            raise ValueError('Required parameter {}'.format(key))
+        return params[key]
