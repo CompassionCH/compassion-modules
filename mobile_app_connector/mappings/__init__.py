@@ -10,4 +10,5 @@
 ##############################################################################
 
 from . import compassion_child_mapping
+from . import compassion_donation_mapping
 from . import compassion_correspondence_mapping
