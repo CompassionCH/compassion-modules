@@ -12,3 +12,4 @@
 from . import compassion_child
 from . import product_template
 from . import compassion_correspondence
+from . import AccountInvoice
