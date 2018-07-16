@@ -8,9 +8,11 @@
 #
 ##############################################################################
 
+import base64
 from odoo import models, api
 from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
+from werkzeug.exceptions import NotFound
 
 
 class CompassionCorrespondence(models.Model):
@@ -60,6 +62,15 @@ class CompassionCorrespondence(models.Model):
 
         mapper = FromLetterMapping(self.env)
         return [mapper.get_connect_data(letter) for letter in letters]
+
+    @api.model
+    def mobile_letter_pdf(self, **other_params):
+        id = self._get_required_param('correspondenceid', other_params)
+        letter = self.env['correspondence'].browse([int(id)])
+        if letter and letter.letter_image:
+            base64_pdf = letter.letter_image
+            return base64.decodestring(base64_pdf)
+        raise NotFound("Letter with id {} not found".format(id))
 
     def _validate_required_fields(self, fields, params):
         missing = [key for key in fields if key not in params]
