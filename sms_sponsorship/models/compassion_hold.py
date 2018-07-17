@@ -10,8 +10,9 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields
 from odoo.exceptions import UserError
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -21,19 +22,34 @@ class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
     booked_by_phone_number = fields.Char()
-    booked_at = fields.Datetime(required=False)
+    booked_by_sms_at = fields.Datetime(required=False)
 
     @api.multi
     def book_by_sms(self, phone_number):
         self.ensure_one()
+        assert re.match('\+\d+', phone_number), \
+            "The phone number do not match the international format"
         if self.booked_by_phone_number:
             raise UserError('Child already booked by {}'
                             .format(self.booked_by_phone_number))
         self.booked_by_phone_number = phone_number
-        self.booked_at = fields.Datetime.now()
+        self.booked_by_sms_at = fields.Datetime.now()
 
     @api.multi
     def release_sms_booking(self):
         self.ensure_one()
         self.booked_by_phone_number = None
-        self.booked_at = None
+        self.booked_by_sms_at = None
+
+    @api.multi
+    def generate_url_of_next_sms_sponsoring_step(self):
+        # todo the exact URLs will be changed
+        self.ensure_one()
+        partner = self.env['res.partner'] \
+            .search([('phone', '=', self.booked_by_phone_number)])
+        child_id = self.env['compassion.child'] \
+            .search([('hold_id', '=', self.id)]).id
+        if partner:
+            return 'sms-sponsorship/{}/partner/{}' \
+                .format(child_id, partner.id)
+        return 'sms-sponsorship/{}/unknown-partner'.format(child_id)

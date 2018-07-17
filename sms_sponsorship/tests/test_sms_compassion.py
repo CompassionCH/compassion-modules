@@ -27,17 +27,24 @@ class TestAnalyticAttribution(BaseSponsorshipTest):
     def test_book_by_sms__and_eviction_rule(self):
         hold = self.child.hold_id
         self.assertFalse(hold.booked_by_phone_number)
-        hold.book_by_sms('021 345 67 89')
+        hold.book_by_sms('+41213456789')
         self.assertTrue(hold.booked_by_phone_number)
 
-        hold.booked_at = fields.Datetime.from_string('2018-01-01')
+        hold.booked_by_sms_at = fields.Datetime.from_string('2018-01-01')
         self.rule._check()
         self.assertFalse(hold.booked_by_phone_number)
-        self.assertFalse(hold.booked_at)
+        self.assertFalse(hold.booked_by_sms_at)
 
     def test_book_by_sms__should_fail_if_already_booked(self):
         hold = self.child.hold_id
         self.assertFalse(hold.booked_by_phone_number)
-        hold.book_by_sms('021 345 67 89')
+        hold.book_by_sms('+41213456789')
         with self.assertRaises(UserError):
-            hold.book_by_sms('023 345 67 89')
+            hold.book_by_sms('+41213456789')
+
+    def test_book_by_sms__generate_url_of_next_step(self):
+        hold = self.child.hold_id
+        hold.book_by_sms('+41213456789')
+
+        url = hold.generate_url_of_next_sms_sponsoring_step()
+        self.assertRegexpMatches(url, 'sms-sponsorship/\d+/unknown-partner')
