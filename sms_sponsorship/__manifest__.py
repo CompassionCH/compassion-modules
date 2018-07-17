@@ -12,7 +12,7 @@
     'name': 'Compassion SMS Sponsorships',
     'version': '10.0.0.1.0',
     'category': 'Other',
-    'author': 'Compassion CH',
+    'author': 'Compassion CH, Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['crm_compassion', 'cms_form', 'sponsorship_compassion'],

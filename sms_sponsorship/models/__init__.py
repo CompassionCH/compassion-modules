@@ -7,4 +7,3 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import recurring_contract

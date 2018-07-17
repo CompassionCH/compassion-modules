@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+	<template id="sms_assets" name="CMS Form SMS assets" inherit_id="website.assets_frontend">
+
+		<xpath expr="." position="inside">
+            <script type="text/javascript" src="/sms_sponsorship/static/src/js/sms_sponsorship_registration_form.js"/>
+		</xpath>
+
+	</template>
+
+</odoo>
