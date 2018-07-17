@@ -47,5 +47,5 @@ class TestSmsCompassion(BaseSponsorshipTest):
         hold = self.child.hold_id
         hold.book_by_sms('+41213456789')
 
-        url = hold.generate_url_of_next_sms_sponsoring_step()
-        self.assertRegexpMatches(url, r'sms-sponsorship/\d+/unknown-partner')
+        url = hold.generate_url_of_next_step()
+        self.assertRegexpMatches(url, r'sms-sponsorship/\d+')

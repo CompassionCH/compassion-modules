@@ -44,14 +44,6 @@ class CompassionHold(models.Model):
         self.booked_by_sms_at = None
 
     @api.multi
-    def generate_url_of_next_sms_sponsoring_step(self):
-        # todo the exact URLs will be changed
+    def generate_url_of_next_step(self):
         self.ensure_one()
-        partner = self.env['res.partner'] \
-            .search([('phone', '=', self.booked_by_phone_number)])
-        child_id = self.env['compassion.child'] \
-            .search([('hold_id', '=', self.id)]).id
-        if partner:
-            return 'sms-sponsorship/{}/partner/{}' \
-                .format(child_id, partner.id)
-        return 'sms-sponsorship/{}/unknown-partner'.format(child_id)
+        return 'sms-sponsorship/{}'.format(self.id)
