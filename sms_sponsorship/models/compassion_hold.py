@@ -29,6 +29,8 @@ class CompassionHold(models.Model):
         self.ensure_one()
         assert re.match('\+\d+', phone_number), \
             "The phone number do not match the international format"
+        assert not self.event_id or self.event_id.accepts_sms_booking, \
+            "SMS booking isn't supported for this event"
         if self.booked_by_phone_number:
             raise UserError('Child already booked by {}'
                             .format(self.booked_by_phone_number))
