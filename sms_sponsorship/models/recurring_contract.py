@@ -11,5 +11,7 @@
 from odoo import models, fields, api
 
 
-class Class(models.Model):
-    _name = "sms.registration"
+class SmsRecurringContract(models.Model):
+    #_name = "cms.form.recurring.contract"
+    #_inherit = "recurring.contract"
+    pass
