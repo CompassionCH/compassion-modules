@@ -9,7 +9,6 @@
 #
 ##############################################################################
 import logging
-import regex
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
 from odoo import fields
@@ -31,6 +30,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         hold.book_by_sms('+41213456789')
         self.assertTrue(hold.booked_by_phone_number)
 
+        # Pick a date far in the past for the sms booking to be discarded
         hold.booked_by_sms_at = fields.Datetime.from_string('2018-01-01')
         self.rule._check()
         self.assertFalse(hold.booked_by_phone_number)
