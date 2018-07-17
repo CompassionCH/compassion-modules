@@ -10,7 +10,7 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 import re
 
@@ -27,13 +27,13 @@ class CompassionHold(models.Model):
     @api.multi
     def book_by_sms(self, phone_number):
         self.ensure_one()
-        assert re.match('\+\d+', phone_number), \
+        assert re.match(r'\+\d+', phone_number), \
             "The phone number do not match the international format"
         assert not self.event_id or self.event_id.accepts_sms_booking, \
             "SMS booking isn't supported for this event"
         if self.booked_by_phone_number:
-            raise UserError('Child already booked by {}'
-                            .format(self.booked_by_phone_number))
+            raise UserError(_('Child already booked by {}'
+                            .format(self.booked_by_phone_number)))
         self.booked_by_phone_number = phone_number
         self.booked_by_sms_at = fields.Datetime.now()
 

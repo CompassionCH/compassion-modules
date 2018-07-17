@@ -9,6 +9,7 @@
 #
 ##############################################################################
 import logging
+import regex
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
 from odoo import fields
@@ -17,10 +18,10 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
-class TestAnalyticAttribution(BaseSponsorshipTest):
+class TestSmsCompassion(BaseSponsorshipTest):
 
     def setUp(self):
-        super(TestAnalyticAttribution, self).setUp()
+        super(TestSmsCompassion, self).setUp()
         self.child = self.create_child('UG1119182')
         self.rule = self.env.ref('sms_sponsorship.release_booking_by_sms_rule')
 
@@ -47,4 +48,4 @@ class TestAnalyticAttribution(BaseSponsorshipTest):
         hold.book_by_sms('+41213456789')
 
         url = hold.generate_url_of_next_sms_sponsoring_step()
-        self.assertRegexpMatches(url, 'sms-sponsorship/\d+/unknown-partner')
+        self.assertRegexpMatches(url, r'sms-sponsorship/\d+/unknown-partner')

@@ -17,7 +17,8 @@
     'website': 'http://www.compassion.ch',
     'depends': ['crm_compassion', 'cms_form'],
     'data': [
-        'data/sms_hold_release.xml'
+        'data/sms_hold_release.xml',
+        'data/event_compassion_view.xml'
     ],
     'installable': True,
     'auto_install': False,

@@ -10,6 +10,7 @@
 ##############################################################################
 from odoo import models, fields
 
+
 class EventCompassion(models.Model):
 
     _inherit = 'crm.event.compassion'
