@@ -11,6 +11,7 @@
 import logging
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
+from odoo import fields
 
 _logger = logging.getLogger(__name__)
 
@@ -22,8 +23,14 @@ class TestAnalyticAttribution(BaseSponsorshipTest):
         self.child = self.create_child('UG1119182')
         self.rule = self.env.ref('sms_sponsorship.release_booking_by_sms_rule')
 
-    def test_book_by_sms(self):
+    def test_book_by_sms__and_eviction_rule(self):
         hold = self.child.hold_id
         self.assertFalse(hold.booked_by_phone_number)
         self.child.hold_id.book_by_sms('021 345 67 89')
         self.assertTrue(hold.booked_by_phone_number)
+
+        hold.booked_at = fields.Datetime.from_string('2018-01-01')
+        self.rule._check()
+        self.assertFalse(hold.booked_by_phone_number)
+        self.assertFalse(hold.booked_at)
+
