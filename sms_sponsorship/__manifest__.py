@@ -16,7 +16,9 @@
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['crm_compassion', 'cms_form'],
-    'data': [],
+    'data': [
+        'data/sms_hold_release.xml'
+    ],
     'installable': True,
     'auto_install': False,
 }
