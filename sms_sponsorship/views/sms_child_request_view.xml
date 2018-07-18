@@ -1,0 +1,73 @@
+<odoo>
+    <record id="sms_child_request_tree" model="ir.ui.view">
+        <field name="name">sms.child.request.tree</field>
+        <field name="model">sms.child.request</field>
+        <field name="arch" type="xml">
+            <tree colors="blue: state == 'new'; green: state == 'child_reserved'; grey: state in ('step2','expired')">
+                <field name="date"/>
+                <field name="partner_id" required="1"/>
+                <field name="sender"/>
+                <field name="child_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="sms_child_request_form" model="ir.ui.view">
+        <field name="name">sms.child.request.form</field>
+        <field name="model">sms.child.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="change_child" type="object" string="Request new child" class="oe_highlight" states="child_reserved"/>
+                    <button name="cancel_request" type="object" string="Cancel request" states="new,child_reserved,step1"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="partner_id" required="1"/>
+                            <field name="sender"/>
+                            <field name="child_id" readonly="1"/>
+                            <field name="sponsorship_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="event_id"/>
+                            <field name="website_url"/>
+                        </group>
+                        <group string="Child filter criteria">
+                            <field name="gender"/>
+                            <field name="min_age"/>
+                            <field name="max_age"/>
+                            <field name="field_office_ids"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sms_child_request_search" model="ir.ui.view">
+        <field name="name">sms.child.request.search</field>
+        <field name="model">sms.child.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sender"/>
+                <field name="partner_id"/>
+                <field name="child_id"/>
+                <field name="state"/>
+                <filter name="active_filter" string="Active" domain="[('state', 'not in', ('step2', 'expired'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sms_request" model="ir.actions.act_window">
+        <field name="name">SMS Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sms.child.request</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active_filter': 1}</field>
+    </record>
+
+    <menuitem id="menu_sms_request" name="SMS Requests" parent="child_compassion.menu_sponsorship_section" sequence="2" action="action_sms_request"/>
+</odoo>
