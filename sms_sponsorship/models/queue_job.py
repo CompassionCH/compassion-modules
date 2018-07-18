@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+
+from odoo import api, models, _
+
+
+class QueueJob(models.Model):
+    _inherit = 'queue.job'
+
+    @api.multi
+    def related_action_sms_request(self):
+        action = {
+            'name': _("SMS Request"),
+            'type': 'ir.actions.act_window',
+            'res_model': 'sms.child.request',
+            'domain': [('id', 'in', self.record_ids)],
+            'view_type': 'form',
+            'view_mode': 'form',
+        }
+        return action
