@@ -21,8 +21,9 @@ class SmsChildRequest(models.Model):
 
     sender = Phone(required=True, partner_field='partner_id',
                    country_field='country_id')
-    date = fields.Datetime(required=True)
+    date = fields.Datetime(required=True, default=fields.Datetime.now())
     website_url = fields.Char(compute='_compute_website_url', store=True)
+    full_url = fields.Char(compute='_compute_full_url')
     state = fields.Selection([
         ('new', 'Request received'),
         ('child_reserved', 'Child reserved'),
@@ -55,6 +56,13 @@ class SmsChildRequest(models.Model):
     def _compute_website_url(self):
         for request in self:
             request.website_url = '/sponsor-now/' + str(request.id)
+
+    @api.multi
+    def _compute_full_url(self):
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        for request in self:
+            request.full_url = base_url + request.website_url
 
     @api.multi
     @api.depends('date')
