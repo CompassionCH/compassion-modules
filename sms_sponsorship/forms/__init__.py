@@ -7,8 +7,5 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
-from . import compassion_hold
-from . import event_compassion
-from . import queue_job
-from . import sms_child_request
+from . import match_partner_form
+from . import sms_sponsorship_registration_form

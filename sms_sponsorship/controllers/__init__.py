@@ -8,7 +8,4 @@
 #
 ##############################################################################
 
-from . import compassion_hold
-from . import event_compassion
-from . import queue_job
-from . import sms_child_request
+from . import main
