@@ -18,7 +18,12 @@
     'depends': ['crm_compassion', 'cms_form', 'sponsorship_compassion'],
     'data': [
         'templates/sms_registration_form.xml',
-        'templates/assets.xml'
+        'templates/assets.xml',
+        'security/ir.model.access.csv',
+        'data/sms_hold_release.xml',
+        'views/event_compassion_view.xml',
+        'views/hold_view.xml',
+        'views/sms_child_request_view.xml',
     ],
     'installable': True,
     'auto_install': False,
