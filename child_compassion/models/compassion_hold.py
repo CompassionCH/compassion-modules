@@ -127,7 +127,6 @@ class AbstractHold(models.AbstractModel):
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
         vals['primary_owner'] = vals['primary_owner'][0]
-        vals['campaign_id'] = self.campaign_id.id
         ambassador = vals.get('ambassador')
         if ambassador:
             vals['ambassador'] = ambassador[0]
