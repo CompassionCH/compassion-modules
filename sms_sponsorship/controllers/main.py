@@ -8,12 +8,9 @@
 #
 ##############################################################################
 
-import werkzeug
-
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.addons.website_portal.controllers.main import website_account
-from odoo import http
-from odoo.http import request, route
+from odoo.http import route
 
 
 class SmsSponsorshipWebsite(website_account, FormControllerMixin):

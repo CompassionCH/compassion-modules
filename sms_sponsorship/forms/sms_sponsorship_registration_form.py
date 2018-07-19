@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, tools, api, _
+from odoo import models, fields, tools, _
 
 testing = tools.config.get('test_enable')
 
@@ -111,20 +111,20 @@ if not testing:
             return req_values.get('partner_city', self.partner_city or '')
 
         def form_before_create_or_update(self, values, extra_values):
-            super(PartnerSmsRegistrationForm, self).form_before_create_or_update(
-                values, extra_values)
+            super(PartnerSmsRegistrationForm,
+                  self).form_before_create_or_update(values, extra_values)
 
             partner_id = self.get_partner_id_from_partner_values(extra_values)
-            new_partner = self.env['res.partner'].search([
+            partner = self.env['res.partner'].search([
                 ('id', '=', partner_id)
             ])
 
-            if new_partner:
+            if partner:
                 # update existing partner
-                new_partner.write(extra_values)
+                partner.write(extra_values)
             else:
                 # create new partner
-                new_partner = self.env['res.partner'].create(extra_values)
+                self.env['res.partner'].create(extra_values)
 
         def form_after_create_or_update(self, values, extra_values):
             # activate sponsorship and send confirmation email
