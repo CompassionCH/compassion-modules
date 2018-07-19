@@ -7,10 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+# pylint: disable=C8101
 {
     'name': 'Compassion SMS Sponsorships',
-    'version': '10.0.0.1.0',
+    'version': '10.0.0.2.0',
     'category': 'Other',
     'author': 'Compassion CH, Odoo Community Association (OCA)',
     'license': 'AGPL-3',

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+sms_child_request_write,SMS Child Request write access,model_sms_child_request,child_compassion.group_sponsorship,1,1,1,0
+sms_child_request_full,SMS Child Request full access,model_sms_child_request,base.group_system,1,1,1,1

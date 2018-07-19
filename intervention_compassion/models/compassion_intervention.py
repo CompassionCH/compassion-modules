@@ -106,6 +106,7 @@ class CompassionIntervention(models.Model):
         ("GP Accepted Costs", _("GP Accepted Costs")),
         ("GP Preferences Submitted", _("GP Preferences Submitted")),
         ("GP Rejected Costs", _("GP Rejected Costs")),
+        ("FO Rejected GP Preferences", _("FO Rejected GP Preferences"))
     ], readonly=True, track_visibility='onchange')
     sla_comments = fields.Char(readonly=True)
     fo_proposed_sla_costs = fields.Float(
