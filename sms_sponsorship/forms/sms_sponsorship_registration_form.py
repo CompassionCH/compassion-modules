@@ -7,9 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from odoo import models, fields, tools, _
 
 testing = tools.config.get('test_enable')
+_logger = logging.getLogger(__name__)
 
 
 if not testing:
@@ -114,9 +117,8 @@ if not testing:
             super(PartnerSmsRegistrationForm,
                   self).form_before_create_or_update(values, extra_values)
 
-            partner_id = self.get_partner_id_from_partner_values(extra_values)
             partner = self.env['res.partner'].search([
-                ('id', '=', partner_id)
+                ('id', '=', self.main_object.partner_id.id)
             ])
 
             if partner:
@@ -127,13 +129,13 @@ if not testing:
                 self.env['res.partner'].create(extra_values)
 
         def form_after_create_or_update(self, values, extra_values):
-            # activate sponsorship and send confirmation email
+            # validate sponsorship and send confirmation email
             self.main_object.signal_workflow('contract_validated')
 
             # if sponsor directly payed
             if self.pay_first_month_ebanking:
                 # load payment view ? TODO
-                print("not yet implemented")
+                _logger.error("Activate sponsorship is not yet implemented")
 
             # send confirmation mail
             self._send_confirmation_mail()

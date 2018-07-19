@@ -15,7 +15,7 @@ from odoo.http import route
 
 class SmsSponsorshipWebsite(website_account, FormControllerMixin):
 
-    @route('/sms-sponsorship/<model("recurring.contract"):sponsorship>/',
+    @route('/sms-sponsorship/step2/<model("recurring.contract"):sponsorship>/',
            auth='public', website=True)
     def sms_partner_register(self, sponsorship=None, **kwargs):
         model = 'recurring.contract'
