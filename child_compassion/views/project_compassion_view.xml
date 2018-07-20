@@ -245,6 +245,7 @@
                     <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
                         <field name="suspension_start_date"/>
                         <field name="suspension_end_date"/>
+                        <field name="suspension_detail"/>
                         <field name="suspension_reason_ids" widget="many2many_checkboxes"/>
                         <field name="extension_1"/>
                         <field name="extension_1_reason_ids" attrs="{'invisible': [('extension_1', '=', False)]}" widget="many2many_tags"/>

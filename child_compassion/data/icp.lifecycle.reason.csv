@@ -6,3 +6,4 @@ icp_lifecycle_reason_policy,Does not comply with policies,does not comply with p
 icp_lifecycle_reason_financial,Financial Mismanagement,financial mismanagement
 icp_lifecycle_reason_other,Other,other
 icp_lifecycle_reason_transition,Successful Transition,sucessful transition
+icp_lifecycle_reason_leadership,Church Leadership / denomination issues,church leadership / denomination issues
