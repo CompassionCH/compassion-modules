@@ -226,6 +226,32 @@ class Household(models.Model):
             res = super(Household, self).create(vals)
         return res
 
+    def write(self, vals):
+
+        for household in self:
+            revised_data = []
+            if vals['father_alive']:
+                revised_data.append({
+                    'name': 'Is Natural Father Alive?',
+                    'old_value': household.father_alive,
+                    'household_id': household.id
+                })
+            elif vals['mother_alive']:
+                revised_data.append({
+                    'name': 'Is Natural Mother Alive?',
+                    'old_value': household.mother_alive,
+                    'household_id': household.id
+                })
+
+            super(Household, household).write(vals)
+
+            if revised_data:
+                for child in household.child_ids:
+                    child._major_revision({
+                        'revised_value_ids': [
+                            (0, 0, data) for data in revised_data]})
+        return True
+
 
 class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
