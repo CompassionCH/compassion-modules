@@ -7,21 +7,21 @@
         <field name="arch" type="xml">
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book">
+                <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book" groups="child_compassion.group_sponsorship">
                     <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
                 </button>
-                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child">
+                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
                     <field string="Sponsored children" name="number_children" widget="statinfo"/>
                 </button>
-                <button class="oe_inline oe_stat_button" string="Forget me" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
+                <button class="oe_inline oe_stat_button" string="Forget me" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser" groups="child_compassion.group_sponsorship"/>
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
-                    <button name="create_contract" string="Add" type="object"/>
-                    <field name="contracts_fully_managed" invisible="True" />
-                    <field name="contracts_paid" invisible="True" />
-                    <field name="contracts_correspondant" invisible="True" />
-                    <div attrs="{'invisible' : [('contracts_paid','=', [])]}">
+                    <button name="create_contract" string="Add" type="object" groups="child_compassion.group_sponsorship"/>
+                    <field name="contracts_fully_managed" invisible="True" groups="child_compassion.group_sponsorship"/>
+                    <field name="contracts_paid" invisible="True" groups="child_compassion.group_sponsorship"/>
+                    <field name="contracts_correspondant" invisible="True" groups="child_compassion.group_sponsorship"/>
+                    <div attrs="{'invisible' : [('contracts_paid','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships as payer only</h3>
                         <field name="contracts_paid" context="{'default_type': 'S'}">
                             <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
@@ -39,7 +39,7 @@
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
+                    <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships as correspondent only</h3>
                         <field name="contracts_correspondant" context="{'default_type': 'S'}">
                             <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
@@ -57,7 +57,7 @@
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
+                    <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships fully managed</h3>
                         <field name="contracts_fully_managed" context="{'default_type': 'S'}">
                             <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
@@ -75,7 +75,7 @@
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('other_contract_ids','=', [])]}">
+                    <div attrs="{'invisible' : [('other_contract_ids','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Other contracts</h3>
                         <field name="other_contract_ids" context="{'default_type': 'O'}">
                             <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
@@ -95,10 +95,10 @@
                 </page>
             </xpath>
             <xpath expr="//page[last()]" position="after">
-                <page string="Privacy data" name="privacy_data">
+                <page string="Privacy data" name="privacy_data" groups="child_compassion.group_sponsorship">
                     <group>
                         <field name="privacy_statement_ids"
-                               context="{'default_partner_id': active_id}">
+                               context="{'default_partner_id': active_id}" groups="child_compassion.group_sponsorship">
                             <tree>
                                 <field name="version"/>
                                 <field name="agreement_date"/>
@@ -110,7 +110,7 @@
                 </page>
             </xpath>
             <field name="website" position="after">
-                <field name="send_original"/>
+                <field name="send_original" groups="child_compassion.group_sponsorship"/>
             </field>
 
         </field>

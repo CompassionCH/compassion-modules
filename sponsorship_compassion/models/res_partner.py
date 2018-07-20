@@ -26,35 +26,50 @@ class ResPartner(models.Model):
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
-        order="state asc")
+        order="state asc",
+        groups="child_compassion.group_sponsorship")
     contracts_paid = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
-        string='Sponsorships as payer only')
+        string='Sponsorships as payer only',
+        groups="child_compassion.group_sponsorship")
     contracts_correspondant = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
-        string='Sponsorships as correspondant only')
+        string='Sponsorships as correspondant only',
+        groups="child_compassion.group_sponsorship")
     sponsorship_ids = fields.One2many(
-        "recurring.contract", compute='_compute_related_contracts')
+        "recurring.contract", compute='_compute_related_contracts',
+        groups="child_compassion.group_sponsorship")
     mandatory_review = fields.Boolean(
         help='Indicates that we should review the letters of this sponsor '
-             'before sending them to GMC.')
+             'before sending them to GMC.',
+        groups="child_compassion.group_sponsorship")
     other_contract_ids = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
-        string='Other contracts')
-    unrec_items = fields.Integer(compute='_compute_count_items')
-    receivable_items = fields.Integer(compute='_compute_count_items')
-    has_sponsorships = fields.Boolean(compute='_compute_has_sponsorships',
-                                      store=True)
+        string='Other contracts',
+        groups="child_compassion.group_sponsorship")
+    unrec_items = fields.Integer(compute='_compute_count_items',
+                                 groups="child_compassion.group_sponsorship")
+    receivable_items = fields.Integer(
+        compute='_compute_count_items',
+        groups="child_compassion.group_sponsorship")
+    has_sponsorships = fields.Boolean(
+        compute='_compute_has_sponsorships', store=True,
+        groups="child_compassion.group_sponsorship")
     number_sponsorships = fields.Integer()
     send_original = fields.Boolean(
-        help='Indicates that we request the original letters for this sponsor'
+        help='Indicates that we request the original letters for this sponsor',
+        groups="child_compassion.group_sponsorship"
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
-        'compassion.child', 'sponsor_id', 'Sponsored children')
-    number_children = fields.Integer(related='number_sponsorships')
-    privacy_statement_ids = fields.One2many('privacy.statement.agreement',
-                                            'partner_id')
+        'compassion.child', 'sponsor_id', 'Sponsored children',
+        groups="child_compassion.group_sponsorship")
+    number_children = fields.Integer(
+        related='number_sponsorships',
+        groups="child_compassion.group_sponsorship")
+    privacy_statement_ids = fields.One2many(
+        'privacy.statement.agreement', 'partner_id',
+        groups='child_compassion.group_sponsorship')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
