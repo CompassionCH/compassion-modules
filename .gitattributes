@@ -1,0 +1,4 @@
+# convert to LF when writing to the object DB
+* text=auto
+*.py text
+*.xml text
