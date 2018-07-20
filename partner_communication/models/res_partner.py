@@ -26,9 +26,17 @@ class ResPartner(models.Model):
         selection='_get_delivery_preference',
         default='auto_digital',
         required=True,
-        help='Delivery preference for Global Communication')
-    email_only = fields.Boolean(help="Don't send any printed communication")
-    communication_count = fields.Integer(compute='_compute_comm_count')
+        help='Delivery preference for Global Communication',
+        groups='base.group_user'
+    )
+    email_only = fields.Boolean(
+        help="Don't send any printed communication",
+        groups='base.group_user'
+    )
+    communication_count = fields.Integer(
+        compute='_compute_comm_count',
+        groups='base.group_user'
+    )
 
     _sql_constraints = [
         ('email_is_set_if_email_only',

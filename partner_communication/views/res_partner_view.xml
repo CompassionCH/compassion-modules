@@ -10,7 +10,8 @@
                         context="{'default_partner_id': active_id}"
                         type="action"
                         class="oe_stat_button oe_inline"
-                        icon="fa-file-text-o">
+                        icon="fa-file-text-o"
+                        groups="base.group_user">
                     <field name="communication_count"
                            widget="statinfo"
                            string="Communications"/>
