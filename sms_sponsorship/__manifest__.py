@@ -10,7 +10,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion SMS Sponsorships',
-    'version': '10.0.0.2.0',
+    'version': '10.0.0.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -18,7 +18,8 @@
     'depends': ['crm_compassion', 'cms_form'],
     'data': [
         'security/ir.model.access.csv',
-        'data/sms_hold_release.xml',
+        'data/sms_event_hold_cron.xml',
+        'data/utm_medium.xml',
         'views/event_compassion_view.xml',
         'views/hold_view.xml',
         'views/sms_child_request_view.xml',

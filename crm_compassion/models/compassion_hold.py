@@ -13,14 +13,36 @@ from odoo import api, models, fields
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 
+class AbstractHold(models.AbstractModel):
+    _inherit = 'compassion.abstract.hold'
+
+    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
+    event_id = fields.Many2one('crm.event.compassion', 'Event')
+
+    def get_fields(self):
+        _fields = super(AbstractHold, self).get_fields()
+        return _fields + ['campaign_id', 'event_id']
+
+    def get_hold_values(self):
+        """ Get the field values of one record.
+            :return: Dictionary of values for the fields
+        """
+        vals = super(AbstractHold, self).get_hold_values()
+        event = vals.get('event_id')
+        if event:
+            vals['event_id'] = event[0]
+        campaign = vals.get('campaign_id')
+        if campaign:
+            vals['campaign_id'] = campaign[0]
+        return vals
+
+
 class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
     origin_id = fields.Many2one('recurring.contract.origin',
                                 compute='_compute_origin', store=True)
-    event_id = fields.Many2one('crm.event.compassion', 'Event',
-                               track_visibility='onchange')
-    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
+    event_id = fields.Many2one(track_visibility='onchange')
 
     @api.multi
     @api.depends('channel', 'type', 'event_id', 'ambassador')

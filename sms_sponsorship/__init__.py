@@ -7,5 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+from . import forms
 from . import models
+from . import controllers
