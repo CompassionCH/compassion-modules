@@ -155,7 +155,7 @@ class SmsChildRequest(models.Model):
                 self.env.uid,
                 'channel': 'sms',
                 'source_code': 'sms_sponsorship',
-                'return_action': 'view_holds'
+                    'return_action': 'view_holds'
             }).send()
         child_hold = self.env['compassion.hold'].browse(
             result_action['domain'][0][2])
