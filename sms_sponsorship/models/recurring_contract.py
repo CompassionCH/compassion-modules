@@ -49,11 +49,6 @@ class RecurringContract(models.Model):
             })
             sms_child_request.partner_id = partner
 
-        # Check origin
-        internet_id = self.env.ref('utm.utm_medium_website').id
-        utms = self.env['utm.mixin'].get_utms(
-            utm_source, utm_medium, utm_campaign)
-
         # Create sponsorship
         child = sms_child_request.child_id
         lines = self._get_sponsorship_standard_lines()
@@ -65,36 +60,9 @@ class RecurringContract(models.Model):
             'child_id': sms_child_request.child_id.id,
             'type': 'S',
             'contract_line_ids': lines,
-            'source_id': utms['source'],
-            'medium_id': utms.get('medium', internet_id),
-            'campaign_id': utms['campaign'],
+            'medium_id': self.env.ref('sms_sponsorship.utm_medium_sms').id
         })
 
-        # Notify staff
-        staff_param = 'sponsorship_' + 'fr' + '_id'
-        staff = self.env['staff.notification.settings'].get_param(staff_param)
-        notify_text = "A new sponsorship was made from a SMS. Please " \
-                      "verify all information and validate the sponsorship " \
-                      "on Odoo: <br/><br/><ul>"
-
-        infos = vals.copy()
-        for element in ['child', 'utm_source', 'utm_medium', 'utm_campaign']:
-            infos[element] = eval(element)
-
-        for k, v in infos.items():
-            notify_text += "<li>" + k + ": " + unicode(v) + '</li>'
-
-        sponsorship.message_post(
-            body=notify_text,
-            subject=_('New sponsorship from SMS'),
-            partner_ids=[staff],
-            type='comment',
-            subtype='mail.mt_comment',
-            content_subtype='html'
-        )
-
-        # Mark child as sponsored even if not yet linked to sponsor
-        child.state = 'P'
         # Convert to No Money Hold
         sponsorship.with_delay().update_child_hold()
 

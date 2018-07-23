@@ -35,7 +35,8 @@ class SmsSponsorshipController(http.Controller):
             return [{'invalid_sms_child_request': True}]
         if sms_child_request.child_id:
             child = sms_child_request.child_id
-            result = child.read(['name', 'birthdate', 'display_name', 'field_office_id', 'gender', 'image_url', 'age'])
+            result = child.read(['name', 'birthdate', 'display_name', 'desc_en',
+                                 'field_office_id', 'gender', 'image_url', 'age'])
             result[0]['has_a_child'] = True
             result[0]['invalid_sms_child_request'] = False
             partner = sms_child_request.partner_id
@@ -64,8 +65,8 @@ class SmsSponsorshipController(http.Controller):
                 vals=body,
                 partner=partner,
                 sms_child_request=sms_child_request,
-                utm_source='mailing',
-                utm_medium='website',
-                utm_campaign='fall_drive'
+                utm_source='',
+                utm_medium='',
+                utm_campaign=''
             )
             return {'result': 'success'}

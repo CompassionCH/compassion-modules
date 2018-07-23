@@ -51,7 +51,7 @@ function SimpleMediaCard(props) {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <ChildDetails/>
+                    <ChildDetails appContext={props.appContext}/>
                 </CardActions>
                 <CardContent>
                     <SponsorForm appContext={props.appContext}/>

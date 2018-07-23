@@ -40,7 +40,7 @@ class NestedList extends React.Component {
                     <List component="div" disablePadding>
                         <ListItem button className={classes.nested}>
                             <Typography component="p">
-                                voici les détails de l'enfant concerné
+                                <div dangerouslySetInnerHTML={{__html: this.props.appContext.state.child.desc_en}}/>
                             </Typography>
                         </ListItem>
                     </List>
