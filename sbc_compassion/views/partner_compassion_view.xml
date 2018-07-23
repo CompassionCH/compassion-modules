@@ -6,13 +6,13 @@
         <field name="arch" type="xml">
             <!-- Add correspondence options -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil">
-                    <field string="Letters" name="nb_letters" widget="statinfo"/>
+                <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil" groups="child_compassion.group_sponsorship">
+                    <field string="Letters" name="nb_letters" widget="statinfo" groups="child_compassion.group_sponsorship"/>
                 </button>
             </xpath>
             <field name="lang" position="after">
-                <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}"/>
-                <field name="mandatory_review"/>
+                <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}" groups="child_compassion.group_sponsorship"/>
+                <field name="mandatory_review" groups="child_compassion.group_sponsorship"/>
             </field>
         </field>
     </record>

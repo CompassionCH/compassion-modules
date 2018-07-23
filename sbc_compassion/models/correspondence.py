@@ -785,5 +785,5 @@ class Correspondence(models.Model):
         name += self.child_id.local_id
         if self.kit_identifier:
             name += ' ' + self.kit_identifier
-        name += '.' + self.letter_format
+        name += '.' + (self.letter_format or 'pdf')
         return name

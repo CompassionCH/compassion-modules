@@ -220,7 +220,7 @@ class SponsorshipContract(models.Model):
     def write(self, vals):
         """ Perform various checks on contract modification """
         if 'child_id' in vals:
-            self._on_change_child_id(vals)
+            self._link_unlink_child_to_sponsor(vals)
 
         if 'partner_id' in vals:
             old_partners = self.mapped('partner_id')
@@ -825,8 +825,14 @@ class SponsorshipContract(models.Model):
         partners = self.mapped('partner_id') | self.mapped('correspondent_id')
         partners.update_number_sponsorships()
 
+    @api.onchange('child_id')
+    def _on_change_child_id(self):
+        if self.child_id and self.child_id.hold_id:
+            campaign = self.child_id.hold_id.campaign_id
+            self.campaign_id = campaign
+
     @api.multi
-    def _on_change_child_id(self, vals):
+    def _link_unlink_child_to_sponsor(self, vals):
         """Link/unlink child to sponsor
         """
         child_id = vals.get('child_id')
