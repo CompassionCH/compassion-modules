@@ -39,7 +39,16 @@ class SurveyUserInput(models.Model):
 
     def action_view_answers(self):
         """ Print PDF report instead of redirecting to survey. """
-        return True
+        datas = {
+            'active_ids': self.ids,
+            'active_model': self._name,
+        }
+        return {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'survey_phone.survey_user_input',
+            'datas': datas,
+            'nodestroy': True
+        }
 
 
 class SurveyUserInputLine(models.Model):
