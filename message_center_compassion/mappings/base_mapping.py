@@ -207,7 +207,7 @@ class OnrampMapping(object):
                 lang='en_US')
             correspondence_field = value_mapping[0].split('.')[0]
             relation_field = value_mapping[0].split('.')[-1]
-            operator = 'in' if isinstance(value, list) else '='
+            operator = 'in' if isinstance(value, list) else '=ilike'
             if relation_search is None:
                 relation_search = list()
             relation_search.extend([(relation_field, operator, value)])
