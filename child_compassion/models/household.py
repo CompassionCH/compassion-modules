@@ -226,30 +226,35 @@ class Household(models.Model):
             res = super(Household, self).create(vals)
         return res
 
-    def write(self, vals):
+    def major_revision(self, vals):
+        # TODO modify xml
+        revised_data = []
+        household_mapping = HouseHoldMapping(self.env)
+        household_data = household_mapping.get_vals_from_connect(
+            vals['BeneficiaryHouseholdList'][0])
+        household_obj = self.search([
+            ('household_id', '=', household_data['household_id'])
+        ])
 
-        for household in self:
-            revised_data = []
-            if vals['father_alive']:
-                revised_data.append({
-                    'name': 'Is Natural Father Alive?',
-                    'old_value': household.father_alive,
-                    'household_id': household.id
-                })
-            elif vals['mother_alive']:
-                revised_data.append({
-                    'name': 'Is Natural Mother Alive?',
-                    'old_value': household.mother_alive,
-                    'household_id': household.id
-                })
+        if household_data['father_alive']:
+            revised_data.append({
+                'name': 'Is Natural Father Alive?',
+                'old_value': household_obj.father_alive,
+                'household_id': household_obj.household_id
+            })
+        if household_data['mother_alive']:
+            revised_data.append({
+                'name': 'Is Natural Mother Alive?',
+                'old_value': household_obj.mother_alive,
+                'household_id': household_obj.household_id
+            })
 
-            super(Household, household).write(vals)
-
-            if revised_data:
-                for child in household.child_ids:
-                    child._major_revision({
-                        'revised_value_ids': [
-                            (0, 0, data) for data in revised_data]})
+        if revised_data:
+            for child in household_obj.child_ids:
+                child._major_revision(
+                    {'revised_value_ids': [
+                        (0, 0, data) for data in revised_data]}
+                )
         return True
 
 
