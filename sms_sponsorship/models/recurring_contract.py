@@ -1,4 +1,4 @@
-from odoo import _, api, models
+from odoo import api, models
 
 
 class RecurringContract(models.Model):
@@ -30,7 +30,7 @@ class RecurringContract(models.Model):
         return res
 
     @api.model
-    def create_sms_sponsorship(self, vals, utm_source, utm_medium, utm_campaign, partner, sms_child_request):
+    def create_sms_sponsorship(self, vals, partner, sms_child_request):
         if not partner:
             # Search for existing partner
             partner = self.env['res.partner'].search([
@@ -39,6 +39,11 @@ class RecurringContract(models.Model):
                 ('email', '=', vals['email'])
             ])
             sms_child_request.partner_id = partner
+        else:
+            if not (partner.firstname == vals['firstname'] and
+                    partner.lastname == vals['lastname'] and
+                    partner.email == vals['email']):
+                    partner = False
 
         if not partner:
             partner = self.env['res.partner'].create({
