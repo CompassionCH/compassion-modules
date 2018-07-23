@@ -341,14 +341,14 @@ class SponsorshipContract(models.Model):
                     "<br/>Invoices due in the suspension period "
                     "are automatically cancelled.".format(
                         project_code)),
-                _("Project Suspended"), 'comment')
+                _("Project Suspended"), _('comment'))
             contract.partner_id.message_post(
                 _("The project {0} was suspended and funds are retained "
                     "for child {1}. <b>"
                     "<br/>Invoices due in the suspension period "
                     "are automatically cancelled.".format(
                         project_code, contract.child_code)),
-                _("Project Suspended"), 'comment')
+                _("Project Suspended"), _('comment'))
 
         # Change invoices if config tells to do so.
         if suspend_config:
@@ -458,7 +458,7 @@ class SponsorshipContract(models.Model):
                 _("The project was reactivated."
                     "<br/>Invoices due in the suspension period "
                     "are automatically reverted."),
-                _("Project Reactivated"), 'comment')
+                _("Project Reactivated"), _('comment'))
 
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
