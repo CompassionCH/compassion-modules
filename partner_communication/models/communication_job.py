@@ -490,127 +490,89 @@ class CommunicationJob(models.Model):
         # https://gist.github.com/kzim44/5023021
         # https://www.blog.pythonlibrary.org/2013/07/16/
         #   pypdf-how-to-write-a-pdf-to-memory/
-
         self.ensure_one()
-
-        # OMR Parameters
-        number_of_alimentation = 2
-        number_of_marks = 7
-
-        orm_mark_length = 7 * mm
-
-        # margin around the omr code which should stay white
-        horizontal_margin = 4.2 * mm
-        vertical_margin = 8.5 * mm
-
-        x1 = 194 * mm
-        x2 = x1 + orm_mark_length
-        y1 = 180 * mm
-        y_step = 4 * mm
 
         pdf_buffer = StringIO.StringIO()
         pdf_buffer.write(pdf_data)
 
         existing_pdf = PdfFileReader(pdf_buffer)
+        output = PdfFileWriter()
         total_pages = existing_pdf.getNumPages()
 
         # print latest omr mark on latest pair page (recto)
-        latest_omr_page = (total_pages - 1) if total_pages % 2 is 0 \
-            else total_pages
-
-        output = PdfFileWriter()
+        latest_omr_page = total_pages // 2
 
         for page_number in range(total_pages):
-            y_position = y1
+            page = existing_pdf.getPage(page_number)
             # only print omr marks on pair pages (recto)
             if page_number % 2 is 0:
-                is_latest_page = True if \
-                    is_latest_document and \
-                    page_number == (latest_omr_page - 1) else False
-
-                omr_buffer = StringIO.StringIO()
-
-                # Create a canvas to write on
-                p = Canvas(omr_buffer)
-
-                # line (x1, y1, x2, y2)
-                p.setLineWidth(0.2 * mm)
-
-                # add a white background for the omr code
-                p.setFillColor(white)
-                p.rect(
-                    x1 - horizontal_margin,
-                    y1 - (number_of_marks - 1) * y_step - vertical_margin,
-                    orm_mark_length + 2 * horizontal_margin,
-                    (number_of_marks - 1) * y_step + 2 * vertical_margin,
-                    fill=True,
-                    stroke=False
-                )
-
-                # start mark (compulsory)
-                p.line(x1, y_position, x2, y_position)
-                y_position -= y_step
-
-                # insert mark (only on latest page)
-                if is_latest_page:
-                    p.line(x1, y_position, x2, y_position)
-                y_position -= y_step
-
-                # alimentation (2 marks)
-                # back 1 is the "big special" one (the lower)
-                # back 2 is at the middle
-                for alimentation_number in range(number_of_alimentation):
-                    if is_latest_page:
-                        if self.omr_add_attachment_tray_1 and \
-                                alimentation_number == 0:
-                            p.line(x1, y_position, x2, y_position)
-                        elif self.omr_add_attachment_tray_2 and \
-                                alimentation_number == 1:
-                            p.line(x1, y_position, x2, y_position)
-                    y_position -= y_step
-
-                # close envelop (if display the envelop is not closed)
-                if is_latest_page \
-                        and not self.omr_should_close_envelope:
-                    p.line(x1, y_position, x2, y_position)
-                y_position -= y_step
-
-                # # number of pages in binary (MSB first with sequence:
-                # # 00, 01, 10, 11, 00, 01, ...)
-                # p.line(x1, y_position, x2, y_position)
-                # y_position -= y_step
-                #
-                # p.line(x1, y_position, x2, y_position)
-                # y_position -= y_step
-
-                # parity mark (total number of marks should be pair)
-                if self._display_parity(is_latest_page):
-                    p.line(x1, y_position, x2, y_position)
-                y_position -= y_step
-
-                # end mark (compulsory)
-                p.line(x1, y_position, x2, y_position)
-
-                # Close the PDF object cleanly.
-                p.showPage()
-                p.save()
-
-                # move to the beginning of the StringIO buffer
-                omr_buffer.seek(0)
-                omr_pdf = PdfFileReader(omr_buffer)
-
-                # add the omr marks to the page
-                page = existing_pdf.getPage(page_number)
-                page.mergePage(omr_pdf.getPage(0))
-            else:
-                page = existing_pdf.getPage(page_number)
-
+                is_latest_page = is_latest_document and \
+                                 page_number == latest_omr_page
+                marks = self._compute_marks(is_latest_page)
+                omr_layer = self._build_omr_layer(marks)
+                page.mergePage(omr_layer)
             output.addPage(page)
 
         out_buffer = StringIO.StringIO()
         output.write(out_buffer)
 
         return out_buffer.getvalue()
+
+    def _compute_marks(self, is_latest_page):
+        marks = [
+            True,  # Start mark (compulsory)
+            is_latest_page,
+            is_latest_page and self.omr_add_attachment_tray_1,
+            is_latest_page and self.omr_add_attachment_tray_2,
+            is_latest_page and not self.omr_should_close_envelope
+        ]
+        parity_check = sum(marks) % 2 == 0
+        marks.append(parity_check)
+        marks.append(True)  # End mark (compulsory)
+        return marks
+
+    @staticmethod
+    def _build_omr_layer(marks):
+        # margin around the omr code which should stay white
+        horizontal_margin = 4.2 * mm
+        vertical_margin = 8.5 * mm
+        x1 = 194 * mm
+        y1 = 180 * mm
+        y_step = 4 * mm
+
+        number_of_marks = len(marks)
+        orm_mark_length = len(marks) * mm
+        x2 = x1 + orm_mark_length
+
+        omr_buffer = StringIO.StringIO()
+        omr_canvas = Canvas(omr_buffer)
+        omr_canvas.setLineWidth(0.2 * mm)
+
+        # add a white background for the omr code
+        omr_canvas.setFillColor(white)
+        omr_canvas.rect(
+            x1 - horizontal_margin,
+            y1 - (number_of_marks - 1) * y_step - vertical_margin,
+            orm_mark_length + 2 * horizontal_margin,
+            (number_of_marks - 1) * y_step + 2 * vertical_margin,
+            fill=True,
+            stroke=False
+        )
+
+        for offset, mark in enumerate(marks):
+            y_position = y1 - offset * y_step
+            if mark:
+                omr_canvas.line(x1, y_position, x2, y_position)
+
+        # Close the PDF object cleanly.
+        omr_canvas.showPage()
+        omr_canvas.save()
+
+        # move to the beginning of the StringIO buffer
+        omr_buffer.seek(0)
+        omr_pdf = PdfFileReader(omr_buffer)
+
+        return omr_pdf.getPage(0)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -687,40 +649,6 @@ class CommunicationJob(models.Model):
             # Commit to avoid invalid state if process fails
             self.env.cr.commit()    # pylint: disable=invalid-commit
         return True
-
-    def _display_parity(self, is_latest_page):
-        # current_page_number = 0
-
-        nb_displayed_marks = 2  # always display start and stop marks
-
-        # insert mark is displayed only on latest page
-        if is_latest_page:
-            nb_displayed_marks += 1
-
-            # a mark is added if the envelope should not be closed
-            if not self.omr_should_close_envelope:
-                nb_displayed_marks += 1
-
-            # count attachment marks
-            if self.omr_add_attachment_tray_1:
-                nb_displayed_marks += 1
-            if self.omr_add_attachment_tray_2:
-                nb_displayed_marks += 1
-
-        # # page number (2) marks
-        # # no mark for page 00 (binary)
-        # # one mark for page 01 and 10 (binary)
-        # if current_page_number % 4 in {1, 2}:
-        #     nb_displayed_marks += 1
-        # # two marks for page 11 (binary)
-        # elif current_page_number % 4 is 3:
-        #     nb_displayed_marks += 2
-
-        # if the nb_displayed_marks is pair, do not display the parity
-        if nb_displayed_marks % 2 is 0:
-            return False
-        else:
-            return True
 
     @api.model
     def _needaction_domain_get(self):
