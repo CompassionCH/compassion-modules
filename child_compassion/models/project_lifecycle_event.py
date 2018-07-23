@@ -65,7 +65,8 @@ class ProjectLifecycle(models.Model):
     transition_complete = fields.Boolean(readonly=True)
     details = fields.Text(readonly=True)
     transition_reason_ids = fields.Many2many(
-        'icp.lifecycle.reason', string='Transition reason', readonly=True)
+        'icp.lifecycle.reason', string='Transition reason', readonly=True,
+        relation='compassion_project_ile_transition_reason_rel')
     projected_transition_date = fields.Date(readonly=True)
     future_involvement_ids = fields.Many2many(
         'icp.involvement', string='Future involvement', readonly=True)
