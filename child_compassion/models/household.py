@@ -227,7 +227,6 @@ class Household(models.Model):
         return res
 
     def major_revision(self, vals):
-        # TODO modify xml
         revised_data = []
         household_mapping = HouseHoldMapping(self.env)
         household_data = household_mapping.get_vals_from_connect(
@@ -236,17 +235,17 @@ class Household(models.Model):
             ('household_id', '=', household_data['household_id'])
         ])
 
-        if household_data['father_alive']:
+        if household_data['father_alive'] != household_obj.father_alive:
             revised_data.append({
                 'name': 'Is Natural Father Alive?',
                 'old_value': household_obj.father_alive,
-                'household_id': household_obj.household_id
+                'household_id': household_obj.id
             })
-        if household_data['mother_alive']:
+        if household_data['mother_alive'] != household_obj.mother_alive:
             revised_data.append({
                 'name': 'Is Natural Mother Alive?',
                 'old_value': household_obj.mother_alive,
-                'household_id': household_obj.household_id
+                'household_id': household_obj.id
             })
 
         if revised_data:
