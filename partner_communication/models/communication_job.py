@@ -661,22 +661,11 @@ class CommunicationJob(models.Model):
         for job in self:
             # Get pdf should directly send it to the printer if report
             # is correctly configured.
-            pdf_data = report_obj.with_context(
+            to_print = report_obj.with_context(
                 print_name=self.env.user.firstname[:3] + ' ' + (
                     job.subject or ''),
                 must_skip_send_to_printer=True
             ).get_pdf(job.ids, job.report_id.report_name)
-
-            # add omr to pdf if needed
-            if job.omr_enable_marks:
-                is_latest_document = not job.attachment_ids.filtered(
-                    'attachment_id.enable_omr'
-                )
-                to_print = job.add_omr_marks(
-                    pdf_data, is_latest_document
-                )
-            else:
-                to_print = pdf_data
 
             # Print letter
             report = job.report_id
