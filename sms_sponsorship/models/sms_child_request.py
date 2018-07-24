@@ -107,7 +107,7 @@ class SmsChildRequest(models.Model):
     @api.multi
     def change_child(self):
         """ Release current child and take another."""
-        self.hold_id.sms_request_id = False
+        self.hold_id.write({'sms_request_id': False})
         self.write({
             'state': 'new',
             'child_id': False
@@ -116,7 +116,7 @@ class SmsChildRequest(models.Model):
 
     @api.multi
     def cancel_request(self):
-        self.hold_id.sms_request_id = False
+        self.hold_id.write({'sms_request_id': False})
         return self.write({
             'state': 'expired',
             'child_id': False
