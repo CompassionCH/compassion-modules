@@ -60,7 +60,7 @@ class CommunicationJob(models.Model):
     _description = 'Communication Job'
     _order = 'date desc,sent_date desc'
     _inherit = ['partner.communication.defaults', 'ir.needaction_mixin',
-                'mail.thread']
+                'mail.thread', 'partner.communication.orm.config.abstract']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -136,9 +136,9 @@ class CommunicationJob(models.Model):
         for job in self:
             for attachment in job.ir_attachment_ids:
                 if attachment not in job.attachment_ids.mapped(
-                    'attachment_id'):
+                        'attachment_id'):
                     if not attachment.report_id and not \
-                        self.env.context.get('no_print'):
+                            self.env.context.get('no_print'):
                         raise UserError(
                             _("Please select a printing configuration for the "
                               "attachments you add.")
@@ -182,13 +182,14 @@ class CommunicationJob(models.Model):
             vals['object_ids'] = str(vals['partner_id'])
 
         same_job_search = [
-                              ('partner_id', '=', vals.get('partner_id')),
-                              ('config_id', '=', vals.get('config_id')),
-                              ('config_id', '!=',
-                               self.env.ref(
-                                   'partner_communication.default_communication').id),
-                              ('state', 'in', ('call', 'pending'))
-                          ] + self.env.context.get('same_job_search', [])
+            ('partner_id', '=', vals.get('partner_id')),
+            ('config_id', '=', vals.get('config_id')),
+            ('config_id', '!=',
+             self.env.ref(
+                          'partner_communication.default_communication'
+             ).id),
+            ('state', 'in', ('call', 'pending'))
+        ] + self.env.context.get('same_job_search', [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + ',' + vals['object_ids']
@@ -201,10 +202,10 @@ class CommunicationJob(models.Model):
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
         if 'send_mode' not in vals and 'default_send_mode' not in \
-            self.env.context:
+                self.env.context:
             job.send_mode = send_mode[0]
         if 'auto_send' not in vals and 'default_auto_send' not in \
-            self.env.context:
+                self.env.context:
             job.auto_send = send_mode[1]
 
         if not job.body_html or not strip_tags(job.body_html):
@@ -246,13 +247,21 @@ class CommunicationJob(models.Model):
         # Determine user by default : take in config or employee
         if not vals.get('user_id'):
             vals['user_id'] = config.user_id.id or self.env.uid
+        user = self.env['res.users'].browse(vals['user_id'])
+        orm_config_of_right_lang = config.omr_config_ids \
+            .filtered(lambda c: c.lang_id.code == user.lang)
+        orm_config = orm_config_of_right_lang[0] if orm_config_of_right_lang \
+            else config.omr_config_ids
 
         # Check all default_vals fields
         for default_val in default_vals:
             if default_val not in vals:
-                value = getattr(config, default_val)
-                if default_val.endswith('_id'):
-                    value = value.id
+                if default_val.startswith('omr_'):
+                    value = getattr(orm_config, default_val, False)
+                else:
+                    value = getattr(config, default_val)
+                    if default_val.endswith('_id'):
+                        value = value.id
                 vals[default_val] = value
 
         return config
@@ -509,7 +518,7 @@ class CommunicationJob(models.Model):
             # only print omr marks on pair pages (recto)
             if page_number % 2 is 0:
                 is_latest_page = is_latest_document and \
-                                 page_number == latest_omr_page
+                    page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
                 omr_layer = self._build_omr_layer(marks)
                 page.mergePage(omr_layer)
@@ -596,8 +605,8 @@ class CommunicationJob(models.Model):
                 'subject': self.subject,
                 'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
                 'auto_delete': False,
-                'reply_to': self.email_template_id.reply_to or
-                            self.user_id.email
+                'reply_to': (self.email_template_id.reply_to or
+                             self.user_id.email)
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
