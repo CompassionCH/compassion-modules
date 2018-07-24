@@ -168,6 +168,17 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        # Avoid duplicating Holds
+        hold_id = vals.get('hold_id')
+        if hold_id:
+            hold = self.search([('hold_id', '=', hold_id)])
+            if hold:
+                hold.write(vals)
+                return hold
+        return super(CompassionHold, self).create(vals)
+
     @api.multi
     def write(self, vals):
         res = super(CompassionHold, self).write(vals)
