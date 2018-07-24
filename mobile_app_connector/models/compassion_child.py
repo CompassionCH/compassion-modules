@@ -11,9 +11,9 @@
 
 import logging
 
-
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class CompassionChild(models.Model):
     _inherit = 'compassion.child'
 
     @api.model
-    def mobile_sponsor_children(self, userid=None, **other_params):
+    def mobile_sponsor_children(self, **other_params):
         """
         Mobile app method:
         Returns the sponsored child list for a given sponsor.
@@ -32,17 +32,22 @@ class CompassionChild(models.Model):
         :return: JSON list of sponsor children data
         """
         result = []
-        if userid is None:
-            return result
+        partner_ref = self._get_required_param('userid', other_params)
 
         sponsor = self.env['res.partner'].search([
             # TODO add filter only portal users
-            ('ref', '=', userid),
+            ('ref', '=', partner_ref),
         ], limit=1)
         children = self.search([
             ('partner_id', '=', sponsor.id)
         ])
+
         mapping = MobileChildMapping(self.env)
         for child in children:
             result.append(mapping.get_connect_data(child))
         return result
+
+    def _get_required_param(self, key, params):
+        if key not in params:
+            raise ValueError('Required parameter {}'.format(key))
+        return params[key]

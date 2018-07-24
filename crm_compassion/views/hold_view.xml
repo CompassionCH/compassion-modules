@@ -84,6 +84,7 @@
         <field name="arch" type="xml">
             <field name="channel" position="before">
                 <field name="campaign_id"/>
+                <field name="event_id" invisible="1"/>
             </field>
         </field>
     </record>

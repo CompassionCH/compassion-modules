@@ -37,9 +37,10 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <menuitem id="menu_sponsorship_settings_other" name="Other" parent="child_compassion.menu_configuration"/>
     <menuitem id="menu_sponsorship_personal_data_agreement"
-              parent="child_compassion.menu_sponsorship_section"
+              parent="menu_sponsorship_settings_other"
               name="Personal Data Agreement"
               groups="child_compassion.group_sponsorship"
-              sequence="5" action="action_data_agreement"/>
+              action="action_data_agreement"/>
 </odoo>

@@ -38,6 +38,9 @@ class MobileAppJsonRequest(JsonRequest):
     def __init__(self, *args):
         try:
             super(MobileAppJsonRequest, self).__init__(*args)
+            self.params = {
+                key: val for key, val in self.httprequest.args.iteritems()
+            }
         except werkzeug.exceptions.BadRequest as error:
             # Put simply an empty JSON data
             if 'Invalid JSON data' in error.description:
@@ -56,3 +59,14 @@ class MobileAppJsonRequest(JsonRequest):
         if result is not None and error is None:
             odoo_result.data = simplejson.dumps(result)
         return odoo_result
+
+    def _handle_exception(self, exception):
+        if isinstance(exception, ValueError):
+            code = 400
+            return self._json_response(error={
+                'code': code,
+                'http_code': code,
+                'message': str(exception)
+            })
+        _logger.warn(exception)
+        raise exception

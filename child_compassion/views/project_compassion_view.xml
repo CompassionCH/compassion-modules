@@ -235,9 +235,6 @@
                         <field name="type"/>
                         <field string="Lifecycle details" name="details"/>
                     </group>
-                    <group>
-                        <field name="action_plan"/>
-                    </group>
                     <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}">
                         <field name="icp_improvement_desc"/>
                     </group>
@@ -245,7 +242,7 @@
                     <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
                         <field name="suspension_start_date"/>
                         <field name="suspension_end_date"/>
-                        <field name="suspension_reason_ids" widget="many2many_checkboxes"/>
+                        <field name="suspension_reason_ids" widget="many2many_tags"/>
                         <field name="extension_1"/>
                         <field name="extension_1_reason_ids" attrs="{'invisible': [('extension_1', '=', False)]}" widget="many2many_tags"/>
                         <field name="extension_2"/>
@@ -261,7 +258,7 @@
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
                         <field name="transition_date"/>
-                        <field name="transition_reason_ids" widget="many2many_checkboxes"/>
+                        <field name="transition_reason_ids" widget="many2many_tags"/>
                         <field name="transition_complete"/>
                         <field name="future_involvement_ids" widget="many2many_checkboxes"/>
                     </group>
@@ -269,6 +266,10 @@
                         <!--<field name="celebration_details"/>-->
                         <!--<field name="relationship_strengths"/>-->
                     <!--</group>-->
+                </group>
+                <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
+                    <field name="suspension_detail"/>
+                    <field name="action_plan"/>
                 </group>
             </form>
         </field>
