@@ -90,7 +90,7 @@ class GmcMessagePool(models.Model):
     failure_reason = fields.Text(
         'Failure details', track_visibility='onchange')
     headers = fields.Text(readonly=True)
-    content = fields.Text(readonly=True)
+    content = fields.Text()
     answer = fields.Text(readonly=True)
 
     _sql_constraints = [
