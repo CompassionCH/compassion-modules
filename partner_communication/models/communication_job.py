@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 class MLStripper(HTMLParser):
     """ Used to remove HTML tags. """
+
     def __init__(self):
         self.reset()
         self.fed = []
@@ -135,9 +136,9 @@ class CommunicationJob(models.Model):
         for job in self:
             for attachment in job.ir_attachment_ids:
                 if attachment not in job.attachment_ids.mapped(
-                        'attachment_id'):
+                    'attachment_id'):
                     if not attachment.report_id and not \
-                            self.env.context.get('no_print'):
+                        self.env.context.get('no_print'):
                         raise UserError(
                             _("Please select a printing configuration for the "
                               "attachments you add.")
@@ -181,12 +182,13 @@ class CommunicationJob(models.Model):
             vals['object_ids'] = str(vals['partner_id'])
 
         same_job_search = [
-            ('partner_id', '=', vals.get('partner_id')),
-            ('config_id', '=', vals.get('config_id')),
-            ('config_id', '!=',
-             self.env.ref('partner_communication.default_communication').id),
-            ('state', 'in', ('call', 'pending'))
-        ] + self.env.context.get('same_job_search', [])
+                              ('partner_id', '=', vals.get('partner_id')),
+                              ('config_id', '=', vals.get('config_id')),
+                              ('config_id', '!=',
+                               self.env.ref(
+                                   'partner_communication.default_communication').id),
+                              ('state', 'in', ('call', 'pending'))
+                          ] + self.env.context.get('same_job_search', [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + ',' + vals['object_ids']
@@ -199,10 +201,10 @@ class CommunicationJob(models.Model):
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
         if 'send_mode' not in vals and 'default_send_mode' not in \
-                self.env.context:
+            self.env.context:
             job.send_mode = send_mode[0]
         if 'auto_send' not in vals and 'default_auto_send' not in \
-                self.env.context:
+            self.env.context:
             job.auto_send = send_mode[1]
 
         if not job.body_html or not strip_tags(job.body_html):
@@ -413,7 +415,7 @@ class CommunicationJob(models.Model):
         """ Call partner from tree view button. """
         self.ensure_one()
         self.env['phone.common'].with_context(
-            click2dial_model=self._name, click2dial_id=self.id)\
+            click2dial_model=self._name, click2dial_id=self.id) \
             .click2dial(self.partner_phone or self.partner_mobile)
         return self.log_call()
 
@@ -533,16 +535,14 @@ class CommunicationJob(models.Model):
 
     @staticmethod
     def _build_omr_layer(marks):
-        # margin around the omr code which should stay white
-        horizontal_margin = 4.2 * mm
-        vertical_margin = 8.5 * mm
-        x1 = 194 * mm
-        y1 = 180 * mm
-        y_step = 4 * mm
+        padding_x = 4.2 * mm
+        padding_y = 8.5 * mm
+        top_mark_x = 7 * mm
+        top_mark_y = 220 * mm
+        mark_y_spacing = 4 * mm
 
-        number_of_marks = len(marks)
-        orm_mark_length = len(marks) * mm
-        x2 = x1 + orm_mark_length
+        mark_width = 6.5 * mm
+        marks_height = (len(marks) - 1) * mark_y_spacing
 
         omr_buffer = StringIO.StringIO()
         omr_canvas = Canvas(omr_buffer)
@@ -551,18 +551,19 @@ class CommunicationJob(models.Model):
         # add a white background for the omr code
         omr_canvas.setFillColor(white)
         omr_canvas.rect(
-            x1 - horizontal_margin,
-            y1 - (number_of_marks - 1) * y_step - vertical_margin,
-            orm_mark_length + 2 * horizontal_margin,
-            (number_of_marks - 1) * y_step + 2 * vertical_margin,
+            x=top_mark_x - padding_x,
+            y=top_mark_y - marks_height - padding_y,
+            width=mark_width + 2 * padding_x,
+            height=marks_height + 2 * padding_y,
             fill=True,
             stroke=False
         )
 
         for offset, mark in enumerate(marks):
-            y_position = y1 - offset * y_step
+            mark_y = top_mark_y - offset * mark_y_spacing
             if mark:
-                omr_canvas.line(x1, y_position, x2, y_position)
+                omr_canvas.line(top_mark_x, mark_y,
+                                top_mark_x + mark_width, mark_y)
 
         # Close the PDF object cleanly.
         omr_canvas.showPage()
@@ -596,7 +597,7 @@ class CommunicationJob(models.Model):
                 'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
                 'auto_delete': False,
                 'reply_to': self.email_template_id.reply_to or
-                self.user_id.email
+                            self.user_id.email
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
@@ -647,7 +648,7 @@ class CommunicationJob(models.Model):
                 'sent_date': fields.Datetime.now()
             })
             # Commit to avoid invalid state if process fails
-            self.env.cr.commit()    # pylint: disable=invalid-commit
+            self.env.cr.commit()  # pylint: disable=invalid-commit
         return True
 
     @api.model
