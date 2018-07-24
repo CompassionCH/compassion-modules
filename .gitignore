@@ -54,3 +54,8 @@ docs/_build/
 
 # Unported modules
 __unported__
+
+# React webapp
+sms_sponsorship/webapp/node_modules
+sms_sponsorship/webapp/build
+sms_sponsorship/webapp/.idea
