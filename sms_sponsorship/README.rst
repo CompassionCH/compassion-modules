@@ -42,23 +42,24 @@ Then, a new ``build`` folder will appear into ``webapp``. If there is no ``sms_s
 Configuration
 =============
 
-Développement
-~~~~~~~~~~~~~
+Development
+~~~~~~~~~~~
 
-Pour développer sur la webapp react, il est conseillé de suivre les étapes suivantes :
-#. Utiliser un éditeur de code compatible avec React (par exemple : WebStorm)
-#. Ouvrir le projet ``sms_sponsorship/webapp``
-#. Si nécessaire, executer ``npm install``
+To develop for the react webapp, please follow these steps :
+#. Use a code editor compatible with react (for exemple : WebStorm)
+#. Open the project ``sms_sponsorship/webapp``
+#. If not already done, execute ``npm install``
 
-Pour lancer l'application sur le serveur de développement, il faut lancer la commande ``npm start``
+To launch the app on the development server, run ``npm start``.
 
 Proxy
-*****
+~~~~~
 
-Pour que le serveur de développement puisse accéder à odoo, il est nécessaire d'ajouter toutes les routes d'odoo dont
-react a besoin pour fonctionner dans le fichier ``package.json``.
 
-Voici un exemple pour les routes ``/sms_sponsorship_api`` :
+In order for the development server to access odoo, it is necessary to add all
+the odoo routes react needs in the file ``package.json``.
+
+Here is an exemple for ``/sms_sponsorship_api`` :
 
    "proxy": { "/sms_sponsorship_api": { "target": "http://localhost:8069/", "secure": false } }
 

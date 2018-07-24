@@ -11,7 +11,7 @@ export default class extends React.Component {
                 height: '80vh',
             },
             loadingTextContainer: {
-                width: '95vw',
+                width: '98vw',
                 textAlign: 'center',
                 paddingTop: 10
             },

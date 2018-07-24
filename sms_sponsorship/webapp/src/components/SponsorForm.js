@@ -123,6 +123,11 @@ class TextFields extends React.Component {
                         label="Sponsorship plus"
                     />
                 </form>
+                <Button variant="contained"
+                        onClick={this.props.appContext.changeChild}
+                        color="primary">
+                    Other child
+                </Button>
                 <Button className={classes.sponsorButton}
                         variant="contained"
                         onClick={this.sponsorFormHandler}

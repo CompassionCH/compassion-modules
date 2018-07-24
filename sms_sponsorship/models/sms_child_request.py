@@ -107,7 +107,8 @@ class SmsChildRequest(models.Model):
     @api.multi
     def change_child(self):
         """ Release current child and take another."""
-        self.hold_id.sms_request_id = False
+        if self.hold_id:
+            self.hold_id.sms_request_id = False
         self.write({
             'state': 'new',
             'child_id': False
@@ -155,7 +156,7 @@ class SmsChildRequest(models.Model):
                 self.env.uid,
                 'channel': 'sms',
                 'source_code': 'sms_sponsorship',
-                    'return_action': 'view_holds'
+                'return_action': 'view_holds'
             }).send()
         child_hold = self.env['compassion.hold'].browse(
             result_action['domain'][0][2])

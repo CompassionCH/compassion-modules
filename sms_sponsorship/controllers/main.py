@@ -13,12 +13,17 @@
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.addons.website_portal.controllers.main import website_account
 from odoo.http import route
+from odoo.http import request
 from odoo import http
 import werkzeug.utils
 
 
-class SmsSponsorshipWebsite(website_account, FormControllerMixin):
+def get_child_request(request_id):
+    return request.env['sms.child.request'].sudo() \
+        .search([('id', '=', int(request_id))])
 
+
+class SmsSponsorshipWebsite(website_account, FormControllerMixin):
     @route('/sms-sponsorship/step2/<model("recurring.contract"):sponsorship>/',
            auth='public', website=True)
     def sms_partner_register(self, sponsorship=None, **kwargs):
@@ -29,12 +34,11 @@ class SmsSponsorshipWebsite(website_account, FormControllerMixin):
 
 
 class SmsSponsorshipController(http.Controller):
-    @http.route('/sms_sponsorship_api', type='json',
-                auth='public', methods=['POST'], csrf=False)
+    @route('/sms_sponsorship_api', type='json',
+           auth='public', methods=['POST'], csrf=False)
     def sms_sponsorship_api_handler(self, **kwargs):
-        request_id = http.request.jsonrequest['child_request_id']
-        sms_child_request = http.request.env['sms.child.request'].sudo()\
-            .search([('id', '=', int(request_id))])
+        request_id = request.jsonrequest['child_request_id']
+        sms_child_request = get_child_request(request_id)
         if not sms_child_request:
             return [{'invalid_sms_child_request': True}]
         if sms_child_request.child_id:
@@ -51,22 +55,21 @@ class SmsSponsorshipController(http.Controller):
             return result
         return [{'has_a_child': False, 'invalid_sms_child_request': False}]
 
-    @http.route('/sponsor-now/<int:child_request_id>', auth='public',
-                website=True)
+    @route('/sponsor-now/<int:child_request_id>', auth='public',
+           website=True)
     def sms_redirect(self, child_request_id=None):
         url = '/sms_sponsorship/static/index.html?child_request_id=' +\
               str(child_request_id)
         # redirects to webapp
         return werkzeug.utils.redirect(url, 301)
 
-    @http.route('/sms_sponsor_confirm', type='json', auth='public',
-                methods=['POST'], csrf=False)
+    @route('/sms_sponsor_confirm', type='json', auth='public',
+           methods=['POST'], csrf=False)
     def sms_sponsor_confirm(self):
-        env = http.request.env
-        body = http.request.jsonrequest
+        env = request.env
+        body = request.jsonrequest
         request_id = body['child_request_id']
-        sms_child_request = http.request.env['sms.child.request'].sudo()\
-            .search([('id', '=', int(request_id))])
+        sms_child_request = get_child_request(request_id)
         if sms_child_request:
             sms_child_request.ensure_one()
             body['phone'] = sms_child_request.sender
@@ -78,3 +81,10 @@ class SmsSponsorshipController(http.Controller):
                 sms_child_request=sms_child_request
             )
             return {'result': 'success'}
+
+    @route('/sms_change_child', type='json', auth='public',
+           methods=['POST'], csrf=False)
+    def sms_change_child(self):
+        request_id = request.jsonrequest['child_request_id']
+        sms_child_request = get_child_request(request_id)
+        sms_child_request.change_child()

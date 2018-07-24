@@ -11,6 +11,10 @@
     "/sms_sponsor_confirm": {
       "target": "http://localhost:8069/",
       "secure": false
+    },
+    "/sms_change_child": {
+      "target": "http://localhost:8069/",
+      "secure": false
     }
   },
   "dependencies": {

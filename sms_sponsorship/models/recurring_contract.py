@@ -55,7 +55,6 @@ class RecurringContract(models.Model):
             sms_child_request.partner_id = partner
 
         # Create sponsorship
-        child = sms_child_request.child_id
         lines = self._get_sponsorship_standard_lines()
         if not vals['sponsorship_plus']:
             lines = lines[:-1]

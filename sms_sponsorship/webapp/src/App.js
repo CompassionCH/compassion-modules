@@ -7,6 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CenteredLoading from './components/CenteredLoading';
 import jsonRPC from './components/jsonRPC';
 import getRequestId from './components/getRequestId';
+import Error from './components/Error';
 
 const theme = createMuiTheme({
     palette: {
@@ -26,6 +27,17 @@ class Main extends React.Component {
         success: false,
     };
 
+    parseResult = (res) => {
+        let child;
+        try {
+            child = JSON.parse(res.responseText).result[0]
+        }
+        catch(e) {
+            child = false;
+        }
+        return child;
+    };
+
     getChild = () => {
         if (!getRequestId()) {
             return;
@@ -33,16 +45,35 @@ class Main extends React.Component {
         let url = "/sms_sponsorship_api";
 
         let data = {
-            child_request_id: getRequestId()
+            child_request_id: getRequestId(),
         };
 
         jsonRPC(url, data, (res) => {
-            let child = JSON.parse(res.responseText).result[0];
+            let child = this.parseResult(res);
             let partner = (typeof(child.partner) === 'undefined') ? false:child.partner[0];
             this.setState({
                 child: child,
                 partner: partner,
             });
+        });
+    };
+
+    changeChild = () => {
+        let url = "/sms_change_child";
+
+        let data = {
+            child_request_id: getRequestId(),
+        };
+
+        this.setState({
+            child: {
+                'has_a_child': true,
+                'loading_other_child': true
+            }
+        });
+
+        jsonRPC(url, data, (res) => {
+            this.getChild();
         });
     };
 
@@ -62,7 +93,7 @@ class Main extends React.Component {
                 <div>
                     {topAppBar}
                     <div>
-                        <CenteredLoading text="Error : no SMS request ID. Please send an other SMS."/>
+                        <Error appContext={this} text="Error : no SMS request ID. Please send an other SMS."/>
                     </div>
                 </div>
             )
@@ -88,21 +119,29 @@ class Main extends React.Component {
                     <div>
                         {!child.invalid_sms_child_request ? (
                             <div>
-                                {child.has_a_child ? (
-                                    <ChildCard centered
-                                               name={child.name}
-                                               country={child.field_office_id[1]}
-                                               age={child.age + ' years'}
-                                               gender={child.gender === 'M' ? 'Male':'Female'}
-                                               image_url={child.image_url}
-                                               appContext={this}/>
+                                {!child.loading_other_child ? (
+                                    <div>
+                                        {child.has_a_child ? (
+                                            <ChildCard centered
+                                                       name={child.name}
+                                                       country={child.field_office_id[1]}
+                                                       age={child.age + ' years'}
+                                                       gender={child.gender === 'M' ? 'Male':'Female'}
+                                                       image_url={child.image_url}
+                                                       appContext={this}/>
+                                        ):(
+                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                        )}
+                                    </div>
                                 ):(
-                                    <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                    <div>
+                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                    </div>
                                 )}
                             </div>
                         ):(
                             <div>
-                                <CenteredLoading text="Error : child request invalid"/>
+                                <Error appContext={this} text="Error : child request invalid"/>
                             </div>
                         )}
                     </div>
