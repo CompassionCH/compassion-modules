@@ -529,7 +529,7 @@ class EventCompassion(models.Model):
             'target': 'current',
             'context': self.with_context({
                 'default_take': self.number_allocate_children,
-                'event_id': self.id,
+                'default_event_id': self.id,
                 'default_channel': 'event',
                 'default_ambassador': self.user_id.partner_id.id,
                 'default_source_code': self.name,

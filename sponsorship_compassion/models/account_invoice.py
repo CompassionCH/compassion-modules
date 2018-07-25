@@ -14,6 +14,7 @@ from datetime import date
 import itertools
 
 from odoo import api, fields, models, _
+from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 
 class AccountInvoice(models.Model):
@@ -23,15 +24,12 @@ class AccountInvoice(models.Model):
     children = fields.Char(
         'Children', compute='_compute_children')
     last_payment = fields.Date(compute='_compute_last_payment', store=True)
-
-    @api.depends('payment_move_line_ids', 'state')
-    @api.multi
-    def _compute_last_payment(self):
-        for invoice in self.filtered('payment_move_line_ids'):
-            filter = 'credit' if invoice.type == 'out_invoice' else 'debit'
-            payment_dates = invoice.payment_move_line_ids.filtered(
-                filter).mapped('date')
-            invoice.last_payment = max(payment_dates or [False])
+    invoice_type = fields.Selection([
+        ('sponsorship', 'Sponsorship'),
+        ('gift', 'Gift'),
+        ('fund', 'Fund donation'),
+        ('other', 'Other'),
+    ], compute='_compute_invoice_type', store=True)
 
     @api.multi
     def _compute_children(self):
@@ -45,6 +43,30 @@ class AccountInvoice(models.Model):
                 invoice.children = children.local_id
             else:
                 invoice.children = False
+
+    @api.depends('payment_move_line_ids', 'state')
+    @api.multi
+    def _compute_last_payment(self):
+        for invoice in self.filtered('payment_move_line_ids'):
+            filter = 'credit' if invoice.type == 'out_invoice' else 'debit'
+            payment_dates = invoice.payment_move_line_ids.filtered(
+                filter).mapped('date')
+            invoice.last_payment = max(payment_dates or [False])
+
+    @api.depends('invoice_line_ids', 'state')
+    @api.multi
+    def _compute_invoice_type(self):
+        for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
+            categories = invoice.with_context(lang='en_US').mapped(
+                'invoice_line_ids.product_id.categ_name')
+            if SPONSORSHIP_CATEGORY in categories:
+                invoice.invoice_type = 'sponsorship'
+            elif GIFT_CATEGORY in categories:
+                invoice.invoice_type = 'gift'
+            elif FUND_CATEGORY in categories:
+                invoice.invoice_type = 'fund'
+            else:
+                invoice.invoice_type = 'other'
 
     @api.multi
     def reconcile_after_clean(self):

@@ -36,3 +36,14 @@ class RestController(http.Controller):
             return handler(request.jsonrequest, **parameters)
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
+
+    @http.route('/mobile-app-api/correspondence/letter_pdf',
+                type='http', auth='public', methods=['GET'])
+    def download_pdf(self, **parameters):
+        pdf = request.env['compassion.child'].sudo() \
+            .mobile_letter_pdf(**parameters)
+        headers = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', len(pdf))
+        ]
+        return request.make_response(pdf, headers=headers)

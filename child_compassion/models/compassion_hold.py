@@ -72,7 +72,11 @@ class AbstractHold(models.AbstractModel):
     ambassador = fields.Many2one('res.partner')
     yield_rate = fields.Float()
     no_money_yield_rate = fields.Float()
-    channel = fields.Selection('get_channel')
+    channel = fields.Selection([
+        ('web', _('Website')),
+        ('event', _('Event')),
+        ('ambassador', _('Ambassador')),
+    ])
     source_code = fields.Char()
     comments = fields.Char()
 
@@ -96,14 +100,6 @@ class AbstractHold(models.AbstractModel):
         diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return fields.Datetime.to_string(datetime.now() + diff)
-
-    @api.model
-    def get_channel(self):
-        return [
-            ('web', _('Website')),
-            ('event', _('Event')),
-            ('ambassador', _('Ambassador')),
-        ]
 
     @api.onchange('type')
     def onchange_type(self):
@@ -172,6 +168,17 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
+    @api.model
+    def create(self, vals):
+        # Avoid duplicating Holds
+        hold_id = vals.get('hold_id')
+        if hold_id:
+            hold = self.search([('hold_id', '=', hold_id)])
+            if hold:
+                hold.write(vals)
+                return hold
+        return super(CompassionHold, self).create(vals)
+
     @api.multi
     def write(self, vals):
         res = super(CompassionHold, self).write(vals)

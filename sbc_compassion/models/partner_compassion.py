@@ -21,9 +21,17 @@ class ResPartner(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     spoken_lang_ids = fields.Many2many(
-        'res.lang.compassion', string='Spoken languages')
-    translator_email = fields.Char(help='e-mail address used in SDL')
-    nb_letters = fields.Integer(compute='_compute_nb_letters')
+        'res.lang.compassion', string='Spoken languages',
+        groups='child_compassion.group_sponsorship'
+    )
+    translator_email = fields.Char(
+        help='e-mail address used in SDL',
+        groups='child_compassion.group_sponsorship'
+    )
+    nb_letters = fields.Integer(
+        compute='_compute_nb_letters',
+        groups='child_compassion.group_sponsorship'
+    )
 
     @api.multi
     def _compute_nb_letters(self):
