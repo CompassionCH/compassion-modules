@@ -144,6 +144,11 @@ if not testing:
                 # load payment view ? TODO
                 _logger.error("Activate sponsorship is not yet implemented")
 
+            # update sms request
+            self.env['sms.child.request'].sudo()\
+                .search([('sponsorship_id', '=', self.main_object.id)])\
+                .write({'state': 'step2'})
+
             # send confirmation mail
             self._send_confirmation_mail()
 

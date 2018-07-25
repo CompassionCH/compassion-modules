@@ -20,6 +20,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
+    _inherit = 'mail.thread'
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
@@ -35,7 +36,7 @@ class SmsChildRequest(models.Model):
         ('step1', 'Step 1 completed'),
         ('step2', 'Step 2 completed'),
         ('expired', 'Request expired')
-    ], default='new')
+    ], default='new', track_visibility='onchange')
     partner_id = fields.Many2one('res.partner', 'Partner')
     country_id = fields.Many2one(
         'res.country', related='partner_id.country_id', readonly=True)
@@ -64,7 +65,8 @@ class SmsChildRequest(models.Model):
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url')
         for request in self:
-            request.full_url = base_url + request.website_url
+            request.full_url = base_url + '/' + self.env.lang +\
+                request.website_url
 
     @api.multi
     @api.depends('date')
@@ -107,7 +109,7 @@ class SmsChildRequest(models.Model):
     @api.multi
     def change_child(self):
         """ Release current child and take another."""
-        self.hold_id.sms_request_id = False
+        self.hold_id.write({'sms_request_id': False})
         self.write({
             'state': 'new',
             'child_id': False
@@ -116,7 +118,7 @@ class SmsChildRequest(models.Model):
 
     @api.multi
     def cancel_request(self):
-        self.hold_id.sms_request_id = False
+        self.hold_id.write({'sms_request_id': False})
         return self.write({
             'state': 'expired',
             'child_id': False

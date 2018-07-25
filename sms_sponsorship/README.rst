@@ -13,9 +13,9 @@ Compassion SMS Sponsorships
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-CompassionCH%2Fcompassion--modules-lightgray.png?logo=github
-    :target: https://github.com/CompassionCH/compassion-modules/tree/devel/sms_sponsorship
-    :alt: CompassionCH/compassion-modules
+.. |badge3| image:: https://img.shields.io/badge/github-CompassionCH%2F{compassion--modules}-lightgray.png?logo=github
+    :target: https://github.com/CompassionCH/{compassion-modules}/tree/devel/sms_sponsorship
+    :alt: CompassionCH/{compassion-modules}
 
 |badge1| |badge2| |badge3| 
 
@@ -28,6 +28,41 @@ mobile-friendly sponsor a child form.
 .. contents::
    :local:
 
+Installation
+============
+
+To install the module, you need to cd to ``sms_sponsorship/webapp`` and run the following commands :
+
+   npm install && npm run build
+
+Then, a new ``build`` folder will appear into ``webapp``. If there is no ``sms_sponsorship/static`` symbolic link, run this command :
+
+   ln -s sms_sponsorship/webapp/build sms_sponsorship/static
+
+Configuration
+=============
+
+Development
+~~~~~~~~~~~
+
+To develop for the react webapp, please follow these steps :
+#. Use a code editor compatible with react (for exemple : WebStorm)
+#. Open the project ``sms_sponsorship/webapp``
+#. If not already done, execute ``npm install``
+
+To launch the app on the development server, run ``npm start``.
+
+Proxy
+~~~~~
+
+
+In order for the development server to access odoo, it is necessary to add all
+the odoo routes react needs in the file ``package.json``.
+
+Here is an exemple for ``/sms_sponsorship_api`` :
+
+   "proxy": { "/sms_sponsorship_api": { "target": "http://localhost:8069/", "secure": false } }
+
 Usage
 =====
 
@@ -38,7 +73,8 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-* Nothing yet
+* Implement verifications for sponsor form
+
 
 Changelog
 =========
@@ -51,10 +87,10 @@ Changelog
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/CompassionCH/compassion-modules/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/CompassionCH/{compassion-modules}/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/CompassionCH/compassion-modules/issues/new?body=module:%20sms_sponsorship%0Aversion:%20devel%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/CompassionCH/{compassion-modules}/issues/new?body=module:%20sms_sponsorship%0Aversion:%20devel%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -71,7 +107,7 @@ Contributors
 
 * Quentin Gigon <gigon.quentin@gmail.com>
 * Nicolas Bornand
-* Samuel Fringeli
+* Samuel Fringeli <samuel.fringeli@me.com>
 * Emanuel Cino <ecino@compassion.ch>
 
 Maintainers
@@ -86,4 +122,4 @@ This module is maintained by Compassion Switzerland.
 Compassion Switzerland is a nonprofit organization whose
 mission is to release children from extreme poverty in Jesus name.
 
-This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/devel/sms_sponsorship>`_ project on GitHub.
+This module is part of the `CompassionCH/{compassion-modules} <https://github.com/CompassionCH/{compassion-modules}/tree/devel/sms_sponsorship>`_ project on GitHub.
