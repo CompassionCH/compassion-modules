@@ -42,8 +42,10 @@ class RecurringContract(models.Model):
             'child_id': sms_child_request.child_id.id,
             'type': 'S',
             'contract_line_ids': lines,
-            'medium_id': self.env.ref('sms_sponsorship.utm_medium_sms').id
+            'medium_id': self.env.ref('sms_sponsorship.utm_medium_sms').id,
+            'origin_id': sms_child_request.event_id.origin_id.id,
         })
+        sponsorship.on_change_origin()
         sponsorship.with_delay().put_child_on_no_money_hold()
         sms_child_request.complete_step1(sponsorship.id)
         partner.set_privacy_statement(origin='new_sponsorship')
