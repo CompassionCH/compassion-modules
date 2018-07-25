@@ -20,6 +20,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
+    _inherit = 'mail.thread'
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
@@ -35,7 +36,7 @@ class SmsChildRequest(models.Model):
         ('step1', 'Step 1 completed'),
         ('step2', 'Step 2 completed'),
         ('expired', 'Request expired')
-    ], default='new')
+    ], default='new', track_visibility='onchange')
     partner_id = fields.Many2one('res.partner', 'Partner')
     country_id = fields.Many2one(
         'res.country', related='partner_id.country_id', readonly=True)

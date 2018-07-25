@@ -21,6 +21,7 @@ class QueueJob(models.Model):
             'name': _("SMS Request"),
             'type': 'ir.actions.act_window',
             'res_model': 'sms.child.request',
+            'res_id': self.record_ids[0],
             'domain': [('id', 'in', self.record_ids)],
             'view_type': 'form',
             'view_mode': 'form',
