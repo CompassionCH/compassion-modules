@@ -645,7 +645,7 @@ class CommunicationJob(models.Model):
             printer = behaviour['printer']
             if printer:
                 printer.print_document(
-                    report, to_print, report.report_type)
+                    report.report_name, to_print, report.report_type)
 
             # Print attachments
             job.attachment_ids.print_attachments()
