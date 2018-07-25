@@ -5,31 +5,6 @@ class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
     @api.model
-    def _get_sponsorship_standard_lines(self):
-        """ Select Sponsorship and General Fund by default """
-        res = []
-        product_obj = self.env['product.product'].with_context(lang='en_US')
-        sponsorship_id = product_obj.search(
-            [('name', '=', 'Sponsorship')])[0].id
-        gen_id = product_obj.search(
-            [('name', '=', 'General Fund')])[0].id
-        sponsorship_vals = {
-            'product_id': sponsorship_id,
-            'quantity': 1,
-            'amount': 42,
-            'subtotal': 42
-        }
-        gen_vals = {
-            'product_id': gen_id,
-            'quantity': 1,
-            'amount': 8,
-            'subtotal': 8
-        }
-        res.append([0, 6, sponsorship_vals])
-        res.append([0, 6, gen_vals])
-        return res
-
-    @api.model
     def create_sms_sponsorship(self, vals, partner, sms_child_request):
         if not partner:
             # Search for existing partner

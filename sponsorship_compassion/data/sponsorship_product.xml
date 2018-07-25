@@ -1,80 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--
-        Resource: product.category
-    -->
+    <data noupdate="1">
+        <!--
+            Resource: product.category
+        -->
 
-    <record id="product_category_sponsorship" model="product.category">
-        <field name="parent_id" ref="product.product_category_1"/>
-        <field name="name">Sponsorship</field>
-    </record>
+        <record id="product_category_sponsorship" model="product.category">
+            <field name="parent_id" ref="product.product_category_1"/>
+            <field name="name">Sponsorship</field>
+        </record>
 
-    <record id="product_category_gift" model="product.category">
-        <field name="parent_id" ref="product_category_sponsorship"/>
-        <field name="name">Sponsor gifts</field>
-    </record>
+        <record id="product_category_gift" model="product.category">
+            <field name="parent_id" ref="product_category_sponsorship"/>
+            <field name="name">Sponsor gifts</field>
+        </record>
 
-    <!--
-        Resource: product.template
-    -->
+        <!--
+            Resource: product.template
+        -->
 
-    <!-- Sponsorship Templates -->
-    <record id="product_template_sponsorship" model="product.template">
-        <field name="name">Sponsorship</field>
-        <field name="categ_id" ref="product_category_sponsorship"/>
-        <field name="list_price">42</field>
-        <field name="type">service</field>
-        <field name="description">Standard Sponsorship of type CDSP.</field>
-        <field name="property_account_income_id" search="[('code','=','6000')]"/>
-        <field name="property_account_expense_id" search="[('code','=','5000')]"/>
-    </record>
+        <!-- Sponsorship Templates -->
+        <record id="product_template_sponsorship" model="product.template">
+            <field name="name">Sponsorship</field>
+            <field name="categ_id" ref="product_category_sponsorship"/>
+            <field name="list_price">42</field>
+            <field name="type">service</field>
+            <field name="description">Standard Sponsorship of type CDSP.</field>
+            <field name="property_account_income_id" search="[('code','=','6000')]"/>
+            <field name="property_account_expense_id" search="[('code','=','5000')]"/>
+        </record>
+        <record id="product_template_sponsorship_ldp" model="product.template">
+            <field name="name">LDP Sponsorship</field>
+            <field name="categ_id" ref="product_category_sponsorship"/>
+            <field name="list_price">310</field>
+            <field name="type">service</field>
+            <field name="description">Sponsorship for LDP Students.</field>
+            <field name="property_account_income_id" search="[('code','=','6013')]"/>
+            <field name="property_account_expense_id" search="[('code','=','5000')]"/>
+        </record>
+        <record id="product_template_fund_gen" model="product.template">
+            <field name="name">General Fund</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="contract_compassion.product_category_fund" />
+            <field name="list_price">8</field>
+            <field name="description">Thanks to your donation to the General Fund, through your help we can offer
+                a concrete help and a new future to many children on the field and restore hope in their lives.</field>
+            <field name="property_account_income_id" search="[('code','=','6004')]"/>
+            <field name="property_account_expense_id" search="[('code','=','5000')]"/>
+        </record>
 
-    <record id="product_template_sponsorship_ldp" model="product.template">
-        <field name="name">LDP Sponsorship</field>
-        <field name="categ_id" ref="product_category_sponsorship"/>
-        <field name="list_price">310</field>
-        <field name="type">service</field>
-        <field name="description">Sponsorship for LDP Students.</field>
-        <field name="property_account_income_id" search="[('code','=','6013')]"/>
-        <field name="property_account_expense_id" search="[('code','=','5000')]"/>
-    </record>
-
-
-
-    <!-- Sponsorship Gifts Templates -->
-    <record id="product_template_gift_birthday" model="product.template">
-        <field name="name">Birthday Gift</field>
-        <field name="type">service</field>
-        <field name="categ_id" ref="product_category_gift" />
-        <field name="property_account_income_id" search="[('code','=','6003')]" />
-        <field name="property_account_expense_id" search="[('code','=','5000')]" />
-    </record>
-    <record id="product_template_gift_gen" model="product.template">
-        <field name="name">General Gift</field>
-        <field name="type">service</field>
-        <field name="categ_id" ref="product_category_gift" />
-        <field name="property_account_income_id" search="[('code','=','6003')]" />
-        <field name="property_account_expense_id" search="[('code','=','5000')]" />
-    </record>
-    <record id="product_template_gift_family" model="product.template">
-        <field name="name">Family Gift</field>
-        <field name="type">service</field>
-        <field name="categ_id" ref="product_category_gift" />
-        <field name="property_account_income_id" search="[('code','=','6003')]" />
-        <field name="property_account_expense_id" search="[('code','=','5000')]" />
-    </record>
-    <record id="product_template_gift_project" model="product.template">
-        <field name="name">Project Gift</field>
-        <field name="type">service</field>
-        <field name="categ_id" ref="product_category_gift" />
-        <field name="property_account_income_id" search="[('code','=','6003')]" />
-        <field name="property_account_expense_id" search="[('code','=','5000')]" />
-    </record>
-    <record id="product_template_gift_graduation" model="product.template">
-        <field name="name">Graduation Gift</field>
-        <field name="type">service</field>
-        <field name="categ_id" ref="product_category_gift" />
-        <field name="property_account_income_id" search="[('code','=','6003')]" />
-        <field name="property_account_expense_id" search="[('code','=','5000')]" />
-    </record>
+        <!-- Sponsorship Gifts Templates -->
+        <record id="product_template_gift_birthday" model="product.template">
+            <field name="name">Birthday Gift</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_gift" />
+            <field name="property_account_income_id" search="[('code','=','6003')]" />
+            <field name="property_account_expense_id" search="[('code','=','5000')]" />
+        </record>
+        <record id="product_template_gift_gen" model="product.template">
+            <field name="name">General Gift</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_gift" />
+            <field name="property_account_income_id" search="[('code','=','6003')]" />
+            <field name="property_account_expense_id" search="[('code','=','5000')]" />
+        </record>
+        <record id="product_template_gift_family" model="product.template">
+            <field name="name">Family Gift</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_gift" />
+            <field name="property_account_income_id" search="[('code','=','6003')]" />
+            <field name="property_account_expense_id" search="[('code','=','5000')]" />
+        </record>
+        <record id="product_template_gift_project" model="product.template">
+            <field name="name">Project Gift</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_gift" />
+            <field name="property_account_income_id" search="[('code','=','6003')]" />
+            <field name="property_account_expense_id" search="[('code','=','5000')]" />
+        </record>
+        <record id="product_template_gift_graduation" model="product.template">
+            <field name="name">Graduation Gift</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="product_category_gift" />
+            <field name="property_account_income_id" search="[('code','=','6003')]" />
+            <field name="property_account_expense_id" search="[('code','=','5000')]" />
+        </record>
+    </data>
 </odoo>

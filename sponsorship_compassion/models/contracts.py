@@ -105,6 +105,9 @@ class SponsorshipContract(models.Model):
     ], default='correspondent_id')
     gift_partner_id = fields.Many2one('res.partner',
                                       compute='_compute_gift_partner')
+    contract_line_ids = fields.One2many(
+        default=lambda self: self._get_standard_lines()
+    )
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
@@ -114,6 +117,38 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    @api.model
+    def _get_standard_lines(self):
+        if 'S' in self.env.context.get('default_type', 'O'):
+            return self._get_sponsorship_standard_lines()
+        return []
+
+    @api.model
+    def _get_sponsorship_standard_lines(self):
+        """ Select Sponsorship and General Fund by default """
+        res = []
+        sponsorship_product = self.env.ref(
+            'sponsorship_compassion.'
+            'product_template_sponsorship').product_variant_id
+        gen_product = self.env.ref(
+            'sponsorship_compassion.'
+            'product_template_fund_gen').product_variant_id
+        sponsorship_vals = {
+            'product_id': sponsorship_product.id,
+            'quantity': 1,
+            'amount': sponsorship_product.list_price,
+            'subtotal': sponsorship_product.list_price
+        }
+        gen_vals = {
+            'product_id': gen_product.id,
+            'quantity': 1,
+            'amount': gen_product.list_price,
+            'subtotal': gen_product.list_price
+        }
+        res.append([0, 6, sponsorship_vals])
+        res.append([0, 6, gen_vals])
+        return res
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,
                         submenu=False):
