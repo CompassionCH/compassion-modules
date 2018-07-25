@@ -41,10 +41,10 @@ class RecurringContract(models.Model):
             'contract_line_ids': lines,
             'medium_id': self.env.ref('sms_sponsorship.utm_medium_sms').id
         })
-
-        # Convert to No Money Hold
-        sponsorship.with_delay().update_child_hold()
-
+        sponsorship.with_delay().put_child_on_no_money_hold()
+        sms_child_request.write({
+            'state': 'step1',
+            'sponsorship_id': sponsorship.id
+        })
         partner.set_privacy_statement(origin='new_sponsorship')
-
         return True
