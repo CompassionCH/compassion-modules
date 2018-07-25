@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ModalForm from './ModalForm';
 import getRequestId from "./getRequestId";
 import jsonRPC from "./jsonRPC";
 
@@ -32,7 +32,8 @@ class TextFields extends React.Component {
         super(props);
         this.state = {
             sp_plus: true,
-            partner: props.appContext.state.partner
+            partner: props.appContext.state.partner,
+            dialogOpen: false
         };
 
         if (!this.state.partner) {
@@ -123,8 +124,9 @@ class TextFields extends React.Component {
                         label="Sponsorship plus"
                     />
                 </form>
+                <ModalForm sponsorFormContext={this} appContext={this.props.appContext}/>
                 <Button variant="contained"
-                        onClick={this.props.appContext.changeChild}
+                        onClick={() => { this.setState({dialogOpen: true}) }}
                         color="primary">
                     Other child
                 </Button>

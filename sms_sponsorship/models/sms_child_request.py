@@ -56,7 +56,7 @@ class SmsChildRequest(models.Model):
     ])
     min_age = fields.Integer(size=2)
     max_age = fields.Integer(size=2)
-    field_office_ids = fields.Many2one(
+    field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
     @api.multi
@@ -137,10 +137,10 @@ class SmsChildRequest(models.Model):
             'gender': self.gender,
             'min_age': self.min_age,
             'max_age': self.max_age,
-            'field_office_ids': [(6, 0, self.field_office_ids.ids or [])]
+            'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
         })
         if self.gender or self.min_age or self.max_age or \
-                self.field_office_ids:
+                self.field_office_id:
             childpool_search.do_search()
         else:
             childpool_search.rich_mix()

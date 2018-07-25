@@ -39,7 +39,7 @@
                             <field name="gender"/>
                             <field name="min_age"/>
                             <field name="max_age"/>
-                            <field name="field_office_ids"/>
+                            <field name="field_office_id"/>
                         </group>
                     </group>
                 </sheet>
