@@ -14,7 +14,6 @@ from odoo import models, fields, tools, _
 testing = tools.config.get('test_enable')
 _logger = logging.getLogger(__name__)
 
-
 if not testing:
     class PartnerSmsRegistrationForm(models.AbstractModel):
         _name = 'cms.form.recurring.contract'
@@ -82,35 +81,35 @@ if not testing:
             return form
 
         def _form_load_partner_id(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_id', self.partner_id or '')
 
         def _form_load_partner_name(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_name', self.partner_name or '')
 
         def _form_load_partner_title(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_title', self.partner_title.id or '')
 
         def _form_load_partner_email(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_email', self.partner_email or '')
 
         def _form_load_partner_phone(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_phone', self.partner_phone or '')
 
         def _form_load_partner_street(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_street', self.partner_street or '')
 
         def _form_load_partner_zip(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_zip', self.partner_zip or '')
 
         def _form_load_partner_city(
-                self, fname, field, value, **req_values):
+            self, fname, field, value, **req_values):
             return req_values.get('partner_city', self.partner_city or '')
 
         def form_before_create_or_update(self, values, extra_values):
@@ -120,6 +119,14 @@ if not testing:
             partner = self.env['res.partner'].search([
                 ('id', '=', self.main_object.partner_id.id)
             ])
+
+            # creates group_id and payment_id if first sponsorship of partner
+            if not self.main_object.payment_mode_id:
+                self.main_object.group_id = self.env[
+                    'recurring.contract.group'].create({
+                        'partner_id': partner.id,
+                        'payment_mode_id': values['payment_mode_id']
+                    })
 
             if partner:
                 # update existing partner
@@ -143,9 +150,3 @@ if not testing:
         def _send_confirmation_mail(self):
             # TODO implement
             pass
-
-        def get_partner_id_from_partner_values(self, values):
-            return self.env['res.partner'].search([
-                ('name', '=', values.get('partner_name')),
-                ('email', '=', values.get('partner_email'))
-            ], limit=1).id
