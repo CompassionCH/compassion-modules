@@ -591,6 +591,19 @@ class SponsorshipContract(models.Model):
 
         return res
 
+    @api.multi
+    @job(default_channel='root.sponsorship_compassion')
+    @related_action(action='related_action_contract')
+    def put_child_on_no_money_hold(self):
+        """Convert child to No Money Hold"""
+        self.ensure_one()
+        return self.child_id.hold_id.write({
+            'expiration_date': self.env[
+                'compassion.hold'].get_default_hold_expiration(
+                HoldType.NO_MONEY_HOLD),
+            'type': HoldType.NO_MONEY_HOLD.value,
+        })
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
