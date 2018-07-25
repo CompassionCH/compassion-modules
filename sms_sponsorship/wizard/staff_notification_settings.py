@@ -14,7 +14,7 @@ from odoo import api, models, fields
 class StaffNotificationSettings(models.TransientModel):
     """ Settings configuration for any Notifications."""
     _name = 'staff.notification.settings'
-    _inherit = 'res.config.settings'
+    _inherit = 'staff.notification.settings'
 
     # Users to notify after Disaster Alert
     new_partner_notify_ids = fields.Many2many(
