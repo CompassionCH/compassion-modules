@@ -7,7 +7,5 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import forms
-from . import models
-from . import controllers
-from . import wizard
+
+from . import staff_notification_settings

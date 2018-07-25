@@ -60,6 +60,10 @@ class SmsChildRequest(models.Model):
     field_office_ids = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
+    new_partner = fields.Boolean('New partner ?',
+                                 help="is true if partner was created when "
+                                 "sending sms", default=True)
+
     @api.multi
     def _compute_full_url(self):
         base_url = self.env['ir.config_parameter'].get_param(
