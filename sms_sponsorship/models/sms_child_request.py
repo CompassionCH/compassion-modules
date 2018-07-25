@@ -105,7 +105,8 @@ class SmsChildRequest(models.Model):
         lang = request.partner_id.lang or self.env.lang
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
-                'url': '/' + lang + '/sponsor-now/' + str(request.id),
+                'url': '/' + lang + '/sms_sponsorship/step1/' +
+                str(request.id),
             }).id
         })
         # Directly commit for the job to work
@@ -189,7 +190,7 @@ class SmsChildRequest(models.Model):
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
-                'url': '/' + self.env.lang + '/sms-sponsorship/step2/' +
+                'url': '/' + self.env.lang + '/sms_sponsorship/step2/' +
                 str(sponsorship_id)
             }).id
         })

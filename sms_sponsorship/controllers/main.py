@@ -10,12 +10,10 @@
 #
 ##############################################################################
 
-from odoo.addons.cms_form.controllers.main import FormControllerMixin
-from odoo.addons.website_portal.controllers.main import website_account
-from odoo.http import route
-from odoo.http import request
-from odoo import http
 import werkzeug.utils
+from odoo.addons.cms_form.controllers.main import FormControllerMixin
+
+from odoo.http import request, route, Controller
 
 
 def get_child_request(request_id):
@@ -23,22 +21,30 @@ def get_child_request(request_id):
         .search([('id', '=', int(request_id))])
 
 
-class SmsSponsorshipWebsite(website_account, FormControllerMixin):
-    @route('/sms-sponsorship/step2/<model("recurring.contract"):sponsorship>/',
-           auth='public', website=True)
-    def sms_partner_register(self, sponsorship=None, **kwargs):
-        model = 'recurring.contract'
-        return self.make_response(model,
-                                  model_id=sponsorship and sponsorship.id,
-                                  **kwargs)
+class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
+    # STEP 1
+    ########
+    @route('/sms_sponsorship/step1/<int:child_request_id>', auth='public',
+           website=True)
+    def step1_redirect_react(self, child_request_id=None):
+        """ URL for SMS step 1, redirects to REACT app showing the mobile
+        form.
+        """
+        url = '/sms_sponsorship/static/index.html?child_request_id=' + \
+            str(child_request_id)
+        return werkzeug.utils.redirect(url, 301)
 
-class SmsSponsorshipController(http.Controller):
-    @route('/sms_sponsorship_api', type='json',
-           auth='public', methods=['POST'], csrf=False)
-    def sms_sponsorship_api_handler(self, **kwargs):
-        request_id = request.jsonrequest['child_request_id']
-        sms_child_request = get_child_request(request_id)
+    @route('/sms_sponsorship/step1/<int:child_request_id>/get_child_data',
+           type='json', auth='public', methods=['POST'], csrf=False)
+    def get_child_data(self, child_request_id):
+        """
+        API Called by REACT app in order to get relevant data for displaying
+        the mobile sponsorship form (step 1).
+        :param child_request_id: id of sms_child_request
+        :return: JSON data
+        """
+        sms_child_request = get_child_request(child_request_id)
         if not sms_child_request:
             return [{'invalid_sms_child_request': True}]
         if sms_child_request.sponsorship_confirmed:
@@ -63,21 +69,17 @@ class SmsSponsorshipController(http.Controller):
             return result
         return [{'has_a_child': False, 'invalid_sms_child_request': False}]
 
-    @route('/sponsor-now/<int:child_request_id>', auth='public',
-           website=True)
-    def sms_redirect(self, child_request_id=None):
-        url = '/sms_sponsorship/static/index.html?child_request_id=' +\
-              str(child_request_id)
-        # redirects to webapp
-        return werkzeug.utils.redirect(url, 301)
-
-    @route('/sms_sponsor_confirm', type='json', auth='public',
-           methods=['POST'], csrf=False)
-    def sms_sponsor_confirm(self):
+    @route('/sms_sponsorship/step1/<int:child_request_id>/confirm',
+           type='json', auth='public', methods=['POST'], csrf=False)
+    def sms_sponsor_confirm(self, child_request_id):
+        """
+        Route called by REACT app when step 1 form is submitted.
+        :param child_request_id: id of sms_child_request
+        :return: JSON result
+        """
         env = request.env
         body = request.jsonrequest
-        request_id = body['child_request_id']
-        sms_child_request = get_child_request(request_id)
+        sms_child_request = get_child_request(child_request_id)
         if sms_child_request:
             sms_child_request.ensure_one()
             body['phone'] = sms_child_request.sender
@@ -91,12 +93,16 @@ class SmsSponsorshipController(http.Controller):
             sms_child_request.write({'sponsorship_confirmed': True})
             return {'result': 'success'}
 
-    @route('/sms_change_child', type='json', auth='public',
-           methods=['POST'], csrf=False)
-    def sms_change_child(self):
+    @route('/sms_sponsorship/step1/<int:child_request_id>/change_child',
+           type='json', auth='public', methods=['POST'], csrf=False)
+    def sms_change_child(self, child_request_id):
+        """
+        Route called by REACT app for selecting another child.
+        :param child_request_id: id of sms_child_request
+        :return: None, REACT page will be refreshed after this call.
+        """
+        sms_child_request = get_child_request(child_request_id)
         body = request.jsonrequest
-        request_id = body['child_request_id']
-        sms_request = get_child_request(request_id)
         tw = dict()  # to write
         if body['gender'] != '':
             tw['gender'] = body['gender']
@@ -117,6 +123,18 @@ class SmsSponsorshipController(http.Controller):
         else:
             tw['field_office_id'] = False
         if tw:
-            sms_request.write(tw)
+            sms_child_request.write(tw)
 
-        sms_request.change_child()
+        sms_child_request.change_child()
+
+    # STEP 2
+    ########
+    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/',
+           auth='public', website=True)
+    def step2_confirm_sponsorship(self, sponsorship=None, **kwargs):
+        """ SMS step2 controller. Returns the sponsorship registration form."""
+        return self.make_response(
+            'recurring.contract',
+            model_id=sponsorship and sponsorship.id,
+            **kwargs
+        )
