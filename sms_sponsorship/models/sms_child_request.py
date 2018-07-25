@@ -64,7 +64,8 @@ class SmsChildRequest(models.Model):
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url')
         for request in self:
-            request.full_url = base_url + request.website_url
+            request.full_url = base_url + '/' + self.env.lang +\
+                request.website_url
 
     @api.multi
     @api.depends('date')
