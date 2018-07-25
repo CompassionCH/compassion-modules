@@ -80,36 +80,28 @@ if not testing:
 
             return form
 
-        def _form_load_partner_id(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_id(self, fname, field, value, **req_values):
             return req_values.get('partner_id', self.partner_id or '')
 
-        def _form_load_partner_name(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_name(self, fname, field, value, **req_values):
             return req_values.get('partner_name', self.partner_name or '')
 
-        def _form_load_partner_title(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_title(self, fname, field, value, **req_values):
             return req_values.get('partner_title', self.partner_title.id or '')
 
-        def _form_load_partner_email(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_email(self, fname, field, value, **req_values):
             return req_values.get('partner_email', self.partner_email or '')
 
-        def _form_load_partner_phone(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_phone(self, fname, field, value, **req_values):
             return req_values.get('partner_phone', self.partner_phone or '')
 
-        def _form_load_partner_street(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_street(self, fname, field, value, **req_values):
             return req_values.get('partner_street', self.partner_street or '')
 
-        def _form_load_partner_zip(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_zip(self, fname, field, value, **req_values):
             return req_values.get('partner_zip', self.partner_zip or '')
 
-        def _form_load_partner_city(
-            self, fname, field, value, **req_values):
+        def _form_load_partner_city(self, fname, field, value, **req_values):
             return req_values.get('partner_city', self.partner_city or '')
 
         def form_before_create_or_update(self, values, extra_values):
@@ -120,14 +112,6 @@ if not testing:
                 ('id', '=', self.main_object.partner_id.id)
             ])
 
-            # creates group_id and payment_id if first sponsorship of partner
-            if not self.main_object.payment_mode_id:
-                self.main_object.group_id = self.env[
-                    'recurring.contract.group'].create({
-                        'partner_id': partner.id,
-                        'payment_mode_id': values['payment_mode_id']
-                    })
-
             if partner:
                 # update existing partner
                 partner.write(extra_values)
@@ -135,9 +119,36 @@ if not testing:
                 # create new partner
                 self.env['res.partner'].create(extra_values)
 
+            # creates group_id and payment_id if first sponsorship of
+            # partner
+            if not self.main_object.payment_mode_id:
+                self.main_object.group_id = self.env[
+                    'recurring.contract.group'].create({
+                        'partner_id': partner.id,
+                        'payment_mode_id': values['payment_mode_id']
+                    })
+
         def form_after_create_or_update(self, values, extra_values):
             # validate sponsorship and send confirmation email
-            self.main_object.signal_workflow('contract_validated')
+            sms_request = self.env['sms.child.request'].search([
+                ('sponsorship_id', '=', self.main_object.id)
+            ])
+            if sms_request.new_partner:
+                # send staff notification
+                notify_ids = self.env['staff.notification.settings'].get_param(
+                    'new_partner_notify_ids')
+                if notify_ids:
+                    self.main_object.message_post(
+                        body=_("A new partner was created by SMS and needs a "
+                               "manual confirmation"),
+                        subject=_("New SMS partner"),
+                        partner_ids=notify_ids,
+                        type='comment',
+                        subtype='mail.mt_comment',
+                        content_subtype='plaintext'
+                    )
+            else:
+                self.main_object.signal_workflow('contract_validated')
 
             # if sponsor directly payed
             if self.pay_first_month_ebanking:
