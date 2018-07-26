@@ -49,6 +49,7 @@ class SmsChildRequest(models.Model):
         compute='_compute_event', inverse='_inverse_event', store=True
     )
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
+    sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
 
     # Filter criterias made by sender
     gender = fields.Selection([

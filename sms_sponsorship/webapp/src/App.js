@@ -121,31 +121,40 @@ class Main extends React.Component {
                     <div>
                         {child ? (
                             <div>
-                                {!child.invalid_sms_child_request ? (
+                                {child.sponsorship_confirmed ? (
                                     <div>
-                                        {!child.loading_other_child ? (
+                                        <Message text="You already sponsored this child, thank you ! <br/><br/>
+                                        If you want to sponsor an other child, please send another SMS."/>
+                                    </div>
+                                ):(
+                                    <div>
+                                        {!child.invalid_sms_child_request ? (
                                             <div>
-                                                {child.has_a_child ? (
-                                                    <ChildCard centered
-                                                               name={child.name}
-                                                               country={child.field_office_id[1]}
-                                                               age={child.age + ' years'}
-                                                               gender={child.gender === 'M' ? 'Male':'Female'}
-                                                               image_url={child.image_url}
-                                                               appContext={this}/>
+                                                {!child.loading_other_child ? (
+                                                    <div>
+                                                        {child.has_a_child ? (
+                                                            <ChildCard centered
+                                                                       name={child.name}
+                                                                       country={child.field_office_id[1]}
+                                                                       age={child.age + ' years'}
+                                                                       gender={child.gender === 'M' ? 'Male':'Female'}
+                                                                       image_url={child.image_url}
+                                                                       appContext={this}/>
+                                                        ):(
+                                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                                        )}
+                                                    </div>
                                                 ):(
-                                                    <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                                    <div>
+                                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                                    </div>
                                                 )}
                                             </div>
                                         ):(
                                             <div>
-                                                <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                                <Message text="Error : child request invalid"/>
                                             </div>
                                         )}
-                                    </div>
-                                ):(
-                                    <div>
-                                        <Message text="Error : child request invalid"/>
                                     </div>
                                 )}
                             </div>

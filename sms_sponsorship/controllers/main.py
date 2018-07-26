@@ -41,6 +41,8 @@ class SmsSponsorshipController(http.Controller):
         sms_child_request = get_child_request(request_id)
         if not sms_child_request:
             return [{'invalid_sms_child_request': True}]
+        if sms_child_request.sponsorship_confirmed:
+            return [{'sponsorship_confirmed': True}]
         if sms_child_request.child_id:
             child = sms_child_request.child_id
             result = child.read(['name', 'birthdate', 'display_name',
@@ -86,6 +88,7 @@ class SmsSponsorshipController(http.Controller):
                 partner=partner,
                 sms_child_request=sms_child_request
             )
+            sms_child_request.write({'sponsorship_confirmed': True})
             return {'result': 'success'}
 
     @route('/sms_change_child', type='json', auth='public',
