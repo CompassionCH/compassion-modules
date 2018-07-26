@@ -29,6 +29,7 @@ class RecurringContract(models.Model):
                 'phone': vals['phone'],
                 'email': vals['email'],
             })
+            sms_child_request.new_partner = True
             sms_child_request.partner_id = partner
 
         # Create sponsorship
