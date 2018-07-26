@@ -166,3 +166,7 @@ if not testing:
         def _send_confirmation_mail(self):
             # TODO implement
             pass
+
+        def form_next_url(self, main_object=None):
+            # TODO better design for confirmation (website.layout?)
+            return "/sms_registration_confirmation"

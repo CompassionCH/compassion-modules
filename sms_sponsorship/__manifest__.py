@@ -23,7 +23,8 @@
         'views/event_compassion_view.xml',
         'views/hold_view.xml',
         'views/sms_child_request_view.xml',
-        'views/notification_settings_view.xml'
+        'views/notification_settings_view.xml',
+        'templates/sms_registration_confirmation_template.xml'
     ],
     'installable': True,
     'auto_install': False,
