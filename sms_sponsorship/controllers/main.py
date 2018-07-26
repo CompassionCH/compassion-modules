@@ -111,7 +111,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             tw['min_age'], tw['max_age'] = False, False
         if body['country']:
             # doesn't work
-            field_office = request.env['compassion.field.office']\
+            field_office = request.env['compassion.field.office'].sudo()\
                 .search([('country_code', '=', body['country'])], limit=1)
             if field_office:
                 tw['field_office_id'] = field_office.id

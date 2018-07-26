@@ -104,7 +104,7 @@ class SmsChildRequest(models.Model):
         request = super(SmsChildRequest, self).create(vals)
         lang = request.partner_id.lang or self.env.lang
         base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url')
+            'web.external.url') + '/'
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + lang + '/sms_sponsorship/step1/' +
@@ -200,7 +200,7 @@ class SmsChildRequest(models.Model):
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
-                'url': base_url + 'sms_sponsorship/step2/' +
+                'url': base_url + '/sms_sponsorship/step2/' +
                 str(sponsorship_id)
             }).id
         })
