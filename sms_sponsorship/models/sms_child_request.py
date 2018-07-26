@@ -103,9 +103,11 @@ class SmsChildRequest(models.Model):
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)
         lang = request.partner_id.lang or self.env.lang
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
-                'url': '/' + lang + '/sms_sponsorship/step1/' +
+                'url': base_url + lang + '/sms_sponsorship/step1/' +
                 str(request.id),
             }).id
         })
@@ -186,14 +188,33 @@ class SmsChildRequest(models.Model):
         return True
 
     def complete_step1(self, sponsorship_id):
-        return self.write({
+        """
+        Create short link for step2, send confirmation to partner.
+        :param sponsorship_id: id of the new sponsorship.
+        :return: True
+        """
+        self.ensure_one()
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        self.write({
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
-                'url': '/' + self.env.lang + '/sms_sponsorship/step2/' +
+                'url': base_url + 'sms_sponsorship/step2/' +
                 str(sponsorship_id)
             }).id
         })
+        self.partner_id.sms_send_step1_confirmation(self)
+        return True
+
+    def complete_step2(self):
+        """
+        Send confirmation to partner and update state.
+        :return: True
+        """
+        self.ensure_one()
+        self.partner_id.sms_send_step2_confirmation(self)
+        return self.write({'state': 'step2'})
 
     def _take_child_from_event(self):
         """ Called in case we couldn't make a hold from global childpool.

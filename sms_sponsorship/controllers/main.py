@@ -85,11 +85,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             body['phone'] = sms_child_request.sender
             partner = sms_child_request.partner_id \
                 if sms_child_request.partner_id else False
-            env['recurring.contract'].with_delay().create_sms_sponsorship(
-                vals=body,
-                partner=partner,
-                sms_child_request=sms_child_request
-            )
+            env['recurring.contract'].sudo().with_delay()\
+                .create_sms_sponsorship(body, partner, sms_child_request)
             sms_child_request.write({'sponsorship_confirmed': True})
             return {'result': 'success'}
 

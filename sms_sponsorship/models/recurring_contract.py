@@ -8,6 +8,13 @@ class RecurringContract(models.Model):
     @api.model
     @job
     def create_sms_sponsorship(self, vals, partner, sms_child_request):
+        """
+        Creates sponsorship from REACT webapp data.
+        :param vals: form values
+        :param partner: res.partner record
+        :param sms_child_request: sms.child.request record
+        :return: True
+        """
         if not partner:
             # Search for existing partner
             partner = self.env['res.partner'].search([
@@ -47,6 +54,6 @@ class RecurringContract(models.Model):
         })
         sponsorship.on_change_origin()
         sponsorship.with_delay().put_child_on_no_money_hold()
-        sms_child_request.complete_step1(sponsorship.id)
         partner.set_privacy_statement(origin='new_sponsorship')
+        sms_child_request.complete_step1(sponsorship.id)
         return True

@@ -130,7 +130,8 @@ if not testing:
 
         def form_after_create_or_update(self, values, extra_values):
             # validate sponsorship and send confirmation email
-            sms_request = self.env['sms.child.request'].search([
+            sponsorship = self.main_object.sudo()
+            sms_request = self.env['sms.child.request'].sudo().search([
                 ('sponsorship_id', '=', self.main_object.id)
             ])
             if sms_request.new_partner:
@@ -138,7 +139,7 @@ if not testing:
                 notify_ids = self.env['staff.notification.settings'].get_param(
                     'new_partner_notify_ids')
                 if notify_ids:
-                    self.main_object.message_post(
+                    sponsorship.message_post(
                         body=_("A new partner was created by SMS and needs a "
                                "manual confirmation"),
                         subject=_("New SMS partner"),
@@ -148,7 +149,7 @@ if not testing:
                         content_subtype='plaintext'
                     )
             else:
-                self.main_object.signal_workflow('contract_validated')
+                sponsorship.signal_workflow('contract_validated')
 
             # if sponsor directly payed
             if self.pay_first_month_ebanking:
@@ -156,13 +157,4 @@ if not testing:
                 _logger.error("Activate sponsorship is not yet implemented")
 
             # update sms request
-            self.env['sms.child.request'].sudo()\
-                .search([('sponsorship_id', '=', self.main_object.id)])\
-                .write({'state': 'step2'})
-
-            # send confirmation mail
-            self._send_confirmation_mail()
-
-        def _send_confirmation_mail(self):
-            # TODO implement
-            pass
+            sms_request.complete_step2()
