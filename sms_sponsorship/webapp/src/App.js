@@ -60,9 +60,13 @@ class Main extends React.Component {
 
     changeChild = () => {
         let url = "/sms_change_child";
+        let form = document.forms.other_child_form;
 
         let data = {
             child_request_id: getRequestId(),
+            gender: form.gender.value,
+            age: form.age.value,
+            country: form.country.value,
         };
 
         this.setState({

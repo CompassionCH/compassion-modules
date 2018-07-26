@@ -48,6 +48,12 @@ class SmsSponsorshipController(http.Controller):
                                  'image_url', 'age'])
             result[0]['has_a_child'] = True
             result[0]['invalid_sms_child_request'] = False
+            result[0]['countries'] = sms_child_request.field_office_id\
+                .search([]).filtered('available_on_childpool')\
+                .mapped(lambda x: {
+                    'value': x.country_code,
+                    'text': x.name
+                })
             partner = sms_child_request.partner_id
             if sms_child_request.partner_id:
                 result[0]['partner'] = partner.read(['firstname', 'lastname',
@@ -85,6 +91,29 @@ class SmsSponsorshipController(http.Controller):
     @route('/sms_change_child', type='json', auth='public',
            methods=['POST'], csrf=False)
     def sms_change_child(self):
-        request_id = request.jsonrequest['child_request_id']
-        sms_child_request = get_child_request(request_id)
-        sms_child_request.change_child()
+        body = request.jsonrequest
+        request_id = body['child_request_id']
+        sms_request = get_child_request(request_id)
+        tw = dict()  # to write
+        if body['gender'] != '':
+            tw['gender'] = body['gender']
+        else:
+            tw['gender'] = False
+        if body['age'] != '':
+            tw['min_age'], tw['max_age'] = map(int, '0-3'.split('-'))
+        else:
+            tw['min_age'], tw['max_age'] = False, False
+        if body['country']:
+            # doesn't work
+            field_office = request.env['compassion.field.office']\
+                .search([('country_code', '=', body['country'])], limit=1)
+            if field_office:
+                tw['field_office_id'] = field_office.id
+            else:
+                tw['field_office_id'] = False
+        else:
+            tw['field_office_id'] = False
+        if tw:
+            sms_request.write(tw)
+
+        sms_request.change_child()
