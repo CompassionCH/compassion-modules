@@ -259,7 +259,10 @@ class Household(models.Model):
                 child._major_revision({
                     'revised_value_ids': [(6, _, revised_data_ids)]
                 })
-
+        # because member_ids is a list and is immutable we have to make it a
+        # tuple before the write
+        household_data['member_ids'] = tuple(household_data['member_ids'])
+        # TODO should update household in odoo but doesnt...
         household_obj.write(household_data)
         return household_obj.ids
 
