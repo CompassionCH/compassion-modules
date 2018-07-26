@@ -227,7 +227,7 @@ class Household(models.Model):
         return res
 
     def major_revision(self, vals):
-        # TODO fix for update on both parents (major_revision_multiple)
+        # TODO household not updated
         revised_data = []
         household_mapping = HouseHoldMapping(self.env)
         household_data = household_mapping.get_vals_from_connect(
