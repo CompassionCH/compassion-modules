@@ -37,6 +37,14 @@ class RestController(http.Controller):
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
+    @http.route('/mobile-app-api/get-message', type='json',
+                auth='public', methods='GET')
+    def get_message(self, **parameters):
+        model = "res.partner"
+        partner = dict(parameters)['partner_id']
+        return self.make_response(model, model_id=partner and partner.id,
+                                  **parameters)
+
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='public', methods=['GET'])
     def download_pdf(self, **parameters):
