@@ -74,7 +74,7 @@
                                options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
                         <field name="origin_id"/>
                         <field name="medium_id" domain="[('type', '=', 'manual')]"/>
-                        <field name="campaign_id" readonly="1"/>
+                        <field name="campaign_id"/>
                         <field name="source_id" readonly="1"/>
                     </group>
                     <group>

@@ -9,7 +9,7 @@
             <form>
                 <sheet>
                     <group col='2' string="Sponsorship Report">
-                        <group string="From the beginning of yours sponsorships">
+                        <group string="From the beginning of your sponsorships">
                             <field name="sr_sponsorship"/>
                             <field name="sr_nb_boy"/>
                             <field name="sr_nb_girl"/>
