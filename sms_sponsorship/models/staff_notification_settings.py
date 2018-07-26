@@ -13,12 +13,12 @@ from odoo import api, models, fields
 
 class StaffNotificationSettings(models.TransientModel):
     """ Settings configuration for any Notifications."""
-    _name = 'staff.notification.settings'
     _inherit = 'staff.notification.settings'
 
-    # Users to notify after Disaster Alert
+    # Users to notify when new partner make a sponsorship by SMS
     new_partner_notify_ids = fields.Many2many(
-        'res.partner', string='SMS new partner')
+        'res.partner', relation="staff_sms_notification_settings",
+                                string='SMS new partner')
 
     @api.multi
     def set_new_partner_notify_ids(self):
@@ -38,8 +38,3 @@ class StaffNotificationSettings(models.TransientModel):
         if partners:
             res['new_partner_notify_ids'] = map(int, partners.split(','))
         return res
-
-    @api.model
-    def get_param(self, param):
-        """ Retrieve a single parameter. """
-        return self.get_default_values([param])[param]
