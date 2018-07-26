@@ -45,8 +45,8 @@ class ResPartner(models.Model):
         self.message_post(
             body=_(
                 "Thank you for your commitment towards %s. Now that all "
-                "information, we will activate your sponsorship as soon "
-                "as we receive your first payment. <br/><br/>"
+                "information is completed, we will activate your sponsorship "
+                "as soon as we receive your first payment. <br/><br/>"
                 "You will receive more documentation by post in the coming "
                 "days. In the mean time, feel free to reach us if you have "
                 "any question. <br/><br/>"
