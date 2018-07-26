@@ -103,7 +103,7 @@ class SmsSponsorshipController(http.Controller):
         else:
             tw['gender'] = False
         if body['age'] != '':
-            tw['min_age'], tw['max_age'] = map(int, '0-3'.split('-'))
+            tw['min_age'], tw['max_age'] = map(int, body['age'].split('-'))
         else:
             tw['min_age'], tw['max_age'] = False, False
         if body['country']:
