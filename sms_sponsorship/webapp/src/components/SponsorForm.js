@@ -58,14 +58,14 @@ class TextFields extends React.Component {
     };
 
     sponsorFormHandler = () => {
-        let url = '/sms_sponsor_confirm';
+        let requestId = getRequestId();
+        let url = "/sms_sponsorship/step1/" + requestId + "/confirm";
         let sponsor_form = document.forms.sponsor_form;
         let data = {
             firstname: sponsor_form.firstname.value,
             lastname: sponsor_form.lastname.value,
             email: sponsor_form.email.value,
             sponsorship_plus: sponsor_form.sponsorship_plus.checked,
-            child_request_id: getRequestId()
         };
         this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {

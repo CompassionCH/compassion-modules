@@ -39,16 +39,12 @@ class Main extends React.Component {
     };
 
     getChild = () => {
-        if (!getRequestId()) {
+        let requestId = getRequestId();
+        if (!requestId) {
             return;
         }
-        let url = "/sms_sponsorship_api";
-
-        let data = {
-            child_request_id: getRequestId(),
-        };
-
-        jsonRPC(url, data, (res) => {
+        let url = "/sms_sponsorship/step1/" + requestId + "/get_child_data";
+        jsonRPC(url, {}, (res) => {
             let child = this.parseResult(res);
             let partner = (typeof(child.partner) === 'undefined') ? false:child.partner[0];
             this.setState({
@@ -59,11 +55,11 @@ class Main extends React.Component {
     };
 
     changeChild = () => {
-        let url = "/sms_change_child";
+        let requestId = getRequestId();
+        let url = "/sms_sponsorship/step1/" + requestId + "/change_child";
         let form = document.forms.other_child_form;
 
         let data = {
-            child_request_id: getRequestId(),
             gender: form.gender.value,
             age: form.age.value,
             country: form.country.value,

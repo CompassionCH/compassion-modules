@@ -10,14 +10,15 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion SMS Sponsorships',
-    'version': '10.0.0.3.0',
+    'version': '10.0.0.4.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_compassion', 'cms_form'],
+    'depends': ['crm_compassion', 'cms_form', 'link_tracker'],
     'data': [
         'security/ir.model.access.csv',
+        'security/access_rules.xml',
         'data/sms_event_hold_cron.xml',
         'data/utm_medium.xml',
         'views/event_compassion_view.xml',

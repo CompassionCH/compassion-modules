@@ -7,5 +7,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import match_partner_form
 from . import sms_sponsorship_registration_form
