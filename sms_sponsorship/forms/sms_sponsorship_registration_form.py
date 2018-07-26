@@ -133,7 +133,7 @@ if not testing:
             sms_request = self.env['sms.child.request'].search([
                 ('sponsorship_id', '=', self.main_object.id)
             ])
-            if True:
+            if sms_request.new_partner:
                 # send staff notification
                 notify_ids = self.env['staff.notification.settings'].get_param(
                     'new_partner_notify_ids')
