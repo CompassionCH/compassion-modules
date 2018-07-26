@@ -18,25 +18,21 @@ class StaffNotificationSettings(models.TransientModel):
 
     # Users to notify after Disaster Alert
     new_partner_notify_ids = fields.Many2many(
-        'res.partner', 'staff_sms_notification_ids',
-        'config_id', 'partner_id',
-        string='SMS new partner',
-        domain=[
-            ('user_ids', '!=', False),
-            ('user_ids.share', '=', False),
-        ]
-    )
+        'res.partner', string='SMS new partner')
 
     @api.multi
-    def set_sms_notify_ids(self):
+    def set_new_partner_notify_ids(self):
         self.env['ir.config_parameter'].set_param(
             'sms_sponsorship.new_partner_notify_ids',
             ','.join(map(str, self.new_partner_notify_ids.ids)))
 
     @api.model
     def get_default_values(self, _fields):
+
         param_obj = self.env['ir.config_parameter']
-        res = {}
+        res = super(StaffNotificationSettings, self).get_default_values(
+            _fields)
+        res['new_partner_notify_ids'] = False
         partners = param_obj.get_param(
             'sms_sponsorship.new_partner_notify_ids', False)
         if partners:
