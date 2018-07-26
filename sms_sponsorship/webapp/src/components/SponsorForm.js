@@ -67,6 +67,7 @@ class TextFields extends React.Component {
             sponsorship_plus: sponsor_form.sponsorship_plus.checked,
             child_request_id: getRequestId()
         };
+        this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {
             if (JSON.parse(res.responseText).result.result === 'success') {
                 this.props.appContext.setState({success: true});

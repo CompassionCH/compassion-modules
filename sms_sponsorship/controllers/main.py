@@ -81,7 +81,7 @@ class SmsSponsorshipController(http.Controller):
             body['phone'] = sms_child_request.sender
             partner = sms_child_request.partner_id \
                 if sms_child_request.partner_id else False
-            env['recurring.contract'].create_sms_sponsorship(
+            env['recurring.contract'].with_delay().create_sms_sponsorship(
                 vals=body,
                 partner=partner,
                 sms_child_request=sms_child_request

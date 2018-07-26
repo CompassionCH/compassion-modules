@@ -1,10 +1,12 @@
 from odoo import api, models
+from odoo.addons.queue_job.job import job
 
 
 class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
     @api.model
+    @job
     def create_sms_sponsorship(self, vals, partner, sms_child_request):
         if not partner:
             # Search for existing partner

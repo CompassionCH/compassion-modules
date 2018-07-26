@@ -7,7 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CenteredLoading from './components/CenteredLoading';
 import jsonRPC from './components/jsonRPC';
 import getRequestId from './components/getRequestId';
-import Error from './components/Error';
+import Message from './components/Message';
 
 const theme = createMuiTheme({
     palette: {
@@ -97,7 +97,7 @@ class Main extends React.Component {
                 <div>
                     {topAppBar}
                     <div>
-                        <Error appContext={this} text="Error : no SMS request ID. Please send an other SMS."/>
+                        <Message text="Error : no SMS request ID. Please send an other SMS."/>
                     </div>
                 </div>
             )
@@ -110,48 +110,50 @@ class Main extends React.Component {
             }, 1000);
         }
 
-        if (this.state.success) {
-            return (
-                <div>success !</div>
-            )
-        }
-
         return (
             <div>
                 {topAppBar}
-                {child ? (
+                {this.state.success ? (
                     <div>
-                        {!child.invalid_sms_child_request ? (
+                        <Message text="Thank you for your sponsorship !"/>
+                    </div>
+                    ):(
+                    <div>
+                        {child ? (
                             <div>
-                                {!child.loading_other_child ? (
+                                {!child.invalid_sms_child_request ? (
                                     <div>
-                                        {child.has_a_child ? (
-                                            <ChildCard centered
-                                                       name={child.name}
-                                                       country={child.field_office_id[1]}
-                                                       age={child.age + ' years'}
-                                                       gender={child.gender === 'M' ? 'Male':'Female'}
-                                                       image_url={child.image_url}
-                                                       appContext={this}/>
+                                        {!child.loading_other_child ? (
+                                            <div>
+                                                {child.has_a_child ? (
+                                                    <ChildCard centered
+                                                               name={child.name}
+                                                               country={child.field_office_id[1]}
+                                                               age={child.age + ' years'}
+                                                               gender={child.gender === 'M' ? 'Male':'Female'}
+                                                               image_url={child.image_url}
+                                                               appContext={this}/>
+                                                ):(
+                                                    <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                                )}
+                                            </div>
                                         ):(
-                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                            <div>
+                                                <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                            </div>
                                         )}
                                     </div>
                                 ):(
                                     <div>
-                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                        <Message text="Error : child request invalid"/>
                                     </div>
                                 )}
                             </div>
                         ):(
                             <div>
-                                <Error appContext={this} text="Error : child request invalid"/>
+                                <CenteredLoading text="loading..."/>
                             </div>
                         )}
-                    </div>
-                ):(
-                    <div>
-                        <CenteredLoading text="loading..."/>
                     </div>
                 )}
             </div>
