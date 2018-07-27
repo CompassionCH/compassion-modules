@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import ModalForm from './ModalForm';
 import getRequestId from "./getRequestId";
 import jsonRPC from "./jsonRPC";
 
@@ -32,7 +32,8 @@ class TextFields extends React.Component {
         super(props);
         this.state = {
             sp_plus: true,
-            partner: props.appContext.state.partner
+            partner: props.appContext.state.partner,
+            dialogOpen: false
         };
 
         if (!this.state.partner) {
@@ -57,15 +58,16 @@ class TextFields extends React.Component {
     };
 
     sponsorFormHandler = () => {
-        let url = '/sms_sponsor_confirm';
+        let requestId = getRequestId();
+        let url = "/sms_sponsorship/step1/" + requestId + "/confirm";
         let sponsor_form = document.forms.sponsor_form;
         let data = {
             firstname: sponsor_form.firstname.value,
             lastname: sponsor_form.lastname.value,
             email: sponsor_form.email.value,
             sponsorship_plus: sponsor_form.sponsorship_plus.checked,
-            child_request_id: getRequestId()
         };
+        this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {
             if (JSON.parse(res.responseText).result.result === 'success') {
                 this.props.appContext.setState({success: true});
@@ -123,8 +125,9 @@ class TextFields extends React.Component {
                         label="Sponsorship plus"
                     />
                 </form>
+                <ModalForm sponsorFormContext={this} appContext={this.props.appContext}/>
                 <Button variant="contained"
-                        onClick={this.props.appContext.changeChild}
+                        onClick={() => { this.setState({dialogOpen: true}) }}
                         color="primary">
                     Other child
                 </Button>

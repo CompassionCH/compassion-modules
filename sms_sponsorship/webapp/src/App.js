@@ -7,7 +7,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CenteredLoading from './components/CenteredLoading';
 import jsonRPC from './components/jsonRPC';
 import getRequestId from './components/getRequestId';
-import Error from './components/Error';
+import Message from './components/Message';
 
 const theme = createMuiTheme({
     palette: {
@@ -39,16 +39,12 @@ class Main extends React.Component {
     };
 
     getChild = () => {
-        if (!getRequestId()) {
+        let requestId = getRequestId();
+        if (!requestId) {
             return;
         }
-        let url = "/sms_sponsorship_api";
-
-        let data = {
-            child_request_id: getRequestId(),
-        };
-
-        jsonRPC(url, data, (res) => {
+        let url = "/sms_sponsorship/step1/" + requestId + "/get_child_data";
+        jsonRPC(url, {}, (res) => {
             let child = this.parseResult(res);
             let partner = (typeof(child.partner) === 'undefined') ? false:child.partner[0];
             this.setState({
@@ -59,10 +55,14 @@ class Main extends React.Component {
     };
 
     changeChild = () => {
-        let url = "/sms_change_child";
+        let requestId = getRequestId();
+        let url = "/sms_sponsorship/step1/" + requestId + "/change_child";
+        let form = document.forms.other_child_form;
 
         let data = {
-            child_request_id: getRequestId(),
+            gender: form.gender.value,
+            age: form.age.value,
+            country: form.country.value,
         };
 
         this.setState({
@@ -93,7 +93,7 @@ class Main extends React.Component {
                 <div>
                     {topAppBar}
                     <div>
-                        <Error appContext={this} text="Error : no SMS request ID. Please send an other SMS."/>
+                        <Message text="Error : no SMS request ID. Please send an other SMS."/>
                     </div>
                 </div>
             )
@@ -106,48 +106,59 @@ class Main extends React.Component {
             }, 1000);
         }
 
-        if (this.state.success) {
-            return (
-                <div>success !</div>
-            )
-        }
-
         return (
             <div>
                 {topAppBar}
-                {child ? (
+                {this.state.success ? (
                     <div>
-                        {!child.invalid_sms_child_request ? (
+                        <Message text="Thank you for your sponsorship !"/>
+                    </div>
+                    ):(
+                    <div>
+                        {child ? (
                             <div>
-                                {!child.loading_other_child ? (
+                                {child.sponsorship_confirmed ? (
                                     <div>
-                                        {child.has_a_child ? (
-                                            <ChildCard centered
-                                                       name={child.name}
-                                                       country={child.field_office_id[1]}
-                                                       age={child.age + ' years'}
-                                                       gender={child.gender === 'M' ? 'Male':'Female'}
-                                                       image_url={child.image_url}
-                                                       appContext={this}/>
-                                        ):(
-                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
-                                        )}
+                                        <Message text="You already sponsored this child, thank you ! <br/><br/>
+                                        If you want to sponsor an other child, please send another SMS."/>
                                     </div>
                                 ):(
                                     <div>
-                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                        {!child.invalid_sms_child_request ? (
+                                            <div>
+                                                {!child.loading_other_child ? (
+                                                    <div>
+                                                        {child.has_a_child ? (
+                                                            <ChildCard centered
+                                                                       name={child.name}
+                                                                       country={child.field_office_id[1]}
+                                                                       age={child.age + ' years'}
+                                                                       gender={child.gender === 'M' ? 'Male':'Female'}
+                                                                       image_url={child.image_url}
+                                                                       appContext={this}/>
+                                                        ):(
+                                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
+                                                        )}
+                                                    </div>
+                                                ):(
+                                                    <div>
+                                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ):(
+                                            <div>
+                                                <Message text="Error : child request invalid"/>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
                         ):(
                             <div>
-                                <Error appContext={this} text="Error : child request invalid"/>
+                                <CenteredLoading text="loading..."/>
                             </div>
                         )}
-                    </div>
-                ):(
-                    <div>
-                        <CenteredLoading text="loading..."/>
                     </div>
                 )}
             </div>

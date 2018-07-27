@@ -18,7 +18,7 @@ class StaffNotificationSettings(models.TransientModel):
     # Users to notify when new partner make a sponsorship by SMS
     new_partner_notify_ids = fields.Many2many(
         'res.partner', relation="staff_sms_notification_settings",
-                                string='SMS new partner')
+        string='SMS new partner')
 
     @api.multi
     def set_new_partner_notify_ids(self):

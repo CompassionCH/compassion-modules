@@ -33,13 +33,14 @@
                         </group>
                         <group>
                             <field name="event_id"/>
-                            <field name="website_url"/>
+                            <field name="step1_url"/>
+                            <field name="step2_url"/>
                         </group>
                         <group string="Child filter criteria">
                             <field name="gender"/>
                             <field name="min_age"/>
                             <field name="max_age"/>
-                            <field name="field_office_ids"/>
+                            <field name="field_office_id"/>
                         </group>
                     </group>
                 </sheet>
