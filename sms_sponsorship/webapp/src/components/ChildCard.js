@@ -29,7 +29,7 @@ const styles = {
 };
 
 function SimpleMediaCard(props) {
-    const { classes } = props;
+    const { classes, t } = props;
     const cardClass = !props.centered ? classes.card : classes.centeredCard;
     return (
         <div>
@@ -44,20 +44,20 @@ function SimpleMediaCard(props) {
                         {props.name}
                     </Typography>
                     <Typography component="p">
-                        Country : {props.country}
+                        {t('country')} : {props.country}
                     </Typography>
                     <Typography component="p">
-                        Age : {props.age}
+                        {t('age')} : {props.age}
                     </Typography>
                     <Typography component="p">
-                        Gender : {props.gender}
+                        {t('gender')} : {t(props.gender)}
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <ChildDetails appContext={props.appContext}/>
+                    <ChildDetails appContext={props.appContext} t={t}/>
                 </CardActions>
                 <CardContent>
-                    <SponsorForm appContext={props.appContext}/>
+                    <SponsorForm appContext={props.appContext} t={t}/>
                 </CardContent>
             </Card>
         </div>

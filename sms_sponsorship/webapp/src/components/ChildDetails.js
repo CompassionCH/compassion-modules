@@ -27,13 +27,13 @@ class NestedList extends React.Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, t } = this.props;
 
         return (
             <div className={classes.root}>
                 <ListItem button onClick={this.handleClick} style={{backgroundColor: '#0054A6', color: 'white'}}>
                     {/*<ListItemText primary="More details" />*/}
-                    <Typography variant="button" style={{color: 'white'}}>More details</Typography>
+                    <Typography variant="button" style={{color: 'white'}}>{t('more')}</Typography>
                     {this.state.open ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={this.state.open} timeout="auto" unmountOnExit>
