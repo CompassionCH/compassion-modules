@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
+from odoo import models, api
 
 
 class GetPartnerMessage(models.Model):
@@ -32,11 +32,13 @@ class GetPartnerMessage(models.Model):
         }]
 
         links = {
-            "Base": "<base url here>",
+            "Base": "http://services.compassionuk.org/"
+                    "AppRest/AppRestService.svc",
             "Next": "/mobile-app-api/get-message/" + str(partner_id)
                     + "?limit=1&start=1",
-            "Self": "<base url here>/mobile-app-api/get-message/" + str(
-                partner_id) + "?limit=1&start=0"
+            "Self": "http://services.compassionuk.org/AppRest/"
+                    "AppRestService.svc/mobile-app-api/get-message/"
+                    + str(partner_id) + "?limit=1&start=0"
         }
 
         response = {
