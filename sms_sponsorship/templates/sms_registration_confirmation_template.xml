@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <template id="sms_registration_confirmation" name="SMS registration confirmation">
-            <t t-call="web.layout">
+            <t t-call="website.layout">
                 <t t-set="title">Thank you for registration!</t>
                 <div class="oe_structure donation_success">
                     <div class="thank_you_container">

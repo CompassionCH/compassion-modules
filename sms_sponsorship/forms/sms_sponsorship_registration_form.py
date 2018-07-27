@@ -168,5 +168,9 @@ if not testing:
             pass
 
         def form_next_url(self, main_object=None):
-            # TODO better design for confirmation (website.layout?)
-            return "/sms_registration_confirmation"
+            return "/sms_registration_confirmation/" + str(self.main_object.id)
+
+        # override to remove text saying item updated after registration
+        @property
+        def form_msg_success_updated(self):
+            return

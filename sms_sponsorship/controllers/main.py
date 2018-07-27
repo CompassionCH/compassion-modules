@@ -89,7 +89,12 @@ class SmsSponsorshipController(http.Controller):
         sms_child_request = get_child_request(request_id)
         sms_child_request.change_child()
 
-    @route('/sms_registration_confirmation', type='http', auth='public',
-           methods=['GET'])
-    def sms_registration_confirmation(self):
-        return request.render('sms_sponsorship.sms_registration_confirmation')
+    @route('/sms_registration_confirmation/<model('
+           '"recurring.contract"):sponsorship>', type='http', auth='public',
+           methods=['GET'], website=True)
+    def sms_registration_confirmation(self, sponsorship=None):
+        values = {
+            'sponsorship': sponsorship
+        }
+        return request.render(
+            'sms_sponsorship.sms_registration_confirmation', values)
