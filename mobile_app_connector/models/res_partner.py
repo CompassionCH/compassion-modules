@@ -31,6 +31,7 @@ class GetPartnerMessage(models.Model):
             "Type": "Child"
         }]
 
+        # TODO change base link with correct URLs (for Switzerland)
         links = {
             "Base": "http://services.compassionuk.org/"
                     "AppRest/AppRestService.svc",
@@ -63,19 +64,22 @@ class GetPartnerMessage(models.Model):
             ('partner_id', '=', partner.id),
             ('child_id', '=', child.id)
         ])
-        # TODO verify who is sending/receiving
+        
         result = []
         for corres in correspondences:
+            text = corres.english_text or corres.original_text
+            # check who is sending the letter (admitting that sender signs
+            # at the end)
+            partner_sending = text.endswith(partner.name)
             result.append({
                 "CancelCard": None,
                 "CancelLetter": "Null data",
                 "CardFrom": None,
                 "CardMessage": None,
                 "CardTo": None,
-                "LetterFrom": partner.name,
-                "LetterMessage": corres.english_text,  # or maybe english_text
-                "LetterTo": child.name,
-                "ReceivedDate": corres.message_last_post  # send date,
-                # not received
+                "LetterFrom": partner.name if partner_sending else child.name,
+                "LetterMessage": text,  # or maybe english_text
+                "LetterTo": child.name if partner_sending else partner.name,
+                "ReceivedDate": corres.scanned_date  # surely wrong date
             })
         return result
