@@ -16,11 +16,13 @@ const styles = {
         maxWidth: 450,
     },
     media: {
-        height: 0,
-        paddingTop: '120%',
+        height: 525,
+        maxWidth: 400,
+        marginLeft: 'auto',
+        marginRight: 'auto'
     },
     centeredCard: {
-        maxWidth: 450,
+        maxWidth: 1000,
         marginLeft: 'auto',
         marginRight: 'auto'
     },
@@ -34,7 +36,8 @@ function SimpleMediaCard(props) {
             <Card className={cardClass}>
                 <CardMedia
                     className={classes.media}
-                    image={props.image_url.replace('/w_150', '')}
+                    image={props.image_url.replace('/w_150', '')
+                        .replace('media.ci.org/', 'media.ci.org/g_face,c_thumb,w_400,h_525,z_0.6/')}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="headline" component="h2">
