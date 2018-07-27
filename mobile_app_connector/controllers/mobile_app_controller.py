@@ -40,8 +40,7 @@ class RestController(http.Controller):
     @http.route('/mobile-app-api/get-message/', type='json',
                 auth='public', methods=['GET'])
     def get_message(self, **parameters):
-        odoo_obj = request.env['res.partner'].browse(
-            dict(parameters)['partner_id'])
+        odoo_obj = request.env.get('res.partner')
         if odoo_obj is None or not hasattr(odoo_obj, 'mobile_get_message'):
             raise NotFound("Unknown API path called.")
 

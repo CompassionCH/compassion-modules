@@ -49,3 +49,33 @@ class GetPartnerMessage(models.Model):
             "_Links": links
         }
         return response
+
+    @api.model
+    def mobile_get_all_correspondence(self, **other_params):
+        values = dict(other_params)
+        partner = self.env['res.partner'].search([
+            ('id', '=', values['partner_id'])
+        ])
+        child = self.env['compassion.child'].search([
+            ('global_id', '=', str(values['child_global_id']))
+        ])
+        correspondences = self.env['correspondence'].search([
+            ('partner_id', '=', partner.id),
+            ('child_id', '=', child.id)
+        ])
+        # TODO verify who is sending/receiving
+        result = []
+        for corres in correspondences:
+            result.append({
+                "CancelCard": None,
+                "CancelLetter": "Null data",
+                "CardFrom": None,
+                "CardMessage": None,
+                "CardTo": None,
+                "LetterFrom": partner.name,
+                "LetterMessage": corres.english_text,  # or maybe english_text
+                "LetterTo": child.name,
+                "ReceivedDate": corres.message_last_post  # send date,
+                # not received
+            })
+        return result
