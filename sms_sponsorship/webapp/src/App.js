@@ -105,7 +105,7 @@ class Main extends React.Component {
             )
         }
 
-        if (!child.has_a_child) {
+        if (!child.has_a_child && !this.state.success) {
             clearTimeout(window.getChildTimeout);
             window.getChildTimeout = setTimeout(() => {
                 this.getChild();
