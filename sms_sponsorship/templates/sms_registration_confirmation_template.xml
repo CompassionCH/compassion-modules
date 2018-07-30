@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
-        <template id="sms_registration_confirmation" name="SMS registration confirmation">
-            <t t-call="website.layout">
-                <t t-set="title">Thank you for registration!</t>
-                <div class="oe_structure donation_success">
-                    <div class="thank_you_container">
-                        <div class="thank_you_image_container">
-                            <img class="img-responsive" style="width: 100%" src="/sms_sponsorship/static/src/img/compassion_thankyou_donation.jpg"/>
-                        </div>
-                        <div class="thank_you_text_container">
-                            <h1>Registration successful !</h1>
-                            <p class="quote">
-                                Thank you for your interest for your registration !
-                                You will receive a confirmation by e-mail very soon with instructions to complete your
-                                profile.
-                            </p>
-                        </div>
+<odoo>
+    <template id="sms_registration_confirmation" name="SMS registration confirmation">
+        <t t-call="website.layout">
+            <t t-set="title">Thank you for registration!</t>
+            <div class="oe_structure donation_success">
+                <div class="thank_you_container">
+                    <div class="thank_you_image_container">
+                        <img class="img-responsive" style="width: 100%" src="/sms_sponsorship/static/src/img/compassion_thankyou_donation.jpg"/>
+                    </div>
+                    <div class="thank_you_text_container">
+                        <h1>Registration successful !</h1>
+                        <p class="quote">
+                            Thank you for your interest for your registration !
+                            You will receive a confirmation by e-mail very soon with instructions to complete your
+                            profile.
+                        </p>
                     </div>
                 </div>
-            </t>
-        </template>
-    </data>
-</openerp>
+            </div>
+        </t>
+    </template>
+</odoo>
