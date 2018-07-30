@@ -19,7 +19,7 @@ class TestSmsRecurringContract(BaseSponsorshipTest):
 
     def setUp(self):
         super(TestSmsRecurringContract, self).setUp()
-        self.child = self.create_child('NB12311019')
+        self.child = self.create_child('ZZ12611019')
         self.child.hold_id.channel = 'sms'
         self.env['ir.config_parameter'].set_param('web.external.url', 'base/')
 
@@ -37,11 +37,4 @@ class TestSmsRecurringContract(BaseSponsorshipTest):
 
         self.env['recurring.contract'] \
             .create_sms_sponsorship(input, None, sms_request)
-
         self.assertTrue(sms_request.partner_id)
-        self._assert_has_invoices(sms_request.sponsorship_id)
-
-    def _assert_has_invoices(self, sponsorship):
-        self.assertGreater(sponsorship.nb_invoices, 0)
-        self.assertGreater(len(sponsorship.invoice_line_ids), 0)
-        self.assertTrue(sponsorship.next_invoice_date)

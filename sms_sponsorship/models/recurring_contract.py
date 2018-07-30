@@ -55,7 +55,6 @@ class RecurringContract(models.Model):
             'origin_id': sms_child_request.event_id.origin_id.id,
         })
         sponsorship.on_change_origin()
-        sponsorship.button_generate_invoices()
         sponsorship.with_delay().put_child_on_no_money_hold()
         partner.set_privacy_statement(origin='new_sponsorship')
         sms_child_request.complete_step1(sponsorship.id)
