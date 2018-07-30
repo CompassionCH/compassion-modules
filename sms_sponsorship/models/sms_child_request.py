@@ -28,8 +28,11 @@ class SmsChildRequest(models.Model):
     sender = Phone(required=True, partner_field='partner_id',
                    country_field='country_id')
     date = fields.Datetime(required=True, default=fields.Datetime.now())
-    website_url = fields.Char(readonly=True)
     full_url = fields.Char(compute='_compute_full_url')
+    step1_url_id = fields.Many2one('link.tracker')
+    step1_url = fields.Char('Step 1 URL', related='step1_url_id.short_url')
+    step2_url_id = fields.Many2one('link.tracker')
+    step2_url = fields.Char('Step 2 URL', related='step2_url_id.short_url')
     state = fields.Selection([
         ('new', 'Request received'),
         ('child_reserved', 'Child reserved'),
@@ -49,8 +52,9 @@ class SmsChildRequest(models.Model):
         compute='_compute_event', inverse='_inverse_event', store=True
     )
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
+    sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
 
-    # Filter criterias made by sender
+    # Filter criteria made by sender
     gender = fields.Selection([
         ('Male', 'Male'),
         ('Female', 'Female')
@@ -60,13 +64,17 @@ class SmsChildRequest(models.Model):
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
+    new_partner = fields.Boolean('New partner ?',
+                                 help="is true if partner was created when "
+                                 "sending sms", default=True)
+
     @api.multi
     def _compute_full_url(self):
-        base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url')
         for request in self:
-            request.full_url = base_url + '/' + self.env.lang +\
-                request.website_url
+            if request.state == 'step1':
+                request.full_url = request.step2_url
+            else:
+                request.full_url = request.step1_url
 
     @api.multi
     @api.depends('date')
@@ -94,7 +102,15 @@ class SmsChildRequest(models.Model):
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)
-        request.website_url = '/sponsor-now/' + str(request.id)
+        lang = request.partner_id.lang or self.env.lang
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url') + '/'
+        request.write({
+            'step1_url_id': self.env['link.tracker'].sudo().create({
+                'url': base_url + lang + '/sms_sponsorship/step1/' +
+                str(request.id),
+            }).id
+        })
         # Directly commit for the job to work
         self.env.cr.commit()    # pylint: disable=invalid-commit
         request.with_delay().reserve_child()
@@ -170,6 +186,35 @@ class SmsChildRequest(models.Model):
         else:
             self._take_child_from_event()
         return True
+
+    def complete_step1(self, sponsorship_id):
+        """
+        Create short link for step2, send confirmation to partner.
+        :param sponsorship_id: id of the new sponsorship.
+        :return: True
+        """
+        self.ensure_one()
+        base_url = self.env['ir.config_parameter'].get_param(
+            'web.external.url')
+        self.write({
+            'sponsorship_id': sponsorship_id,
+            'state': 'step1',
+            'step2_url_id': self.env['link.tracker'].sudo().create({
+                'url': base_url + '/sms_sponsorship/step2/' +
+                str(sponsorship_id)
+            }).id
+        })
+        self.partner_id.sms_send_step1_confirmation(self)
+        return True
+
+    def complete_step2(self):
+        """
+        Send confirmation to partner and update state.
+        :return: True
+        """
+        self.ensure_one()
+        self.partner_id.sms_send_step2_confirmation(self)
+        return self.write({'state': 'step2'})
 
     def _take_child_from_event(self):
         """ Called in case we couldn't make a hold from global childpool.

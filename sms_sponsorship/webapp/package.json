@@ -7,9 +7,14 @@
   "dependencies": {
     "@material-ui/core": "^1.4.0",
     "@material-ui/icons": "^1.1.0",
+    "i18next": "^11.5.0",
+    "i18next-browser-languagedetector": "^2.2.2",
+    "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-scripts": "1.1.4"
+    "react-i18next": "^7.9.1",
+    "react-scripts": "1.1.4",
+    "react-swipeable-views": "^0.12.15"
   },
   "scripts": {
     "start": "react-scripts start",

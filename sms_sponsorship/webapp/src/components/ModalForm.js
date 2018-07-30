@@ -14,19 +14,20 @@ export default class FormDialog extends React.Component {
     };
 
     render() {
+        const {t} = this.props;
         let countries = this.props.appContext.state.child.countries;
 
         let genders = [
-            {value: 'Male', text:'Boy'},
-            {value: 'Female', text:'Girl'}
+            {value: 'Male', text:t('boy')},
+            {value: 'Female', text:t('girl')}
         ];
 
         let age_slots = [
-            {value:'0-3', text:'0-3 years'},
-            {value:'4-6', text:'4-6 years'},
-            {value:'7-10', text:'7-10 years'},
-            {value:'11-14', text:'11-14 years'},
-            {value:'15-20', text:'15-20 years'}
+            {value:'0-3', text:t('ageCat1')},
+            {value:'4-6', text:t('ageCat2')},
+            {value:'7-10', text:t('ageCat3')},
+            {value:'11-14', text:t('ageCat4')},
+            {value:'15-20', text:t('ageCat5')}
         ];
 
         return (
@@ -35,24 +36,23 @@ export default class FormDialog extends React.Component {
                     open={this.props.sponsorFormContext.state.dialogOpen}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Choose other child</DialogTitle>
+                    <DialogTitle id="form-dialog-title">{t('chooseTitle')}</DialogTitle>
                     <DialogContent>
                         <form id="other_child_form" autoComplete="off">
                             <DialogContentText>
-                                Please select filters for an other child.<br/>
-                                When nothing is selected, the filter doesn't apply.
+                                {t('modalHelp')}
                             </DialogContentText>
-                            <SelectForm elements={genders} name="gender" text="Choose a boy or a girl"/>
-                            <SelectForm elements={age_slots} name="age" text="Select age"/>
-                            <SelectForm elements={countries} name="country" text="Choose a country"/>
+                            <SelectForm elements={genders} name="gender" text={t("genderSelect")}/>
+                            <SelectForm elements={age_slots} name="age" text={t("ageSelect")}/>
+                            <SelectForm elements={countries} name="country" text={t("countrySelect")}/>
                         </form>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleClose} color="default">
-                            Cancel
+                            {t("cancel")}
                         </Button>
                         <Button onClick={this.props.appContext.changeChild} color="primary">
-                            Choose other child
+                            {t('chooseTitle')}
                         </Button>
                     </DialogActions>
                 </Dialog>

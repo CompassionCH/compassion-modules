@@ -33,7 +33,8 @@
                         </group>
                         <group>
                             <field name="event_id"/>
-                            <field name="website_url"/>
+                            <field name="step1_url"/>
+                            <field name="step2_url"/>
                         </group>
                         <group string="Child filter criteria">
                             <field name="gender"/>
