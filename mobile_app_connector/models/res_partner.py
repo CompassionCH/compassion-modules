@@ -22,6 +22,7 @@ class GetPartnerMessage(models.Model):
             ('partner_id.id', '=', partner_id)
         ]))
 
+        # TODO what is subtype, sortorder, actionDestination and type
         messages = [{
             "ActionDestination": "Child selector",
             "Body": "You're changing " + str(nb_sponsorships) + " lives",
@@ -64,16 +65,18 @@ class GetPartnerMessage(models.Model):
             ('partner_id', '=', partner.id),
             ('child_id', '=', child.id)
         ])
-        
+
         result = []
         for corres in correspondences:
             text = corres.english_text or corres.original_text
             # check who is sending the letter (admitting that sender signs
             # at the end)
-            partner_sending = text.endswith(partner.name)
+            partner_sending = text.endswith((partner.name,
+                                             partner.name.split(" ")[0],
+                                             partner.name.split(" ")[1]))
             result.append({
                 "CancelCard": None,
-                "CancelLetter": "Null data",
+                "CancelLetter": None,
                 "CardFrom": None,
                 "CardMessage": None,
                 "CardTo": None,
