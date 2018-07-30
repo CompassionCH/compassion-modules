@@ -4,7 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Switch from '@material-ui/core/Switch';
+import SponsorshipPlusTabs from './SponsorshipPlusTabs';
 import Button from '@material-ui/core/Button';
 import ModalForm from './ModalForm';
 import getRequestId from "./getRequestId";
@@ -24,6 +27,9 @@ const styles = theme => ({
         marginRight: 7,
         marginBottom: 20,
         float: 'right',
+    },
+    sponsorPlusTabs: {
+        marginTop: 15
     }
 });
 
@@ -31,7 +37,7 @@ class TextFields extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sp_plus: true,
+            sp_plus_value: 1,
             partner: props.appContext.state.partner,
             dialogOpen: false
         };
@@ -111,19 +117,15 @@ class TextFields extends React.Component {
                         value={partner.email}
                         margin="dense"
                     />
-                    <FormControlLabel
-                        style={{marginLeft: -5, marginTop: 8}}
-                        control={
-                            <Switch
-                                id="sponsorship_plus"
-                                className={classes.compassionSwitch}
-                                checked={this.state.sp_plus}
-                                onChange={() => { this.setState({sp_plus: !this.state.sp_plus}) }}
-                                color="primary"
-                            />
-                        }
-                        label="Sponsorship plus"
-                    />
+                    {/*invisible checkbox for sponsorship plus*/}
+                    <input readOnly
+                           type="checkbox"
+                           id="sponsorship_plus"
+                           style={{display: 'none'}}
+                           checked={this.state.sp_plus_value === 1}/>
+                    <div className={classes.sponsorPlusTabs}>
+                        <SponsorshipPlusTabs sponsorFormContext={this}/>
+                    </div>
                 </form>
                 <ModalForm sponsorFormContext={this} appContext={this.props.appContext}/>
                 <Button variant="contained"
