@@ -16,9 +16,13 @@ from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.http import request, route, Controller
 
 
-def get_child_request(request_id):
+def get_child_request(request_id, lang):
+    matching_lang = request.env['res.lang'].sudo().search([
+        ('code', 'like', lang)
+    ], limit=1)
+    final_lang = matching_lang.code or 'en_US'
     return request.env['sms.child.request'].sudo() \
-        .search([('id', '=', int(request_id))])
+        .with_context(lang=final_lang).search([('id', '=', int(request_id))])
 
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):
@@ -44,24 +48,29 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param child_request_id: id of sms_child_request
         :return: JSON data
         """
-        sms_child_request = get_child_request(child_request_id)
+        body = request.jsonrequest
+        lang = body.get('lang', 'en')
+        sms_child_request = get_child_request(child_request_id, lang)
         if not sms_child_request:
             return [{'invalid_sms_child_request': True}]
         if sms_child_request.sponsorship_confirmed:
             return [{'sponsorship_confirmed': True}]
         if sms_child_request.child_id:
             child = sms_child_request.child_id
-            result = child.read(['name', 'birthdate', 'display_name',
-                                 'desc_en', 'field_office_id', 'gender',
+            result = child.read(['name', 'birthdate', 'preferred_name',
+                                 'desc_en', 'gender',
                                  'image_url', 'age'])
-            result[0]['has_a_child'] = True
-            result[0]['invalid_sms_child_request'] = False
-            result[0]['countries'] = sms_child_request.field_office_id\
-                .search([]).filtered('available_on_childpool')\
-                .mapped(lambda x: {
-                    'value': x.country_code,
-                    'text': x.name
+            result[0].update({
+                'has_a_child': True,
+                'invalid_sms_child_request': False,
+                'country': child.field_office_id.country_id.name,
+                'countries': sms_child_request.field_office_id
+                .search([('available_on_childpool', '=', True)])
+                .mapped('country_id').mapped(lambda country: {
+                    'value': country.code,
+                    'text': country.name
                 })
+            })
             partner = sms_child_request.partner_id
             if sms_child_request.partner_id:
                 result[0]['partner'] = partner.read(['firstname', 'lastname',
@@ -79,7 +88,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """
         env = request.env
         body = request.jsonrequest
-        sms_child_request = get_child_request(child_request_id)
+        sms_child_request = get_child_request(child_request_id,
+                                              body.get('lang', 'en_US'))
         if sms_child_request:
             sms_child_request.ensure_one()
             body['phone'] = sms_child_request.sender
@@ -98,8 +108,9 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param child_request_id: id of sms_child_request
         :return: None, REACT page will be refreshed after this call.
         """
-        sms_child_request = get_child_request(child_request_id)
         body = request.jsonrequest
+        sms_child_request = get_child_request(child_request_id,
+                                              body.get('lang', 'en_US'))
         tw = dict()  # to write
         if body['gender'] != '':
             tw['gender'] = body['gender']

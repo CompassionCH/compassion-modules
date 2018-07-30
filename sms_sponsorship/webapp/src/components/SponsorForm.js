@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import ModalForm from './ModalForm';
 import getRequestId from "./getRequestId";
 import jsonRPC from "./jsonRPC";
+import i18n from '../i18n';
 
 const styles = theme => ({
     container: {
@@ -66,35 +67,38 @@ class TextFields extends React.Component {
     sponsorFormHandler = () => {
         let requestId = getRequestId();
         let url = "/sms_sponsorship/step1/" + requestId + "/confirm";
+        let lang = i18n.languages[1];
         let sponsor_form = document.forms.sponsor_form;
         let data = {
             firstname: sponsor_form.firstname.value,
             lastname: sponsor_form.lastname.value,
             email: sponsor_form.email.value,
             sponsorship_plus: sponsor_form.sponsorship_plus.checked,
+            lang: lang,
         };
+        const { preferred_name, gender} = this.props.appContext.state.child;
         this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {
             if (JSON.parse(res.responseText).result.result === 'success') {
-                this.props.appContext.setState({success: true});
+                this.props.appContext.setState({success: {preferred_name: preferred_name, gender: gender}});
             }
         });
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, t } = this.props;
 
         let partner = this.state.partner;
 
         return (
             <div>
                 <Typography variant="title">
-                    Your coordinates
+                    {t("coordinates")}
                 </Typography>
                 <form id="sponsor_form" className={classes.container} noValidate autoComplete="off">
                     <TextField
                         id="firstname"
-                        label="Firstname"
+                        label={t("firstname")}
                         className={classes.textField}
                         onChange={this.handleChange('firstname')}
                         value={partner.firstname}
@@ -102,7 +106,7 @@ class TextFields extends React.Component {
                     />
                     <TextField
                         id="lastname"
-                        label="Lastname"
+                        label={t("lastname")}
                         className={classes.textField}
                         onChange={this.handleChange('lastname')}
                         value={partner.lastname}
@@ -110,7 +114,7 @@ class TextFields extends React.Component {
                     />
                     <TextField
                         id="email"
-                        label="Email"
+                        label={t("email")}
                         onChange={this.handleChange('email')}
                         type="email"
                         className={classes.textField}
@@ -127,17 +131,19 @@ class TextFields extends React.Component {
                         <SponsorshipPlusTabs sponsorFormContext={this}/>
                     </div>
                 </form>
-                <ModalForm sponsorFormContext={this} appContext={this.props.appContext}/>
+                <ModalForm sponsorFormContext={this}
+                           appContext={this.props.appContext}
+                           t={t}/>
                 <Button variant="contained"
                         onClick={() => { this.setState({dialogOpen: true}) }}
                         color="primary">
-                    Other child
+                    {t('otherChild')}
                 </Button>
                 <Button className={classes.sponsorButton}
                         variant="contained"
                         onClick={this.sponsorFormHandler}
                         color="primary">
-                    Sponsor now
+                    {t("sponsorNow")}
                 </Button>
             </div>
         );

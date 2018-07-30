@@ -3,6 +3,8 @@ import TopAppBar from './components/TopAppBar';
 import ChildCard from './components/ChildCard';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import { translate } from 'react-i18next';
+import i18n from './i18n';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CenteredLoading from './components/CenteredLoading';
 import jsonRPC from './components/jsonRPC';
@@ -39,12 +41,13 @@ class Main extends React.Component {
     };
 
     getChild = () => {
+        let lang = i18n.languages[1];
         let requestId = getRequestId();
         if (!requestId) {
             return;
         }
         let url = "/sms_sponsorship/step1/" + requestId + "/get_child_data";
-        jsonRPC(url, {}, (res) => {
+        jsonRPC(url, {lang: lang}, (res) => {
             let child = this.parseResult(res);
             let partner = (typeof(child.partner) === 'undefined') ? false:child.partner[0];
             this.setState({
@@ -56,6 +59,7 @@ class Main extends React.Component {
 
     changeChild = () => {
         let requestId = getRequestId();
+        let lang = i18n.languages[1];
         let url = "/sms_sponsorship/step1/" + requestId + "/change_child";
         let form = document.forms.other_child_form;
 
@@ -63,6 +67,7 @@ class Main extends React.Component {
             gender: form.gender.value,
             age: form.age.value,
             country: form.country.value,
+            lang: lang,
         };
 
         this.setState({
@@ -85,6 +90,7 @@ class Main extends React.Component {
     }
 
     render() {
+        const { t } = this.props;
         let child = this.state.child;
         let topAppBar = <TopAppBar title="Compassion"/>;
 
@@ -93,13 +99,13 @@ class Main extends React.Component {
                 <div>
                     {topAppBar}
                     <div>
-                        <Message text="Error : no SMS request ID. Please send an other SMS."/>
+                        <Message text={t("error_noRequestID")}/>
                     </div>
                 </div>
             )
         }
 
-        if (!child.has_a_child) {
+        if (!child.has_a_child && !this.state.success) {
             clearTimeout(window.getChildTimeout);
             window.getChildTimeout = setTimeout(() => {
                 this.getChild();
@@ -107,69 +113,67 @@ class Main extends React.Component {
         }
 
         return (
-            <div>
-                {topAppBar}
-                {this.state.success ? (
-                    <div>
-                        <Message text="Thank you for your sponsorship !"/>
-                    </div>
-                    ):(
-                    <div>
-                        {child ? (
-                            <div>
-                                {child.sponsorship_confirmed ? (
-                                    <div>
-                                        <Message text="You already sponsored this child, thank you ! <br/><br/>
-                                        If you want to sponsor an other child, please send another SMS."/>
-                                    </div>
-                                ):(
-                                    <div>
-                                        {!child.invalid_sms_child_request ? (
-                                            <div>
-                                                {!child.loading_other_child ? (
-                                                    <div>
-                                                        {child.has_a_child ? (
-                                                            <ChildCard centered
-                                                                       name={child.name}
-                                                                       country={child.field_office_id[1]}
-                                                                       age={child.age + ' years'}
-                                                                       gender={child.gender === 'M' ? 'Male':'Female'}
-                                                                       image_url={child.image_url}
-                                                                       appContext={this}/>
-                                                        ):(
-                                                            <CenteredLoading text="no child reserved, please wait a few seconds"/>
-                                                        )}
-                                                    </div>
-                                                ):(
-                                                    <div>
-                                                        <CenteredLoading text="searching a new child, please wait a few seconds"/>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ):(
-                                            <div>
-                                                <Message text="Error : child request invalid"/>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+            <MuiThemeProvider theme={theme}>
+                <div>
+                    {topAppBar}
+                    {this.state.success ? (
+                        <div>
+                            <Message text={t('successMessage', { preferred_name: this.state.success.preferred_name, context: this.state.success.gender === 'M' ? 'male':'female' })}/>
+                        </div>
                         ):(
-                            <div>
-                                <CenteredLoading text="loading..."/>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+                        <div>
+                            {child ? (
+                                <div>
+                                    {child.sponsorship_confirmed ? (
+                                        <div>
+                                            <Message text={t('error_sponsorshipAlreadyMade')}/>
+                                        </div>
+                                    ):(
+                                        <div>
+                                            {!child.invalid_sms_child_request ? (
+                                                <div>
+                                                    {!child.loading_other_child ? (
+                                                        <div>
+                                                            {child.has_a_child ? (
+                                                                <ChildCard centered
+                                                                           name={child.name}
+                                                                           country={child.country}
+                                                                           age={child.age + ' ' + t('ageYears')}
+                                                                           gender={child.gender === 'M' ? 'Male':'Female'}
+                                                                           image_url={child.image_url}
+                                                                           appContext={this}
+                                                                           t={t}
+                                                                />
+                                                            ):(
+                                                                <CenteredLoading text={t("waitingForChild")}/>
+                                                            )}
+                                                        </div>
+                                                    ):(
+                                                        <div>
+                                                            <CenteredLoading text={t("waitingForOtherChild")}/>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ):(
+                                                <div>
+                                                    <Message text={t("error_noRequestID")}/>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ):(
+                                <div>
+                                    <CenteredLoading text={t("waitingForChild")}/>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </MuiThemeProvider>
         )
     }
 }
 
-export default () => {
-    return (
-        <MuiThemeProvider theme={theme}>
-            <Main/>
-        </MuiThemeProvider>
-    );
-}
+// extended main view with translate hoc
+export default translate('translations')(Main);
