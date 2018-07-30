@@ -209,16 +209,7 @@ if not testing:
                 _logger.error("Activate sponsorship is not yet implemented")
 
             # update sms request
-            self.env['sms.child.request'].sudo()\
-                .search([('sponsorship_id', '=', self.main_object.id)])\
-                .write({'state': 'step2'})
-
-            # send confirmation mail
-            self._send_confirmation_mail()
-
-        def _send_confirmation_mail(self):
-            # TODO implement
-            pass
+            sms_request.complete_step2()
 
         def form_next_url(self, main_object=None):
             return "/sms_registration_confirmation/" + str(self.main_object.id)
