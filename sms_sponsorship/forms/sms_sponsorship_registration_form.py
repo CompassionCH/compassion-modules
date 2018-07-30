@@ -212,7 +212,8 @@ if not testing:
             sms_request.complete_step2()
 
         def form_next_url(self, main_object=None):
-            return "/sms_registration_confirmation/" + str(self.main_object.id)
+            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
+                   "/confirm"
 
         # override to remove text saying item updated after registration
         @property
