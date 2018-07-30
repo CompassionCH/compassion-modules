@@ -47,12 +47,6 @@ class CompassionChild(models.Model):
             result.append(mapping.get_connect_data(child))
         return result
 
-    @api.model
-    def mobile_get_child_bio(self, **other_params):
-        result = {
-            'ChildBioServiceResult': ''
-        }
-
     def _get_required_param(self, key, params):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
