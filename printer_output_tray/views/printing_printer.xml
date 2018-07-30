@@ -13,7 +13,7 @@
                 <group>
                   <field name="name"/>
                   <field name="system_name"/>
-                  <field name="lang_sent_ids"/>
+                  <field name="lang_forwarded_ids"/>
                 </group>
               </form>
             </field>

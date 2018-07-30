@@ -17,7 +17,7 @@ class PrinterBin(models.Model):
 
     name = fields.Char(required=True)
     system_name = fields.Char(required=True, readonly=True)
-    lang_sent_ids = fields.Many2many('res.lang', string="Languages")
+    lang_forwarded_ids = fields.Many2many('res.lang', string="Languages")
     printer_id = fields.Many2one(
         comodel_name='printing.printer',
         string='Printer',
@@ -25,3 +25,8 @@ class PrinterBin(models.Model):
         readonly=True,
         ondelete='cascade',
     )
+
+    def forward_lang(self, lang):
+        bins_for_lang = self.lang_forwarded_ids \
+            .filtered(lambda lang_forwarded: lang in lang_forwarded.code)
+        return len(bins_for_lang) > 0

@@ -86,10 +86,12 @@ class PrintingPrinter(models.Model):
 
     @api.multi
     def print_options(self, report=None, format=None, copies=1):
+        # Use lpoptions to have an exhaustive list of the supported options
         options = super(PrintingPrinter, self).print_options(report, format)
 
-        # TODO: figure out the appropriate bin depending on the language
-        # if report is not None:
-        #     options['OutputBin'] = 'Default'  # str(tray.system_name)
-
+        if report is not None:
+            print_lang = self.env.lang
+            valid_bin_names = (bin.system_name for bin in self.bin_ids
+                               if bin.forward_lang(print_lang))
+            options['OutputBin'] = next(valid_bin_names, 'Default')
         return options
