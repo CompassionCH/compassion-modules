@@ -9,7 +9,8 @@
         'base_report_to_printer'
     ],
     'data': [
-        'views/printing_printer.xml'
+        'views/printing_printer.xml',
+        'security/ir.model.access.csv'
     ],
     'external_dependencies': {
         'python': ['cups'],

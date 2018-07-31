@@ -27,8 +27,7 @@ class PrintingPrinter(models.Model):
 
     bin_ids = fields.One2many(comodel_name='printing.bin',
                               inverse_name='printer_id',
-                              relation='',
-                              string='Paper Sources')
+                              string='Output Bins')
 
     def _get_values_for_option(self, cups_connection, cups_printer,
                                option_key):

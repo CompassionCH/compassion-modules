@@ -9,12 +9,8 @@
 #
 ##############################################################################
 import types
-
-from mock import patch
-
 from odoo.tests.common import TransactionCase
-from odoo.addons.printer_output_tray.models.printing_printer \
-    import PrintingPrinter
+
 
 class TestPrintingPrinter(TransactionCase):
 
