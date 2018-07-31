@@ -11,9 +11,8 @@
                     <div class="thank_you_text_container">
                         <h1>Registration successful !</h1>
                         <p class="quote">
-                            Thank you for your interest for your registration !
-                            You will receive a confirmation by e-mail very soon with instructions to complete your
-                            profile.
+                            Let a new story for <t t-esc="sponsorship.child_id.preferred_name"/> begin!
+                            You will soon receive all documentation needed to start the sponsorship in your mailbox.
                         </p>
                     </div>
                 </div>

@@ -184,7 +184,7 @@ if not testing:
             # validate sponsorship and send confirmation email
             sponsorship = self.main_object.sudo()
             sms_request = self.env['sms.child.request'].sudo().search([
-                ('partner_id', '=', sponsorship.partner_id.id)
+                ('sponsorship_id', '=', self.main_object.id)
             ])
             # check if partner was created via the SMS request. new_partner
             # is set at True in recurring_contract in models
