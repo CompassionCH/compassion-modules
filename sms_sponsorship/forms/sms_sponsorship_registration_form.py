@@ -210,6 +210,7 @@ if not testing:
 
             # update sms request
             sms_request.complete_step2()
+            sponsorship.button_generate_invoices()
 
         def _get_partner_vals(self, values):
             return {
