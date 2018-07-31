@@ -10,4 +10,3 @@
 ##############################################################################
 
 from . import test_sms_compassion
-from . import test_recurring_contract

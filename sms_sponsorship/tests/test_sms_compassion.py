@@ -94,9 +94,22 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ], limit=1)
         self.assertTrue(new_sponsorship)
 
-    def sms_request(self):
-        pass
-        # can't create sms_request (KeyError)
+    def test_sms_request(self):
+        values = {
+            'firstname': self.partner.firstname,
+            'lastname': self.partner.lastname,
+            'phone': self.partner.phone,
+            'email': self.partner.email,
+            'sponsorship_plus': False
+        }
+        sms_request = self.child_request
+        self.env['recurring.contract'] \
+            .create_sms_sponsorship(values, self.partner, self.child_request)
+        sponsorship = self.env['recurring.contract'].search([
+            ('partner_id', '=', self.partner.id),
+            ('child_id', '=', self.child_request.child_id.id)
+        ], limit=1)
+        self.assertEquals(sms_request.sponsorship_id.id, sponsorship.id)
 
     def test_book_by_sms(self):
         pass
