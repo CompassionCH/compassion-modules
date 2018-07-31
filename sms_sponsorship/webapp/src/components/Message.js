@@ -17,7 +17,7 @@ export default class extends React.Component {
 
         return (
             <div style={styles.loadingContainer}>
-                <div style={styles.loadingTextContainer}>{this.props.text}</div>
+                <div style={styles.loadingTextContainer} dangerouslySetInnerHTML={{__html: this.props.text}}/>
             </div>
         )
     }

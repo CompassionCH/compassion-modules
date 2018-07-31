@@ -448,7 +448,7 @@ class RecurringContract(models.Model):
         return True
 
     @job(default_channel='root.recurring_invoicer')
-    @related_action(action='related_action_contracts')
+    @related_action(action='related_action_contract')
     @api.multi
     def _reset_open_invoices_job(self):
         """Clean the open invoices in order to generate new invoices.
