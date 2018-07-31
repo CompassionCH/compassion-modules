@@ -29,6 +29,8 @@ class Main extends React.Component {
         success: false,
     };
 
+    count_try = 0
+
     parseResult = (res) => {
         let child;
         try {
@@ -105,11 +107,20 @@ class Main extends React.Component {
             )
         }
 
-        if (!child.has_a_child && !this.state.success) {
+        if (!child.has_a_child) {
             clearTimeout(window.getChildTimeout);
-            window.getChildTimeout = setTimeout(() => {
+            if(this.count_try > 20){
+                return (
+                            <div>
+                                 <Message text={t("error_noRequestID")}/>
+                            </div>
+                        )
+            }else{
+                window.getChildTimeout = setTimeout(() => {
                 this.getChild();
-            }, 1000);
+                }, 1000);
+                ++this.count_try;
+            }
         }
 
         return (
