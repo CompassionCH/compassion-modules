@@ -20,11 +20,11 @@ class TestSmsCompassion(BaseSponsorshipTest):
     def setUp(self):
         super(TestSmsCompassion, self).setUp()
         self.child = self.env['compassion.child'].search([
-            ('id', '=', 13)
+            ('id', '=', 5)
         ])
-        self.child.hold_id.channel = 'sms'
+        # self.child.hold_id.channel = 'sms'
         self.partner = self.env['res.partner'].search([
-            ('id', '=', 7)
+            ('id', '=', 15)
         ])
         self.event = self.env['crm.event.compassion'].search([
             ('id', '=', 1)
@@ -75,7 +75,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         new_sponsorship = self.env['recurring.contract'].search([
             ('partner_id', '=', self.partner.id),
             ('child_id', '=', self.child_request.child_id.id)
-        ])
+        ], limit=1)
         self.assertTrue(new_sponsorship)
 
         # test with given existing partner
@@ -91,7 +91,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         new_sponsorship = self.env['recurring.contract'].search([
             ('partner_id', '=', self.partner.id),
             ('child_id', '=', self.child_request.child_id.id)
-        ])
+        ], limit=1)
         self.assertTrue(new_sponsorship)
 
     def sms_request(self):
