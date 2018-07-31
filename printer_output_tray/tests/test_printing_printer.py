@@ -8,8 +8,13 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.tests.common import TransactionCase
+import types
 
+from mock import patch
+
+from odoo.tests.common import TransactionCase
+from odoo.addons.printer_output_tray.models.printing_printer \
+    import PrintingPrinter
 
 class TestPrintingPrinter(TransactionCase):
 
@@ -46,3 +51,25 @@ class TestPrintingPrinter(TransactionCase):
             .with_context(lang='en_US') \
             .print_options(report={})
         self.assertEqual(options['OutputBin'], 'bin1')
+
+    def test_prepare_update_from_cups(self):
+        self._mock_cups_options_to_always_return_an_empty_list(self.printer)
+        cups_printer = {'printer-info': ''}
+
+        vals = self.printer._prepare_update_from_cups({}, cups_printer)
+
+        # The only bin should be listed for deletion
+        self.assertEqual(len(vals['bin_ids']), 1)
+        [(operation, _)] = vals['bin_ids']
+        self.assertEqual(operation, 2)
+
+    def _mock_cups_options_to_always_return_an_empty_list(self, printer):
+        def mock_get_values_for_option(*args):
+            class DictWrapper(dict):
+                __getattr__ = dict.__getitem__
+                __setattr__ = dict.__setitem__
+            return DictWrapper({
+                'choices': []
+            })
+        printer._get_values_for_option = \
+            types.MethodType(mock_get_values_for_option, self.printer)
