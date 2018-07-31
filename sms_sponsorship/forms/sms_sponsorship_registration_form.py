@@ -212,6 +212,7 @@ if not testing:
 
             # update sms request
             sms_request.complete_step2()
+            sponsorship.button_generate_invoices()
 
         def form_next_url(self, main_object=None):
             return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
