@@ -19,22 +19,17 @@ class TestSmsCompassion(BaseSponsorshipTest):
 
     def setUp(self):
         super(TestSmsCompassion, self).setUp()
-        self.child = self.env['compassion.child'].search([
-            ('id', '=', 5)
-        ])
+        self.child = self.env['compassion.child'].create({
+            'global_id': 'AP1696234923',
+            'local_id': 'GD21321'
+        })
         # self.child.hold_id.channel = 'sms'
-        self.partner = self.env['res.partner'].search([
-            ('id', '=', 15)
-        ])
-        self.event = self.env['crm.event.compassion'].search([
-            ('id', '=', 1030)
-        ])
-        self.event.write({'partner_id': self.partner.id})
+        self.partner = self.env.ref('base.res_partner_2')
+
         self.child_request = self.env['sms.child.request'].create({
             'partner_id': self.partner.id,
             'sender': self.partner.phone,
-            'child_id': self.child.id,
-            'event_id': self.event.id
+            'child_id': self.child.id
         })
 
     def test_sms_sponsorship_creation(self):
