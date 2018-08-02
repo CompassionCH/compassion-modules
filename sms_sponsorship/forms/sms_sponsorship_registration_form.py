@@ -186,6 +186,8 @@ if not testing:
             sms_request = self.env['sms.child.request'].sudo().search([
                 ('sponsorship_id', '=', self.main_object.id)
             ])
+            # check if partner was created via the SMS request. new_partner
+            # is set at True in recurring_contract in models
             if sms_request.new_partner:
                 # send staff notification
                 notify_ids = self.env['staff.notification.settings'].get_param(
@@ -210,6 +212,16 @@ if not testing:
 
             # update sms request
             sms_request.complete_step2()
+            sponsorship.button_generate_invoices()
+
+        def form_next_url(self, main_object=None):
+            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
+                   "/confirm"
+
+        # override to remove text saying item updated after registration
+        @property
+        def form_msg_success_updated(self):
+            return
 
         def _get_partner_vals(self, values):
             return {

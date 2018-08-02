@@ -1,9 +1,11 @@
-from odoo import api, models
+from odoo import api, models, fields
 from odoo.addons.queue_job.job import job
 
 
 class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
+
+    group_id = fields.Many2one(required=False)
 
     @api.model
     @job

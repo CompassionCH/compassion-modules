@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import LogoWhite from '../images/LogoWhite.png';
 
 const styles = {
     root: {
@@ -23,10 +23,8 @@ function ButtonAppBar(props) {
     return (
         <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="title" align="center" color="inherit" className={classes.flex}>
-                        {props.title}
-                    </Typography>
+                <Toolbar style={{alignSelf: 'center'}}>
+                    <img src={LogoWhite} height="60px" alt={props.title}/>
                 </Toolbar>
             </AppBar>
         </div>

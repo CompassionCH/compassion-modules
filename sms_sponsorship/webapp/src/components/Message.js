@@ -7,11 +7,12 @@ export default class extends React.Component {
                 display: 'table-cell',
                 verticalAlign: 'middle',
                 height: '80vh',
+                textAlign: 'center'
             },
             loadingTextContainer: {
-                width: '98vw',
+                width: '80%',
                 textAlign: 'center',
-                paddingTop: 10
+                margin: 'auto'
             },
         };
 

@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-from . import test_sms_compassion
-from . import test_recurring_contract
+from . import printing_printer
+from . import printing_bin

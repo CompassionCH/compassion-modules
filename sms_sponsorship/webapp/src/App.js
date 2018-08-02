@@ -1,8 +1,6 @@
 import React from 'react';
 import TopAppBar from './components/TopAppBar';
 import ChildCard from './components/ChildCard';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 import { translate } from 'react-i18next';
 import i18n from './i18n';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -10,12 +8,32 @@ import CenteredLoading from './components/CenteredLoading';
 import jsonRPC from './components/jsonRPC';
 import getRequestId from './components/getRequestId';
 import Message from './components/Message';
+import SuccessMessage from './components/SuccessMessage';
 
 const theme = createMuiTheme({
     palette: {
         primary: {
             main: '#0054A6'
         },
+    },
+    overrides: {
+        // Name of the component ⚛️ / style sheet
+        MuiTypography: {
+            // Name of the rule
+            headline: {
+                color: '#555555'
+            },
+            title: {
+                color: '#555555'
+            }
+        },
+        MuiCardHeader: {
+            title: {
+                textAlign: 'center',
+                fontSize: '30px',
+                // textTransform: 'uppercase'
+            }
+        }
     },
 });
 
@@ -91,7 +109,11 @@ class Main extends React.Component {
 
     render() {
         const { t } = this.props;
+        let image_url = '';
         let child = this.state.child;
+        if (child && child.image_url) {
+            image_url = child.image_url.replace('/w_150', '').replace('media.ci.org/', 'media.ci.org/g_face,c_thumb,w_150,h_150,r_max/');
+        }
         let topAppBar = <TopAppBar title="Compassion"/>;
 
         if (!getRequestId()) {
@@ -117,9 +139,10 @@ class Main extends React.Component {
                 <div>
                     {topAppBar}
                     {this.state.success ? (
-                        <div>
-                            <Message text={t('successMessage', { preferred_name: this.state.success.preferred_name, context: this.state.success.gender === 'M' ? 'male':'female' })}/>
-                        </div>
+                        <SuccessMessage preferred_name={this.state.success.preferred_name}
+                                        gender={this.state.success.gender}
+                                        image_url={this.state.success.image_url.replace('/w_150', '').replace('media.ci.org/', 'media.ci.org/g_face,c_thumb,w_150,h_150,r_max/')} t={t}
+                        />
                         ):(
                         <div>
                             {child ? (
@@ -137,10 +160,11 @@ class Main extends React.Component {
                                                             {child.has_a_child ? (
                                                                 <ChildCard centered
                                                                            name={child.name}
+                                                                           preferredName={child.preferred_name}
                                                                            country={child.country}
                                                                            age={child.age + ' ' + t('ageYears')}
                                                                            gender={child.gender === 'M' ? 'Male':'Female'}
-                                                                           image_url={child.image_url}
+                                                                           image_url={image_url}
                                                                            appContext={this}
                                                                            t={t}
                                                                 />
