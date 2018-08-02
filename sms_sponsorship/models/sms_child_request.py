@@ -66,7 +66,7 @@ class SmsChildRequest(models.Model):
 
     new_partner = fields.Boolean('New partner ?',
                                  help="is true if partner was created when "
-                                 "sending sms", default=True)
+                                 "sending sms", default=False)
 
     @api.multi
     def _compute_full_url(self):
