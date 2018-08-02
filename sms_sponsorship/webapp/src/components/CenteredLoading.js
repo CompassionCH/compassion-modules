@@ -11,9 +11,10 @@ export default class extends React.Component {
                 height: '80vh',
             },
             loadingTextContainer: {
-                width: '98vw',
+                width: '80%',
+                margin: 'auto',
                 textAlign: 'center',
-                paddingTop: 10
+                paddingTop: 10,
             },
             circularProgressContainer: {
                 marginLeft: '50%',

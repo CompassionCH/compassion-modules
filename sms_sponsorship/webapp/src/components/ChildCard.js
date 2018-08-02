@@ -4,11 +4,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
+import CardHeader from '@material-ui/core/CardHeader';
+import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import SponsorForm from './SponsorForm';
 import ChildDetails from './ChildDetails';
+import classNames from 'classnames';
 
 
 const styles = {
@@ -24,36 +25,48 @@ const styles = {
     centeredCard: {
         maxWidth: 1000,
         marginLeft: 'auto',
-        marginRight: 'auto'
+        marginRight: 'auto',
+        paddingTop: 20
     },
+    avatar: {
+        margin: 'auto',
+    },
+    bigAvatar: {
+        width: 150,
+        height: 150,
+    },
+    headline: {
+        display: 'flex',
+        height: '100%',
+        alignItems: 'center'
+    },
+    cardAction: {
+        padding: '20px'
+    }
 };
 
+
 function SimpleMediaCard(props) {
-    const { classes, t } = props;
+    const { classes, image_url, t } = props;
     const cardClass = !props.centered ? classes.card : classes.centeredCard;
     return (
         <div>
             <Card className={cardClass}>
-                <CardMedia
-                    className={classes.media}
-                    image={props.image_url.replace('/w_150', '')
-                        .replace('media.ci.org/', 'media.ci.org/g_face,c_thumb,w_400,h_525,z_0.6/')}
+                <CardHeader title={t("cardTitle")}/>
+                <Avatar
+                    alt={props.preferred_name}
+                    src={image_url}
+                    className={classNames(classes.avatar, classes.bigAvatar)}
                 />
                 <CardContent>
-                    <Typography gutterBottom variant="headline" component="h2">
+                    <Typography gutterBottom variant="title" align="center">
                         {props.name}
                     </Typography>
-                    <Typography component="p">
-                        {t('country')} : {props.country}
-                    </Typography>
-                    <Typography component="p">
-                        {t('age')} : {props.age}
-                    </Typography>
-                    <Typography component="p">
-                        {t('gender')} : {t(props.gender)}
+                    <Typography variant="subheading" align="center" style={{color: '#0054A6'}}>
+                        {props.age}, {props.country}, {t(props.gender)}
                     </Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions className={classes.cardAction}>
                     <ChildDetails appContext={props.appContext} t={t}/>
                 </CardActions>
                 <CardContent>
