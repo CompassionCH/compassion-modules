@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-  <data noupdate="0">
+<odoo>
+  <data>
     <record model="ir.ui.view" id="printing_printer_view_form">
       <field name="name">printing.printer.form</field>
       <field name="model">printing.printer</field>
@@ -22,4 +22,4 @@
       </field>
     </record>
   </data>
-</openerp>
+</odoo>
