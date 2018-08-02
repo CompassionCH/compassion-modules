@@ -12,7 +12,7 @@ class OmrAwareReport(models.Model):
     def get_pdf(self, docids, report_name, html=None, data=None):
         pdf_data = super(OmrAwareReport, self) \
             .get_pdf(docids, report_name, html=html, data=data)
-        job = self.env['partner.communication.job'].browse(docids)
+        job = self.env['partner.communication.job'].browse(docids).exists()
         if job.omr_enable_marks:
             is_latest_document = not job.attachment_ids.filtered(
                 'attachment_id.enable_omr'
