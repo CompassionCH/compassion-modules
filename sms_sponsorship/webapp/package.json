@@ -14,7 +14,8 @@
     "react-dom": "^16.4.1",
     "react-i18next": "^7.9.1",
     "react-scripts": "1.1.4",
-    "react-swipeable-views": "^0.12.15"
+    "react-swipeable-views": "^0.12.15",
+    "classnames": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

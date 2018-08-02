@@ -25,8 +25,8 @@ export default class extends React.Component {
 
         function labelValue(parentClass, childClass) {
             let result = {
-                label: s(parentClass + ' ' + '.desc_label' + childClass),
-                value: s(parentClass + ' ' + '.desc_value' + childClass),
+                label: s(parentClass + ' .desc_label' + childClass),
+                value: s(parentClass + ' .desc_value' + childClass),
             };
             return (result.label === false && result.value === false) ? false:result;
         }
@@ -67,11 +67,9 @@ export default class extends React.Component {
     render() {
         let description_json = this.getDescriptionJson();
         return (
-            <div>
-                <Typography component="p">
-                    {JSON.stringify(description_json)}
-                </Typography>
-            </div>
+            <Typography variant="caption" style={{marginTop: '8px'}}>
+                {JSON.stringify(description_json)}
+            </Typography>
         )
     }
 }

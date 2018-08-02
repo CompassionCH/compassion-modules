@@ -135,6 +135,16 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
         sms_child_request.change_child()
 
+    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/'
+           'confirm', type='http', auth='public',
+           methods=['GET'], website=True)
+    def sms_registration_confirmation(self, sponsorship=None):
+        values = {
+            'sponsorship': sponsorship
+        }
+        return request.render(
+            'sms_sponsorship.sms_registration_confirmation', values)
+
     # STEP 2
     ########
     @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/',

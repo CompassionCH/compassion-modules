@@ -37,7 +37,8 @@ const styles = theme => ({
         marginTop: -5,
         marginLeft: -24,
         marginRight: -24,
-        textAlign: 'justify'
+        textAlign: 'justify',
+        color: '#555555'
     },
     container: {
         marginLeft: 10,
@@ -58,7 +59,7 @@ class FullWidthTabs extends React.Component {
     };
 
     render() {
-        const { classes, theme } = this.props;
+        const { classes, theme, t } = this.props;
 
         return (
             <MuiThemeProvider theme={no_shadows}>
@@ -72,8 +73,8 @@ class FullWidthTabs extends React.Component {
                                 textColor="primary"
                                 fullWidth
                             >
-                                <Tab className={classes.tab} label="Sponsorship basic" />
-                                <Tab className={classes.tab} label="Sponsorship plus" />
+                                <Tab className={classes.tab} label={t("basicTab")} />
+                                <Tab className={classes.tab} label={t("plusTab")} />
                             </Tabs>
                         </AppBar>
                         <SwipeableViews
@@ -84,20 +85,17 @@ class FullWidthTabs extends React.Component {
                             <TabContainer dir={theme.direction}>
                                 <div className={classes.tabText}>
                                     <div className={classes.tabTitle}>
-                                        <Typography variant="title" align="center">CHF 42.-</Typography>
+                                        <Typography variant="title" align="center">{t("basicTitle")}</Typography>
                                     </div>
+                                    <span dangerouslySetInnerHTML={{__html: t("basicDescription")}}/>
                                 </div>
                             </TabContainer>
                             <TabContainer dir={theme.direction}>
                                 <div className={classes.tabText}>
                                     <div className={classes.tabTitle}>
-                                        <Typography variant="title" align="center">CHF 50.-</Typography>
+                                        <Typography variant="title" align="center">{t("plusTitle")}</Typography>
                                     </div>
-                                    Sponsorship Plus is the basic sponsorship (CHF 42.-)
-                                    plus an additional donation of CHF 8.00 per month: it enables Compassion to finance
-                                    projects to change the children's environment.
-                                    The funds received under the Sponsorship Plus program contribute to a common fund
-                                    and enable Compassion to support several projects each year.
+                                    <span dangerouslySetInnerHTML={{__html: t("plusDescription")}}/>
                                 </div>
                             </TabContainer>
                         </SwipeableViews>
