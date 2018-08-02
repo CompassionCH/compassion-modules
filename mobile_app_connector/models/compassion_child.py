@@ -14,6 +14,7 @@ import logging
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,17 +45,6 @@ class CompassionChild(models.Model):
         mapping = MobileChildMapping(self.env)
         for child in children:
             result.append(mapping.get_connect_data(child))
-        return result
-
-    @api.model
-    def mobile_get_child_bio(self, **other_params):
-        values = dict(other_params)
-        child = self.env['compassion.child'].search([
-            ('global_id', '=', str(values['child_global_id']))
-        ])
-        result = {
-            'ChildBioServiceResult': ''
-        }
         return result
 
     def _get_required_param(self, key, params):
