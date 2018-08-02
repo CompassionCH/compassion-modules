@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Switch from '@material-ui/core/Switch';
 import SponsorshipPlusTabs from './SponsorshipPlusTabs';
 import Button from '@material-ui/core/Button';
 import ModalForm from './ModalForm';
@@ -76,11 +72,11 @@ class TextFields extends React.Component {
             sponsorship_plus: sponsor_form.sponsorship_plus.checked,
             lang: lang,
         };
-        const { preferred_name, gender} = this.props.appContext.state.child;
+        const { preferred_name, image_url} = this.props.appContext.state.child;
         this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {
             if (JSON.parse(res.responseText).result.result === 'success') {
-                this.props.appContext.setState({success: {preferred_name: preferred_name, gender: gender}});
+                this.props.appContext.setState({success: {preferred_name: preferred_name, image_url: image_url}});
             }
         });
     };
@@ -92,7 +88,7 @@ class TextFields extends React.Component {
 
         return (
             <div>
-                <Typography variant="title">
+                <Typography variant="title" style={{color: '#555555', marginLeft: '8px'}}>
                     {t("coordinates")}
                 </Typography>
                 <form id="sponsor_form" className={classes.container} noValidate autoComplete="off">
@@ -128,23 +124,31 @@ class TextFields extends React.Component {
                            style={{display: 'none'}}
                            checked={this.state.sp_plus_value === 1}/>
                     <div className={classes.sponsorPlusTabs}>
-                        <SponsorshipPlusTabs sponsorFormContext={this}/>
+                        <SponsorshipPlusTabs sponsorFormContext={this} t={t}/>
                     </div>
                 </form>
                 <ModalForm sponsorFormContext={this}
                            appContext={this.props.appContext}
                            t={t}/>
-                <Button variant="contained"
-                        onClick={() => { this.setState({dialogOpen: true}) }}
-                        color="primary">
-                    {t('otherChild')}
-                </Button>
-                <Button className={classes.sponsorButton}
-                        variant="contained"
-                        onClick={this.sponsorFormHandler}
-                        color="primary">
-                    {t("sponsorNow")}
-                </Button>
+
+                <div style={{textAlign: 'center'}}>
+                    <Button variant="contained"
+                            onClick={this.sponsorFormHandler}
+                            color="primary"
+                            fullWidth
+                            size="medium"
+                    >
+                        {t("sponsorNow", {name: this.props.appContext.state.child.preferred_name})}
+                    </Button>
+                    <Button variant="outlined"
+                            onClick={() => { this.setState({dialogOpen: true}) }}
+                            color="primary"
+                            size="medium"
+                            style={{marginTop: '20px', alignSelf: 'center'}}
+                    >
+                        {t('otherChild')}
+                    </Button>
+                </div>
             </div>
         );
     }

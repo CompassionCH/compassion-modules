@@ -290,7 +290,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Contracts',
             'res_model': 'recurring.contract',
-            'views': [[False, "tree"], [False, "form"]],
+            'views': [[False, "tree"], [False, "form"], [False, "timeline"]],
             'domain': ['|', ('correspondent_id', '=', self.id),
                        ('partner_id', '=', self.id)],
             'context': self.with_context({

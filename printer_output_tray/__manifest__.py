@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester, Emanuel Cino
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Nicolas Bornand
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,39 +29,22 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Compassion Sponsorships',
-    'version': '10.0.1.0.5',
-    'category': 'Other',
+    'name': 'Report to printer - Paper bin selection',
+    'version': '10.0.1.0.0',
+    'category': 'Printer',
     'author': 'Compassion CH',
-    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'crm', 'account_cancel',
-                'web_m2x_options', 'account_invoice_split_invoice',
-                'partner_firstname', 'account_analytic_attribution',
-                'account_analytic_default', 'web_timeline'],
+    'license': 'AGPL-3',
+    'depends': [
+        'base_report_to_printer'
+    ],
     'data': [
-        'views/sponsorship_contract_view.xml',
-        'views/sponsorship_contract_group_view.xml',
-        'views/invoice_line_view.xml',
-        'views/res_partner_view.xml',
-        'views/privacy_statement.xml',
-        'views/generate_gift_view.xml',
-        'views/account_invoice_split_wizard_view.xml',
-        'views/child_view.xml',
-        'views/contracts_report_view.xml',
-        'views/gmc_message_view.xml',
-        'views/end_contract_wizard_view.xml',
-        'views/download_child_pictures_view.xml',
-        'views/project_view.xml',
-        'workflow/contract_workflow.xml',
-        'data/sponsorship_product.xml',
-        'data/gmc_action.xml',
-        'data/partner_category_data.xml',
+        'views/printing_printer.xml',
         'security/ir.model.access.csv'
     ],
-    'demo': [
-        'demo/demo_data.yml'
-    ],
+    'external_dependencies': {
+        'python': ['cups'],
+    },
     'installable': True,
-    'auto_install': False,
+    'application': False,
 }

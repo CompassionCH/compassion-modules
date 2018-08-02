@@ -8,6 +8,7 @@
                 <field name="partner_id" required="1"/>
                 <field name="sender"/>
                 <field name="child_id"/>
+                <field name="sponsorship_confirmed"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -34,6 +35,8 @@
                         <group>
                             <field name="event_id"/>
                             <field name="step1_url"/>
+                            <field name="new_partner"/>
+                            <field name="sponsorship_confirmed"/>
                             <field name="step2_url"/>
                         </group>
                         <group string="Child filter criteria">

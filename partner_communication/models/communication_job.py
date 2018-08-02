@@ -642,10 +642,11 @@ class CommunicationJob(models.Model):
             # Print letter
             report = job.report_id
             behaviour = report.behaviour()[report.id]
-            printer = behaviour['printer']
+            printer = behaviour['printer'] \
+                .with_context(lang=job.partner_id.lang)
             if printer:
                 printer.print_document(
-                    report, to_print, report.report_type)
+                    report.report_name, to_print, report.report_type)
 
             # Print attachments
             job.attachment_ids.print_attachments()
