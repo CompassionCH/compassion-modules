@@ -27,7 +27,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
             ('id', '=', 15)
         ])
         self.event = self.env['crm.event.compassion'].search([
-            ('id', '=', 1)
+            ('id', '=', 1030)
         ])
         self.event.write({'partner_id': self.partner.id})
         self.child_request = self.env['sms.child.request'].create({
@@ -110,6 +110,9 @@ class TestSmsCompassion(BaseSponsorshipTest):
             ('child_id', '=', self.child_request.child_id.id)
         ], limit=1)
         self.assertEquals(sms_request.sponsorship_id.id, sponsorship.id)
+
+        sms_request.cancel_request()
+        self.assertFalse(sms_request.hold_id)
 
     def test_book_by_sms(self):
         pass
