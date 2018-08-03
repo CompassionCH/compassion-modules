@@ -53,8 +53,24 @@ class CompassionChild(models.Model):
         child = self.env['compassion.child'].search([
             ('global_id', '=', str(values['child_global_id']))
         ])
+
+        childbio = {
+            'name': child.name,
+            'firstName': child.firstname,
+            'lastName': child.lastname,
+            'gender': child.gender,
+            'birthdate': child.birthdate,
+            'age': child.age,
+            'weight': child.weight,
+            'height': child.height,
+            'educationLevel': child.education_level,
+            'academicPerformance': child.academic_performance,
+            'vocationalTrainingType': child.vocational_training_type,
+            'sponsorshipStatus': child.sponsorship_status
+        }
+
         result = {
-            'ChildBioServiceResult': ''
+            'ChildBioServiceResult': childbio
         }
         return result
 
