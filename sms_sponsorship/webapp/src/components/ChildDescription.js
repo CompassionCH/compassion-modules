@@ -19,7 +19,7 @@ export default class extends React.Component {
                     for (let i = 0; i < elements.length; i++) {
                         result.push(elements[i].innerHTML);
                     }
-                    return result;
+                    return result.join(", ");
             }
         }
 
@@ -44,9 +44,9 @@ export default class extends React.Component {
             birthday_estimate: s('.birthday_estimate'),
             live_with: s('#live_with'),
             family: {
-                father_alive: labelValue('.father', '.is_alive'),
+                // father_alive: labelValue('.father', '.is_alive'),
                 father_job: labelValue('.father_job', '.job'),
-                mother_alive: labelValue('.mother', '.is_alive'),
+                // mother_alive: labelValue('.mother', '.is_alive'),
                 mother_job: labelValue('.mother_job', '.job'),
                 brothers: labelValue('', '.brothers'),
                 sisters: labelValue('', '.sisters'),
@@ -67,9 +67,30 @@ export default class extends React.Component {
     render() {
         let description_json = this.getDescriptionJson();
         return (
-            <Typography variant="caption" style={{marginTop: '8px'}}>
-                {JSON.stringify(description_json)}
-            </Typography>
+            <div style={{marginTop: '8px', marginLeft: '8px'}}>
+                {Object.keys(description_json).map(item => <ChildDescriptionItem key={item} label={item} value={description_json[item]}/>)}
+            </div>
         )
+    }
+}
+
+class ChildDescriptionItem extends React.Component {
+    render() {
+        const {value} = this.props;
+        if (!value) {
+            return "";
+        }
+        if (typeof value === 'object') {
+            let keys = Object.keys(value);
+            if (keys.length === 2 && value['label'] !== 'undefined') {
+                return <Typography variant="caption" gutterBottom>{value.label + " " + value.value}</Typography>;
+            }
+            return (
+                <div>
+                    {keys.map(item => <ChildDescriptionItem key={item} label={item} value={value[item]}/>)}
+                </div>
+            )
+        }
+        return <Typography variant="caption" gutterBottom>{value}</Typography>;
     }
 }
