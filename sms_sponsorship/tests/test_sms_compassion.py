@@ -19,13 +19,12 @@ class TestSmsCompassion(BaseSponsorshipTest):
 
     def setUp(self):
         super(TestSmsCompassion, self).setUp()
-        self.child = self.create_child('AP2696234923')
-        # self.child = self.env['compassion.child'].create({
-        #     'global_id': 'AP1696234923',
-        #     'local_id': 'GD21321'
-        # })
-        # self.child.hold_id.channel = 'sms'
+        self.child = self.env['compassion.child'].create({
+            'global_id': 'AP1696234923',
+            'local_id': 'GD21321'
+        })
         self.partner = self.env.ref('base.res_partner_2')
+        self.env['ir.config_parameter'].set_param('web.external.url', 'base/')
 
         self.child_request = self.env['sms.child.request'].create({
             'partner_id': self.partner.id,
