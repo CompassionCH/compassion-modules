@@ -10,6 +10,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
@@ -69,6 +70,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959.",
+                    "error_noService": "Erreur : le service n'est pas disponible pour le moment. <br/>Veuillez essayer dans quelques minutes. Merci !",
                     "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959.",
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant sans parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères, merci de patienter quelques secondes...",
@@ -131,10 +133,12 @@ i18n
                     "successMessage_female": "Hooray! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/> Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
                     "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke! <br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
+                    "error_noService": "Error : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuchen Sie es in ein paar Minuten noch einmal. Vielen Dank!",
                     "waitingForChild": "Wir suchen ein Kind, das auf einen Sponsor wartet, bitte warten Sie ein paar Sekunden ...",
                     "waitingForOtherChild": "Wir suchen ein Kind, das Ihrer Anfrage entspricht, bitte warten Sie ein paar Sekunden ...",
                     "ageYears": " Jahre",
                     // ChildCard.js
+                    "cardTitle": "Patenschaft für ein Kind",
                     "age": "Alter",
                     "gender": "Geschlecht",
                     "country": "Land",
@@ -188,6 +192,7 @@ i18n
                     "successMessage_female": "Hooray! {{preferred_name}} will soon receive the good news that you are her sponsor. <br/><br/>There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
                     "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
