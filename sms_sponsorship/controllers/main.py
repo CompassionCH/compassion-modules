@@ -148,4 +148,3 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         }
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)
-

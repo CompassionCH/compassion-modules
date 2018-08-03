@@ -42,7 +42,7 @@ if not testing:
         @property
         def form_title(self):
             return _("Confirm your sponsorship for %s ") %\
-                   self.main_object.sudo().child_id.preferred_name
+                self.main_object.sudo().child_id.preferred_name
 
         @property
         def _form_fieldsets(self):
@@ -184,6 +184,7 @@ if not testing:
                         'partner_id': partner.id,
                         'payment_mode_id': values['payment_mode_id']
                     })
+            sponsorship.on_change_group_id()
 
         def form_after_create_or_update(self, values, extra_values):
             # validate sponsorship and send confirmation email
