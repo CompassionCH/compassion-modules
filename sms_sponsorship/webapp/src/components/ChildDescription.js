@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 export default class extends React.Component {
     getDescriptionJson = () => {
         let div = document.createElement('div');
-        div.innerHTML = this.props.appContext.state.child.desc_en;
+        div.innerHTML = this.props.appContext.state.child.description;
         let table = div.querySelector('table');
 
         function s(selector) {

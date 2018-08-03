@@ -52,7 +52,7 @@ class Main extends React.Component {
     parseResult = (res) => {
         let child;
         try {
-            child = JSON.parse(res.responseText).result[0]
+            child = JSON.parse(res.responseText).result
         }
         catch(e) {
             child = false;

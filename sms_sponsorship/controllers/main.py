@@ -57,26 +57,13 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             return [{'sponsorship_confirmed': True}]
         if sms_child_request.child_id:
             child = sms_child_request.child_id
-            result = child.read(['name', 'birthdate', 'preferred_name',
-                                 'desc_en', 'gender',
-                                 'image_url', 'age'])
-            result[0].update({
-                'has_a_child': True,
-                'invalid_sms_child_request': False,
-                'country': child.field_office_id.country_id.name,
-                'countries': sms_child_request.field_office_id
-                .search([('available_on_childpool', '=', True)])
-                .mapped('country_id').mapped(lambda country: {
-                    'value': country.code,
-                    'text': country.name
-                })
-            })
+            result = child.get_sms_sponsor_child_data()
             partner = sms_child_request.partner_id
             if sms_child_request.partner_id:
-                result[0]['partner'] = partner.read(['firstname', 'lastname',
-                                                     'email'])
+                result['partner'] = partner.read(['firstname', 'lastname',
+                                                  'email'])
             return result
-        return [{'has_a_child': False, 'invalid_sms_child_request': False}]
+        return {'has_a_child': False, 'invalid_sms_child_request': False}
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/confirm',
            type='json', auth='public', methods=['POST'], csrf=False)
