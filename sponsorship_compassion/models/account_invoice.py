@@ -150,13 +150,13 @@ class AccountInvoice(models.Model):
             # https://stackoverflow.com/questions/34517540/
             # find-all-combinations-of-a-list-of-numbers-with-a-given-sum
             matching_lines = line_obj
-            all_combinations = \
+            all_payment_combinations = \
                 (combination for n in range(2, len(open_payments) + 1)
                  for combination in itertools.combinations(open_payments, n))
-            for combination in all_combinations:
-                total = sum(payment.credit for payment in combination)
-                if total == reconcile_amount:
-                    for payment in combination:
+            for payment_combination in all_payment_combinations:
+                combination_amount = sum(p.credit for p in payment_combination)
+                if combination_amount == reconcile_amount:
+                    for payment in payment_combination:
                         matching_lines += payment
                     (matching_lines | move_lines).reconcile()
                     return True
