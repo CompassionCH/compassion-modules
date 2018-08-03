@@ -134,7 +134,8 @@ class Main extends React.Component {
             if(this.count_try > 20){
                 return (
                             <div>
-                                 <Message text={t("error_noRequestID")}/>
+                                {topAppBar}
+                                <Message text={t("error_noService")}/>
                             </div>
                         )
             }else{

@@ -4,9 +4,8 @@ export default class extends React.Component {
     render() {
         let styles = {
             loadingContainer: {
-                display: 'table-cell',
                 verticalAlign: 'middle',
-                height: '80vh',
+                marginTop: '200px',
                 textAlign: 'center'
             },
             loadingTextContainer: {

@@ -21,9 +21,9 @@ class CompassionHold(models.Model):
         :return: JSON data
         """
         self.ensure_one()
-        result = self.read(['name', 'birthdate', 'preferred_name',
-                             'desc_en', 'gender',
-                             'image_url', 'age'])[0]
+        result = self.read([
+            'name', 'birthdate', 'preferred_name', 'desc_en', 'gender',
+            'image_url', 'age'])[0]
         result.update({
             'has_a_child': True,
             'invalid_sms_child_request': False,

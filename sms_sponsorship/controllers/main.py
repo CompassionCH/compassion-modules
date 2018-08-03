@@ -63,6 +63,11 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                 result['partner'] = partner.read(['firstname', 'lastname',
                                                   'email'])
             return result
+
+        # No child for this request, we try to fetch one
+        if not sms_child_request.is_trying_to_fetch_child:
+            sms_child_request.is_trying_to_fetch_child = True
+            sms_child_request.with_delay().reserve_child()
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/confirm',
