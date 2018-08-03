@@ -110,12 +110,12 @@ i18n
                     "basicDescription": "Votre soutien mensuel offre des opportunités qui changent la vie telles qu'"+
                          "une opportunité d'assister ou de rester à l'école, " +
                         "des soins médicaux, des repas nourrissants, du mentorat et un environnement sûr. <br/><br/>" +
-                        "Le parrainag d'enfants de Compassion fonctionne! Des millions d'enfants ont été diplômés de notre programme " +
+                        "Le parrainage d'enfants de Compassion fonctionne! Des millions d'enfants ont été diplômés de notre programme " +
                         "et sont maintenant des adultes responsables et accomplis.",
                     "plusTab": "Parrainage plus",
                     "plusTitle": "CHF 50.- / mois",
-                    "plusDescription": "Le Sponsorship Plus représente le sponsorship basique" +
-                        "plus une donation additionnelle de 8 CHF par mois: <br/><br/>cela permet à Compassion de financer " +
+                    "plusDescription": "Le Sponsorship Plus représente le parrainage basique" +
+                        "plus un don additionnel de 8 CHF par mois: <br/><br/>cela permet à Compassion de financer " +
                         "des projets pour changer l'environnement des enfants." +
                         "Les fonds reçus par le Sponsorship Plus contribuent à un fond commun" +
                         "et permettent à Compassion de soutenir plusieurs projets par année.",
@@ -164,6 +164,21 @@ i18n
                     "ageCat3": "7-10 Jahre",
                     "ageCat4": "11-14 Jahre",
                     "ageCat5": "15-20 Jahre",
+                    // SponsorshipPlusTabs.js
+                    "basicTab": "Sponsorship basic",
+                    "basicTitle": "CHF 42.- / Monat",
+                    "basicDescription": "Ihre monatliche Unterstützung bietet lebensverändernde Möglichkeiten wie " +
+                        "die Möglichkeit, in der Schule zu bleiben oder zu bleiben, " +
+                        "Nahrung zu nähren, Mentoring und eine sichere Umgebung. <br/><br/>" +
+                        "Mitgefühlskindersponsoring funktioniert! Millionen von Kindern haben unser Programm absolviert " +
+                        "und sind nun verantwortliche, erfüllte Erwachsene.",
+                    "plusTab": "Sponsorship plus",
+                    "plusTitle": "CHF 50.- / Monat",
+                    "plusDescription": "Sponsorship Plus ist die Grundförderung " +
+                        "plus eine zusätzliche Spende von CHF 8.00 pro Monat: <br/><br/>Es ermöglicht Compassion, Projekte zu finanzieren, " +
+                        "um die Umwelt der Kinder zu verändern. " +
+                        "Die im Rahmen des Programms Sponsorship Plus erhaltenen Mittel tragen zu einem gemeinsamen Fonds bei " +
+                        "und ermöglichen es Compassion, jedes Jahr mehrere Projekte zu unterstützen."
                 }
             },
             it: {
