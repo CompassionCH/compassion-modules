@@ -124,65 +124,53 @@ class AccountInvoice(models.Model):
         """
         partner = self.mapped('partner_id')
         partner.ensure_one()
-        total_amount = sum(self.mapped('amount_total'))
+        reconcile_amount = sum(self.mapped('amount_total'))
         move_lines = self.mapped('move_id.line_ids').filtered('debit')
         payment_search = [
             ('partner_id', '=', partner.id),
             ('account_id.code', '=', '1050'),
             ('reconciled', '=', False),
-            ('credit', '>', 0),
-            ('credit', '>', total_amount)
+            ('credit', '>', 0)
         ]
 
-        # First try to search a payment greater than the reconcile amount
         line_obj = self.env['account.move.line']
-        open_payment = line_obj.search(
-            payment_search, order='date asc', limit=1)
-        if open_payment:
+        payment_greater_than_reconcile = line_obj.search(
+            payment_search + [('credit', '>', reconcile_amount)],
+            order='date asc', limit=1)
+        if payment_greater_than_reconcile:
             # Split the payment move line to isolate reconcile amount
-            (open_payment | move_lines).split_payment_and_reconcile()
+            (payment_greater_than_reconcile | move_lines) \
+                .split_payment_and_reconcile()
+            return True
         else:
             # Group several payments to match the invoiced amount
             # Limit to 12 move_lines to avoid too many computations
-            open_payments = line_obj.search(payment_search[:-1], limit=12)
+            open_payments = line_obj.search(payment_search, limit=12)
             # Search for a combination giving the invoiced amount
             # https://stackoverflow.com/questions/34517540/
             # find-all-combinations-of-a-list-of-numbers-with-a-given-sum
-            credits = open_payments.mapped('credit')
             matching_lines = line_obj
-            must_split_move_line = False
-            for i in range(2, len(credits)):
-                for combination in itertools.combinations(credits, i):
-                    if sum(combination) == total_amount:
-                        prev_index = 0
-                        for amount in combination:
-                            index = credits[prev_index:].index(amount)
-                            matching_lines += open_payments[prev_index:][index]
-                            prev_index += index + 1
-                        break
-                if matching_lines:
-                    break
+            all_combinations = \
+                (combination for n in range(2, len(open_payments) + 1)
+                 for combination in itertools.combinations(open_payments, n))
+            for combination in all_combinations:
+                total = sum(payment.credit for payment in combination)
+                if total == reconcile_amount:
+                    for payment in combination:
+                        matching_lines += payment
+                    (matching_lines | move_lines).reconcile()
+                    return True
             else:
                 # No combination found: we must split one payment
                 payment_amount = 0
-                nb_lines = 1
-                for payment_line in open_payments:
-                    missing_amount = total_amount - payment_amount
+                for index, payment_line in enumerate(open_payments):
+                    missing_amount = reconcile_amount - payment_amount
                     if payment_line.credit > missing_amount:
                         # Split last added line amount to perfectly match
                         # the total amount we are looking for
-                        must_split_move_line = True
-                        break
-
+                        (open_payments[:index+1] | move_lines) \
+                            .split_payment_and_reconcile()
+                        return True
                     payment_amount += payment_line.credit
-                    nb_lines += 1
-
-                matching_lines = open_payments[:nb_lines]
-
-            # Now reconcile matching lines with invoices
-            if must_split_move_line:
-                (matching_lines | move_lines).split_payment_and_reconcile()
-            else:
-                (matching_lines | move_lines).reconcile()
-
-        return True
+                (open_payments | move_lines).reconcile()
+                return True
