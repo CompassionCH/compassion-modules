@@ -15,3 +15,4 @@ from . import sms_child_request
 from . import recurring_contract
 from . import res_partner
 from . import staff_notification_settings
+from . import compassion_child

@@ -10,6 +10,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
@@ -70,6 +71,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959.",
                     "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959.",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant sans parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à tes critères, merci de patienter quelques secondes...",
                     "ageYears": " ans",
@@ -131,6 +133,7 @@ i18n
                     "successMessage_female": "Hooray! {{preferred_name}} will soon receive the good news that you are her sponsor. <br/><br/>There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
                     "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
@@ -189,6 +192,7 @@ i18n
                     "successMessage_female": "Hooray! {{preferred_name}} will soon receive the good news that you are her sponsor. <br/><br/>There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
                     "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
+                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
