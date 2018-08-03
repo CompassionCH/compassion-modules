@@ -71,7 +71,7 @@ i18n
                     "error_noRequestID": "Erreur : requête invalide. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959.",
                     "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959.",
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant sans parrain...",
-                    "waitingForOtherChild": "Nous recherchons un enfant qui correspond à tes critères, merci de patienter quelques secondes...",
+                    "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères, merci de patienter quelques secondes...",
                     "ageYears": " ans",
                     // ChildCard.js
                     "cardTitle": "Parraine un enfant",
@@ -83,7 +83,7 @@ i18n
                     // ChildDetails.js
                     "more": "Plus d'informations",
                     // SponsorForm.js
-                    "coordinates": "Tes coordonnées",
+                    "coordinates": "Vos coordonnées",
                     "firstname": "Prénom",
                     "lastname": "Nom",
                     "email": "Email",
@@ -92,7 +92,7 @@ i18n
                     "sponsorNow": "Parrainer {{name}}",
                     // ModalForm.js
                     "chooseTitle": "Choisir un autre enfant",
-                    "modalHelp": "Tu peux spécifier ici quelques critères de recherche. Laisse-les simplement vides si tu ne veux pas choisir.",
+                    "modalHelp": "Vous pouvez spécifier ici quelques critères de recherche. Laissez-les simplement vides si vous ne voulez pas choisir.",
                     "genderSelect": "Garçon/Fille",
                     "ageSelect": "Tranche d'âge",
                     "countrySelect": "Pays",
@@ -107,37 +107,30 @@ i18n
                     // SponsorshipPlusTabs.js
                     "basicTab": "Parrainage standard",
                     "basicTitle": "CHF 42.- / mois",
-                    "basicDescription": "Your monthly support provides life-changing opportunities such as " +
-                        "an opportunity to attend or stay in school, " +
-                        "medical care, nourishing food, mentoring, and a safe environment. <br/><br/>" +
-                        "Compassion child sponsorship works! Millions of children have “graduated” from our program " +
-                        "and are now responsible, fulfilled adults.",
+                    "basicDescription": "Votre soutien mensuel offre des opportunités qui changent la vie telles qu'"+
+                         "une opportunité d'assister ou de rester à l'école, " +
+                        "des soins médicaux, des repas nourrissants, du mentorat et un environnement sûr. <br/><br/>" +
+                        "Le parrainag d'enfants de Compassion fonctionne! Des millions d'enfants ont été diplômés de notre programme " +
+                        "et sont maintenant des adultes responsables et accomplis.",
                     "plusTab": "Parrainage plus",
                     "plusTitle": "CHF 50.- / mois",
-                    "plusDescription": "Sponsorship Plus is the basic sponsorship " +
-                        "plus an additional donation of CHF 8.00 per month: <br/><br/>it enables Compassion to finance " +
-                        "projects to change the children's environment. " +
-                        "The funds received under the Sponsorship Plus program contribute to a common fund " +
-                        "and enable Compassion to support several projects each year.",
+                    "plusDescription": "Le Sponsorship Plus représente le sponsorship basique" +
+                        "plus une donation additionnelle de 8 CHF par mois: <br/><br/>cela permet à Compassion de financer " +
+                        "des projets pour changer l'environnement des enfants." +
+                        "Les fonds reçus par le Sponsorship Plus contribuent à un fond commun" +
+                        "et permettent à Compassion de soutenir plusieurs projets par année.",
                     // SuccessMessage.js
                     "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes son parrain.",
-                    "successMessage2": "Il reste quelques petite étapes avant de pouvoir débuter le parrainage, mais soyez tranquille : vous recevrez tous les détails nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes lorsque vous aurez du temps.",
+                    "successMessage2": "Il reste quelques petites étapes avant de pouvoir débuter le parrainage, mais soyez tranquille : vous recevrez tous les détails nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes lorsque vous aurez du temps.",
                 }
             },
             de: {
                 translations: {
                     // App.js
-                    "successMessage_male": "Hurra! {{preferred_name}} wird bald
-                     "die gute Nachricht erhalten, dass Sie sein Sponsor sind.
-                     "<br/><br/>Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge:
-                     "Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
-                    "successMessage_female": "Hooray! {{preferred_name}} wird bald
-                     "die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/>
-                     "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
-                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig.
-                    "<br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke!
-                    "<br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
+                    "successMessage_male": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/>Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
+                    "successMessage_female": "Hooray! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/> Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
+                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
+                    "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke! <br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
                     "waitingForChild": "Wir suchen ein Kind, das auf einen Sponsor wartet, bitte warten Sie ein paar Sekunden ...",
                     "waitingForOtherChild": "Wir suchen ein Kind, das Ihrer Anfrage entspricht, bitte warten Sie ein paar Sekunden ...",
                     "ageYears": " Jahre",
