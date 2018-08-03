@@ -40,6 +40,11 @@ if not testing:
                                                "child ?")
 
         @property
+        def form_title(self):
+            return _("Confirm your sponsorship for %s ") %\
+                   self.main_object.sudo().child_id.preferred_name
+
+        @property
         def _form_fieldsets(self):
             return [
                 {
@@ -53,7 +58,7 @@ if not testing:
                 },
                 {
                     'id': 'payment',
-                    'description': _('Your way of payment'),
+                    'description': _('Your payment mode'),
                     'fields': [
                         'payment_mode_id'
                     ]
