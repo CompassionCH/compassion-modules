@@ -58,17 +58,22 @@ class TestSmsCompassion(BaseSponsorshipTest):
         self.assertTrue(new_sponsorship)
 
         # test with existing partner, but not given
+        new_partner2 = self.env['res.partner'].create({
+            'firstname': "testName2",
+            'lastname': 'testLastname2',
+            'email': 'test2@email.com'
+        })
         values = {
-            'firstname': self.partner.firstname,
-            'lastname': self.partner.lastname,
-            'phone': self.partner.phone,
-            'email': self.partner.email,
+            'firstname': new_partner2.firstname,
+            'lastname': new_partner2.lastname,
+            'phone': '001123456789',
+            'email': new_partner2.email,
             'sponsorship_plus': False
         }
         self.env['recurring.contract'] \
             .create_sms_sponsorship(values, False, self.child_request)
         new_sponsorship = self.env['recurring.contract'].search([
-            ('partner_id', '=', self.partner.id),
+            ('partner_id', '=', new_partner2.id),
             ('child_id', '=', self.child_request.child_id.id)
         ], limit=1)
         self.assertTrue(new_sponsorship)
