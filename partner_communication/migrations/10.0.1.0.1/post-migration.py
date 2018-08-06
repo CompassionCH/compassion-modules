@@ -16,21 +16,18 @@ def migrate(env, version):
     if not version:
         return
 
-    lang = env['res.lang'].search([('code', '=', 'en_US')])
     env.cr.execute("""
         INSERT INTO partner_communication_omr_config (
             config_id,
-            lang_id,
             omr_enable_marks,
             omr_should_close_envelope,
             omr_add_attachment_tray_1,
             omr_add_attachment_tray_2
         ) SELECT
             id,
-            {},
             omr_enable_marks,
             omr_should_close_envelope,
             omr_add_attachment_tray_1,
             omr_add_attachment_tray_2
         FROM partner_communication_config;
-    """.format(lang.id))
+    """)
