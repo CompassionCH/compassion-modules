@@ -52,7 +52,7 @@ class Main extends React.Component {
     parseResult = (res) => {
         let child;
         try {
-            child = JSON.parse(res.responseText).result[0]
+            child = JSON.parse(res.responseText).result
         }
         catch(e) {
             child = false;
@@ -134,7 +134,8 @@ class Main extends React.Component {
             if(this.count_try > 20){
                 return (
                             <div>
-                                 <Message text={t("error_noRequestID")}/>
+                                {topAppBar}
+                                <Message text={t("error_noService")}/>
                             </div>
                         )
             }else{
