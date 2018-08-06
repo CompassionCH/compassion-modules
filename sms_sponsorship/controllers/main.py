@@ -35,7 +35,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """ URL for SMS step 1, redirects to REACT app showing the mobile
         form.
         """
-        url = '/sms_sponsorship/static/index.html?child_request_id=' + \
+        url = '/sms_sponsorship/static/react/index.html?child_request_id=' + \
             str(child_request_id)
         return werkzeug.utils.redirect(url, 301)
 

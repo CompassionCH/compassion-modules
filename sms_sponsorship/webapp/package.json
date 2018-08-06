@@ -2,7 +2,7 @@
   "name": "webapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/sms_sponsorship/static",
+  "homepage": "/sms_sponsorship/static/react",
   "proxy": "http://localhost:8069",
   "dependencies": {
     "@material-ui/core": "^1.4.0",
