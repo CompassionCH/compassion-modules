@@ -65,8 +65,9 @@ class CommunicationOmrConfig(models.Model):
     _name = 'partner.communication.omr.config'
     _inherit = 'partner.communication.orm.config.abstract'
 
-    config_id = fields.Many2one('partner.communication.config')
-    lang_id = fields.Many2one('res.lang')
+    config_id = fields.Many2one(
+        'partner.communication.config', 'Communication type')
+    lang_id = fields.Many2one('res.lang', 'Language')
 
 
 class CommunicationConfig(models.Model):
@@ -109,6 +110,7 @@ class CommunicationConfig(models.Model):
     omr_config_ids = fields.One2many(
         comodel_name='partner.communication.omr.config',
         inverse_name='config_id',
+        string='OMR Configuration'
     )
     active = fields.Boolean(default=True)
 
