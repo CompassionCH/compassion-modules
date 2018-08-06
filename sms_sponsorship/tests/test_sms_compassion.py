@@ -111,16 +111,6 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ], limit=1)
         self.assertEquals(sms_request.sponsorship_id.id, sponsorship.id)
 
-        self.assertFalse(sms_request.hold_id)
-        sms_request.reserve_child()
-        self.assertTrue(sms_request.hold_id)
-        sms_request.cancel_request()
-        self.assertFalse(sms_request.hold_id)
-        sms_request.reserve_child()
-        self.assertTrue(sms_request.hold_id)
-        sms_request.cancel_request()
-        self.assertFalse(sms_request.hold_id)
-
     def test_book_by_sms(self):
         pass
         # hold = self.child.hold_id
