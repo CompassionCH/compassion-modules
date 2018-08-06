@@ -10,7 +10,9 @@
 ##############################################################################
 
 import logging
-from datetime import date
+from datetime import date, datetime
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -277,8 +279,6 @@ class RecurringContract(models.Model):
     def invoice_paid(self, invoice):
         """ Activate contract if it is waiting for payment. """
         activate_contracts = self.filtered(lambda c: c.state == 'waiting')
-        # Cancel the old invoices if a contract is activated
-        activate_contracts._cancel_old_invoices(invoice.date_invoice)
         activate_contracts.signal_workflow('contract_active')
 
     @api.multi
@@ -347,6 +347,10 @@ class RecurringContract(models.Model):
             if contract.child_id and not contract.sponsorship_line_id:
                 last_line_id += 1
                 contract.sponsorship_line_id = last_line_id
+
+        # Cancel the old invoices if a contract is activated
+        delay = datetime.now() + relativedelta(seconds=30)
+        self.with_delay(eta=delay).cancel_old_invoices()
         return True
 
     @api.multi
@@ -402,18 +406,21 @@ class RecurringContract(models.Model):
     def _get_filtered_invoice_lines(self, invoice_lines):
         return invoice_lines.filtered(lambda l: l.contract_id.id in self.ids)
 
-    def _cancel_old_invoices(self, date_invoice):
-        """
-            Cancel the open invoices of a contract
-            which are older than a given date.
-            If the invoice has only one contract -> cancel
-            Else -> draft to modify the invoice and validate
+    @job(default_channel='root.recurring_invoicer')
+    def cancel_old_invoices(self):
+        """Cancel the old open invoices of a contract
+           which are older than the first paid invoice of contract.
+           If the invoice has only one contract -> cancel
+           Else -> draft to modify the invoice and validate
         """
         invoice_line_obj = self.env['account.invoice.line']
+        paid_invl = invoice_line_obj.search([
+            ('contract_id', 'in', self.ids),
+            ('state', '=', 'paid')], order='due_date asc', limit=1)
         invoice_lines = invoice_line_obj.search([
             ('contract_id', 'in', self.ids),
             ('state', '=', 'open'),
-            ('invoice_id.date_invoice', '<', date_invoice)])
+            ('due_date', '<', paid_invl.due_date)])
 
         invoices = invoice_lines.mapped('invoice_id')
 
