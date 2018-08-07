@@ -187,6 +187,34 @@ class SponsorshipGift(models.Model):
     @api.model
     def create(self, vals):
         """ Try to find existing gifts before creating a new one. """
+        previous_gift = self._search_for_similar_pending_gifts(vals)
+        if previous_gift:
+            return previous_gift._blend_in_other_gift(vals)
+        return self._create_new_and_verify(vals)
+
+    def _create_new_and_verify(self, vals):
+        # If a gift for the same partner is to verify, put as well
+        # the new one to verify.
+        partner_id = self.env['recurring.contract'].browse(
+            vals['sponsorship_id']).partner_id.id
+        gift_to_verify = self.search_count([
+            ('partner_id', '=', partner_id),
+            ('state', '=', 'verify')
+        ])
+        if gift_to_verify:
+            vals['state'] = 'verify'
+        new_gift = super(SponsorshipGift, self).create(vals)
+        if new_gift.invoice_line_ids:
+            new_gift.invoice_line_ids.write({'gift_id': new_gift.id})
+        else:
+            # Prevent computed fields to reset their values
+            vals.pop('message_follower_ids')
+            new_gift.write(vals)
+        new_gift._create_gift_message()
+        return new_gift
+
+    @api.multi
+    def _search_for_similar_pending_gifts(self, vals):
         gift_date = vals.get('gift_date')
         if not gift_date:
             invl = self.env['account.invoice.line']
@@ -203,7 +231,7 @@ class SponsorshipGift(models.Model):
                     dates.append(default)
             gift_date = max(dates)
 
-        previous_gift = self.search([
+        return self.search([
             ('sponsorship_id', '=', vals['sponsorship_id']),
             ('gift_type', '=', vals['gift_type']),
             ('attribution', '=', vals['attribution']),
@@ -211,47 +239,28 @@ class SponsorshipGift(models.Model):
             ('sponsorship_gift_type', '=', vals.get('sponsorship_gift_type')),
             ('state', 'in', ['draft', 'verify', 'error'])
         ], limit=1)
-        if previous_gift:
-            # Update gift invoice lines
-            invl_write = list()
-            for line_write in vals.get('invoice_line_ids', []):
-                if line_write[0] == 6:
-                    # Avoid replacing all line_ids => change (6, 0, ids) to
-                    # [(4, id), (4, id), ...]
-                    invl_write.extend([(4, id) for id in line_write[2]])
-                else:
-                    invl_write.append(line_write)
-            if invl_write:
-                previous_gift.write({'invoice_line_ids': invl_write})
 
+    @api.multi
+    def _blend_in_other_gift(self, other_gift_vals):
+        self.ensure_one()
+        # Update gift invoice lines
+        invl_write = list()
+        for line_write in other_gift_vals.get('invoice_line_ids', []):
+            if line_write[0] == 6:
+                # Avoid replacing all line_ids => change (6, 0, ids) to
+                # [(4, id), (4, id), ...]
+                invl_write.extend([(4, id) for id in line_write[2]])
             else:
-                aggregated_amounts = previous_gift.amount + vals['amount']
-                previous_gift.write({'amount': aggregated_amounts})
-            instructions = [previous_gift.instructions, vals['instructions']]
-            previous_gift.instructions = \
-                '; '.join(filter(lambda x: x, instructions))
+                invl_write.append(line_write)
+        if invl_write:
+            self.write({'invoice_line_ids': invl_write})
 
         else:
-            # If a gift for the same partner is to verify, put as well
-            # the new one to verify.
-            partner_id = self.env['recurring.contract'].browse(
-                vals['sponsorship_id']).partner_id.id
-            gift_to_verify = self.search_count([
-                ('partner_id', '=', partner_id),
-                ('state', '=', 'verify')
-            ])
-            if gift_to_verify:
-                vals['state'] = 'verify'
-            previous_gift = super(SponsorshipGift, self).create(vals)
-            if previous_gift.invoice_line_ids:
-                previous_gift.invoice_line_ids.write({'gift_id': previous_gift.id})
-            else:
-                # Prevent computed fields to reset their values
-                vals.pop('message_follower_ids')
-                previous_gift.write(vals)
-            previous_gift._create_gift_message()
-
-        return previous_gift
+            aggregated_amounts = self.amount + other_gift_vals['amount']
+            self.write({'amount': aggregated_amounts})
+        instructions = [self.instructions, other_gift_vals['instructions']]
+        self.instructions = '; '.join(filter(lambda x: x, instructions))
+        return self
 
     @api.multi
     def unlink(self):
