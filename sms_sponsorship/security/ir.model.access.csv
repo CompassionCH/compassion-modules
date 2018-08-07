@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 sms_child_request_write,SMS Child Request write access,model_sms_child_request,child_compassion.group_sponsorship,1,1,1,0
 sms_child_request_full,SMS Child Request full access,model_sms_child_request,base.group_system,1,1,1,1
+recurring_contract_public,Public write access for draft sponsorships,model_recurring_contract,,1,1,0,0
+recurring_contract_group_public,Public read access for sponsorship groups,sponsorship_compassion.model_recurring_contract_group,,1,0,0,0
+recurring_contract_line_public,Public access for draft sponsorship lines,sponsorship_compassion.model_recurring_contract_line,,1,1,1,0
+payment_mode_public,Public read access for payment mode,account_payment_mode.model_account_payment_mode,,1,0,0,0

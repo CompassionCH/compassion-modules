@@ -1,1 +1,2 @@
-* Nothing yet
+* Implement verifications for sponsor form
+

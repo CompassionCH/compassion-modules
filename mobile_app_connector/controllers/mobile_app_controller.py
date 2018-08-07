@@ -37,6 +37,16 @@ class RestController(http.Controller):
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
+    @http.route('/mobile-app-api/get-message/', type='json',
+                auth='public', methods=['GET'])
+    def get_message(self, **parameters):
+        odoo_obj = request.env.get('res.partner')
+        if odoo_obj is None or not hasattr(odoo_obj, 'mobile_get_message'):
+            raise NotFound("Unknown API path called.")
+
+        handler = getattr(odoo_obj.sudo(), 'mobile_get_message')
+        return handler(**parameters)
+
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='public', methods=['GET'])
     def download_pdf(self, **parameters):

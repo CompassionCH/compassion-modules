@@ -11,7 +11,7 @@ odoo.define('refresher.pager', function(require) {
             var el = self.$el;
 
             var pager_value = el.find('.o_pager_value');
-            pager_value.before('<button class="fa fa-refresh btn btn-icon" type="button"></button>');
+            pager_value.before('<span class="fa fa-refresh btn btn-icon"></span>');
             var refresh_btn = pager_value.prev();
             refresh_btn.css('marginRight', '8px');
 

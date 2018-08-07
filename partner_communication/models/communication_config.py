@@ -16,24 +16,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CommunicationDefaults(models.AbstractModel):
-    """ Abstract class to share config settings between communication config
-    and communication job. """
-    _name = 'partner.communication.defaults'
+class OmrConfig(models.AbstractModel):
+    _name = 'partner.communication.orm.config.abstract'
 
-    user_id = fields.Many2one(
-        'res.users', 'From', domain=[('share', '=', False)])
-    need_call = fields.Boolean(
-        help='Indicates we should have a personal contact with the partner'
-    )
-    print_if_not_email = fields.Boolean(
-        help="Should we print the communication if the sponsor don't have "
-             "an e-mail address"
-    )
-    report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
-        domain=[('model', '=', 'partner.communication.job')]
-    )
     omr_enable_marks = fields.Boolean(
         string='Enable OMR',
         help='If set to True, the OMR marks are displayed in the '
@@ -54,6 +39,35 @@ class CommunicationDefaults(models.AbstractModel):
         help='If set to True, the OMR mark for adding an '
              'attachment from tray 2 is added to the communication.'
     )
+
+
+class CommunicationDefaults(models.AbstractModel):
+    """ Abstract class to share config settings between communication config
+    and communication job. """
+    _name = 'partner.communication.defaults'
+
+    user_id = fields.Many2one(
+        'res.users', 'From', domain=[('share', '=', False)])
+    need_call = fields.Boolean(
+        help='Indicates we should have a personal contact with the partner'
+    )
+    print_if_not_email = fields.Boolean(
+        help="Should we print the communication if the sponsor don't have "
+             "an e-mail address"
+    )
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')]
+    )
+
+
+class CommunicationOmrConfig(models.Model):
+    _name = 'partner.communication.omr.config'
+    _inherit = 'partner.communication.orm.config.abstract'
+
+    config_id = fields.Many2one(
+        'partner.communication.config', 'Communication type')
+    lang_id = fields.Many2one('res.lang', 'Language')
 
 
 class CommunicationConfig(models.Model):
@@ -92,6 +106,11 @@ class CommunicationConfig(models.Model):
         'where attach_name is the name of the file generated,'
         'report_name is the name of the report used for printing,'
         'b64_data is the binary of the attachment'
+    )
+    omr_config_ids = fields.One2many(
+        comodel_name='partner.communication.omr.config',
+        inverse_name='config_id',
+        string='OMR Configuration'
     )
     active = fields.Boolean(default=True)
 
