@@ -203,7 +203,7 @@ class SponsorshipGift(models.Model):
                     dates.append(default)
             gift_date = max(dates)
 
-        gift = self.search([
+        previous_gift = self.search([
             ('sponsorship_id', '=', vals['sponsorship_id']),
             ('gift_type', '=', vals['gift_type']),
             ('attribution', '=', vals['attribution']),
@@ -211,7 +211,7 @@ class SponsorshipGift(models.Model):
             ('sponsorship_gift_type', '=', vals.get('sponsorship_gift_type')),
             ('state', 'in', ['draft', 'verify', 'error'])
         ], limit=1)
-        if gift:
+        if previous_gift:
             # Update gift invoice lines
             invl_write = list()
             for line_write in vals.get('invoice_line_ids', []):
@@ -222,10 +222,14 @@ class SponsorshipGift(models.Model):
                 else:
                     invl_write.append(line_write)
             if invl_write:
-                gift.write({'invoice_line_ids': invl_write})
+                previous_gift.write({'invoice_line_ids': invl_write})
 
             else:
-                gift.write({'amount': gift.amount + vals['amount']})
+                aggregated_amounts = previous_gift.amount + vals['amount']
+                previous_gift.write({'amount': aggregated_amounts})
+            instructions = [previous_gift.instructions, vals['instructions']]
+            previous_gift.instructions = \
+                '; '.join(filter(lambda x: x, instructions))
 
         else:
             # If a gift for the same partner is to verify, put as well
@@ -238,16 +242,16 @@ class SponsorshipGift(models.Model):
             ])
             if gift_to_verify:
                 vals['state'] = 'verify'
-            gift = super(SponsorshipGift, self).create(vals)
-            if gift.invoice_line_ids:
-                gift.invoice_line_ids.write({'gift_id': gift.id})
+            previous_gift = super(SponsorshipGift, self).create(vals)
+            if previous_gift.invoice_line_ids:
+                previous_gift.invoice_line_ids.write({'gift_id': previous_gift.id})
             else:
                 # Prevent computed fields to reset their values
                 vals.pop('message_follower_ids')
-                gift.write(vals)
-            gift._create_gift_message()
+                previous_gift.write(vals)
+            previous_gift._create_gift_message()
 
-        return gift
+        return previous_gift
 
     @api.multi
     def unlink(self):
