@@ -31,7 +31,7 @@ i18n
                     "email": "Email",
                     "sponsorshipPlus": "Sponsorship plus",
                     "otherChild": "Other child",
-                    "sponsorNow": "Sponsor now",
+                    "sponsorNow": "Sponsor {{name}}",
                     // ModalForm.js
                     "chooseTitle": "Choose another child",
                     "modalHelp": "Select filters for another child. You can leave the filters empty if you don't want to choose on given criteria.",
@@ -76,7 +76,7 @@ i18n
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères, merci de patienter quelques secondes...",
                     "ageYears": " ans",
                     // ChildCard.js
-                    "cardTitle": "Parraine un enfant",
+                    "cardTitle": "Parrainer un enfant",
                     "age": "Age",
                     "gender": "Sexe",
                     "country": "Pays",
@@ -116,7 +116,7 @@ i18n
                         "et sont maintenant des adultes responsables et accomplis.",
                     "plusTab": "Parrainage plus",
                     "plusTitle": "CHF 50.- / mois",
-                    "plusDescription": "Le Sponsorship Plus représente le parrainage basique" +
+                    "plusDescription": "Le parrainage plus représente le parrainage basique" +
                         "plus un don additionnel de 8 CHF par mois: <br/><br/>cela permet à Compassion de financer " +
                         "des projets pour changer l'environnement des enfants." +
                         "Les fonds reçus par le Sponsorship Plus contribuent à un fond commun" +
@@ -129,8 +129,8 @@ i18n
             de: {
                 translations: {
                     // App.js
-                    "successMessage_male": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/>Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
-                    "successMessage_female": "Hooray! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind. <br/><br/> Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
+                    "successMessage1": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind.",
+                    "successMessage2": "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
                     "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke! <br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
                     "error_noService": "Error : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuchen Sie es in ein paar Minuten noch einmal. Vielen Dank!",
@@ -153,13 +153,13 @@ i18n
                     "email": "Email",
                     "sponsorshipPlus": "Sponsorship plus",
                     "otherChild": "Anderes Kind",
-                    "sponsorNow": "Sponsor jetzt",
+                    "sponsorNow": "Sponsor {{name}}",
                     // ModalForm.js
                     "chooseTitle": "Wähle ein anderes Kind",
                     "modalHelp": "Wählen Sie Filter für ein anderes Kind aus. Sie können die Filter leer lassen, wenn Sie nicht nach bestimmten Kriterien auswählen möchten.",
-                    "genderSelect": "Wähle einen Jungen oder ein Mädchen",
-                    "ageSelect": "Wählen Sie das Alter aus",
-                    "countrySelect": "Wähle ein Land",
+                    "genderSelect": "Jungen/Mädchen",
+                    "ageSelect": "Alter",
+                    "countrySelect": "Land",
                     "cancel": "Abbestellen",
                     "boy": "Junge",
                     "girl": "Mädchen",
