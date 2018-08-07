@@ -20,10 +20,11 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import white
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields, _, tools
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
+testing = tools.config.get('test_enable')
 
 
 class MLStripper(HTMLParser):
@@ -657,8 +658,9 @@ class CommunicationJob(models.Model):
                 'state': 'done',
                 'sent_date': fields.Datetime.now()
             })
-            # Commit to avoid invalid state if process fails
-            self.env.cr.commit()  # pylint: disable=invalid-commit
+            if not testing:
+                # Commit to avoid invalid state if process fails
+                self.env.cr.commit()  # pylint: disable=invalid-commit
         return True
 
     @api.model
