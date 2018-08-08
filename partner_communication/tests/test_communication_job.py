@@ -219,3 +219,14 @@ class TestCommunicationJob(TransactionCase):
         # to add a report template to the config. It was not successful
         # until now.
         self.assertEqual(self.partner.communication_count, 2)
+
+    def test_omr_generation(self):
+        job = self.env['partner.communication.job'].create({
+            'partner_id': self.partner.id,
+            'config_id': self.config.id
+        })
+        marks = job._compute_marks(is_latest_page=True)
+        self.assertListEqual(marks,
+                             [True, True, False, False, True, False, True])
+        layer = job._build_omr_layer(marks)
+        self.assertTrue(layer)
