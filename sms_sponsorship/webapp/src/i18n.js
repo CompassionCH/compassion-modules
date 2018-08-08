@@ -55,9 +55,7 @@ i18n
                     "basicTitle": "CHF 42.- / month",
                     "basicDescription": "Your monthly support provides life-changing opportunities such as " +
                         "an opportunity to attend or stay in school, " +
-                        "medical care, nourishing food, mentoring, and a safe environment. <br/><br/>" +
-                        "Compassion child sponsorship works! Millions of children have “graduated” from our program " +
-                        "and are now responsible, fulfilled adults.",
+                        "medical care, nourishing food, mentoring, and a safe environment.",
                     "plusTab": "Sponsorship plus",
                     "plusTitle": "CHF 50.- / month",
                     "plusDescription": "Sponsorship Plus is the basic sponsorship " +
@@ -65,6 +63,7 @@ i18n
                         "projects to change the children's environment. " +
                         "The funds received under the Sponsorship Plus program contribute to a common fund " +
                         "and enable Compassion to support several projects each year.",
+                    "sponsorshipPromotion": "Compassion child sponsorship works! Millions of children have “graduated” from our program and are now responsible, fulfilled adults.",
                     // SuccessMessage.js
                     "successMessage1": "Hooray! {{preferred_name}} will soon receive the good news that you are his sponsor.",
                     "successMessage2": "There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
@@ -117,10 +116,11 @@ i18n
                     // SponsorshipPlusTabs.js
                     "basicTab": "Parrainage standard",
                     "basicTitle": "CHF 42.- / mois",
-                    "basicDescription": "Votre soutien mensuel offre à l’enfant l’accès à la scolarité, un suivi médical, une alimentation nourrissante, des formations à l’hygiène, et des activités qui lui permettront de prendre conscience de sa valeur et de son potentiel. Le tout, dans un environnement sécurisé et bienveillant. <br/><br/>Le parrainage d'enfants de Compassion a prouvé son efficacité ! Des millions d'enfants démunis ont pu être libérés de la pauvreté et sont maintenant des adultes responsables.",
+                    "basicDescription": "Votre soutien mensuel offre à l’enfant l’accès à la scolarité, un suivi médical, une alimentation nourrissante, des formations à l’hygiène, et des activités qui lui permettront de prendre conscience de sa valeur et de son potentiel. Le tout, dans un environnement sécurisé et bienveillant.",
                     "plusTab": "Parrainage plus",
                     "plusTitle": "CHF 50.- / mois",
                     "plusDescription": "Avec CHF 8.- de plus par mois, le Parrainage Plus permet en plus du Parrainage Standard de financer des projets pour changer l'environnement des enfants et pour soutenir les enfants en attente d’un parrain.",
+                    "sponsorshipPromotion": "Le parrainage d'enfants de Compassion a prouvé son efficacité ! Des millions d'enfants démunis ont pu être libérés de la pauvreté et sont maintenant des adultes responsables.",
                     // SuccessMessage.js
                     "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes désormais son parrain.",
                     "successMessage2": "Il reste 2 étapes pour débuter votre parrainage, mais soyez tranquille : vous recevrez les instructions nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes dès que vous avez un petit moment. D'avance merci !",
@@ -177,16 +177,16 @@ i18n
                     "basicTitle": "CHF 42.- / Monat",
                     "basicDescription": "Ihre monatliche Unterstützung bietet lebensverändernde Möglichkeiten wie " +
                         "die Möglichkeit, in der Schule zu bleiben oder zu bleiben, " +
-                        "Nahrung zu nähren, Mentoring und eine sichere Umgebung. <br/><br/>" +
-                        "Mitgefühlskindersponsoring funktioniert! Millionen von Kindern haben unser Programm absolviert " +
-                        "und sind nun verantwortliche, erfüllte Erwachsene.",
+                        "Nahrung zu nähren, Mentoring und eine sichere Umgebung." +
+                        "",
                     "plusTab": "Sponsorship plus",
                     "plusTitle": "CHF 50.- / Monat",
                     "plusDescription": "Sponsorship Plus ist die Grundförderung " +
                         "plus eine zusätzliche Spende von CHF 8.00 pro Monat: <br/><br/>Es ermöglicht Compassion, Projekte zu finanzieren, " +
                         "um die Umwelt der Kinder zu verändern. " +
                         "Die im Rahmen des Programms Sponsorship Plus erhaltenen Mittel tragen zu einem gemeinsamen Fonds bei " +
-                        "und ermöglichen es Compassion, jedes Jahr mehrere Projekte zu unterstützen."
+                        "und ermöglichen es Compassion, jedes Jahr mehrere Projekte zu unterstützen.",
+                    "sponsorshipPromotion": "Mitgefühlskindersponsoring funktioniert! Millionen von Kindern haben unser Programm absolviert und sind nun verantwortliche, erfüllte Erwachsene.",
                 }
             },
             it: {
@@ -249,7 +249,8 @@ i18n
                         "plus an additional donation of CHF 8.00 per month: <br/><br/>it enables Compassion to finance " +
                         "projects to change the children's environment. " +
                         "The funds received under the Sponsorship Plus program contribute to a common fund " +
-                        "and enable Compassion to support several projects each year."
+                        "and enable Compassion to support several projects each year.",
+                    "sponsorshipPromotion": "Compassion child sponsorship works! Millions of children have “graduated” from our program and are now responsible, fulfilled adults.",
                 }
             },
         },
