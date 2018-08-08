@@ -204,12 +204,12 @@ i18n
             it: {
                 translations: {
                     // App.js
-                    "successMessage_male": "Hooray! {{preferred_name}} will soon receive the good news that you are his sponsor. <br/><br/>There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
-                    "successMessage_female": "Hooray! {{preferred_name}} will soon receive the good news that you are her sponsor. <br/><br/>There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
-                    "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
-                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
+                    "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting COMPASSION to 959. This service is free of charge. Thank you!",
                     "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
+                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
+                    "error_sponsorFromWebsite": "Sponsor a child from our website",
+                    "error_websiteUrl": "https://www.compassion.ch/parrainer",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
@@ -230,16 +230,16 @@ i18n
                     "emailConfirm": "Confirm your email address",
                     "sponsorshipPlus": "Sponsorship plus",
                     "otherChild": "Other child",
-                    "sponsorNow": "Sponsor now",
+                    "sponsorNow": "Sponsor {{name}}",
                     "error_invalidMail": "Please verify that you put a valid e-mail address.",
                     "error_missingFirstname": "Please enter your first name",
                     "error_missingLastname": "Please enter your last name",
                     // ModalForm.js
                     "chooseTitle": "Choose another child",
                     "modalHelp": "Select filters for another child. You can leave the filters empty if you don't want to choose on given criteria.",
-                    "genderSelect": "Choose a boy or a girl",
-                    "ageSelect": "Select age",
-                    "countrySelect": "Choose a country",
+                    "genderSelect": "Boy/Girl",
+                    "ageSelect": "Age",
+                    "countrySelect": "Country",
                     "cancel": "Cancel",
                     "boy": "Boy",
                     "girl": "Girl",
@@ -253,9 +253,7 @@ i18n
                     "basicTitle": "CHF 42.- / month",
                     "basicDescription": "Your monthly support provides life-changing opportunities such as " +
                         "an opportunity to attend or stay in school, " +
-                        "medical care, nourishing food, mentoring, and a safe environment. <br/><br/>" +
-                        "Compassion child sponsorship works! Millions of children have “graduated” from our program " +
-                        "and are now responsible, fulfilled adults.",
+                        "medical care, nourishing food, mentoring, and a safe environment.",
                     "plusTab": "Sponsorship plus",
                     "plusTitle": "CHF 50.- / month",
                     "plusDescription": "Sponsorship Plus is the basic sponsorship " +
@@ -264,6 +262,10 @@ i18n
                         "The funds received under the Sponsorship Plus program contribute to a common fund " +
                         "and enable Compassion to support several projects each year.",
                     "sponsorshipPromotion": "Compassion child sponsorship works! Millions of children have “graduated” from our program and are now responsible, fulfilled adults.",
+                    // SuccessMessage.js
+                    "successTitle": "You sponsored {{preferred_name}}",
+                    "successMessage1": "Hooray! {{preferred_name}} will soon receive the good news that you are his sponsor.",
+                    "successMessage2": "There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
                 }
             },
         },
