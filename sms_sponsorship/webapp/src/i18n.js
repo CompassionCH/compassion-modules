@@ -65,6 +65,7 @@ i18n
                         "and enable Compassion to support several projects each year.",
                     "sponsorshipPromotion": "Compassion child sponsorship works! Millions of children have “graduated” from our program and are now responsible, fulfilled adults.",
                     // SuccessMessage.js
+                    "successTitle": "You sponsored {{preferred_name}}",
                     "successMessage1": "Hooray! {{preferred_name}} will soon receive the good news that you are his sponsor.",
                     "successMessage2": "There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
                 }
@@ -122,6 +123,7 @@ i18n
                     "plusDescription": "Avec CHF 8.- de plus par mois, le Parrainage Plus permet en plus du Parrainage Standard de financer des projets pour changer l'environnement des enfants et pour soutenir les enfants en attente d’un parrain.",
                     "sponsorshipPromotion": "Le parrainage d'enfants de Compassion a prouvé son efficacité ! Des millions d'enfants démunis ont pu être libérés de la pauvreté et sont maintenant des adultes responsables.",
                     // SuccessMessage.js
+                    "successTitle": "Vous avez parrainé {{preferred_name}}",
                     "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes désormais son parrain.",
                     "successMessage2": "Il reste 2 étapes pour débuter votre parrainage, mais soyez tranquille : vous recevrez les instructions nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes dès que vous avez un petit moment. D'avance merci !",
                 }
@@ -129,8 +131,6 @@ i18n
             de: {
                 translations: {
                     // App.js
-                    "successMessage1": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind.",
-                    "successMessage2": "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
                     "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke! <br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
                     "error_noService": "Error : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuchen Sie es in ein paar Minuten noch einmal. Vielen Dank!",
@@ -187,6 +187,10 @@ i18n
                         "Die im Rahmen des Programms Sponsorship Plus erhaltenen Mittel tragen zu einem gemeinsamen Fonds bei " +
                         "und ermöglichen es Compassion, jedes Jahr mehrere Projekte zu unterstützen.",
                     "sponsorshipPromotion": "Mitgefühlskindersponsoring funktioniert! Millionen von Kindern haben unser Programm absolviert und sind nun verantwortliche, erfüllte Erwachsene.",
+                    // SuccessMessage.js
+                    "successMessage1": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind.",
+                    "successMessage2": "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
+                    "successTitle": "You sponsored {{preferred_name}}",
                 }
             },
             it: {

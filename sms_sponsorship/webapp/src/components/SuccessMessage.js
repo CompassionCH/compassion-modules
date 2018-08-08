@@ -4,6 +4,7 @@ import classNames from "classnames";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from "@material-ui/core/styles";
+import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 
 const styles = {
     avatar: {
@@ -31,6 +32,7 @@ function SuccessMessage(props)  {
 
     return (
         <div className={classes.loadingContainer}>
+            <CardHeader title={t('successTitle', {preferred_name: preferred_name})}/>
             <Avatar
                 alt={preferred_name}
                 src={image_url}
