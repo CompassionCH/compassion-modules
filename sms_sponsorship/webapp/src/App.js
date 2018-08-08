@@ -33,6 +33,11 @@ const theme = createMuiTheme({
                 fontSize: '30px',
                 // textTransform: 'uppercase'
             }
+        },
+        MuiSnackbarContent: {
+            root: {
+                backgroundColor: "darkred"
+            }
         }
     },
 });
