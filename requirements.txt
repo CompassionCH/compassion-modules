@@ -12,3 +12,4 @@ Shapely
 wand
 regex
 simplejson
+locustio

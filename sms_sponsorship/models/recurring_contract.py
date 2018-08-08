@@ -1,3 +1,4 @@
+# coding: utf-8
 from odoo import api, models, fields
 from odoo.addons.queue_job.job import job
 
