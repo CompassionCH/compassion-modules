@@ -9,6 +9,7 @@ import jsonRPC from './components/jsonRPC';
 import getRequestId from './components/getRequestId';
 import Message from './components/Message';
 import SuccessMessage from './components/SuccessMessage';
+import Button from "@material-ui/core/Button";
 
 const theme = createMuiTheme({
     palette: {
@@ -52,7 +53,7 @@ class Main extends React.Component {
         success: false,
     };
 
-    count_try = 0
+    count_try = 0;
 
     parseResult = (res) => {
         let child;
@@ -114,6 +115,14 @@ class Main extends React.Component {
         }
     }
 
+    reload() {
+        window.location.reload();
+    }
+
+    redirectToWebsite(url) {
+        window.location.href = url;
+    }
+
     render() {
         const { t } = this.props;
         let image_url = '';
@@ -136,11 +145,29 @@ class Main extends React.Component {
 
        if (!child.has_a_child && !this.state.success) {
             clearTimeout(window.getChildTimeout);
-            if(this.count_try > 20){
+            if(this.count_try > 2){
                 return (
                             <div>
                                 {topAppBar}
-                                <Message text={t("error_noService")}/>
+                                <Message text={t("error_noService")} style={{marginBottom: '20px'}}/>
+                                <div style={{textAlign: 'center', marginTop: '20px'}}>
+                                    <Button variant="contained"
+                                            onClick={this.reload}
+                                            color="primary"
+                                            size="medium"
+                                    >
+                                        {t("error_refresh")}
+                                    </Button>
+                                    <br/>
+                                    <br/>
+                                    <Button variant="outlined"
+                                            onClick={() => this.redirectToWebsite(t('error_websiteUrl'))}
+                                            color="primary"
+                                            size="medium"
+                                    >
+                                        {t("error_sponsorFromWebsite")}
+                                    </Button>
+                                </div>
                             </div>
                         )
             }else{
