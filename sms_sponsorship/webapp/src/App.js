@@ -145,7 +145,7 @@ class Main extends React.Component {
 
        if (!child.has_a_child && !this.state.success) {
             clearTimeout(window.getChildTimeout);
-            if(this.count_try > 2){
+            if(this.count_try > 20){
                 return (
                             <div>
                                 {topAppBar}
