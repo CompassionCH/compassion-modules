@@ -555,7 +555,7 @@ class CommunicationJob(models.Model):
 
         logger.info('Mailer DS-75i OMR Settings: 1={} 2={}'.format(
             (297 * mm - top_mark_y) / mm,
-            (top_mark_x + mark_width / 2) / mm
+            (top_mark_x + mark_width / 2) / mm + 0.5
         ))
 
         omr_buffer = StringIO.StringIO()
