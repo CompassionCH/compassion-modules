@@ -9,9 +9,9 @@ i18n
             en: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Error : this request is invalid. <br/>Please try again to get a valid link by texting COMPASSION to 959. Thank you!",
+                    "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting COMPASSION to 959. This service is free of charge. Thank you!",
                     "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
-                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959.",
+                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959. This service is free of charge.",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
@@ -69,11 +69,11 @@ i18n
             fr: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Erreur : requête invalide. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959.",
+                    "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959. Ce SMS est gratuit.",
                     "error_noService": "Erreur : le service n'est pas disponible pour le moment. <br/>Veuillez essayer dans quelques minutes. Merci !",
-                    "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959.",
-                    "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant sans parrain...",
-                    "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères, merci de patienter quelques secondes...",
+                    "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959. Ce SMS est gratuit.",
+                    "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
+                    "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères. Merci de patienter quelques secondes...",
                     "ageYears": " ans",
                     // ChildCard.js
                     "cardTitle": "Parrainer un enfant",
@@ -94,7 +94,7 @@ i18n
                     "sponsorNow": "Parrainer {{name}}",
                     // ModalForm.js
                     "chooseTitle": "Choisir un autre enfant",
-                    "modalHelp": "Vous pouvez spécifier ici quelques critères de recherche. Laissez-les simplement vides si vous ne voulez pas choisir.",
+                    "modalHelp": "Vous pouvez spécifier ici quelques critères de recherche. Laissez-les simplement vides si vous ne souhaitez pas choisir vous-même.",
                     "genderSelect": "Garçon/Fille",
                     "ageSelect": "Tranche d'âge",
                     "countrySelect": "Pays",
@@ -109,21 +109,13 @@ i18n
                     // SponsorshipPlusTabs.js
                     "basicTab": "Parrainage standard",
                     "basicTitle": "CHF 42.- / mois",
-                    "basicDescription": "Votre soutien mensuel offre des opportunités qui changent la vie telles qu'"+
-                         "une opportunité d'assister ou de rester à l'école, " +
-                        "des soins médicaux, des repas nourrissants, du mentorat et un environnement sûr. <br/><br/>" +
-                        "Le parrainage d'enfants de Compassion fonctionne! Des millions d'enfants ont été diplômés de notre programme " +
-                        "et sont maintenant des adultes responsables et accomplis.",
+                    "basicDescription": "Votre soutien mensuel offre à l’enfant l’accès à la scolarité, un suivi médical, une alimentation nourrissante, des formations à l’hygiène, et des activités qui lui permettront de prendre conscience de sa valeur et de son potentiel. Le tout, dans un environnement sécurisé et bienveillant. <br/><br/>Le parrainage d'enfants de Compassion a prouvé son efficacité ! Des millions d'enfants démunis ont pu être libérés de la pauvreté et sont maintenant des adultes responsables.",
                     "plusTab": "Parrainage plus",
                     "plusTitle": "CHF 50.- / mois",
-                    "plusDescription": "Le parrainage plus représente le parrainage basique" +
-                        "plus un don additionnel de 8 CHF par mois: <br/><br/>cela permet à Compassion de financer " +
-                        "des projets pour changer l'environnement des enfants." +
-                        "Les fonds reçus par le Sponsorship Plus contribuent à un fond commun" +
-                        "et permettent à Compassion de soutenir plusieurs projets par année.",
+                    "plusDescription": "Avec CHF 8.- de plus par mois, le Parrainage Plus permet en plus du Parrainage Standard de financer des projets pour changer l'environnement des enfants et pour soutenir les enfants en attente d’un parrain.",
                     // SuccessMessage.js
-                    "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes son parrain.",
-                    "successMessage2": "Il reste quelques petites étapes avant de pouvoir débuter le parrainage, mais soyez tranquille : vous recevrez tous les détails nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes lorsque vous aurez du temps.",
+                    "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes désormais son parrain.",
+                    "successMessage2": "Il reste 2 étapes pour débuter votre parrainage, mais soyez tranquille : vous recevrez les instructions nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes dès que vous avez un petit moment. D'avance merci !",
                 }
             },
             de: {
