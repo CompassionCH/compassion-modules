@@ -18,24 +18,15 @@ _logger = logging.getLogger(__name__)
 if not testing:
     class PartnerSmsRegistrationForm(models.AbstractModel):
         _name = 'cms.form.recurring.contract'
-        _inherit = 'cms.form'
+        _inherit = ['cms.form.match.partner', 'cms.form.payment']
 
         _form_model = 'recurring.contract'
         _form_model_fields = ['partner_id', 'payment_mode_id']
         _form_required_fields = ('partner_id', 'payment_mode_id')
 
-        partner_title = fields.Many2one(
-            'res.partner.title', 'Title', required=True)
-        partner_name = fields.Char('Name', required=True)
-        partner_email = fields.Char('Email', required=True)
-        partner_phone = fields.Char('Phone', required=True)
-        partner_street = fields.Char('Street', required=True)
-        partner_zip = fields.Char('Zip', required=True)
-        partner_city = fields.Char('City', required=True)
-        partner_country_id = fields.Many2one(
-            'res.country', 'Country', required=True)
         pay_first_month_ebanking = fields.Boolean("Pay first month with "
                                                   "e-banking ?")
+        # TODO : Implement this
         immediately_add_gifts = fields.Boolean("Directly send gifts to the "
                                                "child ?")
 
@@ -118,47 +109,6 @@ if not testing:
 
         def _form_load_partner_city(self, fname, field, value, **req_values):
             return req_values.get('partner_city', self.partner_city or '')
-
-        def _form_load_partner_country_id(
-                self, fname, field, value, **req_values):
-            # Default value loaded in website form
-            return int(req_values.get('partner_country_id',
-                                      self.partner_country_id.id))
-
-        # Form validation
-        #################
-        def _form_validate_partner_phone(self, value, **req_values):
-            if not re.match(r'^[+\d][\d\s]{7,}$', value, re.UNICODE):
-                return 'phone', _('Please enter a valid phone number')
-            # No error
-            return 0, 0
-
-        def _form_validate_partner_zip(self, value, **req_values):
-            if not re.match(r'^\d{3,6}$', value):
-                return 'zip', _('Please enter a valid zip code')
-            # No error
-            return 0, 0
-
-        def _form_validate_partner_email(self, value, **req_values):
-            if not re.match(r'[^@]+@[^@]+\.[^@]+', value):
-                return 'email', _('Verify your e-mail address')
-            # No error
-            return 0, 0
-
-        def _form_validate_partner_name(self, value, **req_values):
-            return self._form_validate_alpha_field('name', value)
-
-        def _form_validate_partner_street(self, value, **req_values):
-            return self._form_validate_alpha_field('street', value)
-
-        def _form_validate_partner_city(self, value, **req_values):
-            return self._form_validate_alpha_field('city', value)
-
-        def _form_validate_alpha_field(self, field, value):
-            if not re.match(r"^[\w\s'-]+$", value, re.UNICODE):
-                return field, _('Please avoid any special characters')
-            # No error
-            return 0, 0
 
         # Form submission
         #################
