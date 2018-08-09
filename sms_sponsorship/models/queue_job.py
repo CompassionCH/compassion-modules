@@ -27,3 +27,29 @@ class QueueJob(models.Model):
             'view_mode': 'form',
         }
         return action
+
+    @api.multi
+    def related_action_update_partner(self):
+        action = {
+            'name': _("Partner update"),
+            'type': 'ir.actions.act_window',
+            'res_model': 'res.partner',
+            'res_id': self.record_ids[0],
+            'domain': [('id', 'in', self.record_ids)],
+            'view_type': 'form',
+            'view_mode': 'form',
+        }
+        return action
+
+    @api.multi
+    def related_action_finalize_form(self):
+        action = {
+            'name': _("Form finalization"),
+            'type': 'ir.actions.act_window',
+            'res_model': 'recurring.contract',
+            'res_id': self.record_ids[0],
+            'domain': [('id', 'in', self.record_ids)],
+            'view_type': 'form',
+            'view_mode': 'form',
+        }
+        return action

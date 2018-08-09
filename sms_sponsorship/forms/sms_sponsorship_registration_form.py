@@ -10,6 +10,8 @@
 import logging
 import re
 
+from odoo.addons.queue_job.job import job, related_action
+
 from odoo import models, fields, tools, _
 
 testing = tools.config.get('test_enable')
@@ -162,7 +164,7 @@ if not testing:
 
         # Form submission
         #################
-        def form_before_create_or_update(self, values, extra_values):
+        def form_before_create_or_update(self, *values, **extra_values):
             super(PartnerSmsRegistrationForm,
                   self).form_before_create_or_update(values, extra_values)
 
@@ -171,7 +173,7 @@ if not testing:
             partner_vals = self._get_partner_vals(extra_values)
             if partner:
                 # update existing partner
-                partner.write(partner_vals)
+                self.with_delay().update_partner(partner_vals)
             else:
                 # create new partner
                 self.env['res.partner'].sudo().create(partner_vals)
@@ -186,11 +188,22 @@ if not testing:
                     })
             sponsorship.on_change_group_id()
 
-        def form_after_create_or_update(self, values, extra_values):
+        @job(default_channel="root.res_partner")
+        @related_action(action='related_action_update_partner')
+        def update_partner(self, partner_vals):
+            self.env['res.partner'].search([
+                ('name', '=', self.partner_name),
+                ('email', '=', self.partner_email)
+            ]).write(partner_vals)
+
+        @job(default_channel="root.recurring_contract")
+        @related_action(action='related_action_finalize_form')
+        def finalize_form(self, sponsorship):
             # validate sponsorship and send confirmation email
-            sponsorship = self.main_object.sudo()
+            # we use partner name temporarily for testing reasons, should
+            # use sponsorship.id
             sms_request = self.env['sms.child.request'].sudo().search([
-                ('sponsorship_id', '=', self.main_object.id)
+                ('partner_id.name', '=', sponsorship.partner_id.name)
             ])
             # check if partner was created via the SMS request. new_partner
             # is set at True in recurring_contract in models
@@ -219,6 +232,9 @@ if not testing:
             # update sms request
             sms_request.complete_step2()
             sponsorship.button_generate_invoices()
+
+        def form_after_create_or_update(self, values, extra_values):
+            self.with_delay().finalize_form(self.main_object.sudo())
 
         def form_next_url(self, main_object=None):
             return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
