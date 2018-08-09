@@ -29,8 +29,8 @@ class EventCompassion(models.Model):
             ('start_date', '<=', fields.Datetime.to_string(in_one_day))
         ]):
             childpool_search = self.env['compassion.childpool.search'].create({
-                # Take 5% of planned sponsorships
-                'take': int(event.planned_sponsorships * 0.05) or 3,
+                # Take 20% of planned sponsorships
+                'take': int(event.planned_sponsorships * 0.2) or 3,
             })
             childpool_search.rich_mix()
             expiration = fields.Datetime.from_string(event.end_date) + \

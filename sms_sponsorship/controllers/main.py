@@ -51,10 +51,10 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         body = request.jsonrequest
         lang = body.get('lang', 'en')
         sms_child_request = get_child_request(child_request_id, lang)
-        if not sms_child_request:
-            return [{'invalid_sms_child_request': True}]
+        if not sms_child_request or sms_child_request.state == 'expired':
+            return {'invalid_sms_child_request': True}
         if sms_child_request.sponsorship_confirmed:
-            return [{'sponsorship_confirmed': True}]
+            return {'sponsorship_confirmed': True}
         if sms_child_request.child_id:
             child = sms_child_request.child_id
             result = child.get_sms_sponsor_child_data()
