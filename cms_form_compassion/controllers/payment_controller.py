@@ -9,9 +9,6 @@
 ##############################################################################
 import json
 
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-
 from odoo import _
 from odoo.http import request, route, Response
 from odoo.addons.website_portal.controllers.main import website_account

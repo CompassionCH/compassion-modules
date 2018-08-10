@@ -8,7 +8,9 @@
 #
 ##############################################################################
 import logging
-import re
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, tools, _
 
@@ -22,13 +24,21 @@ if not testing:
 
         _form_model = 'recurring.contract'
         _form_model_fields = ['partner_id', 'payment_mode_id']
-        _form_required_fields = ('partner_id', 'payment_mode_id')
+        _form_required_fields = ('partner_id', 'payment_mode_id', 'gtc_accept')
+        _display_type = 'full'
 
-        pay_first_month_ebanking = fields.Boolean("Pay first month with "
-                                                  "e-banking ?")
+        pay_first_month_ebanking = fields.Boolean("Pay first month now")
         # TODO : Implement this
         immediately_add_gifts = fields.Boolean("Directly send gifts to the "
                                                "child ?")
+        gtc_accept = fields.Boolean(
+            "Terms and conditions", required=True
+        )
+
+        @property
+        def _payment_accept_redirect(self):
+            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
+                "/confirm"
 
         @property
         def form_title(self):
@@ -40,7 +50,7 @@ if not testing:
             return [
                 {
                     'id': 'partner',
-                    'description': _('Your personal data'),
+                    'title': _('Your personal data'),
                     'fields': ['partner_title', 'partner_name',
                                'partner_email',
                                'partner_phone', 'partner_street',
@@ -49,20 +59,51 @@ if not testing:
                 },
                 {
                     'id': 'payment',
-                    'description': _('Your payment mode'),
                     'fields': [
                         'payment_mode_id'
                     ]
                 },
                 {
                     'id': 'optional',
-                    'description': _('Optional choices'),
+                    'title': _('Optional choices'),
+                    'description': _(
+                        'You can directly activate your sponsorship by paying '
+                        'the first month online. If you choose this option '
+                        'you will be redirected to the secure payment website '
+                        'where you can pay by credit card or postcard.'),
                     'fields': [
                         'pay_first_month_ebanking',
-                        'immediately_add_gifts'
+                        'amount', 'currency_id', 'acquirer_ids', 'gtc_accept'
                     ]
                 }
             ]
+
+        @property
+        def form_widgets(self):
+            # Hide fields
+            res = super(PartnerSmsRegistrationForm, self).form_widgets
+            res.update({
+                'amount': 'cms_form_compassion.form.widget.hidden',
+                'acquirer_ids':
+                'cms_form_compassion.form.widget.payment.hidden',
+                'gtc_accept': 'cms_form_compassion.form.widget.terms',
+            })
+            return res
+
+        @property
+        def _default_amount(self):
+            return self.main_object.total_amount
+
+        @property
+        def gtc(self):
+            statement = self.env['compassion.privacy.statement'].search(
+                [], limit=1).with_context(lang=self.partner_id.lang)
+            return statement.text
+
+        @property
+        def form_msg_success_updated(self):
+            # override to remove text saying item updated after registration
+            return
 
         def form_init(self, request, main_object=None, **kw):
             form = super(PartnerSmsRegistrationForm, self).form_init(
@@ -80,8 +121,8 @@ if not testing:
             form.partner_city = partner.city
             form.partner_country_id = partner.country_id or \
                 self.env.ref('base.ch')
-            form.pay_first_month_ebanking = False
-            form.immediately_add_gifts = False
+            form.pay_first_month_ebanking = kw.get('pay_first_month_ebanking')
+            form.immediately_add_gifts = kw.get('immediately_add_gifts')
             return form
 
         # Load values from model into form view
@@ -118,40 +159,40 @@ if not testing:
 
             sponsorship = self.main_object.sudo()
             partner = sponsorship.partner_id
-            partner_vals = self._get_partner_vals(extra_values)
+            partner_vals = self._get_partner_vals(values, extra_values)
             if partner:
-                # update existing partner
-                partner.with_delay().update_partner(partner_vals)
+                # update existing partner (later, to avoid rollbacks)
+                delay = datetime.now() + relativedelta(minutes=1)
+                partner.with_delay(eta=delay).update_partner(partner_vals)
             else:
                 # create new partner
                 self.env['res.partner'].sudo().create(partner_vals)
 
-            # creates group_id and payment_id if first sponsorship of
-            # partner
-            if not sponsorship.payment_mode_id:
-                sponsorship.group_id = self.env[
-                    'recurring.contract.group'].sudo().create({
-                        'partner_id': partner.id,
-                        'payment_mode_id': values['payment_mode_id']
-                    })
-            sponsorship.on_change_group_id()
+        def _form_write(self, values):
+            """ Nothing to do on write, we handle everything in other methods.
+            """
+            return True
 
         def form_after_create_or_update(self, values, extra_values):
-            self.main_object.sudo().with_delay().finalize_form(
-                self.pay_first_month_ebanking)
+            delay = datetime.now() + relativedelta(seconds=5)
+            sponsorship = self.main_object.sudo()
+            sponsorship.with_delay(eta=delay).finalize_form(
+                self.pay_first_month_ebanking, values['payment_mode_id'])
+            if self.pay_first_month_ebanking and \
+                    sponsorship.sms_request_id.new_partner:
+                delay = datetime.now() + relativedelta(seconds=5)
+                sponsorship.with_delay(eta=delay).create_first_sms_invoice()
 
         def form_next_url(self, main_object=None):
-            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
-                   "/confirm"
+            if self.pay_first_month_ebanking:
+                return super(PartnerSmsRegistrationForm, self).form_next_url(
+                    main_object)
+            else:
+                return self._payment_accept_redirect
 
-        # override to remove text saying item updated after registration
-        @property
-        def form_msg_success_updated(self):
-            return
-
-        def _get_partner_vals(self, values):
-            return {
-                key.replace('partner_', ''): value
-                for key, value in values.iteritems()
-                if key.startswith('partner_')
-            }
+        def _edit_transaction_values(self, tx_values):
+            """ Add invoice link and change reference. """
+            tx_values.update({
+                'reference': 'SMS-1MONTH-' + self.main_object.display_name,
+                'sponsorship_id': self.main_object.id
+            })

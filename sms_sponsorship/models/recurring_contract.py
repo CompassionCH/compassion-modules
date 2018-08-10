@@ -7,6 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+
 from odoo import api, models, fields, _
 from odoo.addons.queue_job.job import job, related_action
 import logging
@@ -18,12 +22,20 @@ class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
     group_id = fields.Many2one(required=False)
+    sms_request_id = fields.Many2one('sms.child.request', 'SMS request',
+                                     compute='_compute_sms_request_id')
+
+    @api.multi
+    def _compute_sms_request_id(self):
+        for contract in self:
+            contract.sms_request_id = self.env['sms.child.request'].search([
+                ('sponsorship_id', '=', self.id)
+            ], limit=1)
 
     @api.model
     @job
     def create_sms_sponsorship(self, vals, partner, sms_child_request):
-        """
-        Creates sponsorship from REACT webapp data.
+        """ Creates sponsorship from REACT webapp data.
         :param vals: form values
         :param partner: res.partner record
         :param sms_child_request: sms.child.request record
@@ -67,21 +79,22 @@ class RecurringContract(models.Model):
             'origin_id': sms_child_request.event_id.origin_id.id,
         })
         sponsorship.on_change_origin()
+        sponsorship._set_next_invoice_date_sms()
         sponsorship.with_delay().put_child_on_no_money_hold()
         partner.set_privacy_statement(origin='new_sponsorship')
         sms_child_request.complete_step1(sponsorship.id)
         return True
 
     @job(default_channel="root.sms_sponsorship")
-    @related_action(action='related_action_finalize_form')
-    def finalize_form(self, pay_first_month_ebanking):
-        # validate sponsorship and send confirmation email
-        sms_request = self.env['sms.child.request'].sudo().search([
-            ('sponsorship_id.id', '=', self.id)
-        ])
-        # check if partner was created via the SMS request. new_partner
-        # is set at True in recurring_contract in models
-        if sms_request.new_partner:
+    @related_action(action='related_action_contract')
+    def finalize_form(self, pay_first_month_ebanking, payment_mode_id):
+        """ validate sms sponsorship after step 2 and send confirmation email
+        :param pay_first_month_ebanking: has the sponsor paid first month
+        :param payment_mode_id: selected payment mode
+        :return: True
+        """
+        self.associate_group(payment_mode_id)
+        if self.sms_request_id.new_partner:
             # send staff notification
             notify_ids = self.env['staff.notification.settings'].get_param(
                 'new_partner_notify_ids')
@@ -97,13 +110,87 @@ class RecurringContract(models.Model):
                 )
         else:
             self.signal_workflow('contract_validated')
+            self.button_generate_invoices()
 
-        # if sponsor directly payed
-        if pay_first_month_ebanking:
-            # load payment view ? TODO
-            _logger.error("Activate sponsorship is not yet implemented")
+        if not pay_first_month_ebanking:
+            # update sms request and send confirmation. this will be done
+            # after the payment if the sponsor decides to pay the first month
+            self.sms_request_id.complete_step2()
 
-        # update sms request
-        sms_request.complete_step2()
-        self.button_generate_invoices()
         return True
+
+    def associate_group(self, payment_mode_id):
+        """ Create contract group when SMS sponsorship is validated.
+        :param payment_mode_id: selected payment mode
+        :return: True
+        """
+        group = self.env['recurring.contract.group'].search([
+            ('partner_id', '=', self.partner_id.id),
+            ('payment_mode_id', '=', payment_mode_id)
+        ], order='next_invoice_date desc', limit=1)
+        if not group:
+            group = group.create({
+                'partner_id': self.partner_id.id,
+                'payment_mode_id': payment_mode_id,
+            })
+        self.group_id = group
+        return True
+
+    @job(default_channel="root.sms_sponsorship")
+    @related_action(action='related_action_contract')
+    def create_first_sms_invoice(self):
+        """In case the sponsor is a new partner, create first invoice
+        because the sponsorship won't be validated and invoices are not
+        generated. We therefore manually create an invoice that can be paid
+        online.
+        :return: True
+        """
+        invoicer = self.env['recurring.invoicer'].create({
+            'source': "SMS Sponsorship"})
+        journal = self.env['account.journal'].search(
+            [('type', '=', 'sale'), ('company_id', '=', 1)], limit=1)
+        inv_data = self.group_id._setup_inv_data(journal, invoicer, self)
+        self.env['account.invoice'].create(inv_data)
+        self.update_next_invoice_date()
+        return True
+
+    def contract_waiting(self):
+        """
+        In case a new sponsor has already paid the first month, we
+        automatically pay the first invoice when contract is validated,
+        supposing that the staff has verified the partner.
+        :return: True
+        """
+        super(RecurringContract, self).contract_waiting()
+        self._post_payment_first_month()
+        return True
+
+    def _post_payment_first_month(self):
+        for contract in self.filtered('invoice_line_ids'):
+            invoices = contract.invoice_line_ids.mapped('invoice_id')
+            payment = self.env['account.payment'].search([
+                ('invoice_ids', 'in', invoices.ids),
+                ('state', '=', 'draft')
+            ])
+            draft_invoices = invoices.filtered(lambda i: i.state == 'draft')
+            draft_invoices.action_invoice_open()
+            payment.post()
+
+    def _set_next_invoice_date_sms(self):
+        """ Just compute the default next_invoice_date for new sponsorship. """
+        self.ensure_one()
+        current_date = datetime.today()
+        if self.group_id:
+            contract_group = self.group_id
+            if contract_group.next_invoice_date:
+                next_group_date = fields.Datetime.from_string(
+                    contract_group.next_invoice_date)
+                next_invoice_date = current_date.replace(
+                    day=next_group_date.day)
+            else:
+                next_invoice_date = current_date.replace(day=1)
+        else:
+            next_invoice_date = current_date.replace(day=1)
+
+        next_invoice_date += relativedelta(months=+1)
+        self.next_invoice_date = fields.Date.to_string(next_invoice_date)

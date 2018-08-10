@@ -31,6 +31,7 @@ class PaymentAcquirerHidden(models.AbstractModel):
     _name = 'cms_form_compassion.form.widget.payment.hidden'
     _inherit = 'cms_form_compassion.form.widget.payment'
     _w_template = 'cms_form_compassion.widget_payment_hidden'
+    _w_css_klass = 'field-hidden'
 
 
 class GeneralTerms(models.AbstractModel):

@@ -66,7 +66,8 @@ class PaymentTransaction(models.Model):
                 method_id = transaction._get_payment_method_id()
                 auto_post = transaction._get_auto_post_invoice()
                 transaction.invoice_id.with_delay().pay_transaction_invoice(
-                    invoice_vals, journal_id, method_id, auto_post)
+                    transaction, invoice_vals, journal_id, method_id,
+                    auto_post)
         return True
 
     def _get_payment_invoice_vals(self):

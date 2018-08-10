@@ -11,8 +11,9 @@
 ##############################################################################
 
 import werkzeug.utils
+from odoo import _
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
-
+from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 
 
@@ -133,6 +134,14 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
            auth='public', website=True)
     def step2_confirm_sponsorship(self, sponsorship=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
+        if kwargs.get('error'):
+            request.website.add_status_message(
+                _("The payment was not successful. Please try again. You can "
+                  "also pay later in case you are experiencing issues with "
+                  "the online payment system."), type_='danger')
+        if sponsorship.sms_request_id.state == 'step2':
+            # Sponsorship is already confirmed
+            return self.sms_registration_confirmation(sponsorship, **kwargs)
         return self.make_response(
             'recurring.contract',
             model_id=sponsorship and sponsorship.id,
@@ -142,9 +151,29 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
     @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/'
            'confirm', type='http', auth='public',
            methods=['GET'], website=True)
-    def sms_registration_confirmation(self, sponsorship=None):
+    def sms_registration_confirmation(self, sponsorship=None, **post):
+        """
+        This is either called after form submission, or when the user
+        is redirected back from the payment website. We use ogone as provider
+        but this could be replaced in a method override.
+        :param sponsorship: the sponsorship
+        :return: The view to render
+        """
         values = {
             'sponsorship': sponsorship.sudo()
         }
+        try:
+            tx = request.env['payment.transaction'].sudo().\
+                _ogone_form_get_tx_from_data(post)
+        except ValidationError:
+            tx = None
+
+        if tx:
+            # The user wanted to pay the first month
+            if tx.state != 'done':
+                # Payment was not successful
+                return request.redirect(
+                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
+
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)

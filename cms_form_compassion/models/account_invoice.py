@@ -18,9 +18,10 @@ class AccountInvoice(models.Model):
     @job(default_channel='root.cms_form_compassion')
     @related_action('related_action_invoice')
     def pay_transaction_invoice(
-            self, invoice_vals, journal_id, method_id, auto_post):
+            self, transaction, invoice_vals, journal_id, method_id, auto_post):
         """Make a payment to reconcile transaction invoice.
 
+        :param transaction: The originating transaction
         :param invoice_vals: Values to write into invoice
         :param journal_id: account.journal to use
         :param method_id: payment.method to use
@@ -60,7 +61,7 @@ class AccountInvoice(models.Model):
             if self.state == 'draft':
                 self.action_invoice_open()
             account_payment.post()
-        self._after_transaction_invoice_paid()
+        self._after_transaction_invoice_paid(transaction)
         return True
 
     @api.multi
@@ -69,6 +70,6 @@ class AccountInvoice(models.Model):
         """Cancel transaction invoice"""
         return self.unlink()
 
-    def _after_transaction_invoice_paid(self):
+    def _after_transaction_invoice_paid(self, transaction):
         """ Hook for doing post-processing after transaction was paid. """
         pass
