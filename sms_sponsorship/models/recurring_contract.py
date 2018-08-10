@@ -1,5 +1,17 @@
-from odoo import api, models, fields
-from odoo.addons.queue_job.job import job
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+from odoo import api, models, fields, _
+from odoo.addons.queue_job.job import job, related_action
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class RecurringContract(models.Model):
@@ -58,4 +70,40 @@ class RecurringContract(models.Model):
         sponsorship.with_delay().put_child_on_no_money_hold()
         partner.set_privacy_statement(origin='new_sponsorship')
         sms_child_request.complete_step1(sponsorship.id)
+        return True
+
+    @job(default_channel="root.sms_sponsorship")
+    @related_action(action='related_action_finalize_form')
+    def finalize_form(self, pay_first_month_ebanking):
+        # validate sponsorship and send confirmation email
+        sms_request = self.env['sms.child.request'].sudo().search([
+            ('sponsorship_id.id', '=', self.id)
+        ])
+        # check if partner was created via the SMS request. new_partner
+        # is set at True in recurring_contract in models
+        if sms_request.new_partner:
+            # send staff notification
+            notify_ids = self.env['staff.notification.settings'].get_param(
+                'new_partner_notify_ids')
+            if notify_ids:
+                self.message_post(
+                    body=_("A new partner was created by SMS and needs a "
+                           "manual confirmation"),
+                    subject=_("New SMS partner"),
+                    partner_ids=notify_ids,
+                    type='comment',
+                    subtype='mail.mt_comment',
+                    content_subtype='plaintext'
+                )
+        else:
+            self.signal_workflow('contract_validated')
+
+        # if sponsor directly payed
+        if pay_first_month_ebanking:
+            # load payment view ? TODO
+            _logger.error("Activate sponsorship is not yet implemented")
+
+        # update sms request
+        sms_request.complete_step2()
+        self.button_generate_invoices()
         return True

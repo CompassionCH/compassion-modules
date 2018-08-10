@@ -171,7 +171,7 @@ if not testing:
             partner_vals = self._get_partner_vals(extra_values)
             if partner:
                 # update existing partner
-                partner.write(partner_vals)
+                partner.with_delay().update_partner(partner_vals)
             else:
                 # create new partner
                 self.env['res.partner'].sudo().create(partner_vals)
@@ -187,38 +187,8 @@ if not testing:
             sponsorship.on_change_group_id()
 
         def form_after_create_or_update(self, values, extra_values):
-            # validate sponsorship and send confirmation email
-            sponsorship = self.main_object.sudo()
-            sms_request = self.env['sms.child.request'].sudo().search([
-                ('sponsorship_id', '=', self.main_object.id)
-            ])
-            # check if partner was created via the SMS request. new_partner
-            # is set at True in recurring_contract in models
-            if sms_request.new_partner:
-                # send staff notification
-                notify_ids = self.env['staff.notification.settings'].get_param(
-                    'new_partner_notify_ids')
-                if notify_ids:
-                    sponsorship.message_post(
-                        body=_("A new partner was created by SMS and needs a "
-                               "manual confirmation"),
-                        subject=_("New SMS partner"),
-                        partner_ids=notify_ids,
-                        type='comment',
-                        subtype='mail.mt_comment',
-                        content_subtype='plaintext'
-                    )
-            else:
-                sponsorship.signal_workflow('contract_validated')
-
-            # if sponsor directly payed
-            if self.pay_first_month_ebanking:
-                # load payment view ? TODO
-                _logger.error("Activate sponsorship is not yet implemented")
-
-            # update sms request
-            sms_request.complete_step2()
-            sponsorship.button_generate_invoices()
+            self.main_object.sudo().with_delay().finalize_form(
+                self.pay_first_month_ebanking)
 
         def form_next_url(self, main_object=None):
             return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
