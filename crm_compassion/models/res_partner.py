@@ -31,7 +31,7 @@ class Partner(models.Model):
         }
 
     @api.multi
-    def make_ambassador(self):
+    def create_odoo_user(self):
         portal = self.env['portal.wizard'].create({})
         portal.onchange_portal_id()
         users = portal.mapped('user_ids')
@@ -41,7 +41,6 @@ class Partner(models.Model):
             partner = user.partner_id
             user.email = partner.firstname[0].lower() + \
                 partner.lastname.lower() + '@cs.local'
-        portal.action_apply()
         no_mail.mapped('partner_id').write({'email': False})
         return True
 
