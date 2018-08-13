@@ -81,7 +81,8 @@ i18n
                     "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Recharger la page",
                     "error_sponsorFromWebsite": "Parrainer un enfant depuis le site web",
-                    "error_websiteUrl": "https://www.compassion.ch/parrainer",                    "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
+                    "error_websiteUrl": "https://www.compassion.ch/parrainer",
+                    "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères. Merci de patienter quelques secondes...",
                     "ageYears": " ans",
                     // ChildCard.js
@@ -136,43 +137,43 @@ i18n
             de: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/>Bitte versuchen Sie es erneut, um einen gültigen Link zu erhalten, indem Sie COMPASSION an 959 senden. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du hast dieses Kind bereits gesponsert, danke! <br/><br/> Wenn Sie ein anderes Kind sponsern möchten, geben Sie bitte erneut COMPASSION bis 959 ein.",
-                    "error_noService": "Error : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuchen Sie es in ein paar Minuten noch einmal. Vielen Dank!",
+                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende COMPASSION an 959. Danke!",
+                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchten, sende bitte erneut COMPASSION an 959.",
+                    "error_noService": "Fehler : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuche es in ein paar Minuten noch einmal. Vielen Dank!",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Parrainer un enfant depuis le site web",
                     "error_websiteUrl": "https://www.compassion.ch/de/finden-sie-ein-patenkind/",
-                    "waitingForChild": "Wir suchen ein Kind, das auf einen Sponsor wartet, bitte warten Sie ein paar Sekunden ...",
-                    "waitingForOtherChild": "Wir suchen ein Kind, das Ihrer Anfrage entspricht, bitte warten Sie ein paar Sekunden ...",
+                    "waitingForChild": "Bitte warte ein paar Sekunden, wir suchen ein Kind, das auf einen Paten wartet ...",
+                    "waitingForOtherChild": "Wir suchen ein Kind, das deinen Kriterien entspricht, bitte warte ein paar Sekunden ...",
                     "ageYears": " Jahre",
                     // ChildCard.js
-                    "cardTitle": "Patenschaft für ein Kind",
+                    "cardTitle": "Ein Kind unterstützen",
                     "age": "Alter",
                     "gender": "Geschlecht",
                     "country": "Land",
                     "Male": "Männlich",
                     "Female": "Weiblich",
                     // ChildDetails.js
-                    "more": "Mehr Details",
+                    "more": "Weitere Informationen",
                     // SponsorForm.js
-                    "coordinates": "Ihre Koordinaten",
+                    "coordinates": "Deine Koordinaten",
                     "firstname": "Vorname",
                     "lastname": "Nachname",
-                    "email": "Email",
+                    "email": "E-Mail",
                     "emailConfirm": "Confirm your email address",
-                    "sponsorshipPlus": "Sponsorship plus",
-                    "otherChild": "Anderes Kind",
-                    "sponsorNow": "Sponsor {{name}}",
+                    "sponsorshipPlus": "Patenschaft Plus",
+                    "otherChild": "Ein anderes Kind unterstützen",
+                    "sponsorNow": "{{name}} unterstützen",
                     "error_invalidMail": "Please verify that you put a valid e-mail address.",
                     "error_missingFirstname": "Please enter your first name",
                     "error_missingLastname": "Please enter your last name",
                     // ModalForm.js
                     "chooseTitle": "Wähle ein anderes Kind",
-                    "modalHelp": "Wählen Sie Filter für ein anderes Kind aus. Sie können die Filter leer lassen, wenn Sie nicht nach bestimmten Kriterien auswählen möchten.",
-                    "genderSelect": "Jungen/Mädchen",
+                    "modalHelp": "Wähle einen Filter für ein anderes Kind aus. Du kannst die Filter leer lassen, wenn du nicht nach bestimmten Kriterien auswählen möchtest.",
+                    "genderSelect": "Junge/Mädchen",
                     "ageSelect": "Alter",
                     "countrySelect": "Land",
-                    "cancel": "Abbestellen",
+                    "cancel": "Abbrechen",
                     "boy": "Junge",
                     "girl": "Mädchen",
                     "ageCat1": "0-3 Jahre",
@@ -181,22 +182,14 @@ i18n
                     "ageCat4": "11-14 Jahre",
                     "ageCat5": "15-20 Jahre",
                     // SponsorshipPlusTabs.js
-                    "basicTab": "Sponsorship basic",
+                    "basicTab": "Patenschaft Basis",
                     "basicTitle": "CHF 42.- / Monat",
-                    "basicDescription": "Ihre monatliche Unterstützung bietet lebensverändernde Möglichkeiten wie " +
-                        "die Möglichkeit, in der Schule zu bleiben oder zu bleiben, " +
-                        "Nahrung zu nähren, Mentoring und eine sichere Umgebung." +
-                        "",
-                    "plusTab": "Sponsorship plus",
+                    "basicDescription": "Deine Patenschaft ermöglicht, dass das Kind ein Kinderzentrum besucht, das von einer einheimischen christlichen Gemeinde geführt wird. Dort wird es ganzheitlich gefördert: Es geht zur Schule, erhält Nahrung und wird ärztlich versorgt. Das Kind lernt, dass es wertvoll ist und entdeckt sein Potential in einem sicheren Umfeld.",
+                    "plusTab": "Patenschaft Plus",
                     "plusTitle": "CHF 50.- / Monat",
-                    "plusDescription": "Sponsorship Plus ist die Grundförderung " +
-                        "plus eine zusätzliche Spende von CHF 8.00 pro Monat: <br/><br/>Es ermöglicht Compassion, Projekte zu finanzieren, " +
-                        "um die Umwelt der Kinder zu verändern. " +
-                        "Die im Rahmen des Programms Sponsorship Plus erhaltenen Mittel tragen zu einem gemeinsamen Fonds bei " +
-                        "und ermöglichen es Compassion, jedes Jahr mehrere Projekte zu unterstützen.",
-                    "sponsorshipPromotion": "Mitgefühlskindersponsoring funktioniert! Millionen von Kindern haben unser Programm absolviert und sind nun verantwortliche, erfüllte Erwachsene.",
+                    "plusDescription": "Patenschaft \"Plus\" beinhaltet die Patenschaft \"Basis\" von CHF 42.00 und eine Spende von CHF 8.00 pro Monat zusätzlich. Sie erlaubt Compassion, Projekte zu finanzieren um die Umgebung des Patenkindes zu verändern und Kinder zu unterstützen, die noch auf einen Paten warten.",
                     // SuccessMessage.js
-                    "successMessage1": "Hurra! {{preferred_name}} wird bald die gute Nachricht erhalten, dass Sie sein Sponsor sind.",
+                    "successMessage1": "Juhu! {{preferred_name}} wird bald die gute Nachricht erhalten, dass du sein Pate bist.<br/><br/>Es sind noch ein paar Schritte nötig, um die Patenschaft zu bestätigen, aber keine Sorge: Du wirst alle Details per E-Mail erhalten, damit du die Registrierung abschliessen kannst, wenn du Zeit hast.",
                     "successMessage2": "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
                     "successTitle": "You sponsored {{preferred_name}}",
                 }
