@@ -68,7 +68,7 @@ class SmsChildRequest(models.Model):
 
     new_partner = fields.Boolean('New partner ?',
                                  help="is true if partner was created when "
-                                 "sending sms", default=False)
+                                      "sending sms", default=False)
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
@@ -84,11 +84,15 @@ class SmsChildRequest(models.Model):
     @api.multi
     @api.depends('date')
     def _compute_event(self):
+        limit_date = datetime.today() - relativedelta(days=7)
         for request in self.filtered('date'):
-            request.event_id = self.env['crm.event.compassion'].search([
+            event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
-                ('start_date', '<=', request.date)
-            ], limit=1)
+                ('start_date', '<=', request.date),
+                ('start_date', '>=', fields.Datetime.to_string(limit_date))
+            ], order='start_date desc', limit=1)
+            # event_id is None if start_date of most recent event is>1 week old
+            request.event_id = event_id
 
     def _inverse_event(self):
         # Allows to manually set an event
@@ -116,7 +120,7 @@ class SmsChildRequest(models.Model):
             'is_trying_to_fetch_child': True
         })
         # Directly commit for the job to work
-        self.env.cr.commit()    # pylint: disable=invalid-commit
+        self.env.cr.commit()  # pylint: disable=invalid-commit
         request.with_delay().reserve_child()
         return request
 
@@ -179,7 +183,8 @@ class SmsChildRequest(models.Model):
                 'channel': 'sms',
                 'source_code': 'sms_sponsorship',
                 'return_action': 'view_holds'
-            }).send()
+            }
+        ).send()
         child_hold = self.env['compassion.hold'].browse(
             result_action['domain'][0][2])
         child_hold.sms_request_id = self.id
