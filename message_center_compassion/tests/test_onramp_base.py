@@ -60,7 +60,7 @@ class TestOnramp(common.HttpCase):
             "x-cim-ToAddress": "CH",
         }
 
-    def _test_no_token(self):
+    def test_no_token(self):
         """ Check we have an access denied if token is not provided
         """
         del self.headers['Authorization']
@@ -69,7 +69,7 @@ class TestOnramp(common.HttpCase):
             self.assertEqual(e.exception.code, 401)
             self.assertEqual(e.exception.msg, 'UNAUTHORIZED')
 
-    def _test_bad_token(self):
+    def test_bad_token(self):
         """ Check we have an access denied if token is not valid
         """
         self.headers['Authorization'] = 'Bearer notarealtoken'
@@ -78,7 +78,7 @@ class TestOnramp(common.HttpCase):
             self.assertEqual(e.exception.code, 401)
             self.assertEqual(e.exception.msg, 'UNAUTHORIZED')
 
-    def _test_body_no_json(self):
+    def test_body_no_json(self):
         req = urllib2.Request(self.rest_url, "This is not json", self.headers)
         with self.assertRaises(urllib2.HTTPError):
             urllib2.urlopen(req)
