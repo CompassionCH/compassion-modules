@@ -7,6 +7,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import SnackbarContent from "@material-ui/core/SnackbarContent/SnackbarContent";
+import teal from '@material-ui/core/colors/teal';
 
 function TabContainer({ children, dir }) {
     return (
@@ -96,6 +98,12 @@ class FullWidthTabs extends React.Component {
                                         <Typography variant="title" align="center">{t("plusTitle")}</Typography>
                                     </div>
                                     <span dangerouslySetInnerHTML={{__html: t("plusDescription")}}/>
+                                    <br/>
+                                    <SnackbarContent
+                                        style={{backgroundColor: teal[700], margin: "auto", marginTop: "20px"}}
+                                        aria-describedby="client-snackbar"
+                                        message={t("sponsorshipPromotion")}
+                                    />
                                 </div>
                             </TabContainer>
                         </SwipeableViews>

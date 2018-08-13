@@ -6,7 +6,7 @@ export default class extends React.Component {
     render() {
         let styles = {
             loadingContainer: {
-                marginTop: '200px',
+                marginTop: '120px',
             },
             loadingTextContainer: {
                 width: '80%',
