@@ -85,14 +85,15 @@ class SmsChildRequest(models.Model):
         for request in self.filtered('date'):
             event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
-                ('start_date', '<=', request.date)
+                ('start_date', '>=', request.date)
             ], limit=1)
             # take last event with sms booking if no more active sms events
             if not event_id:
                 event_id = self.env['crm.event.compassion'].search([
                     ('accepts_sms_booking', '=', True)
                 ], order='start_date desc', limit=1)
-                # check if event is more than a week old
+                # if most recent event is more than a week old, do not
+                # assign event to request
                 if event_id and datetime.today() - datetime.timedelta(days=7)\
                         > event_id.start_date:
                     event_id = None
