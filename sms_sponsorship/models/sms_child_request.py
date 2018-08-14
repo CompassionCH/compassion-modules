@@ -66,7 +66,7 @@ class SmsChildRequest(models.Model):
 
     new_partner = fields.Boolean('New partner ?',
                                  help="is true if partner was created when "
-                                 "sending sms", default=False)
+                                      "sending sms", default=False)
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
@@ -85,19 +85,11 @@ class SmsChildRequest(models.Model):
         for request in self.filtered('date'):
             event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
-                ('start_date', '>=', request.date)
-            ], limit=1)
-            # take last event with sms booking if no more active sms events
-            if not event_id:
-                event_id = self.env['crm.event.compassion'].search([
-                    ('accepts_sms_booking', '=', True)
-                ], order='start_date desc', limit=1)
-                # if most recent event is more than a week old, do not
-                # assign event to request
-                if event_id and datetime.today() - datetime.timedelta(days=7)\
-                        > event_id.start_date:
-                    event_id = None
-
+                ('start_date', '<=', request.date),
+                ('start_date', '>=', datetime.today() -
+                 datetime.timedelta(days=7))
+            ], order='start_date desc', limit=1)
+            # event_id is None if start_date of most recent event is>1 week old
             request.event_id = event_id
 
     def _inverse_event(self):
@@ -111,7 +103,7 @@ class SmsChildRequest(models.Model):
             phone = vals.get('sender')
             partner_obj = self.env['res.partner']
             partner = partner_obj.search([('mobile', 'like', phone)]) or \
-                partner_obj.search([('phone', 'like', phone)])
+                      partner_obj.search([('phone', 'like', phone)])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)
@@ -121,12 +113,12 @@ class SmsChildRequest(models.Model):
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + lang + '/sms_sponsorship/step1/' +
-                str(request.id),
+                       str(request.id),
             }).id,
             'is_trying_to_fetch_child': True
         })
         # Directly commit for the job to work
-        self.env.cr.commit()    # pylint: disable=invalid-commit
+        self.env.cr.commit()  # pylint: disable=invalid-commit
         request.with_delay().reserve_child()
         return request
 
@@ -172,24 +164,24 @@ class SmsChildRequest(models.Model):
             'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
         })
         if self.gender or self.min_age or self.max_age or \
-                self.field_office_id:
+            self.field_office_id:
             childpool_search.do_search()
         else:
             childpool_search.rich_mix()
         expiration = datetime.now() + relativedelta(minutes=15)
         result_action = self.env['child.hold.wizard'].with_context(
             active_id=childpool_search.id, async_mode=False).create({
-                'type': HoldType.E_COMMERCE_HOLD.value,
-                'expiration_date': fields.Datetime.to_string(expiration),
-                'primary_owner': self.env.uid,
-                'event_id': self.event_id.id,
-                'campaign_id': self.event_id.campaign_id.id,
-                'ambassador': self.event_id.user_id.partner_id.id or
-                self.env.uid,
-                'channel': 'sms',
-                'source_code': 'sms_sponsorship',
-                'return_action': 'view_holds'
-            }).send()
+            'type': HoldType.E_COMMERCE_HOLD.value,
+            'expiration_date': fields.Datetime.to_string(expiration),
+            'primary_owner': self.env.uid,
+            'event_id': self.event_id.id,
+            'campaign_id': self.event_id.campaign_id.id,
+            'ambassador': self.event_id.user_id.partner_id.id or
+                          self.env.uid,
+            'channel': 'sms',
+            'source_code': 'sms_sponsorship',
+            'return_action': 'view_holds'
+        }).send()
         child_hold = self.env['compassion.hold'].browse(
             result_action['domain'][0][2])
         child_hold.sms_request_id = self.id
@@ -217,7 +209,7 @@ class SmsChildRequest(models.Model):
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + '/sms_sponsorship/step2/' +
-                str(sponsorship_id)
+                       str(sponsorship_id)
             }).id
         })
         self.partner_id.sms_send_step1_confirmation(self)
