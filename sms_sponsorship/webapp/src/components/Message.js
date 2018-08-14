@@ -6,6 +6,7 @@ export default class extends React.Component {
             loadingContainer: {
                 verticalAlign: 'middle',
                 marginTop: '120px',
+                marginBottom: '50px',
                 textAlign: 'center'
             },
             loadingTextContainer: {
