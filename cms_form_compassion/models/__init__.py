@@ -2,19 +2,14 @@
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#    Releasing children from poverty in Jesus' name
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from . import compassion_hold
-from . import event_compassion
-from . import queue_job
-from . import sms_child_request
-from . import recurring_contract
-from . import res_partner
-from . import staff_notification_settings
-from . import compassion_child
-from . import account_invoice
+from . import widgets
 from . import payment_transaction
+from . import account_invoice
+from . import queue_job

@@ -22,7 +22,7 @@ class PrivacyStatement(models.Model):
     ##########################################################################
     name = fields.Char(compute='_compute_name')
     version = fields.Char()
-    text = fields.Html()
+    text = fields.Html(translate=True)
     date = fields.Date()
 
     @api.model
