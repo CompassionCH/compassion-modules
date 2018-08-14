@@ -43,7 +43,7 @@ function SuccessMessage(props)  {
                     {t('successMessage1', { preferred_name: preferred_name})}
                 </Typography>
                 <br/>
-                <Typography>
+                <Typography gutterBottom>
                     {t('successMessage2', { preferred_name: preferred_name})}
                 </Typography>
             </div>
