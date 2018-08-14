@@ -22,9 +22,10 @@
                 <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
                     <field string="Sponsored children" name="number_children" widget="statinfo"/>
                 </button>
-                <button class="oe_inline oe_stat_button" string="Forget me" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
+                <button class="oe_inline oe_stat_button" string="Forget me" groups="child_compassion.group_sponsorship" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
                 <button class="oe_inline oe_stat_button" type="object"
                         string="Sponsorship impact"
+                        groups="child_compassion.group_sponsorship"
                         name="open_sponsorship_report" icon="fa-file-text-o "/>
             </xpath>
             <xpath expr="//page[1]" position="before">
