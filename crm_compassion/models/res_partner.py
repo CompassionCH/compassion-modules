@@ -41,6 +41,7 @@ class Partner(models.Model):
             partner = user.partner_id
             user.email = partner.firstname[0].lower() + \
                 partner.lastname.lower() + '@cs.local'
+        portal.action_apply()
         no_mail.mapped('partner_id').write({'email': False})
         return True
 
