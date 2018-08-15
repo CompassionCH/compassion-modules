@@ -103,7 +103,7 @@ class SmsChildRequest(models.Model):
             phone = vals.get('sender')
             partner_obj = self.env['res.partner']
             partner = partner_obj.search([('mobile', 'like', phone)]) or \
-                      partner_obj.search([('phone', 'like', phone)])
+                partner_obj.search([('phone', 'like', phone)])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)
@@ -113,7 +113,7 @@ class SmsChildRequest(models.Model):
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + lang + '/sms_sponsorship/step1/' +
-                       str(request.id),
+                str(request.id),
             }).id,
             'is_trying_to_fetch_child': True
         })
@@ -164,7 +164,7 @@ class SmsChildRequest(models.Model):
             'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
         })
         if self.gender or self.min_age or self.max_age or \
-            self.field_office_id:
+                self.field_office_id:
             childpool_search.do_search()
         else:
             childpool_search.rich_mix()
@@ -177,7 +177,7 @@ class SmsChildRequest(models.Model):
                 'event_id': self.event_id.id,
                 'campaign_id': self.event_id.campaign_id.id,
                 'ambassador': self.event_id.user_id.partner_id.id or
-                              self.env.uid,
+                self.env.uid,
                 'channel': 'sms',
                 'source_code': 'sms_sponsorship',
                 'return_action': 'view_holds'
@@ -210,7 +210,7 @@ class SmsChildRequest(models.Model):
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + '/sms_sponsorship/step2/' +
-                       str(sponsorship_id)
+                str(sponsorship_id)
             }).id
         })
         self.partner_id.sms_send_step1_confirmation(self)
