@@ -5,7 +5,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
     var core = require('web.core');
     var _t = core._t;
 
-    animation.registry.modal_form = animation.Class.extend({
+    var ModalForm = animation.Class.extend({
         selector: ".cms_modal_form",
         start: function () {
             // Submit form in Javascript in order to render result inside the modal
@@ -106,4 +106,6 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
             }
         }
     });
+    animation.registry.modal_form = ModalForm;
+    return ModalForm;
 });

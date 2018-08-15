@@ -3,7 +3,7 @@ odoo.define('cms_form_compassion.gtc_form', function (require) {
 
     var animation = require('web_editor.snippets.animation');
 
-    animation.registry.modal_form = animation.Class.extend({
+    var gtc = animation.Class.extend({
         selector: ".gtc-link",
         start: function () {
             // Show GTC text
@@ -12,4 +12,6 @@ odoo.define('cms_form_compassion.gtc_form', function (require) {
             });
         },
     });
+    animation.registry.gtc_form = gtc;
+    return gtc;
 });

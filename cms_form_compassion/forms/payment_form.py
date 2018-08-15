@@ -22,8 +22,6 @@ if not testing:
         _name = 'cms.form.payment'
         _inherit = 'cms.form'
 
-        _default_amount = None
-
         _payment_accept_redirect = '/website_payment/confirm'
         # Can either be modal or full depending if the payment form is
         # displayed in a modal view or in a full page.
@@ -40,6 +38,10 @@ if not testing:
         def _default_currency_id(self):
             # Muskathlon payments are in CHF
             return self.env.ref('base.CHF').id
+
+        @property
+        def _default_amount(self):
+            return 0
 
         @property
         def form_widgets(self):
@@ -64,7 +66,7 @@ if not testing:
                 amount = float(value)
                 if amount <= 0:
                     raise ValueError
-            except ValueError:
+            except (ValueError, TypeError):
                 return 'amount', _(
                     'Please control the amount')
             # No error
