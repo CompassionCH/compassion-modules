@@ -87,7 +87,7 @@ class SmsChildRequest(models.Model):
                 ('accepts_sms_booking', '=', True),
                 ('start_date', '<=', fields.Datetime.to_string(request.date)),
                 ('start_date', '>=', fields.Datetime.to_string(
-                    datetime.today()) - datetime.timedelta(days=7))
+                    datetime.today() - datetime.timedelta(days=7)))
             ], order='start_date desc', limit=1)
             # event_id is None if start_date of most recent event is>1 week old
             request.event_id = event_id
