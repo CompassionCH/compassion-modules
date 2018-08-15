@@ -85,9 +85,9 @@ class SmsChildRequest(models.Model):
         for request in self.filtered('date'):
             event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
-                ('start_date', '<=', request.date),
-                ('start_date', '>=', datetime.today() -
-                 datetime.timedelta(days=7))
+                ('start_date', '<=', fields.Datetime.to_string(request.date)),
+                ('start_date', '>=', fields.Datetime.to_string(
+                    datetime.today()) - datetime.timedelta(days=7))
             ], order='start_date desc', limit=1)
             # event_id is None if start_date of most recent event is>1 week old
             request.event_id = event_id
@@ -171,17 +171,18 @@ class SmsChildRequest(models.Model):
         expiration = datetime.now() + relativedelta(minutes=15)
         result_action = self.env['child.hold.wizard'].with_context(
             active_id=childpool_search.id, async_mode=False).create({
-            'type': HoldType.E_COMMERCE_HOLD.value,
-            'expiration_date': fields.Datetime.to_string(expiration),
-            'primary_owner': self.env.uid,
-            'event_id': self.event_id.id,
-            'campaign_id': self.event_id.campaign_id.id,
-            'ambassador': self.event_id.user_id.partner_id.id or
-                          self.env.uid,
-            'channel': 'sms',
-            'source_code': 'sms_sponsorship',
-            'return_action': 'view_holds'
-        }).send()
+                'type': HoldType.E_COMMERCE_HOLD.value,
+                'expiration_date': fields.Datetime.to_string(expiration),
+                'primary_owner': self.env.uid,
+                'event_id': self.event_id.id,
+                'campaign_id': self.event_id.campaign_id.id,
+                'ambassador': self.event_id.user_id.partner_id.id or
+                              self.env.uid,
+                'channel': 'sms',
+                'source_code': 'sms_sponsorship',
+                'return_action': 'view_holds'
+            }
+        ).send()
         child_hold = self.env['compassion.hold'].browse(
             result_action['domain'][0][2])
         child_hold.sms_request_id = self.id
