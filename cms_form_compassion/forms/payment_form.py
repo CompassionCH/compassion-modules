@@ -64,7 +64,7 @@ if not testing:
                 amount = float(value)
                 if amount <= 0:
                     raise ValueError
-            except ValueError:
+            except (ValueError, TypeError):
                 return 'amount', _(
                     'Please control the amount')
             # No error

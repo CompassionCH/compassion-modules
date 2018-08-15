@@ -6,10 +6,12 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
     var core = require('web.core');
     var _t = core._t;
 
-    animation.registry.modal_form = animation.Class.extend({
+    var PaymentForm = animation.Class.extend({
         selector: "#payment_compassion",
         start: function () {
             this.$el.find('form').submit();
         },
     });
+    animation.registry.payment_form = PaymentForm;
+    return PaymentForm;
 });
