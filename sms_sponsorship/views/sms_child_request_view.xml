@@ -36,6 +36,7 @@
                             <field name="event_id"/>
                             <field name="step1_url"/>
                             <field name="new_partner"/>
+                            <field name="sms_reminder_sent"/>
                             <field name="sponsorship_confirmed"/>
                             <field name="step2_url"/>
                         </group>
