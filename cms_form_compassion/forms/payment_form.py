@@ -88,7 +88,7 @@ if not testing:
             tx_values['reference'] = transaction_obj.get_next_reference(
                 tx_values['reference'])
             transaction = transaction_obj.create(tx_values)
-            return '/compassion/payment/{}/?redirect_url={}&display_type={}'\
+            return '/compassion/payment/{}?redirect_url={}&display_type={}'\
                 .format(str(transaction.id), self._payment_accept_redirect,
                         self._display_type)
 
