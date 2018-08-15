@@ -9,7 +9,6 @@
 #
 ##############################################################################
 import base64
-import urllib2
 import logging
 
 from odoo.tests import common
@@ -34,7 +33,7 @@ class TestOnramp(common.HttpCase):
             default='http://localhost:8069'
         )
         api_client_secret = base64.b64encode("client:secret")
-        self.rest_url = '{0}/onramp?secret={1}'.format(
+        self.rest_url = '{0}/onramp?token={1}'.format(
             self.server_url, api_client_secret)
         params_post = 'grant_type=client_credentials&scope=read+write'
         header_post = {
@@ -50,40 +49,17 @@ class TestOnramp(common.HttpCase):
         data_token = simplejson.loads(response.read())
         conn.close()
 
-        self.headers = {
-            'Content-type': 'application/json',
-            'Authorization': '{token_type} {access_token}'.format(
-                **data_token),
-            "x-cim-MessageType": "http://schemas.ci.org/ci/services/"
-            "communications/2015/09/SBCStructured",
-            "x-cim-FromAddress": "CHTest",
-            "x-cim-ToAddress": "CH",
-        }
-
-    def _test_no_token(self):
-        """ Check we have an access denied if token is not provided
-        """
-        del self.headers['Authorization']
-        with self.assertRaises(urllib2.HTTPError) as e:
-            self._send_post({'nothing': 'nothing'})
-            self.assertEqual(e.exception.code, 401)
-            self.assertEqual(e.exception.msg, 'UNAUTHORIZED')
-
-    def _test_bad_token(self):
-        """ Check we have an access denied if token is not valid
-        """
-        self.headers['Authorization'] = 'Bearer notarealtoken'
-        with self.assertRaises(urllib2.HTTPError) as e:
-            self._send_post({'nothing': 'nothing'})
-            self.assertEqual(e.exception.code, 401)
-            self.assertEqual(e.exception.msg, 'UNAUTHORIZED')
-
-    def _test_body_no_json(self):
-        req = urllib2.Request(self.rest_url, "This is not json", self.headers)
-        with self.assertRaises(urllib2.HTTPError):
-            urllib2.urlopen(req)
+        headers = [
+            ('Content-type', 'application/json'),
+            ('Authorization', '{token_type} {access_token}'.format(
+                **data_token)),
+            ("x-cim-MessageType", "http://schemas.ci.org/ci/services/"
+                "communications/2015/09/SBCStructured"),
+            ("x-cim-FromAddress", "CHTest"),
+            ("x-cim-ToAddress", "CH"),
+        ]
+        self.opener.addheaders.extend(headers)
 
     def _send_post(self, vals):
         data = simplejson.dumps(vals)
-        req = urllib2.Request(self.rest_url, data, self.headers)
-        return urllib2.urlopen(req)
+        return self.url_open(self.rest_url, data)
