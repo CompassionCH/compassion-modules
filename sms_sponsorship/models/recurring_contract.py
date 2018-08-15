@@ -29,7 +29,7 @@ class RecurringContract(models.Model):
     def _compute_sms_request_id(self):
         for contract in self:
             contract.sms_request_id = self.env['sms.child.request'].search([
-                ('sponsorship_id', '=', self.id)
+                ('sponsorship_id', '=', contract.id)
             ], limit=1)
 
     @api.model
