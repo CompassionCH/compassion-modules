@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import api, models, _
+from odoo.addons.queue_job.job import job, related_action
 
 
 class ResPartner(models.Model):
@@ -58,3 +59,8 @@ class ResPartner(models.Model):
             content_subtype='html'
         )
         return True
+
+    @job(default_channel="root.res_partner")
+    @related_action(action='related_action_update_partner')
+    def update_partner(self, partner_vals):
+        return self.write(partner_vals)

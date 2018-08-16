@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2018 Emanuel Cino
+License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+-->
+<odoo>
+    <!-- Display a form in modal popup -->
+    <template id="modal_form" name="CMS Modal Form">
+        <div t-att-id="form.form_id" class="modal fade cms_modal_form" tabindex="-1" role="dialog" aria-labelledby="donation_modal_label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div t-attf-class="modal-content {{form.form_wrapper_css_klass}}">
+                    <div class="modal-body">
+                        <t t-if="form.form_title">
+                            <h2><span class="form_title" t-esc="form.form_title" /></h2>
+                        </t>
+                        <t t-if="form.form_description">
+                            <p class="form_description" t-esc="form.form_description" />
+                        </t>
+                        <t t-raw="form.form_render()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Form buttons for closing modal on cancel -->
+    <template id="modal_form_buttons" name="Modal form buttons">
+      <div class="form-group form-controls">
+        <div class="col-sm-9 col-sm-offset-3">
+          <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+          <button type="submit" class="btn btn-primary"><t t-esc="form.submit_text"/></button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Hide fields in forms -->
+    <template id="field_widget_hidden" name="CMS Widget Field Hidden">
+        <input type="hidden"
+               t-att-name="widget.w_fname"
+               t-att-value="widget.w_field_value"
+               t-att-required="widget.w_field['required'] and '1' or None"
+               t-att-data-params='widget.w_data_json()'
+               t-att-placeholder="widget.w_field['string'] + '...'"
+        />
+    </template>
+
+    <!-- General Terms acceptance checkbox -->
+    <template id="field_widget_gtc" name="CMS form general terms widget">
+        <input type="checkbox"
+           t-att-name="widget.w_fname" t-att-id="fname"
+           t-att-checked="widget.w_field_value or None"
+           t-attf-class="form-control #{widget.w_css_klass}"
+           t-att-required="widget.w_field['required'] and '1' or None"
+           />
+        <span class="label-gtc">By submitting this form, I confirm the acceptance of the <a class="gtc-link" href="#"><b>general terms and conditions</b></a>.</span>
+        <div class="gtc" style="display: none;">
+            <t t-raw="widget.w_form.gtc"/>
+        </div>
+    </template>
+
+    <template id="field_widget_image_simple" name="CMS form image simple for modal">
+        <div class="image-widget-wrapper">
+            <input
+                    type="file" capture="camera" accept="image/*"
+                    t-att-id="widget.w_fname"
+                    t-att-name="widget.w_fname"
+                    class="form-control"
+            />
+        </div>
+    </template>
+
+    <!-- Payment acquirer in form -->
+    <template id="widget_payment" name="CMS Widget Payment Acquirer">
+        <!-- Select payment acquirer -->
+        <ul class="list-unstyled">
+            <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
+                <li>
+                    <label>
+                        <input t-att-value="acquirer.id" type="radio" name="acquirer_id" t-att-checked="widget.w_acquirers[0] == acquirer" />
+                        <span t-field="acquirer.image_small" t-att-title="acquirer.name" t-field-options='{"widget": "image", "style":"max-width: 60px; display: inline-block"}'/>
+                        <span t-field="acquirer.name" />
+                        <span t-if="acquirer.fees_active">(processing fees apply)</span>
+                    </label>
+                    <span t-field="acquirer.pre_msg"/>
+                </li>
+            </t>
+        </ul>
+    </template>
+    <template id="widget_payment_hidden" name="CMS Widget Hidden Payment Acquirer">
+        <!-- Select payment acquirer -->
+        <ul class="list-unstyled" style="display: none">
+            <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
+                <li>
+                    <label>
+                        <input t-att-value="acquirer.id" type="radio" name="acquirer_id" t-att-checked="widget.w_acquirers[0] == acquirer" />
+                        <span t-field="acquirer.image_small" t-att-title="acquirer.name" t-field-options='{"widget": "image", "style":"max-width: 60px; display: inline-block"}'/>
+                        <span t-field="acquirer.name" />
+                        <span t-if="acquirer.fees_active">(processing fees apply)</span>
+                    </label>
+                    <span t-field="acquirer.pre_msg"/>
+                </li>
+            </t>
+        </ul>
+    </template>
+
+    <!-- Called after submission of form, display form for redirecting to Payment Provider -->
+    <template id="modal_payment_submit" name="Payment redirection page">
+        <div class="text-center">
+            <p>Thank you for your submission. You will be redirected to the payment website.
+                Please don't quit or refresh this page. If the redirection doesn't work, please click here.</p>
+            <div id="payment_compassion">
+                <t t-raw="payment_form"/>
+            </div>
+        </div>
+    </template>
+    <template id="payment_submit_full" name="Payment redirection page">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <t t-call="cms_form_compassion.modal_payment_submit"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

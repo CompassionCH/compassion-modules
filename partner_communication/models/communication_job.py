@@ -20,10 +20,11 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import white
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields, _, tools
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
+testing = tools.config.get('test_enable')
 
 
 class MLStripper(HTMLParser):
@@ -553,6 +554,11 @@ class CommunicationJob(models.Model):
         mark_width = 6.5 * mm
         marks_height = (len(marks) - 1) * mark_y_spacing
 
+        logger.info('Mailer DS-75i OMR Settings: 1={} 2={}'.format(
+            (297 * mm - top_mark_y) / mm,
+            (top_mark_x + mark_width / 2) / mm + 0.5
+        ))
+
         omr_buffer = StringIO.StringIO()
         omr_canvas = Canvas(omr_buffer)
         omr_canvas.setLineWidth(0.2 * mm)
@@ -657,8 +663,9 @@ class CommunicationJob(models.Model):
                 'state': 'done',
                 'sent_date': fields.Datetime.now()
             })
-            # Commit to avoid invalid state if process fails
-            self.env.cr.commit()  # pylint: disable=invalid-commit
+            if not testing:
+                # Commit to avoid invalid state if process fails
+                self.env.cr.commit()  # pylint: disable=invalid-commit
         return True
 
     @api.model

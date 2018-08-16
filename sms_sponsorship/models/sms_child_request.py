@@ -60,7 +60,8 @@ class SmsChildRequest(models.Model):
         ('Female', 'Female')
     ])
     min_age = fields.Integer(size=2)
-    max_age = fields.Integer(size=2)
+    # Don't propose children older than 12 years by default
+    max_age = fields.Integer(size=2, default=12)
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
@@ -98,10 +99,8 @@ class SmsChildRequest(models.Model):
             # Try to find a matching partner given phone number
             phone = vals.get('sender')
             partner_obj = self.env['res.partner']
-            partner = partner_obj.search([
-                '|', ('mobile', 'like', phone),
-                ('phone', 'like', phone)
-            ])
+            partner = partner_obj.search([('mobile', 'like', phone)]) or \
+                partner_obj.search([('phone', 'like', phone)])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)

@@ -1,0 +1,5 @@
+<odoo>
+    <record id="cms_form_compassion.confirm_transaction_rule" model="base.action.rule">
+        <field name="filter_pre_domain">['|', ('invoice_id.state', '!=', 'paid'), ('sponsorship_id', '!=', False)]</field>
+    </record>
+</odoo>

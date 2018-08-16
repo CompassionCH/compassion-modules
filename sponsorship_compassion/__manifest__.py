@@ -60,7 +60,8 @@
         'security/ir.model.access.csv'
     ],
     'demo': [
-        'demo/demo_data.yml'
+        'demo/demo_data.yml',
+        'data/demo_data.xml'
     ],
     'installable': True,
     'auto_install': False,

@@ -16,3 +16,5 @@ from . import recurring_contract
 from . import res_partner
 from . import staff_notification_settings
 from . import compassion_child
+from . import account_invoice
+from . import payment_transaction
