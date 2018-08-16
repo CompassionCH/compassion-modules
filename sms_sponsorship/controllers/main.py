@@ -139,7 +139,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                 _("The payment was not successful. Please try again. You can "
                   "also pay later in case you are experiencing issues with "
                   "the online payment system."), type_='danger')
-        if sponsorship.sms_request_id.state == 'step2':
+        if sponsorship.sudo().sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship, **kwargs)
         return self.make_response(
