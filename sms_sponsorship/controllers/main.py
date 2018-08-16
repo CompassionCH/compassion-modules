@@ -148,19 +148,23 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             **kwargs
         )
 
-    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/'
+    @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
            methods=['GET'], website=True)
-    def sms_registration_confirmation(self, sponsorship=None, **post):
+    def sms_registration_confirmation(self, sponsorship_id=None, **post):
         """
         This is either called after form submission, or when the user
         is redirected back from the payment website. We use ogone as provider
         but this could be replaced in a method override.
-        :param sponsorship: the sponsorship
+        NB: at this stage, the sponsorship is no more draft so we use id
+            to avoid access rights issues.
+        :param sponsorship_id: the sponsorship
         :return: The view to render
         """
+        sponsorship = self.env['recurring.contract'].sudo().browse(
+            sponsorship_id)
         values = {
-            'sponsorship': sponsorship.sudo()
+            'sponsorship': sponsorship
         }
         try:
             tx = request.env['payment.transaction'].sudo().\
@@ -173,8 +177,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             if tx.state != 'done':
                 # Payment was not successful
                 return request.redirect(
-                    '/sms_sponsorship/step2/{}?error=1'.format(
-                        sponsorship.sudo().id))
+                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
 
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)
