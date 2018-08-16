@@ -161,7 +161,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param sponsorship_id: the sponsorship
         :return: The view to render
         """
-        sponsorship = self.env['recurring.contract'].sudo().browse(
+        sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
         values = {
             'sponsorship': sponsorship
