@@ -9,9 +9,9 @@ i18n
             en: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting COMPASSION to 959. This service is free of charge. Thank you!",
+                    "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting 1child to 959. This service is free of charge. Thank you!",
                     "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
-                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again COMPASSION to 959. This service is free of charge.",
+                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Sponsor a child from our website",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
@@ -76,9 +76,9 @@ i18n
             fr: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer COMPASSION par SMS au 959. Ce SMS est gratuit.",
+                    "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_noService": "Erreur : le service n'est pas disponible pour le moment. <br/>Veuillez essayer dans quelques minutes. Merci !",
-                    "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer COMPASSION par SMS au 959. Ce SMS est gratuit.",
+                    "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Rafraichir la page",
                     "error_sponsorFromWebsite": "Parrainer depuis le site internet",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
@@ -137,8 +137,8 @@ i18n
             de: {
                 translations: {
                     // App.js
-                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende COMPASSION an 959. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchten, sende bitte erneut COMPASSION an 959.",
+                    "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
+                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchten, sende bitte erneut 1Kind an 959.",
                     "error_noService": "Fehler : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuche es in ein paar Minuten noch einmal. Vielen Dank!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
