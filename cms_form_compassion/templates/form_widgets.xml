@@ -61,7 +61,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
     <template id="field_widget_image_simple" name="CMS form image simple for modal">
         <div class="image-widget-wrapper">
             <input
-                    type="file" capture="camera" accept="image/*"
+                    type="file" accept="image/*"
                     t-att-id="widget.w_fname"
                     t-att-name="widget.w_fname"
                     class="form-control"
