@@ -60,7 +60,8 @@ class SmsChildRequest(models.Model):
         ('Female', 'Female')
     ])
     min_age = fields.Integer(size=2)
-    max_age = fields.Integer(size=2)
+    # Don't propose children older than 12 years by default
+    max_age = fields.Integer(size=2, default=12)
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
