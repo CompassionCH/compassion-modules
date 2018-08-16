@@ -97,7 +97,7 @@ if not testing:
         @property
         def gtc(self):
             statement = self.env['compassion.privacy.statement'].sudo().search(
-                [], limit=1).with_context(lang=self.partner_id.lang)
+                [], limit=1).with_context(lang=self.partner_id.sudo().lang)
             return statement.text
 
         @property
