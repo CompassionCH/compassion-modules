@@ -151,8 +151,8 @@ i18n
                     "age": "Alter",
                     "gender": "Geschlecht",
                     "country": "Land",
-                    "Male": "Männlich",
-                    "Female": "Weiblich",
+                    "Male": "Junge",
+                    "Female": "Mädchen",
                     // ChildDetails.js
                     "more": "Weitere Informationen",
                     // SponsorForm.js
@@ -190,8 +190,8 @@ i18n
                     "plusDescription": "Patenschaft \"Plus\" beinhaltet die Patenschaft \"Basis\" von CHF 42.00 und eine Spende von CHF 8.00 pro Monat zusätzlich. Sie erlaubt Compassion, Projekte zu finanzieren um die Umgebung des Patenkindes zu verändern und Kinder zu unterstützen, die noch auf einen Paten warten.",
                     "sponsorshipPromotion": "Eine Patenschaft mit Compassion funktioniert! Millionen von Kindern aus extremer Armut haben unser Programm absolviert und sind heute verantwortungsvolle Erwachsene, die sich selbst für Kinder einsetzen.",
                     // SuccessMessage.js
-                    "successMessage1": "Juhu! {{preferred_name}} wird bald die gute Nachricht erhalten, dass du sein/ihr Pate/Patin bist.<br/><br/>Es sind noch ein paar Schritte nötig, um die Patenschaft zu bestätigen, aber keine Sorge: Du wirst alle Details per E-Mail erhalten, damit du die Registrierung abschliessen kannst, wenn du Zeit hast.",
-                    "successMessage2": "Es sind noch ein paar Schritte nötig, um das Sponsoring zu bestätigen, aber keine Sorge: Sie werden alle Details per E-Mail erhalten, damit Sie Ihre Registrierung abschließen können, wenn Sie Zeit haben.",
+                    "successMessage1": "Juhu! {{preferred_name}} wird bald die gute Nachricht erhalten, dass du sein/ihr Pate/Patin bist.",
+                    "successMessage2": "Es sind noch ein paar Schritte nötig, um die Patenschaft zu bestätigen, aber keine Sorge: Du wirst alle Details per E-Mail erhalten, damit du die Registrierung abschliessen kannst, wenn du Zeit hast.",
                     "successTitle": "Du bist jetzt Pate/Patin von {{preferred_name}}",
                 }
             },
