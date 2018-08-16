@@ -130,21 +130,23 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
     # STEP 2
     ########
-    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/',
+    @route('/sms_sponsorship/step2/<int:sponsorship_id>/',
            auth='public', website=True)
-    def step2_confirm_sponsorship(self, sponsorship=None, **kwargs):
+    def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
+        sponsorship = request.env['recurring.contract'].sudo().browse(
+            sponsorship_id)
         if kwargs.get('error'):
             request.website.add_status_message(
                 _("The payment was not successful. Please try again. You can "
                   "also pay later in case you are experiencing issues with "
                   "the online payment system."), type_='danger')
-        if sponsorship.sudo().sms_request_id.state == 'step2':
+        if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship, **kwargs)
         return self.make_response(
             'recurring.contract',
-            model_id=sponsorship and sponsorship.sudo().id,
+            model_id=sponsorship and sponsorship.id,
             **kwargs
         )
 

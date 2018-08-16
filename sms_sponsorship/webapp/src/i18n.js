@@ -138,7 +138,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchten, sende bitte erneut 1Kind an 959.",
+                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
                     "error_noService": "Fehler : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuche es in ein paar Minuten noch einmal. Vielen Dank!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
