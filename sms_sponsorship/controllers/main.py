@@ -144,7 +144,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             return self.sms_registration_confirmation(sponsorship, **kwargs)
         return self.make_response(
             'recurring.contract',
-            model_id=sponsorship and sponsorship.id,
+            model_id=sponsorship and sponsorship.sudo().id,
             **kwargs
         )
 
@@ -173,7 +173,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             if tx.state != 'done':
                 # Payment was not successful
                 return request.redirect(
-                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
+                    '/sms_sponsorship/step2/{}?error=1'.format(
+                        sponsorship.sudo().id))
 
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)
