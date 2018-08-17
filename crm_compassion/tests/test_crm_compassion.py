@@ -87,16 +87,17 @@ class TestCrmCompassion(BaseSponsorshipTest):
         is_unlinked = event.unlink()
         self.assertTrue(is_unlinked)
 
-    def test_calendar_event_sync(self):
+    def test_calendar_event_synchronization(self):
         lead = self._create_lead('MyLead', 1)
 
         event = self._create_event(lead, 'sport')
         self.assertEqual(event.calendar_event_id.duration, 9)
 
-        # now = datetime.today().strftime(DF)
-        # event.write({
-        #     'end_date': now + ' 8:43:00',
-        # })
+        in_two_days = (datetime.today() + timedelta(days=2)).strftime(DF)
+        event.write({
+            'end_date': in_two_days,
+        })
+        self.assertEqual(event.calendar_event_id.duration, 16)  # 2 days x 8
 
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
         project_id = self.env['project.project'].create(

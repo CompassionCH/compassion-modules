@@ -485,9 +485,10 @@ class EventCompassion(models.Model):
         self.ensure_one()
         time_delta = (fields.Datetime.from_string(self.end_date) -
                       fields.Datetime.from_string(self.start_date))
-        duration_in_hours = math.ceil(time_delta.seconds / 3600.0)
-        corrected_duration = (time_delta.days if duration_in_hours > 24
-                              else time_delta.days * 8)
+        duration_in_hours = math.ceil(time_delta.days * 24 +
+                                      time_delta.seconds / 3600.0)
+        corrected_duration = (time_delta.days * 8 if duration_in_hours > 24
+                              else duration_in_hours)
         calendar_vals = {
             'name': self.name,
             'compassion_event_id': self.id,
