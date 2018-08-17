@@ -11,6 +11,7 @@
 from odoo import api, models, fields, exceptions, _
 from datetime import datetime, timedelta
 from odoo.exceptions import ValidationError
+import math
 
 
 class EventCompassion(models.Model):
@@ -482,17 +483,17 @@ class EventCompassion(models.Model):
         :return: dictionary of calendar.event values
         """
         self.ensure_one()
-        number_of_days = 1
-        start_date = fields.Datetime.from_string(self.start_date)
-        if self.end_date:
-            end_date = fields.Datetime.from_string(self.end_date)
-            number_of_days = (end_date - start_date).days
+        time_delta = (fields.Datetime.from_string(self.end_date) -
+                      fields.Datetime.from_string(self.start_date))
+        duration_in_hours = math.ceil(time_delta.seconds / 3600.0)
+        corrected_duration = (time_delta.days if duration_in_hours > 24
+                              else time_delta.days * 8)
         calendar_vals = {
             'name': self.name,
             'compassion_event_id': self.id,
             'categ_ids': [
                 (6, 0, [self.env.ref('crm_compassion.calendar_event').id])],
-            'duration': number_of_days * 8,
+            'duration': corrected_duration,
             'description': self.description,
             'location': self.city,
             'user_id': self.user_id.id,
