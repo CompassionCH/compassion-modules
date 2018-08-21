@@ -60,6 +60,17 @@
         </field>
     </record>
 
+    <record id="view_res_partner_filter_sponsorships" model="ir.ui.view">
+        <field name="name">Partner search with employees</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+             <field name="name" position="after">
+                 <field name="ambassador_details_id" filter_domain="[('ambassador_details_id.engagement_ids', 'ilike', self)]"/>
+             </field>
+        </field>
+    </record>
+
     <record id="view_compassion_sponsorship_line_tree" model="ir.ui.view">
         <field name="name">compassion.sponsorship.line.tree</field>
         <field name="model">recurring.contract.line</field>

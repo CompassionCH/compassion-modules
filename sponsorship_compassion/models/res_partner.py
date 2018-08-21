@@ -80,6 +80,8 @@ class ResPartner(models.Model):
                                          store=True)
     church_id = fields.Many2one('res.partner', 'Church',
                                 domain=[('is_church', '=', True)])
+    ambassador_details_id = fields.Many2one('ambassador.details',
+                                            string="Engagement types")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
