@@ -136,11 +136,6 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """ SMS step2 controller. Returns the sponsorship registration form."""
         sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
-        if kwargs.get('error'):
-            request.website.add_status_message(
-                _("The payment was not successful. Please try again. You can "
-                  "also pay later in case you are experiencing issues with "
-                  "the online payment system."), type_='danger')
         if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship, **kwargs)
@@ -168,18 +163,27 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         values = {
             'sponsorship': sponsorship
         }
-        try:
-            tx = request.env['payment.transaction'].sudo().\
-                _ogone_form_get_tx_from_data(post)
-        except ValidationError:
-            tx = None
+        # error if partner said he wanted to pay first month immediately but
+        # didn't for any reasons
+        if post.get('error'):
+            request.website.add_status_message(
+                _("The payment was not successful, but your sponsorship has "
+                  "been activated ! You will receive an email with all "
+                  "needed information"),
+                type_='danger')
+        else:
+            try:
+                tx = request.env['payment.transaction'].sudo().\
+                    _ogone_form_get_tx_from_data(post)
+            except ValidationError:
+                tx = None
 
-        if tx:
-            # The user wanted to pay the first month
-            if tx.state != 'done':
-                # Payment was not successful
-                return request.redirect(
-                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
-
+            if tx:
+                # The user wanted to pay the first month
+                if tx.state != 'done':
+                    # Payment was not successful
+                    return request.redirect(
+                        '/sms_sponsorship/step2/' + str(sponsorship_id) +
+                        '/confirm/?error=1')
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)
