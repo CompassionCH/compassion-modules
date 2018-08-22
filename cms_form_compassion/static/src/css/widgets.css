@@ -1,0 +1,28 @@
+.field-hidden {
+    display: none;
+}
+
+.section-header {
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* This ensures the datepicker is above the modal */
+.ui-datepicker { position: relative; z-index: 10000 !important; }
+
+.gtc {
+    font-size: small;
+}
+
+.label-gtc{
+    font-size: smaller;
+    padding-left: 5px;
+}
+
+.field-gtc {
+    display: inline-block;
+}
+
+/* Problems displaying image fields in forms */
+.form-field input[type=file].form-control {
+    height: initial !important;
+}

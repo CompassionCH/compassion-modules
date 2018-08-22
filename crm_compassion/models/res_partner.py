@@ -31,7 +31,7 @@ class Partner(models.Model):
         }
 
     @api.multi
-    def make_ambassador(self):
+    def create_odoo_user(self):
         portal = self.env['portal.wizard'].create({})
         portal.onchange_portal_id()
         users = portal.mapped('user_ids')
