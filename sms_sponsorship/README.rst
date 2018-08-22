@@ -17,7 +17,7 @@ Compassion SMS Sponsorships
     :target: https://github.com/CompassionCH/{compassion-modules}/tree/devel/sms_sponsorship
     :alt: CompassionCH/{compassion-modules}
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module adds architecture to support sending unique URLs to sponsor mobile devices for sponsoring a child during
 an event. It adds the ability to make a hold on a child for a mobile phone number and providing a URL for a
@@ -69,6 +69,24 @@ Usage
 To use this module, you need to:
 
 #. Have a mobile app that can send messages to your Odoo instance
+
+Load Tests
+==========
+
+Make a copy of the devel database
+
+   createdb -T devel new_db_name
+
+Duplicate the Odoo filestore as well (~/.local/share/Odoo/filestore/devel)
+
+Launch an Odoo instance with that db
+
+Start the load tests with
+
+   locust -f load_tests.py --host=http://localhost:8069
+
+It will start the load test server on localhost:8089
+
 
 Known issues / Roadmap
 ======================

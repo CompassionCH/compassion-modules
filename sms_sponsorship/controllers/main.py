@@ -11,8 +11,9 @@
 ##############################################################################
 
 import werkzeug.utils
+from odoo import _
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
-
+from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 
 
@@ -51,10 +52,10 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         body = request.jsonrequest
         lang = body.get('lang', 'en')
         sms_child_request = get_child_request(child_request_id, lang)
-        if not sms_child_request:
-            return [{'invalid_sms_child_request': True}]
+        if not sms_child_request or sms_child_request.state == 'expired':
+            return {'invalid_sms_child_request': True}
         if sms_child_request.sponsorship_confirmed:
-            return [{'sponsorship_confirmed': True}]
+            return {'sponsorship_confirmed': True}
         if sms_child_request.child_id:
             child = sms_child_request.child_id
             result = child.get_sms_sponsor_child_data()
@@ -129,22 +130,56 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
     # STEP 2
     ########
-    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/',
+    @route('/sms_sponsorship/step2/<int:sponsorship_id>/',
            auth='public', website=True)
-    def step2_confirm_sponsorship(self, sponsorship=None, **kwargs):
+    def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
+        sponsorship = request.env['recurring.contract'].sudo().browse(
+            sponsorship_id)
+        if kwargs.get('error'):
+            request.website.add_status_message(
+                _("The payment was not successful. Please try again. You can "
+                  "also pay later in case you are experiencing issues with "
+                  "the online payment system."), type_='danger')
+        if sponsorship.sms_request_id.state == 'step2':
+            # Sponsorship is already confirmed
+            return self.sms_registration_confirmation(sponsorship, **kwargs)
         return self.make_response(
             'recurring.contract',
             model_id=sponsorship and sponsorship.id,
             **kwargs
         )
 
-    @route('/sms_sponsorship/step2/<model("recurring.contract"):sponsorship>/'
+    @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
            methods=['GET'], website=True)
-    def sms_registration_confirmation(self, sponsorship=None):
+    def sms_registration_confirmation(self, sponsorship_id=None, **post):
+        """
+        This is either called after form submission, or when the user
+        is redirected back from the payment website. We use ogone as provider
+        but this could be replaced in a method override.
+        NB: at this stage, the sponsorship is no more draft so we use id
+            to avoid access rights issues.
+        :param sponsorship_id: the sponsorship
+        :return: The view to render
+        """
+        sponsorship = request.env['recurring.contract'].sudo().browse(
+            sponsorship_id)
         values = {
-            'sponsorship': sponsorship.sudo()
+            'sponsorship': sponsorship
         }
+        try:
+            tx = request.env['payment.transaction'].sudo().\
+                _ogone_form_get_tx_from_data(post)
+        except ValidationError:
+            tx = None
+
+        if tx:
+            # The user wanted to pay the first month
+            if tx.state != 'done':
+                # Payment was not successful
+                return request.redirect(
+                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
+
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)

@@ -35,16 +35,7 @@ class TestGifts(BaseSponsorshipTest):
 
     def test_normal_case(self):
         """ create a gift and verify it's correct """
-        sponsorship = self.sponsorship
-
-        gift = self.env['sponsorship.gift'].create({
-            'gift_date': '2018-08-08',
-            'sponsorship_id': sponsorship.id,
-            'gift_type': 'Beneficiary Gift',
-            'attribution': 'Sponsorship',
-            'sponsorship_gift_type': 'Birthday',
-            'amount': 50
-        })
+        gift = self._create_birthday_gift()
 
         # test gift eligibility based on amount
         self.assertTrue(gift.is_eligible())
@@ -160,3 +151,22 @@ class TestGifts(BaseSponsorshipTest):
             acc_inv_line)
         self.assertEquals(gift.message_id.state, 'postponed')
         self.assertEquals(gift.state, 'verify')
+
+    def test_multiple_birthday_gifts_aggregation(self):
+        gift1 = self._create_birthday_gift(50)
+        gift2 = self._create_birthday_gift(80)
+
+        self.assertEquals(gift1, gift2)
+        self.assertEquals(gift2.amount, 130)
+        self.assertEquals(gift2.instructions.count('Take these'), 2)
+
+    def _create_birthday_gift(self, amount=50):
+        return self.env['sponsorship.gift'].create({
+            'gift_date': '2018-08-08',
+            'sponsorship_id': self.sponsorship.id,
+            'gift_type': 'Beneficiary Gift',
+            'attribution': 'Sponsorship',
+            'sponsorship_gift_type': 'Birthday',
+            'instructions': 'Take these ${}'.format(amount),
+            'amount': amount
+        })

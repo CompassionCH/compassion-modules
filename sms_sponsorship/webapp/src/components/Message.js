@@ -5,7 +5,8 @@ export default class extends React.Component {
         let styles = {
             loadingContainer: {
                 verticalAlign: 'middle',
-                marginTop: '200px',
+                marginTop: '120px',
+                marginBottom: '50px',
                 textAlign: 'center'
             },
             loadingTextContainer: {
