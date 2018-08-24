@@ -61,6 +61,7 @@ class RecurringContract(models.Model):
                 'lastname': vals['lastname'],
                 'phone': vals['phone'],
                 'email': vals['email'],
+                'lang': sms_child_request.lang_code
             })
             sms_child_request.new_partner = True
             sms_child_request.partner_id = partner
