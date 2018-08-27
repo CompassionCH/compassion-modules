@@ -62,7 +62,6 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
         # No child for this request, we try to fetch one
         if not sms_child_request.is_trying_to_fetch_child:
-            sms_child_request.is_trying_to_fetch_child = True
             sms_child_request.with_delay().reserve_child()
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 

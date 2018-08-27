@@ -124,8 +124,8 @@ class TestSmsCompassion(BaseSponsorshipTest):
         #     'sender': '+41213456789'
         # })
 
-
-    @mock.patch('odoo.addons.child_compassion.wizards.global_child_search.GlobalChildSearch.do_search')
+    @mock.patch('odoo.addons.child_compassion.wizards'
+                '.global_child_search.GlobalChildSearch.do_search')
     def test_child_reservation(self, do_search):
         do_search.side_effect = Exception('Mock onramp failure')
 
