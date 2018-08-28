@@ -60,6 +60,7 @@ class PrivacyStatementAgreement(models.Model):
     origin_signature = fields.Selection(
         [('new_letter', 'Website new letter'),
          ('new_sponsorship', 'Website new sponsorship'),
+         ('new_gift', 'Website new gift'),
          ('first_payment', 'First payment')])
 
     ##########################################################################
