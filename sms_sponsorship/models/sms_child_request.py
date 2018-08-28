@@ -72,6 +72,7 @@ class SmsChildRequest(models.Model):
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
+    rappel = fields.Boolean(default=False)
 
     @api.multi
     def _compute_full_url(self):
@@ -239,3 +240,24 @@ class SmsChildRequest(models.Model):
                 'child_id': available_holds[0].child_id.id,
                 'state': 'child_reserved'
             })
+
+    def _sms_reminder(self):
+        sms_requests = self.env['sms.child.request'].search(
+            ['|', ('state', '=', 'new'), ('state', '=', 'child_reserved')])
+        for sms in sms_requests:
+            if not sms.rappel and sms.date < datetime.now().replace(hour=0,
+                                                                    minute=0,
+                                                                    second=0,
+                                                                    microsecond
+                                                                    =0):
+                sms_sender = self.env['sms.sender.wizard'
+                                      ].create({'sms_request_id': sms.id,
+                                                'text': "Votre demande de "
+                                                        "sponsorship n'a pas "
+                                                        "eu de suite, il "
+                                                        "s'agit peut-être "
+                                                        "d'un oubli",
+                                                'subject': 'Rappel de '
+                                                           'demande SMS'
+                                                })
+                sms.rappel = sms_sender.sens_sms_request()
