@@ -97,7 +97,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
         event.write({
             'end_date': in_two_days,
         })
-        self.assertEqual(event.calendar_event_id.duration, 16)  # 2 days x 8
+        self.assertEqual(event.calendar_event_id.duration, 48)
 
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
         project_id = self.env['project.project'].create(
