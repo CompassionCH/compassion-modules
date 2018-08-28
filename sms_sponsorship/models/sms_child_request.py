@@ -113,7 +113,8 @@ class SmsChildRequest(models.Model):
             'step1_url_id': self.env['link.tracker'].sudo().create({
                 'url': base_url + lang + '/sms_sponsorship/step1/' +
                 str(request.id),
-            }).id
+            }).id,
+            'is_trying_to_fetch_child': True
         })
         # Directly commit for the job to work
         self.env.cr.commit()    # pylint: disable=invalid-commit
