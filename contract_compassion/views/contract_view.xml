@@ -63,7 +63,8 @@
                         <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
                     </group>
                     <group>
-                        <field name="start_date" string="Creation date"/>
+                        <field name="create_date" string="Creation date"/>
+                        <field name="start_date" string="Start date"/>
                         <field name="activation_date" states="active,terminated,cancelled" />
                         <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
                         <field name="next_invoice_date" states="draft,waiting,active" />
