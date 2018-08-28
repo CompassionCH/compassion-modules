@@ -373,7 +373,10 @@ class RecurringContract(models.Model):
 
     @api.multi
     def contract_waiting(self):
-        return self.write({'state': 'waiting'})
+        return self.write({
+            'state': 'waiting',
+            'start_date': datetime.today()
+        })
 
     @api.multi
     def action_cancel_draft(self):
