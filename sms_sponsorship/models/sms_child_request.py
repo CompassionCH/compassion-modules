@@ -53,7 +53,7 @@ class SmsChildRequest(models.Model):
     )
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
-    lang_code = fields.Char(required=True)
+    lang_code = fields.Char('Language', required=True)
 
     # Filter criteria made by sender
     gender = fields.Selection([
@@ -72,6 +72,7 @@ class SmsChildRequest(models.Model):
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
+    sms_reminder_sent = fields.Boolean(default=False)
 
     @api.multi
     def _compute_full_url(self):
@@ -170,7 +171,8 @@ class SmsChildRequest(models.Model):
             childpool_search.do_search()
         else:
             childpool_search.rich_mix()
-        expiration = datetime.now() + relativedelta(minutes=15)
+        # Request is valid two days, reminder is sent one day after
+        expiration = datetime.now() + relativedelta(days=2)
         result_action = self.env['child.hold.wizard'].with_context(
             active_id=childpool_search.id, async_mode=False).create({
                 'type': HoldType.E_COMMERCE_HOLD.value,
@@ -239,3 +241,25 @@ class SmsChildRequest(models.Model):
                 'child_id': available_holds[0].child_id.id,
                 'state': 'child_reserved'
             })
+
+    @api.multi
+    def send_step1_reminder(self):
+        """ Can be extended to use a SMS API and send a reminder to user. """
+        self.ensure_one()
+        self.write({'sms_reminder_sent': True})
+
+    @api.model
+    def sms_reminder_cron(self):
+        """
+        CRON job that sends SMS reminders to people that didn't complete
+        step 1.
+        :return: True
+        """
+        sms_requests = self.search([
+            ('sms_reminder_sent', '=', False),
+            ('date', '<', fields.Date.today()),
+            ('state', 'in', ['new', 'child_reserved']),
+        ])
+        for request in sms_requests:
+            request.with_context(lang=request.lang_code).send_step1_reminder()
+        return True
