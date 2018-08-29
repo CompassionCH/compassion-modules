@@ -29,6 +29,7 @@
                             <field name="date"/>
                             <field name="partner_id" required="1"/>
                             <field name="sender"/>
+                            <field name="lang_code"/>
                             <field name="child_id" readonly="1"/>
                             <field name="sponsorship_id" readonly="1"/>
                         </group>

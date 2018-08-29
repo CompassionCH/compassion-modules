@@ -53,7 +53,7 @@ class SmsChildRequest(models.Model):
     )
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
-    lang_code = fields.Char(required=True)
+    lang_code = fields.Char('Language', required=True)
 
     # Filter criteria made by sender
     gender = fields.Selection([
@@ -245,6 +245,7 @@ class SmsChildRequest(models.Model):
     @api.multi
     def send_step1_reminder(self):
         """ Can be extended to use a SMS API and send a reminder to user. """
+        self.ensure_one()
         self.write({'sms_reminder_sent': True})
 
     @api.model
@@ -259,5 +260,6 @@ class SmsChildRequest(models.Model):
             ('date', '<', fields.Date.today()),
             ('state', 'in', ['new', 'child_reserved']),
         ])
-        sms_requests.send_step1_reminder()
+        for request in sms_requests:
+            request.with_context(lang=request.lang_code).send_step1_reminder()
         return True
