@@ -9,6 +9,8 @@
 #
 ##############################################################################
 import logging
+
+from mock import mock
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion \
     import BaseSponsorshipTest
 
@@ -121,3 +123,13 @@ class TestSmsCompassion(BaseSponsorshipTest):
         # request = self.env['sms.child.request'].create({
         #     'sender': '+41213456789'
         # })
+
+    @mock.patch('odoo.addons.child_compassion.wizards'
+                '.global_child_search.GlobalChildSearch.do_search')
+    def test_child_reservation(self, do_search):
+        do_search.side_effect = Exception('Mock onramp failure')
+
+        result = self.child_request.reserve_child()
+
+        self.assertFalse(result)
+        self.assertFalse(self.child_request.is_trying_to_fetch_child)

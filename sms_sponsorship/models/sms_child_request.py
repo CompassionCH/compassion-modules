@@ -8,14 +8,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
-
 from odoo import models, api, fields
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.base_phone.fields import Phone
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
+
+_logger = logging.getLogger(__name__)
 
 
 class SmsChildRequest(models.Model):
@@ -158,45 +159,51 @@ class SmsChildRequest(models.Model):
         event.
         """
         self.ensure_one()
-        childpool_search = self.env['compassion.childpool.search'].create({
-            'take': 1,
-            'gender': self.gender,
-            'min_age': self.min_age,
-            'max_age': self.max_age,
-            'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
-        })
-        if self.gender or self.min_age or self.max_age or \
-                self.field_office_id:
-            childpool_search.do_search()
-        else:
-            childpool_search.rich_mix()
-        # Request is valid two days, reminder is sent one day after
-        expiration = datetime.now() + relativedelta(days=2)
-        result_action = self.env['child.hold.wizard'].with_context(
-            active_id=childpool_search.id, async_mode=False).create({
-                'type': HoldType.E_COMMERCE_HOLD.value,
-                'expiration_date': fields.Datetime.to_string(expiration),
-                'primary_owner': self.env.uid,
-                'event_id': self.event_id.id,
-                'campaign_id': self.event_id.campaign_id.id,
-                'ambassador': self.event_id.user_id.partner_id.id or
-                self.env.uid,
-                'channel': 'sms',
-                'source_code': 'sms_sponsorship',
-                'return_action': 'view_holds'
-            }
-        ).send()
-        child_hold = self.env['compassion.hold'].browse(
-            result_action['domain'][0][2])
-        child_hold.sms_request_id = self.id
-        self.is_trying_to_fetch_child = False
-        if child_hold.state == 'active':
-            self.write({
-                'child_id': child_hold.child_id.id,
-                'state': 'child_reserved'
+        try:
+            self.is_trying_to_fetch_child = True
+            childpool_search = self.env['compassion.childpool.search'].create({
+                'take': 1,
+                'gender': self.gender,
+                'min_age': self.min_age,
+                'max_age': self.max_age,
+                'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
             })
-        else:
-            self._take_child_from_event()
+            if self.gender or self.min_age or self.max_age or \
+                    self.field_office_id:
+                childpool_search.do_search()
+            else:
+                childpool_search.rich_mix()
+            # Request is valid two days, reminder is sent one day after
+            expiration = datetime.now() + relativedelta(days=2)
+            result_action = self.env['child.hold.wizard'].with_context(
+                active_id=childpool_search.id, async_mode=False).create({
+                    'type': HoldType.E_COMMERCE_HOLD.value,
+                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'primary_owner': self.env.uid,
+                    'event_id': self.event_id.id,
+                    'campaign_id': self.event_id.campaign_id.id,
+                    'ambassador': self.event_id.user_id.partner_id.id or
+                    self.env.uid,
+                    'channel': 'sms',
+                    'source_code': 'sms_sponsorship',
+                    'return_action': 'view_holds'
+                }).send()
+            child_hold = self.env['compassion.hold'].browse(
+                result_action['domain'][0][2])
+            child_hold.sms_request_id = self.id
+            if child_hold.state == 'active':
+                self.write({
+                    'child_id': child_hold.child_id.id,
+                    'state': 'child_reserved'
+                })
+            else:
+                self._take_child_from_event()
+        except Exception:
+            _logger.warn('Child reservation failed, reverting')
+            self.env.cr.rollback()
+            return False
+        finally:
+            self.is_trying_to_fetch_child = False
         return True
 
     def complete_step1(self, sponsorship_id):
