@@ -79,7 +79,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         sms_child_request = get_child_request(child_request_id)
         if sms_child_request:
             sms_child_request.ensure_one()
-            body['phone'] = sms_child_request.sender
+            body['mobile'] = sms_child_request.sender
             partner = sms_child_request.partner_id \
                 if sms_child_request.partner_id else False
             env['recurring.contract'].sudo().with_delay()\
