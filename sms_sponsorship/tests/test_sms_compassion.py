@@ -38,7 +38,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': "testName",
             'lastname': 'testLastname',
-            'phone': '1234567890',
+            'mobile': '1234567890',
             'email': 'test@email.com',
             'sponsorship_plus': False
         }
@@ -68,7 +68,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': new_partner2.firstname,
             'lastname': new_partner2.lastname,
-            'phone': '001123456789',
+            'mobile': '001123456789',
             'email': new_partner2.email,
             'sponsorship_plus': False
         }
@@ -84,7 +84,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': self.partner.firstname,
             'lastname': self.partner.lastname,
-            'phone': self.partner.phone,
+            'mobile': self.partner.mobile,
             'email': self.partner.email,
             'sponsorship_plus': False
         }
@@ -100,7 +100,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': self.partner.firstname,
             'lastname': self.partner.lastname,
-            'phone': self.partner.phone,
+            'mobile': self.partner.phone,
             'email': self.partner.email,
             'sponsorship_plus': False
         }

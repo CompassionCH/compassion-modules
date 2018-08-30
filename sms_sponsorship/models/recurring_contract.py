@@ -59,7 +59,7 @@ class RecurringContract(models.Model):
             partner = self.env['res.partner'].create({
                 'firstname': vals['firstname'],
                 'lastname': vals['lastname'],
-                'phone': vals['phone'],
+                'mobile': vals['mobile'],
                 'email': vals['email'],
                 'lang': sms_child_request.lang_code
             })
