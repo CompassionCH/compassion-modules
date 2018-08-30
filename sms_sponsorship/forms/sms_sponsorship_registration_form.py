@@ -174,7 +174,7 @@ if not testing:
             return True
 
         def form_after_create_or_update(self, values, extra_values):
-            delay = datetime.now() + relativedelta(seconds=5)
+            delay = datetime.now() + relativedelta(seconds=3)
             sponsorship = self.main_object.sudo()
             sponsorship.with_delay(eta=delay).finalize_form(
                 self.pay_first_month_ebanking, values['payment_mode_id'])
