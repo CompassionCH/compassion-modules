@@ -17,13 +17,10 @@ from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 
 
-def get_child_request(request_id, lang):
-    matching_lang = request.env['res.lang'].sudo().search([
-        ('code', 'like', lang)
-    ], limit=1)
-    final_lang = matching_lang.code or 'en_US'
-    return request.env['sms.child.request'].sudo() \
-        .with_context(lang=final_lang).search([('id', '=', int(request_id))])
+def get_child_request(request_id):
+    sms_request = request.env['sms.child.request'].sudo() \
+        .search([('id', '=', int(request_id))])
+    return sms_request.with_context(lang=sms_request.lang_code)
 
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):
@@ -49,9 +46,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param child_request_id: id of sms_child_request
         :return: JSON data
         """
-        body = request.jsonrequest
-        lang = body.get('lang', 'en')
-        sms_child_request = get_child_request(child_request_id, lang)
+        sms_child_request = get_child_request(child_request_id)
         if not sms_child_request or sms_child_request.state == 'expired':
             return {'invalid_sms_child_request': True}
         if sms_child_request.sponsorship_confirmed:
@@ -81,8 +76,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """
         env = request.env
         body = request.jsonrequest
-        sms_child_request = get_child_request(child_request_id,
-                                              body.get('lang', 'en_US'))
+        sms_child_request = get_child_request(child_request_id)
         if sms_child_request:
             sms_child_request.ensure_one()
             body['phone'] = sms_child_request.sender
@@ -102,8 +96,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :return: None, REACT page will be refreshed after this call.
         """
         body = request.jsonrequest
-        sms_child_request = get_child_request(child_request_id,
-                                              body.get('lang', 'en_US'))
+        sms_child_request = get_child_request(child_request_id)
         tw = dict()  # to write
         if body['gender'] != '':
             tw['gender'] = body['gender']
@@ -136,11 +129,6 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """ SMS step2 controller. Returns the sponsorship registration form."""
         sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
-        if kwargs.get('error'):
-            request.website.add_status_message(
-                _("The payment was not successful. Please try again. You can "
-                  "also pay later in case you are experiencing issues with "
-                  "the online payment system."), type_='danger')
         if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship, **kwargs)
@@ -174,12 +162,11 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         except ValidationError:
             tx = None
 
-        if tx:
-            # The user wanted to pay the first month
-            if tx.state != 'done':
-                # Payment was not successful
-                return request.redirect(
-                    '/sms_sponsorship/step2/{}?error=1'.format(sponsorship.id))
-
+        if tx and tx.state != 'done' or post.get('error'):
+            request.website.add_status_message(
+                _("The payment was not successful, but your sponsorship has "
+                  "still been activated! You will be able to pay later using "
+                  "your selected payment method."),
+                type_='danger')
         return request.render(
             'sms_sponsorship.sms_registration_confirmation', values)
