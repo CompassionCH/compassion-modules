@@ -492,7 +492,7 @@ class EventCompassion(models.Model):
             'compassion_event_id': self.id,
             'categ_ids': [
                 (6, 0, [self.env.ref('crm_compassion.calendar_event').id])],
-            'duration': duration_in_hours,
+            'duration': max(duration_in_hours, 3),
             'description': self.description,
             'location': self.city,
             'user_id': self.user_id.id,

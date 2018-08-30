@@ -99,6 +99,12 @@ class TestCrmCompassion(BaseSponsorshipTest):
         })
         self.assertEqual(event.calendar_event_id.duration, 48)
 
+        # The event duration should have a lower bound of 3 hours
+        event.write({
+            'end_date': datetime.today().strftime(DF),
+        })
+        self.assertEqual(event.calendar_event_id.duration, 3)
+
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
         project_id = self.env['project.project'].create(
             {
