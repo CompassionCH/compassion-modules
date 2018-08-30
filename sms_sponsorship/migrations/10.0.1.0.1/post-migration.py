@@ -8,18 +8,17 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openupgradelib import openupgrade
 
 
-@openupgrade.migrate(use_env=True)
-def migrate(env, version):
+def migrate(cr, version):
     if not version:
         return
 
-    # Correct ambassadors of sponsorships made from events
-    events = env['crm.event.compassion'].search([
-        ('origin_id', '!=', False),
-        ('user_id', '!=', False)
-    ])
-    for event in events:
-        event.origin_id.partner_id = event.user_id.partner_id
+    # Update CRON function
+    cr.execute(
+        """
+        UPDATE ir_cron
+        SET function = 'hold_children_for_sms_cron'
+        WHERE function = 'hold_children_for_sms'
+        """
+    )

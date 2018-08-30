@@ -7,7 +7,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="model">crm.event.compassion</field>
-            <field name="function">hold_children_for_sms</field>
+            <field name="function">hold_children_for_sms_cron</field>
             <field name="args">()</field>
         </record>
 
