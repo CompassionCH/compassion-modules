@@ -110,12 +110,14 @@ if not testing:
                 request, main_object, **kw)
 
             # Set default values in the model
+            sms_request = form.main_object.sudo().sms_request_id
             partner = main_object.sudo().partner_id
             form.partner_id = partner.id
             form.partner_title = partner.title
             form.partner_name = partner.name
             form.partner_email = partner.email
-            form.partner_phone = partner.mobile or partner.phone
+            form.partner_phone = sms_request.sender or partner.mobile or \
+                partner.phone
             form.partner_street = partner.street
             form.partner_zip = partner.zip
             form.partner_city = partner.city
