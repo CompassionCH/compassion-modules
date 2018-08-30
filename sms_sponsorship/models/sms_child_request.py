@@ -110,13 +110,12 @@ class SmsChildRequest(models.Model):
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
         request = super(SmsChildRequest, self).create(vals)
-        lang = request.partner_id.lang or self.env.lang
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url') + '/'
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
-                'url': base_url + lang + '/sms_sponsorship/step1/' +
-                str(request.id),
+                'url': base_url + request.lang_code +
+                '/sms_sponsorship/step1/' + str(request.id),
             }).id,
             'is_trying_to_fetch_child': True
         })
@@ -208,12 +207,12 @@ class SmsChildRequest(models.Model):
         """
         self.ensure_one()
         base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url')
+            'web.external.url') + '/'
         self.write({
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
-                'url': base_url + '/sms_sponsorship/step2/' +
+                'url': base_url + self.lang_code + '/sms_sponsorship/step2/' +
                 str(sponsorship_id)
             }).id
         })
