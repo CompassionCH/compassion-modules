@@ -27,8 +27,9 @@ if not testing:
         _form_required_fields = ('partner_id', 'payment_mode_id', 'gtc_accept')
         _display_type = 'full'
 
+        # These two fields are not used for now but we let them in case
+        # we would like to revert the functionality
         pay_first_month_ebanking = fields.Boolean("Pay first month now")
-        # TODO : Implement this
         immediately_add_gifts = fields.Boolean("Directly send gifts to the "
                                                "child ?")
         gtc_accept = fields.Boolean(
@@ -60,22 +61,9 @@ if not testing:
                 {
                     'id': 'payment',
                     'fields': [
-                        'payment_mode_id'
+                        'payment_mode_id', 'gtc_accept', 'amount'
                     ]
                 },
-                {
-                    'id': 'optional',
-                    'title': _('Optional choices'),
-                    'description': _(
-                        'You can directly activate your sponsorship by paying '
-                        'the first month online. If you choose this option '
-                        'you will be redirected to the secure payment website '
-                        'where you can pay by credit card or postcard.'),
-                    'fields': [
-                        'pay_first_month_ebanking',
-                        'amount', 'currency_id', 'acquirer_ids', 'gtc_accept'
-                    ]
-                }
             ]
 
         @property
