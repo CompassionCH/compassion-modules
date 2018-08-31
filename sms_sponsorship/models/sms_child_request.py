@@ -8,6 +8,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -16,6 +18,11 @@ from odoo import models, api, fields
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.base_phone.fields import Phone
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
+
+# By default, don't propose children older than this
+DEFAULT_MAX_AGE = 12
+
+_logger = logging.getLogger(__name__)
 
 
 class SmsChildRequest(models.Model):
@@ -61,8 +68,7 @@ class SmsChildRequest(models.Model):
         ('Female', 'Female')
     ])
     min_age = fields.Integer(size=2)
-    # Don't propose children older than 12 years by default
-    max_age = fields.Integer(size=2, default=12)
+    max_age = fields.Integer(size=2, default=DEFAULT_MAX_AGE)
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
@@ -121,7 +127,7 @@ class SmsChildRequest(models.Model):
         })
         # Directly commit for the job to work
         self.env.cr.commit()  # pylint: disable=invalid-commit
-        request.with_delay().reserve_child()
+        request.with_delay(priority=5).reserve_child()
         return request
 
     @api.onchange('partner_id')
@@ -129,6 +135,7 @@ class SmsChildRequest(models.Model):
         phone = self.partner_id.mobile or self.partner_id.phone
         if phone:
             self.sender = phone
+        self.lang_code = self.partner_id.lang
 
     @api.multi
     def change_child(self):
@@ -139,7 +146,9 @@ class SmsChildRequest(models.Model):
             'child_id': False,
             'is_trying_to_fetch_child': True
         })
-        return self.reserve_child()
+        # Directly commit for the job to work
+        self.env.cr.commit()  # pylint: disable=invalid-commit
+        return self.with_delay(priority=5).reserve_child()
 
     @api.multi
     def cancel_request(self):
@@ -153,50 +162,61 @@ class SmsChildRequest(models.Model):
     @related_action(action='related_action_sms_request')
     def reserve_child(self):
         """Finds a child for SMS sponsorship service.
-        Put the child on hold for the sms request. If the hold request is
-        not working, fallback to search a child already allocated for the
-        event.
+        Try to fetch a child in the event allocation pool or
+        put a new child on hold for the sms request.
         """
         self.ensure_one()
-        childpool_search = self.env['compassion.childpool.search'].create({
-            'take': 1,
-            'gender': self.gender,
-            'min_age': self.min_age,
-            'max_age': self.max_age,
-            'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
-        })
-        if self.gender or self.min_age or self.max_age or \
-                self.field_office_id:
-            childpool_search.do_search()
-        else:
-            childpool_search.rich_mix()
-        # Request is valid two days, reminder is sent one day after
-        expiration = datetime.now() + relativedelta(days=2)
-        result_action = self.env['child.hold.wizard'].with_context(
-            active_id=childpool_search.id, async_mode=False).create({
-                'type': HoldType.E_COMMERCE_HOLD.value,
-                'expiration_date': fields.Datetime.to_string(expiration),
-                'primary_owner': self.env.uid,
-                'event_id': self.event_id.id,
-                'campaign_id': self.event_id.campaign_id.id,
-                'ambassador': self.event_id.user_id.partner_id.id or
-                self.env.uid,
-                'channel': 'sms',
-                'source_code': 'sms_sponsorship',
-                'return_action': 'view_holds'
-            }
-        ).send()
-        child_hold = self.env['compassion.hold'].browse(
-            result_action['domain'][0][2])
-        child_hold.sms_request_id = self.id
-        self.is_trying_to_fetch_child = False
-        if child_hold.state == 'active':
-            self.write({
-                'child_id': child_hold.child_id.id,
-                'state': 'child_reserved'
-            })
-        else:
-            self._take_child_from_event()
+        try:
+            has_filter = self.gender or self.min_age or self.field_office_id
+            if not has_filter and self.event_id:
+                self._take_child_from_event()
+                return True
+            else:
+                childpool_search = self.env[
+                    'compassion.childpool.search'].create({
+                        'take': 1,
+                        'gender': self.gender,
+                        'min_age': self.min_age,
+                        'max_age': self.max_age,
+                        'field_office_ids': [(6, 0,
+                                              self.field_office_id.ids or [])]
+                    })
+                if has_filter:
+                    childpool_search.do_search()
+                else:
+                    childpool_search.rich_mix()
+                # Request is valid two days, reminder is sent one day after
+                expiration = datetime.now() + relativedelta(days=2)
+                result_action = self.env['child.hold.wizard'].with_context(
+                    active_id=childpool_search.id, async_mode=False).create({
+                        'type': HoldType.E_COMMERCE_HOLD.value,
+                        'expiration_date': fields.Datetime.to_string(
+                            expiration),
+                        'primary_owner': self.env.uid,
+                        'event_id': self.event_id.id,
+                        'campaign_id': self.event_id.campaign_id.id,
+                        'ambassador': self.event_id.user_id.partner_id.id or
+                        self.env.uid,
+                        'channel': 'sms',
+                        'source_code': 'sms_sponsorship',
+                        'return_action': 'view_holds'
+                    }
+                ).send()
+                child_hold = self.env['compassion.hold'].browse(
+                    result_action['domain'][0][2])
+                child_hold.sms_request_id = self.id
+                if child_hold.state == 'active':
+                    self.write({
+                        'child_id': child_hold.child_id.id,
+                        'state': 'child_reserved'
+                    })
+                _logger.info("SMS child directly taken from global pool")
+        except:
+            _logger.error("Error during SMS child reservation", exc_info=True)
+            self.env.cr.rollback()
+            self.env.invalidate_all()
+        finally:
+            self.is_trying_to_fetch_child = False
         return True
 
     def complete_step1(self, sponsorship_id):
@@ -229,17 +249,22 @@ class SmsChildRequest(models.Model):
         return self.write({'state': 'step2'})
 
     def _take_child_from_event(self):
-        """ Called in case we couldn't make a hold from global childpool.
-        We will search if we have some children available for the sms service.
+        """ Search in the allocated children for the event.
         """
-        available_holds = self.event_id.hold_ids.filtered(
-            lambda h: h.channel == 'sms' and not h.sms_request_id)
-        if available_holds:
-            available_holds[0].sms_request_id = self.id
+        available_hold = self.event_id.hold_ids.filtered(
+            lambda h: h.state == 'active' and h.channel == 'sms' and not
+            h.sms_request_id)[:1]
+        if available_hold:
             self.write({
-                'child_id': available_holds[0].child_id.id,
+                'child_id': available_hold.child_id.id,
                 'state': 'child_reserved'
             })
+            available_hold.sms_request_id = self.id
+            # Put a new child in event buffer
+            self.event_id.with_delay().hold_children_for_sms(1)
+            _logger.info("SMS child taken from event pool")
+            return True
+        return False
 
     @api.multi
     def send_step1_reminder(self):
