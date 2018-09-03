@@ -79,6 +79,7 @@ class SmsChildRequest(models.Model):
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
     sms_reminder_sent = fields.Boolean(default=False)
+    has_filter = fields.Boolean(compute='_compute_has_filter')
 
     @api.multi
     def _compute_full_url(self):
@@ -104,6 +105,13 @@ class SmsChildRequest(models.Model):
     def _inverse_event(self):
         # Allows to manually set an event
         return True
+
+    @api.multi
+    def _compute_has_filter(self):
+        for request in self:
+            request.has_filter = request.gender or request.min_age or \
+                request.field_office_id or (request.max_age and
+                                            request.max_age != DEFAULT_MAX_AGE)
 
     @api.model
     def create(self, vals):
@@ -166,58 +174,12 @@ class SmsChildRequest(models.Model):
         put a new child on hold for the sms request.
         """
         self.ensure_one()
-        try:
-            has_filter = self.gender or self.min_age or self.field_office_id
-            if not has_filter and self.event_id:
-                self._take_child_from_event()
-                return True
-            else:
-                childpool_search = self.env[
-                    'compassion.childpool.search'].create({
-                        'take': 1,
-                        'gender': self.gender,
-                        'min_age': self.min_age,
-                        'max_age': self.max_age,
-                        'field_office_ids': [(6, 0,
-                                              self.field_office_id.ids or [])]
-                    })
-                if has_filter:
-                    childpool_search.do_search()
-                else:
-                    childpool_search.rich_mix()
-                # Request is valid two days, reminder is sent one day after
-                expiration = datetime.now() + relativedelta(days=2)
-                result_action = self.env['child.hold.wizard'].with_context(
-                    active_id=childpool_search.id, async_mode=False).create({
-                        'type': HoldType.E_COMMERCE_HOLD.value,
-                        'expiration_date': fields.Datetime.to_string(
-                            expiration),
-                        'primary_owner': self.env.uid,
-                        'event_id': self.event_id.id,
-                        'campaign_id': self.event_id.campaign_id.id,
-                        'ambassador': self.event_id.user_id.partner_id.id or
-                        self.env.uid,
-                        'channel': 'sms',
-                        'source_code': 'sms_sponsorship',
-                        'return_action': 'view_holds'
-                    }
-                ).send()
-                child_hold = self.env['compassion.hold'].browse(
-                    result_action['domain'][0][2])
-                child_hold.sms_request_id = self.id
-                if child_hold.state == 'active':
-                    self.write({
-                        'child_id': child_hold.child_id.id,
-                        'state': 'child_reserved'
-                    })
-                _logger.info("SMS child directly taken from global pool")
-        except:
-            _logger.error("Error during SMS child reservation", exc_info=True)
-            self.env.cr.rollback()
-            self.env.invalidate_all()
-        finally:
-            self.is_trying_to_fetch_child = False
-        return True
+        if not self.has_filter and self.event_id:
+            child_fetched = self._take_child_from_event()
+        else:
+            child_fetched = self.take_child_from_childpool()
+        self.is_trying_to_fetch_child = False
+        return child_fetched
 
     def complete_step1(self, sponsorship_id):
         """
@@ -247,6 +209,59 @@ class SmsChildRequest(models.Model):
         self.ensure_one()
         self.partner_id.sms_send_step2_confirmation(self)
         return self.write({'state': 'step2'})
+
+    def take_child_from_childpool(self):
+        try:
+            childpool_search = self.env[
+                'compassion.childpool.search'].create({
+                    'take': 1,
+                    'gender': self.gender,
+                    'min_age': self.min_age,
+                    'max_age': self.max_age,
+                    'field_office_ids': [(6, 0,
+                                          self.field_office_id.ids or [])]
+                })
+            if self.has_filter:
+                childpool_search.do_search()
+            else:
+                childpool_search.rich_mix()
+            # Request is valid two days, reminder is sent one day after
+            expiration = datetime.now() + relativedelta(days=2)
+            result_action = self.env['child.hold.wizard'].with_context(
+                active_id=childpool_search.id, async_mode=False).create({
+                    'type': HoldType.E_COMMERCE_HOLD.value,
+                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'primary_owner': self.env.uid,
+                    'event_id': self.event_id.id,
+                    'campaign_id': self.event_id.campaign_id.id,
+                    'ambassador': self.event_id.user_id.partner_id.id or
+                    self.env.uid,
+                    'channel': 'sms',
+                    'source_code': 'sms_sponsorship',
+                    'return_action': 'view_holds'
+                }
+            ).send()
+            child_hold = self.env['compassion.hold'].browse(
+                result_action['domain'][0][2])
+            child_hold.sms_request_id = self.id
+            if child_hold.state == 'active':
+                self.write({
+                    'child_id': child_hold.child_id.id,
+                    'state': 'child_reserved'
+                })
+                _logger.info("SMS child directly taken from global pool")
+                return True
+            else:
+                _logger.error("SMS child couldn't be put on hold from global "
+                              "pool")
+                return False
+        except:
+            _logger.error("Error during SMS child reservation", exc_info=True)
+            self.env.cr.rollback()
+            self.env.invalidate_all()
+            return False
+        finally:
+            self.is_trying_to_fetch_child = False
 
     def _take_child_from_event(self):
         """ Search in the allocated children for the event.
