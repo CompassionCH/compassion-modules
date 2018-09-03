@@ -25,24 +25,24 @@ class TestSmsCompassion(BaseSponsorshipTest):
         })
         self.partner = self.env.ref('base.res_partner_2')
         self.env['ir.config_parameter'].set_param('web.external.url', 'base/')
-
+        self.env["res.lang"].load_lang('fr_CH')
         self.child_request = self.env['sms.child.request'].create({
             'partner_id': self.partner.id,
             'sender': self.partner.phone,
-            'child_id': self.child.id
+            'child_id': self.child.id,
+            'lang_code': 'fr_CH'
         })
 
-    def test_sms_sponsorship_creation(self):
+    def test_sms_sponsorship_creation__with_new_partner(self):
 
-        # test with new partner
         values = {
             'firstname': "testName",
             'lastname': 'testLastname',
-            'phone': '1234567890',
+            'mobile': '1234567890',
             'email': 'test@email.com',
             'sponsorship_plus': False
         }
-        self.env['recurring.contract']\
+        self.env['recurring.contract'] \
             .create_sms_sponsorship(values, False, self.child_request)
         new_partner = self.env['res.partner'].search([
             ('firstname', '=', "testName"),
@@ -51,13 +51,15 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ])
         self.assertTrue(new_partner)
         self.assertTrue(self.child_request.new_partner)
+        self.assertEqual(new_partner.lang, 'fr_CH')
         new_sponsorship = self.env['recurring.contract'].search([
             ('partner_id', '=', new_partner.id),
             ('child_id', '=', self.child_request.child_id.id)
         ])
         self.assertTrue(new_sponsorship)
 
-        # test with existing partner, but not given
+    def test_sms_sponsorship_creation__with_existing_partner(self):
+
         new_partner2 = self.env['res.partner'].create({
             'firstname': "testName2",
             'lastname': 'testLastname2',
@@ -66,7 +68,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': new_partner2.firstname,
             'lastname': new_partner2.lastname,
-            'phone': '001123456789',
+            'mobile': '001123456789',
             'email': new_partner2.email,
             'sponsorship_plus': False
         }
@@ -82,7 +84,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': self.partner.firstname,
             'lastname': self.partner.lastname,
-            'phone': self.partner.phone,
+            'mobile': self.partner.mobile,
             'email': self.partner.email,
             'sponsorship_plus': False
         }
@@ -98,7 +100,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         values = {
             'firstname': self.partner.firstname,
             'lastname': self.partner.lastname,
-            'phone': self.partner.phone,
+            'mobile': self.partner.phone,
             'email': self.partner.email,
             'sponsorship_plus': False
         }

@@ -10,7 +10,7 @@
 ##############################################################################
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -87,6 +87,24 @@ class TestCrmCompassion(BaseSponsorshipTest):
         is_unlinked = event.unlink()
         self.assertTrue(is_unlinked)
 
+    def test_calendar_event_synchronization(self):
+        lead = self._create_lead('MyLead', 1)
+
+        event = self._create_event(lead, 'sport')
+        self.assertEqual(event.calendar_event_id.duration, 9)
+
+        in_two_days = (datetime.today() + timedelta(days=2)).strftime(DF)
+        event.write({
+            'end_date': in_two_days,
+        })
+        self.assertEqual(event.calendar_event_id.duration, 48)
+
+        # The event duration should have a lower bound of 3 hours
+        event.write({
+            'end_date': datetime.today().strftime(DF),
+        })
+        self.assertEqual(event.calendar_event_id.duration, 3)
+
     def _create_project(self, name, privacy_visibility, user_id, type, bool):
         project_id = self.env['project.project'].create(
             {
@@ -107,7 +125,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
                 'name': event_dico['context']['default_name'],
                 'type': type,
                 'start_date': now,
-                'end_date': now,
+                'end_date': now + ' 8:43:00',
                 'hold_start_date': now,
                 'hold_end_date': now,
                 'number_allocate_children': 2,

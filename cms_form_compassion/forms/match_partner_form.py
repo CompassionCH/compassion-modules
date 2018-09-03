@@ -100,8 +100,7 @@ if not testing:
                     self.partner_id = partner_id
                 return True
 
-            uid = self.env.ref('muskathlon.user_muskathlon_portal').id
-            partner_obj = self.env['res.partner'].sudo(uid)
+            partner_obj = self.env['res.partner'].sudo()
             source_vals = self._get_partner_vals(extra_values, values)
             partner = partner_obj.search([
                 ('email', '=ilike', source_vals['email'])], limit=1)

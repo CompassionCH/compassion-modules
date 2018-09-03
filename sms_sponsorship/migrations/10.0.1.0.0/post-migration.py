@@ -16,10 +16,7 @@ def migrate(env, version):
     if not version:
         return
 
-    # Correct ambassadors of sponsorships made from events
-    events = env['crm.event.compassion'].search([
-        ('origin_id', '!=', False),
-        ('user_id', '!=', False)
-    ])
-    for event in events:
-        event.origin_id.partner_id = event.user_id.partner_id
+    # Set language for all requests, so that required constraints can be set
+    missing = env['sms.child.request'].search([('lang_code', '=', False)])
+    for request in missing:
+        request.lang_code = request.partner_id.lang or 'en_US'

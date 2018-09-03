@@ -5,8 +5,8 @@
     The licence is in the file __manifest__.py
 -->
 
-<openerp>
-    <data>
+<odoo>
+    <data noupdate="1">
         <record id="compassion_hold_cron" model="ir.cron">
             <field name="name">Check holds validity</field>
             <field name="interval_number">1</field>
@@ -27,8 +27,6 @@
             <field name="model" eval="'compassion.hold'"/>
             <field name="args" eval="()"/>
         </record>
-    </data>
-    <data>
         <record id="project_reservation_cron" model="ir.cron">
             <field name="name">Check reservations validity</field>
             <field name="interval_number">1</field>
@@ -40,4 +38,4 @@
             <field name="args" eval="()"/>
         </record>
     </data>
-</openerp>
+</odoo>
