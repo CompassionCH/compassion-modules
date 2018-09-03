@@ -51,19 +51,21 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             return {'invalid_sms_child_request': True}
         if sms_child_request.sponsorship_confirmed:
             return {'sponsorship_confirmed': True}
-        if sms_child_request.child_id:
-            child = sms_child_request.child_id
+
+        # No child for this request, we try to fetch one
+        child = sms_child_request.child_id
+        if not child and not sms_child_request.is_trying_to_fetch_child:
+            sms_child_request.is_trying_to_fetch_child = True
+            if not sms_child_request.reserve_child():
+                sms_child_request.is_trying_to_fetch_child = True
+                sms_child_request.take_child_from_childpool()
+        if child:
             result = child.get_sms_sponsor_child_data()
             partner = sms_child_request.partner_id
             if sms_child_request.partner_id:
                 result['partner'] = partner.read(['firstname', 'lastname',
                                                   'email'])
             return result
-
-        # No child for this request, we try to fetch one
-        if not sms_child_request.is_trying_to_fetch_child:
-            sms_child_request.is_trying_to_fetch_child = True
-            sms_child_request.reserve_child()
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/confirm',
