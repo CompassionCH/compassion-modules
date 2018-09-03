@@ -10,7 +10,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting 1child to 959. This service is free of charge. Thank you!",
-                    "error_noService": "Error : the service is not available at this time. <br/>Please try again in a few minutes. Thank you!",
+                    "error_noService": "Thanks for your interest. Due to the high demand right now, the process of your request takes more time than usual. Please click the bellow button in a moment. Thank you!",
                     "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Sponsor a child from our website",
@@ -77,7 +77,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
-                    "error_noService": "Erreur : le service n'est pas disponible pour le moment. <br/>Veuillez essayer dans quelques minutes. Merci !",
+                    "error_noService": "Merci pour votre intérêt. En raison de la demande élevée, le traitement de votre requête prend un peu plus de temps que prévu. Merci de cliquer sur le bouton ci-dessous dans quelques instants.",
                     "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Rafraichir la page",
                     "error_sponsorFromWebsite": "Parrainer depuis le site internet",
@@ -139,7 +139,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
                     "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
-                    "error_noService": "Fehler : Der Dienst ist zu diesem Zeitpunkt nicht verfügbar. <br/>Bitte versuche es in ein paar Minuten noch einmal. Vielen Dank!",
+                    "error_noService": "Schön, dass du dran bist. Der Server läuft heiss, aufgrund der vielen Anfrage. Es braucht gerade ein bisschen Geduld. Bitte klicke gleich auf den Button unten. Danke!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
                     "error_websiteUrl": "https://www.compassion.ch/de/finden-sie-ein-patenkind/",
