@@ -10,7 +10,7 @@
                     </div>
                     <div class="thank_you_text_container">
                         <h1>Registration successful !</h1>
-                        <p class="quote">
+                        <p class="quote" style="margin-bottom: 50px">
                             Let a new story for <t t-esc="sponsorship.child_id.preferred_name"/> begin!
                             You will soon receive all documentation needed to start the sponsorship in your mailbox.
                         </p>
