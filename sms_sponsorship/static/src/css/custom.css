@@ -29,6 +29,10 @@
     height: initial;
 }
 
+.donation_success {
+    margin-bottom: 20px;
+}
+
 .donation_success h1 {
     font-size: 50px;
     line-height: 50px;
