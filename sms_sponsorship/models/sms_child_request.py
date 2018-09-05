@@ -34,7 +34,7 @@ class SmsChildRequest(models.Model):
 
     sender = Phone(required=True, partner_field='partner_id',
                    country_field='country_id')
-    date = fields.Datetime(required=True, default=fields.Datetime.now())
+    date = fields.Datetime(required=True, default=fields.Datetime.now)
     full_url = fields.Char(compute='_compute_full_url')
     step1_url_id = fields.Many2one('link.tracker')
     step1_url = fields.Char('Step 1 URL', related='step1_url_id.short_url')
@@ -123,6 +123,7 @@ class SmsChildRequest(models.Model):
                 partner_obj.search([('phone', 'like', phone)])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
+                vals['lang_code'] = partner.lang
         request = super(SmsChildRequest, self).create(vals)
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url') + '/'

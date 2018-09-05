@@ -80,6 +80,8 @@ class Main extends React.Component {
                 child: child,
                 partner: partner,
             });
+            // Set the language as the request
+            i18n.changeLanguage(child.lang);
         });
     };
 
@@ -125,6 +127,7 @@ class Main extends React.Component {
 
     render() {
         const { t } = this.props;
+        document.title = t("cardTitle");
         let image_url = '';
         let child = this.state.child;
         if (child && child.image_url) {
