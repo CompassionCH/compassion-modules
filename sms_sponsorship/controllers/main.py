@@ -67,7 +67,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                                                   'email'])
                 result['lang'] = partner.lang[:2]
             else:
-                result['lang'] = sms_child_request.lang_code
+                result['lang'] = sms_child_request.lang_code[:2]
             return result
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
