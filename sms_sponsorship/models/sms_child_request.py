@@ -34,7 +34,7 @@ class SmsChildRequest(models.Model):
 
     sender = Phone(required=True, partner_field='partner_id',
                    country_field='country_id')
-    date = fields.Datetime(required=True, default=fields.Datetime.now())
+    date = fields.Datetime(required=True, default=fields.Datetime.now)
     full_url = fields.Char(compute='_compute_full_url')
     step1_url_id = fields.Many2one('link.tracker')
     step1_url = fields.Char('Step 1 URL', related='step1_url_id.short_url')
