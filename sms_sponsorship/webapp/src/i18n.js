@@ -139,7 +139,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
                     "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
-                    "error_noService": "Schön, dass du dran bist. Der Server läuft heiss, aufgrund der vielen Anfrage. Es braucht gerade ein bisschen Geduld. Bitte klicke gleich auf den Button unten. Danke!",
+                    "error_noService": "Schön, dass du dran bist. Der Server läuft heiss, aufgrund der vielen Anfragen. Es braucht gerade ein bisschen Geduld. Bitte klicke gleich auf den Button unten. Danke!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
                     "error_websiteUrl": "https://www.compassion.ch/de/finden-sie-ein-patenkind/",

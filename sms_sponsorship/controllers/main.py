@@ -136,7 +136,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             sponsorship_id)
         if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
-            return self.sms_registration_confirmation(sponsorship, **kwargs)
+            return self.sms_registration_confirmation(sponsorship.id, **kwargs)
         return self.make_response(
             'recurring.contract',
             model_id=sponsorship and sponsorship.id,
