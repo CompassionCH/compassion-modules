@@ -20,7 +20,7 @@ from odoo.http import request, route, Controller
 def get_child_request(request_id):
     sms_request = request.env['sms.child.request'].sudo() \
         .search([('id', '=', int(request_id))])
-    return sms_request.with_context(lang=sms_request.lang_code)
+    return sms_request
 
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):

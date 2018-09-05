@@ -123,6 +123,7 @@ class SmsChildRequest(models.Model):
                 partner_obj.search([('phone', 'like', phone)])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
+                vals['lang_code'] = partner.lang
         request = super(SmsChildRequest, self).create(vals)
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url') + '/'
