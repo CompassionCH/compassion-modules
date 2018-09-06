@@ -222,10 +222,7 @@ class SmsChildRequest(models.Model):
                     'field_office_ids': [(6, 0,
                                           self.field_office_id.ids or [])]
                 })
-            if self.has_filter:
-                childpool_search.do_search()
-            else:
-                childpool_search.rich_mix()
+            childpool_search.do_search()
             # Request is valid two days, reminder is sent one day after
             expiration = datetime.now() + relativedelta(days=2)
             result_action = self.env['child.hold.wizard'].with_context(

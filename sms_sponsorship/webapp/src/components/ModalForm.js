@@ -9,7 +9,7 @@ import SelectForm from './SelectForm';
 
 export default class FormDialog extends React.Component {
     handleClose = () => {
-        this.props.sponsorFormContext.setState({ dialogOpen: false });
+        this.props.appContext.setState({ dialogOpen: false });
     };
 
     render() {
@@ -32,7 +32,7 @@ export default class FormDialog extends React.Component {
         return (
             <div>
                 <Dialog
-                    open={this.props.sponsorFormContext.state.dialogOpen}
+                    open={this.props.appContext.state.dialogOpen}
                     onClose={this.handleClose}
                     aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">{t('chooseTitle')}</DialogTitle>

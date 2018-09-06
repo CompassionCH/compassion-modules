@@ -146,9 +146,9 @@ class Main extends React.Component {
             )
         }
 
-       if (!child.has_a_child && !this.state.success) {
+       if (!child.has_a_child && !this.state.success && !child.sponsorship_confirmed && !child.invalid_sms_child_request) {
             clearTimeout(window.getChildTimeout);
-            if(this.count_try > 20){
+            if(this.count_try > 40){
                 return (
                             <div>
                                 {topAppBar}

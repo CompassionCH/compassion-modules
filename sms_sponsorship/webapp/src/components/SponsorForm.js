@@ -54,7 +54,6 @@ class TextFields extends React.Component {
         this.state = {
             sp_plus_value: 1,
             partner: props.appContext.state.partner,
-            dialogOpen: false,
             snackBarOpen: false,
             formErrors: false,
             message: ''
@@ -211,14 +210,6 @@ class TextFields extends React.Component {
                             size="medium"
                     >
                         {t("sponsorNow", {name: this.props.appContext.state.child.preferred_name})}
-                    </Button>
-                    <Button variant="outlined"
-                            onClick={() => { this.setState({dialogOpen: true}) }}
-                            color="primary"
-                            size="medium"
-                            style={{marginTop: '20px', alignSelf: 'center'}}
-                    >
-                        {t('otherChild')}
                     </Button>
                 </div>
                 <Snackbar

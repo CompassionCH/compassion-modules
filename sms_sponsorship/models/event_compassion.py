@@ -72,7 +72,7 @@ class EventCompassion(models.Model):
                 'take': take,
                 'max_age': DEFAULT_MAX_AGE
             })
-            childpool_search.rich_mix()
+            childpool_search.do_search()
             expiration = fields.Datetime.from_string(event.end_date) + \
                 relativedelta(days=2)
             self.env['child.hold.wizard'].with_context(
