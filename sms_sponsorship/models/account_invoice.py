@@ -17,5 +17,6 @@ class AccountInvoice(models.Model):
         """ Confirm step 2 and link invoice to transaction. """
         super(AccountInvoice, self)._after_transaction_invoice_paid(
             transaction)
-        transaction.sponsorship_id.sms_request_id.complete_step2()
+        if transaction.sponsorship_id.sms_request_id:
+            transaction.sponsorship_id.sms_request_id.complete_step2()
         return True
