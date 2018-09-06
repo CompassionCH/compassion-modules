@@ -155,9 +155,7 @@ class SmsChildRequest(models.Model):
             'child_id': False,
             'is_trying_to_fetch_child': True
         })
-        # Directly commit for the job to work
-        self.env.cr.commit()  # pylint: disable=invalid-commit
-        return self.with_delay(priority=5).reserve_child()
+        return self.reserve_child()
 
     @api.multi
     def cancel_request(self):
