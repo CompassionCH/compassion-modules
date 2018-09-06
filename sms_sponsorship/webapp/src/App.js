@@ -103,7 +103,7 @@ class Main extends React.Component {
                 'has_a_child': true,
                 'loading_other_child': true
             },
-            dialogOpen: False
+            dialogOpen: false
         });
 
         jsonRPC(url, data, (res) => {
