@@ -65,6 +65,9 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             if sms_child_request.partner_id:
                 result['partner'] = partner.read(['firstname', 'lastname',
                                                   'email'])
+                result['lang'] = partner.lang[:2]
+            else:
+                result['lang'] = sms_child_request.lang_code[:2]
             return result
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
@@ -133,7 +136,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             sponsorship_id)
         if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
-            return self.sms_registration_confirmation(sponsorship, **kwargs)
+            return self.sms_registration_confirmation(sponsorship.id, **kwargs)
         return self.make_response(
             'recurring.contract',
             model_id=sponsorship and sponsorship.id,

@@ -26,7 +26,7 @@ class NestedList extends React.Component {
 
         return (
             <div className={classes.root}>
-                <ListItem button onClick={this.handleClick} style={{backgroundColor: '#0054A6', color: 'white'}}>
+                <ListItem button onClick={this.handleClick} style={{backgroundColor: '#0054A6', color: 'white', justifyContent: 'center'}}>
                     {/*<ListItemText primary="More details" />*/}
                     <Typography variant="button" style={{color: 'white'}}>{t('more')}</Typography>
                     {this.state.open ? <ExpandLess /> : <ExpandMore />}

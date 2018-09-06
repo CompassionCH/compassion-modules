@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import SponsorForm from './SponsorForm';
 import ChildDetails from './ChildDetails';
 import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
 
 
 const styles = {
@@ -69,6 +70,16 @@ function SimpleMediaCard(props) {
                 <CardActions className={classes.cardAction}>
                     <ChildDetails appContext={props.appContext} t={t}/>
                 </CardActions>
+                    <div style={{padding: '0 20px'}}>
+                        <Button variant="outlined"
+                            onClick={() => { props.appContext.setState({dialogOpen: true}) }}
+                            color="primary"
+                            size="medium"
+                            fullWidth
+                    >
+                        {t('otherChild')}
+                    </Button>
+                    </div>
                 <CardContent>
                     <SponsorForm appContext={props.appContext} t={t}/>
                 </CardContent>

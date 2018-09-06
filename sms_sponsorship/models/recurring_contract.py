@@ -48,7 +48,13 @@ class RecurringContract(models.Model):
                 ('lastname', 'ilike', vals['lastname']),
                 ('email', '=', vals['email'])
             ])
-            sms_child_request.partner_id = partner
+            if len(partner) == 1:
+                sms_child_request.write({
+                    'partner_id': partner.id,
+                    'lang_code': partner.lang
+                })
+            else:
+                partner = False
         else:
             if not (partner.firstname == vals['firstname'] and
                     partner.lastname == vals['lastname'] and
@@ -83,7 +89,8 @@ class RecurringContract(models.Model):
         sponsorship._set_next_invoice_date_sms()
         sponsorship.with_delay().put_child_on_no_money_hold()
         partner.set_privacy_statement(origin='new_sponsorship')
-        sms_child_request.complete_step1(sponsorship.id)
+        sms_child_request.with_context(lang=partner.lang).complete_step1(
+            sponsorship.id)
         return True
 
     @job(default_channel="root.sms_sponsorship")
