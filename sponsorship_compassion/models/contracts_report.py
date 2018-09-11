@@ -26,6 +26,12 @@ class PartnerSponsorshipReport(models.Model):
                                     help='Count only the sponsorships who '
                                          'are fully managed or those who are '
                                          'paid (not the correspondent).')
+
+    correspondent_only_sponsorship = fields.Integer('Number of sponsorships '
+                                                    'as correspondent only',
+                                                    compute='_compute_corres'
+                                                            '_sponsorship')
+
     sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
                                       compute='_compute_b2s_letter')
     sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
@@ -57,6 +63,21 @@ class PartnerSponsorshipReport(models.Model):
         today = fields.Date.today()
         for partner in self:
             partner.end_period = today
+
+    @api.multi
+    def _compute_corres_sponsorship(self):
+        def get_nb_corres_sponsorship(_partner):
+            return self.env['recurring.contract'].search_count(
+                [('correspondent_id', '=', _partner.id),
+                 ('type', 'in', ['S', 'SC']),
+                 ('is_active', '=', True)])
+
+        for partner in self:
+            nb_corres_sponsorship = get_nb_corres_sponsorship(partner)
+            if partner.is_church:
+                for member in partner.member_ids:
+                    nb_corres_sponsorship += get_nb_corres_sponsorship(member)
+            partner.correspondent_only_sponsorship = nb_corres_sponsorship
 
     @api.multi
     def _compute_sr_sponsorship(self):
@@ -108,28 +129,40 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_boy(self):
         for partner in self:
-            total = self.env['compassion.child'].search_count(
-                [('partner_id', '=', partner.id),
-                 ('gender', '=', 'M')])
-            if partner.is_church:
-                for member in partner.member_ids:
-                    total += self.env['compassion.child'].search_count(
-                        [('partner_id', '=', member.id),
-                         ('gender', '=', 'M')])
-            partner.sr_nb_boy = total
+            sponsorships = self.env['recurring.contract'].search([
+                ('partner_id', '=', partner.id)
+            ])
+            count = 0
+            for sponsorship in sponsorships:
+                # if not correspondent only
+                if sponsorship.type == 'S' and sponsorship.is_active and \
+                        sponsorship.child_id.gender == 'M':
+                    count += len(sponsorship.child_id)
+                    if partner.is_church:
+                        for member in partner.member_ids:
+                            count += self.env['compassion.child'].search_count(
+                                [('partner_id', '=', member.id),
+                                 ('gender', '=', 'M')])
+            partner.sr_nb_boy = count
 
     @api.multi
     def _compute_girl(self):
         for partner in self:
-            total = self.env['compassion.child'].search_count(
-                [('partner_id', '=', partner.id),
-                 ('gender', '=', 'F')])
-            if partner.is_church:
-                for member in partner.member_ids:
-                    total += self.env['compassion.child'].search_count(
-                        [('partner_id', '=', member.id),
-                         ('gender', '=', 'F')])
-            partner.sr_nb_girl = total
+            sponsorships = self.env['recurring.contract'].search([
+                ('partner_id', '=', partner.id)
+            ])
+            count = 0
+            for sponsorship in sponsorships:
+                # if not correspondent only
+                if sponsorship.type == 'S' and sponsorship.is_active and \
+                        sponsorship.child_id.gender == 'F':
+                    count += len(sponsorship.child_id)
+                    if partner.is_church:
+                        for member in partner.member_ids:
+                            count += self.env['compassion.child'].search_count(
+                                [('partner_id', '=', member.id),
+                                 ('gender', '=', 'F')])
+            partner.sr_nb_girl = count
 
     @api.multi
     def _compute_time_scp(self):

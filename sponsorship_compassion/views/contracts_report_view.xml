@@ -13,6 +13,7 @@
                             <field name="sr_sponsorship"/>
                             <field name="sr_nb_boy"/>
                             <field name="sr_nb_girl"/>
+                            <field name="correspondent_only_sponsorship"/>
                             <field name="sr_time_icp" widget="float_time"/>
                             <field name="sr_nb_meal"/>
                             <field name="sr_nb_bible"/>
