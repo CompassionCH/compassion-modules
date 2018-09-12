@@ -249,6 +249,23 @@ class SponsorshipContract(models.Model):
                 'sponsor_id': vals.get('correspondent_id', vals['partner_id'])
             })
 
+        """ Generates commitment number for contracts BVRs
+        """
+        if 'commitment_number' not in vals:
+            partner_id = vals.get('partner_id')
+            correspondent_id = vals.get('correspondent_id', partner_id)
+            if partner_id:
+                other_nums = self.search([
+                    '|', '|', '|', ('partner_id', '=', partner_id),
+                    ('partner_id', '=', correspondent_id),
+                    ('correspondent_id', '=', partner_id),
+                    ('correspondent_id', '=', correspondent_id)
+                ]).mapped('commitment_number')
+
+                vals['commitment_number'] = max(other_nums or [-1]) + 1
+            else:
+                vals['commitment_number'] = 1
+
         return super(SponsorshipContract, self).create(vals)
 
     @api.multi
