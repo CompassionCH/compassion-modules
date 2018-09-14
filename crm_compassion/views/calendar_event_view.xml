@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
         <field name="arch" type="xml">
             <field name="start" position="before">
-                <field name="compassion_event_id" attrs="{'invisible': [('compassion_event_id', '=', False)]}"/>
+                <field name="compassion_event_id"/>
             </field>
         </field>
     </record>
@@ -18,7 +18,7 @@
         <field name="inherit_id" ref="calendar.view_calendar_event_form_popup"/>
         <field name="arch" type="xml">
             <field name="start_date" position="before">
-                <field name="compassion_event_id" attrs="{'invisible': [('compassion_event_id', '=', False)]}"/>
+                <field name="compassion_event_id"/>
             </field>
         </field>
     </record>

@@ -261,7 +261,7 @@ class EventCompassion(models.Model):
                     self.env['recurring.contract.origin'].sudo().browse(
                         event.origin_id.id).write({'name': event.full_name})
                 if not self.env.context.get('no_calendar'):
-                    event.calendar_event_id.write(self._get_calendar_vals())
+                    event.calendar_event_id.write(event._get_calendar_vals())
 
         return True
 
