@@ -321,31 +321,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def clean_invoices_paid(self, since_date, to_date):
-        """
-        Unreconcile paid invoices in the given period, so that they
-        can be cleaned with the clean_invoices process.
-        :param since_date: clean invoices with date greater than this
-        :param to_date: clean invoices with date lower than this
-        :return: invoices cleaned that contained other contracts than the
-                 the ones we are cleaning.
-        """
-        # Find all paid invoice lines after the given date
-        inv_line_obj = self.env['account.invoice.line']
-        invl_search = self._filter_clean_invoices(since_date, to_date)
-        inv_lines = inv_line_obj.search(invl_search)
-        move_lines = inv_lines.mapped('invoice_id.move_id.line_ids').filtered(
-            'reconciled')
-        reconciles = inv_lines.mapped(
-            'invoice_id.payment_move_line_ids.full_reconcile_id')
-
-        # Unreconcile paid invoices
-        move_lines |= reconciles.mapped('reconciled_line_ids')
-        move_lines.remove_move_reconcile()
-
-        return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
-            lambda l: l.contract_id not in self).mapped('invoice_id')
-
     @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
@@ -806,33 +781,6 @@ class SponsorshipContract(models.Model):
                 )
 
     @api.multi
-    @job(default_channel='root.recurring_invoicer')
-    @related_action(action='related_action_contract')
-    def _clean_invoices(self, since_date=None, to_date=None,
-                        keep_lines=None, clean_invoices_paid=True):
-        """ Clean invoices
-        Take into consideration when the sponsor has paid in advance,
-        so that we cancel/modify the paid invoices and let the user decide
-        what to do with the payment.
-        :param since_date: optional date from which invoices will be cleaned
-        :param to_date: optional date limit for invoices we want to clean
-        :param keep_lines: set to true to avoid deleting invoice lines
-        :param clean_invoices_paid: set to true to unreconcile paid invoices
-                                    and clean them as well.
-        :return: invoices cleaned (which should be in cancel state)
-        """
-        if clean_invoices_paid:
-            sponsorships = self.filtered(lambda s: s.type == 'S')
-            paid_invoices = sponsorships.clean_invoices_paid(since_date,
-                                                             to_date)
-
-        invoices = super(SponsorshipContract, self)._clean_invoices(
-            since_date, to_date, keep_lines)
-        if clean_invoices_paid:
-            paid_invoices.reconcile_after_clean()
-        return invoices
-
-    @api.multi
     def _on_sponsorship_finished(self):
         """ Called when a sponsorship is terminated or cancelled:
         Remove sponsor from the child and terminate related gift contracts.
@@ -978,6 +926,7 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     def _get_filtered_invoice_lines(self, invoice_lines):
+        # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
             lambda invl: invl.contract_id.id in self.ids and
             invl.product_id.categ_name != GIFT_CATEGORY)
@@ -991,20 +940,11 @@ class SponsorshipContract(models.Model):
         """ Hook for reactivating gifts. """
         pass
 
-    ##########################################################################
-    #                      CLEAN PAID INVOICES METHODS                       #
-    ##########################################################################
     @api.multi
     def _filter_clean_invoices(self, since_date, to_date):
-        """ Construct filter domain to be passed on method
-        clean_invoices_paid, which will determine which invoice lines will
-        be removed from invoices. """
-        if not since_date:
-            since_date = datetime.today().strftime(DF)
-        invl_search = [('contract_id', 'in', self.ids), ('state', '=', 'paid'),
-                       ('due_date', '>=', since_date),
-                       ('product_id.categ_name', '!=', GIFT_CATEGORY)]
-        if to_date:
-            invl_search.append(('due_date', '<=', to_date))
-
+        """ Exclude gifts from clean invoice method. """
+        invl_search = super(SponsorshipContract, self)._filter_clean_invoices(
+            since_date, to_date
+        )
+        invl_search.append(('product_id.categ_name', '!=', GIFT_CATEGORY))
         return invl_search
