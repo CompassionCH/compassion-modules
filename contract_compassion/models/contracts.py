@@ -289,6 +289,31 @@ class RecurringContract(models.Model):
         logger.info("Contracts " + str(self.ids) + " activated.")
         return True
 
+    def clean_invoices_paid(self, since_date, to_date):
+        """
+        Unreconcile paid invoices in the given period, so that they
+        can be cleaned with the clean_invoices process.
+        :param since_date: clean invoices with date greater than this
+        :param to_date: clean invoices with date lower than this
+        :return: invoices cleaned that contained other contracts than the
+                 the ones we are cleaning.
+        """
+        # Find all paid invoice lines after the given date
+        inv_line_obj = self.env['account.invoice.line']
+        invl_search = self._filter_clean_invoices(since_date, to_date)
+        inv_lines = inv_line_obj.search(invl_search)
+        move_lines = inv_lines.mapped('invoice_id.move_id.line_ids').filtered(
+            'reconciled')
+        reconciles = inv_lines.mapped(
+            'invoice_id.payment_move_line_ids.full_reconcile_id')
+
+        # Unreconcile paid invoices
+        move_lines |= reconciles.mapped('reconciled_line_ids')
+        move_lines.remove_move_reconcile()
+
+        return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
+            lambda l: l.contract_id not in self).mapped('invoice_id')
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -409,7 +434,35 @@ class RecurringContract(models.Model):
     def _get_filtered_invoice_lines(self, invoice_lines):
         return invoice_lines.filtered(lambda l: l.contract_id.id in self.ids)
 
+    @api.multi
     @job(default_channel='root.recurring_invoicer')
+    @related_action(action='related_action_contract')
+    def _clean_invoices(self, since_date=None, to_date=None,
+                        keep_lines=None, clean_invoices_paid=True):
+        """ Clean invoices
+        Take into consideration when the sponsor has paid in advance,
+        so that we cancel/modify the paid invoices and let the user decide
+        what to do with the payment.
+        :param since_date: optional date from which invoices will be cleaned
+        :param to_date: optional date limit for invoices we want to clean
+        :param keep_lines: set to true to avoid deleting invoice lines
+        :param clean_invoices_paid: set to true to unreconcile paid invoices
+                                    and clean them as well.
+        :return: invoices cleaned (which should be in cancel state)
+        """
+        if clean_invoices_paid:
+            sponsorships = self.filtered(lambda s: s.type == 'S')
+            paid_invoices = sponsorships.clean_invoices_paid(since_date,
+                                                             to_date)
+
+        invoices = super(RecurringContract, self)._clean_invoices(
+            since_date, to_date, keep_lines)
+        if clean_invoices_paid:
+            paid_invoices.reconcile_after_clean()
+        return invoices
+
+    @job(default_channel='root.recurring_invoicer')
+    @related_action(action='related_action_contract')
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
            which are older than the first paid invoice of contract.
@@ -449,21 +502,11 @@ class RecurringContract(models.Model):
               'changing the attribution of his payment before cancelling '
               'the sponsorship.'))
 
-    def _reset_open_invoices(self):
-        """ Launch the task in asynchrnous job by default. """
-        if self.env.context.get('async_mode', True):
-            self.with_delay()._reset_open_invoices_job()
-        else:
-            self._reset_open_invoices_job()
-        return True
-
-    @job(default_channel='root.recurring_invoicer')
-    @related_action(action='related_action_contract')
     @api.multi
     def _reset_open_invoices_job(self):
         """Clean the open invoices in order to generate new invoices.
         This can be useful if contract was updated when active."""
-        invoices_canceled = self._clean_invoices()
+        invoices_canceled = self._clean_invoices(clean_invoices_paid=False)
         if invoices_canceled:
             invoice_obj = self.env['account.invoice']
             inv_update_ids = set()
@@ -489,6 +532,19 @@ class RecurringContract(models.Model):
             validate_invoices = invoice_obj.browse(list(inv_update_ids))
             validate_invoices.action_invoice_open()
         return True
+
+    @api.multi
+    def _filter_clean_invoices(self, since_date, to_date):
+        """ Construct filter domain to be passed on method
+        clean_invoices_paid, which will determine which invoice lines will
+        be removed from invoices. """
+        if not since_date:
+            since_date = fields.Date.today()
+        invl_search = [('contract_id', 'in', self.ids), ('state', '=', 'paid'),
+                       ('due_date', '>=', since_date)]
+        if to_date:
+            invl_search.append(('due_date', '<=', to_date))
+        return invl_search
 
     def _on_group_id_changed(self):
         """Remove lines of open invoices and generate them again

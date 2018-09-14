@@ -21,8 +21,7 @@ _logger = logging.getLogger(__name__)
 
 
 def get_request(self, httprequest):
-    if (httprequest.mimetype == "application/json" and
-            httprequest.environ['PATH_INFO'].startswith('/mobile-app-api')):
+    if httprequest.environ['PATH_INFO'].startswith('/mobile-app-api'):
         return MobileAppJsonRequest(httprequest)
     return old_get_request(self, httprequest)
 

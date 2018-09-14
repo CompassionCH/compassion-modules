@@ -34,9 +34,10 @@ class CompassionLogin(models.Model):
         password = self._get_required_param('password', other_params)
 
         user = self.search([
-            ('new_password', '=', password),
             ('login', '=', username)
         ], limit=1)
+        if user:
+            user.sudo(user.id).check_credentials(password)
 
         mapping = MobileLoginMapping(self.env)
         result = mapping.get_connect_data(user)
