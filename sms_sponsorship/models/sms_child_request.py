@@ -9,6 +9,7 @@
 #
 ##############################################################################
 import logging
+import random
 
 from datetime import datetime
 
@@ -173,9 +174,10 @@ class SmsChildRequest(models.Model):
         put a new child on hold for the sms request.
         """
         self.ensure_one()
-        if not self.has_filter and self.event_id:
+        child_fetched = None
+        if self.event_id:
             child_fetched = self._take_child_from_event()
-        else:
+        if not child_fetched:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
         return child_fetched
@@ -262,9 +264,16 @@ class SmsChildRequest(models.Model):
     def _take_child_from_event(self):
         """ Search in the allocated children for the event.
         """
-        available_hold = self.event_id.hold_ids.filtered(
+        event_holds = self.event_id.hold_ids.filtered(
             lambda h: h.state == 'active' and h.channel == 'sms' and not
-            h.sms_request_id)[:1]
+            h.sms_request_id)
+        available_hold = None
+        if self.has_filter:
+            for child_hold in random.shuffle(event_holds):
+                if self.check_hold_child_parameters(child_hold):
+                    available_hold = child_hold
+        else:
+            available_hold = random.choice(event_holds)
         if available_hold:
             self.write({
                 'child_id': available_hold.child_id.id,
@@ -276,6 +285,15 @@ class SmsChildRequest(models.Model):
             _logger.info("SMS child taken from event pool")
             return True
         return False
+
+    def check_hold_child_parameters(self, child_hold):
+        if child_hold.child_id.gender == self.gender and \
+            child_hold.child_id.min_age == self.min_age \
+            and child_hold.child_id.max_age == self.max_age \
+                and child_hold.child_id.country_id == self.country_id:
+                    return True
+        else:
+            return False
 
     @api.multi
     def send_step1_reminder(self):
