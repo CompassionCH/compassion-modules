@@ -23,7 +23,7 @@ class MobileLoginMapping(OnrampMapping):
         'lastname': 'lastname',
         'yearofbirth': 'birthdate',
         'email': 'email',
-        'screenname': None,
+        'screenname': 'preferred_name',
         'twitterid': None,
         'username': 'login',
         'password': 'password',
@@ -57,11 +57,36 @@ class MobileLoginMapping(OnrampMapping):
         'error': None
     }
 
+    CONSTANTS = {
+        'error': '0',
+        'status': '1',
+        'activation': '1',
+        'alternateemail1': '1',
+        'alternateemail2': '1',
+        'officephone': '1',
+        'street3': '1',
+        'street4': '1',
+        'street5': '1',
+        'twitterid': '1',
+        'receive_emails': '1',
+        'no_emails': '1',
+        'sponsorshipplus_flag': '1',
+        'bb_dd_flag': '1',
+        'dd_flag': '1',
+        'fb_login': '1',
+    }
+
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+    def __init__(self, env):
+        super(MobileLoginMapping, self).__init__(env)
+        self.FIELDS_TO_SUBMIT.update(self.CONSTANTS)
 
     # override get_connect_data to compute value for field 'login_count'
     def get_connect_data(self, odoo_object, fields_to_submit=None):
         mapped = super(MobileLoginMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         mapped['login_count'] = len(odoo_object.log_ids)
+        for key, value in mapped.iteritems():
+            mapped[key] = str(value)
         return mapped

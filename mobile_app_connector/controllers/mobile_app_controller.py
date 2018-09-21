@@ -22,7 +22,7 @@ class RestController(http.Controller):
     # how the authentication is made from the mobile app to provide
     # with a login path and only allow connected users to call this API
     @http.route('/mobile-app-api/<string:model>/<string:method>', type='json',
-                auth='public', methods=['GET', 'POST'])
+                auth='oauth2', methods=['GET', 'POST'])
     def mobile_app_handler(self, model, method, **parameters):
         odoo_obj = request.env.get(model)
         model_method = 'mobile_' + method
