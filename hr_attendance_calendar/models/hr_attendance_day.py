@@ -192,16 +192,22 @@ class HrAttendanceDay(models.Model):
                 'is_offered').mapped('total_duration') or [0])
 
     @api.multi
+    @api.depends('attendance_ids')
     def _compute_rule_id(self):
         """
         To know which working rule is applied on the day, we deduce the
         free break time offered from the paid hours.
         """
         for att_day in self:
-            logged_hours = att_day.paid_hours - att_day.free_breaks_hours
+            if att_day.paid_hours:
+                hours = att_day.paid_hours - att_day.free_breaks_hours
+            else:
+                hours = att_day.due_hours - att_day.free_breaks_hours
+            if hours < 0:
+                hours = 0
             att_day.rule_id = self.env['hr.attendance.rules'].search([
-                ('time_from', '<=', logged_hours),
-                ('time_to', '>', logged_hours),
+                ('time_from', '<=', hours),
+                ('time_to', '>', hours),
             ])
 
     @api.multi
@@ -343,7 +349,7 @@ class HrAttendanceDay(models.Model):
                 if new_rule != rule:
                     time_to_add = compute_break_time_to_add(new_rule)
                     time_to_add = max(time_to_add, logged_hours -
-                                      new_rule.time_to + 2.0/3600)
+                                      new_rule.time_to)
                 if time_to_add != 0:
                     extend_longest_break(time_to_add)
 
