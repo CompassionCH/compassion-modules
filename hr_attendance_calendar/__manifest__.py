@@ -63,6 +63,7 @@
     'demo': [
         'demo/hr_config.xml',
         'demo/resource_calendar.xml',
+        'demo/hr_attendance_day.xml',
     ],
     'installable': True,
     'qweb': [
