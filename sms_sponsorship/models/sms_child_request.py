@@ -290,7 +290,8 @@ class SmsChildRequest(models.Model):
         if child_hold.child_id.gender == self.gender and \
             child_hold.child_id.min_age == self.min_age \
             and child_hold.child_id.max_age == self.max_age \
-                and child_hold.child_id.country_id == self.country_id:
+            and child_hold.child_id.field_office_ids.id == \
+                self.field_office_ids.id:
                     return True
         else:
             return False
