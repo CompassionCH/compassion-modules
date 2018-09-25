@@ -21,6 +21,7 @@ class HrAttendance(models.Model):
                                         string='Attendance day',
                                         readonly=True)
 
+    date = fields.Date('Date', compute='_compute_date', store=True)
     due_hours = fields.Float(related='attendance_day_id.due_hours')
     total_attendance = fields.Float(
         related='attendance_day_id.total_attendance')
@@ -46,6 +47,15 @@ class HrAttendance(models.Model):
         }
 
     ##########################################################################
+    #                             FIELDS METHODS                             #
+    ##########################################################################
+    @api.multi
+    @api.depends('check_in')
+    def _compute_date(self):
+        for attendance in self.filtered('check_in'):
+            attendance.date = attendance.check_in[:10]
+
+    ##########################################################################
     #                               ORM METHODS                              #
     ##########################################################################
     @api.model
@@ -54,6 +64,7 @@ class HrAttendance(models.Model):
         created"""
         new_record = super(HrAttendance, self).create(vals)
         new_record.attendance_day_id = new_record._find_related_day()
+        new_record.attendance_day_id.compute_breaks()
         return new_record
 
     @api.multi

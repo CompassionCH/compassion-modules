@@ -49,12 +49,14 @@ class IrHTTP(models.AbstractModel):
         jwt_decoded = jwt.decode(access_token, options=options)
         # validation
         # is the iss = to Compassions IDP ?
-        if jwt_decoded.get('iss') != 'https://esther.ci.org':
+        if jwt_decoded.get('iss') not in ('https://esther.ci.org',
+                                          'http://services.compassionuk.org/'):
             raise Unauthorized()
         # is scope read or write in scopes ?
-        if mode not in jwt_decoded.get('scope'):
+        scope = jwt_decoded.get('scope')
+        if scope and mode not in scope:
             raise Unauthorized()
-        client_id = jwt_decoded.get('client_id')
+        client_id = jwt_decoded.get('client_id') or jwt_decoded.get('ClientID')
         logger.info("TOKEN CLIENT IS -----------------> " + client_id)
         user = request.env['res.users'].sudo().search(
             [('login', '=', client_id)])

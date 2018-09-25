@@ -8,8 +8,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.tests.common import HttpCase
 import json
+import jwt
+from odoo.tests.common import HttpCase
 
 
 class TestMobileAppHttp(HttpCase):
@@ -17,7 +18,15 @@ class TestMobileAppHttp(HttpCase):
     def setUp(self):
         super(TestMobileAppHttp, self).setUp()
         self.root_url = '/mobile-app-api/'
+        # Add JSON type in request headers
         self.opener.addheaders.append(('Content-Type', 'application/json'))
+        # Add authentication for Oauth2
+        payload = {
+            'iss': 'https://esther.ci.org',
+            'client_id': 'admin'
+        }
+        token = jwt.encode(payload, 'secret')
+        self.opener.addheaders.append(('Authorization', 'Bearer ' + token))
 
     def test_missing_parameters(self):
         url = self.root_url + 'correspondence/get_letters'
