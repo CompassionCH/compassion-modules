@@ -299,11 +299,11 @@ class SmsChildRequest(models.Model):
     def check_hold_child_parameters(self, child_hold):
         if (self.gender == 0 or child_hold.child_id.gender == self.gender[0])\
             and (self.min_age == 0 or child_hold.child_id.age >=
-             self.min_age) and (self.max_age == 0 or
-                child_hold.child_id.age <= self.max_age) and\
-            (self.field_office_id.id is False or
-                child_hold.child_id.field_office_id.id ==
-                self.field_office_id.id):
+                 self.min_age) \
+            and (self.max_age == 0 or child_hold.child_id.age <= self.max_age)\
+            and (self.field_office_id.id is False or
+                 child_hold.child_id.field_office_id.id ==
+                 self.field_office_id.id):
             return True
         else:
             return False
