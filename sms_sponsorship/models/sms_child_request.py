@@ -177,7 +177,6 @@ class SmsChildRequest(models.Model):
         child_fetched = None
         if self.event_id:
             child_fetched = self._take_child_from_event()
-        # TODO tourne en boucle si fetch in global pool
         if not child_fetched:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
@@ -268,11 +267,19 @@ class SmsChildRequest(models.Model):
         event_holds = self.event_id.hold_ids.filtered(
             lambda h: h.state == 'active' and h.channel == 'sms' and not
             h.sms_request_id)
+        # used to try to pick a different child
+        # than current one if no filters were given
+        random_order_holds = []
+        for h in event_holds:
+            random_order_holds.append(h)
+        random.shuffle(random_order_holds)
+
         available_hold = None
-        # TODO ameliorer
         if self.has_filter:
-            for child_hold in event_holds:
-                if self.check_hold_child_parameters(child_hold):
+            for child_hold in random_order_holds:
+                # check if child corresponds to filters
+                if self.check_hold_child_parameters(child_hold) and \
+                        available_hold is None:
                     available_hold = child_hold
         elif not available_hold:
             available_hold = random.choice(event_holds)
@@ -288,14 +295,15 @@ class SmsChildRequest(models.Model):
             return True
         return False
 
+    # TODO more than one field_office_id for some countries
     def check_hold_child_parameters(self, child_hold):
         if (self.gender == 0 or child_hold.child_id.gender == self.gender[0])\
             and (self.min_age == 0 or child_hold.child_id.age >=
              self.min_age) and (self.max_age == 0 or
-                 child_hold.child_id.age <= self.max_age):
-            # and (self.field_office_id.ids == None or
-            #      child_hold.child_id.field_office_id.id ==
-            #      self.child_id.field_office_id.id)
+                child_hold.child_id.age <= self.max_age) and\
+            (self.field_office_id.id is False or
+                child_hold.child_id.field_office_id.id ==
+                self.field_office_id.id):
             return True
         else:
             return False
