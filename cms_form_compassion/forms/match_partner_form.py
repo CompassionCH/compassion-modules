@@ -47,19 +47,19 @@ if not testing:
                                       self.partner_country_id.id))
 
         def _form_validate_partner_phone(self, value, **req_values):
-            if not re.match(r'^[+\d][\d\s]{7,}$', value, re.UNICODE):
+            if value and not re.match(r'^[+\d][\d\s]{7,}$', value, re.UNICODE):
                 return 'phone', _('Please enter a valid phone number')
             # No error
             return 0, 0
 
         def _form_validate_partner_zip(self, value, **req_values):
-            if not re.match(r'^\d{3,6}$', value):
+            if value and not re.match(r'^\d{3,6}$', value):
                 return 'zip', _('Please enter a valid zip code')
             # No error
             return 0, 0
 
         def _form_validate_partner_email(self, value, **req_values):
-            if not re.match(r'[^@]+@[^@]+\.[^@]+', value):
+            if value and not re.match(r'[^@]+@[^@]+\.[^@]+', value):
                 return 'email', _('Verify your e-mail address')
             # No error
             return 0, 0
@@ -74,7 +74,7 @@ if not testing:
             return self._form_validate_alpha_field('city', value)
 
         def _form_validate_alpha_field(self, field, value):
-            if not re.match(r"^[\w\s'-/]+$", value, re.UNICODE):
+            if value and not re.match(r"^[\w\s'-/]+$", value, re.UNICODE):
                 return field, _('Please avoid any special characters')
             # No error
             return 0, 0

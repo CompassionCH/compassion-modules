@@ -8,8 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.addons.message_center_compassion.tests.onramp_base_test \
-    import TestOnramp
+from .onramp_base_test import TestOnramp
 
 
 class TestOnRampController(TestOnramp):

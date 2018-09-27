@@ -411,10 +411,10 @@ class CompassionIntervention(models.Model):
             'state': 'cancel',
         })
         self.message_post(
-            body="The hold of {} ({}) was just cancelled.".format(
+            body=_("The hold of {} ({}) was just cancelled.").format(
                 self.name, self.intervention_id
             ),
-            subject="Intervention hold cancelled",
+            subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             type='comment',
             subtype='mail.mt_comment',

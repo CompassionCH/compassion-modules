@@ -190,9 +190,7 @@ class SponsorshipGift(models.Model):
         previous_gift = self._search_for_similar_pending_gifts(vals)
         if previous_gift:
             return previous_gift._blend_in_other_gift(vals)
-        return self._create_new_and_verify(vals)
 
-    def _create_new_and_verify(self, vals):
         # If a gift for the same partner is to verify, put as well
         # the new one to verify.
         partner_id = self.env['recurring.contract'].browse(
