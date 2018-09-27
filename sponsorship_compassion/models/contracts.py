@@ -249,8 +249,7 @@ class SponsorshipContract(models.Model):
                 'sponsor_id': vals.get('correspondent_id', vals['partner_id'])
             })
 
-        """ Generates commitment number for contracts BVRs
-        """
+        # Generates commitment number for contracts BVRs
         if 'commitment_number' not in vals:
             partner_id = vals.get('partner_id')
             correspondent_id = vals.get('correspondent_id', partner_id)

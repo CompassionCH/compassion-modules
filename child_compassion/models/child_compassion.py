@@ -533,9 +533,8 @@ class CompassionChild(models.Model):
             'image_url': self.image_url})
         if pictures:
             # Add a note in child
-            self.message_post(
-                _("The picture has been updated."),
-                _("Picture update"), 'comment')
+            self.message_post(_("The picture has been updated."),
+                              _("Picture update"), message_type='comment')
 
         return pictures
 
