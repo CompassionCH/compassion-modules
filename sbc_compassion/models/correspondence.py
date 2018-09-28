@@ -16,6 +16,7 @@ import threading
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
+from odoo.tools import config
 from io import BytesIO
 
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
@@ -25,6 +26,7 @@ from odoo.addons.message_center_compassion.mappings import base_mapping as \
     mapping
 
 _logger = logging.getLogger(__name__)
+test_mode = config.get('test_enable')
 
 try:
     import magic
@@ -771,7 +773,8 @@ class Correspondence(models.Model):
                     'file_name': attachments[0].name
                 })
                 attachments.unlink()
-            self.env.cr.commit()    # pylint: disable=invalid-commit
+            if not test_mode:
+                self.env.cr.commit()    # pylint: disable=invalid-commit
             index += 1
         return True
 
