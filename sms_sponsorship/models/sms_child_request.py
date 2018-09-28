@@ -11,7 +11,7 @@
 import logging
 
 from datetime import datetime
-
+from random import randint
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, api, fields
@@ -173,9 +173,10 @@ class SmsChildRequest(models.Model):
         put a new child on hold for the sms request.
         """
         self.ensure_one()
-        if not self.has_filter and self.event_id:
+        child_fetched = False
+        if self.event_id:
             child_fetched = self._take_child_from_event()
-        else:
+        if not child_fetched:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
         return child_fetched
@@ -262,20 +263,45 @@ class SmsChildRequest(models.Model):
     def _take_child_from_event(self):
         """ Search in the allocated children for the event.
         """
-        available_hold = self.event_id.hold_ids.filtered(
+        available_children = self.event_id.hold_ids.filtered(
             lambda h: h.state == 'active' and h.channel == 'sms' and not
-            h.sms_request_id)[:1]
-        if available_hold:
+            h.sms_request_id).mapped('child_id')
+        selected_children = available_children - self.child_id
+        if self.has_filter:
+            selected_children = selected_children.filtered(
+                self.check_child_parameters)
+
+        if selected_children:
+            # Take a random child among the selection
+            index = randint(0, len(selected_children) - 1)
+            child = selected_children[index]
             self.write({
-                'child_id': available_hold.child_id.id,
+                'child_id': child.id,
                 'state': 'child_reserved'
             })
-            available_hold.sms_request_id = self.id
+            child.hold_id.sms_request_id = self.id
             # Put a new child in event buffer
             self.event_id.with_delay().hold_children_for_sms(1)
             _logger.info("SMS child taken from event pool")
             return True
         return False
+
+    # TODO more than one field_office_id for some countries
+    def check_child_parameters(self, child):
+        """
+        Used to filter children and tells if child corresponds to search
+        filters activated in the SMS request.
+        :param child: <compassion.child> record
+        :return: True if child meets search criterias
+        """
+        gender_match = not self.gender or self.gender[0] == child.gender
+        min_age_match = not self.min_age or self.min_age <= child.age
+        max_age_match = not self.max_age or self.max_age >= child.age
+        country_match = not self.field_office_id or \
+            self.field_office_id == child.field_office_id
+
+        return gender_match and min_age_match and max_age_match and \
+            country_match
 
     @api.multi
     def send_step1_reminder(self):
