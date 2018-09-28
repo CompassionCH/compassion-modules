@@ -642,7 +642,8 @@ class CommunicationJob(models.Model):
             to_print = report_obj.with_context(
                 print_name=self.env.user.firstname[:3] + ' ' + (
                     job.subject or ''),
-                must_skip_send_to_printer=True
+                must_skip_send_to_printer=True,
+                lang=job.partner_id.lang
             ).get_pdf(job.ids, job.report_id.report_name)
 
             # Print letter

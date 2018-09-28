@@ -384,9 +384,9 @@ class CompassionProject(models.Model):
         By default: log a message.
         """
         for project in self:
-            project.message_post(
-                _("The project was suspended and funds are retained."),
-                _("Project Suspended"), 'comment')
+            project.message_post(_(
+                "The project was suspended and funds are retained."),
+                _("Project Suspended"), message_type='comment')
         return True
 
     @api.model
@@ -469,7 +469,7 @@ class CompassionProject(models.Model):
         for project in self:
             project.message_post(
                 _("The project is reactivated."),
-                _("Project Reactivation"), 'comment')
+                _("Project Reactivation"), message_type='comment')
         return True
 
     def hold_gifts_action(self):
