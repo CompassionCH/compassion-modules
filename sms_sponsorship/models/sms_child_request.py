@@ -9,6 +9,7 @@
 #
 ##############################################################################
 import logging
+import random
 
 from datetime import datetime
 
@@ -64,8 +65,8 @@ class SmsChildRequest(models.Model):
 
     # Filter criteria made by sender
     gender = fields.Selection([
-        ('Male', 'Male'),
-        ('Female', 'Female')
+        ('Male', 'M'),
+        ('Female', 'F')
     ])
     min_age = fields.Integer(size=2)
     max_age = fields.Integer(size=2, default=DEFAULT_MAX_AGE)
@@ -173,9 +174,10 @@ class SmsChildRequest(models.Model):
         put a new child on hold for the sms request.
         """
         self.ensure_one()
-        if not self.has_filter and self.event_id:
+        child_fetched = None
+        if self.event_id:
             child_fetched = self._take_child_from_event()
-        else:
+        if not child_fetched:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
         return child_fetched
@@ -262,9 +264,25 @@ class SmsChildRequest(models.Model):
     def _take_child_from_event(self):
         """ Search in the allocated children for the event.
         """
-        available_hold = self.event_id.hold_ids.filtered(
+        event_holds = self.event_id.hold_ids.filtered(
             lambda h: h.state == 'active' and h.channel == 'sms' and not
-            h.sms_request_id)[:1]
+            h.sms_request_id)
+        # used to try to pick a different child
+        # than current one if no filters were given
+        random_order_holds = []
+        for h in event_holds:
+            random_order_holds.append(h)
+        random.shuffle(random_order_holds)
+
+        available_hold = None
+        if self.has_filter:
+            for child_hold in random_order_holds:
+                # check if child corresponds to filters
+                if self.check_hold_child_parameters(child_hold) and \
+                        available_hold is None:
+                    available_hold = child_hold
+        elif not available_hold:
+            available_hold = random.choice(event_holds)
         if available_hold:
             self.write({
                 'child_id': available_hold.child_id.id,
@@ -276,6 +294,19 @@ class SmsChildRequest(models.Model):
             _logger.info("SMS child taken from event pool")
             return True
         return False
+
+    # TODO more than one field_office_id for some countries
+    def check_hold_child_parameters(self, child_hold):
+        if (self.gender == 0 or child_hold.child_id.gender == self.gender[0])\
+            and (self.min_age == 0 or child_hold.child_id.age >=
+                 self.min_age) \
+            and (self.max_age == 0 or child_hold.child_id.age <= self.max_age)\
+            and (self.field_office_id.id is False or
+                 child_hold.child_id.field_office_id.id ==
+                 self.field_office_id.id):
+            return True
+        else:
+            return False
 
     @api.multi
     def send_step1_reminder(self):
