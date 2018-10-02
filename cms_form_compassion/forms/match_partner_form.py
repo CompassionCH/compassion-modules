@@ -109,12 +109,8 @@ if not testing:
             partner = partner_obj.search([
                 ('email', '=ilike', source_vals['email'])], limit=1)
             if not partner:
-                names = source_vals['name'].split(' ')
-                name_one = names[0]
-                name_two = names[:1][0]
                 partner = partner_obj.search([
-                    '|', ('lastname', 'ilike', name_one),
-                    ('lastname', 'ilike', name_two or name_one),
+                    ('lastname', 'ilike', source_vals['lastname']),
                     ('zip', '=', source_vals['zip'])], limit=1)
             if not partner:
                 # no match found -> creating a new one.
