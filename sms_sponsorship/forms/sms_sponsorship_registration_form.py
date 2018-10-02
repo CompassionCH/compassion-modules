@@ -122,12 +122,12 @@ if not testing:
             return req_values.get('partner_id', self.partner_id or '')
 
         def _form_load_partner_firstname(self, fname, field, value,
-                                       **req_values):
+                                         **req_values):
             return req_values.get('partner_firstname',
                                   self.partner_firstname or '')
 
         def _form_load_partner_lastname(self, fname, field, value,
-                                       **req_values):
+                                        **req_values):
             return req_values.get('partner_lastname',
                                   self.partner_lastname or '')
 

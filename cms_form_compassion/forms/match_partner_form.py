@@ -9,7 +9,7 @@
 ##############################################################################
 import re
 
-from odoo import models, fields, tools, api, _
+from odoo import models, fields, tools, _
 
 testing = tools.config.get('test_enable')
 
