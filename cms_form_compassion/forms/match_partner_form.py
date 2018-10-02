@@ -29,8 +29,8 @@ if not testing:
         partner_id = fields.Many2one('res.partner')
         partner_title = fields.Many2one(
             'res.partner.title', 'Title', required=True)
-        partner_firstname = fields.Char('First name', required=True)
-        partner_lastname = fields.Char('Last name', required=True)
+        partner_firstname = fields.Char('First Name', required=True)
+        partner_lastname = fields.Char('Last Name', required=True)
         partner_email = fields.Char('Email', required=True)
         partner_phone = fields.Char('Phone', required=True)
         partner_street = fields.Char('Street', required=True)
@@ -66,10 +66,10 @@ if not testing:
             return 0, 0
 
         def _form_validate_partner_lastname(self, value, **req_values):
-            return self._form_validate_alpha_field('last name', value)
+            return self._form_validate_alpha_field('last_name', value)
 
         def _form_validate_partner_firstname(self, value, **req_values):
-            return self._form_validate_alpha_field('first name', value)
+            return self._form_validate_alpha_field('first_name', value)
 
         def _form_validate_partner_street(self, value, **req_values):
             return self._form_validate_alpha_field('street', value)
