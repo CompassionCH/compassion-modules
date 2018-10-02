@@ -10,6 +10,9 @@
 ##############################################################################
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from odoo.tools import config
+
+test_mode = config.get('test_enable')
 
 
 class HoldWizard(models.TransientModel):
@@ -58,7 +61,8 @@ class HoldWizard(models.TransientModel):
             'action_id': create_commitment.id,
             'object_id': self.id,
         })
-        self.env.cr.commit()  # pylint: disable=invalid-commit
+        if not test_mode:
+            self.env.cr.commit()  # pylint: disable=invalid-commit
         message.with_context(async_mode=False).process_messages()
         if message.state == 'failure':
             raise UserError(message.failure_reason)

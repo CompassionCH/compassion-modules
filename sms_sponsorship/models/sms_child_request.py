@@ -15,6 +15,7 @@ from random import randint
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, api, fields
+from odoo.tools import config
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.base_phone.fields import Phone
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
@@ -23,6 +24,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 DEFAULT_MAX_AGE = 12
 
 _logger = logging.getLogger(__name__)
+test_mode = config.get('test_enable')
 
 
 class SmsChildRequest(models.Model):
@@ -135,7 +137,8 @@ class SmsChildRequest(models.Model):
             'is_trying_to_fetch_child': True
         })
         # Directly commit for the job to work
-        self.env.cr.commit()  # pylint: disable=invalid-commit
+        if not test_mode:
+            self.env.cr.commit()  # pylint: disable=invalid-commit
         request.with_delay(priority=5).reserve_child()
         return request
 

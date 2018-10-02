@@ -10,6 +10,7 @@
 ##############################################################################
 
 from odoo import api, fields, models, _
+from odoo.tools import config
 
 from dateutil.relativedelta import relativedelta
 
@@ -17,6 +18,7 @@ from ..models.product import GIFT_NAMES
 import logging
 
 logger = logging.getLogger(__name__)
+test_mode = config.get('test_enable')
 
 
 class GenerateGiftWizard(models.TransientModel):
@@ -81,7 +83,8 @@ class GenerateGiftWizard(models.TransientModel):
                     invoice.action_invoice_open()
                     # Commit at each invoice creation. This does not break
                     # the state
-                    self.env.cr.commit()    # pylint: disable=invalid-commit
+                    if not test_mode:
+                        self.env.cr.commit()   # pylint: disable=invalid-commit
                     invoice_ids.append(invoice.id)
 
         return {

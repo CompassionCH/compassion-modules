@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
+from odoo.tools import config
 
 try:
     from enum import Enum
@@ -25,6 +26,7 @@ from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
 
 logger = logging.getLogger(__name__)
+test_mode = config.get('test_enable')
 
 
 class HoldType(Enum):
@@ -242,7 +244,8 @@ class CompassionHold(models.Model):
                     'date': fields.Date.today(),
                 })
                 # Always commit after receiving a hold to avoid losing it
-                self.env.cr.commit()    # pylint: disable=invalid-commit
+                if not test_mode:
+                    self.env.cr.commit()    # pylint: disable=invalid-commit
             else:
                 # Release child if no hold_id received
                 hold.unlink()
@@ -478,4 +481,5 @@ class CompassionHold(models.Model):
                 type='comment',
             )
             # Commit after hold is updated
-            self.env.cr.commit()  # pylint:disable=invalid-commit
+            if not test_mode:
+                self.env.cr.commit()  # pylint:disable=invalid-commit
