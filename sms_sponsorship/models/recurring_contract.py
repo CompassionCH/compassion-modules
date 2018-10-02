@@ -142,6 +142,9 @@ class RecurringContract(models.Model):
                 'payment_mode_id': payment_mode_id,
             })
         self.group_id = group
+        # TODO maybe this call is not optimal (used to set BVR ref when
+        # creating sponsorship from sms form step2)
+        self.group_id.onchange_payment_mode_id()
         return True
 
     @job(default_channel="root.sms_sponsorship")
