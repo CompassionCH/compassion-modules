@@ -108,6 +108,7 @@ class SponsorshipContract(models.Model):
     contract_line_ids = fields.One2many(
         default=lambda self: self._get_standard_lines()
     )
+    preferred_name = fields.Char(related='child_id.preferred_name')
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
