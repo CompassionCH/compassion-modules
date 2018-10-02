@@ -25,12 +25,11 @@ class TestSmsCompassion(BaseSponsorshipTest):
         })
         self.partner = self.env.ref('base.res_partner_2')
         self.env['ir.config_parameter'].set_param('web.external.url', 'base/')
-        self.env["res.lang"].load_lang('fr_CH')
         self.child_request = self.env['sms.child.request'].create({
             'partner_id': self.partner.id,
             'sender': self.partner.phone,
             'child_id': self.child.id,
-            'lang_code': 'fr_CH'
+            'lang_code': 'en_US'
         })
 
     def test_sms_sponsorship_creation__with_new_partner(self):
@@ -51,7 +50,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ])
         self.assertTrue(new_partner)
         self.assertTrue(self.child_request.new_partner)
-        self.assertEqual(new_partner.lang, 'fr_CH')
+        self.assertEqual(new_partner.lang, 'en_US')
         new_sponsorship = self.env['recurring.contract'].search([
             ('partner_id', '=', new_partner.id),
             ('child_id', '=', self.child_request.child_id.id)

@@ -29,7 +29,8 @@ if not testing:
         partner_id = fields.Many2one('res.partner')
         partner_title = fields.Many2one(
             'res.partner.title', 'Title', required=True)
-        partner_name = fields.Char('Name', required=True)
+        partner_firstname = fields.Char('First Name', required=True)
+        partner_lastname = fields.Char('Last Name', required=True)
         partner_email = fields.Char('Email', required=True)
         partner_phone = fields.Char('Phone', required=True)
         partner_street = fields.Char('Street', required=True)
@@ -64,8 +65,11 @@ if not testing:
             # No error
             return 0, 0
 
-        def _form_validate_partner_name(self, value, **req_values):
-            return self._form_validate_alpha_field('name', value)
+        def _form_validate_partner_lastname(self, value, **req_values):
+            return self._form_validate_alpha_field('last_name', value)
+
+        def _form_validate_partner_firstname(self, value, **req_values):
+            return self._form_validate_alpha_field('first_name', value)
 
         def _form_validate_partner_street(self, value, **req_values):
             return self._form_validate_alpha_field('street', value)
@@ -105,12 +109,8 @@ if not testing:
             partner = partner_obj.search([
                 ('email', '=ilike', source_vals['email'])], limit=1)
             if not partner:
-                names = source_vals['name'].split(' ')
-                name_one = names[0]
-                name_two = names[:1][0]
                 partner = partner_obj.search([
-                    '|', ('lastname', 'ilike', name_one),
-                    ('lastname', 'ilike', name_two or name_one),
+                    ('lastname', 'ilike', source_vals['lastname']),
                     ('zip', '=', source_vals['zip'])], limit=1)
             if not partner:
                 # no match found -> creating a new one.
@@ -122,8 +122,8 @@ if not testing:
 
         def _get_partner_vals(self, values, extra_values):
             keys = [
-                'name', 'email', 'phone', 'street', 'city', 'zip',
-                'country_id', 'state_id', 'title'
+                'firstname', 'lastname', 'email', 'phone', 'street', 'city',
+                'zip', 'country_id', 'state_id', 'title'
             ]
             return {
                 key: extra_values.get(

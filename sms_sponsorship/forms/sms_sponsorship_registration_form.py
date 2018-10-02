@@ -52,8 +52,8 @@ if not testing:
                 {
                     'id': 'partner',
                     'title': _('Your personal data'),
-                    'fields': ['partner_title', 'partner_name',
-                               'partner_email',
+                    'fields': ['partner_title', 'partner_firstname',
+                               'partner_lastname', 'partner_email',
                                'partner_phone', 'partner_street',
                                'partner_zip', 'partner_city',
                                'partner_country_id']
@@ -102,7 +102,8 @@ if not testing:
             partner = main_object.sudo().partner_id
             form.partner_id = partner.id
             form.partner_title = partner.title
-            form.partner_name = partner.name
+            form.partner_lastname = partner.lastname
+            form.partner_firstname = partner.firstname
             form.partner_email = partner.email
             form.partner_phone = sms_request.sender or partner.mobile or \
                 partner.phone
@@ -120,8 +121,15 @@ if not testing:
         def _form_load_partner_id(self, fname, field, value, **req_values):
             return req_values.get('partner_id', self.partner_id or '')
 
-        def _form_load_partner_name(self, fname, field, value, **req_values):
-            return req_values.get('partner_name', self.partner_name or '')
+        def _form_load_partner_firstname(self, fname, field, value,
+                                         **req_values):
+            return req_values.get('partner_firstname',
+                                  self.partner_firstname or '')
+
+        def _form_load_partner_lastname(self, fname, field, value,
+                                        **req_values):
+            return req_values.get('partner_lastname',
+                                  self.partner_lastname or '')
 
         def _form_load_partner_title(self, fname, field, value, **req_values):
             return req_values.get('partner_title', self.partner_title.id or '')

@@ -30,7 +30,7 @@ class ContractGroup(models.Model):
 
 class RecurringContract(models.Model):
     _inherit = ['recurring.contract', 'utm.mixin']
-    _order = 'start_date desc'
+    _order = 'create_date desc'
     _rec_name = 'name'
     _name = 'recurring.contract'
 
