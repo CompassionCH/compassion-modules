@@ -20,6 +20,11 @@ class PartnerSponsorshipReport(models.Model):
     end_period = fields.Date(compute='_compute_end_period')
     start_period = fields.Date(compute='_compute_start_period')
 
+    related_active_sponsorships = fields.One2many(
+        "recurring.contract", compute='_compute_related_active_sponsorship')
+    related_sponsorships = fields.One2many(
+        "recurring.contract", compute='_compute_related_sponsorship')
+
     # sr -> Sponsorship Report
     sr_sponsorship = fields.Integer('Number of sponsorship',
                                     compute='_compute_sr_sponsorship',
@@ -32,18 +37,30 @@ class PartnerSponsorshipReport(models.Model):
                                       compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer('Number of boys', compute='_compute_boy')
     sr_nb_girl = fields.Integer('Number of girls', compute='_compute_girl')
-    sr_time_icp = fields.Integer('Total time spent at the ICP',
+    sr_time_icp = fields.Integer('Total hour spent at the ICP',
                                  compute='_compute_time_scp')
     sr_nb_meal = fields.Integer('Number of meals served',
                                 compute='_compute_meal')
-    # sr_nb_medic_check = fields.Integer('Number of given medical checks',
-    #                                    compute='_compute_medic_check')
     sr_nb_bible = fields.Integer('Number of bibles distributed',
                                  related='sr_sponsorship')
-    sr_total_donation = fields.Float('Invoices',
-                                     compute='_compute_total_donation')
-    sr_total_gift = fields.Float('Gift',
-                                 compute='_compute_total_gift')
+    sr_total_donation = fields.Monetary('Invoices',
+                                        compute='_compute_total_donation')
+    sr_total_gift = fields.Integer('Gift',
+                                   compute='_compute_total_gift')
+
+    @api.multi
+    def _compute_related_sponsorship(self):
+        for partner in self:
+            sponsorships = partner.sponsorship_ids
+            sponsorships |= partner.member_ids.mapped('sponsorship_ids')
+            partner.related_sponsorships = sponsorships
+
+    @api.multi
+    def _compute_related_active_sponsorship(self):
+        for partner in self:
+            sponsorships = partner.related_sponsorships
+            partner.related_active_sponsorships = sponsorships.filtered(
+                'is_active')
 
     @api.multi
     def _compute_start_period(self):
@@ -60,18 +77,8 @@ class PartnerSponsorshipReport(models.Model):
 
     @api.multi
     def _compute_sr_sponsorship(self):
-        def get_nb_sponsorship(_partner):
-            return self.env['recurring.contract'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('type', 'in', ['S', 'SC']),
-                 ('is_active', '=', True)])
-
         for partner in self:
-            nb_sponsorship = get_nb_sponsorship(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_sponsorship += get_nb_sponsorship(member)
-            partner.sr_sponsorship = nb_sponsorship
+            partner.sr_sponsorship = len(partner.related_active_sponsorships)
 
     @api.multi
     def _compute_b2s_letter(self):
@@ -108,68 +115,40 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_boy(self):
         for partner in self:
-            total = self.env['compassion.child'].search_count(
-                [('partner_id', '=', partner.id),
-                 ('gender', '=', 'M')])
-            if partner.is_church:
-                for member in partner.member_ids:
-                    total += self.env['compassion.child'].search_count(
-                        [('partner_id', '=', member.id),
-                         ('gender', '=', 'M')])
-            partner.sr_nb_boy = total
+            partner.sr_nb_boy = len(partner.related_active_sponsorships.mapped(
+                'child_id').filtered(lambda r: r.gender == 'M'))
 
     @api.multi
     def _compute_girl(self):
         for partner in self:
-            total = self.env['compassion.child'].search_count(
-                [('partner_id', '=', partner.id),
-                 ('gender', '=', 'F')])
-            if partner.is_church:
-                for member in partner.member_ids:
-                    total += self.env['compassion.child'].search_count(
-                        [('partner_id', '=', member.id),
-                         ('gender', '=', 'F')])
-            partner.sr_nb_girl = total
+            partner.sr_nb_girl = len(
+                partner.related_active_sponsorships.mapped(
+                    'child_id').filtered(lambda r: r.gender == 'F'))
 
     @api.multi
     def _compute_time_scp(self):
-        def get_time_in_scp(_partner):
-            total = 0
-            for contract in self.env['recurring.contract'].search(
-                    [('partner_id', '=', _partner.id),
-                     ('type', 'in', ['S', 'SC'])]):
-                nb_weeks = contract.contract_duration / 7.
-                country = contract.child_id.field_office_id
-                total += nb_weeks * country.icp_hours_week
-            return total
+        def get_time_in_scp(sponsorship):
+            nb_weeks = sponsorship.contract_duration / 7.
+            country = sponsorship.child_id.field_office_id
+            return nb_weeks * country.icp_hours_week
 
         for partner in self:
-            time_to_scp = get_time_in_scp(partner)
-
-            if partner.is_church:
-                for member in partner.member_ids:
-                    time_to_scp += get_time_in_scp(member)
-            partner.sr_time_icp = time_to_scp
+            total_day = sum(
+                partner.related_sponsorships.mapped(get_time_in_scp))
+            partner.sr_time_icp = total_day
 
     @api.multi
     def _compute_meal(self):
-        def get_nb_meal(_partner):
-            total = 0
-            for contract in self.env['recurring.contract'].search(
-                    [('partner_id', '=', _partner.id),
-                     ('type', 'in', ['S', 'SC'])]):
-                nb_weeks = contract.contract_duration / 7.
-                country = contract.child_id.field_office_id
-                total += nb_weeks * country.icp_meal_week
-            return total
+        def get_nb_meal(sponsorship):
+            nb_weeks = sponsorship.contract_duration / 7.
+            country = sponsorship.child_id.field_office_id
+            return nb_weeks * country.icp_meal_week
 
         for partner in self:
-            sr_meal = get_nb_meal(partner)
-
-            if partner.is_church:
-                for member in partner.member_ids:
-                    sr_meal = get_nb_meal(member)
-            partner.sr_nb_meal = sr_meal
+            total_meal = sum(
+                partner.related_sponsorships.filtered('global_id').mapped(
+                    get_nb_meal))
+            partner.sr_nb_meal = total_meal
 
     @api.multi
     def _compute_total_donation(self):
@@ -201,7 +180,7 @@ class PartnerSponsorshipReport(models.Model):
                  ('type', '=', 'out_invoice'),
                  ('state', '=', 'paid'),
                  ('last_payment', '<', _partner.end_period),
-                 ('last_payment', '>', _partner.start_period)
+                 ('last_payment', '>=', _partner.start_period)
                  ])
 
         for partner in self:
