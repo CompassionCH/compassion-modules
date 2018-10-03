@@ -41,6 +41,7 @@
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="payment_mode_id" />
@@ -60,6 +61,7 @@
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="payment_mode_id" />
@@ -79,6 +81,7 @@
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
+                                <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="payment_mode_id" />
@@ -96,6 +99,7 @@
                         <field name="other_contract_ids" context="{'default_type': 'O'}">
                             <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
                                 <field name="name" />
+                                <field name="create_date" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                                 <field name="payment_mode_id" />
