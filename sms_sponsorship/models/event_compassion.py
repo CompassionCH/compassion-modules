@@ -82,7 +82,8 @@ class EventCompassion(models.Model):
                     'primary_owner': self.env.uid,
                     'event_id': event.id,
                     'campaign_id': event.campaign_id.id,
-                    'ambassador': event.user_id.partner_id.id or self.env.uid,
+                    'ambassador': event.user_id.partner_id.id or
+                    self.env.user.partner_id.id,
                     'channel': 'sms',
                     'source_code': 'automatic_sms_reservation_for_event',
                     'return_action': 'view_holds'
