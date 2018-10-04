@@ -42,7 +42,7 @@ class PartnerSponsorshipReport(models.Model):
     sr_nb_meal = fields.Integer('Number of meals served',
                                 compute='_compute_meal')
     sr_nb_bible = fields.Integer('Number of bibles distributed',
-                                 related='sr_sponsorship')
+                                 compute='_compute_nb_bible')
     sr_total_donation = fields.Monetary('Invoices',
                                         compute='_compute_total_donation')
     sr_total_gift = fields.Integer('Gift',
@@ -149,6 +149,13 @@ class PartnerSponsorshipReport(models.Model):
                 partner.related_sponsorships.filtered('global_id').mapped(
                     get_nb_meal))
             partner.sr_nb_meal = total_meal
+
+    @api.multi
+    def _compute_nb_bible(self):
+        for partner in self:
+            total_bible = len(
+                partner.related_sponsorships.filtered('global_id'))
+            partner.sr_nb_bible = total_bible
 
     @api.multi
     def _compute_total_donation(self):
