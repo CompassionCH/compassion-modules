@@ -9,18 +9,20 @@
             <form>
                 <sheet>
                     <group col='2' string="Sponsorship Report">
-                        <group string="From the beginning of your sponsorships">
+                        <group string="Active sponsorships">
                             <field name="sr_sponsorship"/>
                             <field name="sr_nb_boy"/>
                             <field name="sr_nb_girl"/>
-                            <field name="sr_time_icp" widget="float_time"/>
+                        </group>
+                        <group string="From the beginning of your sponsorships">
+                            <field name="sr_time_icp"/>
                             <field name="sr_nb_meal"/>
                             <field name="sr_nb_bible"/>
                         </group>
                         <group string="During the last 12 months">
                             <field name="sr_nb_b2s_letter"/>
                             <field name="sr_nb_s2b_letter"/>
-                            <field name="sr_total_donation"/>
+                            <field name="sr_total_donation" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                             <field name="sr_total_gift"/>
                         </group>
                     </group>
