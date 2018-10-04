@@ -125,8 +125,10 @@ if not testing:
                 'firstname', 'lastname', 'email', 'phone', 'street', 'city',
                 'zip', 'country_id', 'state_id', 'title'
             ]
-            return {
+            vals = {
                 key: extra_values.get(
                     'partner_' + key, values.get('partner_' + key))
                 for key in keys
             }
+            vals['lang'] = self.env.lang
+            return vals
