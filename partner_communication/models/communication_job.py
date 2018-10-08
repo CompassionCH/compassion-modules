@@ -651,7 +651,7 @@ class CommunicationJob(models.Model):
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer'] \
                 .with_context(lang=job.partner_id.lang)
-            if printer:
+            if behaviour['action'] != 'client' and printer:
                 printer.print_document(
                     report.report_name, to_print, report.report_type)
 
