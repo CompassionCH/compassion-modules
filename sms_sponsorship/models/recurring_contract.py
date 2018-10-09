@@ -41,6 +41,8 @@ class RecurringContract(models.Model):
         :param sms_child_request: sms.child.request record
         :return: True
         """
+        frontend_lang = self.env['res.lang'].search([
+            ('code', 'like', vals['lang'] + '_')], limit=1)
         if not partner:
             # Search for existing partner
             partner = self.env['res.partner'].search([
@@ -48,13 +50,10 @@ class RecurringContract(models.Model):
                 ('lastname', 'ilike', vals['lastname']),
                 ('email', '=', vals['email'])
             ])
-            if len(partner) == 1:
-                sms_child_request.write({
-                    'partner_id': partner.id,
-                    'lang_code': partner.lang
-                })
-            else:
-                partner = False
+            if len(partner) > 1:
+                partner = partner.filtered('has_sponsorships')
+                if len(partner) != 1:
+                    partner = False
         else:
             if not (partner.firstname == vals['firstname'] and
                     partner.lastname == vals['lastname'] and
@@ -67,10 +66,18 @@ class RecurringContract(models.Model):
                 'lastname': vals['lastname'],
                 'mobile': vals['mobile'],
                 'email': vals['email'],
-                'lang': sms_child_request.lang_code
+                'lang': frontend_lang.code or sms_child_request.lang_code
             })
             sms_child_request.new_partner = True
             sms_child_request.partner_id = partner
+
+        # Update language of request and of partner
+        if frontend_lang and partner.lang != frontend_lang.code:
+            partner.lang = frontend_lang.code
+        sms_child_request.write({
+            'partner_id': partner.id,
+            'lang_code': partner.lang
+        })
 
         # Create sponsorship
         lines = self._get_sponsorship_standard_lines()
