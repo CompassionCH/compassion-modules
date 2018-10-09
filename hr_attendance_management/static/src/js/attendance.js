@@ -1,4 +1,4 @@
-odoo.define('hr_attendance_extra_hours.attendance', function (require) {
+odoo.define('hr_attendance_management.attendance', function (require) {
 "use strict";
 
     var core = require('web.core');
@@ -85,7 +85,7 @@ odoo.define('hr_attendance_extra_hours.attendance', function (require) {
                 window.add_timeout_button_event = function(className) {
                     $('.'+className).click(window.attendance_message_timeout);
                 };
-                this.do_action('hr_attendance_extra_hours.change_day_wizard');
+                this.do_action('hr_attendance_management.change_day_wizard');
             }
         }
     });

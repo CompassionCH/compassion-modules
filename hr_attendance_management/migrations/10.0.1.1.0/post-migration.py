@@ -24,7 +24,7 @@ def migrate(cr, version):
     cr.execute("""
             UPDATE ir_config_parameter
             SET key = replace(key, 'hr_attendance_calendar',
-                              'hr_attendance_extra_hours')
+                              'hr_attendance_management')
         """)
 
     # See https://confluence.compassion.ch/display/CI/Migration+hr-attendance

@@ -32,7 +32,7 @@
                         <field name="previous_annual_balance" widget="float_time" invisible="1"/>
                         <field name="extra_hours_lost" widget="float_time"/>
                         <field name="attendance_days_ids"
-                               context="{'tree_view_ref': 'hr_attendance_extra_hours.hr_attendance_day_tree_from_employee'}"/>
+                               context="{'tree_view_ref': 'hr_attendance_management.hr_attendance_day_tree_from_employee'}"/>
                     </group>
                 </page>
             </xpath>

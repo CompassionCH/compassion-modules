@@ -259,7 +259,7 @@ class HrAttendanceDay(models.Model):
         of the employee, which is a SQL view.
         """
         max_extra_hours = float(self.env['ir.config_parameter'].get_param(
-            'hr_attendance_extra_hours.max_extra_hours', 0.0))
+            'hr_attendance_management.max_extra_hours', 0.0))
         # First reset the extra hours lost
         self.write({'extra_hours_lost': 0})
 
@@ -390,8 +390,7 @@ class HrAttendanceDay(models.Model):
         # find related attendance
         rd.attendance_ids = self.env['hr.attendance'].search([
             ('employee_id', '=', rd.employee_id.id),
-            ('check_in', '>=', rd.date + " 00:00:00"),
-            ('check_in', '<=', rd.date + " 23:59:59"),
+            ('date', '=', rd.date),
         ])
 
         # compute breaks
