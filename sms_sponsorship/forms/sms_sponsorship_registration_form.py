@@ -12,10 +12,16 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, tools, _
+from odoo import api, models, fields, tools, _
 
 testing = tools.config.get('test_enable')
 _logger = logging.getLogger(__name__)
+
+
+@api.model
+def _lang_get(self):
+    return self.env['res.lang'].sudo().get_installed()
+
 
 if not testing:
     class PartnerSmsRegistrationForm(models.AbstractModel):
@@ -26,6 +32,10 @@ if not testing:
         _form_model_fields = ['partner_id', 'payment_mode_id']
         _form_required_fields = ('partner_id', 'payment_mode_id', 'gtc_accept')
         _display_type = 'full'
+
+        partner_lang = fields.Selection(_lang_get, 'Language')
+        partner_birthdate = fields.Date()
+        origin_text = fields.Char('I have heard of Compassion through')
 
         # These two fields are not used for now but we let them in case
         # we would like to revert the functionality
@@ -48,23 +58,34 @@ if not testing:
 
         @property
         def _form_fieldsets(self):
-            return [
+            fieldset = [
                 {
                     'id': 'partner',
                     'title': _('Your personal data'),
                     'fields': ['partner_title', 'partner_firstname',
-                               'partner_lastname', 'partner_email',
+                               'partner_lastname', 'partner_lang',
+                               'partner_email',
                                'partner_phone', 'partner_street',
                                'partner_zip', 'partner_city',
-                               'partner_country_id']
-                },
-                {
-                    'id': 'payment',
-                    'fields': [
-                        'payment_mode_id', 'gtc_accept', 'amount'
-                    ]
+                               'partner_country_id', 'partner_birthdate']
                 },
             ]
+            if not self.main_object.sudo().origin_id:
+                fieldset.append({
+                    'id': 'origin',
+                    'title': _('How did you hear about Compassion?'),
+                    'fields': [
+                        'origin_text'
+                    ]
+                })
+            fieldset.append({
+                'id': 'payment',
+                'title': _('Payment Method'),
+                'fields': [
+                    'payment_mode_id', 'gtc_accept', 'amount'
+                ]
+            })
+            return fieldset
 
         @property
         def form_widgets(self):
@@ -112,8 +133,11 @@ if not testing:
             form.partner_city = partner.city
             form.partner_country_id = partner.country_id or \
                 self.env.ref('base.ch')
+            form.partner_lang = partner.lang
+            form.partner_birthdate = partner.birthdate
             form.pay_first_month_ebanking = kw.get('pay_first_month_ebanking')
             form.immediately_add_gifts = kw.get('immediately_add_gifts')
+            form.origin_text = kw.get('origin_text')
             return form
 
         # Load values from model into form view
@@ -149,6 +173,14 @@ if not testing:
         def _form_load_partner_city(self, fname, field, value, **req_values):
             return req_values.get('partner_city', self.partner_city or '')
 
+        def _form_load_partner_lang(self, fname, field, value, **req_values):
+            return req_values.get('partner_lang', self.partner_lang or '')
+
+        def _form_load_partner_birthdate(self, fname, field, value,
+                                         **req_values):
+            return req_values.get(
+                'partner_birthdate', self.partner_id.sudo().birthdate or '')
+
         # Form submission
         #################
         def form_before_create_or_update(self, values, extra_values):
@@ -180,6 +212,13 @@ if not testing:
                     sponsorship.sms_request_id.new_partner:
                 delay = datetime.now() + relativedelta(seconds=5)
                 sponsorship.with_delay(eta=delay).create_first_sms_invoice()
+            message_post_values = self._get_post_message_values()
+            if message_post_values:
+                body = u"<ul>{}</ul>".format(u"".join(
+                    [u"<li>{}: {}</li>".format(k, v) for k, v in
+                     message_post_values.iteritems()]
+                ))
+                sponsorship.with_delay().post_message_from_step2(body)
 
         def form_next_url(self, main_object=None):
             if self.pay_first_month_ebanking:
@@ -194,3 +233,19 @@ if not testing:
                 'reference': 'SMS-1MONTH-' + self.main_object.display_name,
                 'sponsorship_id': self.main_object.id
             })
+
+        def _get_post_message_values(self):
+            """
+            This is used to get values that will posted on the sponsorship.
+            :return: dict of key values
+            """
+            values = {}
+            if self.origin_text:
+                values['Origin'] = self.origin_text
+            return values
+
+        def _get_partner_keys(self):
+            res = super(PartnerSmsRegistrationForm, self)._get_partner_keys()
+            res.extend(['lang', 'birthdate'])
+            res.remove('state_id')
+            return res

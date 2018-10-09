@@ -134,6 +134,12 @@ class RecurringContract(models.Model):
 
         return True
 
+    @job(default_channel="root.sms_sponsorship")
+    @related_action(action='related_action_contract')
+    def post_message_from_step2(self, message):
+        # Post message in sponsorship
+        return self.message_post(message)
+
     def associate_group(self, payment_mode_id):
         """ Create contract group when SMS sponsorship is validated.
         :param payment_mode_id: selected payment mode

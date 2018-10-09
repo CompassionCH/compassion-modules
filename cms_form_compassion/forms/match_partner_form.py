@@ -105,7 +105,7 @@ if not testing:
                 return True
 
             partner_obj = self.env['res.partner'].sudo()
-            source_vals = self._get_partner_vals(extra_values, values)
+            source_vals = self._get_partner_vals(values, extra_values)
             partner = partner_obj.search([
                 ('email', '=ilike', source_vals['email'])], limit=1)
             if not partner:
@@ -121,14 +121,19 @@ if not testing:
             return True
 
         def _get_partner_vals(self, values, extra_values):
-            keys = [
-                'firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title'
-            ]
+            keys = self._get_partner_keys()
             vals = {
                 key: extra_values.get(
                     'partner_' + key, values.get('partner_' + key))
                 for key in keys
             }
-            vals['lang'] = self.env.lang
+            if 'lang' not in vals:
+                vals['lang'] = self.env.lang
             return vals
+
+        def _get_partner_keys(self):
+            # Returns the partner fields used by the form
+            return [
+                'firstname', 'lastname', 'email', 'phone', 'street', 'city',
+                'zip', 'country_id', 'state_id', 'title'
+            ]
