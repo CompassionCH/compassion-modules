@@ -138,7 +138,17 @@ class RecurringContract(models.Model):
     @related_action(action='related_action_contract')
     def post_message_from_step2(self, message):
         # Post message in sponsorship
-        return self.message_post(message)
+        notify_ids = self.env['staff.notification.settings'].get_param(
+            'new_partner_notify_ids')
+        intro = _(
+            "Please verify the following information given by the sponsor:")
+        return self.message_post(
+            intro + message, _("New SMS sponsorship information"),
+            partner_ids=notify_ids,
+            type='comment',
+            subtype='mail.mt_comment',
+            content_subtype='html',
+        )
 
     def associate_group(self, payment_mode_id):
         """ Create contract group when SMS sponsorship is validated.
