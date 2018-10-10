@@ -22,3 +22,4 @@ from . import hr_weekday_coefficient
 from . import resource_calendar_attendance
 from . import hr_forced_due_hours
 from . import hr_change_day_request
+from . import hr_attendance_location
