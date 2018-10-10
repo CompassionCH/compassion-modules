@@ -6,27 +6,34 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-10 12:18+0000\n"
-"PO-Revision-Date: 2018-10-10 14:26+0200\n"
+"POT-Creation-Date: 2018-10-10 13:57+0000\n"
+"PO-Revision-Date: 2018-10-10 15:59+0200\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"Language: fr_CH\n"
 "X-Generator: Poedit 2.0.6\n"
 
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/models/recurring_contract.py:118
 #, python-format
 msgid "A new partner was created by SMS and needs a manual confirmation"
-msgstr "Un nouveau partenaire s'est enregistré via SMS. Il est nécessaire de le vérifier et valider le parrainage."
+msgstr ""
+"Un nouveau partenaire s'est enregistré via SMS. Il est nécessaire de le "
+"vérifier et valider le parrainage."
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_search
 msgid "Active"
 msgstr "Actif"
+
+#. module: sms_sponsorship
+#: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_birthdate
+msgid "Birthdate"
+msgstr "Date de naissance"
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_form
@@ -165,8 +172,11 @@ msgstr "ID"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,help:sms_sponsorship.field_crm_event_compassion_accepts_sms_booking
-msgid "If checked, children will be allocated especially for sponsorships made with SMS requests."
-msgstr "Activez pour allouer des enfants supplémentaires pour les demandes par SMS."
+msgid ""
+"If checked, children will be allocated especially for sponsorships made with "
+"SMS requests."
+msgstr ""
+"Activez pour allouer des enfants supplémentaires pour les demandes par SMS."
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_crm_event_compassion_initial_sms_allocation_done
@@ -232,6 +242,12 @@ msgid "New SMS partner"
 msgstr "Nouveau partenaire"
 
 #. module: sms_sponsorship
+#: code:addons/sms_sponsorship/models/recurring_contract.py:146
+#, python-format
+msgid "New SMS sponsorship information"
+msgstr "Nouvelles informations étape 2 SMS"
+
+#. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_new_partner
 msgid "New partner ?"
 msgstr "Nouveau partenaire"
@@ -273,6 +289,12 @@ msgstr "Transaction"
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_phone
 msgid "Phone"
 msgstr "Téléphone"
+
+#. module: sms_sponsorship
+#: code:addons/sms_sponsorship/models/recurring_contract.py:143
+#, python-format
+msgid "Please verify the following information given by the sponsor:"
+msgstr "Merci de vérifier les infos remplies par le parrain :"
 
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_queue_job
@@ -416,8 +438,18 @@ msgstr "Merci de tout coeur de votre parrainage."
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/models/res_partner.py:47
 #, python-format
-msgid "Thank you for your commitment towards %s. Now that all information is completed, we will activate your sponsorship as soon as we receive your first payment. <br/><br/>You will receive more documentation by post in the coming days. In the mean time, feel free to reach us if you have any question. <br/><br/>"
-msgstr "Thank you for your commitment towards %s. Now that all information is completed, we will activate your sponsorship as soon as we receive your first payment. <br/><br/>You will receive more documentation by post in the coming days. In the mean time, feel free to reach us if you have any question. <br/><br/>"
+msgid ""
+"Thank you for your commitment towards %s. Now that all information is "
+"completed, we will activate your sponsorship as soon as we receive your "
+"first payment. <br/><br/>You will receive more documentation by post in the "
+"coming days. In the mean time, feel free to reach us if you have any "
+"question. <br/><br/>"
+msgstr ""
+"Thank you for your commitment towards %s. Now that all information is "
+"completed, we will activate your sponsorship as soon as we receive your "
+"first payment. <br/><br/>You will receive more documentation by post in the "
+"coming days. In the mean time, feel free to reach us if you have any "
+"question. <br/><br/>"
 
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/models/res_partner.py:35
@@ -429,13 +461,21 @@ msgstr "Thank you for your sponsorship!"
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/controllers/main.py:176
 #, python-format
-msgid "The payment was not successful, but your sponsorship has still been activated! You will be able to pay later using your selected payment method."
-msgstr "The payment was not successful, but your sponsorship has still been activated! You will be able to pay later using your selected payment method."
+msgid ""
+"The payment was not successful, but your sponsorship has still been "
+"activated! You will be able to pay later using your selected payment method."
+msgstr ""
+"The payment was not successful, but your sponsorship has still been "
+"activated! You will be able to pay later using your selected payment method."
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,help:sms_sponsorship.field_sms_child_request_is_trying_to_fetch_child
-msgid "This is set to true when a child is currently being fetched. It prevents to fetch multiple children."
-msgstr "This is set to true when a child is currently being fetched. It prevents to fetch multiple children."
+msgid ""
+"This is set to true when a child is currently being fetched. It prevents to "
+"fetch multiple children."
+msgstr ""
+"This is set to true when a child is currently being fetched. It prevents to "
+"fetch multiple children."
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_title
@@ -445,8 +485,22 @@ msgstr "Titre"
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/models/res_partner.py:23
 #, python-format
-msgid "You chose to invest in the life of %s. There are two more steps before %s will be informed that you sponsor %s, but you don't have to hurry! We have reserved the child so that you can take your time to complete the registration.<br/><br/>1. You can <a href='%s'>click here</a> to complete your information and your payment option in the coming days. <br/>2. Your sponsorship will be activated when we receive your first payment. <br/><br/>Best regards"
-msgstr "You chose to invest in the life of %s. There are two more steps before %s will be informed that you sponsor %s, but you don't have to hurry! We have reserved the child so that you can take your time to complete the registration.<br/><br/>1. You can <a href='%s'>click here</a> to complete your information and your payment option in the coming days. <br/>2. Your sponsorship will be activated when we receive your first payment. <br/><br/>Best regards"
+msgid ""
+"You chose to invest in the life of %s. There are two more steps before %s "
+"will be informed that you sponsor %s, but you don't have to hurry! We have "
+"reserved the child so that you can take your time to complete the "
+"registration.<br/><br/>1. You can <a href='%s'>click here</a> to complete "
+"your information and your payment option in the coming days. <br/>2. Your "
+"sponsorship will be activated when we receive your first payment. <br/><br/"
+">Best regards"
+msgstr ""
+"You chose to invest in the life of %s. There are two more steps before %s "
+"will be informed that you sponsor %s, but you don't have to hurry! We have "
+"reserved the child so that you can take your time to complete the "
+"registration.<br/><br/>1. You can <a href='%s'>click here</a> to complete "
+"your information and your payment option in the coming days. <br/>2. Your "
+"sponsorship will be activated when we receive your first payment. <br/><br/"
+">Best regards"
 
 #. module: sms_sponsorship
 #: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:64
@@ -463,8 +517,11 @@ msgstr "Code postal"
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_registration_confirmation
 msgid ""
 "begin!\n"
-"                            You will soon receive all documentation needed to start the sponsorship in your mailbox."
-msgstr "va changer grâce à vous! Vous allez recevoir dans les jours qui viennent les informations pour démarrer ce parrainage dans votre boîte aux lettres."
+"                            You will soon receive all documentation needed "
+"to start the sponsorship in your mailbox."
+msgstr ""
+"va changer grâce à vous! Vous allez recevoir dans les jours qui viennent les "
+"informations pour démarrer ce parrainage dans votre boîte aux lettres."
 
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_cms_form_match_partner

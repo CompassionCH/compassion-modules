@@ -34,7 +34,7 @@ if not testing:
         _display_type = 'full'
 
         partner_lang = fields.Selection(_lang_get, 'Language')
-        partner_birthdate = fields.Date()
+        partner_birthdate = fields.Date('Birthdate')
         origin_text = fields.Char('I have heard of Compassion through')
 
         # These two fields are not used for now but we let them in case
