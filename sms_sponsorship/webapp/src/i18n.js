@@ -71,6 +71,14 @@ i18n
                     "successTitle": "You sponsored {{preferred_name}}",
                     "successMessage1": "Hooray! {{preferred_name}} will soon receive the good news that you are his sponsor.",
                     "successMessage2": "There a few more steps required to confirm the sponsorship, but no worries: you will receive all the details per e-mail so that you can complete your registration when you have time.",
+                    // LangDialog.js
+                    "langTitle": "Choose your language",
+                    "langAction": "Change language",
+                    "langDe": "Deutsch",
+                    "langIt": "Italiano",
+                    "langFr": "Français",
+                    "langEn": "English",
+                    "langButton": "Language",
                 }
             },
             fr: {
@@ -132,6 +140,14 @@ i18n
                     "successTitle": "Vous avez parrainé {{preferred_name}}",
                     "successMessage1": "Félicitations ! {{preferred_name}} sera heureux d'apprendre que vous êtes désormais son parrain.",
                     "successMessage2": "Il reste 2 étapes pour débuter votre parrainage, mais soyez tranquille : vous recevrez les instructions nécessaires par e-mail. Vous pourrez ainsi compléter les informations manquantes dès que vous avez un petit moment. D'avance merci !",
+                    // LangDialog.js
+                    "langTitle": "Choisissez une langue",
+                    "langAction": "Changer de langue",
+                    "langDe": "Deutsch",
+                    "langIt": "Italiano",
+                    "langFr": "Français",
+                    "langEn": "English",
+                    "langButton": "Langue",
                 }
             },
             de: {
@@ -193,6 +209,14 @@ i18n
                     "successMessage1": "Juhu! {{preferred_name}} wird bald die gute Nachricht erhalten, dass du sein/ihr Pate/Patin bist.",
                     "successMessage2": "Es sind noch ein paar Schritte nötig, um die Patenschaft zu bestätigen, aber keine Sorge: Du wirst alle Details per E-Mail erhalten, damit du die Registrierung abschliessen kannst, wenn du Zeit hast.",
                     "successTitle": "Du bist jetzt Pate/Patin von {{preferred_name}}",
+                    // LangDialog.js
+                    "langTitle": "Wähle deine Sprache",
+                    "langAction": "Sprache ändern",
+                    "langDe": "Deutsch",
+                    "langIt": "Italiano",
+                    "langFr": "Français",
+                    "langEn": "English",
+                    "langButton": "Sprache",
                 }
             },
             it: {
@@ -254,6 +278,14 @@ i18n
                     "successTitle": "Hai scelto di sostenere {{preferred_name}}",
                     "successMessage1": "Juhu! {{preferred_name}} presto riceverà la buona notizia che sei il suo sostenitore.",
                     "successMessage2": "Ci vuole ancora qualche passo per confermare il sostegno, ma non ti preoccupare: riceverai tutti i dettagli via e-mail in modo da poter completare la registrazione quando avrai il tempo. Grazie!",
+                    // LangDialog.js
+                    "langTitle": "Scegli la tua lingua",
+                    "langAction": "Cambia lingua",
+                    "langDe": "Deutsch",
+                    "langIt": "Italiano",
+                    "langFr": "Français",
+                    "langEn": "English",
+                    "langButton": "Lingua",
                 }
             },
         },

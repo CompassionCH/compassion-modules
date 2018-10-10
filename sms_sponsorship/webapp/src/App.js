@@ -51,6 +51,8 @@ class Main extends React.Component {
         child: false,
         partner: false,
         success: false,
+        langDialog: false,
+        langChanged: false,
     };
 
     count_try = 0;
@@ -66,14 +68,17 @@ class Main extends React.Component {
         return child;
     };
 
-    getChild = () => {
-        let lang = i18n.languages[1];
+    getChild = (forceLang) => {
+        let data = {};
+        if (forceLang || this.state.langChanged) {
+            data.lang = i18n.language
+        }
         let requestId = getRequestId();
         if (!requestId) {
             return;
         }
         let url = "/sms_sponsorship/step1/" + requestId + "/get_child_data";
-        jsonRPC(url, {lang: lang}, (res) => {
+        jsonRPC(url, data, (res) => {
             let child = this.parseResult(res);
             let partner = (typeof(child.partner) === 'undefined') ? false:child.partner[0];
             this.setState({
@@ -87,7 +92,7 @@ class Main extends React.Component {
 
     changeChild = () => {
         let requestId = getRequestId();
-        let lang = i18n.languages[1];
+        let lang = i18n.language;
         let url = "/sms_sponsorship/step1/" + requestId + "/change_child";
         let form = document.forms.other_child_form;
 
@@ -109,6 +114,17 @@ class Main extends React.Component {
         jsonRPC(url, data, (res) => {
             this.getChild();
         });
+    };
+
+    changeLanguage = () => {
+        let form = document.forms.lang_form;
+        let lang = form.lang.value;
+        i18n.changeLanguage(lang);
+        this.setState({
+            langDialog: false,
+            langChanged: true,
+        });
+        this.getChild(lang);
     };
 
     componentDidMount() {
@@ -134,7 +150,7 @@ class Main extends React.Component {
         if (child && child.image_url) {
             image_url = child.image_url.replace('/w_150', '').replace('media.ci.org/', 'media.ci.org/g_face,c_thumb,w_150,h_150,r_max/');
         }
-        let topAppBar = <TopAppBar title="Compassion"/>;
+        let topAppBar = <TopAppBar title="Compassion" t={t} appContext={this}/>;
 
         if (!getRequestId()) {
             return (

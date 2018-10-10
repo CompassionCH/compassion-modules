@@ -90,7 +90,7 @@ class TextFields extends React.Component {
     sponsorFormHandler = () => {
         let requestId = getRequestId();
         let url = "/sms_sponsorship/step1/" + requestId + "/confirm";
-        let lang = i18n.languages[1];
+        let lang = i18n.language;
         let sponsor_form = document.forms.sponsor_form;
 
         // Validate name
