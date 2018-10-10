@@ -34,9 +34,9 @@ class TestAttendanceDays(SavepointCase):
         # Set free break
         # Todo
         cls.env['ir.config_parameter'].set_param(
-            'hr_attendance_extra_hours.free_break', '0.25')
+            'hr_attendance_management.free_break', '0.25')
         cls.env['ir.config_parameter'].set_param(
-            'hr_attendance_extra_hours.max_extra_hours', '20')
+            'hr_attendance_management.max_extra_hours', '20')
 
         # Create attendance days for employees
         attendances = cls.env['hr.attendance'].search([], order='check_in')
@@ -63,7 +63,7 @@ class TestAttendanceDays(SavepointCase):
         date_start = date_stop - timedelta(weeks=4)
 
         self.env['ir.config_parameter'].set_param(
-            'hr_attendance_extra_hours.max_extra_hours', '20')
+            'hr_attendance_management.max_extra_hours', '20')
 
         # create attendance_day
         self.env['create.hr.attendance.day'].create({

@@ -9,7 +9,7 @@ try:
     can_upgrade = True
 except ImportError:
     logger.warning("Install openupgradelib to upgrade module name of "
-                   "hr_attendance_calendar to hr_attendance_extra_hours")
+                   "hr_attendance_calendar to hr_attendance_management")
     can_upgrade = False
 
 
@@ -21,7 +21,7 @@ class Migrate(models.AbstractModel):
         if can_upgrade:
             openupgrade.update_module_names(
                 self.env.cr, [
-                    ('hr_attendance_calendar', 'hr_attendance_extra_hours'),
+                    ('hr_attendance_calendar', 'hr_attendance_management'),
                 ],
                 merge_modules=True
             )

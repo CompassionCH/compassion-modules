@@ -25,13 +25,13 @@ class HrAttendanceSettings(models.TransientModel):
     @api.multi
     def set_free_break(self):
         self.env['ir.config_parameter'].set_param(
-            'hr_attendance_extra_hours.free_break',
+            'hr_attendance_management.free_break',
             str(self.free_break))
 
     @api.multi
     def set_max_extra_hours(self):
         self.env['ir.config_parameter'].set_param(
-            'hr_attendance_extra_hours.max_extra_hours',
+            'hr_attendance_management.max_extra_hours',
             str(self.max_extra_hours))
         # We should compute again the extra hours lost for the year
         self.env['hr.attendance.day'].search([
@@ -43,20 +43,20 @@ class HrAttendanceSettings(models.TransientModel):
         param_obj = self.env['ir.config_parameter']
         return {
             'free_break': float(param_obj.get_param(
-                'hr_attendance_extra_hours.free_break', '0.0')),
+                'hr_attendance_management.free_break', '0.0')),
             'max_extra_hours': float(param_obj.get_param(
-                'hr_attendance_extra_hours.max_extra_hours', '0.0'))
+                'hr_attendance_management.max_extra_hours', '0.0'))
         }
 
     @api.model
     def get_free_break(self):
         return float(self.env['ir.config_parameter'].get_param(
-            'hr_attendance_extra_hours.free_break'))
+            'hr_attendance_management.free_break'))
 
     @api.model
     def get_max_extra_hours(self):
         return float(self.env['ir.config_parameter'].get_param(
-            'hr_attendance_extra_hours.max_extra_hours'))
+            'hr_attendance_management.max_extra_hours'))
 
 
 class CreateHrAttendance(models.TransientModel):
