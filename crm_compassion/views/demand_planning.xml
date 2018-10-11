@@ -29,9 +29,6 @@
         <field name="inherit_id" ref="child_compassion.view_demand_weekly_demand_tree"/>
         <field name="arch" type="xml">
             <field name="total_demand" position="before">
-                <field name="period_locked"/>
-                <field name="week_start_date"/>
-                <field name="week_end_date"/>
                 <field name="number_children_website"/>
                 <field name="number_children_ambassador"/>
                 <field name="number_sub_sponsorship"/>

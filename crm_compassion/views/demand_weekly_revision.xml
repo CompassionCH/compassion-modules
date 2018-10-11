@@ -19,7 +19,6 @@
                         </group>
                         <group string="Results">
                             <field name="holds"/>
-                            <field name="sponsorships"/>
                             <field name="effective_resupply"/>
                         </group>
                     </group>
@@ -63,12 +62,11 @@
         <field name="name">demand.weekly.revision.pivot</field>
         <field name="model">demand.weekly.revision</field>
         <field name="arch" type="xml">
-            <pivot>
+            <pivot string="Demand Planning">
                 <field name="demand" type="measure"/>
                 <field name="resupply" type="measure"/>
-                <field name="effective_resupply" type="measure"/>
                 <field name="holds" type="measure"/>
-                <field name="sponsorships" type="measure"/>
+                <field name="effective_resupply" type="measure"/>
             </pivot>
         </field>
     </record>
