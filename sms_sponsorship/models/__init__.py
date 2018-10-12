@@ -18,3 +18,4 @@ from . import staff_notification_settings
 from . import compassion_child
 from . import account_invoice
 from . import payment_transaction
+from . import weekly_demand

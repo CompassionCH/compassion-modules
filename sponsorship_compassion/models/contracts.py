@@ -512,6 +512,7 @@ class SponsorshipContract(models.Model):
                     'hold_id': vals['hold_id'],
                     'child_id': child.id,
                     'type': HoldType.SPONSOR_CANCEL_HOLD.value,
+                    'channel': 'sponsor_cancel',
                     'expiration_date': self.hold_expiration_date,
                     'primary_owner': self.write_uid.id,
                     'state': 'active',

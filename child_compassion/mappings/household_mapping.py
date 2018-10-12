@@ -40,6 +40,18 @@ class HouseHoldMapping(OnrampMapping):
     }
 
     def _process_odoo_data(self, odoo_data):
+        # Unlink old revised values and create new ones
+        if isinstance(odoo_data.get('revised_value_ids'), list):
+            household = self.env[self.ODOO_MODEL].search(
+                [('household_id', '=', odoo_data['household_id'])])
+            household.revised_value_ids.unlink()
+            for value in odoo_data['revised_value_ids']:
+                self.env['compassion.major.revision'].create({
+                    'name': value,
+                    'household_id': household.id,
+                })
+            del odoo_data['revised_value_ids']
+
         # Replace dict by a tuple for the ORM update/create
         if 'member_ids' in odoo_data:
             # Remove all members
@@ -52,18 +64,6 @@ class HouseHoldMapping(OnrampMapping):
                 orm_tuple = (0, 0, member)
                 member_list.append(orm_tuple)
             odoo_data['member_ids'] = member_list or False
-
-        # Unlink old revised values and create new ones
-        if isinstance(odoo_data.get('revised_value_ids'), list):
-            household = self.env[self.ODOO_MODEL].search(
-                [('household_id', '=', odoo_data['household_id'])])
-            household.revised_value_ids.unlink()
-            for value in odoo_data['revised_value_ids']:
-                self.env['compassion.major.revision'].create({
-                    'name': value,
-                    'household_id': household.id,
-                })
-            del odoo_data['revised_value_ids']
 
         for key in odoo_data.iterkeys():
             val = odoo_data[key]

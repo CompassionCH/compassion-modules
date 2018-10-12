@@ -78,6 +78,8 @@ class AbstractHold(models.AbstractModel):
         ('web', _('Website')),
         ('event', _('Event')),
         ('ambassador', _('Ambassador')),
+        ('sponsor_cancel', _('Sponsor Cancel')),
+        ('sub', _('SUB Sponsorship')),
     ])
     source_code = fields.Char()
     comments = fields.Char()
