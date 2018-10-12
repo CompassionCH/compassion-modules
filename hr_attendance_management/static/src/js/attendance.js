@@ -5,18 +5,27 @@ odoo.define('hr_attendance_management.attendance', function (require) {
 
     var hr_attendance = require('hr_attendance.my_attendances');
     var greeting_message = require('hr_attendance.greeting_message');
-
     var Model = require('web.Model');
+    var session = require('web.session');
 
     var QWeb = core.qweb;
     var _t = core._t;
+
 
     hr_attendance.include({
         start: function () {
             var self = this;
             var result = this._super();
+            var hr_location = new Model('hr.attendance.location');
+            self.hr_location = [];
+            hr_location.call('search', [[]]).then(function (location_ids) {
+                hr_location.call('read', [location_ids, ['name']]).then(function (result) {
+                   self.hr_location = result;
+                   self.$el.html(QWeb.render("HrAttendanceMyMainMenu", {widget: self}));
+                });
+            });
             var hr_employee = new Model('hr.employee');
-            hr_employee.query(['attendance_state', 'name', 'extra_hours_formatted', 'today_hour_formatted', 'time_warning_balance', 'time_warning_today', 'extra_hours_today'])
+            hr_employee.query(['attendance_state', 'name', 'extra_hours_formatted', 'today_hour_formatted', 'time_warning_balance', 'time_warning_today', 'extra_hours_today', 'work_location'])
                 .filter([['user_id', '=', self.session.uid]])
                 .all()
                 .then(function (res) {
@@ -37,6 +46,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                             ['worked_today', 'balance_today'].forEach(
                                 function (el) {
                                     var matches = $('#' + el + '_pl').text().match(/^-?(\d{2}):(\d{2})$/);
+
 
                                     if (matches != null && $('#state').text() == 'checked in') {
                                         var hours = parseInt(matches[1]);
@@ -61,6 +71,11 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                 });
 
             return result;
+        },
+        update_attendance: function () {
+            var loc_id = parseInt($('#location').val(), 10);
+            session.user_context['default_location_id'] = loc_id;
+            this._super();
         }
     });
 

@@ -17,10 +17,14 @@ from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 
 
-def get_child_request(request_id):
+def get_child_request(request_id, lang=None):
     sms_request = request.env['sms.child.request'].sudo() \
         .search([('id', '=', int(request_id))])
-    return sms_request.with_context(lang=sms_request.lang_code)
+    lang_code = sms_request.lang_code
+    if lang:
+        lang_code = request.env['res.lang'].sudo().search([
+            ('code', 'like', lang)], limit=1).code or lang_code
+    return sms_request.with_context(lang=lang_code)
 
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):
@@ -46,7 +50,9 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param child_request_id: id of sms_child_request
         :return: JSON data
         """
-        sms_child_request = get_child_request(child_request_id)
+        body = request.jsonrequest
+        lang = body.get('lang')
+        sms_child_request = get_child_request(child_request_id, lang=lang)
         if not sms_child_request or sms_child_request.state == 'expired':
             return {'invalid_sms_child_request': True}
         if sms_child_request.sponsorship_confirmed:
@@ -62,12 +68,10 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         if child:
             result = child.get_sms_sponsor_child_data()
             partner = sms_child_request.partner_id
+            result['lang'] = body.get('lang', sms_child_request.lang_code[:2])
             if sms_child_request.partner_id:
                 result['partner'] = partner.read(['firstname', 'lastname',
                                                   'email'])
-                result['lang'] = partner.lang[:2]
-            else:
-                result['lang'] = sms_child_request.lang_code[:2]
             return result
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 

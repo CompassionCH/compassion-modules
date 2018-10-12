@@ -42,6 +42,8 @@ class HrEmployee(models.Model):
 
     today_hour_formatted = fields.Char(compute='_compute_today_hour_formatted')
 
+    work_location = fields.Many2one('hr.attendance.location')
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
