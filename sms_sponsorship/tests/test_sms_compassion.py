@@ -39,7 +39,8 @@ class TestSmsCompassion(BaseSponsorshipTest):
             'lastname': 'testLastname',
             'mobile': '1234567890',
             'email': 'test@email.com',
-            'sponsorship_plus': False
+            'sponsorship_plus': False,
+            'lang': 'en',
         }
         self.env['recurring.contract'] \
             .create_sms_sponsorship(values, False, self.child_request)
@@ -62,14 +63,15 @@ class TestSmsCompassion(BaseSponsorshipTest):
         new_partner2 = self.env['res.partner'].create({
             'firstname': "testName2",
             'lastname': 'testLastname2',
-            'email': 'test2@email.com'
+            'email': 'test2@email.com',
         })
         values = {
             'firstname': new_partner2.firstname,
             'lastname': new_partner2.lastname,
             'mobile': '001123456789',
             'email': new_partner2.email,
-            'sponsorship_plus': False
+            'sponsorship_plus': False,
+            'lang': 'en',
         }
         self.env['recurring.contract'] \
             .create_sms_sponsorship(values, False, self.child_request)
@@ -85,7 +87,8 @@ class TestSmsCompassion(BaseSponsorshipTest):
             'lastname': self.partner.lastname,
             'mobile': self.partner.mobile,
             'email': self.partner.email,
-            'sponsorship_plus': False
+            'sponsorship_plus': False,
+            'lang': 'en',
         }
         self.env['recurring.contract'] \
             .create_sms_sponsorship(values, self.partner, self.child_request)
@@ -101,7 +104,8 @@ class TestSmsCompassion(BaseSponsorshipTest):
             'lastname': self.partner.lastname,
             'mobile': self.partner.phone,
             'email': self.partner.email,
-            'sponsorship_plus': False
+            'sponsorship_plus': False,
+            'lang': 'en',
         }
         sms_request = self.child_request
         self.env['recurring.contract'] \
