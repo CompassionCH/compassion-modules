@@ -27,6 +27,7 @@ class HrAttendance(models.Model):
         related='attendance_day_id.total_attendance')
     has_change_day_request = fields.Boolean(
         related='attendance_day_id.has_change_day_request')
+    location_id = fields.Many2one('hr.attendance.location', 'Location')
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
