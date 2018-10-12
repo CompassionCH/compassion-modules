@@ -103,6 +103,7 @@ class SubSponsorshipWizard(models.TransientModel):
                     'next_invoice_date': fields.Date.to_string(
                         next_invoice_date),
                     'default_type': HoldType.SUB_CHILD_HOLD.value,
+                    'default_channel': 'sub',
                     'default_return_action': 'sub',
                     'default_source_code': 'sub_proposal',
                 }).env.context

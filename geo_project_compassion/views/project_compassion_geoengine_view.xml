@@ -29,11 +29,8 @@
         <field name="model">compassion.project</field>
     </record>
 
-    <record id="action_project_form_view" model="ir.actions.act_window.view">
-        <field eval="20" name="sequence"/>
-        <field name="view_mode">geoengine</field>
-        <field name="view_id" ref="ir_ui_view_geo_project"/>
-        <field name="act_window_id" ref="child_compassion.open_view_project_tree"/>
+    <record id="child_compassion.open_view_project_tree" model="ir.actions.act_window">
+        <field name="view_mode">tree,form,geoengine</field>
     </record>
 
     <record id="geoengine_vector_layer_compassion_project" model="geoengine.vector.layer">
