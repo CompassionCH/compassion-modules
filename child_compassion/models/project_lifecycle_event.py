@@ -71,11 +71,15 @@ class ProjectLifecycle(models.Model):
     future_involvement_ids = fields.Many2many(
         'icp.involvement', string='Future involvement', readonly=True)
 
-    name = fields.Char(readonly=True)
+    name = fields.Char(readonly=True, index=True, required=True)
     reactivation_date = fields.Date(readonly=True)
     project_status = fields.Selection(related='project_id.status')
 
     gender = fields.Char(size=1, default='M')
+
+    _sql_constraints = [
+        ('unique_name', 'unique(name)', 'Lifecycle event already exists')
+    ]
 
     @api.model
     def _get_type(self):
@@ -102,22 +106,26 @@ class ProjectLifecycle(models.Model):
         fund_suspended = project.suspension == 'fund-suspended'
         hold_gifts = project.hold_gifts
         hold_letters = project.hold_s2b_letters
-        event = super(ProjectLifecycle, self).create(vals)
-        if event.type == 'Suspension':
-            if event.hold_cdsp_funds and not fund_suspended:
+        lifecycle = self.search([('name', '=', vals['name'])])
+        if lifecycle:
+            lifecycle.write(vals)
+        else:
+            lifecycle = super(ProjectLifecycle, self).create(vals)
+        if lifecycle.type == 'Suspension':
+            if lifecycle.hold_cdsp_funds and not fund_suspended:
                 project.suspend_funds()
-            if event.hold_gifts and not hold_gifts:
+            if lifecycle.hold_gifts and not hold_gifts:
                 project.hold_gifts_action()
-            if event.hold_s2b_letters and not hold_letters:
+            if lifecycle.hold_s2b_letters and not hold_letters:
                 project.hold_letters_action()
-        if event.type == 'Reactivation':
+        if lifecycle.type == 'Reactivation':
             if fund_suspended:
                 project.reactivate_project()
-            if hold_gifts and not event.hold_gifts:
+            if hold_gifts and not lifecycle.hold_gifts:
                 project.reactivate_gifts()
-            if hold_letters and not event.hold_s2b_letters:
+            if hold_letters and not lifecycle.hold_s2b_letters:
                 project.reactivate_letters()
-        return event
+        return lifecycle
 
     @api.model
     def process_commkit(self, commkit_data):

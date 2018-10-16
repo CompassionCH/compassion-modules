@@ -236,6 +236,7 @@
                         <field string="Lifecycle details" name="details"/>
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}">
+                        <field name="reactivation_date"/>
                         <field name="icp_improvement_desc"/>
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}"/>

@@ -206,6 +206,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.env['compassion.project.ile'].create({
             'project_id': child.project_id.id,
             'type': 'Suspension',
+            'name': 'LE-15156-544',
             'hold_cdsp_funds': True,
         })
         logger.info(
@@ -235,6 +236,7 @@ class TestSponsorship(BaseSponsorshipTest):
         # Reactivation of the sponsorship contract
         self.env['compassion.project.ile'].create({
             'project_id': child.project_id.id,
+            'name': 'LE-54654-545411',
             'type': 'Reactivation',
             'hold_cdsp_funds': False,
         })
