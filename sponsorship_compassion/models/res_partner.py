@@ -196,6 +196,8 @@ class ResPartner(models.Model):
 
     @api.multi
     def write(self, vals):
+        if 'firstname' in vals and 'preferred_name' not in vals:
+            vals['preferred_name'] = vals['firstname']
         res = super(ResPartner, self).write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
                        'mandatory_review', 'send_original', 'title']
