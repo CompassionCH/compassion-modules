@@ -90,6 +90,8 @@
                                     <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="estimated_impacted_beneficiaries"/>
                                     <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="local_currency"/>
+                                    <field name="total_actual_cost_local" widget="monetary" options="{'currency_field': 'local_currency'}"/>
                                 </group>
                                 <group string="Actual numbers">
                                     <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>

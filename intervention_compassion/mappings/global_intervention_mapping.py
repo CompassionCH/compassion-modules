@@ -55,7 +55,7 @@ class GlobalInterventionMapping(OnrampMapping):
                              'compassion.global.partner'),
         "RemainingAmountToRaise": "remaining_amount_to_raise",
         "FundingStatus": "funding_status",
-        "PlannedSponsorshipBeneficiariesNumber":
+        "EstimatedImpactedBeneficiaryQuantity":
             'estimated_impacted_beneficiaries',
         "StartNoLaterThanDate": "start_no_later_than",
         "Description": "description",

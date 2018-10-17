@@ -87,6 +87,11 @@ class CompassionIntervention(models.Model):
     total_income = fields.Char(
         'Total income', compute='_compute_move_line', readonly=True)
     total_amendment = fields.Float()
+    total_actual_cost_local = fields.Float(help='Total costs in local '
+                                                'currency')
+    local_currency = fields.Many2one('res.currency',
+                                     related='field_office_id.country_id.'
+                                             'currency_id')
 
     # Intervention Details Information
     ##################################
@@ -592,7 +597,7 @@ class CompassionIntervention(models.Model):
             'res_model': 'compassion.intervention.commitment.wizard',
             'context': self.with_context({
                 'default_intervention_id': self.id,
-                'default_commitment_amount': self.hold_amount,
+                'default_commitment_amount': self.commitment_amount,
             }).env.context,
             'target': 'new',
         }
