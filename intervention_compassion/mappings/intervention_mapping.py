@@ -76,7 +76,7 @@ class InterventionMapping(OnrampMapping):
         "StartNoLaterThanDate": 'start_no_later_than',
         "Status": 'intervention_status',
         "SuccessFactors": 'success_factors',
-        "TotalActualCosts": 'total_actual_cost',
+        "TotalActualCosts": 'total_actual_cost_local',
 
         # Additional field used by InterventionHoldRemovalNotification
         "InterventionType_Name": 'type',
