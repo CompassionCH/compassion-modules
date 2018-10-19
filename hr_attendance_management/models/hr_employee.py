@@ -42,11 +42,23 @@ class HrEmployee(models.Model):
 
     today_hour_formatted = fields.Char(compute='_compute_today_hour_formatted')
 
-    work_location = fields.Many2one('hr.attendance.location')
+    work_location_id = fields.Many2one('hr.attendance.location',
+                                       string='Work Location')
+
+    work_location = fields.Char(compute='_compute_work_location')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
+    @api.multi
+    def _compute_work_location(self):
+        for employee in self:
+            actual_location = self.env['hr.attendance'].search([
+                ('employee_id', '=', employee.id),
+                ('check_out', '=', False)], limit=1)
+
+            employee.work_location = actual_location.location_id.name
 
     @api.multi
     @api.depends('attendance_days_ids.extra_hours', 'annual_balance')
