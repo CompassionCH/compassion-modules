@@ -66,13 +66,16 @@ class PaymentFormController(website_account, FormControllerMixin):
         else:
             return request.render(fail_template, kwargs)
 
-    def _form_redirect(self, response):
+    def _form_redirect(self, response, full_page=False):
         """
         Utility for payment form that are called by AJAX and can send back
         a redirection. Instead of pushing back the redirection which will
         fail over HTTPS, we wrap it inside JSON response and let the client
         perform the redirection.
-        :return: Response
+        :param response: original response
+        :param full_page: optional parameter to force full page rendering
+                          (useful for modal forms that must close the modal)
+        :return: Response object for client
         """
         if response.status_code == 303:
             # Prepend with lang, to avoid 302 redirection
@@ -80,9 +83,10 @@ class PaymentFormController(website_account, FormControllerMixin):
             if request.env.lang != request.website.default_lang_code:
                 location += '/' + request.env.lang
             location += response.location
-            return Response(
-                json.dumps({'redirect': location}),
+            res = Response(
+                json.dumps({'redirect': location, 'full_page': full_page}),
                 status=200,
                 mimetype='application/json'
             )
+            return res
         return response
