@@ -170,7 +170,7 @@
             <field name="name">HouseholdMajorRevision</field>
             <field name="model">compassion.household</field>
             <field name="description">This will update the household with the major changes that happened.</field>
-            <field name="incoming_method">major_revision</field>
+            <field name="incoming_method">process_commkit</field>
             <field name="auto_process">1</field>
         </record>
         <!-- Beneficiary Note -->

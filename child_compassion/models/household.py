@@ -226,46 +226,6 @@ class Household(models.Model):
             res = super(Household, self).create(vals)
         return res
 
-    def major_revision(self, vals):
-        # TODO household not updated
-        revised_data = []
-        household_mapping = HouseHoldMapping(self.env)
-        household_data = household_mapping.get_vals_from_connect(
-            vals['BeneficiaryHouseholdList'][0])
-        household_obj = self.search([
-            ('household_id', '=', household_data['household_id'])
-        ])
-
-        if household_data['father_alive'] == 'No':
-            revised_data.append({
-                'name': 'Is Natural Father Alive?',
-                'old_value': household_obj.father_alive,
-                'household_id': household_obj.id
-            })
-        if household_data['mother_alive'] == 'No':
-            revised_data.append({
-                'name': 'Is Natural Mother Alive?',
-                'old_value': household_obj.mother_alive,
-                'household_id': household_obj.id
-            })
-        revised_data_ids = []
-        for data in revised_data:
-            revised_data_ids.append(
-                self.env['compassion.major.revision'].create(
-                    data).id)
-
-        if revised_data_ids:
-            for child in household_obj.child_ids:
-                child._major_revision({
-                    'revised_value_ids': [(6, _, revised_data_ids)]
-                })
-        # because member_ids is a list and is immutable we have to make it a
-        # tuple before the write
-        household_data['member_ids'] = tuple(household_data['member_ids'])
-        # TODO should update household in odoo but doesnt...
-        household_obj.write(household_data)
-        return household_obj.ids
-
 
 class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'

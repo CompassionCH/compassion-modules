@@ -19,9 +19,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="change_child" type="object" string="Request new child" class="oe_highlight" states="child_reserved"/>
+                    <button name="change_child" type="object" string="Request new child" class="oe_highlight" states="new,child_reserved"/>
+                    <button name="mark_done" type="object" string="Mark as completed" states="new,child_reserved,step1"/>
                     <button name="cancel_request" type="object" string="Cancel request" states="new,child_reserved,step1"/>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,child_reserved,step1,step2"/>
                 </header>
                 <sheet>
                     <group>

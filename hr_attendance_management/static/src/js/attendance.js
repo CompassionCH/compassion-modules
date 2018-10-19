@@ -15,15 +15,9 @@ odoo.define('hr_attendance_management.attendance', function (require) {
     hr_attendance.include({
         start: function () {
             var self = this;
+            self.hr_location = [];
             var result = this._super();
             var hr_location = new Model('hr.attendance.location');
-            self.hr_location = [];
-            hr_location.call('search', [[]]).then(function (location_ids) {
-                hr_location.call('read', [location_ids, ['name']]).then(function (result) {
-                   self.hr_location = result;
-                   self.$el.html(QWeb.render("HrAttendanceMyMainMenu", {widget: self}));
-                });
-            });
             var hr_employee = new Model('hr.employee');
             hr_employee.query(['attendance_state', 'name', 'extra_hours_formatted', 'today_hour_formatted', 'time_warning_balance', 'time_warning_today', 'extra_hours_today', 'work_location'])
                 .filter([['user_id', '=', self.session.uid]])
@@ -34,7 +28,12 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                         return;
                     }
                     self.employee = res[0];
-                    self.$el.html(QWeb.render("HrAttendanceMyMainMenu", {widget: self}));
+                    hr_location.call('search', [[]]).then(function (location_ids) {
+                        hr_location.call('read', [location_ids, ['name']]).then(function (result) {
+                           self.hr_location = result;
+                           self.$el.html(QWeb.render("HrAttendanceMyMainMenu", {widget: self}));
+                        });
+                    });
 
                     // auto-counter
                     $('#moment_pl').html(Date.now());
