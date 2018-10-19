@@ -211,6 +211,14 @@ class SmsChildRequest(models.Model):
         """
         self.ensure_one()
         self.partner_id.sms_send_step2_confirmation(self)
+        return self.mark_done()
+
+    def mark_done(self):
+        """
+        Simply put the request in done state (in case it was processed
+        manually).
+        :return: True
+        """
         return self.write({'state': 'step2'})
 
     def take_child_from_childpool(self):

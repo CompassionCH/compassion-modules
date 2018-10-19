@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import api, models, fields, _
+from odoo.fields import Datetime
 
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
@@ -28,10 +29,7 @@ class WeeklyRevision(models.Model):
     demand = fields.Float('Demand prevision')
     resupply = fields.Float('Resupply prevision')
     holds = fields.Integer('Holds requested', readonly=True)
-    sponsorships = fields.Integer('Registered sponsorships', readonly=True)
-    effective_resupply = fields.Integer(
-        compute='_compute_effective_resupply', store=True
-    )
+    effective_resupply = fields.Integer()
 
     _sql_constraints = [
         ('unique_week_type', "unique(week_start_date,type)",
@@ -51,13 +49,6 @@ class WeeklyRevision(models.Model):
             ('cancel', _('Cancellation')),
         ]
 
-    @api.depends('sponsorships', 'holds')
-    @api.multi
-    def _compute_effective_resupply(self):
-        for revision in self:
-            revision.effective_resupply = revision.holds - \
-                revision.sponsorships
-
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -73,57 +64,67 @@ class WeeklyRevision(models.Model):
             return revision
 
         revision = super(WeeklyRevision, self).create(vals)
-        end_date = revision.week_end_date
+        revision.recompute_effective_numbers()
+        return revision
 
-        # Holds created in the period
-        holds = self.env['compassion.hold'].search([
-            ('create_date', '>=', start_date),
-            ('create_date', '<=', end_date),
-            ('type', '=', HoldType.CONSIGNMENT_HOLD.value)
-        ])
-        # Sponsorships created in the period
-        sponsorships = self.env['recurring.contract'].search([
-            ('type', '=', 'S'),
-            ('start_date', '>=', start_date),
-            ('start_date', '<=', end_date),
-            ('state', '!=', 'cancelled'),
-        ])
-        if revision.type == 'web':
-            nb_holds = len(holds.filtered(lambda h: h.channel == 'web'))
-            nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.channel == 'website' and
-                s.origin_id.type not in ('partner', 'event') and not
-                s.parent_id))
-        elif revision.type == 'ambassador':
-            nb_holds = len(holds.filtered(
-                lambda h: h.channel == 'ambassador'))
-            nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.origin_id.type == 'partner' and
-                s.origin_id.partner_id))
-        elif revision.type == 'events':
-            nb_holds = len(holds.filtered(lambda h: h.channel == 'event'))
-            nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.origin_id.type == 'event'))
-        elif revision.type == 'sub':
-            nb_holds = self.env['compassion.hold'].search_count([
+    def recompute_effective_numbers(self):
+        for revision in self:
+            start_date = revision.week_start_date
+            end_date = revision.week_end_date
+
+            # Holds created in the period
+            demand_search = [
                 ('create_date', '>=', start_date),
                 ('create_date', '<=', end_date),
-                ('type', '=', HoldType.SUB_CHILD_HOLD.value)
-            ])
-            nb_sponsorships = len(sponsorships.filtered(
-                lambda s: s.parent_id))
-        elif revision.type == 'cancel':
-            nb_holds = 0
-            nb_sponsorships = self.env['recurring.contract'].search_count([
-                ('type', '=', 'S'),
-                ('end_date', '>=', start_date),
-                ('end_date', '<=', end_date),
-                ('state', '=', 'terminated'),
-                ('end_reason', '!=', '1'),
-            ])
+            ]
+            resupply_search = [
+                ('expiration_date', '>=', start_date),
+                ('expiration_date', '<=', end_date),
+            ]
+            if revision.type == 'web':
+                demand_search.append(('channel', '=', 'web'))
+                resupply_search.append(('channel', '=', 'web'))
+            elif revision.type == 'ambassador':
+                demand_search.append(('channel', '=', 'ambassador'))
+                resupply_search.append(('channel', '=', 'ambassador'))
+            elif revision.type == 'events':
+                demand_search.append(('channel', '=', 'event'))
+                resupply_search.append(('channel', '=', 'event'))
+            elif revision.type == 'sub':
+                demand_search.append(('channel', '=', 'sub'))
+                resupply_search.append(('channel', '=', 'sub'))
+            elif revision.type == 'cancel':
+                # This is a special case where we have no holds requested
+                # and only resupply by sponsorships cancelled.
+                cancellations = self.env['recurring.contract'].search([
+                    ('type', 'like', 'S'),
+                    ('state', '=', 'terminated'),
+                    ('end_date', '>=', start_date),
+                    ('end_date', '<=', end_date),
+                    ('end_date', '!=', False),
+                    ('hold_expiration_date', '!=', False),
+                    ('end_reason', '!=', '1'),
+                ])
+                # Cancellations for which we didn't keep the child on hold
+                resupply = len(cancellations.filtered(lambda c: (
+                    Datetime.from_string(c.hold_expiration_date) -
+                    Datetime.from_string(c.end_date)).total_seconds() < 60
+                ))
+                # Sponsor Cancel Holds that were released
+                resupply_search.extend([
+                    ('channel', '=', 'sponsor_cancel'),
+                    ('type', '=', HoldType.SPONSOR_CANCEL_HOLD.value),
+                ])
+                resupply += self.env['compassion.hold'].search_count(
+                    resupply_search)
+                revision.effective_resupply = resupply
+                continue
 
-        revision.write({
-            'holds': nb_holds,
-            'sponsorships': nb_sponsorships,
-        })
-        return revision
+            hold_obj = self.env['compassion.hold']
+            nb_holds = hold_obj.search_count(demand_search)
+            resupply = hold_obj.search_count(resupply_search)
+            revision.write({
+                'holds': nb_holds,
+                'effective_resupply': resupply,
+            })
+        return True

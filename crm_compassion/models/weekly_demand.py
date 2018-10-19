@@ -121,10 +121,11 @@ class WeeklyDemand(models.Model):
     def _default_demand_sub(self):
         """ Compute average of SUB since one year. """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
+        website_medium = self.env.ref('utm.utm_medium_website').id
         sub_sponsored = self.env['recurring.contract'].search_count([
             ('parent_id', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
-            ('medium_id.name', '!=', 'internet')
+            ('medium_id', '!=', website_medium)
         ])
         return float(sub_sponsored) / STATS_DURATION
 
@@ -143,8 +144,9 @@ class WeeklyDemand(models.Model):
         one year.
         """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
+        website_medium = self.env.ref('utm.utm_medium_website').id
         web_sponsored = self.env['recurring.contract'].search_count([
-            ('medium_id.name', '=', 'Website'),
+            ('medium_id', '=', website_medium),
             ('start_date', '>=', fields.Date.to_string(start_date))
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
@@ -157,12 +159,13 @@ class WeeklyDemand(models.Model):
         one year.
         """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
+        website_medium = self.env.ref('utm.utm_medium_website').id
         ambass_sponsored = self.env['recurring.contract'].search_count([
             ('origin_id.type', '=', 'partner'),
             ('origin_id.partner_id', '!=', False),
             ('origin_id.partner_id.user_ids', '!=', False),
             ('start_date', '>=', fields.Date.to_string(start_date)),
-            ('medium_id.name', '!=', 'Website')
+            ('medium_id', '!=', website_medium)
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
             'number_children_ambassador')
@@ -208,9 +211,8 @@ class WeeklyDemand(models.Model):
         """ Compute average of sponsor cancellations since one year. """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
         cancellations = self.env['recurring.contract'].search_count([
+            ('type', 'like', 'S'),
             ('state', '=', 'terminated'),
-            ('parent_id', '=', False),
-            ('medium_id.name', '!=', 'internet'),
             ('end_reason', '!=', '1'),
             ('end_date', '>=', fields.Date.to_string(start_date))
         ])
