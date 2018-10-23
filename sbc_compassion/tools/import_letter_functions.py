@@ -141,8 +141,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         page_buffer.seek(0)
 
         # read the qrcode on the current page
-        qrcode, img_path, cropped_img_path = _decode_page(
-            env, page_buffer.read())
+        qrcode, img_path = _decode_page(env, page_buffer.read())
 
         if (qrcode and qrcode['data'] != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode['data']
@@ -171,7 +170,6 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 "sec".format(i + 1, inputpdf.numPages, time() - tic))
 
         os.remove(img_path)
-        os.remove(cropped_img_path)
     letter_indexes.append(i+1)
 
     return letter_indexes, page_imgs
@@ -199,7 +197,6 @@ def _decode_page(env, page_data):
         img_url = sniffpdf.get_images(
             page_data, dst_folder=os.getcwd(), dst_name='page')
         img_url = img_url[0]
-        img = cv2.imread(img_url)
         _logger.info("\t\tPDF opened with sniffpdf in {:.3} sec".format(
             time() - tic))
         # its time to remove the temporary PDF file
@@ -223,55 +220,20 @@ def _decode_page(env, page_data):
         _logger.info("\t\tPDF opened with wand.image in {:.3} sec".format(
             time() - tic))
 
-    # We are now about to crop the img around the QRCode and save it on disk
-    height = img.shape[0]
-    width = img.shape[1]
-    # get the crop coordinates
-    left, right, top, bottom = _get_qr_crop(env, width, height)
-
-    # Convert it to grayscale
-    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    # And crop it around the qrcode
-    cropped = img[top:bottom, left:right]
-    cropped_url = os.getcwd() + '/page_cropped.jpg'
-    cv2.imwrite(cropped_url, cropped)
-
     tic = time()
 
     decoder_lib = 'zbar'
     if decoder_lib == 'zxing':
-        qrdata = zxing_wrapper.scan_qrcode(cropped_url)
+        qrdata = zxing_wrapper.scan_qrcode(img_url)
         _logger.debug(
             "\t\tQRCode decoded using ZXing in {:.3} sec".format(time() -
                                                                  tic))
     elif decoder_lib == 'zbar':
-        qrdata = zbar_wrapper.scan_qrcode(cropped_url)
+        qrdata = zbar_wrapper.scan_qrcode(img_url)
         _logger.debug("\t\tQRCode decoded using ZBar in {:.3} sec".format(
             time()-tic))
 
-    return qrdata, img_url, cropped_url
-
-
-def _get_qr_crop(env, img_width, img_height):
-    """ Computes the area to be croped for searching the QR code,
-    given image height and width.
-
-    :returns: left, right, top, bottom
-    :rtype: int, int, int, int
-    """
-    left = img_width * float(
-        env['ir.config_parameter'].get_param(
-            'qrcode_x_min'))
-    right = img_width * float(
-        env['ir.config_parameter'].get_param(
-            'qrcode_x_max'))
-    top = img_height * float(
-        env['ir.config_parameter'].get_param(
-            'qrcode_y_min'))
-    bottom = img_height * float(
-        env['ir.config_parameter'].get_param(
-            'qrcode_y_max'))
-    return int(left), int(right), int(top), int(bottom)
+    return qrdata, img_url
 
 
 def decode_barcode(env, barcode):

@@ -41,6 +41,11 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                     processData: false,
                     success: function (data) {
                         if (data.redirect) {
+                            if (data.full_page) {
+                                // Call the redirection
+                                window.location.href = data.redirect;
+                                return;
+                            }
                             var result_html = $('<div></div>');
                             result_html.load(data.redirect, function() {
                                 var payment_compassion = result_html.find(
@@ -54,8 +59,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                                     modal_body.find('#payment_compassion form')
                                         .submit();
                                 } else {
-                                    self.on_receive_back_html_result(
-                                        result_html.html());
+                                    self.on_receive_back_html_result(result_html.html());
                                 }
                                 btn.button('reset');
                             });
