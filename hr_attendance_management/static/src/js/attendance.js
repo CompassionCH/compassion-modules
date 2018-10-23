@@ -18,7 +18,6 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             var result = this._super();
             var hr_location = new Model('hr.attendance.location');
             var hr_employee = new Model('hr.employee');
-            let dateNow = Date.now();
 
             hr_employee.query(['attendance_state', 'name', 'extra_hours_formatted', 'today_hour_formatted', 'time_warning_balance', 'time_warning_today', 'extra_hours_today', 'work_location'])
                 .filter([['user_id', '=', self.session.uid]])
@@ -36,10 +35,10 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                         });
                     });
 
-                     // auto-counter
-                     $('#moment_pl').html(dateNow);
+                    // auto-counter
+                    let now = new Date();
                     setInterval(function () {
-
+                        $('#moment_pl').html(now);
                         if ($('#moment_pl').length) {
                             let moment_start = moment(new Date($('#moment_pl').text()));
                             let diff_minutes = moment().diff(moment_start, 'minutes');
