@@ -69,6 +69,7 @@
                             <group>
                                 <field name="icp_hours_week"/>
                                 <field name="icp_meal_week"/>
+                                <field name="icp_medical_check"/>
                                 <field name="icp_ids">
                                     <tree>
                                         <field name="name"/>

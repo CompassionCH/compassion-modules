@@ -60,6 +60,7 @@ class FieldOffice(models.Model):
     )
     icp_hours_week = fields.Integer('Hours/week', default=8)
     icp_meal_week = fields.Integer('Meals/week', default=1)
+    icp_medical_check = fields.Integer('Medical check/year', default=1)
     icp_ids = fields.One2many('compassion.project', 'field_office_id', 'ICP')
 
     _sql_constraints = [
