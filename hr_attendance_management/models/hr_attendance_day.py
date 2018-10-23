@@ -143,15 +143,15 @@ class HrAttendanceDay(models.Model):
             # Forced due hours (when an user changes work days)
             forced_hours = att_day.get_related_forced_due_hours()
             if forced_hours:
-                att_day.due_hours = forced_hours.forced_due_hours
-                continue
+                due_hours = forced_hours.forced_due_hours
+            else:
+                due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
 
             # Public holidays
             if att_day.public_holiday_id:
                 att_day.due_hours = 0
                 continue
 
-            due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
             # Leaves
             for leave in att_day.leave_ids.filtered(
                     lambda l: l.state == 'validate' and not l.keep_due_hours):
