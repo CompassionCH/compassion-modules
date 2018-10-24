@@ -600,7 +600,7 @@ class CompassionIntervention(models.Model):
             'res_model': 'compassion.intervention.commitment.wizard',
             'context': self.with_context({
                 'default_intervention_id': self.id,
-                'default_commitment_amount': max(
+                'default_commitment_amount': min(
                     self.hold_amount, self.total_estimated_cost_local),
             }).env.context,
             'target': 'new',
