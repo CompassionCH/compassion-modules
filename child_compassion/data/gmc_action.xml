@@ -41,14 +41,14 @@
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
         </record>
-        <!-- Get ICP details -->
-        <record id="icp_details" model="gmc.action">
+        <!-- Get FCP details -->
+        <record id="fcp_details" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">ICPDetails</field>
+            <field name="name">FCPDetails</field>
             <field name="model">compassion.project</field>
-            <field name="connect_answer_wrapper">ICPResponseList</field>
+            <field name="connect_answer_wrapper">FCPResponseList</field>
             <field name="description">This will update the project</field>
-            <field name="connect_service">churchpartners/${object.icp_id}/kits/icpkit</field>
+            <field name="connect_service">churchpartners/${object.fcp_id}/kits/fcpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
@@ -66,7 +66,7 @@
         <!-- Reservation Message Creation -->
         <record id="create_reservation" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">IcpCreateReservation</field>
+            <field name="name">FcpCreateReservation</field>
             <field name="mapping_name">create_reservation</field>
             <field name="model">compassion.reservation</field>
             <field name="description">This will send a new project Reservation to GMC.</field>
@@ -137,10 +137,10 @@
             <field name="description">This will update the child with the fresh information.</field>
             <field name="auto_process">1</field>
         </record>
-        <!-- ICP Kit -->
-        <record id="icp_kit" model="gmc.action">
+        <!-- FCP Kit -->
+        <record id="fcp_kit" model="gmc.action">
             <field name="direction">in</field>
-            <field name="name">ICPKit</field>
+            <field name="name">FCPKit</field>
             <field name="model">compassion.project</field>
             <field name="incoming_method">new_kit</field>
             <field name="description">This will update the project  with the fresh information.</field>
@@ -246,9 +246,9 @@
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BeneficiaryKit</field>
             <field name="action_id" ref="beneficiary_kit"/>
         </record>
-        <record id="icp_kit_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/ICPKit</field>
-            <field name="action_id" ref="icp_kit"/>
+        <record id="fcp_kit_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/FCPKit</field>
+            <field name="action_id" ref="fcp_kit"/>
         </record>
         <record id="beneficiary_cdpr_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/CDPRAssessmentKit</field>
@@ -271,7 +271,7 @@
             <field name="action_id" ref="beneficiary_note"/>
         </record>
         <record id="new_project_cycle_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/ICPLifecycleEventKit</field>
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/FCPLifecycleEventKit</field>
             <field name="action_id" ref="new_project_cycle"/>
         </record>
         <record id="new_reinstatement_notification_connect" model="gmc.action.connect">

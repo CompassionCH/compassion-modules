@@ -59,7 +59,7 @@
                         <group>
                             <field name="intervention_id"/>
                             <field name="field_office_id"/>
-                            <field name="icp_ids" widget="many2many_tags"/>
+                            <field name="fcp_ids" widget="many2many_tags"/>
                             <field name="category_id"/>
                             <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
                             <field name="type"/>
@@ -200,7 +200,7 @@
                 <field name="name"/>
                 <field name="category_id"/>
                 <field name="subcategory_id"/>
-                <field name="icp_ids"/>
+                <field name="fcp_ids"/>
                 <field name="field_office_id"/>
                 <field name="funding_status"/>
                 <field name="type"/>
