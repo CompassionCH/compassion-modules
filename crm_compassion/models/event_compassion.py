@@ -173,7 +173,11 @@ class EventCompassion(models.Model):
         for event in self:
             children = event.hold_ids.mapped('child_id')
             event.allocate_child_ids = children
-            event.effective_allocated = len(children)
+            nb_child = 0
+            for child in children:
+                if child.state in ('N', 'I'):
+                    nb_child += 1
+            event.effective_allocated = nb_child
 
     @api.constrains('hold_start_date', 'start_date')
     def _check_hold_start_date(self):
@@ -383,7 +387,8 @@ class EventCompassion(models.Model):
             'view_type': 'form',
             'res_model': 'compassion.child',
             'src_model': 'crm.event.compassion',
-            'context': self.env.context,
+            'context': self.with_context(
+                search_default_available=1).env.context,
             'domain': [('id', 'in', self.allocate_child_ids.ids)]
         }
 
