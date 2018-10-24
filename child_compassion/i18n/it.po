@@ -2537,7 +2537,7 @@ msgid "ID"
 msgstr "ID"
 
 #. module: child_compassion
-#: field:compassion.project,icp_id:0
+#: field:compassion.project,fcp_id:0
 msgid "Icp id"
 msgstr "Icp id"
 
@@ -3972,7 +3972,7 @@ msgstr "Programs of interest"
 #: field:compassion.generic.child,project_id:0
 #: field:compassion.global.child,project_id:0
 #: view:compassion.project:child_compassion.view_compassion_project_form
-#: field:compassion.reservation,icp_id:0
+#: field:compassion.reservation,fcp_id:0
 #: field:icp.disaster.impact,project_id:0
 msgid "Project"
 msgstr "Project"
@@ -4048,7 +4048,7 @@ msgid "Projected transition date"
 msgstr "Projected transition date"
 
 #. module: child_compassion
-#: field:compassion.childpool.search,icp_ids:0
+#: field:compassion.childpool.search,fcp_ids:0
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_project
 msgid "Projects"
 msgstr "Progetti"

@@ -42,7 +42,7 @@
             <field name="success_method">details_answer</field>
         </record>
         <!-- Get FCP details -->
-        <record id="fcp_details" model="gmc.action">
+        <record id="icp_details" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">FCPDetails</field>
             <field name="model">compassion.project</field>
@@ -138,7 +138,7 @@
             <field name="auto_process">1</field>
         </record>
         <!-- FCP Kit -->
-        <record id="fcp_kit" model="gmc.action">
+        <record id="icp_kit" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">FCPKit</field>
             <field name="model">compassion.project</field>
@@ -246,7 +246,7 @@
             <field name="connect_schema">http://schemas.ci.org/ci/messages/beneficiaries/2016/04/BeneficiaryKit</field>
             <field name="action_id" ref="beneficiary_kit"/>
         </record>
-        <record id="fcp_kit_connect" model="gmc.action.connect">
+        <record id="icp_kit_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/churchpartners/2016/04/FCPKit</field>
             <field name="action_id" ref="fcp_kit"/>
         </record>

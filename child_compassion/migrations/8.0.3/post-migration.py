@@ -18,6 +18,6 @@ def migrate(cr, version):
     cr.execute("""
 UPDATE compassion_child SET local_id = left(code, 2) || '0' ||
     substring(code from 3 for 3) || '0' || right(code, 4);
-UPDATE compassion_project SET icp_id = left(icp_id, 2) || '0' || right(
-    icp_id, 3);
+UPDATE compassion_project SET fcp_id = left(fcp_id, 2) || '0' || right(
+    fcp_id, 3);
     """)
