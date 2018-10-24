@@ -19,8 +19,7 @@ class CrmLead(models.Model):
         'Expected new sponsorships', track_visibility='onchange')
     event_id = fields.Many2one('crm.event.compassion', 'Event')
     event_ids = fields.One2many(
-        'crm.event.compassion', 'lead_id', 'Events',
-        readonly=True)
+        'crm.event.compassion', 'lead_id', 'Events')
 
     @api.multi
     def create_event(self):
