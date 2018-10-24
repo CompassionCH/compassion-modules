@@ -58,9 +58,12 @@ class FieldOffice(models.Model):
     disaster_alert_ids = fields.Many2many(
         'fo.disaster.alert', string='Disaster alerts'
     )
-    icp_hours_week = fields.Integer('Hours/week', default=8)
-    icp_meal_week = fields.Integer('Meals/week', default=1)
-    icp_ids = fields.One2many('compassion.project', 'field_office_id', 'ICP')
+    fcp_hours_week = fields.Integer('Hours/week', default=8,
+                                    oldname='icp_hours_week')
+    fcp_meal_week = fields.Integer('Meals/week', default=1,
+                                   oldname='icp_meal_week')
+    fcp_ids = fields.One2many('compassion.project', 'field_office_id',
+                              'FCP', oldname='icp_ids')
 
     _sql_constraints = [
         ('field_office_id', 'unique(field_office_id)',

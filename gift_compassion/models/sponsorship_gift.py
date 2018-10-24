@@ -319,7 +319,7 @@ class SponsorshipGift(models.Model):
 
     @api.multi
     def is_eligible(self):
-        """ Verifies the amount is within the thresholds and that the ICP
+        """ Verifies the amount is within the thresholds and that the FCP
         is currently accepting gifts.
         """
         self.ensure_one()

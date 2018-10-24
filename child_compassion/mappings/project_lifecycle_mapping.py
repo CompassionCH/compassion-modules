@@ -12,7 +12,7 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-class ICPLifecycleMapping(OnrampMapping):
+class FCPLifecycleMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.project.ile'
     MAPPING_NAME = "new_project_lifecyle"
 
@@ -21,9 +21,9 @@ class ICPLifecycleMapping(OnrampMapping):
         "ActualSuspensionEndDate": "suspension_end_date",
         "ActualTransitionDate": "date",
         "FutureInvolvement": ("future_involvement_ids.name",
-                              "icp.involvement"),
-        "ICPImprovementDescription": "icp_improvement_desc",
-        "ICPLifecycleEventType": "type",
+                              "fcp.involvement"),
+        "FCPImprovementDescription": "fcp_improvement_desc",
+        "FCPLifecycleEventType": "type",
         "IsBeneficiaryInformationUpdatesWithheld":
             "is_beneficiary_information_updates_withheld",
         "IsBeneficiaryToSupporterLettersWithheld": "hold_b2s_letters",
@@ -38,19 +38,19 @@ class ICPLifecycleMapping(OnrampMapping):
         "ProjectedTransitionDate": "projected_transition_date",
         "ReactivationDate": "reactivation_date",
         "ReasonForFirstExtension": ("extension_1_reason_ids.name",
-                                    "icp.suspension.extension.reason"),
+                                    "fcp.suspension.extension.reason"),
         "ReasonforSecondExtension": ("extension_2_reason_ids.name",
-                                     "icp.suspension.extension.reason"),
+                                     "fcp.suspension.extension.reason"),
         "SuspensionDetailsGPAUse": "suspension_detail",
         "SuspensionReason": ("suspension_reason_ids.name",
-                             "icp.lifecycle.reason"),
+                             "fcp.lifecycle.reason"),
         "SuspensionStartDate": "suspension_start_date",
         "TransitionDetailsGPAUse": "details",
         "TransitionReason": ("transition_reason_ids.name",
-                             "icp.lifecycle.reason"),
+                             "fcp.lifecycle.reason"),
         "TranslationStatus": "translation_status",
-        "ICPStatus": "project_status",
-        "ICP_ID": ('project_id.icp_id', 'compassion.project'),
+        "FCPStatus": "project_status",
+        "FCP_ID": ('project_id.fcp_id', 'compassion.project'),
 
         # Not used in Odoo
         'SourceKitName': None,
@@ -63,7 +63,7 @@ class ICPLifecycleMapping(OnrampMapping):
     }
 
     def __init__(self, env):
-        super(ICPLifecycleMapping, self).__init__(env)
+        super(FCPLifecycleMapping, self).__init__(env)
         self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _process_odoo_data(self, odoo_data):

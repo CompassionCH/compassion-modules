@@ -20,26 +20,26 @@ class CompassionProject(models.Model):
     def mobile_get_project(self, **other_params):
         """
         Mobile app method:
-        Returns the project for a given ICP ID.
-        :param icpid: the id of the church associated with the project
+        Returns the project for a given FCP ID.
+        :param fcpid: the id of the church associated with the project
         :param other_params: all request parameters
         :return: JSON containing the project
         """
         result = {
             'ProjectServiceResult': {
                 'Error': None,
-                'ICPResponseList': None
+                'FCPResponseList': None
             }
         }
-        icpid = self._get_required_param('icpid', other_params)
+        fcpid = self._get_required_param('fcpid', other_params)
 
         project = self.search([
-            ('icp_id', '=', icpid)
+            ('fcp_id', '=', fcpid)
         ], limit=1)
 
         mapping = MobileProjectMapping(self.env)
         if project:
-            result['ProjectServiceResult']['ICPResponseList'] = (
+            result['ProjectServiceResult']['FCPResponseList'] = (
                 mapping.get_connect_data(project))
         return result
 

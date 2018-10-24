@@ -14,7 +14,7 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-class ICPMapping(OnrampMapping):
+class FCPMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.project'
 
     CONNECT_MAPPING = {
@@ -43,11 +43,11 @@ class ICPMapping(OnrampMapping):
         'Community_Name': 'community_name',
         'PlantingMonths': ('planting_month_ids.name', 'connect.month'),
         'Population': 'community_population',
-        'PrimaryDiet': ('primary_diet_ids.name', 'icp.diet'),
+        'PrimaryDiet': ('primary_diet_ids.name', 'fcp.diet'),
         'PrimaryEthnicGroup': 'primary_ethnic_group_name',
         'PrimaryLanguage': ('primary_language_id.name', 'res.lang.compassion'),
         'PrimaryOccupation': ('primary_adults_occupation_ids.name',
-                              'icp.community.occupation'),
+                              'fcp.community.occupation'),
         'RainyMonths': ('rainy_month_ids.name', 'connect.month'),
         'SocialNeedsDescription': 'social_needs',
         'SpiritualNeedDescription': 'spiritual_needs',
@@ -64,21 +64,21 @@ class ICPMapping(OnrampMapping):
         'ChildDevelopmentCenterName': 'name',
         'ChildDevelopmentCenterNameLocalLanguage':
             'child_center_original_name',
-        'ChurchMinistry': ('ministry_ids.name', 'icp.church.ministry'),
+        'ChurchMinistry': ('ministry_ids.name', 'fcp.church.ministry'),
         'City': 'city',
         'Cluster': 'cluster',
         'CognitiveActivities0To5': ('cognitive_activity_babies_ids.name',
-                                    'icp.cognitive.activity'),
+                                    'fcp.cognitive.activity'),
         'CognitiveActivities6To11': ('cognitive_activity_kids_ids.name',
-                                     'icp.cognitive.activity'),
+                                     'fcp.cognitive.activity'),
         'CognitiveActivities12Plus': ('cognitive_activity_ados_ids.name',
-                                      'icp.cognitive.activity'),
-        'CommunityInvolvement': ('involvement_ids.name', 'icp.involvement'),
+                                      'fcp.cognitive.activity'),
+        'CommunityInvolvement': ('involvement_ids.name', 'fcp.involvement'),
         'ComputersForBeneficiaryUse': 'nb_child_computers',
         'ComputersForStaffUse': 'nb_staff_computers',
         'CountryDivision': 'state_province',
         'ElectricalPowerAvailability': 'electrical_power',
-        'Facilities': ('facility_ids.name', 'icp.church.facility'),
+        'Facilities': ('facility_ids.name', 'fcp.church.facility'),
         'FacilityOwnershipStatus': 'church_ownership',
         'FirstLetterWritingMonth': 'first_scheduled_letter',
         'FirstPartnershipAgreementSignedDate': 'partnership_start_date',
@@ -87,51 +87,51 @@ class ICPMapping(OnrampMapping):
         'GPSLatitude': 'gps_latitude',
         'GPSLongitude': 'gps_longitude',
         'HealthContextNeeds': 'health_needs',
-        'ICPStatus': 'status',
-        'ICP_ID': 'icp_id',
-        'ImplementedProgram': ('implemented_program_ids.name', 'icp.program'),
+        'FCPStatus': 'status',
+        'FCP_ID': 'fcp_id',
+        'ImplementedProgram': ('implemented_program_ids.name', 'fcp.program'),
         'InterestedGlobalPartnerName': ('interested_partner_ids.name',
-                                        'icp.program'),
+                                        'fcp.program'),
         'InternationalDenominationAffiliation': 'international_affiliation',
         'InternetAccess': 'church_internet_access',
         'LastReviewedDate': 'last_reviewed_date',
-        'ICP_Name': 'local_church_name',
-        'ICP_NameNonLatin': 'local_church_original_name',
+        'FCP_Name': 'local_church_name',
+        'FCP_NameNonLatin': 'local_church_original_name',
         'NumberOfActiveMembers': 'number_church_members',
         'NumberOfClassrooms': 'nb_classrooms',
         'NumberOfLatrines': 'nb_latrines',
         'NumberOfSponsorshipBeneficiaries': 'nb_cdsp_kids',
         'NumberOfSurvivalBeneficiaries': 'nb_csp_kids',
         'PhysicalActivities0To5': ('physical_activity_babies_ids.name',
-                                   'icp.physical.activity'),
+                                   'fcp.physical.activity'),
         'PhysicalActivities6To11': ('physical_activity_kids_ids.name',
-                                    'icp.physical.activity'),
+                                    'fcp.physical.activity'),
         'PhysicalActivities12Plus': ('physical_activity_ados_ids.name',
-                                     'icp.physical.activity'),
+                                     'fcp.physical.activity'),
         'PostalCode': 'zip_code',
         'PreferredLanguage': ('preferred_lang_id.name', 'res.lang.compassion'),
         'ProgramEndDate': 'program_end_date',
         'ProgramStartDate': 'program_start_date',
-        'ProgramsOfInterest': ('interested_program_ids.name', 'icp.program'),
+        'ProgramsOfInterest': ('interested_program_ids.name', 'fcp.program'),
         'ProjectActivitiesForFamilies': 'activities_for_parents',
-        'SchoolCostPaidByICP': ('school_cost_paid_ids.name',
-                                'icp.school.cost'),
+        'SchoolCostPaidByFCP': ('school_cost_paid_ids.name',
+                                'fcp.school.cost'),
         'SecondLetterWritingMonth': 'second_scheduled_letter',
         'SocialMedia': 'social_media_site',
         'SocioEmotionalActivities0To5': ('socio_activity_babies_ids.name',
-                                         'icp.sociological.activity'),
+                                         'fcp.sociological.activity'),
         'SocioEmotionalActivities6To11': ('socio_activity_kids_ids.name',
-                                          'icp.sociological.activity'),
+                                          'fcp.sociological.activity'),
         'SocioEmotionalActivities12Plus': ('socio_activity_ados_ids.name',
-                                           'icp.sociological.activity'),
+                                           'fcp.sociological.activity'),
         'SpiritualActivities0To5': ('spiritual_activity_babies_ids.name',
-                                    'icp.spiritual.activity'),
+                                    'fcp.spiritual.activity'),
         'SpiritualActivities6To11': ('spiritual_activity_kids_ids.name',
-                                     'icp.spiritual.activity'),
+                                     'fcp.spiritual.activity'),
         'SpiritualActivities12Plus': ('spiritual_activity_ados_ids.name',
-                                      'icp.spiritual.activity'),
+                                      'fcp.spiritual.activity'),
         'Territory': 'territory',
-        'UtilitiesOnSite': ('utility_ids.name', 'icp.church.utility'),
+        'UtilitiesOnSite': ('utility_ids.name', 'fcp.church.utility'),
         'Website': 'website',
         'WeeklyChildAttendance': 'weekly_child_attendance',
 
@@ -157,7 +157,7 @@ class ICPMapping(OnrampMapping):
     }
 
     def __init__(self, env):
-        super(ICPMapping, self).__init__(env)
+        super(FCPMapping, self).__init__(env)
         self.CONSTANTS = {'gpid': env.user.country_id.code}
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
@@ -167,7 +167,7 @@ class ICPMapping(OnrampMapping):
         """
         if connect_name == 'PrimaryLanguage' and value:
             value = value.lower().title()
-        return super(ICPMapping, self)._convert_connect_data(
+        return super(FCPMapping, self)._convert_connect_data(
             connect_name, value_mapping, value, relation_search
         )
 

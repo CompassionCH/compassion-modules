@@ -54,9 +54,9 @@ class CompassionIntervention(models.Model):
     ], readonly=True)
     funding_global_partners = fields.Char(readonly=True)
     cancel_reason = fields.Char(readonly=True)
-    icp_ids = fields.Many2many(
-        'compassion.project', 'icp_interventions', 'intervention_id', 'icp_id',
-        string='ICPs', readonly=True
+    fcp_ids = fields.Many2many(
+        'compassion.project', 'fcp_interventions', 'intervention_id', 'fcp_id',
+        string='FCPs', readonly=True, oldname='icp_ids'
     )
     product_template_id = fields.Many2one('product.template', 'Linked product')
 
@@ -194,19 +194,19 @@ class CompassionIntervention(models.Model):
         '% births in medical facility', readonly=True
     )
     spiritual_activity_ids = fields.Many2many(
-        'icp.spiritual.activity', 'intervention_spiritual_activities',
+        'fcp.spiritual.activity', 'intervention_spiritual_activities',
         string='Spiritual activities', readonly=True
     )
     cognitive_activity_ids = fields.Many2many(
-        'icp.cognitive.activity', 'intervention_cognitive_activities',
+        'fcp.cognitive.activity', 'intervention_cognitive_activities',
         string='Cognitive activities', readonly=True
     )
     physical_activity_ids = fields.Many2many(
-        'icp.physical.activity', 'intervention_physical_activities',
+        'fcp.physical.activity', 'intervention_physical_activities',
         string='Physical activities', readonly=True
     )
     socio_activity_ids = fields.Many2many(
-        'icp.sociological.activity', 'intervention_socio_activities',
+        'fcp.sociological.activity', 'intervention_socio_activities',
         string='Sociological activities', readonly=True
     )
     activities_for_parents = fields.Char(readonly=True)
@@ -220,7 +220,7 @@ class CompassionIntervention(models.Model):
                     'intervention_compassion.deliverable_final_program_report')
             elif 'Survival' in intervention.type:
                 intervention.deliverable_level_1_ids = self.env.ref(
-                    'intervention_compassion.deliverable_icp_profile'
+                    'intervention_compassion.deliverable_fcp_profile'
                 ) + self.env.ref(
                     'intervention_compassion.'
                     'deliverable_survival_quarterly_report_data'
@@ -236,10 +236,10 @@ class CompassionIntervention(models.Model):
                 )
             elif 'Sponsorship' in intervention.type:
                 intervention.deliverable_level_1_ids = self.env.ref(
-                    'intervention_compassion.deliverable_icp_profile'
+                    'intervention_compassion.deliverable_fcp_profile'
                 ) + self.env.ref(
                     'intervention_compassion.'
-                    'deliverable_icp_community_information'
+                    'deliverable_fcp_community_information'
                 ) + self.env.ref(
                     'intervention_compassion.'
                     'deliverable_sponsorship_launch_budget'
@@ -277,7 +277,7 @@ class CompassionIntervention(models.Model):
         vals['commited_percentage'] = 0
         intervention = super(CompassionIntervention, self).create(vals)
         intervention.get_infos()
-        intervention.icp_ids.get_lifecycle_event()
+        intervention.fcp_ids.get_lifecycle_event()
         return intervention
 
     @api.multi

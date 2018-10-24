@@ -39,7 +39,7 @@ class ChildLifecycleEvent(models.Model):
         ('reached max age or completion date but did not fulfill '
          'completion plan',
          '{he} reached maximum age or completion date.'),
-        ('reached the end of relevant programs available at icp',
+        ('reached the end of relevant programs available at fcp',
          '{he} reached the end of relevant programs available at the '
          'project'),
         ('reached the end of the relevant programs available at the church '
@@ -56,8 +56,8 @@ class ChildLifecycleEvent(models.Model):
          '{he} is now interested and agrees to policies'),
         # Transfer
         ('child transfer', 'Child Transfer'),
-        ('recently exited and attending new icp',
-         '{he} recently exited and attends a new ICP'),
+        ('recently exited and attending new fcp',
+         '{he} recently exited and attends a new FCP'),
         ("relocation: caregiver's work.",
          "of a relocation of {his} caregiver's work."),
         ("relocation: caregiver's work",

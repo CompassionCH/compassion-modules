@@ -189,7 +189,7 @@ class Correspondence(models.Model):
              _('Quality Check Done')),
             ('Field Office translation queue', _('SDL FO Translation Queue')),
             ('Composition process', _('Composition Process')),
-            ('Printed and sent to ICP', _('Sent to ICP')),
+            ('Printed and sent to FCP', _('Sent to FCP')),
             ('Exception', _('Exception')),
             ('Quality check unsuccessful', _('Quality check failed')),
             ('Translation check unsuccessful', _('Translation check '

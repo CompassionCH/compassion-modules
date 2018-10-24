@@ -34,7 +34,7 @@ class CompassionReservation(models.Model):
         ('active', "Active"),
         ('expired', "Expired")],
         readonly=True, default='draft', track_visibility='onchange')
-    icp_id = fields.Many2one('compassion.project', 'Project')
+    fcp_id = fields.Many2one('compassion.project', 'Project')
     child_id = fields.Many2one('compassion.child', 'Child', domain=[
         ('global_id', '!=', False), ('hold_id', '=', False)
     ])

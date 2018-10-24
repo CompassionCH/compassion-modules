@@ -362,7 +362,7 @@ class SponsorshipContract(models.Model):
 
         for contract in self:
             # Add a note in the contract and in the partner.
-            project_code = contract.project_id.icp_id
+            project_code = contract.project_id.fcp_id
             contract.message_post(
                 _("The project {0} was suspended and funds are retained."
                     "<br/>Invoices due in the suspension period "
@@ -890,7 +890,7 @@ class SponsorshipContract(models.Model):
                 if not payment_allowed:
                     raise UserError(
                         _("The project %s is fund-suspended. You cannot "
-                          "reconcile invoice (%s).") % (project.icp_id,
+                          "reconcile invoice (%s).") % (project.fcp_id,
                                                         invoice.id))
 
                 # Activate gift related contracts (if any)

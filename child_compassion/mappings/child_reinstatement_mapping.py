@@ -25,7 +25,7 @@ class ReinstatementMapping(OnrampMapping):
 
         # Not used in Odoo
         'GlobalPartner_ID': None,
-        'ICP_ID': None,
+        'FCP_ID': None,
     }
 
     CONSTANTS = {

@@ -32,7 +32,7 @@ class MobileChildMapping(OnrampMapping):
         'FullBodyImageURL': 'image_url',
         'FullName': 'name',
         'Gender': 'gender',
-        'icpId': ('project_id.icp_id', 'compassion.project'),
+        'fcpId': ('project_id.fcp_id', 'compassion.project'),
         'image': None,
         'ImageURL': 'image_url',
         'Latitude': None,

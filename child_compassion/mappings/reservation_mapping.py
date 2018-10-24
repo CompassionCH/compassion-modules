@@ -23,8 +23,8 @@ class ReservationCreateMapping(OnrampMapping):
     CONNECT_MAPPING = {
         'Beneficiary_GlobalID': 'child_global_id',
         'Channel_Name': 'channel',
-        'ICP_ID': ('icp_id.icp_id', 'compassion.project'),
-        'CampaignEventIdentifier': ('icp_id.icp_id', 'compassion.project'),
+        'FCP_ID': ('fcp_id.fcp_id', 'compassion.project'),
+        'CampaignEventIdentifier': ('fcp_id.fcp_id', 'compassion.project'),
         'ExpirationDate': 'reservation_expiration_date',
         'HoldExpirationDate': 'expiration_date',
         'HoldYieldRate': 'yield_rate',
@@ -39,7 +39,7 @@ class ReservationCreateMapping(OnrampMapping):
     FIELDS_TO_SUBMIT = {
         'Channel_Name': None,
         'GlobalPartner_ID': None,
-        'ICP_ID': None,
+        'FCP_ID': None,
         'CampaignEventIdentifier': lambda x: x or 'Child reservation',
         'ExpirationDate': None,
         'HoldExpirationDate': None,
@@ -55,7 +55,7 @@ class ReservationCreateMapping(OnrampMapping):
 
     CONSTANTS = {
         'GlobalPartner_ID': 'CH',
-        'ReservationType': 'ICP',
+        'ReservationType': 'FCP',
         'SourceCode': '',
     }
 
@@ -91,7 +91,7 @@ class BeneficiaryReservationMapping(ReservationCreateMapping):
         'Beneficiary_GlobalID': None,
         'Channel_Name': None,
         'GlobalPartner_ID': None,
-        'ICP_ID': None,
+        'FCP_ID': None,
         'CampaignEventIdentifier': None,
         'ExpirationDate': None,
         'HoldExpirationDate': None,

@@ -91,7 +91,7 @@ class ReservationToHoldMapping(OnrampMapping):
         # Not used in Odoo
         'BeneficiaryOrder_ID': None,
         'GlobalPartner_ID': None,
-        'ICP_ID': None,
+        'FCP_ID': None,
         'ReservationType_Name': None,
         'CampaignEventID': None,
     }

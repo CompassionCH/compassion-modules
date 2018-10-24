@@ -27,7 +27,7 @@ class LifecycleMapping(OnrampMapping):
         'LastAttendedDate': 'last_attended_project',
         'NewSituation': 'new_situation',
         'SponsorImpact': 'sponsor_impact',
-        'CurrentICP': 'current_project',
+        'CurrentFCP': 'current_project',
         'Status': 'status',
         'DeathInterventionInformation': 'death_intervention_information',
         'EffectiveDate': 'date',
@@ -35,7 +35,7 @@ class LifecycleMapping(OnrampMapping):
         'ReasonForRequest': 'request_reason',
         'ExpectedArrivalDate': 'transfer_arrival_date',
         'NewBeneficiaryLocalNumber': ('child_id.local_id', 'compassion.child'),
-        'NewICPID': 'new_project',
+        'NewFCPID': 'new_project',
         'OtherReasonForTransfer': 'other_transfer_reason',
         'BeneficiaryTransitionType': 'transition_type',
         'NewProgram': 'new_program',
@@ -46,7 +46,7 @@ class LifecycleMapping(OnrampMapping):
         # Not used in Odoo
         'Beneficiary_LocalID': None,
         'BeneficiaryStatus': None,
-        'NewICPName': None,
+        'NewFCPName': None,
         'SourceKitName': None,
     }
 

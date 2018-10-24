@@ -41,7 +41,7 @@ class CorrespondenceMapping(OnrampMapping):
         'OptInForLanguageTranslation': None
     }
 
-    ICP_MAPPING = {
+    FCP_MAPPING = {
         'Id': None,
         'ObjectUrl': None
     }

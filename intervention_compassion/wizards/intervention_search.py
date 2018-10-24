@@ -43,9 +43,9 @@ class InterventionSearch(models.TransientModel):
     status_chooser = fields.Selection('get_statuses')
     status_selected = fields.Char(readonly=True)
     intervention_id = fields.Char()
-    icp_ids = fields.Many2many(
-        'compassion.project', 'compassion_intervention_search_icp',
-        'search_id', 'icp_id', 'ICPs'
+    fcp_ids = fields.Many2many(
+        'compassion.project', 'compassion_intervention_search_fcp',
+        'search_id', 'fcp_id', 'FCPs', oldname='icp_ids'
     )
     field_office_ids = fields.Many2many(
         'compassion.field.office', 'compassion_intervention_search_fo',
@@ -134,10 +134,10 @@ class InterventionSearch(models.TransientModel):
         if self.intervention_id:
             new_filters.append(_get_filter(
                 'intervention_id', is_id, self.intervention_id))
-        if self.icp_ids:
-            icp_codes = ';'.join(self.icp_ids.mapped('icp_id'))
+        if self.fcp_ids:
+            fcp_codes = ';'.join(self.fcp_ids.mapped('fcp_id'))
             new_filters.append(_get_filter(
-                'icp_id', anyof_id, icp_codes))
+                'fcp_id', anyof_id, fcp_codes))
         if self.field_office_ids:
             fo_codes = ';'.join(self.field_office_ids.mapped(
                 'field_office_id'))
