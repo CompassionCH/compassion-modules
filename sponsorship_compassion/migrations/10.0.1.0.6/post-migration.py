@@ -23,14 +23,18 @@ def migrate(env, version):
 
     old_sponsorships = env['recurring.contract'].search([
         ('end_date', '<=', fields.Date.to_string(end_date_limit)),
-        ('state', 'ilike', 'terminated'),
-        ('global_id', '=', False)
+        ('state', '=', 'terminated'),
+        ('global_id', '=', False),
+        ('activation_date', '!=', False)
     ])
 
     random_global_ids = range(0, 1000000)
     random.shuffle(random_global_ids)
 
-    for sponsorship in old_sponsorships:
+    min_transmition_delay = 5
+
+    for sponsorship in old_sponsorships.filtered(
+            lambda s: s.contract_duration > min_transmition_delay):
         sponsorship.write({
-            'global_id': 'hold-' + str(random_global_ids.pop())
+            'global_id': 'missing-' + str(random_global_ids.pop())
         })
