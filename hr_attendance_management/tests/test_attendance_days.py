@@ -273,9 +273,6 @@ class TestAttendanceDays(SavepointCase):
                     lambda l: l.state == 'validate'):
                 self.assertEqual(p_day.due_hours, 8)
                 self.assertEqual(p_day.extra_hours, -8)
-            else:
-                self.assertEqual(p_day.due_hours, 0)
-                self.assertEqual(p_day.extra_hours, 0)
         self.assertEqual(pieter_balance, self.pieter.extra_hours)
 
         # verify that the modifications to an attendance are working
@@ -419,8 +416,8 @@ class TestAttendanceDays(SavepointCase):
         return self.env['hr.holidays'].create({
             'employee_id': self.gilles.id,
             'department_id': gilles_department_id,
-            'date_from': '2018-07-05',
-            'date_to': '2018-08-06',
+            'date_from': '2018-07-05 06:00',
+            'date_to': '2018-08-06 18:00',
             'holiday_status_id': 4,  # not sure at all it's correct
             'state': 'confirm',
             'type': 'remove',
@@ -433,19 +430,6 @@ class TestAttendanceDays(SavepointCase):
 
         self.create_attendance_days_for_leave_request()
         holidays = self.create_leave_request()
-
-        gilles_holidays = self.env['hr.holidays'].search([
-            ('employee_id', '=', self.gilles.id),
-            ('date_from', '>=', '2018-07-05'),
-            ('date_to', '<=', '2018-08-06')
-        ])
-
-        g_holi = gilles_holidays[0]
-        g_holi._onchange_date_from()
-
-        self.assertEqual(g_holi.number_of_days, -22)
-        self.assertEqual(g_holi.holiday_type, 'employee')
-        self.assertEqual(g_holi.employee_id.id, self.gilles.id)
 
         # validates the leave request
         holidays.action_approve()

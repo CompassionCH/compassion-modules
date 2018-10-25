@@ -154,7 +154,8 @@ class HrAttendanceDay(models.Model):
 
             # Leaves
             for leave in att_day.leave_ids.filtered(
-                    lambda l: l.state == 'validate' and not l.keep_due_hours):
+                    lambda l: l.state == 'validate' and not
+                    l.holiday_status_id.keep_due_hours):
                 due_hours -= leave.compute_leave_time(att_day.date)
 
             if due_hours < 0:
