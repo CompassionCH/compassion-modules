@@ -88,20 +88,20 @@
                                 <group string="Previsions">
                                     <field name="currency_usd" invisible="1"/>
                                     <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="total_estimated_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
                                     <field name="estimated_impacted_beneficiaries"/>
                                     <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="local_currency_id" invisible="1"/>
-                                    <field name="total_estimated_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
                                 </group>
                                 <group string="Actual numbers">
                                     <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="total_actual_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+                                    <field name="impacted_beneficiaries"/>
+                                    <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                                     <field name="commited_percentage" widget="progressbar"/>
                                     <field name="total_amendment" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="total_actual_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
-                                    <field name="impacted_beneficiaries"/>
                                 </group>
                             </group>
                         </page>

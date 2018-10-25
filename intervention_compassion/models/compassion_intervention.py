@@ -87,10 +87,12 @@ class CompassionIntervention(models.Model):
     total_income = fields.Char(
         'Total income', compute='_compute_move_line', readonly=True)
     total_amendment = fields.Float()
-    total_actual_cost_local = fields.Float(help='Total costs in local '
-                                                'currency')
-    total_estimated_cost_local = fields.Float(help='Total estimated costs in '
-                                                   'local currency')
+    total_actual_cost_local = fields.Float(
+        'Total cost (local currency)'
+    )
+    total_estimated_cost_local = fields.Float(
+        'Estimated costs (local currency)'
+    )
     local_currency_id = fields.Many2one('res.currency',
                                         related='field_office_id.country_id.'
                                                 'currency_id')
