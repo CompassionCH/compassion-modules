@@ -379,6 +379,7 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
     def suspend_funds(self):
         """ Hook to perform some action when project is suspended.
         By default: log a message.
@@ -402,6 +403,7 @@ class CompassionProject(models.Model):
             self.mapped(field + '_ados_ids')).sorted()
         return all_activities[:max].mapped('value')
 
+    @api.multi
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
