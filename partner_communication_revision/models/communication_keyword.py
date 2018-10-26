@@ -143,21 +143,21 @@ class CommunicationKeyword(models.Model):
     def _compute_final_text(self):
         for keyword in self:
             if keyword.type == 'if':
-                final_text = '\n' + keyword.raw_code + '\n\t' + \
+                final_text = u'\n' + keyword.raw_code + u'\n\t' + \
                     keyword.true_text
                 if keyword.false_text:
-                    final_text += '\n\t% else:' + '\n\t' + keyword.false_text
-                final_text += '\n% endif \n'
+                    final_text += u'\n\t% else:\n\t' + keyword.false_text
+                final_text += u'\n% endif \n'
                 keyword.final_text = final_text
             elif 'for' in keyword.type:
-                final_text = '\n' + keyword.raw_code + '\n\t' + \
+                final_text = u'\n' + keyword.raw_code + u'\n\t' + \
                     keyword.true_text
-                final_text += '\n% endfor \n'
+                final_text += u'\n% endfor \n'
                 if keyword.type == 'for_ul':
-                    final_text = '<ul>{}</ul>'.format(final_text)
+                    final_text = u'<ul>{}</ul>'.format(final_text)
                 keyword.final_text = final_text
             elif keyword.type == 'var':
-                keyword.final_text = '\n' + keyword.raw_code + '\n'
+                keyword.final_text = u'\n' + keyword.raw_code + u'\n'
             else:
                 keyword.final_text = keyword.raw_code
 

@@ -21,7 +21,7 @@ class CompassionProject(geo_model.GeoModel):
     geo_point = GeoPoint(
         readonly=True, store=True)
 
-    @api.model
+    @api.multi
     def details_answer(self, vals):
         super(CompassionProject, self).details_answer(vals)
         self.compute_geopoint()

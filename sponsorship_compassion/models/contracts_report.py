@@ -43,6 +43,8 @@ class PartnerSponsorshipReport(models.Model):
                                 compute='_compute_meal')
     sr_nb_bible = fields.Integer('Number of bibles distributed',
                                  compute='_compute_nb_bible')
+    sr_nb_medic_check = fields.Integer('Number of given medical checks',
+                                       compute='_compute_medic_check')
     sr_total_donation = fields.Monetary('Invoices',
                                         compute='_compute_total_donation')
     sr_total_gift = fields.Integer('Gift',
@@ -149,6 +151,19 @@ class PartnerSponsorshipReport(models.Model):
                 partner.related_sponsorships.filtered('global_id').mapped(
                     get_nb_meal))
             partner.sr_nb_meal = total_meal
+
+    @api.multi
+    def _compute_medic_check(self):
+        def get_nb_check(sponsorship):
+            nb_year = sponsorship.contract_duration / 365
+            country = sponsorship.child_id.field_office_id
+            return nb_year * country.icp_medical_check
+
+        for partner in self:
+            total_check = sum(
+                partner.related_sponsorships.filtered('global_id').mapped(
+                    get_nb_check))
+            partner.sr_nb_medic_check = total_check
 
     @api.multi
     def _compute_nb_bible(self):

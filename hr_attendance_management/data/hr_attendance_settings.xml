@@ -2,15 +2,21 @@
 <odoo>
     <data noupdate="1">
         <!-- Free break-->
-        <record id="hr_attendance_management.free_break" model="ir.config_parameter">
+        <record id="free_break" model="ir.config_parameter">
             <field name="key">hr_attendance_management.free_break</field>
             <field name="value">0</field>
         </record>
 
         <!-- Max extra hours-->
-        <record id="hr_attendance_management.max_extra_hours" model="ir.config_parameter">
+        <record id="max_extra_hours" model="ir.config_parameter">
             <field name="key">hr_attendance_management.max_extra_hours</field>
             <field name="value">0</field>
+        </record>
+
+        <!-- Work hours per week-->
+        <record id="hours_week" model="ir.config_parameter">
+            <field name="key">hr_attendance_management.hours_week</field>
+            <field name="value">40</field>
         </record>
     </data>
 </odoo>

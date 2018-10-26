@@ -11,6 +11,9 @@
 import logging
 
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
+import pytz
 
 _logger = logging.getLogger(__name__)
 
@@ -18,7 +21,15 @@ _logger = logging.getLogger(__name__)
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
 
-    keep_due_hours = fields.Boolean(related='holiday_status_id.keep_due_hours')
+    @api.constrains('state', 'number_of_days_temp', 'holiday_status_id')
+    def _check_holidays(self):
+        for holiday in self:
+            # Check that it isn't possible to take less than half a day.
+            if holiday.number_of_days_temp % 0.5 != 0:
+                raise ValidationError(_(
+                    "The number of day can't be less than half a day.\n"
+                    "Please verify your leave duration."))
+        super(HrHolidays, self)._check_holidays()
 
     ##########################################################################
     #                               ORM METHODS                              #
@@ -65,21 +76,38 @@ class HrHolidays(models.Model):
 
         start_time = fields.Datetime.from_string(self.date_from)
         end_time = fields.Datetime.from_string(self.date_to)
+
+        # Convert UTC in local timezone
+        user_tz = self.employee_id.user_id.tz
+        if user_tz:
+            local = pytz.timezone(user_tz)
+            utc = pytz.timezone('UTC')
+
+            start_time = utc.localize(start_time).astimezone(local)
+            end_time = utc.localize(end_time).astimezone(local)
+
         start_day = fields.Date.from_string(self.date_from)
         end_day = fields.Date.from_string(self.date_to)
 
         date = fields.Date.from_string(str_date)
 
+        full_day = self.env['base.config.settings'].get_hours_week()/5
+
         if date == start_day == end_day:
-            duration = (end_time - start_time).total_seconds() / 3600.0
+            duration = self.number_of_days_temp * full_day
         elif start_day < date < end_day:
-            duration = 24
-        elif start_day <= date <= end_day:
-            if date == start_day or date == end_day:
-                end_time = start_time.replace(hour=23, minute=59)
+            duration = full_day
+
+        elif date == start_day:
+            if start_time.hour <= 12:
+                duration = full_day
             else:
-                start_time = end_time.replace(hour=0, minute=0)
-            duration = (end_time - start_time).total_seconds() / 3600.0
+                duration = full_day / 2
+        elif date == end_day:
+            if end_time.hour > 12:
+                duration = full_day
+            else:
+                duration = full_day / 2
         else:
             _logger.error(
                 "This attendance day doesn't correspond to this leave"
