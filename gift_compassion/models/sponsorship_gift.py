@@ -148,11 +148,12 @@ class SponsorshipGift(models.Model):
                  'invoice_line_ids.price_subtotal')
     def _compute_invoice_fields(self):
         for gift in self.filtered('invoice_line_ids'):
-            pay_dates = gift.invoice_line_ids.filtered('last_payment').mapped(
-                'last_payment') or [gift.invoice_line_ids[0].last_payment]
-
-            inv_dates = gift.invoice_line_ids.mapped('due_date')
-            amounts = gift.mapped('invoice_line_ids.price_subtotal')
+            invoice_lines = gift.invoice_line_ids
+            pay_dates = invoice_lines.filtered('last_payment').mapped(
+                'last_payment') or [False]
+            inv_dates = invoice_lines.filtered('due_date').mapped(
+                'due_date') or [False]
+            amounts = invoice_lines.mapped('price_subtotal')
 
             gift.date_partner_paid = fields.Date.to_string(max(
                 map(lambda d: fields.Date.from_string(d), pay_dates)))
@@ -162,8 +163,9 @@ class SponsorshipGift(models.Model):
                     compute_date_birthday_invoice(
                         gift.child_id.birthdate, inv_dates[0])
             else:
-                gift.gift_date = fields.Date.to_string(max(
-                    map(lambda d: fields.Date.from_string(d), inv_dates)))
+                gift_date = max(
+                    map(lambda d: fields.Date.from_string(d), inv_dates))
+                gift.gift_date = gift_date and fields.Date.to_string(gift_date)
 
             gift.amount = sum(amounts)
 
@@ -582,7 +584,7 @@ class SponsorshipGift(models.Model):
         """ Cancel Invoices and delete Gifts. """
         invoices = self.mapped('invoice_line_ids.invoice_id')
         invoices.mapped(
-            'payment_ids.full_reconcile_id.'
+            'payment_ids.move_line_ids.full_reconcile_id.'
             'reconciled_line_ids').remove_move_reconcile()
         invoices.action_invoice_cancel()
         self.mapped('message_id').unlink()
@@ -657,7 +659,7 @@ class SponsorshipGift(models.Model):
         ])
         analytic = self.env['account.analytic.account'].search([
             ('code', '=', 'ATT_CD')])
-        for gift in self:
+        for gift in self.filtered('payment_id'):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({
                 'date': fields.Date.today()
