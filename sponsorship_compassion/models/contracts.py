@@ -109,6 +109,7 @@ class SponsorshipContract(models.Model):
         default=lambda self: self._get_standard_lines()
     )
     preferred_name = fields.Char(related='child_id.preferred_name')
+    suspended_amount = fields.Float(compute='_compute_suspended_amount')
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
@@ -235,6 +236,25 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.gift_partner_id = getattr(
                 contract, contract.send_gifts_to, contract.correspondent_id)
+
+    @api.multi
+    def _compute_suspended_amount(self):
+        """ Suspended amount is all amount donated to suspension product
+        and amount not reconciled. """
+        suspend_config = int(self.env['ir.config_parameter'].get_param(
+            'sponsorship_compassion.suspend_product_id', 0))
+        suspend_product = self.env['product.product'].browse(
+            suspend_config).exists()
+        for contract in self.filtered('child_id'):
+            amount = 0
+            if suspend_product:
+                amount += sum(self.env['account.invoice.line'].search([
+                    ('contract_id', '=', contract.id),
+                    ('state', '=', 'paid'),
+                    ('product_id', '=', suspend_product.id)
+                ]).mapped('price_subtotal') or [0])
+            amount += contract.partner_id.debit
+            contract.suspended_amount = amount
 
     ##########################################################################
     #                              ORM METHODS                               #
