@@ -24,7 +24,7 @@ class InterventionSearchMapping(OnrampMapping):
         "FirstDayOfProgramActivities": None,
         "FundingStatus": "funding_status",
         "GlobalPartnerId": None,
-        "ICPId": "icp_id",
+        "ICPId": "fcp_ids",
         "InterventionDescription": "description",
         "InterventionId": "intervention_id",
         "InterventionName": "name",
@@ -64,7 +64,7 @@ class GlobalInterventionMapping(OnrampMapping):
         "InterventionSubCategory_Name": (
             "subcategory_id.name", "compassion.intervention.subcategory"),
         "ProposedStartDate": "proposed_start_date",
-        "ICP_ID": ("icp_ids.icp_id", "compassion.project"),
+        "ICP_ID": ("fcp_ids.fcp_id", "compassion.project"),
         "FieldOffice_ID": ("field_office_id.field_office_id",
                            "compassion.field.office"),
         "IsFieldOfficePriority": "is_fo_priority",
@@ -91,7 +91,7 @@ class GlobalInterventionMapping(OnrampMapping):
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
-        """ Split ICP ids"""
+        """ Split FCP ids"""
         if connect_name == 'ICP':
             value = value.split("; ")
         return super(GlobalInterventionMapping, self)._convert_connect_data(

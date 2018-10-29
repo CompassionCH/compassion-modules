@@ -21,7 +21,7 @@
         <field name="name">Project view</field>
         <field name="arch" type="xml">
             <geoengine>
-                <field name="icp_id"/>
+                <field name="fcp_id"/>
                 <field name="name" select="1"/>
             </geoengine>
         </field>

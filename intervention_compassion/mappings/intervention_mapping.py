@@ -53,7 +53,7 @@ class InterventionMapping(OnrampMapping):
             'deliverable_level_2_ids.name',
             'compassion.intervention.deliverable'),
         "GlobalPartnerLevel2Selection": "sla_selection_complete",
-        "ICP": ('icp_ids.icp_id', 'compassion.project'),
+        "ICP": ('fcp_ids.fcp_id', 'compassion.project'),
         "Intervention_ID": 'intervention_id',
         "ImpactedBeneficiaryQuantity": 'impacted_beneficiaries',
         "ImplementationRisks": 'implementation_risks',
@@ -98,15 +98,15 @@ class InterventionMapping(OnrampMapping):
         "PopulationUnderAge5": 'under_five_population',
         "MedicalFacilityBirthPercent": 'birth_medical',
         "SpiritualActivities": ('spiritual_activity_ids.name',
-                                'icp.spiritual.activity'),
+                                'fcp.spiritual.activity'),
         "SocioEmotionalActivities": ('socio_activity_ids.name',
-                                     'icp.spiritual.activity'),
+                                     'fcp.spiritual.activity'),
         "CognitiveVocationalActivities": ('cognitive_activity_ids.name',
-                                          'icp.spiritual.activity'),
+                                          'fcp.spiritual.activity'),
         "OtherActivities": 'other_activities',
         "ParentFamilyActivities": 'activities_for_parents',
         "PhysicalHealthActivities": ('physical_activity_ids.name',
-                                     'icp.spiritual.activity'),
+                                     'fcp.spiritual.activity'),
 
         # Not used in odoo:
         "Beneficiary_ProgramFieldManualExemption": None,
@@ -157,7 +157,7 @@ class InterventionMapping(OnrampMapping):
 
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
-        """ Split ICP ids"""
+        """ Split FCP ids"""
         if connect_name == 'ICP':
             value = value.split("; ")
         return super(InterventionMapping, self)._convert_connect_data(

@@ -35,7 +35,7 @@
                                 </group>
                                 <group>
                                     <field name="intervention_id"/>
-                                    <field name="icp_ids" widget="many2many_tags" options="{'create_edit': False, 'create': False}"/>
+                                    <field name="fcp_ids" widget="many2many_tags" options="{'create_edit': False, 'create': False}"/>
                                     <field name="field_office_ids" widget="many2many_tags" options="{'create_edit': False, 'create': False}"/>
                                     <field name="remaining_amount_equal"/>
                                     <field name="remaining_amount_greater" attrs="{'invisible': [('remaining_amount_equal', '!=', 0)]}"/>
