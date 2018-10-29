@@ -111,11 +111,15 @@ if not testing:
             if not partner:
                 partner = partner_obj.search([
                     ('lastname', 'ilike', source_vals['lastname']),
+                    ('firstname', 'ilike', source_vals['firstname']),
                     ('zip', '=', source_vals['zip'])], limit=1)
             if not partner:
                 # no match found -> creating a new one.
                 source_vals['lang'] = self.env.lang
                 partner = partner_obj.create(source_vals)
+            else:
+                # Write current values in partner.
+                partner.write(source_vals)
             self.partner_id = partner.id
             values['partner_id'] = partner.id
             return True
