@@ -15,7 +15,7 @@
                             <field name="sr_nb_girl"/>
                         </group>
                         <group string="From the beginning of your sponsorships">
-                            <field name="sr_time_icp"/>
+                            <field name="sr_time_fcp"/>
                             <field name="sr_nb_meal"/>
                             <field name="sr_nb_bible"/>
                             <field name="sr_nb_medic_check"/>

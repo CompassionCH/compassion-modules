@@ -14,8 +14,8 @@ from ..mappings.field_office_disaster_mapping import FieldOfficeDisasterMapping
 
 
 class ICPDisasterImpact(models.Model):
-    _name = 'icp.disaster.impact'
-    _description = 'ICP Disaster Impact'
+    _name = 'fcp.disaster.impact'
+    _description = 'FCP Disaster Impact'
     _order = 'id desc'
 
     project_id = fields.Many2one(
@@ -25,7 +25,7 @@ class ICPDisasterImpact(models.Model):
         'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
     )
 
-    impact_on_icp_program = fields.Char()
+    impact_on_fcp_program = fields.Char(oldname='impact_on_icp_program')
     disaster_impact_description = fields.Char()
     state = fields.Selection(related='disaster_id.state')
     infrastructure = fields.Char()
@@ -134,9 +134,15 @@ class FieldOfficeDisasterAlert(models.Model):
     field_office_impact_description = fields.Char()
 
     impact_description = fields.Char()
-    impact_on_icp_infrastructure_damaged = fields.Integer()
-    impact_on_icp_infrastructure_destroyed = fields.Integer()
-    impact_on_icp_program_temporarily_closed = fields.Integer()
+    impact_on_fcp_infrastructure_damaged = fields.Integer(
+        oldname='impact_on_icp_infrastructure_damaged'
+    )
+    impact_on_fcp_infrastructure_destroyed = fields.Integer(
+        oldname='impact_on_icp_infrastructure_destroyed'
+    )
+    impact_on_fcp_program_temporarily_closed = fields.Integer(
+        oldname='impact_on_icp_program_temporarily_closed'
+    )
     impact_to_field_office_operations = fields.Char()
 
     is_additional_funds_requested = fields.Boolean()
@@ -147,7 +153,8 @@ class FieldOfficeDisasterAlert(models.Model):
     reported_loss_of_life_caregivers = fields.Integer()
     reported_loss_of_life_siblings = fields.Integer()
     reported_number_beneficiaries_impacted = fields.Integer()
-    reported_number_of_icps_impacted = fields.Integer()
+    reported_number_of_fcps_impacted = fields.Integer(
+        oldname='reported_number_of_icps_impacted')
     reported_serious_injuries_beneficiaries = fields.Integer()
     reported_serious_injuries_caregivers = fields.Integer()
     reported_serious_injuries_siblings = fields.Integer()
@@ -156,8 +163,9 @@ class FieldOfficeDisasterAlert(models.Model):
     severity_level = fields.Char()
     source_kit_name = fields.Char()
 
-    icp_disaster_impact_ids = fields.One2many(
-        'icp.disaster.impact', 'disaster_id', 'ICP Disaster Impact'
+    fcp_disaster_impact_ids = fields.One2many(
+        'fcp.disaster.impact', 'disaster_id', 'FCP Disaster Impact',
+        oldname='icp_disaster_impact_ids'
     )
     fo_disaster_update_ids = fields.One2many(
         'fo.disaster.update', 'disaster_id', 'Field Office Update'
@@ -258,7 +266,7 @@ class FieldOfficeDisasterAlert(models.Model):
     def view_icp(self):
         return {
             'name': _('Impacted projects'),
-            'domain': [('id', 'in', self.icp_disaster_impact_ids.mapped(
+            'domain': [('id', 'in', self.fcp_disaster_impact_ids.mapped(
                 'project_id').ids)],
             'type': 'ir.actions.act_window',
             'view_type': 'form',

@@ -22,7 +22,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="icp_id" />
+                            <field name="fcp_id" />
                             <field name="suspension" />
                             <field name="last_reviewed_date" />
                             <field name="status_comment" />
@@ -123,7 +123,7 @@
                                     <field name="utility_ids" widget="many2many_tags"/>
                                     <field name="electrical_power"/>
                                 </group>
-                                <group string="ICP Activities">
+                                <group string="FCP Activities">
                                     <field name="spiritual_activity_babies_ids" widget="many2many_tags"/>
                                     <field name="spiritual_activity_kids_ids" widget="many2many_tags"/>
                                     <field name="spiritual_activity_ados_ids" widget="many2many_tags"/>
@@ -199,7 +199,7 @@
         <field name="arch" type="xml">
             <tree string="project">
                 <field name="name" />
-                <field name="icp_id" />
+                <field name="fcp_id" />
                 <field name="last_update_date" />
                 <field name="suspension" />
             </tree>
@@ -212,7 +212,7 @@
         <field name="arch" type="xml">
             <search string="Search project">
                 <field name="name"/>
-                <field name="icp_id"/>
+                <field name="fcp_id"/>
                 <field name="status"/>
                 <field name="last_update_date"/>
                 <filter name="suspended" string="Suspended" domain="[('suspension','=','fund-suspended')]"/>
@@ -237,7 +237,7 @@
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}">
                         <field name="reactivation_date"/>
-                        <field name="icp_improvement_desc"/>
+                        <field name="fcp_improvement_desc"/>
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}"/>
                     <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">

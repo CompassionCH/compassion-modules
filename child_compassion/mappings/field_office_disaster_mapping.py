@@ -12,18 +12,18 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
-class ICPDisasterImpactMapping(OnrampMapping):
+class FCPDisasterImpactMapping(OnrampMapping):
     """
-    ICP Disaster Impact Mapping
+    FCP Disaster Impact Mapping
     """
-    ODOO_MODEL = 'icp.disaster.impact'
+    ODOO_MODEL = 'fcp.disaster.impact'
 
     CONNECT_MAPPING = {
-        'Disaster_ImpactOnICPProgram': 'impact_on_icp_program',
+        'Disaster_ImpactOnICPProgram': 'impact_on_fcp_program',
         'ICPDisasterImpact_DisasterImpactDescription':
             'disaster_impact_description',
         'ICPDisasterImpact_ICPInfrastructureDisasterImpact': 'infrastructure',
-        'ICP_ID': ('project_id.icp_id', 'compassion.project'),
+        'ICP_ID': ('project_id.fcp_id', 'compassion.project'),
         # Not used in Odoo (related fields)
         'ICP_Name': None,
         'Disaster_Name': None,
@@ -108,11 +108,11 @@ class FieldOfficeDisasterMapping(OnrampMapping):
         'Disaster_ID': 'disaster_id',
         'ImpactDescription': 'impact_description',
         'ImpactOnICPInfrastructureDamaged':
-            'impact_on_icp_infrastructure_damaged',
+            'impact_on_fcp_infrastructure_damaged',
         'ImpactOnICPInfrastructureDestroyed':
-            'impact_on_icp_infrastructure_destroyed',
+            'impact_on_fcp_infrastructure_destroyed',
         'ImpactOnICPProgramTemporarilyClosed':
-            'impact_on_icp_program_temporarily_closed',
+            'impact_on_fcp_program_temporarily_closed',
         'ImpactToFieldOfficeOperations': 'impact_to_field_office_operations',
         'IsAdditionalFundsRequested': 'is_additional_funds_requested',
         'IsCommunicationSensitive': 'is_communication_sensitive',
@@ -126,7 +126,7 @@ class FieldOfficeDisasterMapping(OnrampMapping):
         'ReportedLossOfLifeSiblings': 'reported_loss_of_life_siblings',
         'ReportedNumberBeneficiariesImpacted':
             'reported_number_beneficiaries_impacted',
-        'ReportedNumberOfICPsImpacted': 'reported_number_of_icps_impacted',
+        'ReportedNumberOfICPsImpacted': 'reported_number_of_fcps_impacted',
         'ReportedSeriousInjuriesBeneficaries':
             'reported_serious_injuries_beneficiaries',
         'ReportedSeriousInjuriesCaregivers':
@@ -137,8 +137,8 @@ class FieldOfficeDisasterMapping(OnrampMapping):
         'SeverityLevel': 'severity_level',
         'FieldOffice_Name': ('field_office_id.name',
                              'compassion.field.office'),
-        'ICPDisasterImpacts': ('icp_disaster_impact_ids',
-                               'icp.disaster.impact'),
+        'ICPDisasterImpacts': ('fcp_disaster_impact_ids',
+                               'fcp.disaster.impact'),
         'SourceKitName': 'source_kit_name',
     }
 
@@ -155,11 +155,11 @@ class FieldOfficeDisasterMapping(OnrampMapping):
                            odoo_data['child_disaster_impact_ids']]
             odoo_data['child_disaster_impact_ids'] = impact_list
 
-        if 'icp_disaster_impact_ids' in odoo_data:
-            disaster.icp_disaster_impact_ids.unlink()
+        if 'fcp_disaster_impact_ids' in odoo_data:
+            disaster.fcp_disaster_impact_ids.unlink()
             impact_list = [(0, 0, impact) for impact in
-                           odoo_data['icp_disaster_impact_ids']]
-            odoo_data['icp_disaster_impact_ids'] = impact_list
+                           odoo_data['fcp_disaster_impact_ids']]
+            odoo_data['fcp_disaster_impact_ids'] = impact_list
 
         if 'fo_disaster_update_ids' in odoo_data:
             update_list = list()

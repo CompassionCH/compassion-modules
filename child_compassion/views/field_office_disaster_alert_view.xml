@@ -78,10 +78,10 @@
                             <page string="Impact">
                                 <group>
                                     <group colspan="2">
-                                        <field name="icp_disaster_impact_ids">
+                                        <field name="fcp_disaster_impact_ids">
                                             <tree>
                                                 <field name="project_id"/>
-                                                <field name="impact_on_icp_program"/>
+                                                <field name="impact_on_fcp_program"/>
                                                 <field name="infrastructure"/>
                                                 <field name="state"/>
                                             </tree>
@@ -99,11 +99,11 @@
                                     </group>
                                     <group>
                                         <field name="impact_description"/>
-                                        <field name="impact_on_icp_infrastructure_damaged"/>
-                                        <field name="impact_on_icp_infrastructure_destroyed"/>
+                                        <field name="impact_on_fcp_infrastructure_damaged"/>
+                                        <field name="impact_on_fcp_infrastructure_destroyed"/>
                                     </group>
                                     <group>
-                                        <field name="impact_on_icp_program_temporarily_closed"/>
+                                        <field name="impact_on_fcp_program_temporarily_closed"/>
                                         <field name="impact_to_field_office_operations"/>
                                     </group>
                                 </group>
@@ -117,7 +117,7 @@
                                         <field name="reported_number_beneficiaries_impacted"/>
                                     </group>
                                     <group>
-                                        <field name="reported_number_of_icps_impacted"/>
+                                        <field name="reported_number_of_fcps_impacted"/>
                                         <field name="reported_serious_injuries_beneficiaries"/>
                                         <field name="reported_serious_injuries_caregivers"/>
                                         <field name="reported_serious_injuries_siblings"/>

@@ -51,7 +51,7 @@ class ProjectCompassion(models.Model):
         contracts = self.env['recurring.contract']
         for project in self:
             contracts |= self.env['recurring.contract'].search([
-                ('child_code', 'like', project.icp_id),
+                ('child_code', 'like', project.fcp_id),
                 ('state', 'in', ('active', 'waiting', 'mandate'))])
         res = res and contracts.suspend_contract()
 
@@ -67,19 +67,19 @@ class ProjectCompassion(models.Model):
         contracts = self.env['recurring.contract']
         for project in self:
             contracts |= self.env['recurring.contract'].search([
-                ('child_code', 'like', project.icp_id),
+                ('child_code', 'like', project.fcp_id),
                 ('state', 'in', ('active', 'waiting', 'mandate'))])
         contracts.reactivate_contract()
         return res
 
     def hold_gifts_action(self):
         contracts = self.env['recurring.contract'].search([
-            ('child_code', 'like', self.icp_id),
+            ('child_code', 'like', self.fcp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
         contracts.hold_gifts()
 
     def reactivate_gifts(self):
         contracts = self.env['recurring.contract'].search([
-            ('child_code', 'like', self.icp_id),
+            ('child_code', 'like', self.fcp_id),
             ('state', 'in', ('active', 'waiting', 'mandate'))])
         contracts.reactivate_gifts()

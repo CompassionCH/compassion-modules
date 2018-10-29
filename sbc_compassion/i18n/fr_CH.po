@@ -1652,7 +1652,7 @@ msgstr "Envoyé par courrier"
 #. module: sbc_compassion
 #: code:addons/sbc_compassion/models/correspondence.py:178
 #, python-format
-msgid "Sent to ICP"
+msgid "Sent to FCP"
 msgstr "Envoyée au Centre d'Accueil"
 
 #. module: sbc_compassion

@@ -75,7 +75,7 @@ class GenericIntervention(models.AbstractModel):
     @api.model
     def get_fields(self):
         return [
-            'name', 'intervention_id', 'field_office_id', 'icp_ids',
+            'name', 'intervention_id', 'field_office_id', 'fcp_ids',
             'description', 'additional_marketing_information', 'category_id',
             'subcategory_id', 'funding_status', 'is_fo_priority',
             'proposed_start_date', 'start_no_later_than', 'estimated_costs',
@@ -95,9 +95,9 @@ class GenericIntervention(models.AbstractModel):
             if vals.get(field):
                 vals[field] = vals[field][0]
 
-        icp_ids = vals.get('icp_ids')
-        if icp_ids:
-            vals['icp_ids'] = [(6, 0, icp_ids)]
+        fcp_ids = vals.get('fcp_ids')
+        if fcp_ids:
+            vals['fcp_ids'] = [(6, 0, fcp_ids)]
 
         del vals['id']
         return vals
@@ -119,9 +119,9 @@ class GlobalIntervention(models.TransientModel):
     holding_partner_id = fields.Many2one(
         'compassion.global.partner', 'Major holding partner', readonly=True)
     can_be_funded = fields.Boolean(compute='_compute_can_be_funded')
-    icp_ids = fields.Many2many(
-        'compassion.project', 'icp_global_interventions', 'intervention_id',
-        'icp_id', string='ICPs', readonly=True
+    fcp_ids = fields.Many2many(
+        'compassion.project', 'fcp_global_interventions', 'intervention_id',
+        'fcp_id', string='FCPs', readonly=True
     )
 
     @api.multi

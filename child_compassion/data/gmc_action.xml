@@ -48,7 +48,7 @@
             <field name="model">compassion.project</field>
             <field name="connect_answer_wrapper">ICPResponseList</field>
             <field name="description">This will update the project</field>
-            <field name="connect_service">churchpartners/${object.icp_id}/kits/icpkit</field>
+            <field name="connect_service">churchpartners/${object.fcp_id}/kits/icpkit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>

@@ -11,12 +11,12 @@
 from odoo import api, models, fields
 
 
-class ICP(models.Model):
+class FCP(models.Model):
     _inherit = 'compassion.project'
 
     intervention_ids = fields.Many2many(
-        'compassion.intervention', 'icp_interventions',
-        'icp_id', 'intervention_id', 'Interventions'
+        'compassion.intervention', 'fcp_interventions',
+        'fcp_id', 'intervention_id', 'Interventions'
     )
     nb_interventions = fields.Integer(compute='_compute_nb_interventions')
 
