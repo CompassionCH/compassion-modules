@@ -161,8 +161,8 @@ class GlobalChildSearch(models.TransientModel):
         self.ensure_one()
         # Remove previous search results
         self.global_child_ids.unlink()
-        # When searching for specifics, we don't want to skip children
-        self.skip = 0
+        # Skip value must be set before the search (with_context)
+        self.skip = self.skip_value | 0
         if not self.advanced_criteria_used:
             self._call_search_service(
                 'profile_search', 'beneficiaries/availabilitysearch',
