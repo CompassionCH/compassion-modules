@@ -94,6 +94,8 @@ class GlobalChildSearch(models.TransientModel):
     skip = fields.Integer(size=4, default=50000)
     take = fields.Integer(default=80, size=4)
 
+    skip_value = fields.Integer()
+
     # Returned children
     nb_found = fields.Integer('Number of matching children', readonly=True)
     nb_selected = fields.Integer(
@@ -162,7 +164,7 @@ class GlobalChildSearch(models.TransientModel):
         # Remove previous search results
         self.global_child_ids.unlink()
         # Skip value must be set before the search (with_context)
-        self.skip = self.skip_value | 0
+        self.skip = self.env.context.get('skip_value', 0)
         if not self.advanced_criteria_used:
             self._call_search_service(
                 'profile_search', 'beneficiaries/availabilitysearch',
