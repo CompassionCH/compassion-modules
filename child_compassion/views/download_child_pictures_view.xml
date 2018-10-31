@@ -1,0 +1,36 @@
+<odoo>
+    <record id="children_pictures_download_wizard_form" model="ir.ui.view">
+        <field name="name">children.pictures.download.wizard.form</field>
+        <field name="model">child.pictures.download.wizard</field>
+        <field name="preview"/>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <p>You can download an archive file from here.</p>
+                    <group>
+                        <field name="fname" invisible="1"/>
+                        <field name="type"/>
+                    </group>
+                    <group>
+                        <field name="height" />
+                        <field name="width" />
+                        <field name="preview" widget='image' />
+                    </group>
+                    <group>
+                        <field name="download_data" filename="fname"/>
+                        <field name="information" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="get_pictures" string="Make Zip" type="object" class="oe_highlight"/>
+                    <button name="close" special="cancel" string="Close"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_download_child_pictures"
+                name="Download child pictures"
+                res_model="child.pictures.download.wizard" src_model="res.partner"
+                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+</odoo>
