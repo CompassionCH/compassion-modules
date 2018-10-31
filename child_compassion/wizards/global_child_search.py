@@ -94,8 +94,6 @@ class GlobalChildSearch(models.TransientModel):
     skip = fields.Integer(size=4, default=50000)
     take = fields.Integer(default=80, size=4)
 
-    skip_value = fields.Integer()
-
     # Returned children
     nb_found = fields.Integer('Number of matching children', readonly=True)
     nb_selected = fields.Integer(
