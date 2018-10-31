@@ -109,8 +109,13 @@ class WeeklyDemand(models.Model):
                 resupply += event.number_allocate_children - \
                     event.planned_sponsorships
 
+            if resupply < 0:
+                if week.average_unsponsored_web >= abs(resupply):
+                    week.average_unsponsored_web += abs(resupply)
+            else:
+                week.resupply_events = resupply
+
             week.number_children_events = allocate
-            week.resupply_events = resupply
 
     @api.multi
     def _inverse_fields(self):
