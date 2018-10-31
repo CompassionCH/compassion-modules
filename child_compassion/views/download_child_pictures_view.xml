@@ -1,6 +1,6 @@
 <odoo>
-    <record id="children_pictures_download_wizard_form" model="ir.ui.view">
-        <field name="name">children.pictures.download.wizard.form</field>
+    <record id="child_pictures_download_wizard_form" model="ir.ui.view">
+        <field name="name">child.pictures.download.wizard.form</field>
         <field name="model">child.pictures.download.wizard</field>
         <field name="preview"/>
         <field name="arch" type="xml">
@@ -33,4 +33,5 @@
                 name="Download child pictures"
                 res_model="child.pictures.download.wizard" src_model="res.partner"
                 view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+
 </odoo>
