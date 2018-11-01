@@ -105,8 +105,7 @@ class Correspondence(models.Model):
     original_language_id = fields.Many2one(
         'res.lang.compassion', 'Original language')
     translation_language_id = fields.Many2one(
-        'res.lang.compassion', 'Translation language',
-        oldname='destination_language_id')
+        'res.lang.compassion', 'Translation language')
     original_text = fields.Text(
         compute='_compute_original_text',
         inverse='_inverse_original')
@@ -143,11 +142,14 @@ class Correspondence(models.Model):
     import_id = fields.Many2one('import.letters.history')
     translator = fields.Char()
     translator_id = fields.Many2one(
-        'res.partner', 'GP Translator', compute='_compute_translator',
+        'res.partner', 'Local translator', compute='_compute_translator',
         inverse='_inverse_set_translator', store=True)
     email = fields.Char(related='partner_id.email')
+    translate_date = fields.Datetime()
     sponsorship_state = fields.Selection(
-        related='sponsorship_id.state', string='Sponsorship state')
+        related='sponsorship_id.state', string='Sponsorship state',
+        readonly=True
+    )
     is_final_letter = fields.Boolean(compute='_compute_is_final_letter')
     generator_id = fields.Many2one('correspondence.s2b.generator')
 
@@ -457,6 +459,8 @@ class Correspondence(models.Model):
         """ Keep track of state changes. """
         if 'state' in vals:
             vals['status_date'] = fields.Datetime.now()
+        if 'translator_id' in vals:
+            vals['translate_date'] = fields.Datetime.now()
         return super(Correspondence, self).write(vals)
 
     @api.multi
