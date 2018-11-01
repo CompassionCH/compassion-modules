@@ -88,6 +88,11 @@
             <field name="code_iso">ben</field>
         </record>
 
+        <record id="lang_compassion_bangali" model="res.lang.compassion">
+            <field name="name">Bengali</field>
+            <field name="code_iso">ben</field>
+        </record>
+
         <record id="lang_compassion_visayan" model="res.lang.compassion">
             <field name="name">Cebuano (Visayan)</field>
             <field name="code_iso">vis</field>
@@ -141,6 +146,11 @@
         <record id="lang_compassion_oromiffa" model="res.lang.compassion">
             <field name="name">Oromiffa</field>
             <field name="code_iso">oro</field>
+        </record>
+
+        <record id="lang_compassion_oromo" model="res.lang.compassion">
+            <field name="name">Oromo</field>
+            <field name="code_iso">orm</field>
         </record>
 
         <record id="lang_compassion_quechi" model="res.lang.compassion">
