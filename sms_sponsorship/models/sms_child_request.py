@@ -121,11 +121,13 @@ class SmsChildRequest(models.Model):
             # Try to find a matching partner given phone number
             phone = vals.get('sender')
             partner_obj = self.env['res.partner']
-            partner = partner_obj.search([('mobile', 'like', phone)]) or \
-                partner_obj.search([('phone', 'like', phone)])
+            partner = partner_obj.search(['|', ('mobile', 'like', phone),
+                                          ('phone', 'like', phone),
+                                          ('active', 'in', [True, False])])
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
                 vals['lang_code'] = partner.lang
+                vals['active'] = True
         request = super(SmsChildRequest, self).create(vals)
         base_url = self.env['ir.config_parameter'].get_param(
             'web.external.url') + '/'
