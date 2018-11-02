@@ -96,27 +96,27 @@ msgid "Age"
 msgstr "Age"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_contests
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_contests
 msgid "Age graded contests"
 msgstr "Wettbewerbe nach Altersgruppen"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_health_education
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_education
 msgid "Age graded health education"
 msgstr "Altersspezifische Gesundheitskunde"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_remedial
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_remedial
 msgid "Age graded remedial classes"
 msgstr "Nachhilfeunterricht nach Altersgruppen"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_retreats
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_retreats
 msgid "Age graded retreats"
 msgstr "Freizeiten nach Altersgruppen"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_workshops
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_workshops
 msgid "Age graded workshops"
 msgstr "Schulungen nach Altersgruppen"
 
@@ -170,7 +170,7 @@ msgid "Animal care"
 msgstr "Versorgt Nutztiere"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_herding
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_herding
 msgid "Animal herding"
 msgstr "Viehhaltung"
 
@@ -201,8 +201,8 @@ msgid "Apr"
 msgstr "Apr"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:122
-#: code:addons/child_compassion/models/icp_property.py:134
+#: code:addons/child_compassion/models/fcp_property.py:122
+#: code:addons/child_compassion/models/fcp_property.py:134
 #, python-format
 msgid "April"
 msgstr "April"
@@ -218,7 +218,7 @@ msgid "Art"
 msgstr "Kunst"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_art
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_art
 msgid "Art and music"
 msgstr "Kunst und Musik"
 
@@ -243,7 +243,7 @@ msgid "Asthma"
 msgstr "Asthma"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_athletics
+#: model:fcp.physical.activity,value:child_compassion.physical_act_athletics
 msgid "Athletics"
 msgstr "Leichtathletik"
 
@@ -253,8 +253,8 @@ msgid "Aug"
 msgstr "Aug"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:126
-#: code:addons/child_compassion/models/icp_property.py:138
+#: code:addons/child_compassion/models/fcp_property.py:126
+#: code:addons/child_compassion/models/fcp_property.py:138
 #, python-format
 msgid "August"
 msgstr "August"
@@ -316,7 +316,7 @@ msgid "Bahasa Indonesia"
 msgstr "Bahasa Indonesia"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_bananas
+#: model:fcp.diet,value:child_compassion.icp_diet_bananas
 msgid "Bananas"
 msgstr "Bananen"
 
@@ -326,7 +326,7 @@ msgid "Bangla (Bengali)"
 msgstr "Bengalisch"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_barley
+#: model:fcp.diet,value:child_compassion.icp_diet_barley
 msgid "Barley"
 msgstr "Gerste"
 
@@ -336,7 +336,7 @@ msgid "Baseball"
 msgstr "Baseball"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_basic
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_basic
 msgid "Basic life-skill training"
 msgstr "Lebenspraktischer Unterricht"
 
@@ -346,12 +346,12 @@ msgid "Basketball"
 msgstr "Basketball"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_beans
+#: model:fcp.diet,value:child_compassion.icp_diet_beans
 msgid "Beans"
 msgstr "Bohnen"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_beef
+#: model:fcp.diet,value:child_compassion.icp_diet_beef
 msgid "Beef"
 msgstr "Rindfleisch"
 
@@ -409,27 +409,27 @@ msgid "Bible class"
 msgstr "Bibelunterricht"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_bible_drama
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_drama
 msgid "Bible dramas / acting"
 msgstr "Bibeltheater/-schauspiel"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_bible_drills
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_drills
 msgid "Bible drills"
 msgstr "Bibelkunde"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_bible_memory
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_memory
 msgid "Bible memory verse club"
 msgstr "Bibelvers-Club"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_bible_stories
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_stories
 msgid "Bible stories"
 msgstr "Bibelgeschichten"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_bible_study
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_study
 msgid "Bible study"
 msgstr "Bibelstudium"
 
@@ -481,7 +481,7 @@ msgid "Boys"
 msgstr "Jungen"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_bread
+#: model:fcp.diet,value:child_compassion.icp_diet_bread
 msgid "Bread"
 msgstr "Brot"
 
@@ -511,7 +511,7 @@ msgid "CSP kids count"
 msgstr "CSP kids count"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_cabbage
+#: model:fcp.diet,value:child_compassion.icp_diet_cabbage
 msgid "Cabbage"
 msgstr "Kohl"
 
@@ -526,7 +526,7 @@ msgid "Campaign event identifier"
 msgstr "Campaign event identifier"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_camps
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_camps
 msgid "Camps"
 msgstr "Freizeitlager"
 
@@ -553,12 +553,12 @@ msgid "Cannot find enough availalbe children in all countries. Try with less"
 msgstr "Cannot find enough availalbe children in all countries. Try with less"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_career
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_career
 msgid "Career guidance"
 msgstr "Hilfe bei Berufsfindung"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_bonding
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_bonding
 msgid "Caregiver bonding with child"
 msgstr "Eltern-Kind-Beziehung fördern"
 
@@ -578,7 +578,7 @@ msgid "Carrying water"
 msgstr "Holt Wasser"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_cassava
+#: model:fcp.diet,value:child_compassion.icp_diet_cassava
 msgid "Cassava"
 msgstr "Maniok"
 
@@ -603,7 +603,7 @@ msgid "Center based"
 msgstr "Center based"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_cereal
+#: model:fcp.diet,value:child_compassion.icp_diet_cereal
 msgid "Cereal"
 msgstr "Getreide"
 
@@ -629,7 +629,7 @@ msgid "Chf income"
 msgstr "Chf income"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_chickens
+#: model:fcp.diet,value:child_compassion.icp_diet_chickens
 msgid "Chickens"
 msgstr "Huhn"
 
@@ -762,12 +762,12 @@ msgid "Children"
 msgstr "Children"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_reconciliation
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_reconciliation
 msgid "Children and caregiver reconciliation"
 msgstr "Versöhnung Kind-Eltern/Bezugspersonen"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_child_conference
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_child_conference
 msgid "Children conferences"
 msgstr "Kinderkonferenzen"
 
@@ -984,7 +984,7 @@ msgid "Community population"
 msgstr "Community population"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_community
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_community
 msgid "Community service"
 msgstr "Community service"
 
@@ -1014,7 +1014,7 @@ msgid "Completion date change reason"
 msgstr "Completion date change reason"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_computer
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_computer
 msgid "Computer classes"
 msgstr "Computerklassen"
 
@@ -1088,7 +1088,7 @@ msgid "Cosmetology"
 msgstr "Kosmetik"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_counseling_hiv
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_counseling_hiv
 msgid "Counseling and testing for hiv / aids"
 msgstr "Beratung und Testung zu HIV/Aids"
 
@@ -1123,7 +1123,7 @@ msgid "Counts how many time the no money hold was extended."
 msgstr ""
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_cowpeas
+#: model:fcp.diet,value:child_compassion.icp_diet_cowpeas
 msgid "Cowpeas"
 msgstr "Augenbohnen"
 
@@ -1157,18 +1157,18 @@ msgstr "Augenbohnen"
 #: field:compassion.reservation,create_uid:0 field:connect.month,create_uid:0
 #: field:fo.disaster.alert,create_uid:0 field:fo.disaster.loss,create_uid:0
 #: field:fo.disaster.update,create_uid:0 field:fo.high.risk,create_uid:0
-#: field:icp.church.facility,create_uid:0
-#: field:icp.church.ministry,create_uid:0
-#: field:icp.church.utility,create_uid:0
-#: field:icp.cognitive.activity,create_uid:0
-#: field:icp.community.occupation,create_uid:0 field:icp.diet,create_uid:0
-#: field:icp.disaster.impact,create_uid:0 field:icp.involvement,create_uid:0
-#: field:icp.lifecycle.reason,create_uid:0
-#: field:icp.mobile.device,create_uid:0
-#: field:icp.physical.activity,create_uid:0 field:icp.program,create_uid:0
-#: field:icp.property,create_uid:0 field:icp.school.cost,create_uid:0
-#: field:icp.sociological.activity,create_uid:0
-#: field:icp.spiritual.activity,create_uid:0 field:migration.r4,create_uid:0
+#: field:fcp.church.facility,create_uid:0
+#: field:fcp.church.ministry,create_uid:0
+#: field:fcp.church.utility,create_uid:0
+#: field:fcp.cognitive.activity,create_uid:0
+#: field:fcp.community.occupation,create_uid:0 field:fcp.diet,create_uid:0
+#: field:fcp.disaster.impact,create_uid:0 field:fcp.involvement,create_uid:0
+#: field:fcp.lifecycle.reason,create_uid:0
+#: field:fcp.mobile.device,create_uid:0
+#: field:fcp.physical.activity,create_uid:0 field:fcp.program,create_uid:0
+#: field:fcp.property,create_uid:0 field:fcp.school.cost,create_uid:0
+#: field:fcp.sociological.activity,create_uid:0
+#: field:fcp.spiritual.activity,create_uid:0 field:migration.r4,create_uid:0
 #: field:staff.notification.settings,create_uid:0
 msgid "Created by"
 msgstr "Created by"
@@ -1212,26 +1212,26 @@ msgstr "Created holds"
 #: field:connect.month,create_date:0 field:fo.disaster.alert,create_date:0
 #: field:fo.disaster.loss,create_date:0
 #: field:fo.disaster.update,create_date:0 field:fo.high.risk,create_date:0
-#: field:icp.church.facility,create_date:0
-#: field:icp.church.ministry,create_date:0
-#: field:icp.church.utility,create_date:0
-#: field:icp.cognitive.activity,create_date:0
-#: field:icp.community.occupation,create_date:0 field:icp.diet,create_date:0
-#: field:icp.disaster.impact,create_date:0
-#: field:icp.involvement,create_date:0
-#: field:icp.lifecycle.reason,create_date:0
-#: field:icp.mobile.device,create_date:0
-#: field:icp.physical.activity,create_date:0 field:icp.program,create_date:0
-#: field:icp.property,create_date:0 field:icp.school.cost,create_date:0
-#: field:icp.sociological.activity,create_date:0
-#: field:icp.spiritual.activity,create_date:0
+#: field:fcp.church.facility,create_date:0
+#: field:fcp.church.ministry,create_date:0
+#: field:fcp.church.utility,create_date:0
+#: field:fcp.cognitive.activity,create_date:0
+#: field:fcp.community.occupation,create_date:0 field:fcp.diet,create_date:0
+#: field:fcp.disaster.impact,create_date:0
+#: field:fcp.involvement,create_date:0
+#: field:fcp.lifecycle.reason,create_date:0
+#: field:fcp.mobile.device,create_date:0
+#: field:fcp.physical.activity,create_date:0 field:fcp.program,create_date:0
+#: field:fcp.property,create_date:0 field:fcp.school.cost,create_date:0
+#: field:fcp.sociological.activity,create_date:0
+#: field:fcp.spiritual.activity,create_date:0
 #: field:migration.r4,create_date:0
 #: field:staff.notification.settings,create_date:0
 msgid "Created on"
 msgstr "Created on"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_creativity
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_creativity
 msgid "Creativity club"
 msgstr "Künstlerisches Gestalten"
 
@@ -1241,7 +1241,7 @@ msgid "Criminology"
 msgstr "Kriminalistik"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_birthday
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_birthday
 msgid "Cultural and birthday celebrations"
 msgstr "Kulturelle und Geburtstagsfeiern"
 
@@ -1293,7 +1293,7 @@ msgid "Date of the last message posted on the record."
 msgstr "Date of the last message posted on the record."
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_day_labor
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_day_labor
 msgid "Day labor"
 msgstr "Tagelöhner"
 
@@ -1308,7 +1308,7 @@ msgid "Death intervention information"
 msgstr "Death intervention information"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_debate
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_debate
 msgid "Debate clubs"
 msgstr "Diskussionsgruppen"
 
@@ -1318,8 +1318,8 @@ msgid "Dec"
 msgstr "Dec"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:130
-#: code:addons/child_compassion/models/icp_property.py:142
+#: code:addons/child_compassion/models/fcp_property.py:130
+#: code:addons/child_compassion/models/fcp_property.py:142
 #, python-format
 msgid "December"
 msgstr "Dezember"
@@ -1441,7 +1441,7 @@ msgstr "Behinderung Rückgrat"
 #. module: child_compassion
 #: field:child.disaster.impact,disaster_id:0
 #: field:fo.disaster.update,disaster_id:0
-#: field:icp.disaster.impact,disaster_id:0
+#: field:fcp.disaster.impact,disaster_id:0
 #: field:staff.notification.settings,disaster_notify_ids:0
 msgid "Disaster Alert"
 msgstr "Disaster Alert"
@@ -1469,7 +1469,7 @@ msgid "Disaster id"
 msgstr "Disaster id"
 
 #. module: child_compassion
-#: field:icp.disaster.impact,disaster_impact_description:0
+#: field:fcp.disaster.impact,disaster_impact_description:0
 msgid "Disaster impact description"
 msgstr "Disaster impact description"
 
@@ -1479,12 +1479,12 @@ msgid "Disaster type"
 msgstr "Disaster type"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_class
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_class
 msgid "Discipleship classes"
 msgstr "Jüngerschaftsklassen"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_caregiver
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_caregiver
 msgid "Discipleship of caregivers"
 msgstr "Jüngerschaft Eltern/Bezugspersonen"
 
@@ -1523,20 +1523,20 @@ msgstr "Jüngerschaft Eltern/Bezugspersonen"
 #: field:connect.month,display_name:0 field:fo.disaster.alert,display_name:0
 #: field:fo.disaster.loss,display_name:0
 #: field:fo.disaster.update,display_name:0 field:fo.high.risk,display_name:0
-#: field:icp.church.facility,display_name:0
-#: field:icp.church.ministry,display_name:0
-#: field:icp.church.utility,display_name:0
-#: field:icp.cognitive.activity,display_name:0
-#: field:icp.community.occupation,display_name:0
-#: field:icp.diet,display_name:0 field:icp.disaster.impact,display_name:0
-#: field:icp.involvement,display_name:0
-#: field:icp.lifecycle.reason,display_name:0
-#: field:icp.mobile.device,display_name:0
-#: field:icp.physical.activity,display_name:0
-#: field:icp.program,display_name:0 field:icp.property,display_name:0
-#: field:icp.school.cost,display_name:0
-#: field:icp.sociological.activity,display_name:0
-#: field:icp.spiritual.activity,display_name:0
+#: field:fcp.church.facility,display_name:0
+#: field:fcp.church.ministry,display_name:0
+#: field:fcp.church.utility,display_name:0
+#: field:fcp.cognitive.activity,display_name:0
+#: field:fcp.community.occupation,display_name:0
+#: field:fcp.diet,display_name:0 field:fcp.disaster.impact,display_name:0
+#: field:fcp.involvement,display_name:0
+#: field:fcp.lifecycle.reason,display_name:0
+#: field:fcp.mobile.device,display_name:0
+#: field:fcp.physical.activity,display_name:0
+#: field:fcp.program,display_name:0 field:fcp.property,display_name:0
+#: field:fcp.school.cost,display_name:0
+#: field:fcp.sociological.activity,display_name:0
+#: field:fcp.spiritual.activity,display_name:0
 #: field:migration.r4,display_name:0
 #: field:staff.notification.settings,display_name:0
 msgid "Display Name"
@@ -1553,7 +1553,7 @@ msgid "Dolls"
 msgstr "Puppen"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_domestic
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_domestic
 msgid "Domestic services"
 msgstr "Haushaltshelfer"
 
@@ -1566,7 +1566,7 @@ msgid "Draft"
 msgstr "Draft"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_drama
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_drama
 msgid "Drama"
 msgstr "Theatergruppe"
 
@@ -1581,12 +1581,12 @@ msgid "E commerce hold duration"
 msgstr "E commerce hold duration"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_mentorship_early
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_mentorship_early
 msgid "Early mentorship programs"
 msgstr "Mentoring für Kinder"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_stimultation_baby
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_stimultation_baby
 msgid "Early stimulation for baby"
 msgstr "Frühstimulierung für Säuglinge"
 
@@ -1617,17 +1617,17 @@ msgid "Education needs"
 msgstr "Education needs"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_educ_assistance
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_educ_assistance
 msgid "Educational assistance"
 msgstr "Schulische Unterstützung "
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_educ_tous
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_educ_tous
 msgid "Educational trips"
 msgstr "Exkursionen/Ausflüge"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_egg
+#: model:fcp.diet,value:child_compassion.icp_diet_egg
 msgid "Egg"
 msgstr "Ei"
 
@@ -1663,7 +1663,7 @@ msgid "English description"
 msgstr "English description"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_enset
+#: model:fcp.diet,value:child_compassion.icp_diet_enset
 msgid "Enset"
 msgstr "Zierbananen"
 
@@ -1723,7 +1723,7 @@ msgid "Estimations"
 msgstr "Estimations"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_evangelism
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_evangelism
 msgid "Evangelism"
 msgstr "Evangelistische Aktionen"
 
@@ -1784,7 +1784,7 @@ msgid "FO high risk"
 msgstr "FO high risk"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_factory
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_factory
 msgid "Factory work"
 msgstr "Fabrikarbeit"
 
@@ -1828,8 +1828,8 @@ msgid "Feb"
 msgstr "Feb"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:120
-#: code:addons/child_compassion/models/icp_property.py:132
+#: code:addons/child_compassion/models/fcp_property.py:120
+#: code:addons/child_compassion/models/fcp_property.py:132
 #, python-format
 msgid "February"
 msgstr "Februar"
@@ -1940,7 +1940,7 @@ msgid "Final letter sent"
 msgstr "Final letter sent"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_motor_play
+#: model:fcp.physical.activity,value:child_compassion.physical_act_motor_play
 msgid "Fine/gross motor play"
 msgstr "Förderspiele Fein-/Grobmotorik"
 
@@ -1957,12 +1957,12 @@ msgid "Firstname"
 msgstr "Vorname"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_fish
+#: model:fcp.diet,value:child_compassion.icp_diet_fish
 msgid "Fish"
 msgstr "Fisch"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_fishing
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_fishing
 msgid "Fishing"
 msgstr "Fischerei"
 
@@ -2018,7 +2018,7 @@ msgid "GP interested with a church engagement"
 msgstr "GP interested with a church engagement"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_gardening
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_gardening
 msgid "Gardening"
 msgstr "Gärtnern"
 
@@ -2101,7 +2101,7 @@ msgid "Global id"
 msgstr "Global id"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_goat
+#: model:fcp.diet,value:child_compassion.icp_diet_goat
 msgid "Goat"
 msgstr "Ziegenfleisch"
 
@@ -2122,7 +2122,7 @@ msgid "Graphic arts"
 msgstr "Grafik"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_greengram
+#: model:fcp.diet,value:child_compassion.icp_diet_greengram
 msgid "Green Gram"
 msgstr "Mungbohne"
 
@@ -2141,27 +2141,27 @@ msgid "Group games"
 msgstr "Gruppenspiele"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_group_play
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_group_play
 msgid "Group play"
 msgstr "Gruppenspiele"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_grow_camps
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_grow_camps
 msgid "Growing up camps"
 msgstr "Freizeiten für Jugendliche"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_growth_monitoring
+#: model:fcp.physical.activity,value:child_compassion.physical_act_growth_monitoring
 msgid "Growth monitoring"
 msgstr "Wachstumskontrolle"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_guidance
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_guidance
 msgid "Guidance and counselling"
 msgstr "Seelsorgerliche Begleitung"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_guineapig
+#: model:fcp.diet,value:child_compassion.icp_diet_guineapig
 msgid "Guinea Pig"
 msgstr "Meerschweinchen"
 
@@ -2198,7 +2198,7 @@ msgid "Health"
 msgstr "Gesundheit"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_health_kits
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_kits
 msgid "Health kits"
 msgstr "Hygienepäckchen"
 
@@ -2208,12 +2208,12 @@ msgid "Health needs"
 msgstr "Health needs"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_health_referral
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_referral
 msgid "Health referral"
 msgstr "Überweisungen"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_health_screening
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_screening
 msgid "Health screening"
 msgstr "Ärztliche Untersuchung"
 
@@ -2405,7 +2405,7 @@ msgid "Hunger months"
 msgstr "Hunger months"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_hygiene_training
+#: model:fcp.physical.activity,value:child_compassion.physical_act_hygiene_training
 msgid "Hygiene training"
 msgstr "Anleitung in Hygiene"
 
@@ -2426,89 +2426,89 @@ msgstr "I want children from all countries"
 
 #. module: child_compassion
 #: view:compassion.project:child_compassion.view_compassion_project_form
-msgid "ICP Activities"
-msgstr "ICP Activities"
+msgid "FCP Activities"
+msgstr "FCP Activities"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_icp_church_facility
-msgid "ICP Church facility"
-msgstr "ICP Church facility"
+msgid "FCP Church facility"
+msgstr "FCP Church facility"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_icp_church_ministry
-msgid "ICP Church ministry"
-msgstr "ICP Church ministry"
+msgid "FCP Church ministry"
+msgstr "FCP Church ministry"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_icp_church_utility
-msgid "ICP Church utility"
-msgstr "ICP Church utility"
+msgid "FCP Church utility"
+msgstr "FCP Church utility"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_icp_community_occupation
-msgid "ICP Community occupation"
-msgstr "ICP Community occupation"
+msgid "FCP Community occupation"
+msgstr "FCP Community occupation"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_diet
-msgid "ICP Diet"
-msgstr "ICP Diet"
+#: model:ir.model,name:child_compassion.model_fcp_diet
+msgid "FCP Diet"
+msgstr "FCP Diet"
 
 #. module: child_compassion
-#: field:fo.disaster.alert,icp_disaster_impact_ids:0
-#: model:ir.model,name:child_compassion.model_icp_disaster_impact
-msgid "ICP Disaster Impact"
-msgstr "ICP Disaster Impact"
+#: field:fo.disaster.alert,fcp_disaster_impact_ids:0
+#: model:ir.model,name:child_compassion.model_fcp_disaster_impact
+msgid "FCP Disaster Impact"
+msgstr "FCP Disaster Impact"
 
 #. module: child_compassion
-#: field:compassion.project,icp_disaster_impact_ids:0
-msgid "ICP Disaster Impacts"
-msgstr "ICP Disaster Impacts"
+#: field:compassion.project,fcp_disaster_impact_ids:0
+msgid "FCP Disaster Impacts"
+msgstr "FCP Disaster Impacts"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_involvement
-msgid "ICP Involvement"
-msgstr "ICP Involvement"
+#: model:ir.model,name:child_compassion.model_fcp_involvement
+msgid "FCP Involvement"
+msgstr "FCP Involvement"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_lifecycle_reason
-msgid "ICP Lifecycle Reason"
+#: model:ir.model,name:child_compassion.model_fcp_lifecycle_reason
+msgid "FCP Lifecycle Reason"
 msgstr ""
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_program
-msgid "ICP Program"
-msgstr "ICP Program"
+#: model:ir.model,name:child_compassion.model_fcp_program
+msgid "FCP Program"
+msgstr "FCP Program"
 
 #. module: child_compassion
 #: model:ir.model,name:child_compassion.model_icp_school_cost
-msgid "ICP School costs"
-msgstr "ICP School costs"
+msgid "FCP School costs"
+msgstr "FCP School costs"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_cognitive_activity
-msgid "ICP cognitive activity"
-msgstr "ICP cognitive activity"
+#: model:ir.model,name:child_compassion.model_fcp_cognitive_activity
+msgid "FCP cognitive activity"
+msgstr "FCP cognitive activity"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_mobile_device
-msgid "ICP mobile device"
-msgstr "ICP mobile device"
+#: model:ir.model,name:child_compassion.model_fcp_mobile_device
+msgid "FCP mobile device"
+msgstr "FCP mobile device"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_physical_activity
-msgid "ICP physical activity"
-msgstr "ICP physical activity"
+#: model:ir.model,name:child_compassion.model_fcp_physical_activity
+msgid "FCP physical activity"
+msgstr "FCP physical activity"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_sociological_activity
-msgid "ICP sociological activity"
-msgstr "ICP sociological activity"
+#: model:ir.model,name:child_compassion.model_fcp_sociological_activity
+msgid "FCP sociological activity"
+msgstr "FCP sociological activity"
 
 #. module: child_compassion
-#: model:ir.model,name:child_compassion.model_icp_spiritual_activity
-msgid "ICP spiritual activity"
-msgstr "ICP spiritual activity"
+#: model:ir.model,name:child_compassion.model_fcp_spiritual_activity
+msgid "FCP spiritual activity"
+msgstr "FCP spiritual activity"
 
 #. module: child_compassion
 #: field:availability.management.settings,id:0
@@ -2531,32 +2531,32 @@ msgstr "ICP spiritual activity"
 #: field:compassion.reservation,id:0 field:connect.month,id:0
 #: field:fo.disaster.alert,id:0 field:fo.disaster.loss,id:0
 #: field:fo.disaster.update,id:0 field:fo.high.risk,id:0
-#: field:icp.church.facility,id:0 field:icp.church.ministry,id:0
-#: field:icp.church.utility,id:0 field:icp.cognitive.activity,id:0
-#: field:icp.community.occupation,id:0 field:icp.diet,id:0
-#: field:icp.disaster.impact,id:0 field:icp.involvement,id:0
-#: field:icp.lifecycle.reason,id:0 field:icp.mobile.device,id:0
-#: field:icp.physical.activity,id:0 field:icp.program,id:0
-#: field:icp.property,id:0 field:icp.school.cost,id:0
-#: field:icp.sociological.activity,id:0 field:icp.spiritual.activity,id:0
+#: field:fcp.church.facility,id:0 field:fcp.church.ministry,id:0
+#: field:fcp.church.utility,id:0 field:fcp.cognitive.activity,id:0
+#: field:fcp.community.occupation,id:0 field:fcp.diet,id:0
+#: field:fcp.disaster.impact,id:0 field:fcp.involvement,id:0
+#: field:fcp.lifecycle.reason,id:0 field:fcp.mobile.device,id:0
+#: field:fcp.physical.activity,id:0 field:fcp.program,id:0
+#: field:fcp.property,id:0 field:fcp.school.cost,id:0
+#: field:fcp.sociological.activity,id:0 field:fcp.spiritual.activity,id:0
 #: field:migration.r4,id:0 field:staff.notification.settings,id:0
 msgid "ID"
 msgstr "ID"
 
 #. module: child_compassion
-#: field:compassion.project,icp_id:0
-msgid "Icp id"
-msgstr "Icp id"
+#: field:compassion.project,fcp_id:0
+msgid "FCP id"
+msgstr "FCP id"
 
 #. module: child_compassion
-#: field:compassion.project.ile,icp_improvement_desc:0
-msgid "Icp improvement desc"
-msgstr "Icp improvement desc"
+#: field:compassion.project.ile,fcp_improvement_desc:0
+msgid "FCP improvement desc"
+msgstr "FCP improvement desc"
 
 #. module: child_compassion
-#: field:compassion.childpool.search,icp_name:0
-msgid "Icp name"
-msgstr "Icp name"
+#: field:compassion.childpool.search,fcp_name:0
+msgid "FCP name"
+msgstr "FCP name"
 
 #. module: child_compassion
 #: help:compassion.child,message_unread:0
@@ -2576,7 +2576,7 @@ msgid "Image url"
 msgstr "Image url"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_immunization
+#: model:fcp.physical.activity,value:child_compassion.physical_act_immunization
 msgid "Immunization"
 msgstr "Immunisierung"
 
@@ -2591,24 +2591,24 @@ msgid "Impact description"
 msgstr "Impact description"
 
 #. module: child_compassion
-#: field:fo.disaster.alert,impact_on_icp_infrastructure_damaged:0
-msgid "Impact on icp infrastructure damaged"
-msgstr "Impact on icp infrastructure damaged"
+#: field:fo.disaster.alert,impact_on_fcp_infrastructure_damaged:0
+msgid "Impact on FCP infrastructure damaged"
+msgstr "Impact on FCP infrastructure damaged"
 
 #. module: child_compassion
-#: field:fo.disaster.alert,impact_on_icp_infrastructure_destroyed:0
-msgid "Impact on icp infrastructure destroyed"
-msgstr "Impact on icp infrastructure destroyed"
+#: field:fo.disaster.alert,impact_on_fcp_infrastructure_destroyed:0
+msgid "Impact on FCP infrastructure destroyed"
+msgstr "Impact on FCP infrastructure destroyed"
 
 #. module: child_compassion
-#: field:icp.disaster.impact,impact_on_icp_program:0
-msgid "Impact on icp program"
-msgstr "Impact on icp program"
+#: field:fcp.disaster.impact,impact_on_fcp_program:0
+msgid "Impact on FCP program"
+msgstr "Impact on FCP program"
 
 #. module: child_compassion
-#: field:fo.disaster.alert,impact_on_icp_program_temporarily_closed:0
-msgid "Impact on icp program temporarily closed"
-msgstr "Impact on icp program temporarily closed"
+#: field:fo.disaster.alert,impact_on_fcp_program_temporarily_closed:0
+msgid "Impact on FCP program temporarily closed"
+msgstr "Impact on FCP program temporarily closed"
 
 #. module: child_compassion
 #: field:fo.disaster.alert,impact_to_field_office_operations:0
@@ -2689,18 +2689,18 @@ msgid "Indonesian"
 msgstr "Indonesisch"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_indoor_outdoor_games
-#: model:icp.sociological.activity,value:child_compassion.socio_act_indoor_outdoor
+#: model:fcp.physical.activity,value:child_compassion.physical_act_indoor_outdoor_games
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_indoor_outdoor
 msgid "Indoor and outdoor games"
 msgstr "Spiele drinnen und draußen  "
 
 #. module: child_compassion
-#: field:icp.disaster.impact,infrastructure:0
+#: field:fcp.disaster.impact,infrastructure:0
 msgid "Infrastructure"
 msgstr "Infrastructure"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_injera
+#: model:fcp.diet,value:child_compassion.icp_diet_injera
 msgid "Injera"
 msgstr "Injera (äthiop. Fladenbrot)"
 
@@ -2710,7 +2710,7 @@ msgid "International affiliation"
 msgstr "International affiliation"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_internships
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_internships
 msgid "Internships"
 msgstr "Berufspraktika"
 
@@ -2814,8 +2814,8 @@ msgid "Jan"
 msgstr "Jan"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:119
-#: code:addons/child_compassion/models/icp_property.py:131
+#: code:addons/child_compassion/models/fcp_property.py:119
+#: code:addons/child_compassion/models/fcp_property.py:131
 #, python-format
 msgid "January"
 msgstr "Januar"
@@ -2826,8 +2826,8 @@ msgid "Jul"
 msgstr "Jul"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:125
-#: code:addons/child_compassion/models/icp_property.py:137
+#: code:addons/child_compassion/models/fcp_property.py:125
+#: code:addons/child_compassion/models/fcp_property.py:137
 #, python-format
 msgid "July"
 msgstr "Juli"
@@ -2848,8 +2848,8 @@ msgid "Jun"
 msgstr "Jun"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:124
-#: code:addons/child_compassion/models/icp_property.py:136
+#: code:addons/child_compassion/models/fcp_property.py:124
+#: code:addons/child_compassion/models/fcp_property.py:136
 #, python-format
 msgid "June"
 msgstr "Juni"
@@ -2880,7 +2880,7 @@ msgid "Kitchen help"
 msgstr "Hilft in Küche"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_kocho
+#: model:fcp.diet,value:child_compassion.icp_diet_kocho
 msgid "Kocho"
 msgstr "Kocho (äthiop. Fladenbrot)"
 
@@ -2942,20 +2942,20 @@ msgstr "Last Message Date"
 #: field:fo.disaster.loss,__last_update:0
 #: field:fo.disaster.update,__last_update:0
 #: field:fo.high.risk,__last_update:0
-#: field:icp.church.facility,__last_update:0
-#: field:icp.church.ministry,__last_update:0
-#: field:icp.church.utility,__last_update:0
-#: field:icp.cognitive.activity,__last_update:0
-#: field:icp.community.occupation,__last_update:0
-#: field:icp.diet,__last_update:0 field:icp.disaster.impact,__last_update:0
-#: field:icp.involvement,__last_update:0
-#: field:icp.lifecycle.reason,__last_update:0
-#: field:icp.mobile.device,__last_update:0
-#: field:icp.physical.activity,__last_update:0
-#: field:icp.program,__last_update:0 field:icp.property,__last_update:0
-#: field:icp.school.cost,__last_update:0
-#: field:icp.sociological.activity,__last_update:0
-#: field:icp.spiritual.activity,__last_update:0
+#: field:fcp.church.facility,__last_update:0
+#: field:fcp.church.ministry,__last_update:0
+#: field:fcp.church.utility,__last_update:0
+#: field:fcp.cognitive.activity,__last_update:0
+#: field:fcp.community.occupation,__last_update:0
+#: field:fcp.diet,__last_update:0 field:fcp.disaster.impact,__last_update:0
+#: field:fcp.involvement,__last_update:0
+#: field:fcp.lifecycle.reason,__last_update:0
+#: field:fcp.mobile.device,__last_update:0
+#: field:fcp.physical.activity,__last_update:0
+#: field:fcp.program,__last_update:0 field:fcp.property,__last_update:0
+#: field:fcp.school.cost,__last_update:0
+#: field:fcp.sociological.activity,__last_update:0
+#: field:fcp.spiritual.activity,__last_update:0
 #: field:migration.r4,__last_update:0
 #: field:staff.notification.settings,__last_update:0
 msgid "Last Modified on"
@@ -2994,16 +2994,16 @@ msgstr "Last Update"
 #: field:compassion.reservation,write_uid:0 field:connect.month,write_uid:0
 #: field:fo.disaster.alert,write_uid:0 field:fo.disaster.loss,write_uid:0
 #: field:fo.disaster.update,write_uid:0 field:fo.high.risk,write_uid:0
-#: field:icp.church.facility,write_uid:0
-#: field:icp.church.ministry,write_uid:0 field:icp.church.utility,write_uid:0
-#: field:icp.cognitive.activity,write_uid:0
-#: field:icp.community.occupation,write_uid:0 field:icp.diet,write_uid:0
-#: field:icp.disaster.impact,write_uid:0 field:icp.involvement,write_uid:0
-#: field:icp.lifecycle.reason,write_uid:0 field:icp.mobile.device,write_uid:0
-#: field:icp.physical.activity,write_uid:0 field:icp.program,write_uid:0
-#: field:icp.property,write_uid:0 field:icp.school.cost,write_uid:0
-#: field:icp.sociological.activity,write_uid:0
-#: field:icp.spiritual.activity,write_uid:0 field:migration.r4,write_uid:0
+#: field:fcp.church.facility,write_uid:0
+#: field:fcp.church.ministry,write_uid:0 field:fcp.church.utility,write_uid:0
+#: field:fcp.cognitive.activity,write_uid:0
+#: field:fcp.community.occupation,write_uid:0 field:fcp.diet,write_uid:0
+#: field:fcp.disaster.impact,write_uid:0 field:fcp.involvement,write_uid:0
+#: field:fcp.lifecycle.reason,write_uid:0 field:fcp.mobile.device,write_uid:0
+#: field:fcp.physical.activity,write_uid:0 field:fcp.program,write_uid:0
+#: field:fcp.property,write_uid:0 field:fcp.school.cost,write_uid:0
+#: field:fcp.sociological.activity,write_uid:0
+#: field:fcp.spiritual.activity,write_uid:0 field:migration.r4,write_uid:0
 #: field:staff.notification.settings,write_uid:0
 msgid "Last Updated by"
 msgstr "Last Updated by"
@@ -3038,18 +3038,18 @@ msgstr "Last Updated by"
 #: field:compassion.reservation,write_date:0 field:connect.month,write_date:0
 #: field:fo.disaster.alert,write_date:0 field:fo.disaster.loss,write_date:0
 #: field:fo.disaster.update,write_date:0 field:fo.high.risk,write_date:0
-#: field:icp.church.facility,write_date:0
-#: field:icp.church.ministry,write_date:0
-#: field:icp.church.utility,write_date:0
-#: field:icp.cognitive.activity,write_date:0
-#: field:icp.community.occupation,write_date:0 field:icp.diet,write_date:0
-#: field:icp.disaster.impact,write_date:0 field:icp.involvement,write_date:0
-#: field:icp.lifecycle.reason,write_date:0
-#: field:icp.mobile.device,write_date:0
-#: field:icp.physical.activity,write_date:0 field:icp.program,write_date:0
-#: field:icp.property,write_date:0 field:icp.school.cost,write_date:0
-#: field:icp.sociological.activity,write_date:0
-#: field:icp.spiritual.activity,write_date:0 field:migration.r4,write_date:0
+#: field:fcp.church.facility,write_date:0
+#: field:fcp.church.ministry,write_date:0
+#: field:fcp.church.utility,write_date:0
+#: field:fcp.cognitive.activity,write_date:0
+#: field:fcp.community.occupation,write_date:0 field:fcp.diet,write_date:0
+#: field:fcp.disaster.impact,write_date:0 field:fcp.involvement,write_date:0
+#: field:fcp.lifecycle.reason,write_date:0
+#: field:fcp.mobile.device,write_date:0
+#: field:fcp.physical.activity,write_date:0 field:fcp.program,write_date:0
+#: field:fcp.property,write_date:0 field:fcp.school.cost,write_date:0
+#: field:fcp.sociological.activity,write_date:0
+#: field:fcp.spiritual.activity,write_date:0 field:migration.r4,write_date:0
 #: field:staff.notification.settings,write_date:0
 msgid "Last Updated on"
 msgstr "Last Updated on"
@@ -3087,17 +3087,17 @@ msgid "Law"
 msgstr "Jura"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_leaders
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_leaders
 msgid "Leaders trainings days"
 msgstr "Leiterschaftsschulungen"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_leadership
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_leadership
 msgid "Leadership training"
 msgstr "Leiterschaftsschulungen"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_lentils
+#: model:fcp.diet,value:child_compassion.icp_diet_lentils
 msgid "Lentils"
 msgstr "Linsen"
 
@@ -3128,7 +3128,7 @@ msgid "Listening to stories"
 msgstr "Geschichten hören"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_livelihood
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_livelihood
 msgid "Livelihood skills development"
 msgstr "Lebenspraktischer Unterricht"
 
@@ -3166,7 +3166,7 @@ msgid "Location"
 msgstr "Location"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_maize
+#: model:fcp.diet,value:child_compassion.icp_diet_maize
 msgid "Maize"
 msgstr "Mais"
 
@@ -3243,8 +3243,8 @@ msgid "Marbles"
 msgstr "Murmeln"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:121
-#: code:addons/child_compassion/models/icp_property.py:133
+#: code:addons/child_compassion/models/fcp_property.py:121
+#: code:addons/child_compassion/models/fcp_property.py:133
 #, python-format
 msgid "March"
 msgstr "März"
@@ -3255,7 +3255,7 @@ msgid "Marital status"
 msgstr "Marital status"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_market_trading
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_market_trading
 msgid "Market trading"
 msgstr "Markthändler"
 
@@ -3275,8 +3275,8 @@ msgid "Max age"
 msgstr "Max age"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:123
-#: code:addons/child_compassion/models/icp_property.py:135
+#: code:addons/child_compassion/models/fcp_property.py:123
+#: code:addons/child_compassion/models/fcp_property.py:135
 #: model:connect.month,name:child_compassion.connect_month_may
 #, python-format
 msgid "May"
@@ -3293,12 +3293,12 @@ msgid "Medical / Health services"
 msgstr "Gesundheitswesen"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_medical_camps
+#: model:fcp.physical.activity,value:child_compassion.physical_act_medical_camps
 msgid "Medical camps"
 msgstr "Vorsorge- und GesundheitstageÄrztliche Untersuchungen"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_medical_checkups
+#: model:fcp.physical.activity,value:child_compassion.physical_act_medical_checkups
 msgid "Medical checkups"
 msgstr "Ärztliche Untersuchungen"
 
@@ -3309,7 +3309,7 @@ msgid "Members"
 msgstr "Members"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_mentorship
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_mentorship
 msgid "Mentorship"
 msgstr "Mentoring"
 
@@ -3330,7 +3330,7 @@ msgid "Messages and communication history"
 msgstr "Messages and communication history"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_millet
+#: model:fcp.diet,value:child_compassion.icp_diet_millet
 msgid "Millet"
 msgstr "Hirse"
 
@@ -3378,14 +3378,14 @@ msgid "Mother living with child"
 msgstr "Mutter, die mit Kind lebt"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_multi_sensory_play
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_multi_sensory_play
 msgid "Multi-sensory play"
 msgstr "Multisensorisches Spielen"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_music
 #: model:child.school.subject,value:child_compassion.school_music
-#: model:icp.sociological.activity,value:child_compassion.socio_act_music
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_music
 msgid "Music"
 msgstr "Musik"
 
@@ -3428,14 +3428,14 @@ msgstr "Nahuatl"
 #: field:compassion.project.ile,name:0 field:connect.month,name:0
 #: field:fo.disaster.alert,name:0 field:fo.disaster.loss,name:0
 #: field:fo.disaster.update,name:0 field:fo.high.risk,name:0
-#: field:icp.church.facility,name:0 field:icp.church.ministry,name:0
-#: field:icp.church.utility,name:0 field:icp.cognitive.activity,name:0
-#: field:icp.community.occupation,name:0 field:icp.diet,name:0
-#: field:icp.involvement,name:0 field:icp.lifecycle.reason,name:0
-#: field:icp.mobile.device,name:0 field:icp.physical.activity,name:0
-#: field:icp.program,name:0 field:icp.property,name:0
-#: field:icp.school.cost,name:0 field:icp.sociological.activity,name:0
-#: field:icp.spiritual.activity,name:0
+#: field:fcp.church.facility,name:0 field:fcp.church.ministry,name:0
+#: field:fcp.church.utility,name:0 field:fcp.cognitive.activity,name:0
+#: field:fcp.community.occupation,name:0 field:fcp.diet,name:0
+#: field:fcp.involvement,name:0 field:fcp.lifecycle.reason,name:0
+#: field:fcp.mobile.device,name:0 field:fcp.physical.activity,name:0
+#: field:fcp.program,name:0 field:fcp.property,name:0
+#: field:fcp.school.cost,name:0 field:fcp.sociological.activity,name:0
+#: field:fcp.spiritual.activity,name:0
 msgid "Name"
 msgstr "Name"
 
@@ -3587,8 +3587,8 @@ msgid "Nov"
 msgstr "Nov"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:129
-#: code:addons/child_compassion/models/icp_property.py:141
+#: code:addons/child_compassion/models/fcp_property.py:129
+#: code:addons/child_compassion/models/fcp_property.py:141
 #, python-format
 msgid "November"
 msgstr "November"
@@ -3637,12 +3637,12 @@ msgid "Nursing"
 msgstr "Krankenpflege"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_nutrition_caregivers
+#: model:fcp.physical.activity,value:child_compassion.physical_act_nutrition_caregivers
 msgid "Nutrition education for caregivers"
 msgstr "Ernährungslehre für Eltern"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_nutrition
+#: model:fcp.physical.activity,value:child_compassion.physical_act_nutrition
 msgid "Nutritional lessons"
 msgstr "Ernährungsunterricht"
 
@@ -3652,8 +3652,8 @@ msgid "Oct"
 msgstr "Oct"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:128
-#: code:addons/child_compassion/models/icp_property.py:140
+#: code:addons/child_compassion/models/fcp_property.py:128
+#: code:addons/child_compassion/models/fcp_property.py:140
 #, python-format
 msgid "October"
 msgstr "Oktober"
@@ -3691,7 +3691,7 @@ msgstr "Oromiffa"
 
 #. module: child_compassion
 #: model:child.chronic.illness,value:child_compassion.illness_other
-#: model:icp.diet,value:child_compassion.icp_diet_other
+#: model:fcp.diet,value:child_compassion.icp_diet_other
 msgid "Other"
 msgstr "Other"
 
@@ -3723,7 +3723,7 @@ msgid "Owner"
 msgstr "Owner"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_panel_discussion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_panel_discussion
 msgid "Panel discussion"
 msgstr "Diskussionsrunden"
 
@@ -3743,12 +3743,12 @@ msgid "Partnership start date"
 msgstr "Partnership start date"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_peer_mentorship
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_peer_mentorship
 msgid "Peer coaching"
 msgstr "Mentoring durch Altersgenossen"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_peer_counselling
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_peer_counselling
 msgid "Peer counselling"
 msgstr "Seelsorgerliche Begleitung durch Altersgenossen"
 
@@ -3801,7 +3801,7 @@ msgid "Physical score"
 msgstr "Physical score"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_picnics
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_picnics
 msgid "Picnics"
 msgstr "Ausflüge"
 
@@ -3811,12 +3811,12 @@ msgid "Ping pong"
 msgstr "Tischtennis"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_plantain
+#: model:fcp.diet,value:child_compassion.icp_diet_plantain
 msgid "Plantains"
 msgstr "Kochbananen"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_plantation
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_plantation
 msgid "Plantation work"
 msgstr "Arbeit in Plantagen"
 
@@ -3831,7 +3831,7 @@ msgid "Play house"
 msgstr "Vater-Mutter-Kind spielen"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_instruments
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_instruments
 msgid "Playing instruments"
 msgstr "Unterricht mit Musikinstrumenten"
 
@@ -3852,7 +3852,7 @@ msgid "Population"
 msgstr "Bevölkerung"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_pork
+#: model:fcp.diet,value:child_compassion.icp_diet_pork
 msgid "Pork"
 msgstr "Schweinfleisch"
 
@@ -3867,27 +3867,27 @@ msgid "Portuguese"
 msgstr "Portugiesisch"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_potato
+#: model:fcp.diet,value:child_compassion.icp_diet_potato
 msgid "Potato"
 msgstr "Kartoffeln"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_prayer
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer
 msgid "Prayer"
 msgstr "Gebet"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_prayer_group
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer_group
 msgid "Prayer group"
 msgstr "Gebetsgruppe"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_pre_literacy_games
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_pre_literacy_games
 msgid "Pre-literacy games"
 msgstr "Spiele vorm ersten Lesen und Schreiben "
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_pre_numeracy_games
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_pre_numeracy_games
 msgid "Pre-numeracy games"
 msgstr "Spiele vorm ersten Rechnen "
 
@@ -3959,7 +3959,7 @@ msgid "Priority:"
 msgstr "Priority:"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_prize_giving
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_prize_giving
 msgid "Prize giving days"
 msgstr "Besondere Ehrungstage"
 
@@ -3988,8 +3988,8 @@ msgstr "Programs of interest"
 #: field:compassion.generic.child,project_id:0
 #: field:compassion.global.child,project_id:0
 #: view:compassion.project:child_compassion.view_compassion_project_form
-#: field:compassion.reservation,icp_id:0
-#: field:icp.disaster.impact,project_id:0
+#: field:compassion.reservation,fcp_id:0
+#: field:fcp.disaster.impact,project_id:0
 msgid "Project"
 msgstr "Project"
 
@@ -4065,7 +4065,7 @@ msgid "Projected transition date"
 msgstr "Projected transition date"
 
 #. module: child_compassion
-#: field:compassion.childpool.search,icp_ids:0
+#: field:compassion.childpool.search,fcp_ids:0
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_project
 msgid "Projects"
 msgstr "Projekte"
@@ -4086,12 +4086,12 @@ msgid "Psychology"
 msgstr "Psychologie"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_pulse
+#: model:fcp.diet,value:child_compassion.icp_diet_pulse
 msgid "Pulse"
 msgstr "Hülsenfrüchte"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_puppets
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_puppets
 msgid "Puppet shows"
 msgstr "Anspiele mit Puppen"
 
@@ -4111,7 +4111,7 @@ msgid "Quechua"
 msgstr "Quechua"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_ragi
+#: model:fcp.diet,value:child_compassion.icp_diet_ragi
 msgid "Ragi"
 msgstr "Fingerhirse"
 
@@ -4194,9 +4194,9 @@ msgid "Reported number beneficiaries impacted"
 msgstr "Reported number beneficiaries impacted"
 
 #. module: child_compassion
-#: field:fo.disaster.alert,reported_number_of_icps_impacted:0
-msgid "Reported number of icps impacted"
-msgstr "Reported number of icps impacted"
+#: field:fo.disaster.alert,reported_number_of_fcps_impacted:0
+msgid "Reported number of FCPs impacted"
+msgstr "Reported number of FCPs impacted"
 
 #. module: child_compassion
 #: field:fo.disaster.alert,reported_serious_injuries_beneficiaries:0
@@ -4280,7 +4280,7 @@ msgid "Response description"
 msgstr "Response description"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_retreats
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_retreats
 msgid "Retreats"
 msgstr "Freizeiten"
 
@@ -4290,12 +4290,12 @@ msgid "Return action"
 msgstr "Return action"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_rice
+#: model:fcp.diet,value:child_compassion.icp_diet_rice
 msgid "Rice"
 msgstr "Reis"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_rite_passage
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_rite_passage
 msgid "Rite of passages"
 msgstr "Übergang ins Erwachsenenleben"
 
@@ -4315,12 +4315,12 @@ msgid "Rolling a hoop"
 msgstr "Reifenrollen"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_roti
+#: model:fcp.diet,value:child_compassion.icp_diet_roti
 msgid "Roti"
 msgstr "Fladenbrot"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_boundaries
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_boundaries
 msgid "Routines and boundaries"
 msgstr "Routine und Grenzen"
 
@@ -4335,7 +4335,7 @@ msgid "Running errands"
 msgstr "Macht Besorgungen"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_sago
+#: model:fcp.diet,value:child_compassion.icp_diet_sago
 msgid "Sago"
 msgstr "Sagostärke"
 
@@ -4345,7 +4345,7 @@ msgid "Sales and marketing"
 msgstr "Sales and marketing"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_sanitation
+#: model:fcp.physical.activity,value:child_compassion.physical_act_sanitation
 msgid "Sanitation demonstration units"
 msgstr "Übungsmodelle zu Hygiene "
 
@@ -4367,8 +4367,8 @@ msgstr "School begins in"
 
 #. module: child_compassion
 #: field:compassion.project,school_cost_paid_ids:0
-msgid "School costs paid by ICP"
-msgstr "School costs paid by ICP"
+msgid "School costs paid by FCP"
+msgstr "School costs paid by FCP"
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_description.py:332
@@ -4393,7 +4393,7 @@ msgid "Science"
 msgstr "Naturwissenschaft"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_science_congress
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_science_congress
 msgid "Science congresses"
 msgstr "Wissenschaftskongress"
 
@@ -4467,7 +4467,7 @@ msgid "Selected children"
 msgstr "Selected children"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_self_control
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_self_control
 msgid "Self-control and emotions"
 msgstr "Selbstkontrolle und Emotionen"
 
@@ -4487,14 +4487,14 @@ msgid "Sep"
 msgstr "Sept"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/icp_property.py:127
-#: code:addons/child_compassion/models/icp_property.py:139
+#: code:addons/child_compassion/models/fcp_property.py:127
+#: code:addons/child_compassion/models/fcp_property.py:139
 #, python-format
 msgid "September"
 msgstr "September"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_service
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_service
 msgid "Service opportunities"
 msgstr "Gemeinnützige Aktionen"
 
@@ -4529,13 +4529,13 @@ msgid "Sidamigna"
 msgstr "Sidamigna"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_simsim
+#: model:fcp.diet,value:child_compassion.icp_diet_simsim
 msgid "Simsim"
 msgstr "Sesam"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_singing
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_singing
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_singing
 msgid "Singing"
 msgstr "Singen"
 
@@ -4555,13 +4555,13 @@ msgid "Soccer or football"
 msgstr "Fussball"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_soccer
-#: model:icp.sociological.activity,value:child_compassion.socio_act_games
+#: model:fcp.physical.activity,value:child_compassion.physical_act_soccer
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_games
 msgid "Soccer tournaments"
 msgstr "Fussballturniere"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_social_clubs
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_social_clubs
 msgid "Social clubs"
 msgstr "Kinder-/Jugendclub"
 
@@ -4619,7 +4619,7 @@ msgid "Sometimes employed"
 msgstr "Zeitweise Arbeit"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_sorgham
+#: model:fcp.diet,value:child_compassion.icp_diet_sorgham
 msgid "Sorgham"
 msgstr "Sorghumhirse"
 
@@ -4677,7 +4677,7 @@ msgid "Spiritual activities (6-11)"
 msgstr "Spiritual activities (6-11)"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_conventions
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_conventions
 msgid "Spiritual conventions"
 msgstr "Geistliche Versammlungen/Konferenzen"
 
@@ -4742,7 +4742,7 @@ msgstr "Sponsorship status"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_sports
-#: model:icp.sociological.activity,value:child_compassion.socio_act_sports
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_sports
 msgid "Sports"
 msgstr "Sport"
 
@@ -4761,7 +4761,7 @@ msgstr "Staff number"
 #: view:compassion.child:child_compassion.view_child_compassion_filter
 #: field:compassion.child,state:0 field:compassion.hold,state:0
 #: field:compassion.reservation,state:0 field:fo.disaster.alert,state:0
-#: field:icp.disaster.impact,state:0
+#: field:fcp.disaster.impact,state:0
 msgid "State"
 msgstr "State"
 
@@ -4786,7 +4786,7 @@ msgid "Street"
 msgstr "Street"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_street_vending
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_street_vending
 msgid "Street vending"
 msgstr "Strassenverkäufer"
 
@@ -4796,7 +4796,7 @@ msgid "Sub child hold duration"
 msgstr "Sub child hold duration"
 
 #. module: child_compassion
-#: model:icp.community.occupation,value:child_compassion.icp_occupation_farming
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_farming
 msgid "Subsistence farming"
 msgstr "Kleinbauern"
 
@@ -4812,12 +4812,12 @@ msgstr "Summary"
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_sundayschool
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_sunday_school
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_sunday_school
 msgid "Sunday school"
 msgstr "Sonntagsschule"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_supplement_feeding
+#: model:fcp.physical.activity,value:child_compassion.physical_act_supplement_feeding
 msgid "Supplemental feeding"
 msgstr "Ergänzende Mahlzeiten"
 
@@ -4875,13 +4875,13 @@ msgid "Swahili"
 msgstr "Swahili"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_sweetpotato
+#: model:fcp.diet,value:child_compassion.icp_diet_sweetpotato
 msgid "Sweet Potato"
 msgstr "Süsskartoffeln"
 
 #. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_swimming
-#: model:icp.physical.activity,value:child_compassion.physical_act_swimming
+#: model:fcp.physical.activity,value:child_compassion.physical_act_swimming
 msgid "Swimming"
 msgstr "Schwimmen"
 
@@ -4896,7 +4896,7 @@ msgid "Take"
 msgstr "Take"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_talent_development
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_talent_development
 msgid "Talent development"
 msgstr "Entwicklung der Begabungen"
 
@@ -4906,17 +4906,17 @@ msgid "Teaching others"
 msgstr "Hilft anderen Kindern bei Hausaufgaben"
 
 #. module: child_compassion
-#: model:icp.sociological.activity,value:child_compassion.socio_act_team_building
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_team_building
 msgid "Team building"
 msgstr "Stärkung der Gemeinschaft"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_team_building
+#: model:fcp.physical.activity,value:child_compassion.physical_act_team_building
 msgid "Team building activities"
 msgstr "Gemeinschaftsfördernde Aktionen "
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_teff
+#: model:fcp.diet,value:child_compassion.icp_diet_teff
 msgid "Teff"
 msgstr "Teff (äthiop. Zwerghirse)"
 
@@ -4948,8 +4948,8 @@ msgstr "Thai"
 
 #. module: child_compassion
 #: sql_constraint:compassion.project:0
-msgid "The ICP Id must be unique."
-msgstr "The ICP Id must be unique."
+msgid "The FCP Id must be unique."
+msgstr "The FCP Id must be unique."
 
 #. module: child_compassion
 #: help:compassion.field.office,country_code:0
@@ -5027,7 +5027,7 @@ msgid "Theology"
 msgstr "Theologie"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_therapeutic_feeding
+#: model:fcp.physical.activity,value:child_compassion.physical_act_therapeutic_feeding
 msgid "Therapeutic feeding"
 msgstr "Therapeutische Ernährung"
 
@@ -5077,7 +5077,7 @@ msgid "Toy cars"
 msgstr "Spielzeugautos"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_trade_fairs
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_trade_fairs
 msgid "Trade fairs"
 msgstr "Handelsmessen"
 
@@ -5128,7 +5128,7 @@ msgid "Transportation"
 msgstr "Transportwesen"
 
 #. module: child_compassion
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_tutoring
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_tutoring
 msgid "Tutoring"
 msgstr "Unterricht"
 
@@ -5243,18 +5243,18 @@ msgid "Usd"
 msgstr "Usd"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_ushering
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_ushering
 msgid "Ushering"
 msgstr "Plantzanweiser im Gottesdienst"
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_vacationbibleschool
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_vacation_bible
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_vacation_bible
 msgid "Vacation bible school"
 msgstr "Ferienbibelschule"
 
 #. module: child_compassion
-#: model:icp.physical.activity,value:child_compassion.physical_act_vaccinations
+#: model:fcp.physical.activity,value:child_compassion.physical_act_vaccinations
 msgid "Vaccinations"
 msgstr "Impfungen"
 
@@ -5269,14 +5269,14 @@ msgstr "Validieren"
 #: field:child.physical.disability,value:0
 #: field:child.project.activity,value:0 field:child.property,value:0
 #: field:child.school.subject,value:0 field:fo.high.risk,value:0
-#: field:icp.church.facility,value:0 field:icp.church.ministry,value:0
-#: field:icp.church.utility,value:0 field:icp.cognitive.activity,value:0
-#: field:icp.community.occupation,value:0 field:icp.diet,value:0
-#: field:icp.involvement,value:0 field:icp.lifecycle.reason,value:0
-#: field:icp.mobile.device,value:0 field:icp.physical.activity,value:0
-#: field:icp.program,value:0 field:icp.property,value:0
-#: field:icp.school.cost,value:0 field:icp.sociological.activity,value:0
-#: field:icp.spiritual.activity,value:0
+#: field:fcp.church.facility,value:0 field:fcp.church.ministry,value:0
+#: field:fcp.church.utility,value:0 field:fcp.cognitive.activity,value:0
+#: field:fcp.community.occupation,value:0 field:fcp.diet,value:0
+#: field:fcp.involvement,value:0 field:fcp.lifecycle.reason,value:0
+#: field:fcp.mobile.device,value:0 field:fcp.physical.activity,value:0
+#: field:fcp.program,value:0 field:fcp.property,value:0
+#: field:fcp.school.cost,value:0 field:fcp.sociological.activity,value:0
+#: field:fcp.spiritual.activity,value:0
 msgid "Value"
 msgstr "Wert"
 
@@ -5300,8 +5300,8 @@ msgstr "Sichtbarkeit"
 # ck
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_description.py:345
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_vocational_ex
-#: model:icp.cognitive.activity,value:child_compassion.cognitive_act_vocational_in
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_ex
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_in
 #, python-format
 msgid "Vocational training"
 msgstr "Handwerkliche Ausbildung"
@@ -5376,7 +5376,7 @@ msgid "What to do next?"
 msgstr "Was noch zu machen dann?"
 
 #. module: child_compassion
-#: model:icp.diet,value:child_compassion.icp_diet_wheat
+#: model:fcp.diet,value:child_compassion.icp_diet_wheat
 msgid "Wheat"
 msgstr "Weizen"
 
@@ -5391,7 +5391,7 @@ msgid "Wolaitigna"
 msgstr "Wolaitigna"
 
 #. module: child_compassion
-#: model:icp.spiritual.activity,value:child_compassion.spiritual_act_worship
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_worship
 msgid "Worship team"
 msgstr "Anbetungsgruppe"
 
@@ -5443,7 +5443,7 @@ msgid "aunt"
 msgstr "Tante"
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_books
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_books
 msgid "books"
 msgstr "Bücher"
 
@@ -5456,7 +5456,7 @@ msgstr "Bruder"
 
 # check !
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_protection
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_protection
 msgid "child protection issue"
 msgstr "Kinderschutz Probleme"
 
@@ -5471,8 +5471,8 @@ msgid "date of pictures"
 msgstr "Datum des Fotos"
 
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_disaster1
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_disaster2
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_disaster1
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_disaster2
 msgid "disaster event"
 msgstr "Betroffen von Naturkatastrophe"
 
@@ -5482,7 +5482,7 @@ msgid "disaster prone area"
 msgstr "Region gefährdet durch Naturkatastrophen"
 
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_policy
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_policy
 msgid "does not comply with policies"
 msgstr "hält sich nicht an Richtlinien"
 
@@ -5497,7 +5497,7 @@ msgid "drought"
 msgstr "Dürren"
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_supplies
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_supplies
 msgid "educational supplies"
 msgstr "Schulsachen"
 
@@ -5518,7 +5518,7 @@ msgid "father"
 msgstr "Vater"
 
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_financial
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_financial
 msgid "financial mismanagement"
 msgstr "Finanzielles Missmanagement"
 
@@ -5705,7 +5705,7 @@ msgid "origin of the hold"
 msgstr "origin of the hold"
 
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_other
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_other
 msgid "other"
 msgstr "other"
 
@@ -5767,7 +5767,7 @@ msgid "projects"
 msgstr "Projekte"
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_fees
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_fees
 msgid "school fees"
 msgstr "Schulgebühren"
 
@@ -5806,12 +5806,12 @@ msgid "step mother"
 msgstr "Stiefmutter"
 
 #. module: child_compassion
-#: model:icp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_transition
+#: model:fcp.lifecycle.reason,value:child_compassion.icp_lifecycle_reason_transition
 msgid "sucessful transition"
 msgstr ""
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_tutoring
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_tutoring
 msgid "supplemental tutoring"
 msgstr "Ergänzender Unterricht"
 
@@ -5834,7 +5834,7 @@ msgid "uncle"
 msgstr "Onkel"
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_uniforms
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_uniforms
 msgid "uniforms"
 msgstr "Schuluniformen"
 
@@ -5844,7 +5844,7 @@ msgid "university"
 msgstr "Universität"
 
 #. module: child_compassion
-#: model:icp.school.cost,value:child_compassion.icp_school_cost_vocational
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_vocational
 msgid "vocational training"
 msgstr "Handwerkliche Ausbildung"
 
@@ -5962,7 +5962,7 @@ msgstr "{er} hat verfügbares Programm im Kinderzentrum beendet"
 # ck
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
-msgid "{he} recently exited and attends a new ICP"
+msgid "{he} recently exited and attends a new FCP"
 msgstr "{er} ist vor Kurzem ausgeschieden, aber jetzt in neuem Projekt "
 
 #. module: child_compassion

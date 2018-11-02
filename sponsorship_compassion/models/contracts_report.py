@@ -37,7 +37,7 @@ class PartnerSponsorshipReport(models.Model):
                                       compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer('Number of boys', compute='_compute_boy')
     sr_nb_girl = fields.Integer('Number of girls', compute='_compute_girl')
-    sr_time_icp = fields.Integer('Total hour spent at the ICP',
+    sr_time_fcp = fields.Integer('Total hour spent at the FCP',
                                  compute='_compute_time_scp')
     sr_nb_meal = fields.Integer('Number of meals served',
                                 compute='_compute_meal')
@@ -132,19 +132,19 @@ class PartnerSponsorshipReport(models.Model):
         def get_time_in_scp(sponsorship):
             nb_weeks = sponsorship.contract_duration / 7.
             country = sponsorship.child_id.field_office_id
-            return nb_weeks * country.icp_hours_week
+            return nb_weeks * country.fcp_hours_week
 
         for partner in self:
             total_day = sum(
                 partner.related_sponsorships.mapped(get_time_in_scp))
-            partner.sr_time_icp = total_day
+            partner.sr_time_fcp = total_day
 
     @api.multi
     def _compute_meal(self):
         def get_nb_meal(sponsorship):
             nb_weeks = sponsorship.contract_duration / 7.
             country = sponsorship.child_id.field_office_id
-            return nb_weeks * country.icp_meal_week
+            return nb_weeks * country.fcp_meal_week
 
         for partner in self:
             total_meal = sum(
@@ -157,7 +157,7 @@ class PartnerSponsorshipReport(models.Model):
         def get_nb_check(sponsorship):
             nb_year = sponsorship.contract_duration / 365
             country = sponsorship.child_id.field_office_id
-            return nb_year * country.icp_medical_check
+            return nb_year * country.fcp_medical_check
 
         for partner in self:
             total_check = sum(

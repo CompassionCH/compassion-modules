@@ -45,10 +45,10 @@ class GlobalChildSearch(models.TransientModel):
     birthday_day = fields.Integer(size=2)
     birthday_year = fields.Integer(size=4)
     child_name = fields.Char()
-    icp_ids = fields.Many2many(
+    fcp_ids = fields.Many2many(
         'compassion.project', 'childpool_project_search_rel',
-        string='Projects')
-    icp_name = fields.Char()
+        string='Projects', oldname='icp_ids')
+    fcp_name = fields.Char()
     hiv_affected_area = fields.Boolean()
     is_orphan = fields.Boolean()
     has_special_needs = fields.Boolean()
@@ -161,8 +161,8 @@ class GlobalChildSearch(models.TransientModel):
         self.ensure_one()
         # Remove previous search results
         self.global_child_ids.unlink()
-        # When searching for specifics, we don't want to skip children
-        self.skip = 0
+        # Skip value must be set before the search (with_context)
+        self.skip = self.env.context.get('skip_value', 0)
         if not self.advanced_criteria_used:
             self._call_search_service(
                 'profile_search', 'beneficiaries/availabilitysearch',
@@ -384,13 +384,13 @@ class GlobalChildSearch(models.TransientModel):
             values = ';'.join(self.holding_gp_ids.mapped('country_id.code'))
             new_filters.append(_get_filter(
                 'holding_gp_ids', anyof_id, values))
-        if self.icp_ids:
-            values = ';'.join(self.icp_ids.mapped('icp_id'))
+        if self.fcp_ids:
+            values = ';'.join(self.fcp_ids.mapped('fcp_id'))
             new_filters.append(_get_filter(
-                'icp_ids', anyof_id, values))
-        if self.icp_name:
+                'fcp_ids', anyof_id, values))
+        if self.fcp_name:
             new_filters.append(_get_filter(
-                'icp_name', is_id, self.icp_name))
+                'fcp_name', is_id, self.fcp_name))
         if self.hiv_affected_area:
             new_filters.append(_get_filter(
                 'hiv_affected_area', is_id, "T"))
@@ -477,9 +477,9 @@ class GlobalChildSearch(models.TransientModel):
         if self.field_office_ids and child.project_id.field_office_id not in \
                 self.field_office_ids:
             return False
-        if self.icp_ids and child.project_id not in self.icp_ids:
+        if self.fcp_ids and child.project_id not in self.fcp_ids:
             return False
-        if self.icp_name and self.icp_name not in child.project_id.name:
+        if self.fcp_name and self.fcp_name not in child.project_id.name:
             return False
         if self.child_name and self.child_name not in child.name:
             return False

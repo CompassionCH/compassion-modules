@@ -13,96 +13,96 @@
 from odoo import api, models, fields, _
 
 
-class ICPProperty(models.AbstractModel):
-    """ An ICP property is a class linked to projects to describe
+class FCPProperty(models.AbstractModel):
+    """ An FCP property is a class linked to projects to describe
     the project hobbies/activities/etc... in several languages. """
-    _name = 'icp.property'
+    _name = 'fcp.property'
     _inherit = 'connect.multipicklist'
     res_model = 'compassion.project'
     value = fields.Char(translate=True)
 
 
 class ProjectInvolvement(models.Model):
-    _inherit = 'icp.property'
-    _name = 'icp.involvement'
-    _description = 'ICP Involvement'
+    _inherit = 'fcp.property'
+    _name = 'fcp.involvement'
+    _description = 'FCP Involvement'
     res_field = 'involvement_ids'
 
 
 class ChurchMinistry(models.Model):
-    _name = 'icp.church.ministry'
-    _inherit = 'icp.property'
-    _description = 'ICP Church ministry'
+    _name = 'fcp.church.ministry'
+    _inherit = 'fcp.property'
+    _description = 'FCP Church ministry'
     res_field = 'ministry_ids'
 
 
-class ICPProgram(models.Model):
-    _name = 'icp.program'
-    _inherit = 'icp.property'
-    _description = 'ICP Program'
+class FCPProgram(models.Model):
+    _name = 'fcp.program'
+    _inherit = 'fcp.property'
+    _description = 'FCP Program'
     res_field = 'implemented_program_ids'
 
 
-class ICPChurchFacility(models.Model):
-    _name = 'icp.church.facility'
-    _inherit = 'icp.property'
-    _description = 'ICP Church facility'
+class FCPChurchFacility(models.Model):
+    _name = 'fcp.church.facility'
+    _inherit = 'fcp.property'
+    _description = 'FCP Church facility'
     res_field = 'facility_ids'
 
 
-class ICPMobileDevice(models.Model):
-    _name = 'icp.mobile.device'
-    _inherit = 'icp.property'
-    _description = 'ICP mobile device'
+class FCPMobileDevice(models.Model):
+    _name = 'fcp.mobile.device'
+    _inherit = 'fcp.property'
+    _description = 'FCP mobile device'
     res_field = 'mobile_device_ids'
 
 
-class ICPChurchUtility(models.Model):
-    _name = 'icp.church.utility'
-    _inherit = 'icp.property'
-    _description = 'ICP Church utility'
+class FCPChurchUtility(models.Model):
+    _name = 'fcp.church.utility'
+    _inherit = 'fcp.property'
+    _description = 'FCP Church utility'
     res_field = 'utility_ids'
 
 
-class ICPSpiritualActivity(models.Model):
-    _name = 'icp.spiritual.activity'
-    _inherit = 'icp.property'
-    _description = 'ICP spiritual activity'
+class FCPSpiritualActivity(models.Model):
+    _name = 'fcp.spiritual.activity'
+    _inherit = 'fcp.property'
+    _description = 'FCP spiritual activity'
     _order = 'name'
 
 
-class ICPCognitiveActivity(models.Model):
-    _name = 'icp.cognitive.activity'
-    _inherit = 'icp.property'
-    _description = 'ICP cognitive activity'
+class FCPCognitiveActivity(models.Model):
+    _name = 'fcp.cognitive.activity'
+    _inherit = 'fcp.property'
+    _description = 'FCP cognitive activity'
     _order = 'name'
 
 
-class ICPPhysicalActivity(models.Model):
-    _name = 'icp.physical.activity'
-    _inherit = 'icp.property'
-    _description = 'ICP physical activity'
+class FCPPhysicalActivity(models.Model):
+    _name = 'fcp.physical.activity'
+    _inherit = 'fcp.property'
+    _description = 'FCP physical activity'
     _order = 'name'
 
 
-class ICPSociologicalActivity(models.Model):
-    _name = 'icp.sociological.activity'
-    _inherit = 'icp.property'
-    _description = 'ICP sociological activity'
+class FCPSociologicalActivity(models.Model):
+    _name = 'fcp.sociological.activity'
+    _inherit = 'fcp.property'
+    _description = 'FCP sociological activity'
     _order = 'name'
 
 
-class ICPCommunityOccupation(models.Model):
-    _name = 'icp.community.occupation'
-    _inherit = 'icp.property'
-    _description = 'ICP Community occupation'
+class FCPCommunityOccupation(models.Model):
+    _name = 'fcp.community.occupation'
+    _inherit = 'fcp.property'
+    _description = 'FCP Community occupation'
     res_field = 'primary_adults_occupation_ids'
 
 
-class ICPSchoolCost(models.Model):
-    _name = 'icp.school.cost'
-    _inherit = 'icp.property'
-    _description = 'ICP School costs'
+class FCPSchoolCost(models.Model):
+    _name = 'fcp.school.cost'
+    _inherit = 'fcp.property'
+    _description = 'FCP School costs'
     res_field = 'school_cost_paid_ids'
 
 
@@ -143,24 +143,24 @@ class ConnectMonth(models.Model):
         ]
 
 
-class ICPDiet(models.Model):
-    _name = 'icp.diet'
-    _inherit = 'icp.property'
-    _description = 'ICP Diet'
+class FCPDiet(models.Model):
+    _name = 'fcp.diet'
+    _inherit = 'fcp.property'
+    _description = 'FCP Diet'
     res_field = 'primary_diet_ids'
 
 
-class ICPLifecycleReason(models.Model):
-    _name = 'icp.lifecycle.reason'
-    _inherit = 'icp.property'
-    _description = 'ICP Lifecycle Reason'
+class FCPLifecycleReason(models.Model):
+    _name = 'fcp.lifecycle.reason'
+    _inherit = 'fcp.property'
+    _description = 'FCP Lifecycle Reason'
     res_model = 'compassion.project.ile'
     res_field = 'suspension_reason_ids'
 
 
-class ICPSuspensionExtensionReason(models.Model):
-    _name = 'icp.suspension.extension.reason'
-    _inherit = 'icp.property'
-    _description = 'ICP Suspension Reason'
+class FCPSuspensionExtensionReason(models.Model):
+    _name = 'fcp.suspension.extension.reason'
+    _inherit = 'fcp.property'
+    _description = 'FCP Suspension Reason'
     res_model = 'compassion.project.ile'
     res_field = 'extension_1_reason_ids'

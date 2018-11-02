@@ -30,7 +30,8 @@ class ProjectLifecycle(models.Model):
 
     # Reactivation
     ##############
-    icp_improvement_desc = fields.Text(readonly=True)
+    fcp_improvement_desc = fields.Text(
+        readonly=True, oldname='icp_improvement_desc')
 
     # Suspension
     ############
@@ -38,7 +39,7 @@ class ProjectLifecycle(models.Model):
     suspension_end_date = fields.Date(readonly=True)
     suspension_detail = fields.Char(readonly=True)
     suspension_reason_ids = fields.Many2many(
-        'icp.lifecycle.reason', string='Suspension reason', readonly=True)
+        'fcp.lifecycle.reason', string='Suspension reason', readonly=True)
 
     hold_cdsp_funds = fields.Boolean(readonly=True)
     hold_csp_funds = fields.Boolean(readonly=True)
@@ -52,12 +53,15 @@ class ProjectLifecycle(models.Model):
     extension_1 = fields.Boolean(
         help='Suspension is extended by 30 days', readonly=True)
     extension_1_reason_ids = fields.Many2many(
-        'icp.suspension.extension.reason', readonly=True)
+        'fcp.suspension.extension.reason',
+        relation='compassion_project_ile_sus_extension1_rel',
+        readonly=True)
     extension_2 = fields.Boolean(
         help='Suspension is extended by additional 30 days (60 in total)',
+        relation='compassion_project_ile_sus_extension2_rel',
         readonly=True)
     extension_2_reason_ids = fields.Many2many(
-        'icp.suspension.extension.reason', readonly=True)
+        'fcp.suspension.extension.reason', readonly=True)
 
     # Transition
     ############
@@ -65,11 +69,11 @@ class ProjectLifecycle(models.Model):
     transition_complete = fields.Boolean(readonly=True)
     details = fields.Text(readonly=True)
     transition_reason_ids = fields.Many2many(
-        'icp.lifecycle.reason', string='Transition reason', readonly=True,
+        'fcp.lifecycle.reason', string='Transition reason', readonly=True,
         relation='compassion_project_ile_transition_reason_rel')
     projected_transition_date = fields.Date(readonly=True)
     future_involvement_ids = fields.Many2many(
-        'icp.involvement', string='Future involvement', readonly=True)
+        'fcp.involvement', string='Future involvement', readonly=True)
 
     name = fields.Char(readonly=True, index=True, required=True)
     reactivation_date = fields.Date(readonly=True)
@@ -138,10 +142,10 @@ class ProjectLifecycle(models.Model):
         for single_data in commkit_data.get('ICPLifecycleEventList',
                                             [commkit_data]):
             project = self.env['compassion.project'].search([
-                ('icp_id', '=', single_data['ICP_ID'])
+                ('fcp_id', '=', single_data['ICP_ID'])
             ])
             if not project:
-                project.create({'icp_id': single_data['ICP_ID']})
+                project.create({'fcp_id': single_data['ICP_ID']})
             vals = project_mapping.get_vals_from_connect(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)

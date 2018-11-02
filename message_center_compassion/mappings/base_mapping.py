@@ -167,27 +167,6 @@ class OnrampMapping(object):
         self._process_connect_data(connect_data)
         return connect_data
 
-    def _convert_odoo_data(self, field_name, value, mapping=None):
-        """ Given a field_name and its value, returns a dictionary for Connect
-            {'ConnectFieldName': connect_value}
-
-            :param mapping: dictionary to use for the mapping
-        """
-        res = dict()
-        if mapping is None:
-            mapping = self.CONNECT_MAPPING
-        for connect_name, connect_map in mapping.iteritems():
-            if isinstance(connect_map, collections.Mapping):
-                # Recursively call _convert_odoo_data to build
-                # the structure of connect message
-                section_value = self._convert_odoo_data(
-                    field_name, value, connect_map)
-                if section_value:
-                    res[connect_name] = section_value
-            elif field_name == connect_map:
-                res[connect_name] = value
-        return res
-
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
         """ Converts a received data from Connect to odoo field:value

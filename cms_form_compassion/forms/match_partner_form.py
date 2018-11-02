@@ -106,13 +106,17 @@ if not testing:
 
             partner_obj = self.env['res.partner'].sudo()
             source_vals = self._get_partner_vals(values, extra_values)
+            source_vals['active'] = True
             partner = partner_obj.search([
-                ('email', '=ilike', source_vals['email'])], limit=1)
+                ('email', '=ilike', source_vals['email']),
+                ('active', 'in', [True, False]),
+            ], limit=1)
             if not partner:
                 partner = partner_obj.search([
                     ('lastname', 'ilike', source_vals['lastname']),
                     ('firstname', 'ilike', source_vals['firstname']),
-                    ('zip', '=', source_vals['zip'])], limit=1)
+                    ('zip', '=', source_vals['zip']),
+                    ('active', 'in', [True, False]), ], limit=1)
             if not partner:
                 # no match found -> creating a new one.
                 source_vals['lang'] = self.env.lang

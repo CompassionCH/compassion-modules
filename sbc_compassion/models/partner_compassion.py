@@ -32,6 +32,8 @@ class ResPartner(models.Model):
         compute='_compute_nb_letters',
         groups='child_compassion.group_sponsorship'
     )
+    translated_letter_ids = fields.One2many(
+        'correspondence', 'translator_id', 'Translated letters')
 
     @api.multi
     def _compute_nb_letters(self):

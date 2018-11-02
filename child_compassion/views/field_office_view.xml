@@ -65,15 +65,15 @@
                                 </field>
                             </group>
                         </page>
-                        <page string="ICP">
+                        <page string="FCP">
                             <group>
-                                <field name="icp_hours_week"/>
-                                <field name="icp_meal_week"/>
-                                <field name="icp_medical_check"/>
-                                <field name="icp_ids">
+                                <field name="fcp_hours_week"/>
+                                <field name="fcp_meal_week"/>
+                                <field name="fcp_medical_check"/>
+                                <field name="fcp_ids">
                                     <tree>
                                         <field name="name"/>
-                                        <field name="icp_id"/>
+                                        <field name="fcp_id"/>
                                         <field name="suspension"/>
                                     </tree>
                                 </field>

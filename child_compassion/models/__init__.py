@@ -18,7 +18,7 @@ from . import child_property
 from . import child_assessment
 from . import child_lifecycle_event
 from . import household
-from . import icp_property
+from . import fcp_property
 from . import lang_compassion
 from . import project_lifecycle_event
 from . import project_need
