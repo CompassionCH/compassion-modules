@@ -435,13 +435,6 @@
                name="value"/>
     </record>
 
-    <record id="child_pictures_download_wizard_form" model="ir.ui.view">
-        <field name="name">Download children pictures</field>
-        <field name="res_model">child.pictures.download.wizard</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">form</field>
-    </record>
-
     <menuitem id="menu_sponsorship_children"
               parent="menu_sponsorship_section"
               name="Children"

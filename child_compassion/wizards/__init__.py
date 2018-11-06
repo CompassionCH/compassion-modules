@@ -16,4 +16,3 @@ from . import child_description
 from . import project_description
 from . import staff_notification_settings
 from . import child_reservation_wizard
-from . import download_child_pictures
