@@ -11,8 +11,6 @@
 import logging
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
-from odoo.tools.translate import _
 import pytz
 
 _logger = logging.getLogger(__name__)
@@ -20,16 +18,6 @@ _logger = logging.getLogger(__name__)
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
-
-    @api.constrains('state', 'number_of_days_temp', 'holiday_status_id')
-    def _check_holidays(self):
-        for holiday in self:
-            # Check that it isn't possible to take less than half a day.
-            if holiday.number_of_days_temp % 0.5 != 0:
-                raise ValidationError(_(
-                    "The number of day can't be less than half a day.\n"
-                    "Please verify your leave duration."))
-        super(HrHolidays, self)._check_holidays()
 
     ##########################################################################
     #                               ORM METHODS                              #

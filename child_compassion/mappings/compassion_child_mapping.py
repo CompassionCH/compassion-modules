@@ -65,8 +65,8 @@ class GenericChildMapping(OnrampMapping):
             'holding_global_partner_id.country_id.code',
             'compassion.global.partner'),
         'HouseholdDuty_Name': ('duty_ids.name', 'child.household.duty'),
-        'ICPID': ('project_id.icp_id', 'compassion.project'),
-        'ICP_ID': ('project_id.icp_id', 'compassion.project'),
+        'ICPID': ('project_id.fcp_id', 'compassion.project'),
+        'ICP_ID': ('project_id.fcp_id', 'compassion.project'),
         'IsHivAffectedArea': 'is_area_hiv_affected',
         'IsBirthDateEstimated': 'estimated_birthdate',
         'IsInHIVAffectedArea': 'is_area_hiv_affected',
@@ -148,7 +148,7 @@ class GenericChildMapping(OnrampMapping):
         )
         if connect_name == 'ICP_ID' and not result.get('project_id'):
             project = self.env['compassion.project'].create({
-                'icp_id': value
+                'fcp_id': value
             })
             result['project_id'] = project.id
         return result

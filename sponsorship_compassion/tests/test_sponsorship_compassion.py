@@ -58,7 +58,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             'state': 'N',
             'birthdate': '2010-01-01',
             'project_id': self.env['compassion.project'].create({
-                'icp_id': local_id[:5]
+                'fcp_id': local_id[:5]
             }).id,
             'hold_id': self.env['compassion.hold'].create({
                 'hold_id': self.ref(9),

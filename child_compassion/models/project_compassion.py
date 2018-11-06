@@ -26,8 +26,9 @@ logger = logging.getLogger(__name__)
 class CompassionProject(models.Model):
     """ A compassion project """
     _name = 'compassion.project'
-    _rec_name = 'icp_id'
+    _rec_name = 'fcp_id'
     _inherit = ['mail.thread', 'translatable.model']
+    _description = "Frontline Church Partner"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -35,7 +36,7 @@ class CompassionProject(models.Model):
 
     # General Information
     #####################
-    icp_id = fields.Char(required=True, oldname='code')
+    fcp_id = fields.Char(required=True, oldname='icp_id')
     name = fields.Char(readonly=True)
     child_center_original_name = fields.Char(readonly=True)
     local_church_name = fields.Char(readonly=True)
@@ -43,7 +44,7 @@ class CompassionProject(models.Model):
     website = fields.Char(readonly=True)
     social_media_site = fields.Char(readonly=True)
     involvement_ids = fields.Many2many(
-        'icp.involvement', string='Involvement', readonly=True)
+        'fcp.involvement', string='Involvement', readonly=True)
     available_for_visits = fields.Boolean(readonly=True)
     nb_csp_kids = fields.Integer('CSP kids count', readonly=True)
     nb_cdsp_kids = fields.Integer('CDSP kids count', readonly=True)
@@ -54,8 +55,8 @@ class CompassionProject(models.Model):
         readonly=True)
 
     _sql_constraints = [
-        ('icp_id_uniq', 'unique(icp_id)',
-         'The ICP Id must be unique.'),
+        ('fcp_id_uniq', 'unique(fcp_id)',
+         'The FCP Id must be unique.'),
     ]
 
     # Location information
@@ -79,17 +80,17 @@ class CompassionProject(models.Model):
     church_denomination = fields.Char(readonly=True)
     international_affiliation = fields.Char(readonly=True)
     ministry_ids = fields.Many2many(
-        'icp.church.ministry', string='Church ministries', readonly=True
+        'fcp.church.ministry', string='Church ministries', readonly=True
     )
     preferred_lang_id = fields.Many2one(
         'res.lang.compassion', 'Church preferred language', readonly=True)
     number_church_members = fields.Integer(readonly=True)
     weekly_child_attendance = fields.Integer(readonly=True)
     implemented_program_ids = fields.Many2many(
-        'icp.program', string='Programs implemented', readonly=True
+        'fcp.program', string='Programs implemented', readonly=True
     )
     interested_program_ids = fields.Many2many(
-        'icp.program', string='Programs of interest', readonly=True
+        'fcp.program', string='Programs of interest', readonly=True
     )
 
     # Church infrastructure information
@@ -101,7 +102,7 @@ class CompassionProject(models.Model):
         ('Owned', 'Owned'),
     ], readonly=True)
     facility_ids = fields.Many2many(
-        'icp.church.facility', string='Church facilities', readonly=True
+        'fcp.church.facility', string='Church facilities', readonly=True
     )
     nb_staff_computers = fields.Char(size=2, readonly=True)
     nb_child_computers = fields.Char(size=2, readonly=True)
@@ -109,61 +110,61 @@ class CompassionProject(models.Model):
     nb_latrines = fields.Char(size=2, readonly=True)
     church_internet_access = fields.Char(readonly=True)
     mobile_device_ids = fields.Many2many(
-        'icp.mobile.device', string='Mobile devices', readonly=True
+        'fcp.mobile.device', string='Mobile devices', readonly=True
     )
     utility_ids = fields.Many2many(
-        'icp.church.utility', string='Church utilities', readonly=True
+        'fcp.church.utility', string='Church utilities', readonly=True
     )
     electrical_power = fields.Selection('_get_electrical_power', readonly=True)
 
-    # ICP Activities
+    # FCP Activities
     ################
     spiritual_activity_babies_ids = fields.Many2many(
-        'icp.spiritual.activity', 'icp_spiritual_baby_act',
+        'fcp.spiritual.activity', 'fcp_spiritual_baby_act',
         string='Spiritual activities (0-5)', readonly=True
     )
     spiritual_activity_kids_ids = fields.Many2many(
-        'icp.spiritual.activity', 'icp_spiritual_kid_act',
+        'fcp.spiritual.activity', 'fcp_spiritual_kid_act',
         string='Spiritual activities (6-11)', readonly=True
     )
     spiritual_activity_ados_ids = fields.Many2many(
-        'icp.spiritual.activity', 'icp_spiritual_ado_act',
+        'fcp.spiritual.activity', 'fcp_spiritual_ado_act',
         string='Spiritual activities (12+)', readonly=True
     )
     cognitive_activity_babies_ids = fields.Many2many(
-        'icp.cognitive.activity', 'icp_cognitive_baby_act',
+        'fcp.cognitive.activity', 'fcp_cognitive_baby_act',
         string='Cognitive activities (0-5)', readonly=True
     )
     cognitive_activity_kids_ids = fields.Many2many(
-        'icp.cognitive.activity', 'icp_cognitive_kid_act',
+        'fcp.cognitive.activity', 'fcp_cognitive_kid_act',
         string='Cognitive activities (6-11)', readonly=True
     )
     cognitive_activity_ados_ids = fields.Many2many(
-        'icp.cognitive.activity', 'icp_cognitive_ado_act',
+        'fcp.cognitive.activity', 'fcp_cognitive_ado_act',
         string='Cognitive activities (12+)', readonly=True
     )
     physical_activity_babies_ids = fields.Many2many(
-        'icp.physical.activity', 'icp_physical_baby_act',
+        'fcp.physical.activity', 'fcp_physical_baby_act',
         string='Physical activities (0-5)', readonly=True
     )
     physical_activity_kids_ids = fields.Many2many(
-        'icp.physical.activity', 'icp_physical_kid_act',
+        'fcp.physical.activity', 'fcp_physical_kid_act',
         string='Physical activities (6-11)', readonly=True
     )
     physical_activity_ados_ids = fields.Many2many(
-        'icp.physical.activity', 'icp_physical_ado_act',
+        'fcp.physical.activity', 'fcp_physical_ado_act',
         string='Physical activities (12+)', readonly=True
     )
     socio_activity_babies_ids = fields.Many2many(
-        'icp.sociological.activity', 'icp_socio_baby_act',
+        'fcp.sociological.activity', 'fcp_socio_baby_act',
         string='Sociological activities (0-5)', readonly=True
     )
     socio_activity_kids_ids = fields.Many2many(
-        'icp.sociological.activity', 'icp_socio_kid_act',
+        'fcp.sociological.activity', 'fcp_socio_kid_act',
         string='Sociological activities (6-11)', readonly=True
     )
     socio_activity_ados_ids = fields.Many2many(
-        'icp.sociological.activity', 'icp_socio_ado_act',
+        'fcp.sociological.activity', 'fcp_socio_ado_act',
         string='Sociological activities (12+)', readonly=True
     )
     reservation_id = fields.Many2one(
@@ -180,7 +181,7 @@ class CompassionProject(models.Model):
     primary_language_id = fields.Many2one(
         'res.lang.compassion', 'Primary language', readonly=True)
     primary_adults_occupation_ids = fields.Many2many(
-        'icp.community.occupation', string='Primary adults occupation',
+        'fcp.community.occupation', string='Primary adults occupation',
         readonly=True
     )
     local_currency = fields.Many2one('res.currency',
@@ -195,7 +196,7 @@ class CompassionProject(models.Model):
     annual_secondary_school_cost = fields.Float(
         readonly=True, help='In local currency')
     school_cost_paid_ids = fields.Many2many(
-        'icp.school.cost', string='School costs paid by ICP', readonly=True
+        'fcp.school.cost', string='School costs paid by FCP', readonly=True
     )
     school_year_begins = fields.Selection('_get_months', readonly=True)
     closest_city = fields.Char(readonly=True)
@@ -239,9 +240,10 @@ class CompassionProject(models.Model):
     social_needs = fields.Text(readonly=True)
     spiritual_needs = fields.Text(readonly=True)
     primary_diet_ids = fields.Many2many(
-        'icp.diet', string='Primary diet', readonly=True)
-    icp_disaster_impact_ids = fields.One2many(
-        'icp.disaster.impact', 'project_id', 'ICP Disaster Impacts'
+        'fcp.diet', string='Primary diet', readonly=True)
+    fcp_disaster_impact_ids = fields.One2many(
+        'fcp.disaster.impact', 'project_id', 'FCP Disaster Impacts',
+        oldname='icp_disaster_impact_ids'
     )
 
     # Partnership
@@ -293,11 +295,11 @@ class CompassionProject(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('icp_id')
+    @api.depends('fcp_id')
     def _compute_field_office(self):
         fo_obj = self.env['compassion.field.office']
-        for project in self.filtered('icp_id'):
-            fo = fo_obj.search([('field_office_id', '=', project.icp_id[:2])])
+        for project in self.filtered('fcp_id'):
+            fo = fo_obj.search([('field_office_id', '=', project.fcp_id[:2])])
             project.field_office_id = fo.id
 
     @api.model
@@ -420,8 +422,8 @@ class CompassionProject(models.Model):
         projects = self
         for project_data in commkit_data.get('ICPResponseList',
                                              [commkit_data]):
-            icp_id = project_data.get('ICP_ID')
-            project = self.search([('icp_id', '=', icp_id)])
+            fcp_id = project_data.get('ICP_ID')
+            project = self.search([('fcp_id', '=', fcp_id)])
             vals = project_mapping.get_vals_from_connect(project_data)
             if project:
                 projects += project
@@ -456,7 +458,7 @@ class CompassionProject(models.Model):
         lifecylcle_ids = list()
         for project in self:
             result = onramp.send_message(
-                endpoint.format(project.icp_id), 'GET')
+                endpoint.format(project.fcp_id), 'GET')
             if 'ICPLifecycleEventList' in result.get('content', {}):
                 lifecylcle_ids.extend(
                     self.env['compassion.project.ile'].process_commkit(

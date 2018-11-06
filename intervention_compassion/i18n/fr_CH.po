@@ -460,16 +460,16 @@ msgid "Holds the Chatter summary (number of messages, ...). This summary is dire
 msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
 
 #. module: intervention_compassion
-#: field:compassion.generic.intervention,icp_id:0
-#: field:compassion.global.intervention,icp_id:0
-#: field:compassion.intervention,icp_id:0
-msgid "ICP"
-msgstr "ICP"
+#: field:compassion.generic.intervention,fcp_id:0
+#: field:compassion.global.intervention,fcp_id:0
+#: field:compassion.intervention,fcp_id:0
+msgid "FCP"
+msgstr "FCP"
 
 #. module: intervention_compassion
-#: field:compassion.intervention.search,icp_ids:0
-msgid "ICPs"
-msgstr "ICPs"
+#: field:compassion.intervention.search,fcp_ids:0
+msgid "FCPs"
+msgstr "FCPs"
 
 #. module: intervention_compassion
 #: field:compassion.generic.intervention,id:0
