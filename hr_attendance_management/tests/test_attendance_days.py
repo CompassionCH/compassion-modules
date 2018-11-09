@@ -32,7 +32,6 @@ class TestAttendanceDays(SavepointCase):
         cls.michael.calendar_id = cls.env.ref('resource.timesheet_group1')
 
         # Set free break
-        # Todo
         cls.env['ir.config_parameter'].set_param(
             'hr_attendance_management.free_break', '0.25')
         cls.env['ir.config_parameter'].set_param(

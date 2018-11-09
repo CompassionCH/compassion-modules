@@ -17,6 +17,7 @@
                 <field name="worked_hours"
                        widget="float_time"/>
                 <field name="attendance_day_id"/>
+                <field name="working_schedule_id"/>
             </field>
         </field>
     </record>
