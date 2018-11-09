@@ -29,6 +29,11 @@ class HrAttendance(models.Model):
         related='attendance_day_id.has_change_day_request')
     location_id = fields.Many2one('hr.attendance.location', 'Location')
 
+    # Link the resource.calendar to the attendance thus we keep a trace of
+    # due_hours
+    working_schedule_id = fields.Many2one('resource.calendar', readonly=True,
+                                          string='Working schedule')
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -64,8 +69,10 @@ class HrAttendance(models.Model):
         """ If the corresponding attendance day doesn't exist a new one is
         created"""
         new_record = super(HrAttendance, self).create(vals)
-        new_record.attendance_day_id = new_record._find_related_day()
-        new_record.attendance_day_id.compute_breaks()
+        att_day = new_record._find_related_day()
+        new_record.attendance_day_id = att_day
+        new_record.working_schedule_id = att_day.working_schedule_id
+        att_day.compute_breaks()
         return new_record
 
     @api.multi

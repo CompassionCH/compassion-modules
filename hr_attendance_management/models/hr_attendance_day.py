@@ -9,9 +9,13 @@
 #
 ##############################################################################
 
-from datetime import date
+import logging
+
+import pytz
 
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class HrAttendanceDay(models.Model):
@@ -36,15 +40,18 @@ class HrAttendanceDay(models.Model):
         default=lambda self: self.env.user.employee_ids[0].id)
 
     # Working schedule
-    cal_att_ids = fields.Many2many('resource.calendar.attendance',
-                                   string="Working schedule",
-                                   required=True)
+    working_schedule_id = fields.Many2one('resource.calendar', store=True,
+                                          string='Working schedule',
+                                          compute='_compute_working_schedule')
+    cal_att_ids = fields.Many2many('resource.calendar.attendance', store=True,
+                                   compute='_compute_cal_att_ids')
     working_day = fields.Char(compute='_compute_working_day',
                               readonly=True, store=True)
     name = fields.Char(compute='_compute_name', store=True)
 
     # Leaves
-    leave_ids = fields.Many2many('hr.holidays', readonly=True, string='Leaves')
+    leave_ids = fields.Many2many('hr.holidays', string='Leaves')
+    # todo replace by employee_id.is_absent_totay
     in_leave = fields.Boolean('In leave', compute='_compute_in_leave',
                               store=True)
     public_holiday_id = fields.Many2one('hr.holidays.public.line',
@@ -100,6 +107,66 @@ class HrAttendanceDay(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
+    @api.depends('attendance_ids', 'employee_id.contract_id')
+    def _compute_working_schedule(self):
+        for att_day in self:
+            # Find the correspondent resource.calendar
+            # First check if the attendance has already a resource.calendar
+            schedule = att_day.attendance_ids.mapped('working_schedule_id')
+            if schedule:
+                # if there is more than one resource.calendar take one...
+                schedule = schedule[0]
+            else:
+                # look for a valid contract...
+                # todo: check if att_day.employee_id.current_contract is enough
+                contracts = self.env['hr.contract'].search([
+                    ('employee_id', '=', att_day.employee_id.id),
+                    ('date_start', '<=', att_day.date),
+                    '|', ('date_end', '=', False),
+                    ('date_end', '>=', att_day.date)
+                ])
+                # ...or take the resource.calendar of employee
+                schedule = contracts.working_hours or (
+                    att_day.employee_id.calendar_id)
+
+            att_day.working_schedule_id = schedule
+
+    @api.multi
+    @api.depends('working_schedule_id', 'working_schedule_id.attendance_ids')
+    def _compute_cal_att_ids(self):
+        """
+        Find the resource.calendar.attendance matching
+        """
+        for att_day in self:
+            week_day = fields.Date.from_string(att_day.date).weekday()
+
+            # select the calendar attendance(s) that are valid today.
+            current_cal_att = att_day.working_schedule_id.mapped(
+                'attendance_ids').filtered(
+                lambda a: int(a.dayofweek) == week_day)
+
+            # Specific period
+            att_schedule = current_cal_att.filtered(
+                lambda r: r.date_from is not False and
+                r.date_to is not False and
+                r.date_from <= att_day.date <= r.date_to)
+
+            # Period with only date_to or date_from
+            if not att_schedule:
+                att_schedule = current_cal_att.filtered(
+                    lambda r: (r.date_from <= att_day.date and
+                               not r.date_to and r.date_from) or
+                              (r.date_to >= att_day.date and
+                               not r.date_from and r.date_to))
+
+            # Default schedule
+            if not att_schedule:
+                att_schedule = current_cal_att.filtered(
+                    lambda r: not r.date_from and not r.date_to)
+
+            att_day.cal_att_ids = att_schedule
+
+    @api.multi
     def get_related_forced_due_hours(self):
         self.ensure_one()
         return self.env['hr.forced.due.hours'].search([
@@ -133,11 +200,11 @@ class HrAttendanceDay(models.Model):
             att_day.in_leave = att_day.leave_ids or att_day.public_holiday_id
 
     @api.multi
-    @api.depends('cal_att_ids', 'cal_att_ids.due_hours', 'leave_ids.state',
-                 'public_holiday_id')
+    @api.depends('working_schedule_id', 'leave_ids', 'public_holiday_id',
+                 'cal_att_ids.due_hours')
     def _compute_due_hours(self):
         """First search the due hours based on the contract and after remove
-        some hours if they are vacation"""
+        some hours if they are public holiday or vacation"""
         for att_day in self:
 
             # Forced due hours (when an user changes work days)
@@ -145,7 +212,7 @@ class HrAttendanceDay(models.Model):
             if forced_hours:
                 due_hours = forced_hours.forced_due_hours
             else:
-                due_hours = sum(att_day.mapped('cal_att_ids.due_hours'))
+                due_hours = sum(att_day.cal_att_ids.mapped('due_hours'))
 
             # Public holidays
             if att_day.public_holiday_id:
@@ -153,10 +220,7 @@ class HrAttendanceDay(models.Model):
                 continue
 
             # Leaves
-            for leave in att_day.leave_ids.filtered(
-                    lambda l: l.state == 'validate' and not
-                    l.holiday_status_id.keep_due_hours):
-                due_hours -= leave.compute_leave_time(att_day.date)
+            due_hours -= att_day.get_leave_time()
 
             if due_hours < 0:
                 due_hours = 0
@@ -363,8 +427,6 @@ class HrAttendanceDay(models.Model):
 
         att_date = fields.Date.from_string(rd.date)
 
-        # link to schedule (resource.calendar.attendance)
-        rd.update_calendar_attendance()
         # link to leaves (hr.holidays )
         date_str = fields.Date.to_string(att_date)
         rd.leave_ids = self.env['hr.holidays'].search([
@@ -402,45 +464,63 @@ class HrAttendanceDay(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
-    def update_calendar_attendance(self):
+    def get_leave_time(self):
         """
-        Find matching calendar attendance given the work schedule of the
-        employee.
-        :return: None
+        Compute leave duration for the day.
+        :return: leave duration (in hours)
+        :rtype: float [0:24]
         """
-        for att_day in self:
-            att_date = fields.Date.from_string(att_day.date)
-            week_day = att_date.weekday()
+        total = 0
+        for leave in self.leave_ids:
+            if leave.state != 'validate' or \
+                    leave.holiday_status_id.keep_due_hours:
+                continue
+            else:
+                utc_start = fields.Datetime.from_string(leave.date_from)
+                utc_end = fields.Datetime.from_string(leave.date_to)
 
-            # look for a valid contract or take schedule of employee
-            contracts = self.env['hr.contract'].search([
-                ('employee_id', '=', att_day.employee_id.id),
-                ('date_start', '<=', att_day.date),
-                '|', ('date_end', '=', False), ('date_end', '>=', att_day.date)
-            ])
-            schedules = contracts.mapped('working_hours')
-            if not schedules:
-                schedules = att_day.employee_id.calendar_id
-            cal_att_ids = self.env['resource.calendar.attendance']
+                # Convert UTC in local timezone
+                user_tz = self.employee_id.user_id.tz
 
-            # select the attendance(s) that are valid today.
-            current_cal_att = schedules.mapped('attendance_ids').filtered(
-                lambda a: int(a.dayofweek) == week_day)
+                local = pytz.timezone(user_tz)
+                utc = pytz.timezone('UTC')
 
-            for cal_att_id in current_cal_att:
-                if cal_att_id.date_from:
-                    start = fields.Date.from_string(cal_att_id.date_from)
+                local_start = utc.localize(utc_start).astimezone(local)
+                local_end = utc.localize(utc_end).astimezone(local)
+
+                leave_start_date = local_start.date()
+                leave_end_date = local_end.date()
+
+                date = fields.Date.from_string(self.date)
+
+                full_day = self.due_hours
+
+                if leave_start_date == date == leave_end_date:
+                    total += leave.number_of_days_temp
+                elif leave_start_date < date < leave_end_date:
+                    total += full_day
+
+                elif date == leave_start_date:
+                    start = local_start.hour + local_start.minute / 60.
+                    for att in self.cal_att_ids:
+                        if att.hour_from <= start < att.hour_to:
+                            total += att.hour_to - start
+                        elif start < att.hour_from:
+                            total += att.due_hours
+
+                elif date == leave_end_date:
+                    end = local_end.hour + local_end.minute / 60.
+                    for att in self.cal_att_ids:
+                        if att.hour_from < end < att.hour_to:
+                            total += end - att.hour_from
+                        elif end > att.hour_to:
+                            total += att.due_hours
+
                 else:
-                    start = date.min
-                if cal_att_id.date_to:
-                    end = fields.Date.from_string(cal_att_id.date_to)
-                else:
-                    end = date.max
-                if start <= att_date <= end:
-                    cal_att_ids += cal_att_id
-
-            att_day.cal_att_ids = cal_att_ids
+                    _logger.error(
+                        "This day doesn't correspond to this leave"
+                    )
+        return total
 
     @api.multi
     def compute_breaks(self):
