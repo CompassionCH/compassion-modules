@@ -33,6 +33,8 @@ if not testing:
         acquirer_ids = fields.Many2many(
             'payment.acquirer', string='Payment Method')
         acquirer_id = fields.Many2one('payment.acquirer', 'Selected acquirer')
+        # Used for redirection to payment transaction
+        transaction_id = 0
 
         @property
         def _default_currency_id(self):
@@ -74,45 +76,47 @@ if not testing:
 
         def form_next_url(self, main_object=None):
             # Redirect to payment controller, creating a transaction
-            tx_values = {
-                'acquirer_id': self.acquirer_id.id,
-                'type': 'form',
-                'amount': self.amount,
-                'currency_id': self.currency_id.id,
-                'partner_id': self.partner_id.id,
-                'partner_country_id': self.partner_id.sudo().country_id.id,
-                'reference': 'payment-form',
-            }
-            self._edit_transaction_values(tx_values)
-            transaction_obj = self.env['payment.transaction'].sudo()
-            tx_values['reference'] = transaction_obj.get_next_reference(
-                tx_values['reference'])
-            transaction = transaction_obj.create(tx_values)
             return '/compassion/payment/{}?redirect_url={}&display_type={}'\
-                .format(str(transaction.id), self._payment_accept_redirect,
-                        self._display_type)
-
-        def form_before_create_or_update(self, values, extra_values):
-            super(PaymentForm, self).form_before_create_or_update(
-                values, extra_values)
-            # Extract values from form to fields
-            source_vals = extra_values or values
-            acquirer_id = source_vals.get('acquirer_id')
-            if acquirer_id and not self.acquirer_id:
-                self.acquirer_id = acquirer_id
-            currency_id = source_vals.get('currency_id',
-                                          self.env.ref('base.CHF').id)
-            if currency_id and not self.currency_id:
-                self.currency_id = int(currency_id)
-            amount = source_vals.get('amount')
-            if amount and not self.amount:
-                self.amount = float(amount)
+                .format(str(self.transaction_id),
+                        self._payment_accept_redirect, self._display_type)
 
         def form_after_create_or_update(self, values, extra_values):
             """ Dismiss status message, as the client will be redirected
             to payment."""
+            super(PaymentForm, self).form_after_create_or_update(
+                values, extra_values)
             self.o_request.website.get_status_message()
+            all_vals = self.get_all_vals(values, extra_values)
+            partner = self.env['res.partner'].sudo().browse(
+                all_vals.get('partner_id')).exists()
+            tx_values = {
+                'acquirer_id': all_vals.get('acquirer_id'),
+                'type': 'form',
+                'amount': all_vals.get('amount'),
+                'currency_id': all_vals.get('currency_id'),
+                'partner_id': partner.id,
+                'partner_country_id': partner.country_id.id,
+                'reference': 'payment-form',
+            }
+            self._edit_transaction_values(tx_values, all_vals)
+            transaction_obj = self.env['payment.transaction'].sudo()
+            tx_values['reference'] = transaction_obj.get_next_reference(
+                tx_values['reference'])
+            self.transaction_id = transaction_obj.create(tx_values).id
 
-        def _edit_transaction_values(self, tx_values):
+        def get_all_vals(self, values, extra_values):
+            """
+            Used to find form value that can either be in values or
+            extra_values dictionary.
+            :param values: values dictionary (containing form model fields)
+            :param extra_values: extra_values dictionary
+                                 (containing non-model fields)
+            :return: new dictionary that intersect the two sources
+            """
+            all_vals = values.copy()
+            all_vals.update(extra_values)
+            return all_vals
+
+        def _edit_transaction_values(self, tx_values, form_vals):
             """ Hook to setup custom values for payment. """
             pass

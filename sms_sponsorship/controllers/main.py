@@ -72,6 +72,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             if sms_child_request.partner_id:
                 result['partner'] = partner.read(['firstname', 'lastname',
                                                   'email'])
+                if not result['partner'][0]['email']:
+                    result['partner'][0]['email'] = ''
             return result
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
