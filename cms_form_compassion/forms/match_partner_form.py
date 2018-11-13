@@ -154,6 +154,8 @@ if not testing:
                 values, extra_values)
             partner_id = values.get('partner_id')
             partner_obj = self.env['res.partner'].sudo()
+            partner = partner_obj
+            new_partner = False
             if partner_id:
                 partner = partner_obj.browse(partner_id)
 
@@ -161,25 +163,42 @@ if not testing:
             if not partner:
                 partner = partner_obj.search([
                     ('email', '=ilike', source_vals['email']),
-                    ('active', 'in', [True, False]),
+                    '|', ('active', '=', True), ('active', '=', False),
                 ])
             if not partner:
                 partner = partner_obj.search([
                     ('lastname', 'ilike', source_vals['lastname']),
                     ('firstname', 'ilike', source_vals['firstname']),
                     ('zip', '=', source_vals['zip']),
-                    ('active', 'in', [True, False]), ])
+                    '|', ('active', '=', True), ('active', '=', False),
+                ])
             if not partner or len(partner) > 1:
                 # no match found or not sure which one -> creating a new one.
                 source_vals['lang'] = self.env.lang
                 partner = partner_obj.create(source_vals)
+                new_partner = True
             else:
                 # Write current values in partner without changing name
                 del source_vals['title']
                 del source_vals['lastname']
                 del source_vals['firstname']
-                partner.write(source_vals)
-            values['partner_id'] = partner.id
+            self.after_partner_match(partner, new_partner, source_vals)
+            values['partner_id'] = source_vals['partner_id']
+
+        def after_partner_match(self, partner, new_partner, vals):
+            """
+            Called after partner is matched. Useful for updating partner
+            data
+            :param partner: res.partner record matched
+            :param new_partner: True if a new partner was created
+            :param vals: partner vals extracted from form
+            :return: None
+            """
+            if not new_partner:
+                partner.write(vals)
+            # Push partner_id in values for using it in the rest
+            # of form process
+            vals['partner_id'] = partner.id
 
         #######################################################################
         #                         PRIVATE METHODS                             #
