@@ -12,7 +12,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, models, fields, tools, _
+from odoo import models, fields, tools, _
 
 testing = tools.config.get('test_enable')
 _logger = logging.getLogger(__name__)
