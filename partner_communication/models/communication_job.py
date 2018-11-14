@@ -431,7 +431,7 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def get_objects(self):
-        model = self.mapped('config_id.model')
+        model = list(set(self.mapped('config_id.model')))
         assert len(model) == 1
         object_ids = list()
         object_id_strings = self.mapped('object_ids')
