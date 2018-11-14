@@ -38,4 +38,9 @@
                 name="Download child pictures"
                 res_model="child.pictures.download.wizard" src_model="recurring.contract"
                 view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+
+    <act_window id="action_download_child_pictures_3"
+                name="Download child pictures"
+                res_model="child.pictures.download.wizard" src_model="compassion.child"
+                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
 </odoo>

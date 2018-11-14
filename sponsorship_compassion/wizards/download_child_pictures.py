@@ -210,5 +210,14 @@ class DownloadChildPictures(models.TransientModel):
             contracts = self.env[context].browse(
                 self.env.context['active_ids'])
 
+        elif context == 'compassion.child':
+            childrens = self.env[context].browse(
+                self.env.context['active_ids'])
+            contracts = self.env['recurring.contract'].search([
+                ('child_id', 'in', childrens.ids),
+                ('type', 'in', ['S', 'SC']),
+                ('state', '!=', 'cancelled')
+            ])
+
         children = contracts.mapped('child_id')
         return children

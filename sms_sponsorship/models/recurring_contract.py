@@ -56,9 +56,9 @@ class RecurringContract(models.Model):
                     partner = False
         else:
             if not (partner.firstname == vals['firstname'] and
-                    partner.lastname == vals['lastname'] and
-                    partner.email == vals['email']):
+                    partner.lastname == vals['lastname']):
                     partner = False
+            partner.email = vals['email']
 
         if not partner:
             partner = self.env['res.partner'].create({
