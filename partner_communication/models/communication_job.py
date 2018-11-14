@@ -431,13 +431,13 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def get_objects(self):
-        config = self.mapped('config_id')
-        config.ensure_one()
+        model = self.mapped('config_id.model')
+        assert len(model) == 1
         object_ids = list()
         object_id_strings = self.mapped('object_ids')
         for id_strings in object_id_strings:
             object_ids += map(int, id_strings.split(','))
-        return self.env[config.model].browse(set(object_ids))
+        return self.env[model[0]].browse(set(object_ids))
 
     @api.multi
     def set_attachments(self):
