@@ -262,6 +262,7 @@
                 <field name="sponsor_id"/>
                 <field name="gender"/>
                 <field name="birthdate"/>
+                <field name="birthday_dm"/>
                 <field name="completion_date"/>
                 <field name="hold_channel"/>
                 <field name="hold_type"/>
