@@ -7,6 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import date
 
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
@@ -98,15 +99,16 @@ class TestGifts(BaseSponsorshipTest):
         acc_inv_line = self.env['account.invoice.line'].create({
             'contract_id': sponsorship.id,
             'product_id': product.id,
-            'due_date': '2019-09-09',
             'state': 'draft',
             'price_unit': 50.0,
             'account_id': account.id,
             'name': 'test'
         })
 
+        today = date.today()
         account_invoice = self.env['account.invoice'].create({
             'name': 'test_account_invoice',
+            'date_invoice': '%s-07-01' % str(today.year),
             'type': 'out_invoice',
             'state': 'draft',
             'account_id': account.id,
@@ -136,7 +138,7 @@ class TestGifts(BaseSponsorshipTest):
         self.assertEquals(gift.name, 'Birthday Gift ['
                           + gift.sponsorship_id.name + ']')
         # it's a birthday gift, so due_date is 2 month before the birthday
-        self.assertEquals(gift.gift_date, '2018-11-28')
+        self.assertEquals(gift.gift_date, '%s-11-28' % str(today.year))
         self.assertEquals(gift.amount, 50)
         self.assertEquals(gift.gift_type, 'Beneficiary Gift')
         self.assertEquals(gift.state, 'draft')

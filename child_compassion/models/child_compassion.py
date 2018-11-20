@@ -73,6 +73,8 @@ class CompassionChild(models.Model):
     has_been_sponsored = fields.Boolean()
     exit_reason = fields.Char(compute='_compute_exit_reason')
     non_latin_name = fields.Char()
+    birthday_dm = fields.Char(
+        'Birthday', compute='_compute_birthday_month', store=True)
     birthday_month = fields.Selection(
         '_get_months', compute='_compute_birthday_month', store=True)
 
@@ -281,6 +283,7 @@ class CompassionChild(models.Model):
             for child in self.filtered('birthdate'):
                 birthday = fields.Date.from_string(child.birthdate)
                 child.birthday_month = birthday.strftime('%B')
+                child.birthday_dm = birthday.strftime('%m-%d')
 
     ##########################################################################
     #                              ORM METHODS                               #
