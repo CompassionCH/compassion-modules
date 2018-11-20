@@ -13,6 +13,8 @@ from math import ceil
 
 import sys
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -109,6 +111,9 @@ class GlobalChildSearch(models.TransientModel):
         "Number of restricted children", readonly=True,
         help="These children were removed from the search results because "
              "of a Field Office restriction configuration."
+    )
+    missing_dates = fields.Text(
+        help="All birthdates not found when using 365 search"
     )
 
     ##########################################################################
@@ -276,6 +281,37 @@ class GlobalChildSearch(models.TransientModel):
         # Delete leftover children
         (self.global_child_ids - found_children).unlink()
         return True
+
+    @api.multi
+    def do_365_mix(self):
+        """ Try to find one child per day of the year having his birthdate
+        on that date."""
+        today = date.today()
+        first_day = today.replace(day=1, month=1)
+        last_day = today.replace(day=31, month=12)
+        current_date = first_day
+        # First step as regular search
+        self.write({
+            'birthday_day': 1,
+            'birthday_month': 1,
+            'take': 1,
+            'missing_dates': '',
+            'skip': 0,
+        })
+        self.do_search()
+        while current_date < last_day:
+            # Next steps: add child to the search result
+            current_date += relativedelta(days=1)
+            self.write({
+                'birthday_day': current_date.day,
+                'birthday_month': current_date.month,
+                'skip': 0,
+            })
+            try:
+                self.add_search()
+            except UserError:
+                # No children found on that date: displays it.
+                self.missing_dates += current_date.strftime("%d.%m\n")
 
     @api.multi
     def filter(self):
