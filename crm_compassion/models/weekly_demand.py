@@ -93,6 +93,9 @@ class WeeklyDemand(models.Model):
             if resupply < 0:
                 if week.average_unsponsored_web >= abs(resupply):
                     week.average_unsponsored_web += resupply
+                else:
+                    week.average_unsponsored_web = 0
+                week.resupply_events = 0
             else:
                 week.resupply_events = resupply
 
