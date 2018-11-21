@@ -66,7 +66,7 @@ class WeeklyDemand(models.Model):
     )
     resupply_events = fields.Integer(
         'Events resupply',
-        compute='_compute_demand_events', store=True,
+        compute='_compute_resupply', store=True,
         inverse='_inverse_fields',
     )
     total_resupply = fields.Integer(
@@ -119,23 +119,6 @@ class WeeklyDemand(models.Model):
                     days_in_week = (event_start - week_start).days + 1
                 allocate += float(event.number_allocate_children *
                                   days_in_week) / days_for_allocation
-
-            # Compute resupply
-            events = self.env['crm.event.compassion'].search([
-                ('hold_end_date', '>=', week.week_start_date),
-                ('hold_end_date', '<=', week.week_end_date),
-            ])
-            resupply = 0
-            for event in events:
-                resupply += event.number_allocate_children - \
-                    event.planned_sponsorships
-
-            if resupply < 0:
-                if week.average_unsponsored_web >= abs(resupply):
-                    # should we add abs(value) ?
-                    week.average_unsponsored_web += abs(resupply)
-            else:
-                week.resupply_events = resupply
 
             week.number_children_events = allocate
 
