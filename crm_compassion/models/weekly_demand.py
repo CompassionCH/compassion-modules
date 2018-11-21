@@ -77,6 +77,27 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
+    def _compute_resupply(self):
+        for week in self.filtered('week_start_date').filtered('week_end_date'):
+
+            # Compute resupply
+            events = self.env['crm.event.compassion'].search([
+                ('hold_end_date', '>=', week.week_start_date),
+                ('hold_end_date', '<=', week.week_end_date),
+            ])
+            resupply = 0
+            for event in events:
+                resupply += event.number_allocate_children - \
+                    event.planned_sponsorships
+
+            if resupply < 0:
+                if week.average_unsponsored_web >= abs(resupply):
+                    week.average_unsponsored_web += resupply
+            else:
+                week.resupply_events = resupply
+
+    @api.depends('week_start_date', 'week_end_date')
+    @api.multi
     def _compute_demand_events(self):
         for week in self.filtered('week_start_date').filtered('week_end_date'):
             # Compute demand
