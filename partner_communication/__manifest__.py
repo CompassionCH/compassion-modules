@@ -38,7 +38,7 @@
     'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
                 'compassion_dashboard', 'queue_job', 'utm', 'web_ckeditor4'],
     'external_dependencies': {
-        'python': ['phonenumbers']
+        'python': ['phonenumbers', 'pyPdf']
     },
     'data': [
         'security/ir.model.access.csv',
