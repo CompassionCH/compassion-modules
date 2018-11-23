@@ -5,8 +5,6 @@ import logging
 
 import pytz
 
-import pytz
-
 from odoo import models, fields, api
 
 _logger = logging.getLogger(__name__)
