@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Eicher Stephane <seicher@compassion.ch>
-#    @author: Emanuel Cino <ecino@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
+# Copyright (C) 2018 Compassion CH
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import models, fields, api
 
 
@@ -22,11 +15,12 @@ class HrAttendance(models.Model):
                                         readonly=True)
 
     date = fields.Date('Date', compute='_compute_date', store=True)
-    due_hours = fields.Float(related='attendance_day_id.due_hours')
+    due_hours = fields.Float(related='attendance_day_id.due_hours',
+                             readonly=True)
     total_attendance = fields.Float(
-        related='attendance_day_id.total_attendance')
+        related='attendance_day_id.total_attendance', readonly=True)
     has_change_day_request = fields.Boolean(
-        related='attendance_day_id.has_change_day_request')
+        related='attendance_day_id.has_change_day_request', readonly=True)
     location_id = fields.Many2one('hr.attendance.location', 'Location')
 
     # Link the resource.calendar to the attendance thus we keep a trace of
@@ -59,7 +53,8 @@ class HrAttendance(models.Model):
     @api.depends('check_in')
     def _compute_date(self):
         for attendance in self.filtered('check_in'):
-            attendance.date = attendance.check_in[:10]
+            date = fields.Date.from_string(attendance.check_in)
+            attendance.date = fields.Date.to_string(date)
 
     ##########################################################################
     #                               ORM METHODS                              #
@@ -107,7 +102,7 @@ class HrAttendance(models.Model):
         """
         attendance_days = self.env['hr.attendance.day']
         for attendance in self:
-            date = attendance.check_in[:10]
+            date = fields.Date.from_string(attendance.check_in)
             employee_id = attendance.employee_id.id
             attendance_day = self.env['hr.attendance.day'].search([
                 ('employee_id', '=', employee_id),
@@ -116,7 +111,7 @@ class HrAttendance(models.Model):
             if not attendance_day:
                 attendance_day = self.env['hr.attendance.day'].create({
                     'employee_id': employee_id,
-                    'date': date
+                    'date': fields.Date.to_string(date)
                 })
             else:
                 # A modified attendance should update related breaks
