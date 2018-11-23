@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Eicher Stephane <seicher@compassion.ch>
-#    @author: Emanuel Cino <ecino@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
-
+# Copyright (C) 2018 Compassion CH
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 
 import pytz
@@ -66,7 +58,7 @@ class HrAttendanceDay(models.Model):
                                      'Attendances', readonly=True)
 
     has_change_day_request = fields.Boolean(
-        compute='_compute_has_linked_change_day_request', store=True,
+        compute='_compute_has_change_day_request', store=True,
         oldname='has_linked_change_day_request'
     )
 
@@ -175,7 +167,7 @@ class HrAttendanceDay(models.Model):
 
     @api.multi
     @api.depends('due_hours')
-    def _compute_has_linked_change_day_request(self):
+    def _compute_has_change_day_request(self):
         for att_day in self:
             res = att_day.get_related_forced_due_hours()
             att_day.has_change_day_request = len(res) == 1
@@ -305,19 +297,6 @@ class HrAttendanceDay(models.Model):
                 att_day.extra_hours_lost
 
     @api.multi
-    def write(self, vals):
-        super(HrAttendanceDay, self).write(vals)
-        if 'paid_hours' in vals or 'coefficient' in vals:
-            for att_day in self:
-                att_days_future = self.search([
-                    ('date', '>=', att_day.date),
-                    ('employee_id', '=', att_day.employee_id.id)
-                ], order='date')
-                att_days_future.update_extra_hours_lost()
-
-        return True
-
-    @api.multi
     def update_extra_hours_lost(self):
         """
         This will set the extra hours lost based on the balance evolution
@@ -339,7 +318,7 @@ class HrAttendanceDay(models.Model):
             balance = self.env.cr.fetchone()
             balance = balance[0] if balance else 0
 
-            if balance > max_extra_hours > 0:
+            if balance > max_extra_hours:
                 overhead = balance - max_extra_hours
                 att_day.extra_hours_lost = min(overhead, att_day.extra_hours)
             else:
@@ -367,7 +346,6 @@ class HrAttendanceDay(models.Model):
                 })
 
             att_break.write({
-                'system_modified': True,
                 'additional_duration': extension_duration
             })
 
@@ -461,6 +439,18 @@ class HrAttendanceDay(models.Model):
 
         return rd
 
+    @api.multi
+    def write(self, vals):
+        res = super(HrAttendanceDay, self).write(vals)
+        if 'paid_hours' in vals or 'coefficient' in vals:
+            for att_day in self:
+                att_days_future = self.search([
+                    ('date', '>=', att_day.date),
+                    ('employee_id', '=', att_day.employee_id.id)
+                ], order='date')
+                att_days_future.update_extra_hours_lost()
+        return res
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
@@ -481,7 +471,8 @@ class HrAttendanceDay(models.Model):
 
                 # Convert UTC in local timezone
                 user_tz = self.employee_id.user_id.tz
-
+                if not user_tz:
+                    user_tz = u'UTC'
                 local = pytz.timezone(user_tz)
                 utc = pytz.timezone('UTC')
 
@@ -531,8 +522,9 @@ class HrAttendanceDay(models.Model):
         (total attendance - additional break time added)
         :return: None
         """
-        for att_day in self.filtered('attendance_ids'):
-            att_day.break_ids.unlink()
+        att_day_ids = self.filtered('attendance_ids')
+        att_day_ids.mapped('break_ids').unlink()
+        for att_day in att_day_ids:
 
             # add the offered break
             free_break = self.env['base.config.settings'].get_free_break()
@@ -541,7 +533,6 @@ class HrAttendanceDay(models.Model):
                     'employee_id': att_day.employee_id.id,
                     'attendance_day_id': att_day.id,
                     'is_offered': True,
-                    'system_modified': True,
                     'additional_duration': free_break
                 })
 
