@@ -65,8 +65,7 @@ class WeeklyDemand(models.Model):
         default=lambda self: self._default_cancellation()
     )
     resupply_events = fields.Integer(
-        'Events resupply',
-        compute='_compute_demand_events', store=True,
+        'Events resupply', store=True,
         inverse='_inverse_fields',
     )
     total_resupply = fields.Integer(
@@ -75,29 +74,6 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.depends('week_start_date', 'week_end_date')
-    @api.multi
-    def _compute_resupply(self):
-        for week in self.filtered('week_start_date').filtered('week_end_date'):
-
-            # Compute resupply
-            events = self.env['crm.event.compassion'].search([
-                ('hold_end_date', '>=', week.week_start_date),
-                ('hold_end_date', '<=', week.week_end_date),
-            ])
-            resupply = 0
-            for event in events:
-                resupply += event.number_allocate_children - \
-                    event.planned_sponsorships
-
-            if resupply < 0:
-                if week.average_unsponsored_web >= abs(resupply):
-                    week.average_unsponsored_web += resupply
-                else:
-                    week.average_unsponsored_web = 0
-                week.resupply_events = 0
-            else:
-                week.resupply_events = resupply
 
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
@@ -123,26 +99,9 @@ class WeeklyDemand(models.Model):
                 allocate += float(event.number_allocate_children *
                                   days_in_week) / days_for_allocation
 
-            # Compute resupply
-            events = self.env['crm.event.compassion'].search([
-                ('hold_end_date', '>=', week.week_start_date),
-                ('hold_end_date', '<=', week.week_end_date),
-            ])
-            resupply = 0
-            for event in events:
-                resupply += event.number_allocate_children - \
-                            event.planned_sponsorships
-
-            if resupply < 0:
-                if week.average_unsponsored_web >= abs(resupply):
-                    week.average_unsponsored_web += resupply
-                else:
-                    week.average_unsponsored_web = 0
-                week.resupply_events = 0
-            else:
-                week.resupply_events = resupply
-
             week.number_children_events = allocate
+
+            week.write({})
 
     @api.multi
     def _inverse_fields(self):
@@ -277,6 +236,36 @@ class WeeklyDemand(models.Model):
             vals['average_unsponsored_ambassador'] = 0
 
         return super(WeeklyDemand, self).create(vals)
+
+    @api.depends('week_start_date', 'week_end_date')
+    @api.model
+    def write(self, vals):
+
+        events = self.env['crm.event.compassion'].search([
+            ('hold_start_date', '<=', self.week_end_date),
+            ('start_date', '>=', self.week_start_date)
+        ])
+
+        resupply = 0
+        for event in events:
+            resupply += event.number_allocate_children - \
+                        event.planned_sponsorships
+
+        average_unsponsored_web = self._default_unsponsored_web()
+        resupply_events = 0
+        if resupply < 0:
+            if average_unsponsored_web >= abs(resupply):
+                average_unsponsored_web += resupply
+            else:
+                average_unsponsored_web = 0
+                resupply_events = 0
+        else:
+            resupply_events = resupply
+
+        self.resupply_events = resupply_events
+        self.average_unsponsored_web = average_unsponsored_web
+
+        return super(WeeklyDemand, self).write(vals)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
