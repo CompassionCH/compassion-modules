@@ -7,7 +7,7 @@
         <field eval="19" name="priority"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']">
-                <button name="open_sponsorships" type="object" icon="fa-child" class="oe_stat_button oe_inline" context="{'search_default_state':1, 'search_default_state':'Active'}">
+                <button name="open_sponsorships" type="object" icon="fa-child" class="oe_stat_button oe_inline" context="{'search_default_active':1}">
                     <field name="sponsorships_count" widget="statinfo" string="Sponsorships"/>
                 </button>
             </xpath>
