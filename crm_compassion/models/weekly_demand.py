@@ -248,7 +248,7 @@ class WeeklyDemand(models.Model):
 
         resupply = 0
         for event in events:
-            resupply += event.number_allocate_children - \
+            resupply += event.number_allocate_children -\
                         event.planned_sponsorships
 
         average_unsponsored_web = self._default_unsponsored_web()
