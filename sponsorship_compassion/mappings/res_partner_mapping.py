@@ -26,7 +26,7 @@ class ResPartnerMapping(OnrampMapping):
         'Gender': ('title.gender', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
         'PreferredName': 'preferred_name',
-        'CommunicationDeliveryPreference': 'send_original',
+        'CorrespondenceDeliveryPreference': 'send_original',
         'FirstName': 'firstname',
         'LastName': 'lastname',
     }
@@ -35,7 +35,7 @@ class ResPartnerMapping(OnrampMapping):
         'Gender': lambda gender: 'Female' if gender == 'F' else 'Male',
         'MandatoryReviewRequired': None,
         'PreferredName': None,
-        'CommunicationDeliveryPreference':
+        'CorrespondenceDeliveryPreference':
             lambda original: 'Physical' if original else 'Digital',
         'GlobalPartner': None,
         'GPID': lambda ref: '65-' + ref,
@@ -82,7 +82,6 @@ class AnonymizePartner(OnrampMapping):
     }
 
     CONSTANTS = {
-        # "GP_ID": "Compassion Switzerland",
         "GP_ID": "CH",
         "DataProtection_Type": "ForgetMe"
     }
