@@ -33,7 +33,7 @@ class HoldWizard(models.TransientModel):
     )
     hold_id = fields.Char(related='intervention_id.hold_id')
     usd = fields.Many2one(related='intervention_id.currency_usd')
-    commitment_amount = fields.Float(required=True, readonly=True)
+    commitment_amount = fields.Float(required=True)
     commit_to_additional_fund = fields.Boolean()
 
     @api.multi

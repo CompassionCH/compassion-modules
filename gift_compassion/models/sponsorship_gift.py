@@ -447,7 +447,9 @@ class SponsorshipGift(models.Model):
         analytic = self.env['account.analytic.account'].search([
             ('code', '=', 'ATT_CD')])
         # Create the debit lines from the Gift Account
-        if self.invoice_line_ids:
+        invoiced_amount = sum(
+            self.invoice_line_ids.mapped('price_subtotal') or [0])
+        if invoiced_amount:
             for invl in self.invoice_line_ids:
                 move_lines_data.append({
                     'partner_id': invl.partner_id.id,
@@ -461,17 +463,19 @@ class SponsorshipGift(models.Model):
                     'currency_id': self.currency_usd.id,
                     'amount_currency': invl.price_subtotal * exchange_rate
                 })
-        else:
+        if invoiced_amount < self.amount:
+            # Create a move line for the difference that is not invoiced.
+            amount = self.amount - invoiced_amount
             move_lines_data.append({
                 'partner_id': self.partner_id.id,
                 'account_id': account_debit.id,
                 'name': self.name,
-                'debit': self.amount,
+                'debit': amount,
                 'analytic_account_id': analytic.id,
                 'date': maturity,
                 'date_maturity': maturity,
                 'currency_id': self.currency_usd.id,
-                'amount_currency': data['amount_us_dollars']
+                'amount_currency': amount * exchange_rate
             })
 
         # Create the credit line in the GMC Gift Due Account

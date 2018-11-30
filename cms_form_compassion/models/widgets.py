@@ -45,3 +45,9 @@ class SimpleImage(models.AbstractModel):
     _name = 'cms_form_compassion.form.widget.simple.image'
     _inherit = 'cms.form.widget.image'
     _w_template = 'cms_form_compassion.field_widget_image_simple'
+
+
+class ReadonlyWidget(models.AbstractModel):
+    _name = 'cms_form_compassion.form.widget.readonly'
+    _inherit = 'cms.form.widget.mixin'
+    _w_template = 'cms_form_compassion.field_widget_readonly'

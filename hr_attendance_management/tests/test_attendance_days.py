@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
+
+# Copyright (C) 2018 Compassion CH
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from datetime import datetime, timedelta
 from odoo import fields
 from odoo.tests import SavepointCase
@@ -32,7 +27,6 @@ class TestAttendanceDays(SavepointCase):
         cls.michael.calendar_id = cls.env.ref('resource.timesheet_group1')
 
         # Set free break
-        # Todo
         cls.env['ir.config_parameter'].set_param(
             'hr_attendance_management.free_break', '0.25')
         cls.env['ir.config_parameter'].set_param(
@@ -308,7 +302,7 @@ class TestAttendanceDays(SavepointCase):
         self.gilles._compute_today_hour_formatted()
         self.assertEqual(self.gilles.today_hour_formatted,
                          '{:02d}:{:02d}'.format(*divmod(int(abs(float(
-                             self.gilles.compute_today_hour()) * 60)), 60)))
+                             self.gilles.calc_today_hour()) * 60)), 60)))
 
         # test modification of due_hours with a write() on forced_due_hours
         forced_due_hours = self.env['hr.forced.due.hours'].create({
@@ -405,48 +399,3 @@ class TestAttendanceDays(SavepointCase):
             'date_to': '2018-08-06 17:00:00',
             'employee_ids': [(4, self.gilles.id)]
         }).create_attendance_day()
-
-    def create_leave_request(self):
-
-        gilles_department_id = self.env['hr.employee'].search([
-            ('identification_id', '=', self.gilles.id)
-        ]).department_id
-
-        # create leave request for gilles on the day created before
-        return self.env['hr.holidays'].create({
-            'employee_id': self.gilles.id,
-            'department_id': gilles_department_id,
-            'date_from': '2018-07-05 06:00',
-            'date_to': '2018-08-06 18:00',
-            'holiday_status_id': 4,  # not sure at all it's correct
-            'state': 'confirm',
-            'type': 'remove',
-            'holiday_type': 'employee',
-            'keep_due_hours': False
-        })
-
-    def test_leave_request(self):
-        """ Simply test leave requests """
-
-        self.create_attendance_days_for_leave_request()
-        holidays = self.create_leave_request()
-
-        # validates the leave request
-        holidays.action_approve()
-
-        # get all gilles's attendance days during his holidays
-        gilles_days = self.env['hr.attendance.day'].search([
-            ('employee_id', '=', self.gilles.id),
-            ('date', '>=', '2018-07-05'),
-            ('date', '<=', '2018-08-06')
-        ])
-
-        # check that due_hours of attendance days during holidays are equal
-        # to 0, that they contains a ref to a leave (holiday) and that
-        # total_attendance is correctly computed
-        for g_day in gilles_days:
-            self.assertEqual(g_day.due_hours, 0)
-            self.assertEqual(len(g_day.leave_ids), 1)
-            g_day._compute_total_attendance()
-            self.assertEqual(g_day.total_attendance,
-                             g_day.attendance_ids.worked_hours)
