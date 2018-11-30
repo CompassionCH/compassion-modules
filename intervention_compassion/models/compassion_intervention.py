@@ -603,7 +603,8 @@ class CompassionIntervention(models.Model):
             'context': self.with_context({
                 'default_intervention_id': self.id,
                 'default_commitment_amount': min(
-                    self.hold_amount, self.total_estimated_cost_local),
+                    self.hold_amount,
+                    self.estimated_costs or self.hold_amount),
             }).env.context,
             'target': 'new',
         }
