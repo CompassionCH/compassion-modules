@@ -60,7 +60,7 @@ class PaymentFormController(website_account, FormControllerMixin):
         success = transaction.state == 'done'
         if transaction.state in ('cancel', 'error'):
             # Cancel the invoice
-            transaction.invoice_id.with_delay().delete_transaction_invoice()
+            transaction.invoice_id.with_delay().cancel_transaction_invoice()
         if success:
             return request.render(success_template, kwargs)
         else:
