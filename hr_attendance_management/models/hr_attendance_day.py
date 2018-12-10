@@ -297,8 +297,9 @@ class HrAttendanceDay(models.Model):
     @api.multi
     @api.depends('paid_hours', 'due_hours', 'extra_hours_lost')
     def _compute_extra_hours(self):
+        sick_leave = self.env.ref('hr_holidays.holiday_status_sl')
         for att_day in self:
-            if att_day.leave_ids.holiday_status_id.name == 'Sick Leaves':
+            if sick_leave in att_day.leave_ids.mapped('holiday_status_id'):
                 att_day.extra_hours = 0
             else:
                 extra_hours = att_day.paid_hours - att_day.due_hours

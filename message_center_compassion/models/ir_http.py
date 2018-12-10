@@ -22,6 +22,13 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+VALID_ISSUERS = [
+    'https://esther.ci.org',
+    'http://services.compassionuk.org/',
+    'globalaccessidp-stage.ci.org',
+    'globalaccessidp-test.ci.org',
+]
+
 
 class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
@@ -49,8 +56,7 @@ class IrHTTP(models.AbstractModel):
         jwt_decoded = jwt.decode(access_token, options=options)
         # validation
         # is the iss = to Compassions IDP ?
-        if jwt_decoded.get('iss') not in ('https://esther.ci.org',
-                                          'http://services.compassionuk.org/'):
+        if jwt_decoded.get('iss') not in VALID_ISSUERS:
             raise Unauthorized()
         # is scope read or write in scopes ?
         scope = jwt_decoded.get('scope')
