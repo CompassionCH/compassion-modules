@@ -135,8 +135,7 @@ Sample Unsuccessful Response
             error.update({
                 'ErrorCode': exception.code,
                 'ErrorCategory': 'CommunicationError',
-                'ErrorMessage': exception.message,
-                'description': exception.description,
+                'ErrorMessage': exception.description,
             })
         except exceptions.AccessDenied:
             # Access error
