@@ -369,6 +369,14 @@ class RecurringContract(models.Model):
         for contract in self:
             contract.partner_id.customer_payment_mode_id = \
                 contract.payment_mode_id
+
+            # Update payment mode
+            partner = self.env['res.partner'].search([
+                ('id', '=', self.partner_id.id)
+            ])
+            partner.write({'customer_payment_mode_id':
+                           contract.payment_mode_id})
+
             if contract.child_id and not contract.sponsorship_line_id:
                 last_line_id += 1
                 contract.sponsorship_line_id = last_line_id
