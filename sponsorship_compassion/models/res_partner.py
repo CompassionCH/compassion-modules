@@ -390,6 +390,7 @@ class ResPartner(models.Model):
         """If partner has active contracts, UPSERT Constituent in GMC."""
         message_obj = self.env['gmc.message.pool'].with_context(
             async_mode=False)
+        messages = message_obj
         action_id = self.env.ref('sponsorship_compassion.upsert_partner').id
         for partner in self:
             contract_count = self.env['recurring.contract'].search_count([
@@ -402,4 +403,5 @@ class ResPartner(models.Model):
                     'object_id': partner.id,
                     'partner_id': partner.id,
                 }
-                message_obj.create(message_vals)
+                messages += message_obj.create(message_vals)
+        return messages

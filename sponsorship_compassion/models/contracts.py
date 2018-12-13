@@ -316,7 +316,7 @@ class SponsorshipContract(models.Model):
             logger.error(
                 "Error while changing correspondant at GMC. "
                 "The sponsorship is no longer active at GMC side. "
-                "Please activate it again manually."
+                "Please activate it again manually.", exc_info=True
                 )
 
         if 'reading_language' in vals:
@@ -743,7 +743,8 @@ class SponsorshipContract(models.Model):
             except:
                 logger.error(
                     "Error when updating sponsorship language. "
-                    "You may be out of sync with GMC - please try again."
+                    "You may be out of sync with GMC - please try again.",
+                    exc_info=True
                 )
 
     @api.multi
@@ -768,6 +769,7 @@ class SponsorshipContract(models.Model):
                 'compassion.hold'].get_default_hold_expiration(
                 HoldType.SPONSOR_CANCEL_HOLD)
         })
+        cancelled_sponsorships = self.env[self._name]
 
         # Cancel sponsorship at GMC
         messages = message_obj
@@ -781,11 +783,11 @@ class SponsorshipContract(models.Model):
         messages.process_messages()
         for i in range(0, len(messages)):
             if messages[i].state == 'success':
-                sponsorships[i].global_id = False
+                cancelled_sponsorships += sponsorships[i]
             else:
                 messages[i].unlink()
-
-        return sponsorships.filtered(lambda s: not s.global_id)
+        cancelled_sponsorships.write({'global_id': False})
+        return cancelled_sponsorships
 
     @api.multi
     def _on_correspondant_changed(self):
@@ -801,13 +803,17 @@ class SponsorshipContract(models.Model):
         create_action = self.env.ref(
             'sponsorship_compassion.create_sponsorship')
 
+        # Upsert correspondents
+        self.mapped('correspondent_id').upsert_constituent().process_messages()
+
         # Create new sponsorships at GMC
         messages = message_obj
         for sponsorship in self:
+            partner = sponsorship.correspondent_id
             messages += message_obj.create({
                 'action_id': create_action.id,
                 'child_id': sponsorship.child_id.id,
-                'partner_id': sponsorship.correspondent_id.id,
+                'partner_id': partner.id,
                 'object_id': sponsorship.id
             })
         messages.process_messages()
