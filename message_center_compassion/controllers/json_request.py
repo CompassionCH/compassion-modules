@@ -135,9 +135,9 @@ Sample Unsuccessful Response
             error.update({
                 'ErrorCode': exception.code,
                 'ErrorCategory': 'CommunicationError',
-                'ErrorMessage': exception.message,
-                'description': exception.description,
+                'ErrorMessage': exception.description,
             })
+            _logger.error(exception.description, exc_info=True)
         except exceptions.AccessDenied:
             # Access error
             error.update({
@@ -145,6 +145,7 @@ Sample Unsuccessful Response
                 'ErrorCategory': 'AuthorizationError',
                 'ErrorMessage': '401 Unauthorized',
             })
+            _logger.error('401 Unauthorized', exc_info=True)
         except AttributeError:
             # Raised if JSON could not be parsed or invalid body was received
             error.update({
@@ -154,22 +155,26 @@ Sample Unsuccessful Response
                 'ErrorCategory': 'InputValidationError',
                 'ErrorMessage': exception.message,
             })
+            _logger.error(exception.message, exc_info=True)
         except AuthenticationError:
                 error.update({
                     'ErrorCode': 401,
                     'ErrorCategory': 'AuthenticationError',
                     'ErrorMessage': 'Session Invalid',
                 })
+                _logger.error('Session Invalid', exc_info=True)
         except SessionExpiredException:
                 error.update({
                     'ErrorCode': 401,
                     'ErrorCategory': 'AuthenticationError',
                     'ErrorMessage': 'Session Expired',
                 })
+                _logger.error('Session Expired', exc_info=True)
         except Exception:
             # Any other cases, lookup what exception type was raised.
             if not isinstance(exception, (exceptions.UserError)):
-                _logger.exception("Exception during JSON request handling.")
+                _logger.exception(
+                    "Exception during JSON request handling.", exc_info=True)
             error.update({
                 'ErrorCode': 500,
                 'ErrorCategory': 'ApplicationError',
