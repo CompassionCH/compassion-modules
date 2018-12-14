@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 VALID_ISSUERS = [
     'https://esther.ci.org',
     'http://services.compassionuk.org/',
-    'globalaccessidp-stage.ci.org',
-    'globalaccessidp-test.ci.org',
+    'globalaccess-stage.ci.org',
+    'globalaccess-test.ci.org',
 ]
 
 
