@@ -69,6 +69,17 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         </div>
     </template>
 
+    <template id="field_widget_document" name="CMS form document">
+        <div class="image-widget-wrapper">
+            <input
+                    type="file" accept="image/*,.pdf,.doc,.docx"
+                    t-att-id="widget.w_fname"
+                    t-att-name="widget.w_fname"
+                    class="form-control"
+            />
+        </div>
+    </template>
+
     <!-- Payment acquirer in form -->
     <template id="widget_payment" name="CMS Widget Payment Acquirer">
         <!-- Select payment acquirer -->
