@@ -178,6 +178,21 @@ class CompassionChild(models.Model):
         ('Sociology / Social Science', 'Sociology'),
         ('Theology', 'Theology'),
         ('Tourism', 'Tourism'),
+        ('Biology', 'Biology'),
+        ('Social Science', 'Social Science'),
+        ('Sociology', 'Sociology'),
+        ('Hotel Management', 'Hotel Management'),
+        ('Hospitality', 'Hospitality'),
+        ('Fine Arts', 'Fine Arts'),
+        ('Graphic Arts', 'Graphic Arts'),
+        ('Law Enforcement', 'Law Enforcement'),
+        ('Criminology', 'Criminology'),
+        ('Information Technology', 'Information Technology'),
+        ('Computer Science ', 'Computer Science'),
+        ('Business', 'Business'),
+        ('Management', 'Management'),
+        ('Commerce', 'Commerce'),
+        ('Medicine', 'Medicine'),
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
@@ -239,6 +254,7 @@ class CompassionChild(models.Model):
          'The child already exists in database.')
     ]
 
+    is_special_needs = fields.Boolean()
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################

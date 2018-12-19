@@ -76,7 +76,7 @@ class GenericChildMapping(OnrampMapping):
         'LastPhotoDate': 'last_photo_date',
         'LastReviewDate': 'last_review_date',
         'LocalNumber': 'local_id',
-        'MajorCourseOfStudy': 'major_course_study',
+        'MajorOrCourseOfStudy': 'major_course_study',
         'MinDaysWaiting': 'waiting_days',
         'NameInNonLatinChar': 'non_latin_name',
         'NotEnrolledInEducationReason': 'not_enrolled_reason',
