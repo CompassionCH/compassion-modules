@@ -101,7 +101,6 @@ class ResPartner(models.Model):
             'de_CH': u'%d. %B %Y',
             'en_US': u'%d %B %Y',
             'it_IT': u'%d %B %Y',
-            'es_ES': u'%d de %B de %Y'
         }
         today = datetime.today()
         city = self.env.user.partner_id.company_id.city
