@@ -113,7 +113,7 @@ class AdvancedTranslatable(models.AbstractModel):
         pattern_keyword = re.compile("(\\{)(.*?)(\\})")
 
         def _replace_keyword(match):
-            return self.get(match.group(2))
+            return self.translate(match.group(2))
 
         res = list()
         field_path = field.split('.')
