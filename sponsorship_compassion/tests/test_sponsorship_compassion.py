@@ -157,17 +157,6 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(child.state, 'P')
         self.assertEqual(sponsorship.state, 'draft')
 
-        # Check correspondent is updated when partner is changed
-        group = self.env['recurring.contract.group'].search([
-            ('partner_id', '=', self.thomas.id)
-        ])
-        if not group:
-            self.create_group({'partner_id': self.thomas.id})
-        sponsorship.write({'partner_id': self.thomas.id})
-        sponsorship.on_change_partner_id()
-        self.assertEqual(sponsorship.correspondent_id, sponsorship.partner_id)
-        self.assertEqual(child.sponsor_id, self.thomas)
-
         # Test validation of contract
         update_hold = self.validate_sponsorship(sponsorship)
         self.assertEqual(sponsorship.state, 'waiting')

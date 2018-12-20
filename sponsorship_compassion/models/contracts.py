@@ -264,6 +264,24 @@ class SponsorshipContract(models.Model):
     def create(self, vals):
         """ Perform various checks on contract creations
         """
+        # Force the commitment_number
+        partner_ids = []
+        partner_id = vals.get('partner_id')
+        if partner_id:
+            partner_ids.append(partner_id)
+        correspondent_id = vals.get('correspondent_id')
+        if correspondent_id and correspondent_id != partner_id:
+            partner_ids.append(correspondent_id)
+        if partner_ids:
+            other_nums = self.search([
+                '|', ('partner_id', 'in', partner_ids),
+                ('correspondent_id', 'in', partner_ids),
+                ('state', 'not in', ['cancelled', 'terminated'])
+            ]).mapped('commitment_number')
+            vals['commitment_number'] = max(other_nums or [0]) + 1
+        else:
+            vals['commitment_number'] = 1
+
         child = self.env['compassion.child'].browse(vals.get('child_id'))
         if 'S' in vals.get('type', '') and child:
             child.write({
@@ -620,12 +638,20 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
-    @api.onchange('partner_id')
-    def on_change_partner_id(self):
-        super(SponsorshipContract, self).on_change_partner_id()
-        if 'S' in self.type and self.state == 'draft':
-            # If state draft correspondent_id=partner_id
+    @api.onchange('partner_id', 'correspondent_id')
+    def on_change_partner_correspondent_id(self):
+        """ On partner change, we set the new commitment number
+        (for gift identification). """
+        partners = self.partner_id + self.correspondent_id
+        contracts = self.search([
+            '|',
+            ('partner_id', 'in', partners.ids),
+            ('correspondent_id', 'in', partners.ids),
+            ('state', 'not in', ['terminated', 'cancelled']),
+        ])
+        self.commitment_number = max(
+            contracts.mapped('commitment_number') or [0]) + 1
+        if self.partner_id and not self.correspondent_id:
             self.correspondent_id = self.partner_id
 
     @api.multi
