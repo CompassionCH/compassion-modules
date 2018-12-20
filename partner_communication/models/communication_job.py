@@ -120,8 +120,11 @@ class CommunicationJob(models.Model):
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
 
     def count_pdf_page(self):
-        test_mode = getattr(threading.currentThread(), 'testing', False)
-        if not test_mode:
+        skip_count = self.env.context.get(
+            'skip_pdf_count',
+            getattr(threading.currentThread(), 'testing', False)
+        )
+        if not skip_count:
             for record in self.filtered('report_id'):
                 if record.send_mode == 'physical':
                     report_obj = record.env['report'].with_context(

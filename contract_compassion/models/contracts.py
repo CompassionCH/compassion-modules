@@ -220,15 +220,23 @@ class RecurringContract(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        if 'commitment_number' not in vals:
-            partner_id = vals.get('partner_id')
-            if partner_id:
-                other_nums = self.search([
-                    ('partner_id', '=', partner_id)
-                ]).mapped('commitment_number')
-                vals['commitment_number'] = max(other_nums or [-1]) + 1
-            else:
-                vals['commitment_number'] = 1
+        # Force the commitment_number
+        partner_ids = []
+        partner_id = vals.get('partner_id')
+        if partner_id:
+            partner_ids.append(partner_id)
+        correspondent_id = vals.get('correspondent_id')
+        if correspondent_id and correspondent_id != partner_id:
+            partner_ids.append(correspondent_id)
+        if partner_ids:
+            other_nums = self.search([
+                '|', ('partner_id', 'in', partner_ids),
+                ('correspondent_id', 'in', partner_ids),
+                ('state', 'not in', ['cancelled', 'terminated'])
+            ]).mapped('commitment_number')
+            vals['commitment_number'] = max(other_nums or [0]) + 1
+        else:
+            vals['commitment_number'] = 1
 
         new_sponsorship = super(RecurringContract, self).create(vals)
 
@@ -317,15 +325,20 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.onchange('partner_id')
-    def on_change_partner_id(self):
+    @api.onchange('partner_id', 'correspondent_id')
+    def on_change_partner_correspondent_id(self):
         """ On partner change, we set the new pol_number
         (for gift identification). """
-        super(RecurringContract, self).on_change_partner_id()
-        num_contracts = self.search_count(
-            [('partner_id', '=', self.partner_id.id)])
-
-        self.commitment_number = num_contracts
+        partners = self.partner_id + self.correspondent_id
+        contracts = self.search([
+            '|',
+            ('partner_id', 'in', partners.ids),
+            ('correspondent_id', 'in', partners.ids),
+            ('state', 'not in', ['terminated', 'cancelled']),
+            ('child_id', '!=', False)
+        ])
+        self.commitment_number = max(
+            contracts.mapped('commitment_number') or [0]) + 1
 
     @api.onchange('parent_id')
     def on_change_parent_id(self):
