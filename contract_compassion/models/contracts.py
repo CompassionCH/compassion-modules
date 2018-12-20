@@ -335,7 +335,6 @@ class RecurringContract(models.Model):
             ('partner_id', 'in', partners.ids),
             ('correspondent_id', 'in', partners.ids),
             ('state', 'not in', ['terminated', 'cancelled']),
-            ('child_id', '!=', False)
         ])
         self.commitment_number = max(
             contracts.mapped('commitment_number') or [0]) + 1

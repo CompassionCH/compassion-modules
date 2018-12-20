@@ -258,6 +258,7 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
     @api.model
     def _get_child_states(self):
         return [
