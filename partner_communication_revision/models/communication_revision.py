@@ -9,15 +9,18 @@
 #
 ##############################################################################
 
+import logging
 from odoo import api, models, _, fields
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 try:
     import regex as re
     from pyquery import PyQuery
     from bs4 import BeautifulSoup
 except ImportError:
-    raise UserError(_("Please install python pyquery and bs4"))
+    _logger.warning("Please install python pyquery, regex and bs4")
 
 
 def safe_replace(original, to_replace, replacement):

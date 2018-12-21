@@ -37,7 +37,7 @@
     'website': 'http://www.compassion.ch',
     'depends': ['partner_communication'],
     'external_dependencies': {
-        'python': ['pyquery', 'regex']
+        'python': ['pyquery', 'regex', 'bs4']
     },
     'data': [
         'security/ir.model.access.csv',

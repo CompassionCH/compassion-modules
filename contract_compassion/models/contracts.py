@@ -226,7 +226,7 @@ class RecurringContract(models.Model):
                 other_nums = self.search([
                     ('partner_id', '=', partner_id)
                 ]).mapped('commitment_number')
-                vals['commitment_number'] = max(other_nums or [-1]) + 1
+                vals['commitment_number'] = max(other_nums or [0]) + 1
             else:
                 vals['commitment_number'] = 1
 
@@ -317,16 +317,6 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.onchange('partner_id')
-    def on_change_partner_id(self):
-        """ On partner change, we set the new pol_number
-        (for gift identification). """
-        super(RecurringContract, self).on_change_partner_id()
-        num_contracts = self.search_count(
-            [('partner_id', '=', self.partner_id.id)])
-
-        self.commitment_number = num_contracts
-
     @api.onchange('parent_id')
     def on_change_parent_id(self):
         """ If a previous sponsorship is selected, the origin should be
