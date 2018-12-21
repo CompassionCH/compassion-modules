@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': "Sponsor to beneficiary communication",
-    'version': '10.0.1.2.1',
+    'version': '10.0.1.3.0',
     'category': 'Other',
     'summary': "SBC - Supporter to Beneficiary Communication",
     'sequence': 150,
@@ -55,6 +55,7 @@
         'views/download_letters_view.xml',
         'views/get_letter_image_wizard_view.xml',
         'views/correspondence_s2b_generator_view.xml',
+        'views/last_writing_report_view.xml',
         'report/s2b_letter.xml',
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
