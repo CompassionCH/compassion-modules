@@ -22,3 +22,4 @@ from . import correspondence_translation_box
 from . import project_compassion
 from . import correspondence_s2b_generator
 from . import queue_job
+from . import last_writing_report
