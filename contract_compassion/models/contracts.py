@@ -232,6 +232,9 @@ class RecurringContract(models.Model):
 
         new_sponsorship = super(RecurringContract, self).create(vals)
 
+        if 'campaign_id' in vals:
+            new_sponsorship.campaign_id = vals['campaign_id']
+
         # Set the sub_sponsorship_id in the current parent_id and take
         # sponsorship line id
         if 'parent_id' in vals and vals['parent_id']:
