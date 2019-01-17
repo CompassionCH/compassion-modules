@@ -16,11 +16,11 @@
 bank-payment
 queue
 partner-contact
-web https://github.com/daramousk/web 10.0-MIG-CKEditor
+web
 report-print-send https://github.com/CompassionCH/report-print-send 10.0
 server-tools
 connector-telephony
 hr
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 10.0
-geospatial https://github.com/OCA/geospatial 10.0
+geospatial
 website-cms
