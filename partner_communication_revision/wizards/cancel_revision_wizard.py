@@ -72,10 +72,17 @@ class ValidateRevisionWizard(models.TransientModel):
             })
         self.revision_id.write(revision_vals)
         if self.user_id != self.env.user or self.comments:
-            body = u"The text was set back in revision by {}. {}".format(
-                self.env.user.name, self.comments or u"").strip()
+            next_action_text = u'<b>Next action for {}: ' \
+                u'Make corrections and resubmit.</b><br/><br/>'.format(
+                    self.user_id.firstname)
+            body = u"The text was set back in revision by {}{}{}".format(
+                self.env.user.firstname,
+                u" with following comments:<br/><br/>" if self.comments else
+                u".",
+                self.comments or u"").strip()
             subject = "[{}] Approval cancelled:  text needs corrections"\
                 .format(self.revision_id.display_name)
-            self.revision_id.notify_proposition(subject, body)
+            self.revision_id.notify_proposition(
+                subject, next_action_text + body)
 
         return True

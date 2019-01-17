@@ -387,7 +387,7 @@ class CommunicationRevision(models.Model):
         # Post a message that is sent to watchers
         self.message_post(
             body=body, subject=subject, type='comment',
-            subtype='mail.mt_comment', content_subtype='plaintext'
+            subtype='mail.mt_comment', content_subtype='html'
         )
 
     @api.multi

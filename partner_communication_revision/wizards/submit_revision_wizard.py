@@ -33,9 +33,14 @@ class ValidateRevisionWizard(models.TransientModel):
     def submit(self):
         self.ensure_one()
         revision = self.revision_id
+        next_action_text = u'<b>Next action for {}: '
         if self.state == 'pending':
             subject_base = u'[{}] Revision text submitted'
-            body_base = u'A new text for was submitted for approval. {}'
+            next_action_text += u'Proofread and approve or correct.'
+            next_action_text = next_action_text.format(
+                revision.correction_user_id.firstname)
+            body_base = u'A new text for was submitted for approval.' \
+                u'<br/><br/>{}'
             revision.write({
                 'proposition_correction':
                 revision.proposition_correction or revision.proposition_text,
@@ -45,10 +50,14 @@ class ValidateRevisionWizard(models.TransientModel):
             })
         else:
             subject_base = u'[{}] Correction submitted'
-            body_base = u'Corrections were proposed. {}'
+            next_action_text += u'Approve or submit new proposition.'
+            next_action_text = next_action_text.format(
+                revision.user_id.firstname)
+            body_base = u'Corrections were proposed.<br/><br/>{}'
             revision.write({'state': 'corrected'})
 
-        body = body_base.format(self.comments or '').strip()
+        body = next_action_text + u'</b><br/><br/>' + body_base.format(
+            self.comments or '').strip()
         subject = subject_base.format(revision.display_name)
         revision.notify_proposition(subject, body)
         return True
