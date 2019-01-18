@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Partner Communication Revisions',
-    'version': '10.0.1.0.1',
+    'version': '10.0.1.1.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -41,6 +41,9 @@
     },
     'data': [
         'security/ir.model.access.csv',
+        'data/email_template.xml',
+        'data/communication_config.xml',
+        'data/reminder_cron.xml',
         'views/new_proposition_wizard_view.xml',
         'views/validate_revision_wizard_view.xml',
         'views/communication_config_view.xml',

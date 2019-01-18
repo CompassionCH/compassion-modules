@@ -387,7 +387,7 @@ class CommunicationRevision(models.Model):
         # Post a message that is sent to watchers
         self.message_post(
             body=body, subject=subject, type='comment',
-            subtype='mail.mt_comment', content_subtype='plaintext'
+            subtype='mail.mt_comment', content_subtype='html'
         )
 
     @api.multi
@@ -436,6 +436,22 @@ class CommunicationRevision(models.Model):
     def toggle_all_keywords(self):
         for record in self:
             record.show_all_keywords = not record.show_all_keywords
+        return True
+
+    @api.model
+    def send_revision_reminders(self):
+        pending_revisions = self.search([
+            ('state', 'not in', ['approved', 'active'])])
+        users = pending_revisions.mapped('user_id') | \
+            pending_revisions.mapped('correction_user_id')
+        reminder_config = self.env.ref(
+            'partner_communication_revision.revision_reminder_config')
+        for user in users:
+            self.env['partner.communication.job'].create({
+                'config_id': reminder_config.id,
+                'partner_id': user.partner_id.id,
+                'object_ids': user.id,
+            })
         return True
 
     ##########################################################################

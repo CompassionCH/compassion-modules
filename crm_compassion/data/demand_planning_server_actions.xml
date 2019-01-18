@@ -1,0 +1,9 @@
+<odoo>
+    <record id="correct_event_resupply_action" model="ir.actions.server">
+        <field name="name">Demand planning: correct negative resupply</field>
+        <field name="model_id" ref="model_demand_weekly_demand"/>
+        <field name="state">code</field>
+        <field name="sequence">10</field>
+        <field name="code">records.correct_event_resupply()</field>
+    </record>
+</odoo>

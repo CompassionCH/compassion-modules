@@ -275,3 +275,21 @@ class WeeklyDemand(models.Model):
                 self._default_unsponsored_ambassador(),
             'average_cancellation': self._default_cancellation(),
         }
+
+    @api.multi
+    def correct_event_resupply(self):
+        """
+        Action rule called to correct a negative event resupply.
+        In that case we have more sponsorships planned from events than what
+        we allocate for them. We assume the sponsorships will be made through
+        the website, so we transfer the web resupply to the event resupply.
+        :return: True
+        """
+        for demand in self:
+            web_resupply = max(
+                demand.average_unsponsored_web + demand.resupply_events, 0)
+            demand.write({
+                'average_unsponsored_web': web_resupply,
+                'resupply_events': 0
+            })
+        return True

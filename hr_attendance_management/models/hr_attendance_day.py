@@ -231,7 +231,6 @@ class HrAttendanceDay(models.Model):
             att_day.total_attendance = sum(
                 att_day.attendance_ids.mapped(
                     'worked_hours') or [0])
-            att_day.compute_breaks()
 
     @api.multi
     @api.depends('total_attendance', 'coefficient')
@@ -248,7 +247,7 @@ class HrAttendanceDay(models.Model):
                 lambda r: r.system_modified and not r.is_offered)
 
             paid_hours -= sum(breaks.mapped('additional_duration'))
-            att_day.paid_hours = paid_hours * self.coefficient
+            att_day.paid_hours = paid_hours * att_day.coefficient
 
     @api.multi
     def _compute_free_break_hours(self):
