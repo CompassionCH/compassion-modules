@@ -27,7 +27,6 @@ class PaymentTransaction(models.Model):
         was not updated after a while.
         :return: True
         """
-        self.invoice_id.action_invoice_cancel()
         return self.write({
             'state': 'cancel',
             'state_message': 'No update of the transaction within 10 minutes.'
@@ -39,7 +38,6 @@ class PaymentTransaction(models.Model):
         Called by ir_action_rule in when transaction was cancelled by user.
         :return: True
         """
-        self.invoice_id.action_invoice_cancel()
         return True
 
     @api.multi

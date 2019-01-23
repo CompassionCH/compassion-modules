@@ -64,12 +64,6 @@ class AccountInvoice(models.Model):
         self._after_transaction_invoice_paid(transaction)
         return True
 
-    @api.multi
-    @job(default_channel='root.cms_form_compassion')
-    def cancel_transaction_invoice(self):
-        """Cancel transaction invoice"""
-        return self.action_invoice_cancel()
-
     def _after_transaction_invoice_paid(self, transaction):
         """ Hook for doing post-processing after transaction was paid. """
         pass

@@ -57,11 +57,7 @@ class PaymentFormController(website_account, FormControllerMixin):
         :param kwargs: post data
         :return: web page
         """
-        success = transaction.state == 'done'
-        if transaction.state in ('cancel', 'error'):
-            # Cancel the invoice
-            transaction.invoice_id.with_delay().cancel_transaction_invoice()
-        if success:
+        if transaction.state == 'done':
             return request.render(success_template, kwargs)
         else:
             return request.render(fail_template, kwargs)
