@@ -16,6 +16,7 @@ from odoo import http, exceptions
 from odoo.http import request
 from odoo.tools import config
 from ..tools.onramp_connector import OnrampConnector
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -67,10 +68,15 @@ class RestController(http.Controller):
         action_connect = request.env['gmc.action.connect'].sudo(
             request.uid).search([('connect_schema', '=', message_type)])
         if not action_connect:
-            action_connect = request.env['gmc.action.connect'].sudo(
-                request.uid).create({
-                    'connect_schema': message_type
-                })
+            try:
+                action_connect = request.env['gmc.action.connect'].sudo(
+                    request.uid).create({
+                        'connect_schema': message_type
+                    })
+            except ValidationError:
+                action_connect = request.env['gmc.action.connect'].sudo(
+                    request.uid).search([('connect_schema', '=',
+                                          message_type)])
 
         action = action_connect.action_id
         params = {
