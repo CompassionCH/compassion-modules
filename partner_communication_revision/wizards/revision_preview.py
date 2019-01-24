@@ -85,7 +85,8 @@ class RevisionPreview(models.TransientModel):
             'state': 'done',  # Prevents sending test jobs,
             'send_mode': 'digital',  # Prevents pdf generation
             'body_html': self._context.get('working_text'),  # Custom text
-            'subject': self._context.get('working_subject')
+            'subject': self._context.get('working_subject'),
+            'auto_send': False,  # Prevents automatic sending
         }
         if not self.preview_job_id:
             # Avoid creating attachments for the communication
