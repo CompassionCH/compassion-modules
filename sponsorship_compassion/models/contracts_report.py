@@ -226,3 +226,25 @@ class PartnerSponsorshipReport(models.Model):
             ).env.context,
             'res_id': self.id
         }
+
+    @api.multi
+    def open_donation_details(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Donations details',
+            'res_model': 'account.invoice.line',
+            'views': [[False, 'list']],
+            'context': self.with_context(
+                search_default_group_product=1,
+                form_view_ref='sponsorship_compassion'
+                              '.view_invoice_line_partner_tree '
+            ).env.context,
+            "domain": [("partner_id", "=", self.id),
+                       ('invoice_id.invoice_type', 'in',
+                        ['gift', 'sponsorship', 'fund']),
+                       ('invoice_id.type', '=', 'out_invoice'),
+                       ('state', '=', 'paid'),
+                       ('last_payment', '<', self.end_period),
+                       ('last_payment', '>=', self.start_period)]
+        }

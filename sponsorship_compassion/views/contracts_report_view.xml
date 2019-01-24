@@ -8,6 +8,12 @@
                type="xml">
             <form>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_inline oe_stat_button" type="object"
+                            string="Details of donations"
+                            groups="child_compassion.group_sponsorship"
+                            name="open_donation_details" icon="fa-file-text-o "/>
+                    </div>
                     <group col='2' string="Sponsorship Report">
                         <group string="Active sponsorships">
                             <field name="sr_sponsorship"/>
