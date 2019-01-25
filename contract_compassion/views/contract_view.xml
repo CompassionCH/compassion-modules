@@ -118,11 +118,6 @@
                 </xpath>
                 <xpath expr="//filter[@name='terminated']" position="replace">
                     <filter name="finished" string="Finished" domain="[('state','=', 'terminated')]"/>
-                    <separator/>
-                    <filter string="French" name="french" domain="[('partner_id.lang', '=', 'fr_CH')]"/>
-                    <filter string="German" name="german" domain="[('partner_id.lang', '=', 'de_DE')]"/>
-                    <filter string="Italian" name="italian" domain="[('partner_id.lang', '=', 'it_IT')]"/>
-                    <filter string="English" name="english" domain="[('partner_id.lang', '=', 'en_US')]"/>
                 </xpath>
                 <xpath expr="//filter[@name='active']" position="attributes">
                     <attribute name="domain">[('is_active', '=', True), ('state', 'not in', ('cancelled','terminated'))]</attribute>
