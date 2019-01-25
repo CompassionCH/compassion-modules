@@ -427,6 +427,7 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def reload_text(self):
+        self.keyword_ids.unlink()
         text = self.with_context(lang=self.lang).body_html
         self.raw_template_edit_mode = False
         self.with_context(
