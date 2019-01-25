@@ -107,7 +107,7 @@
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
         <field name="arch" type="xml">
-            <filter name="english" position="after">
+            <filter name="finished" position="after">
                 <filter string="Last 3 Months"  name="last_3_months"
                     domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
                              ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]" help="Last 3 months"/>
