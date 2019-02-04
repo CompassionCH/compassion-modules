@@ -234,13 +234,16 @@ class PartnerSponsorshipReport(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Donations details',
             'res_model': 'account.invoice.line',
-            'views': [[False, 'list']],
+            'views': [[self.env.ref('sponsorship_compassion'
+                                    '.view_invoice_line_partner_tree').id,
+                       'list']],
             'context': self.with_context(
                 search_default_group_product=1,
-                form_view_ref='sponsorship_compassion'
+                tree_view_ref='sponsorship_compassion'
                               '.view_invoice_line_partner_tree '
             ).env.context,
-            "domain": [("partner_id", "=", self.id),
+            "domain": ['|', ("partner_id", "=", self.id),
+                       ("partner_id.church_id", "=", self.id),
                        ('invoice_id.invoice_type', 'in',
                         ['gift', 'sponsorship', 'fund']),
                        ('invoice_id.type', '=', 'out_invoice'),
