@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<odoo>
+    <record model="ir.ui.view" id="crm_request_form_view">
+        <field name="name">CRM - Requests Form</field>
+        <field name="model">crm.claim</field>
+        <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[1]" position="attributes">
+                <attribute name="string">Request Description</attribute>
+            </xpath>
+            <xpath expr="//page[1]/group/separator" position="attributes">
+                <attribute name="string">Reporter</attribute>
+            </xpath>
+            <xpath expr="//page[1]/separator" position="attributes">
+                <attribute name="string">Description</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="request_action">
+        <field name="name">Requests</field>
+        <field name="res_model">crm.claim</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,calendar,form</field>
+        <field name="view_id" ref="crm_claim.crm_case_claims_tree_view"/>
+        <field name="context">{"search_default_user_id":uid,
+            "stage_type":'claim'}
+        </field>
+        <field name="search_view_id"
+               ref="crm_claim.view_crm_case_claims_filter"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Record and track your customers' requests. Requests may be
+                linked to a sales order or a lot.You can send emails with
+                attachments and keep the full history for a request (emails
+                sent, intervention type and so on).Requests may automatically
+                be linked to an email address using the mail gateway module.
+            </p>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window.view" id="action_crm_tag_form_claim0">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="crm_request_form_view"/>
+        <field name="act_window_id" ref="request_action"/>
+    </record>
+
+    <menuitem id="menu_support" name="Support"
+              parent="child_compassion.menu_sponsorship_root" sequence="4"/>
+
+    <menuitem id="menu_crm_case_claims" name="Requests"
+              parent="menu_support" action="request_action" sequence="1"/>
+</odoo>
