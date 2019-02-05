@@ -15,6 +15,19 @@
                 <attribute name="string">Description</attribute>
             </xpath>
 
+            <field name="date" position="attributes">
+                <attribute name="string">Date</attribute>
+            </field>
+            <field name="name" position="attributes">
+                <attribute name="string">Subject</attribute>
+            </field>
+            <field name="code" position="attributes">
+                <attribute name="string">Number</attribute>
+            </field>
+            <field name="claim_type" position="attributes">
+                <attribute name="string">Type</attribute>
+            </field>
+
         </field>
     </record>
 
@@ -38,13 +51,6 @@
                 be linked to an email address using the mail gateway module.
             </p>
         </field>
-    </record>
-
-    <record model="ir.actions.act_window.view" id="action_crm_tag_form_claim0">
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="crm_request_form_view"/>
-        <field name="act_window_id" ref="request_action"/>
     </record>
 
     <menuitem id="menu_support" name="Support"

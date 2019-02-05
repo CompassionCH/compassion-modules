@@ -40,7 +40,8 @@
         'base_location',
         'sponsorship_compassion',
         'project',
-        'crm_claim',
+        'crm_claim_code',
+        'crm_claim_type',
     ],
     'data': [
         'security/ir.model.access.csv',
