@@ -16,7 +16,6 @@ from . import project_project
 from . import account_analytic_line
 from . import account_invoice_line
 from . import res_partner
-from . import request
 from . import calendar_event
 from . import demand_planning
 from . import weekly_demand
