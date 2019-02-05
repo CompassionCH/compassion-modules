@@ -40,6 +40,7 @@
         'base_location',
         'sponsorship_compassion',
         'project',
+        'crm_claim',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -49,6 +50,7 @@
         'data/demand_planning_action_rules.xml',
         'views/event_compassion_view.xml',
         'views/contract_origin_view.xml',
+        'views/request_view.xml',
         'views/crm_lead_view.xml',
         'views/project_view.xml',
         'views/account_invoice_line.xml',
