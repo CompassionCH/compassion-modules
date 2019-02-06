@@ -9,25 +9,20 @@
 #
 ##############################################################################
 import logging
+import requests
 
 from odoo.http import request
-from odoo import models, _
-from odoo.exceptions import UserError
+from odoo import models
 from werkzeug.exceptions import Unauthorized
+
+_logger = logging.getLogger(__name__)
 
 try:
     import jwt
+    import simplejson
+    from jwt.algorithms import RSAAlgorithm
 except ImportError:
-    raise UserError(_("Please install python jwt"))
-
-logger = logging.getLogger(__name__)
-
-VALID_ISSUERS = [
-    'https://esther.ci.org',
-    'http://services.compassionuk.org/',
-    'globalaccess-stage.ci.org',
-    'globalaccess-test.ci.org',
-]
+    _logger.error("Please install python jwt and simplejson")
 
 
 class IrHTTP(models.AbstractModel):
@@ -35,35 +30,50 @@ class IrHTTP(models.AbstractModel):
 
     @classmethod
     def _auth_method_oauth2(self):
+        self._oauth_validation(
+            'globalaccess.ci.org',
+            'https://globalaccessidp.ci.org/core/.well-known/jwks'
+        )
+
+    @classmethod
+    def _auth_method_oauth2_stage(self):
+        self._oauth_validation(
+            'globalaccess-stage.ci.org',
+            'https://globalaccessidp-stage.ci.org/core/.well-known/jwks'
+        )
+
+    @classmethod
+    def _oauth_validation(self, issuer, cert_url):
         if request.httprequest.method == 'GET':
             mode = 'read'
         if request.httprequest.method == 'POST':
             mode = 'write'
-        token_data = request.httprequest.headers.get('Authorization')
-        if not token_data:
-            raise Unauthorized()
-        token_authorization = token_data.split()[0]
-        if token_authorization != 'Bearer':
-            raise Unauthorized()
-        access_token = token_data.split()[1]
 
-        # Token validation
-        options = {
-            # not sure why, you might need to do that if token is not encrypted
-            'verify_signature': False,
-            'verify_aud': False
-        }
-        jwt_decoded = jwt.decode(access_token, options=options)
-        # validation
-        # is the iss = to Compassions IDP ?
-        if jwt_decoded.get('iss') not in VALID_ISSUERS:
+        # Get public certificate of issuer for token validation
+        try:
+            token_data = request.httprequest.headers.get('Authorization')
+            access_token = token_data.split()[1]
+            _logger.info("Received access token: %s", access_token)
+            cert = requests.get(cert_url)
+            key_json = simplejson.dumps(cert.json()['keys'][0])
+        except ValueError:
+            # If any error occurs during token and certificate retrieval,
+            # we don't allow to go any further
+            _logger.error("Error during token validation", exc_info=True)
             raise Unauthorized()
+
+        public_key = RSAAlgorithm.from_jwk(key_json)
+        jwt_decoded = jwt.decode(
+            access_token, key=public_key, algorithms=['RS256'],
+            audience=issuer+'/resources', issuer=issuer
+        )
+        # validation
         # is scope read or write in scopes ?
         scope = jwt_decoded.get('scope')
         if scope and mode not in scope:
             raise Unauthorized()
         client_id = jwt_decoded.get('client_id') or jwt_decoded.get('ClientID')
-        logger.info("TOKEN CLIENT IS -----------------> " + client_id)
+        _logger.info("TOKEN CLIENT IS -----------------> " + client_id)
         user = request.env['res.users'].sudo().search(
             [('login', '=', client_id)])
         if user:
