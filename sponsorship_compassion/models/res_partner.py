@@ -150,14 +150,9 @@ class ResPartner(models.Model):
     @api.multi
     def update_number_sponsorships(self):
         for partner in self:
-            partner.number_sponsorships = self.env[
-                'recurring.contract'].search_count([
-                    '|',
-                    ('partner_id', '=', partner.id),
-                    ('correspondent_id', '=', partner.id),
-                    ('activation_date', '!=', False),
-                    ('state', 'not in', ['cancelled', 'terminated']),
-                    ('child_id', '!=', False)])
+            partner.number_sponsorships = self.env['recurring.contract']\
+                .search_count(partner._get_active_sponsorships_domain())
+        return True
 
     @api.multi
     @api.depends('number_sponsorships')
@@ -293,27 +288,21 @@ class ResPartner(models.Model):
             'name': 'Contracts',
             'res_model': 'recurring.contract',
             'views': [[False, "tree"], [False, "form"], [False, "timeline"]],
-            'domain': ['|', ('correspondent_id', '=', self.id),
-                       ('partner_id', '=', self.id)],
-            'context': self.with_context({
-                'default_type': 'S',
-                'search_default_active': True
-            }).env.context,
+            'domain': self._get_active_sponsorships_domain(),
         }
 
     @api.multi
     def open_sponsored_children(self):
         self.ensure_one()
+        children = self.env['recurring.contract'].search(
+            self._get_active_sponsorships_domain()).mapped('child_id')
         return {
             'type': 'ir.actions.act_window',
             'name': 'Children',
             'res_model': 'compassion.child',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'context': self.with_context(
-                group_by=False,
-                search_default_sponsor_id=self.id
-            ).env.context,
+            'domain': [('id', 'in', children.ids)],
         }
 
     @api.onchange('lastname', 'firstname')
@@ -405,3 +394,18 @@ class ResPartner(models.Model):
                 }
                 messages += message_obj.create(message_vals)
         return messages
+
+    def _get_active_sponsorships_domain(self):
+        """
+        Get a search domain to fetch active sponsorships of the given
+        partners.
+        :return: domain search filter for recurring.contract object
+        """
+        return [
+            '|',
+            ('partner_id', 'in', self.ids),
+            ('correspondent_id', 'in', self.ids),
+            ('activation_date', '!=', False),
+            ('state', 'not in', ['cancelled', 'terminated']),
+            ('child_id', '!=', False)
+        ]
