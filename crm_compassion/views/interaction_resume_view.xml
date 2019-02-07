@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="interaction_resume_tree_view" model="ir.ui.view">
+        <field name="name">interaction_resume_tree_view</field>
+        <field name="model">interaction.resume</field>
+        <field name="arch" type="xml">
+        <tree>
+            <field name="communication_date"/>
+            <field name="communication_type"/>
+            <field name="communication" invisible="1" widget="many2one_clickable"/>
+            <field name="communication_shown" widget="polymorphic" polymorphic="communication" />
+        </tree>
+        </field>
+    </record>
+
+    <record id="action_view_interaction_resume_tree" model="ir.actions.act_window">
+        <field name="name">Interaction resume</field>
+        <field name="res_model">interaction.resume</field>
+        <field name="view_type">tree</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

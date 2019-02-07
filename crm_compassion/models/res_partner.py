@@ -9,11 +9,15 @@
 #
 ##############################################################################
 
-from odoo import api, models, _
+from odoo import api, models, fields, _
 
 
 class Partner(models.Model):
     _inherit = 'res.partner'
+
+    interaction_resume_ids = fields.One2many("interaction.resume",
+                                             compute="_compute_interaction",
+                                             stored=True)
 
     @api.multi
     def open_events(self):
@@ -48,3 +52,56 @@ class Partner(models.Model):
             partner.opportunity_count += self.env['crm.lead'].search_count(
                 [('partner_id', operator, partner.id),
                  ('type', '=', 'opportunity'), ('active', '=', False)])
+
+    @api.multi
+    def _compute_interaction(self):
+        for partner in self:
+            paper = self.env['partner.communication.job'].\
+                search([('partner_id', '=', partner.id)])
+            phone = self.env['crm.phonecall'].\
+                search([('partner_id', '=', partner.id)])
+            email = self.env['mail.tracking.email'].\
+                search([('partner_id', '=', partner.id)])
+
+            paperir_rec = self.env['interaction.resume'].\
+                search(['&', ('partner_id', '=', partner.id),
+                        ('communication_type', '=', 'Paper')])
+            paperir = paperir_rec.mapped('communication')
+            phoneir_rec = self.env['interaction.resume'].\
+                search(['&', ('partner_id', '=', partner.id),
+                        ('communication_type', '=', 'Phone')])
+            phoneir = phoneir_rec.mapped('communication')
+            emailir_rec = self.env['interaction.resume'].\
+                search(['&', ('partner_id', '=', partner.id),
+                        ('communication_type', '=', 'Email')])
+            emailir = emailir_rec.mapped('communication')
+
+            for papercom in paper:
+                if papercom not in paperir:
+                    partner.interaction_resume_ids | \
+                        self.env['interaction.resume'].create({
+                            'partner_id': partner.id,
+                            'communication_date': papercom.date,
+                            'communication_type': 'Paper',
+                            'communication': papercom.id
+                        })
+
+            for phonecom in phone:
+                if phonecom not in phoneir:
+                    partner.interaction_resume_ids | \
+                        self.env['interaction.resume'].create({
+                            'partner_id': partner.id,
+                            'communication_date': phonecom.date,
+                            'communication_type': 'Phone',
+                            'communication': phonecom.id
+                        })
+
+            for emailcom in email:
+                if emailcom not in emailir:
+                    partner.interaction_resume_ids | \
+                        self.env['interaction.resume'].create({
+                            'partner_id': partner.id,
+                            'communication_date': emailcom.date,
+                            'communication_type': 'Email',
+                            'communication': emailcom.id
+                        })
