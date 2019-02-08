@@ -32,19 +32,13 @@ class Partner(models.Model):
 
     @api.multi
     def create_odoo_user(self):
-        ctx = {
-            'active_ids': self.ids
-        }
-        return {
-            'name': _('Create odoo user'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'res.partner.create.portal.wizard',
-            'view_mode': 'form',
-            'view_id': self.env.ref(
-                'crm_compassion.res_partner_create_portal_wizard_form').id,
-            'target': 'new',
-            'context': ctx,
-        }
+        portal = self.env['portal.wizard'].create({})
+        portal.onchange_portal_id()
+        users_portal = portal.mapped('user_ids')
+        users_portal.write({'in_portal': True})
+        res = portal.action_apply()
+
+        return res
 
     @api.multi
     def _compute_opportunity_count(self):
