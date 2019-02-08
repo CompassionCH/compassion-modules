@@ -46,7 +46,6 @@ class Partner(models.Model):
             'context': ctx,
         }
 
-
     @api.multi
     def _compute_opportunity_count(self):
         super(Partner, self)._compute_opportunity_count()

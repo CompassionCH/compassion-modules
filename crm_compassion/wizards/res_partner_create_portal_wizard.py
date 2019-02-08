@@ -12,6 +12,7 @@
 
 from odoo import api, models, fields, _
 
+
 class ResPartnerCreatePortalWizard(models.TransientModel):
     """ creation of a portal user wizard will send a email
         with the identifier if the user used the checkbox """
@@ -51,7 +52,7 @@ class ResPartnerCreatePortalWizard(models.TransientModel):
 
         action = None
         if bool_uid_communication:
-            #get same communication create in portal.action_apply()
+            # get same communication create in portal.action_apply()
             same_job_search = [
                 ('partner_id', '=', users_portal.partner_id.id),
                 ('config_id', '=', ctx['config_id_id']),
