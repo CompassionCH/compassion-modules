@@ -61,6 +61,7 @@
         'views/demand_weekly_revision.xml',
         'views/hold_view.xml',
         'views/calendar_view.xml',
+        'wizards/res_partner_create_portal_wizard.xml'
     ],
     'qweb': [
         'static/src/xml/web_fullcalendar_event.xml',

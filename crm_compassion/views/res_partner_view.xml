@@ -16,7 +16,7 @@
         <field name="name">Create Odoo User</field>
         <field name="model_id" ref="model_res_partner"/>
         <field name="state">code</field>
-        <field name="code">records.create_odoo_user()</field>
+        <field name="code">action = records.create_odoo_user()</field>
     </record>
 
     <record id="test_more_item" model="ir.values">
