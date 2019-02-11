@@ -113,12 +113,6 @@ if not testing:
             # No error
             return 0, 0
 
-        def _form_validate_partner_zip(self, value, **req_values):
-            if value and not re.match(r'^\d{3,6}$', value):
-                return 'zip', _('Please enter a valid zip code')
-            # No error
-            return 0, 0
-
         def _form_validate_partner_email(self, value, **req_values):
             if value and not re.match(r'[^@]+@[^@]+\.[^@]+', value):
                 return 'email', _('Verify your e-mail address')
