@@ -15,7 +15,7 @@
                     <field name="force" />
                 </group>
                 <footer>
-                    <button name="generate_invoice" string="Generate" type="object" class="oe_highlight"/>
+                    <button name="generate_invoice" string="Generate" type="object" class="oe_highlight" context="{'force_date': True}"/>
                 </footer>
             </form>
         </field>

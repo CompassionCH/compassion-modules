@@ -55,12 +55,16 @@ class GenerateGiftWizard(models.TransientModel):
                             logger.error(
                                 'The birthdate of the child is missing!')
                             continue
-                        if self.env.context.get('lsv'):
+                        # This is set in the view in order to let the user
+                        # choose the invoice date. Otherwise (called from code)
+                        # the invoice date will be computed based on the
+                        # birthday of the child.
+                        if self.env.context.get('force_date'):
+                            invoice_date = self.invoice_date
+                        else:
                             invoice_date = self.compute_date_birthday_invoice(
                                 contract.child_id.birthdate,
                                 self.invoice_date)
-                        else:
-                            invoice_date = self.invoice_date
                         begin_year = fields.Date.from_string(
                             self.invoice_date).replace(month=1, day=1)
                         end_year = begin_year.replace(month=12, day=31)

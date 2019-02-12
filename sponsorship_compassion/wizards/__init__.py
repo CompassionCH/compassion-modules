@@ -13,4 +13,3 @@ from . import generate_gift_wizard
 from . import end_contract_wizard
 from . import child_hold_wizard
 from . import download_child_pictures
-from . import recurring_invoicer_wizard
