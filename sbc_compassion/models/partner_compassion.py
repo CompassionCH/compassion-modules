@@ -34,6 +34,7 @@ class ResPartner(models.Model):
     )
     translated_letter_ids = fields.One2many(
         'correspondence', 'translator_id', 'Translated letters')
+    last_writing_date = fields.Date(compute='_compute_last_writing_date')
 
     @api.multi
     def _compute_nb_letters(self):
@@ -41,6 +42,15 @@ class ResPartner(models.Model):
             partner.nb_letters = self.env['correspondence'].search_count([
                 ('partner_id', '=', partner.id)
             ])
+
+    @api.multi
+    def _compute_last_writing_date(self):
+        for partner in self:
+            last_letter = self.env['correspondence.last.writing.report']\
+                .search([('partner_id', '=', partner.id),
+                         ('last_write_date', '!=', False)],
+                        order='last_write_date desc', limit=1)
+            partner.last_writing_date = last_letter.last_write_date
 
     @api.model
     def create(self, vals):
