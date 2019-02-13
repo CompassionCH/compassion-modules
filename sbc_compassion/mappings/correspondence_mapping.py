@@ -116,22 +116,6 @@ class CorrespondenceMapping(OnrampMapping):
         'GlobalPartner.Id': 'CH',
     }
 
-    def get_connect_data(self, odoo_object, fields_to_submit=None):
-        """
-        Change mapping in order to send the translated language as original
-        language to GMC. This is because we translate the letter locally
-        and want to keep the original language in our system, but we transmit
-        the translated language to avoid the letter going into Field Office
-        Translation Queue.
-        :param odoo_object: correspondence object
-        :param fields_to_submit: dict of fields to submit
-        :return: connect data
-        """
-        res = super(CorrespondenceMapping, self).get_connect_data(
-            odoo_object, fields_to_submit)
-        res['OriginalLanguage'] = odoo_object.translation_language_id.name
-        return res
-
     def _convert_connect_data(self, connect_name, value_mapping, value,
                               relation_search=None):
         """ Replace mapping for template to look for B2S templates.
