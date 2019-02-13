@@ -31,13 +31,30 @@
         </field>
     </record>
 
+    <!-- Search view-->
+    <record id="support_search_view" model="ir.ui.view">
+        <field name="name">support.search.view</field>
+        <field name="model">crm.claim</field>
+        <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[1]" position="attributes">
+                <attribute name="name">unassigned</attribute>
+            </xpath>
+            <field name="partner_id" position="before">
+                <filter string="Assign to me" name="responsible"
+                        domain="[('user_id','=',uid)]"/>
+            </field>
+        </field>
+    </record>
+
     <record model="ir.actions.act_window" id="request_action">
         <field name="name">Requests</field>
         <field name="res_model">crm.claim</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,calendar,form</field>
         <field name="view_id" ref="crm_claim.crm_case_claims_tree_view"/>
-        <field name="context">{"search_default_user_id":uid,
+        <field name="context">
+            {"search_default_responsible":1,"search_default_unassigned":1,
             "stage_type":'claim'}
         </field>
         <field name="search_view_id"
@@ -53,9 +70,26 @@
         </field>
     </record>
 
-    <menuitem id="menu_support" name="Support"
-              parent="child_compassion.menu_sponsorship_root" sequence="4"/>
+    <!-- Top menu item -->
+    <menuitem id="support_root"
+              name="Support"
+              groups="sales_team.group_sale_salesman"
+              sequence="1"
+              web_icon="crm_compassion,static/description/support.png"/>
 
     <menuitem id="menu_crm_case_claims" name="Requests"
-              parent="menu_support" action="request_action" sequence="1"/>
+              parent="support_root" action="request_action" sequence="0"/>
+
+    <!-- Configuration menu-->
+    <menuitem id="crm_claim.menu_config_claim" name="Configuration"
+              parent="support_root" sequence="1"/>
+    <menuitem id="crm_claim_type.menu_crm_claim_type_act" name="Types"
+              parent="crm_claim.menu_config_claim"
+              action="crm_claim_type.crm_claim_type_act"/>
+    <menuitem name="Support Teams"
+              id="support_team_config"
+              parent="crm_claim.menu_config_claim"
+              sequence="3"
+              action="sales_team.sales_team_config_action"/>
+
 </odoo>
