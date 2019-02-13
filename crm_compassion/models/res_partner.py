@@ -34,16 +34,11 @@ class Partner(models.Model):
     def create_odoo_user(self):
         portal = self.env['portal.wizard'].create({})
         portal.onchange_portal_id()
-        users = portal.mapped('user_ids')
-        users.write({'in_portal': True})
-        no_mail = users.filtered(lambda u: not u.email)
-        for user in no_mail:
-            partner = user.partner_id
-            user.email = partner.firstname[0].lower() + \
-                partner.lastname.lower() + '@cs.local'
-        portal.action_apply()
-        no_mail.mapped('partner_id').write({'email': False})
-        return True
+        users_portal = portal.mapped('user_ids')
+        users_portal.write({'in_portal': True})
+        res = portal.action_apply()
+
+        return res
 
     @api.multi
     def _compute_opportunity_count(self):
