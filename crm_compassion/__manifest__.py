@@ -60,7 +60,7 @@
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
         'views/hold_view.xml',
-        'views/calendar_view.xml',
+        'views/calendar_view.xml'
     ],
     'qweb': [
         'static/src/xml/web_fullcalendar_event.xml',
