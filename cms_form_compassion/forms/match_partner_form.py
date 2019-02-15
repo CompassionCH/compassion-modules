@@ -159,7 +159,7 @@ if not testing:
                     ('email', '=ilike', source_vals['email']),
                     '|', ('active', '=', True), ('active', '=', False),
                 ])
-            if not partner:
+            if not partner or len(partner) > 1:
                 partner = partner_obj.search([
                     ('lastname', 'ilike', source_vals['lastname']),
                     ('firstname', 'ilike', source_vals['firstname']),
@@ -168,7 +168,6 @@ if not testing:
                 ])
             if not partner or len(partner) > 1:
                 # no match found or not sure which one -> creating a new one.
-                source_vals['lang'] = self.env.lang
                 partner = partner_obj.create(source_vals)
                 new_partner = True
             else:
@@ -176,23 +175,26 @@ if not testing:
                 del source_vals['title']
                 del source_vals['lastname']
                 del source_vals['firstname']
-            self.after_partner_match(partner, new_partner, source_vals)
-            values['partner_id'] = source_vals['partner_id']
+            self.after_partner_match(partner, new_partner, source_vals,
+                                     values, extra_values)
 
-        def after_partner_match(self, partner, new_partner, vals):
+        def after_partner_match(self, partner, new_partner, partner_vals,
+                                values, extra_values):
             """
             Called after partner is matched. Useful for updating partner
-            data
+            data. The method should put the matched partner id in values.
             :param partner: res.partner record matched
             :param new_partner: True if a new partner was created
-            :param vals: partner vals extracted from form
+            :param partner_vals: partner vals extracted from form
+            :param values: form main object values
+            :param extra_values: form extra values
             :return: None
             """
             if not new_partner:
-                partner.write(vals)
+                partner.write(partner_vals)
             # Push partner_id in values for using it in the rest
             # of form process
-            vals['partner_id'] = partner.id
+            values['partner_id'] = partner.id
 
         #######################################################################
         #                         PRIVATE METHODS                             #
@@ -204,6 +206,8 @@ if not testing:
                     'partner_' + key, values.get('partner_' + key))
                 for key in keys
             }
+            # Make active any partner that is matched
+            vals['active'] = True
             if 'lang' not in vals:
                 vals['lang'] = self.env.lang
             return vals
