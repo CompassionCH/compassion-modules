@@ -29,10 +29,6 @@ class ResPartner(models.Model):
         help='Delivery preference for Global Communication',
         groups='base.group_user'
     )
-    email_only = fields.Boolean(
-        help="Don't send any printed communication",
-        groups='base.group_user'
-    )
     communication_count = fields.Integer(
         compute='_compute_comm_count',
         groups='base.group_user'
@@ -40,12 +36,8 @@ class ResPartner(models.Model):
 
     _sql_constraints = [
         ('email_is_set_if_email_only',
-         "CHECK (NOT email_only OR email IS NOT NULL)",
-         'The email address should not be empty if email_only is selected.'),
-        ('not_both_and_email_only',
-         "CHECK (NOT email_only OR global_communication_delivery_preference "
-         "!= 'both')",
-         'The send mode should not be "both" if email_only is selected.')
+         "CHECK (global_communication_delivery_preference != 'digital_only' OR email IS NOT NULL)",
+         'The email address should not be empty if email_only is selected.')
     ]
 
     @api.multi

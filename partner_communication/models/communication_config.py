@@ -169,6 +169,8 @@ class CommunicationConfig(models.Model):
     def get_delivery_preferences(self):
         return [
             ('none', _("Don't inform sponsor")),
+            ('auto_digital_only', _('only by e-mail (send automatically)')),
+            ('digital_only', _('only by e-mail (send manually)')),
             ('auto_digital', _('Send e-mail automatically')),
             ('digital', _('Prepare e-mail (sent manually)')),
             ('auto_physical', _('Print letter automatically')),
@@ -182,13 +184,20 @@ class CommunicationConfig(models.Model):
         It makes the product of the communication preference and the partner
         preference :
 
-        comm_pref   partner_pref    result
-        ----------------------------------
-        digital     physical        physical if "print if no e-mail" else none
-        physical    digital         physical if not "email only"
+        comm_pref       partner_pref        result
+        ---------------------------------------------------
+        physical        digital             physical
+        physical        digital_only        digital
+        digital         physical            physical if "print if no e-mail" else none
+        digital         digital_only        digital
+        digital_only    physical            digital if e-mail is set else none
+        digital_only    digital             digital
+        digital_only    both                digital
+        both            digital_only        digital
 
-        auto        manual          manual
-        manual      auto            manual
+
+        auto            manual              manual
+        manual          auto                manual
 
         :param partner: res.partner record
         :returns: send_mode (physical/digital/False), auto_mode (True/False)
@@ -200,19 +209,30 @@ class CommunicationConfig(models.Model):
             'physical': {
                 'none': 'none',
                 'physical': 'physical',
-                'digital': 'physical' if not partner.email_only else 'none',
+                'digital': 'physical',
+                'digital_only': 'digital',
                 'both': 'physical',
             },
             'digital': {
                 'none': 'none',
                 'physical': 'physical' if self.print_if_not_email else 'none',
                 'digital': 'digital',
-                'both': 'both' if self.print_if_not_email else 'digital',
+                'digital_only': 'digital',
+                'both': 'digital',
+            },
+            'digital_only': {
+                'none': 'none',
+                'physical': 'digital' if partner.email else 'none',
+                'digital': 'digital',
+                'digital_only': 'digital',
+                'both': 'digital',
+
             },
             'both': {
                 'none': 'none',
                 'physical': 'physical',
-                'digital': 'both' if not partner.email_only else 'digital',
+                'digital': 'digital',
+                'digital_only': 'digital',
                 'both': 'both',
             }
         }
@@ -227,8 +247,8 @@ class CommunicationConfig(models.Model):
                 auto_mode = 'auto' in send_mode or send_mode == 'both'
             else:
                 auto_mode = (
-                    'auto' in self.send_mode and 'auto' in partner_mode or
-                    self.send_mode == 'both' and 'auto' in partner_mode or
+                    'auto' in partner_mode and 'auto' in self.send_mode or
+                    'auto' in partner_mode and self.send_mode == 'both' or
                     'auto' in self.send_mode and partner_mode == 'both'
                 )
                 comm_mode = self.send_mode.replace('auto_', '')
@@ -240,15 +260,15 @@ class CommunicationConfig(models.Model):
                 partner, self.send_mode_pref_field,  'none')
             auto_mode = 'auto' in send_mode or send_mode == 'both'
 
-        send_mode = send_mode.replace('auto_', '')
+        send_mode = send_mode.replace('auto_', '').replace('_only', '')
         if send_mode == 'none':
             send_mode = False
 
         # missing email
         if send_mode in ['digital', 'both'] and not partner.email:
             removed_digital = True
-            if (self.print_if_not_email or send_mode == 'both') and not \
-                    partner.email_only:
+            if (self.print_if_not_email or send_mode == 'both') and \
+                    send_mode != 'digital_only':
                 send_mode = 'physical'
                 auto_mode = False
             else:
