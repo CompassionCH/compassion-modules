@@ -36,7 +36,8 @@ class ResPartner(models.Model):
 
     _sql_constraints = [
         ('email_is_set_if_email_only',
-         "CHECK (global_communication_delivery_preference != 'digital_only' OR email IS NOT NULL)",
+         "CHECK (global_communication_delivery_preference != 'digital_only'"
+         "OR email IS NOT NULL)",
          'The email address should not be empty if email_only is selected.')
     ]
 

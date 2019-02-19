@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Nicolas Bornand
+#    @author: Joel Vaucher
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from openupgradelib import openupgrade
 
 
-@openupgrade.migrate(use_env=True)
 def migrate(env, version):
     if not version:
         return
@@ -34,7 +32,8 @@ def migrate(env, version):
     env.cr.execute("""
         UPDATE res_partner
         SET global_communication_delivery_preference='auto_digital_only'
-        WHERE email_only=true AND global_communication_delivery_preference!='none'
+        WHERE email_only=true AND
+        global_communication_delivery_preference!='none'
         """)
     env.cr.execute("""
         UPDATE res_partner
