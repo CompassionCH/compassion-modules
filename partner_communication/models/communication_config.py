@@ -48,7 +48,9 @@ class CommunicationDefaults(models.AbstractModel):
 
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
-    need_call = fields.Boolean(
+    need_call = fields.Selection(
+        [('before_sending', 'Before the communication is sent'),
+         ('after_sending', 'After the communication is sent')],
         help='Indicates we should have a personal contact with the partner'
     )
     print_if_not_email = fields.Boolean(
