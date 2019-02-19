@@ -254,25 +254,28 @@ class CommunicationConfig(models.Model):
                 comm_mode = self.send_mode.replace('auto_', '')
                 partner_mode = partner_mode.replace('auto_', '')
                 send_mode = send_priority[comm_mode][partner_mode]
-
         else:
             send_mode = getattr(
                 partner, self.send_mode_pref_field,  'none')
             auto_mode = 'auto' in send_mode or send_mode == 'both'
 
-        send_mode = send_mode.replace('auto_', '').replace('_only', '')
+        send_mode = send_mode.replace('auto_', '')
+
         if send_mode == 'none':
             send_mode = False
 
         # missing email
-        if send_mode in ['digital', 'both'] and not partner.email:
+        if send_mode in ['digital', 'digital_only', 'both'] and \
+                not partner.email:
             removed_digital = True
-            if (self.print_if_not_email or send_mode == 'both') and \
+            if self.print_if_not_email or send_mode == 'both' and \
                     send_mode != 'digital_only':
                 send_mode = 'physical'
                 auto_mode = False
             else:
                 send_mode = False
+
+        send_mode = send_mode.replace('_only', '')
 
         # missing address
         if send_mode in ['physical', 'both'] and \
