@@ -39,19 +39,12 @@ class MatchPartner(models.AbstractModel):
         if partner_id:
             partner = partner_obj.browse(partner_id)
 
-        if not partner or len(partner) > 1:
-            partner = partner_obj.search([
-                ('email', '=ilike', infos['email']),
-                '|', ('active', '=', True), ('active', '=', False),
-            ])
-
-        if not partner or len(partner) > 1:
-            partner = partner_obj.search([
-                ('lastname', 'ilike', infos['lastname']),
-                ('firstname', 'ilike', infos['firstname']),
-                ('zip', '=', infos['zip']),
-                '|', ('active', '=', True), ('active', '=', False),
-            ])
+        for rule in self._match_get_rules_order():
+            if not partner or len(partner) > 1:
+                method = getattr(self, '_match_rule_' + rule)
+                partner = method(partner_obj, infos)
+            else:
+                break
 
         if not partner or len(partner) > 1:
             # no match found or not sure which one -> creating a new one.
@@ -61,6 +54,31 @@ class MatchPartner(models.AbstractModel):
         partner = self.match_after_match(partner, new_partner, infos)
 
         return partner
+
+    @api.model
+    def _match_get_rules_order(self):
+        """
+        Get, in order, the name of the methods used to find a matching partner.
+        Each of the listed method must take a partner_obj and the infos as
+        their parameter. They must also return a recordset of partner.
+        """
+        return ['email', 'fullname_and_zip']
+
+    @api.model
+    def _match_rule_email(self, partner_obj, infos):
+        return partner_obj.search([
+            ('email', '=ilike', infos['email']),
+            '|', ('active', '=', True), ('active', '=', False),
+        ])
+
+    @api.model
+    def _match_rule_fullname_and_zip(self, partner_obj, infos):
+        return partner_obj.search([
+            ('lastname', 'ilike', infos['lastname']),
+            ('firstname', 'ilike', infos['firstname']),
+            ('zip', '=', infos['zip']),
+            '|', ('active', '=', True), ('active', '=', False),
+        ])
 
     @api.model
     def match_after_match(self, partner, new_partner, infos):
