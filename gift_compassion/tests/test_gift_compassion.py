@@ -141,6 +141,10 @@ class TestGifts(BaseSponsorshipTest):
         self.assertEquals(gift.gift_date, '%s-11-28' % str(today.year))
         self.assertEquals(gift.amount, 50)
         self.assertEquals(gift.gift_type, 'Beneficiary Gift')
+        self.assertEquals(gift.state, 'verify')
+
+        sponsorship.contract_active()
+
         self.assertEquals(gift.state, 'draft')
 
         # test create from invoice line function

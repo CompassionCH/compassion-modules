@@ -55,13 +55,18 @@ class SponsorshipContract(models.Model):
 
         super(SponsorshipContract, self).invoice_paid(invoice)
 
-    @api.onchange('is_active')
-    def onchange_is_active(self):
-        if self.is_active:
-            for invl in self.invoice_line_ids.filtered('gift_id'):
-                gift = invl.gift_id
-                if gift.state == 'verify':
-                    gift.state = 'draft'
+    @api.multi
+    def contract_active(self):
+        res = super(SponsorshipContract, self).contract_active()
+
+        for contract in self:
+            if contract.is_active:
+                for invl in contract.invoice_line_ids.filtered('gift_id'):
+                    gift = invl.gift_id
+                    if gift.state == 'verify':
+                        gift.state = 'draft'
+
+        return res
 
     @api.multi
     def invoice_unpaid(self, invoice):
