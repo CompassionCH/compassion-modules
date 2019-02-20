@@ -24,7 +24,7 @@ class RestController(http.Controller):
     # TODO Implement new oauth_validation method for issuer
     # 'http://services.compassionuk.org/' (or any other)
     @http.route('/mobile-app-api/<string:model>/<string:method>', type='json',
-                auth='oauth2', methods=['GET', 'POST'])
+                auth='oauth2_legacy', methods=['GET', 'POST'])
     def mobile_app_handler(self, model, method, **parameters):
         odoo_obj = request.env.get(model)
         model_method = 'mobile_' + method

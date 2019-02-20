@@ -22,8 +22,8 @@ class TestOnRampController(TestOnramp):
         self.opener.addheaders = [pair for pair in self.opener.addheaders
                                   if pair[0] != 'Authorization']
         response = self._send_post({'nothing': 'nothing'})
-        self.assertEqual(response.code, 401)
-        self.assertEqual(response.msg, 'UNAUTHORIZED')
+        self.assertEqual(response.code, 403)
+        self.assertEqual(response.msg, 'FORBIDDEN')
 
     def test_bad_token(self):
         """ Check we have an access denied if token is not valid
