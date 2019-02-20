@@ -259,9 +259,12 @@ class GmcMessagePool(models.Model):
         for message in self:
             model_obj = self.env[action.model]
             commkit_data = [json.loads(message.content)]
+
             object_ids.extend(
                 map(str,
-                    getattr(model_obj, action.incoming_method)(*commkit_data)))
+                    getattr(model_obj, action.incoming_method)(
+                        *commkit_data)))
+
         return {
             'state': 'success' if object_ids else 'failure',
             'object_ids': ','.join(object_ids),

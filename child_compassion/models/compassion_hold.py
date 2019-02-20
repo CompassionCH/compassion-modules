@@ -417,7 +417,9 @@ class CompassionHold(models.Model):
                 ('global_id', '=', data.get('Beneficiary_GlobalID'))
             ])
             if not child:
-                return []
+                # return -1 is better than an empty list, as it allow us a
+                # better error handling
+                return [-1]
             hold = child.hold_id
             if not hold:
                 hold = self.create({
