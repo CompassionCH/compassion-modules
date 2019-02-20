@@ -256,14 +256,21 @@ class GmcMessagePool(models.Model):
         and call the process_commkit method on the related object. """
         object_ids = list()
         action = self.mapped('action_id')
+        success = False
         for message in self:
             model_obj = self.env[action.model]
             commkit_data = [json.loads(message.content)]
-            object_ids.extend(
-                map(str,
-                    getattr(model_obj, action.incoming_method)(*commkit_data)))
+
+            # if hold or related child is not in our system anymore
+            if -1 in object_ids:
+                success = True
+            else:
+                object_ids.extend(
+                    map(str,
+                        getattr(model_obj, action.incoming_method)(
+                            *commkit_data)))
         return {
-            'state': 'success' if object_ids else 'failure',
+            'state': 'success' if (object_ids or success) else 'failure',
             'object_ids': ','.join(object_ids),
             'failure_reason': 'No related objects found.' if not object_ids
             else False
