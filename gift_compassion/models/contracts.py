@@ -50,7 +50,7 @@ class SponsorshipContract(models.Model):
                 gift = self.env['sponsorship.gift']\
                     .create_from_invoice_line(invl)
 
-                if not invl.invoice_id.is_active:
+                if not invl.contract_id.is_active:
                     gift.state = 'verify'
 
         super(SponsorshipContract, self).invoice_paid(invoice)
