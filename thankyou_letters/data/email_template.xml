@@ -29,6 +29,35 @@
             </field>
         </record>
 
+        <record id="thankyou_letter_template_large" model="mail.template">
+            <field name="name">Large Donation - Thank You Letter</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="use_default_to" eval="True"/>
+            <field name="subject">Donation Receipt</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set invoice_lines = object.get_objects()
+                    % set donations = invoice_lines.get_donations()
+                    % set partner = object.partner_id
+                </div>
+                <div>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We thank you for the donation of CHF ${donations[0]}.-
+                    % if donations[1]:
+                        you made for ${donations[1]}.
+                    % else
+                        you made.
+                    % endif
+                    We appreciate your generosity.
+                    <br/>
+                    <br/>
+                    Yours sincerely
+                </div>
+            </field>
+        </record>
+
         <record id="donation_summary_template" model="mail.template">
             <field name="name">Donation - Summary</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>

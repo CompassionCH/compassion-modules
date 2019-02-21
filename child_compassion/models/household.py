@@ -286,6 +286,7 @@ class HouseholdMembers(models.Model):
             ('Friend', _('friend')),
             ('Other non-relative', 'Other non-relative'),
             ('Other relative', 'Other relative'),
+            ('Beneficiary \u2013 Unborn', 'Beneficiary Unborn')
         ]
 
     @api.depends('role')

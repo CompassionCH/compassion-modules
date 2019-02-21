@@ -7,16 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from psycopg2 import IntegrityError
 from odoo.tests.common import TransactionCase
 import logging
 logger = logging.getLogger(__name__)
 
 
 class TestCommunicationJob(TransactionCase):
-
-    def _set_email_only(self):
-        self.partner.email_only = True
 
     def _set_email_false(self):
         self.partner.email = False
@@ -103,12 +99,6 @@ class TestCommunicationJob(TransactionCase):
         self.partner.global_communication_delivery_preference = 'digital'
         self.assertEqual(self.config.get_inform_mode(self.partner),
                          ('physical', False))
-        # Partner said email only -> No comm
-        self.partner.global_communication_delivery_preference = 'digital'
-        self.partner.email_only = True
-        self.assertEqual(self.config.get_inform_mode(self.partner),
-                         (False, False))
-        self.partner.email_only = False
 
         self.partner.global_communication_delivery_preference = 'both'
         self.assertEqual(self.config.get_inform_mode(self.partner),
@@ -139,7 +129,6 @@ class TestCommunicationJob(TransactionCase):
         # send_mode == both -> still no paper is email only
         self.config.send_mode = 'both'
         self.assertEqual(self.config.send_mode, 'both')
-        self.assertEqual(self.partner.email_only, False)  # by default False
 
         self.partner.global_communication_delivery_preference = 'auto_digital'
         self.assertEqual(self.config.get_inform_mode(self.partner),
@@ -148,13 +137,6 @@ class TestCommunicationJob(TransactionCase):
         self.partner.global_communication_delivery_preference = 'physical'
         self.assertEqual(self.config.get_inform_mode(self.partner),
                          ('physical', False))
-
-        # Partner said email only -> No comm
-        self.partner.global_communication_delivery_preference = 'digital'
-        self.partner.email_only = True
-        self.assertEqual(self.config.get_inform_mode(self.partner),
-                         ('digital', False))
-        self.partner.email_only = False
 
         # user has no email field -> every digital should result in None
         self.partner.email = False
@@ -172,29 +154,19 @@ class TestCommunicationJob(TransactionCase):
         self.assertEqual(self.config.get_inform_mode(self.partner),
                          ('physical', False))
 
-    def test_sql_constraint_email_only(self):
-        self.assertIsNot(self.partner.email_only, True)
+    def test_digital_only(self):
+        # Some tests to check if digital only preference is well treated
+        self.partner.global_communication_delivery_preference = 'digital_only'
+        self.config.send_mode = 'physical'
+        self.assertEqual(self.config.get_inform_mode(self.partner),
+                         ('digital', False))
+        self.partner.global_communication_delivery_preference = 'physical'
+        self.config.send_mode = 'digital_only'
+        self.assertEqual(self.config.get_inform_mode(self.partner),
+                         ('digital', False))
         self.partner.email = False
-        self.assertFalse(self.partner.email)
-        self.assertRaises(IntegrityError, self._set_email_only)
-
-    def test_sql_constraint_email_false(self):
-        self.partner.email = 'me@example.com'
-        self.assertIsNot(self.partner.email, False)
-        self.partner.email_only = True
-        self.assertTrue(self.partner.email_only)
-        self.assertRaises(IntegrityError, self._set_email_false)
-
-    def test_sql_constraint_not_both_and_email_only(self):
-        self.partner.email_only = True
-        self.assertIsNot(self.partner.email_only, False)
-        self.assertRaises(IntegrityError, self._set_pref_both)
-
-    def test_sql_constraint_not_email_only_if_both(self):
-        self.partner.email_only = False
-        self.assertFalse(self.partner.email_only)
-        self.partner.global_communication_delivery_preference = 'both'
-        self.assertRaises(IntegrityError, self._set_email_only)
+        self.assertEqual(self.config.get_inform_mode(self.partner),
+                         (False, False))
 
     def test_multiple_jobs(self):
         non_default_config = self.env['partner.communication.config'].browse(

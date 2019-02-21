@@ -28,7 +28,7 @@ if not testing:
            be present on the related model.
         """
         _name = 'cms.form.match.partner'
-        _inherit = 'cms.form'
+        _inherit = ['cms.form', 'res.partner.match']
 
         partner_id = fields.Many2one('res.partner')
         partner_title = fields.Many2one(
@@ -146,54 +146,15 @@ if not testing:
             """
             super(PartnerMatchform, self).form_before_create_or_update(
                 values, extra_values)
-            partner_id = values.get('partner_id')
-            partner_obj = self.env['res.partner'].sudo()
-            partner = partner_obj
-            new_partner = False
-            if partner_id:
-                partner = partner_obj.browse(partner_id)
 
             source_vals = self._get_partner_vals(values, extra_values)
-            if not partner:
-                partner = partner_obj.search([
-                    ('email', '=ilike', source_vals['email']),
-                    '|', ('active', '=', True), ('active', '=', False),
-                ])
-            if not partner or len(partner) > 1:
-                partner = partner_obj.search([
-                    ('lastname', 'ilike', source_vals['lastname']),
-                    ('firstname', 'ilike', source_vals['firstname']),
-                    ('zip', '=', source_vals['zip']),
-                    '|', ('active', '=', True), ('active', '=', False),
-                ])
-            if not partner or len(partner) > 1:
-                # no match found or not sure which one -> creating a new one.
-                partner = partner_obj.create(source_vals)
-                new_partner = True
-            else:
-                # Write current values in partner without changing name
-                del source_vals['title']
-                del source_vals['lastname']
-                del source_vals['firstname']
-            self.after_partner_match(partner, new_partner, source_vals,
-                                     values, extra_values)
 
-        def after_partner_match(self, partner, new_partner, partner_vals,
-                                values, extra_values):
-            """
-            Called after partner is matched. Useful for updating partner
-            data. The method should put the matched partner id in values.
-            :param partner: res.partner record matched
-            :param new_partner: True if a new partner was created
-            :param partner_vals: partner vals extracted from form
-            :param values: form main object values
-            :param extra_values: form extra values
-            :return: None
-            """
-            if not new_partner:
-                partner.write(partner_vals)
-            # Push partner_id in values for using it in the rest
-            # of form process
+            partner_id = values.get('partner_id')
+            if partner_id:
+                source_vals['partner_id'] = partner_id
+
+            partner = self.match_partner_to_infos(source_vals)
+
             values['partner_id'] = partner.id
 
         #######################################################################

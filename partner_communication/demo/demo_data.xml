@@ -4,6 +4,6 @@
         <field name="model_id" ref="model_res_partner"/>
         <field name="send_mode">partner_preference</field>
         <field name="send_mode_pref_field">global_communication_delivery_preference</field>
-        <field name="need_call">True</field>
+        <field name="need_call">before_sending</field>
     </record>
 </odoo>

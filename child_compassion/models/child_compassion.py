@@ -171,6 +171,7 @@ class CompassionChild(models.Model):
                                            'management'),
         ('Law', 'Law'),
         ('Mathematics', 'Mathematics'),
+        ('Medical/ Health Services', 'Medical / Health services'),
         ('Nursing', 'Nursing'),
         ('Psychology', 'Psychology'),
         ('Sales and Marketing', 'Sales and marketing'),
@@ -193,6 +194,7 @@ class CompassionChild(models.Model):
         ('Management', 'Management'),
         ('Commerce', 'Commerce'),
         ('Medicine', 'Medicine'),
+        ('Other', 'Other')
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
