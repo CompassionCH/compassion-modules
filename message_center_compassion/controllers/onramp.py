@@ -8,16 +8,19 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import simplejson as json
 
 from odoo import http, exceptions
 from odoo.http import request
-from ..tools.onramp_logging import ONRAMP_LOGGER, log_message
+from ..tools.onramp_connector import OnrampConnector
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
 AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC', 'CINetsuite',
                       'SFDC-CI']
+
+_logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
@@ -28,7 +31,8 @@ class RestController(http.Controller):
         """
         headers = request.httprequest.headers
         message_type = headers['x-cim-MessageType']
-        log_message("INCOMING", message_type, headers, request.jsonrequest)
+        OnrampConnector.log_message(
+            "INCOMING", message_type, headers, request.jsonrequest)
         self._validate_headers(headers)
         result = {
             "ConfirmationId": request.uuid,
@@ -58,11 +62,11 @@ class RestController(http.Controller):
         else:
             params['direction'] = 'in'
             if action_connect.ignored:
-                ONRAMP_LOGGER.info(
+                _logger.warning(
                     "Ignored message type received: " + message_type)
                 result["Message"] = "Ignored message type - not processed."
             else:
-                ONRAMP_LOGGER.error(
+                _logger.warning(
                     "Unknown message type received: " + message_type)
                 result["Message"] = "Unknown message type - not processed."
 

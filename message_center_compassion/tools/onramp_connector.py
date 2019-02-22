@@ -13,19 +13,17 @@ import requests
 import base64
 from datetime import datetime, timedelta
 
-from .onramp_logging import log_message
-
 from odoo import _
 from odoo.exceptions import UserError
 from odoo.tools.config import config
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 try:
     import httplib
     import simplejson
 except ImportError:
-    logger.warning("Please install httplib and simplejson")
+    _logger.warning("Please install httplib and simplejson")
 
 
 class OnrampConnector(object):
@@ -90,7 +88,7 @@ class OnrampConnector(object):
         """
         headers = {'Content-type': 'application/json'}
         url = self._connect_url + service_name
-        log_message(message_type, url, headers, body, self._session)
+        self.log_message(message_type, url, headers, body, self._session)
         if params is None:
             params = dict()
         param_string = self._encode_params(params)
@@ -113,7 +111,7 @@ class OnrampConnector(object):
             'code': status,
             'request_id': r.headers.get('x-cim-RequestId'),
         }
-        log_message(status, 'RESULT', message=r.text)
+        self.log_message(status, 'RESULT', message=r.text)
         try:
             # Receiving some weird encoded strings
             result['content'] = simplejson.JSONDecoder(strict=False).decode(
@@ -169,3 +167,30 @@ class OnrampConnector(object):
         except (AttributeError, KeyError):
             raise UserError(
                 _('Token validation failed.'))
+
+    @classmethod
+    def log_message(cls, type, url, headers=None, message=None, session=None):
+        """
+        Used to format GMC messages for console log
+        :param type: type of request (post/get/etc...)
+        :param url: url of request
+        :param headers: headers of request
+        :param message: content of request
+        :param session: session of request
+        :return: None
+        """
+        if headers is None:
+            headers = dict()
+        if message is None:
+            message = '{empty}'
+        if session is not None:
+            complete_headers = headers.copy()
+            complete_headers.update(session.headers)
+        else:
+            complete_headers = headers
+        _logger.info(
+            "[%s] %s %s %s",
+            type,
+            url,
+            [(k, v) for k, v in complete_headers.iteritems()],
+            simplejson.dumps(message))
