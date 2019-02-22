@@ -99,7 +99,8 @@ class CommunicationJob(models.Model):
         related='config_id.email_template_id', store=True)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
-    email_id = fields.Many2one('mail.mail', 'Generated e-mail', readonly=True)
+    email_id = fields.Many2one(
+        'mail.mail', 'Generated e-mail', readonly=True, index=True)
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
     body_html = fields.Html(sanitize=False)
