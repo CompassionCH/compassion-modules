@@ -27,6 +27,7 @@
 #
 ##############################################################################
 
+# pylint: disable=C8101
 {
     'name': "Compassion Onramp Simulator",
     'version': '10.0.1.0.0',
@@ -34,6 +35,7 @@
     'summary': "Send messages to Compassion Onramps",
     'sequence': 150,
     'author': 'Compassion CH',
+    'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['message_center_compassion'],
     'external_dependencies': {},
