@@ -73,6 +73,8 @@ class CommunicationRevision(models.Model):
     is_master_version = fields.Boolean()
     subject = fields.Char()
     subject_correction = fields.Char()
+    raw_subject = fields.Char(compute='_compute_raw_subject',
+                              inverse='_inverse_raw_subject')
     body_html = fields.Html(related='config_id.email_template_id.body_html')
     raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
@@ -172,6 +174,19 @@ class CommunicationRevision(models.Model):
         for rev in self:
             rev.display_name = rev.config_id.name + ' - ' + \
                 rev.lang.upper()[:2]
+
+    @api.multi
+    def _compute_raw_subject(self):
+        for revision in self:
+            revision.raw_subject = revision.config_id.email_template_id\
+                .with_context(lang=revision.lang).subject
+
+    @api.multi
+    def _inverse_raw_subject(self):
+        for revision in self:
+            if revision.raw_subject:
+                revision.config_id.email_template_id.with_context(
+                    lang=revision.lang).subject = revision.raw_subject
 
     ##########################################################################
     #                              ORM METHODS                               #
