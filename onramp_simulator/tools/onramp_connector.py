@@ -12,8 +12,6 @@ import simplejson
 import requests
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from odoo.addons.message_center_compassion.tools.onramp_logging import \
-    log_message
 
 from odoo import _
 from odoo.exceptions import UserError
@@ -58,11 +56,11 @@ class TestOnrampConnector(OnrampConnector):
         url = test_message.server_url
         body = test_message.body_json
 
-        log_message('POST', url, headers, body)
+        OnrampConnector.log_message('POST', url, headers, body)
         r = self._session.post(url, headers=headers,
                                json=simplejson.loads(body))
         status = r.status_code
-        log_message(status, 'RESULT', message=r.text)
+        OnrampConnector.log_message(status, 'RESULT', message=r.text)
         test_message.write({
             'result': r.text,
             'result_code': r.status_code
