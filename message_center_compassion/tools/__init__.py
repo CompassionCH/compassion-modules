@@ -8,5 +8,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import onramp_logging
 from . import onramp_connector

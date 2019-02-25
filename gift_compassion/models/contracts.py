@@ -47,9 +47,26 @@ class SponsorshipContract(models.Model):
             if invl.product_id.categ_name == GIFT_CATEGORY and \
                     invl.contract_id.child_id:
                 # Create the Sponsorship Gift
-                self.env['sponsorship.gift'].create_from_invoice_line(invl)
+                gift = self.env['sponsorship.gift']\
+                    .create_from_invoice_line(invl)
+
+                if not invl.contract_id.is_active:
+                    gift.state = 'verify'
 
         super(SponsorshipContract, self).invoice_paid(invoice)
+
+    @api.multi
+    def contract_active(self):
+        res = super(SponsorshipContract, self).contract_active()
+
+        for contract in self:
+            if contract.is_active:
+                for invl in contract.invoice_line_ids.filtered('gift_id'):
+                    gift = invl.gift_id
+                    if gift.state == 'verify':
+                        gift.state = 'draft'
+
+        return res
 
     @api.multi
     def invoice_unpaid(self, invoice):

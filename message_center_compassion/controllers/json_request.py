@@ -14,11 +14,10 @@ import logging
 import uuid
 from datetime import datetime
 
-from ..tools.onramp_logging import ONRAMP_LOGGER
 from odoo import exceptions
 from odoo.http import (
     Response, JsonRequest, Root, SessionExpiredException,
-    AuthenticationError, serialize_exception
+    AuthenticationError
 )
 
 _logger = logging.getLogger(__name__)
@@ -82,7 +81,7 @@ Sample Unsuccessful Response
 
     def dispatch(self):
         """ Log the received message before processing it. """
-        ONRAMP_LOGGER.info(
+        _logger.info(
             "[%s] %s %s %s",
             self.httprequest.environ['REQUEST_METHOD'],
             self.httprequest.url,
@@ -112,7 +111,7 @@ Sample Unsuccessful Response
 
         http_response = Response(
             body, headers=headers, status=status)
-        ONRAMP_LOGGER.info('[SEND] %s %s "%s"', status, headers, response)
+        _logger.info('[SEND] %s %s "%s"', status, headers, response)
         return http_response
 
     def _handle_exception(self, exception):
@@ -182,5 +181,4 @@ Sample Unsuccessful Response
             })
 
         finally:
-            ONRAMP_LOGGER.error(serialize_exception(exception))
             return self._json_response(error=error)

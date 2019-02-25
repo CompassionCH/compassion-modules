@@ -16,9 +16,6 @@ class TestOnRampController(TestOnramp):
     def setUp(self):
         super(TestOnRampController, self).setUp()
 
-    def test_dummy(self):
-        self.assertEqual(1, 1)
-
     def test_no_token(self):
         """ Check we have an access denied if token is not provided
         """

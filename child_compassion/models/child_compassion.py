@@ -106,6 +106,7 @@ class CompassionChild(models.Model):
         ('Preschool', 'preschool'),
         ('Primary', 'primary school'),
         ('Secondary', 'secondary school'),
+        ('Highschool', 'high school'),
         ('University Graduate', 'university'),
     ], readonly=True)
     local_grade_level = fields.Char(readonly=True)
@@ -381,6 +382,32 @@ class CompassionChild(models.Model):
                 child.write(child_mapping.get_vals_from_connect(child_data))
         children.update_child_pictures()
         return children.ids
+
+    def convert_us_grade_to_education_level(self):
+        """
+        Takes the US Grade level field and converts to the education level
+        which is used in child descriptions.
+        :return: True
+        """
+        self.ensure_one()
+        if self.us_grade_level and not self.education_level:
+            grade_mapping = {
+                'P': 'Preschool',
+                'K': 'Preschool',
+                '1': 'Primary',
+                '2': 'Primary',
+                '3': 'Primary',
+                '4': 'Primary',
+                '5': 'Primary',
+                '6': 'Primary',
+                '7': 'Secondary',
+                '8': 'Secondary',
+                '9': 'Secondary',
+                '10': 'Highschool',
+                '11': 'Highschool',
+                '12': 'Highschool',
+            }
+            self.education_level = grade_mapping.get(self.us_grade_level)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

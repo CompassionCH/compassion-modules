@@ -56,7 +56,7 @@ class GenericChildMapping(OnrampMapping):
         'Gender': 'gender',
         'GlobalId': 'global_id',
         'GradeLevelLocal_Name': 'local_grade_level',
-        'GradeLevelUS_Name': 'local_grade_level',
+        'GradeLevelUS_Name': 'us_grade_level',
         'HeightInCm': 'height',
         'HoldExpirationDate': 'hold_expiration_date',
         'HoldingGlobalPartner': (
@@ -96,7 +96,7 @@ class GenericChildMapping(OnrampMapping):
         'ThingsILikeAge1To2': ('hobby_ids.name', 'child.hobby'),
         'ThingsILikeToDoAge3Plus': ('hobby_ids.name', 'child.hobby'),
         'TypeOfVocationalEducation': 'vocational_training_type',
-        'USEquivalentGradeLevel': 'local_grade_level',
+        'USEquivalentGradeLevel': 'us_grade_level',
         'VocationalTrainingType_Name': 'vocational_training_type',
         'WaitingSinceDate': 'unsponsored_since',
         'WeightInKg': 'weight',

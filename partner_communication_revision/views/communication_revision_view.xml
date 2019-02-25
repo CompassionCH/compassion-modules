@@ -25,6 +25,14 @@
                         <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit template" type="object" groups="base.group_system"/>
                         <button class="oe_stat_button" name="reload_text" icon="fa-refresh" string="Reload text" type="object" attrs="{'invisible': [('raw_template_edit_mode','=',False)]}"/>
                     </div>
+                    <group>
+                        <group>
+                            <field name="subject"/>
+                        </group>
+                        <group>
+                            <field name="raw_subject"/>
+                        </group>
+                    </group>
                     <field name="raw_template_edit_mode" invisible="1"/>
                     <field name="proposition_text" groups="base.group_erp_manager"/>
                     <hr groups="base.group_erp_manager"/>
@@ -57,6 +65,9 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
+                    <group>
+                        <field name="raw_subject"/>
+                    </group>
                     <field name="simplified_text" widget="html" readonly="1"/>
                     <button name="refresh_text" type="object" string="Update text" class="oe_highlight sht_refresh_button"/>
                     <group>

@@ -16,8 +16,6 @@ from odoo import _
 from odoo.exceptions import UserError
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from odoo.addons.message_center_compassion.tools.onramp_logging import \
-    log_message
 
 from odoo.tools.config import config
 
@@ -62,12 +60,11 @@ class SBCConnector(OnrampConnector):
         headers = {'Content-type': 'image/{0}'.format(image_type)}
         params = {'doctype': 's2bletter'}
         url = self._connect_url+'images/documents'
-        log_message(
+        OnrampConnector.log_message(
             'POST', url, headers, message='{image binary data not shown}')
         r = self._session.post(
             url, params=params, headers=headers,
             data=base64.b64decode(image_data))
-        letter_url = False
         status = r.status_code
         if status == 201:
             letter_url = r.text
@@ -85,7 +82,7 @@ class SBCConnector(OnrampConnector):
             'format': type,
             'pg': pages,
             'dpi': dpi}
-        log_message('GET', letter_url)
+        OnrampConnector.log_message('GET', letter_url)
         r = self._session.get(letter_url, params=params)
         letter_data = None
         if r.status_code == 200:

@@ -191,7 +191,9 @@ class ChildDescription(models.TransientModel):
 
         # 3. Schooling
         ##############
-        if child.education_level and child.education_level != 'Not Enrolled':
+        if child.us_grade_level and child.us_grade_level != 'Not Enrolled':
+            # Make sure the education level is set
+            child.convert_us_grade_to_education_level()
             desc('#school_attending').html(
                 self.school_yes_lang[self.env.lang][child.gender].format(
                     preferred_name=child.preferred_name,
