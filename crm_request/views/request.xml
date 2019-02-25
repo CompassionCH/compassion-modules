@@ -15,15 +15,6 @@
                 <attribute name="string">Description</attribute>
             </xpath>
 
-            <field name="date" position="attributes">
-                <attribute name="string">Date</attribute>
-            </field>
-            <field name="name" position="attributes">
-                <attribute name="string">Subject</attribute>
-            </field>
-            <field name="code" position="attributes">
-                <attribute name="string">Number</attribute>
-            </field>
             <field name="claim_type" position="attributes">
                 <attribute name="string">Type</attribute>
             </field>
@@ -38,11 +29,19 @@
         <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[1]" position="attributes">
+                <attribute name="string">Unassigned</attribute>
                 <attribute name="name">unassigned</attribute>
             </xpath>
             <field name="partner_id" position="before">
                 <filter string="Assign to me" name="responsible"
                         domain="[('user_id','=',uid)]"/>
+            </field>
+            <field name="user_id" position="after">
+                <separator/>
+                <!--<filter string="Request open" name="stage_open"-->
+                        <!--domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d)]"/>-->
+                <filter string="Request open" name="stage_open"
+                        domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d),('stage_id', '!=', %(crm_claim.stage_claim3)d)]"/>
             </field>
         </field>
     </record>
@@ -54,7 +53,9 @@
         <field name="view_mode">tree,calendar,form</field>
         <field name="view_id" ref="crm_claim.crm_case_claims_tree_view"/>
         <field name="context">
-            {"search_default_responsible":1,"search_default_unassigned":1,
+            {"search_default_responsible":1,
+            "search_default_unassigned":1,
+            "search_default_stage_open":1,
             "stage_type":'claim'}
         </field>
         <field name="search_view_id"
@@ -75,7 +76,7 @@
               name="Support"
               groups="sales_team.group_sale_salesman"
               sequence="1"
-              web_icon="crm_compassion,static/description/support.png"/>
+              web_icon="crm_request,static/description/icon.png"/>
 
     <menuitem id="menu_crm_case_claims" name="Requests"
               parent="support_root" action="request_action" sequence="0"/>
@@ -86,10 +87,5 @@
     <menuitem id="crm_claim_type.menu_crm_claim_type_act" name="Types"
               parent="crm_claim.menu_config_claim"
               action="crm_claim_type.crm_claim_type_act"/>
-    <menuitem name="Support Teams"
-              id="support_team_config"
-              parent="crm_claim.menu_config_claim"
-              sequence="3"
-              action="sales_team.sales_team_config_action"/>
 
 </odoo>
