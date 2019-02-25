@@ -29,7 +29,7 @@ test_mode = config.get('test_enable')
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
@@ -321,6 +321,14 @@ class SmsChildRequest(models.Model):
         """ Can be extended to use a SMS API and send a reminder to user. """
         self.ensure_one()
         self.write({'sms_reminder_sent': True})
+
+    @api.model
+    def _needaction_domain_get(self):
+        """
+        Used to display a count icon in the menu
+        :return: domain of jobs counted
+        """
+        return [('state', 'in', ['new', 'child_reserved', 'step1'])]
 
     @api.model
     def sms_reminder_cron(self):
