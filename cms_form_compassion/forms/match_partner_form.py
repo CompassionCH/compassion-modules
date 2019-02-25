@@ -169,8 +169,6 @@ if not testing:
             }
             # Make active any partner that is matched
             vals['active'] = True
-            if 'lang' not in vals:
-                vals['lang'] = self.env.lang
             return vals
 
         def _get_partner_keys(self):
