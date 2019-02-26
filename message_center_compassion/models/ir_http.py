@@ -78,6 +78,11 @@ class IrHTTP(models.AbstractModel):
 
     @classmethod
     def _auth_method_oauth2(cls):
+        client_id = cls._oauth_validation()
+        cls._validate_client_user(client_id)
+
+    @classmethod
+    def _oauth_validation(cls):
         issuer = config.get('connect_token_issuer')
         cert_url = config.get('connect_token_cert')
         if request.httprequest.method == 'GET':
@@ -110,9 +115,20 @@ class IrHTTP(models.AbstractModel):
             raise Unauthorized()
         client_id = jwt_decoded.get('client_id') or jwt_decoded.get('ClientID')
         _logger.info("TOKEN CLIENT IS -----------------> " + client_id)
+        return client_id
+
+    @classmethod
+    def _validate_client_user(cls, client_id):
+        """
+        Validates that the client_id received in the token is a Odoo
+        user. This will change the current user in the session.
+        :param client_id: token client id
+        :return: res.user record
+        """
         user = request.env['res.users'].sudo().search(
             [('login', '=', client_id)])
         if user:
             request.uid = user.id
         else:
             raise Unauthorized()
+        return user
