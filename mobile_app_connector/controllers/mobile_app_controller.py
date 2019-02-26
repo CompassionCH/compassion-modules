@@ -40,15 +40,46 @@ class RestController(http.Controller):
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
-    @http.route('/mobile-app-api/get-message/', type='json',
+    @http.route('/mobile-app-api/hero/', type='json',
                 auth='public', methods=['GET'])
-    def get_message(self, **parameters):
-        odoo_obj = request.env.get('res.partner')
-        if odoo_obj is None or not hasattr(odoo_obj, 'mobile_get_message'):
-            raise NotFound("Unknown API path called.")
-
-        handler = getattr(odoo_obj.sudo(), 'mobile_get_message')
-        return handler(**parameters)
+    def get_hero(self, hero_type=None, view=None, **parameters):
+        """
+        Hero view is the main header above the HUB in the app.
+        We return here what should appear in this view.
+        :param hero_type: "Default" == user logged in,
+                          "WithoutLogin" == user not logged in.
+        :param view: always "hero"
+        :param parameters: other parameters should be empty
+        :return: list of messages to display in header
+                 note: only one item is used by the app.
+        """
+        return [
+            {
+                "ID": "13",
+                "HERO_TITLE": "Bible Verses About Faith To Inspire You",
+                "HERO_DESCRIPTION": "Discover a daily devotion to bring you "
+                "encouragement. The Bible is full of incredible truths that "
+                "remind us that we can put our faith in God and trust Him.",
+                "HERO_IMAGE": "http://myuatsystems.com/appcp/upload/compassion"
+                              "/Bible-verses-about-faith.jpg",
+                "HERO_CTA_TEXT": "testing",
+                "HERO_CTA_DESTINATION": "Blog",
+                "HERO_CTA_DESTINATION_TYPE": "Internal",
+                "HERO_TYPE": "WithoutLogin",
+                "POST_ID": "10219",
+                "POST_TITLE": "50 Powerful Bible Promises To Build Your Faith",
+                "POST_URL": "http://www.myuatsystems.com/compassionWP/"
+                            "?post_type=blog&p=10219",
+                "CREATED_ON": "2018-09-03 19:34:37",
+                "UPDATED_ON": "2019-02-18 12:11:14",
+                "OA_ID": "820",
+                "OA_BRAND_ID": "856",
+                "USER_ID": "1566",
+                "CREATED_BY": "1",
+                "UPDATED_BY": "1566",
+                "IS_DELETED": "0"
+            },
+        ]
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='public', methods=['GET'])
