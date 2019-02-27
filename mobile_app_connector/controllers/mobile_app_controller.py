@@ -21,8 +21,10 @@ class RestController(http.Controller):
     # TODO : For now the route is public but we will have to see
     # how the authentication is made from the mobile app to provide
     # with a login path and only allow connected users to call this API
+    # TODO Implement new oauth_validation method for issuer
+    # 'http://services.compassionuk.org/' (or any other)
     @http.route('/mobile-app-api/<string:model>/<string:method>', type='json',
-                auth='oauth2', methods=['GET', 'POST'])
+                auth='oauth2_legacy', methods=['GET', 'POST'])
     def mobile_app_handler(self, model, method, **parameters):
         odoo_obj = request.env.get(model)
         model_method = 'mobile_' + method
