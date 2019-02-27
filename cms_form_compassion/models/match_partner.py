@@ -8,8 +8,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime, timedelta
 
 from odoo import api, models
+from odoo.addons.queue_job.job import job
 
 
 class MatchPartner(models.AbstractModel):
@@ -63,7 +65,8 @@ class MatchPartner(models.AbstractModel):
     def match_after_match(self, partner, new_partner, infos):
         """Once a match is found or created, this method allows to change it"""
         if not new_partner:
-            self.match_update(partner, infos)
+            delay = datetime.now() + timedelta(minutes=1)
+            self.with_delay(eta=delay).match_update(partner, infos)
         return partner
 
     @api.model
@@ -88,6 +91,7 @@ class MatchPartner(models.AbstractModel):
         return create_infos
 
     @api.model
+    @job
     def match_update(self, partner, infos):
         """Update the matched partner with a selection of the given infos."""
         update_infos = self.match_process_update_infos(infos)
