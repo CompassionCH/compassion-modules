@@ -42,7 +42,11 @@ class MatchPartner(models.AbstractModel):
         for rule in self._match_get_rules_order():
             if not partner or len(partner) > 1:
                 method = getattr(self, '_match_rule_' + rule)
-                partner = method(partner_obj, infos)
+                try:
+                    partner = method(partner_obj, infos)
+                except KeyError:
+                    # Not enough info for the matching rule
+                    partner = False
             else:
                 break
 
