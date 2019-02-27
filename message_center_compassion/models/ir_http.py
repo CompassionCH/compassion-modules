@@ -11,8 +11,9 @@
 import logging
 import requests
 
-from odoo.http import request
 from odoo import models
+from odoo.http import request
+from odoo.tools import config
 from werkzeug.exceptions import Unauthorized
 
 _logger = logging.getLogger(__name__)
@@ -27,20 +28,6 @@ except ImportError:
 
 class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
-
-    @classmethod
-    def _auth_method_oauth2(cls):
-        cls._oauth_validation(
-            'globalaccess.ci.org',
-            'https://globalaccessidp.ci.org/core/.well-known/jwks'
-        )
-
-    @classmethod
-    def _auth_method_oauth2_stage(cls):
-        cls._oauth_validation(
-            'globalaccess-stage.ci.org',
-            'https://globalaccessidp-stage.ci.org/core/.well-known/jwks'
-        )
 
     @classmethod
     def _auth_method_oauth2_legacy(cls):
@@ -90,7 +77,9 @@ class IrHTTP(models.AbstractModel):
             raise Unauthorized()
 
     @classmethod
-    def _oauth_validation(cls, issuer, cert_url):
+    def _auth_method_oauth2(cls):
+        issuer = config.get('connect_token_issuer')
+        cert_url = config.get('connect_token_cert')
         if request.httprequest.method == 'GET':
             mode = 'read'
         if request.httprequest.method == 'POST':

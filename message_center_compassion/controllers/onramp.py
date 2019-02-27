@@ -31,18 +31,9 @@ _logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
+
     @http.route('/onramp', type='json', auth='oauth2', methods=['POST'])
     def handler_onramp(self):
-        return self._process_post_message()
-
-    @http.route('/onramp-stage', type='json', auth='oauth2_stage',
-                methods=['POST'])
-    def handler_onramp_stage(self):
-        """ Handler for `/onramp` url for json data.
-        """
-        return self._process_post_message()
-
-    def _process_post_message(self):
         headers = request.httprequest.headers
         message_type = headers['x-cim-MessageType']
         OnrampConnector.log_message(
