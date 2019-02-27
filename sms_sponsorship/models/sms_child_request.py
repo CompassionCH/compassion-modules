@@ -14,7 +14,7 @@ from datetime import datetime
 from random import randint
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, api, fields
+from odoo import models, api, fields, _
 from odoo.tools import config
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.base_phone.fields import Phone
@@ -29,7 +29,7 @@ test_mode = config.get('test_enable')
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
@@ -323,6 +323,14 @@ class SmsChildRequest(models.Model):
         self.write({'sms_reminder_sent': True})
 
     @api.model
+    def _needaction_domain_get(self):
+        """
+        Used to display a count icon in the menu
+        :return: domain of jobs counted
+        """
+        return [('state', 'in', ['new', 'child_reserved', 'step1'])]
+
+    @api.model
     def sms_reminder_cron(self):
         """
         CRON job that sends SMS reminders to people that didn't complete
@@ -337,3 +345,29 @@ class SmsChildRequest(models.Model):
         for request in sms_requests:
             request.with_context(lang=request.lang_code).send_step1_reminder()
         return True
+
+    @api.model
+    def sms_notification_unfinished_cron(self):
+        """
+        CRON job that sends mails weekly, which notify the staff that some SMS
+        Sponsorship are ongoing.
+        :return: True
+        """
+        nb_sms_requests = self.search_count([
+            ('state', 'in', ['new', 'child_reserved', 'step1']),
+        ])
+
+        # send staff notification
+        notify_ids = self.env['staff.notification.settings'].get_param(
+            'new_partner_notify_ids')
+        if nb_sms_requests and notify_ids:
+            self.message_post(
+                body=_("{} partner(s) have ongoing SMS Sponsorship").format(
+                    nb_sms_requests),
+                subject=_("{} SMS Sponsorship are ongoing").format(
+                    nb_sms_requests),
+                partner_ids=notify_ids,
+                type='comment',
+                subtype='mail.mt_comment',
+                content_subtype='plaintext'
+            )
