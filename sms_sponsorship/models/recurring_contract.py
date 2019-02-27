@@ -43,37 +43,17 @@ class RecurringContract(models.Model):
         """
         frontend_lang = self.env['res.lang'].search([
             ('code', 'like', vals['lang'] + '_')], limit=1)
-        if not partner:
-            # Search for existing partner
-            partner = self.env['res.partner'].search([
-                ('firstname', 'ilike', vals['firstname']),
-                ('lastname', 'ilike', vals['lastname']),
-                ('email', '=', vals['email'])
-            ])
-            if len(partner) > 1:
-                partner = partner.filtered('has_sponsorships')
-                if len(partner) != 1:
-                    partner = False
-        else:
-            if not (partner.firstname == vals['firstname'] and
-                    partner.lastname == vals['lastname']):
-                    partner = False
-            partner.email = vals['email']
+
+        if partner and (partner.firstname != vals['firstname'] or
+                        partner.lastname != vals['lastname']):
+            partner = False
 
         if not partner:
-            partner = self.env['res.partner'].create({
-                'firstname': vals['firstname'],
-                'lastname': vals['lastname'],
-                'mobile': vals['mobile'],
-                'email': vals['email'],
-                'lang': frontend_lang.code or sms_child_request.lang_code
-            })
-            sms_child_request.new_partner = True
-            sms_child_request.partner_id = partner
+            match_obj = self.env['res.partner.match']
+            vals['lang'] = frontend_lang.code
+            partner = match_obj.match_partner_to_infos(vals)
 
-        # Update language of request and of partner
-        if frontend_lang and partner.lang != frontend_lang.code:
-            partner.lang = frontend_lang.code
+        # Update SMS Request
         sms_child_request.write({
             'partner_id': partner.id,
             'lang_code': partner.lang
@@ -109,23 +89,6 @@ class RecurringContract(models.Model):
         :return: True
         """
         self.associate_group(payment_mode_id)
-        if self.sms_request_id.new_partner:
-            # send staff notification
-            notify_ids = self.env['staff.notification.settings'].get_param(
-                'new_partner_notify_ids')
-            if notify_ids:
-                self.message_post(
-                    body=_("A new partner was created by SMS and needs a "
-                           "manual confirmation"),
-                    subject=_("New SMS partner"),
-                    partner_ids=notify_ids,
-                    type='comment',
-                    subtype='mail.mt_comment',
-                    content_subtype='plaintext'
-                )
-        else:
-            self.signal_workflow('contract_validated')
-            self.button_generate_invoices()
 
         if not pay_first_month_ebanking:
             # update sms request and send confirmation. this will be done

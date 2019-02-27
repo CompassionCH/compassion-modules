@@ -50,7 +50,6 @@ class TestSmsCompassion(BaseSponsorshipTest):
             ('email', '=', 'test@email.com')
         ])
         self.assertTrue(new_partner)
-        self.assertTrue(self.child_request.new_partner)
         self.assertEqual(new_partner.lang, 'en_US')
         new_sponsorship = self.env['recurring.contract'].search([
             ('partner_id', '=', new_partner.id),

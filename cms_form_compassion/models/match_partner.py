@@ -138,12 +138,13 @@ class MatchPartner(models.AbstractModel):
     @api.model
     def _match_get_valid_create_fields(self):
         """Return the fields which can be used at creation."""
-        return ['firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title', 'lang', 'birthdate',
-                'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
+                'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
+                'birthdate', 'church_unlinked', 'function', 'spoken_lang_ids']
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
-        return ['email', 'phone', 'street', 'city', 'zip', 'country_id',
-                'state_id', 'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
+                'country_id', 'state_id', 'church_unlinked', 'function',
+                'spoken_lang_ids']
