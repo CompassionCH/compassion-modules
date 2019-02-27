@@ -9,11 +9,18 @@
 #
 ##############################################################################
 import logging
-import simplejson as json
 
 from odoo import http, exceptions
 from odoo.http import request
 from ..tools.onramp_connector import OnrampConnector
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import simplejson as json
+except ImportError:
+    _logger.error("Please install simplejson")
+
 
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
@@ -26,9 +33,7 @@ _logger = logging.getLogger(__name__)
 class RestController(http.Controller):
 
     @http.route('/onramp', type='json', auth='oauth2', methods=['POST'])
-    def handler_onramp(self, token=None):
-        """ Handler for `/onramp` url for json data.
-        """
+    def handler_onramp(self):
         headers = request.httprequest.headers
         message_type = headers['x-cim-MessageType']
         OnrampConnector.log_message(

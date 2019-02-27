@@ -36,9 +36,6 @@ class OnrampConnector(object):
     # Holds the last time a token was retrieved from GMC.
     _token_time = None
 
-    # Holds the token used to authenticate with GMC.
-    _token = None
-
     # Requests Session that will be used accross calls to server
     _session = None
 
@@ -139,14 +136,27 @@ class OnrampConnector(object):
 
     def _retrieve_token(self):
         """ Retrieves the token from Connect. """
+        self._token_time = datetime.now()
+        self._session.headers.update(self.get_gmc_token())
+
+    @classmethod
+    def get_gmc_token(cls):
+        """
+        Class method that fetches a token from GMC OAuth server.
+        :return: dict: Authorisation header.
+        """
         client = config.get('connect_client')
         secret = config.get('connect_secret')
-        environment = config.get('connect_env', 'core')
-        if not client or not secret:
-            raise UserError(
-                _('Please give connect_client and connect_secret values '
-                  'in your Odoo configuration file.'))
-        api_client_secret = base64.b64encode("{0}:{1}".format(client, secret))
+        provider = config.get('connect_token_server')
+        endpoint = config.get('connect_token_endpoint')
+        if not client or not secret or not provider or not endpoint:
+            raise UserError(_(
+                'Please give connect_client, connect_secret, '
+                'connect_token_server and connect_token_endpoint '
+                'in your Odoo configuration file.'
+            ))
+        api_client_secret = base64.b64encode(
+            "{0}:{1}".format(client, secret))
         params_post = 'grant_type=client_credentials&scope=read+write'
         header_post = {
             "Authorization": "Basic " + api_client_secret,
@@ -154,17 +164,16 @@ class OnrampConnector(object):
             "Content-Length": 46,
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
-        conn = httplib.HTTPSConnection('api2.compassion.com')
-        auth_path = "/{}/connect/token".format(environment)
-        conn.request("POST", auth_path, params_post, header_post)
+        conn = httplib.HTTPSConnection(provider)
+        conn.request("POST", endpoint, params_post, header_post)
         response = conn.getresponse()
         try:
-            self._token = simplejson.loads(response.read())
-            self._token_time = datetime.now()
-            self._session.headers.update({
-                'Authorization': '{token_type} {access_token}'.format(
-                    **self._token)})
+            token = simplejson.loads(response.read())
+            return {
+                'Authorization': '{token_type} {access_token}'.format(**token)
+            }
         except (AttributeError, KeyError):
+            _logger.error("GMC token retrieval error", exc_info=True)
             raise UserError(
                 _('Token validation failed.'))
 
