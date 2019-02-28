@@ -87,6 +87,7 @@ class MobileLoginMapping(OnrampMapping):
         mapped = super(MobileLoginMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         mapped['login_count'] = len(odoo_object.log_ids)
+        # The mobile app expects all string values
         for key, value in mapped.iteritems():
-            mapped[key] = str(value)
+            mapped[key] = unicode(value)
         return mapped

@@ -15,7 +15,6 @@ from odoo.tests import common
 _logger = logging.getLogger(__name__)
 
 try:
-    import httplib
     import simplejson
 except ImportError:
     _logger.warning("Please install httplib and simplejson")
