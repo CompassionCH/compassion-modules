@@ -99,9 +99,9 @@ class IrHTTP(models.AbstractModel):
             key_json = simplejson.dumps(cert.json()['keys'][0])
         except ValueError:
             # If any error occurs during token and certificate retrieval,
-            # we don't allow to go any further
-            _logger.error("Error during token validation", exc_info=True)
-            raise Unauthorized()
+            # we put a wrong certificate, and jwt library will fail
+            # to decrypt the token, leading to unauthorized error.
+            key_json = {}
 
         public_key = RSAAlgorithm.from_jwk(key_json)
         jwt_decoded = jwt.decode(
