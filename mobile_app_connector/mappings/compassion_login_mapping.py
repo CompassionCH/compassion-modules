@@ -8,6 +8,7 @@
 #
 ##############################################################################
 
+from odoo import _
 from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
@@ -90,4 +91,7 @@ class MobileLoginMapping(OnrampMapping):
         # The mobile app expects all string values
         for key, value in mapped.iteritems():
             mapped[key] = unicode(value)
+        # If no user is logged in, return error
+        if not odoo_object:
+            mapped['error'] = _("Wrong user or password")
         return mapped

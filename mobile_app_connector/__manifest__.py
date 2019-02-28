@@ -30,12 +30,12 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion EU Mobile App Connector',
-    'version': '10.0.1.0.2',
+    'version': '10.0.1.1.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': ['sbc_compassion'],
+    'depends': ['sbc_compassion', 'partner_contact_birthdate'],
     'external_dependencies': {
         'python': ['simplejson'],
     },

@@ -21,10 +21,10 @@ class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
 
     @classmethod
-    def _auth_method_oauth2_app(self):
-        client_id = self._oauth_validation()
+    def _auth_method_oauth2_app(cls):
+        client_id = cls._oauth_validation()
         # For mobile app, we check that the token was requested from us,
         # using the GMC connect client
-        authorized_client = config.get('connect_client')
+        authorized_client = config.get('connect_client', 'admin')
         if client_id != authorized_client:
             raise Unauthorized()
