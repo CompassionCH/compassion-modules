@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="interaction_resume_tree_view" model="ir.ui.view">
+        <field name="name">interaction_resume_tree_view</field>
+        <field name="model">interaction.resume</field>
+        <field name="arch" type="xml">
+        <tree>
+            <field name="communication_date"/>
+            <field name="communication_type"/>
+            <field name="partner_id" invisible="1"/>
+            <field name="communication" invisible="1"/>
+            <field name="communication_shown" widget="polymorphic" polymorphic="communication" />
+        </tree>
+        </field>
+    </record>
+
+
+      <record id="interaction_resume_form_view" model="ir.ui.view">
+        <field name="name">interaction_resume_form_view</field>
+        <field name="model">interaction.resume</field>
+        <field name="arch" type="xml">
+        <form>
+            <group>
+                <field name="communication_date"/>
+                <field name="communication_type"/>
+                <field name="communication_shown"/>
+                <field name="communication_phone" attrs="{'invisible': [('communication_phone','=',False)]}"/>
+                <field name="communication_paper" attrs="{'invisible': [('communication_paper','=',False)]}"/>
+                <field name="communication_email" attrs="{'invisible': [('communication_email','=',False)]}"/>
+            </group>
+        </form>
+        </field>
+    </record>
+
+    <record id="interaction_resume_search" model="ir.ui.view">
+            <field name="model">interaction.resume</field>
+            <field name="arch" type="xml">
+                <search string="interaction_resume">
+                 <field name="partner_id"/>
+                 <field name="communication_shown"/>
+                 <field name="communication_date"/>
+                 <field name="communication_type"/>
+                </search>
+            </field>
+    </record>
+
+    <record id="action_view_interaction_resume_tree" model="ir.actions.act_window">
+        <field name="name">Interaction resume</field>
+        <field name="res_model">interaction.resume</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_partner_id':active_id}</field>
+        <field name="search_view_id" ref="interaction_resume_search"/>
+    </record>
+</odoo>
