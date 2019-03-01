@@ -8,9 +8,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import json
-import jwt
+import simplejson
+from mock import patch
 from odoo.tests.common import HttpCase
+
+mock_oauth = ('odoo.addons.message_center_compassion.models.ir_http'
+              '.IrHTTP._oauth_validation')
 
 
 class TestMobileAppHttp(HttpCase):
@@ -18,32 +21,54 @@ class TestMobileAppHttp(HttpCase):
     def setUp(self):
         super(TestMobileAppHttp, self).setUp()
         self.root_url = '/mobile-app-api/'
-        # Add JSON type in request headers
+        # Add JSON type in request headers and fake token
         self.opener.addheaders.append(('Content-Type', 'application/json'))
-        # Add authentication for Oauth2
-        payload = {
-            'iss': 'https://esther.ci.org',
-            'client_id': 'admin'
-        }
-        token = jwt.encode(payload, 'secret')
-        self.opener.addheaders.append(('Authorization', 'Bearer ' + token))
+        self.opener.addheaders.append(('Authorization', 'Bearer fake_token'))
 
-    def test_missing_parameters(self):
-        url = self.root_url + 'correspondence/get_letters'
-        response = self.url_open(url)
-        body_str = response.read()
-        error_message = json.loads(body_str)['error']['message']
-        self.assertEqual(error_message, u"Required parameter supgrpid")
-
-    def test_for_valid_requests(self):
-        url = self.root_url + 'compassion.child/sponsor_children?userid=25'
-        response = self.url_open(url)
-
+    @patch(mock_oauth)
+    def test_login(self, oauth_patch):
+        oauth_patch.return_value = 'admin'
+        url = self.root_url + 'login?username={}&password={}'
+        # Bad username and password
+        response = self.url_open(url.format('wrong', 'login'))
         self.assertEqual(response.code, 200)
+        json_data = simplejson.loads(response.read())
+        self.assertEqual(json_data['error'], 'Wrong user or password')
+        # Good username and password
+        response = self.url_open(url.format('admin', 'admin'))
+        self.assertEqual(response.code, 200)
+        json_data = simplejson.loads(response.read())
+        self.assertEqual(json_data['userid'], '1')
 
-    def test_with_invalid_path(self):
-        url = self.root_url + 'xxx/sponsor_children?userid=7663'
+    @patch(mock_oauth)
+    def test_hub_authentication(self, oauth_patch):
+        """
+        Tests for the hub messages security:
+        - if no partner is specified, the url is publicly available
+        - if a partner is requested, the user must be authenticated
+        """
+        oauth_patch.return_value = 'admin'
+        url = self.root_url + 'hub/'
+        # Public messages
+        response = self.url_open(url + '0')
+        self.assertEqual(response.code, 200)
+        json_data = simplejson.loads(response.read())
+        self.assertIn('Messages', json_data)
+        # Private messages without login should fail
+        response = self.url_open(url + '1')
+        self.assertEqual(response.code, 401)
+        # Private message while authenticated should work
+        self.authenticate('admin', 'admin')
+        response = self.url_open(url + '1')
+        self.assertEqual(response.code, 200)
+        json_data = simplejson.loads(response.read())
+        self.assertIn('Messages', json_data)
+
+    def test_entry_point(self):
+        # Test we can only call entry point while authenticated
+        url = self.root_url + 'res.partner/get_message'
         response = self.url_open(url)
-
-        self.assertEqual(response.code, 404)
-        self.assertEqual(response.msg, "NOT FOUND")
+        self.assertEqual(response.code, 401)
+        self.authenticate('admin', 'admin')
+        response = self.url_open(url)
+        self.assertEqual(response.code, 200)

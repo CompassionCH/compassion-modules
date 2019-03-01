@@ -15,11 +15,33 @@ class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
 
     @api.model
+    def mobile_update_notification_preference(self, json_data, **params):
+        """
+        TODO Should we store these settings in Odoo and use them?
+        This is called when the user updates his notification preferences.
+        :param params: {
+            "SupporterId": the partner id
+            "appchild": boolean (receive child notification)
+            "appinfo": boolean (receive general notifications)
+        }
+        :return:
+        """
+        partner_id = json_data.get('SupporterId')
+        notify_child = json_data.get('appchild')
+        notify_info = json_data.get('appinfo')
+        return {
+            "UpdateRecordinContactcResult":
+            "App notification Child And App notification child Info updated "
+            "of Supporter ID : {} ({}, {})".format(
+                partner_id, notify_child, notify_info)
+        }
+
+    @api.model
     def mobile_get_message(self, **other_params):
         values = dict(other_params)
-        partner_id = values['partner_id']
+        partner_id = values.get('partner_id')
         nb_sponsorships = len(self.env["recurring.contract"].search([
-            ('partner_id.id', '=', partner_id)
+            ('partner_id', '=', partner_id)
         ]))
 
         # TODO what is subtype, sortorder, actionDestination and type
@@ -28,7 +50,7 @@ class GetPartnerMessage(models.Model):
             "Body": "You're changing " + str(nb_sponsorships) + " lives",
             "SortOrder": 1001,
             "SubType": "CH1",
-            "Title": "Thank You",
+            "Title": "Thank You" if nb_sponsorships else "Oh no!",
             "Type": "Child"
         }]
 
