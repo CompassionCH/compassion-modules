@@ -33,6 +33,8 @@ class MatchPartner(models.AbstractModel):
         :return: The matched partner.
         """
 
+        self.match_process_infos(infos)
+
         new_partner = False
         partner_obj = self.env['res.partner'].sudo()
         partner = False
@@ -98,6 +100,12 @@ class MatchPartner(models.AbstractModel):
         partner.write(update_infos)
 
     @api.model
+    def match_process_infos(self, infos):
+        """Transform, if needed and before matching, the infos received"""
+        if 'church_name' in infos:
+            self._match_church(infos)
+
+    @api.model
     def match_process_update_infos(self, infos):
         """
         From the info given by the user, select the one that should be used
@@ -109,6 +117,18 @@ class MatchPartner(models.AbstractModel):
             if key in valid:
                 update_infos[key] = value
         return update_infos
+
+    @api.model
+    def _match_church(self, infos):
+        church_name = infos.pop('church_name')
+        church = self.env['res.partner'].with_context(lang='en_US').search([
+            ('name', 'like', church_name),
+            ('category_id.name', '=', 'Church')
+        ])
+        if len(church) == 1:
+            infos['church_id'] = church.id
+        else:
+            infos['church_unlinked'] = church_name
 
     @api.model
     def _match_get_rules_order(self):
@@ -140,11 +160,12 @@ class MatchPartner(models.AbstractModel):
         """Return the fields which can be used at creation."""
         return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
                 'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
-                'birthdate', 'church_unlinked', 'function', 'spoken_lang_ids']
+                'birthdate', 'church_unlinked', 'church_id', 'function',
+                'spoken_lang_ids']
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
         return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
-                'country_id', 'state_id', 'church_unlinked', 'function',
-                'spoken_lang_ids']
+                'country_id', 'state_id', 'church_unlinked', 'church_id',
+                'function', 'spoken_lang_ids']
