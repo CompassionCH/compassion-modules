@@ -8,8 +8,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime, timedelta
 
 from odoo import api, models
+from odoo.addons.queue_job.job import job
 
 
 class MatchPartner(models.AbstractModel):
@@ -42,7 +44,11 @@ class MatchPartner(models.AbstractModel):
         for rule in self._match_get_rules_order():
             if not partner or len(partner) > 1:
                 method = getattr(self, '_match_rule_' + rule)
-                partner = method(partner_obj, infos)
+                try:
+                    partner = method(partner_obj, infos)
+                except KeyError:
+                    # Not enough info for the matching rule
+                    partner = False
             else:
                 break
 
@@ -59,7 +65,8 @@ class MatchPartner(models.AbstractModel):
     def match_after_match(self, partner, new_partner, infos):
         """Once a match is found or created, this method allows to change it"""
         if not new_partner:
-            self.match_update(partner, infos)
+            delay = datetime.now() + timedelta(minutes=1)
+            self.with_delay(eta=delay).match_update(partner, infos)
         return partner
 
     @api.model
@@ -84,6 +91,7 @@ class MatchPartner(models.AbstractModel):
         return create_infos
 
     @api.model
+    @job
     def match_update(self, partner, infos):
         """Update the matched partner with a selection of the given infos."""
         update_infos = self.match_process_update_infos(infos)
@@ -130,12 +138,13 @@ class MatchPartner(models.AbstractModel):
     @api.model
     def _match_get_valid_create_fields(self):
         """Return the fields which can be used at creation."""
-        return ['firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title', 'lang', 'birthdate',
-                'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
+                'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
+                'birthdate', 'church_unlinked', 'function', 'spoken_lang_ids']
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
-        return ['email', 'phone', 'street', 'city', 'zip', 'country_id',
-                'state_id', 'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
+                'country_id', 'state_id', 'church_unlinked', 'function',
+                'spoken_lang_ids']

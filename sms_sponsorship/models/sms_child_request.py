@@ -74,9 +74,6 @@ class SmsChildRequest(models.Model):
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office')
 
-    new_partner = fields.Boolean('New partner ?',
-                                 help="is true if partner was created when "
-                                      "sending sms", default=False)
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
