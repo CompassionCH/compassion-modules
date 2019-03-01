@@ -44,6 +44,7 @@ SELECT sp.id, sp.id AS sponsorship_id, sp.correspondent_id AS partner_id,
 FROM recurring_contract sp
 FULL OUTER JOIN correspondence c ON c.sponsorship_id = sp.id
 WHERE sp.state = 'active' AND sp.child_id IS NOT NULL
+AND c.direction = 'Supporter To Beneficiary'
 GROUP BY sp.id, sp.correspondent_id, sp.child_id, sp.type, sp.activation_date
 ORDER BY id asc;
 """)
