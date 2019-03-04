@@ -9,11 +9,14 @@
 #
 ##############################################################################
 
-from odoo import api, models, _
+from odoo import api, models, fields, _
 
 
 class Partner(models.Model):
     _inherit = 'res.partner'
+
+    interaction_resume_ids = fields.One2many(
+        'interaction.resume', 'partner_id', 'Interaction resume')
 
     @api.multi
     def open_events(self):
