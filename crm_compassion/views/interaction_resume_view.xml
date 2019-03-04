@@ -4,44 +4,55 @@
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-        <tree>
-            <field name="communication_date"/>
-            <field name="communication_type"/>
-            <field name="partner_id" invisible="1"/>
-            <field name="communication" invisible="1"/>
-            <field name="communication_shown" widget="polymorphic" polymorphic="communication" />
-        </tree>
+            <tree colors="red:state == 'in';green:state == 'out'">
+                <button name="out" icon="fa-arrow-up" states="out"/>
+                <button name="in" icon="fa-arrow-down" states="in"/>
+                <field name="partner_id"/>
+                <field name="communication_date"/>
+                <field name="communication_type"/>
+                <field name="state" invisible="1"/>
+                <field name="subject"/>
+            </tree>
         </field>
     </record>
 
-
-      <record id="interaction_resume_form_view" model="ir.ui.view">
+    <record id="interaction_resume_form_view" model="ir.ui.view">
         <field name="name">interaction_resume_form_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-        <form>
-            <group>
-                <field name="communication_date"/>
-                <field name="communication_type"/>
-                <field name="communication_shown"/>
-                <field name="communication_phone" attrs="{'invisible': [('communication_phone','=',False)]}"/>
-                <field name="communication_paper" attrs="{'invisible': [('communication_paper','=',False)]}"/>
-                <field name="communication_email" attrs="{'invisible': [('communication_email','=',False)]}"/>
-            </group>
-        </form>
+            <form>
+                <group>
+                    <field name="communication_date"/>
+                    <field name="communication_type"/>
+                    <field name="direction"/>
+                    <field name="phone_id" attrs="{'invisible': [('phone_id','=',False)]}"/>
+                    <field name="paper_id" attrs="{'invisible': [('paper_id','=',False)]}"/>
+                    <field name="email_id" attrs="{'invisible': [('email_id','=',False)]}"/>
+                    <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}"/>
+                </group>
+                <group>
+                    <field name="subject"/>
+                    <field name="body"/>
+                </group>
+            </form>
         </field>
     </record>
 
     <record id="interaction_resume_search" model="ir.ui.view">
-            <field name="model">interaction.resume</field>
-            <field name="arch" type="xml">
-                <search string="interaction_resume">
-                 <field name="partner_id"/>
-                 <field name="communication_shown"/>
-                 <field name="communication_date"/>
-                 <field name="communication_type"/>
-                </search>
-            </field>
+        <field name="model">interaction.resume</field>
+        <field name="arch" type="xml">
+            <search string="interaction_resume">
+                <field name="partner_id"/>
+                <field name="communication_date"/>
+                <field name="communication_type"/>
+                <field name="direction"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter name="Type" domain="[]" context="{'group_by':'communication_type'}"/>
+                    <filter name="Direction" domain="[]" context="{'group_by':'direction'}"/>
+                </group>
+            </search>
+        </field>
     </record>
 
     <record id="action_view_interaction_resume_tree" model="ir.actions.act_window">
