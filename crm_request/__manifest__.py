@@ -22,5 +22,6 @@
         'data/request_sequence.xml',
         'data/crm_request_data.xml',
         'views/request.xml',
+        'views/request_type.xml',
     ],
 }
