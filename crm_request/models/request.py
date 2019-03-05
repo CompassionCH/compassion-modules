@@ -40,6 +40,12 @@ class CrmClaim(models.Model):
             'context': ctx,
         }
 
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        """Unlink the email_from field from the partner"""
+        if self.partner_id:
+            self.partner_phone = self.partner_id.phone
+
     # -------------------------------------------------------
     # Mail gateway
     # -------------------------------------------------------
