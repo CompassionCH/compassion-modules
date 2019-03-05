@@ -90,6 +90,10 @@
                 <attribute name="string">Description</attribute>
             </xpath>
 
+            <field name="team_id" position="after">
+                <field name="alias_id" groups="base.group_no_one"/>
+            </field>
+
             <field name="claim_type" position="attributes">
                 <attribute name="string">Type</attribute>
             </field>
