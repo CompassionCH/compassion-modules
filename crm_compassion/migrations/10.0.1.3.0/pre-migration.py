@@ -17,7 +17,7 @@ def migrate(cr, version):
     # Remove SQL view
     try:
         cr.execute("""
-            DROP VIEW interaction_resume IF EXISTS;
+            DROP VIEW IF EXISTS interaction_resume;
         """)
     except:
         cr.rollback()
