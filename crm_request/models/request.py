@@ -2,6 +2,8 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import email.utils
+
 from odoo import api, fields, models
 
 
@@ -62,10 +64,12 @@ class CrmClaim(models.Model):
 
         if 'partner_id' not in custom_values:
             match_obj = self.env['res.partner.match']
+            options = {'skip_create': True}
             partner = match_obj.match_partner_to_infos({
-                'email': msg.get('from')
-            })
-            defaults['partner_id'] = partner.id
+                'email': email.utils.parseaddr(msg.get('from'))[1]
+            }, options)
+            if partner:
+                defaults['partner_id'] = partner.id
 
         defaults.update(custom_values)
         return super(CrmClaim, self).message_new(msg, defaults)
