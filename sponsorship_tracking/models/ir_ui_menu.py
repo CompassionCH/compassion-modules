@@ -9,13 +9,12 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api
+from odoo import models, api
 from odoo.tools.safe_eval import safe_eval
 
 
 class IrUiMenu(models.Model):
     _inherit = 'ir.ui.menu'
-
 
     @api.multi
     def get_needaction_data(self):
