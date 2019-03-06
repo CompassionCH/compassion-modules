@@ -55,9 +55,9 @@ class CrmClaim(models.Model):
         """
         if custom_values is None:
             custom_values = {}
-
         defaults = {
-            'description': msg.get('body')
+            'description': msg.get('body'),
+            'date': msg.get('date'),  # Get the time of the sending of the mail
         }
 
         if 'partner_id' not in custom_values:
