@@ -49,7 +49,10 @@ class CrmClaim(models.Model):
         """
         if custom_values is None:
             custom_values = {}
-        custom_values.update({'description': msg.get('body')})
+        custom_values.update({
+            'description': msg.get('body'),
+            'date': msg.get('date'),  # Get the time of the sending of the mail
+        })
         return super(CrmClaim, self).message_new(msg, custom_values)
 
     @api.multi
