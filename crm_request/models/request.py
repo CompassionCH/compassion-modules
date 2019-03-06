@@ -55,8 +55,20 @@ class CrmClaim(models.Model):
         """
         if custom_values is None:
             custom_values = {}
-        custom_values.update({'description': msg.get('body')})
-        return super(CrmClaim, self).message_new(msg, custom_values)
+
+        defaults = {
+            'description': msg.get('body')
+        }
+
+        if 'partner_id' not in custom_values:
+            match_obj = self.env['res.partner.match']
+            partner = match_obj.match_partner_to_infos({
+                'email': msg.get('from')
+            })
+            defaults['partner_id'] = partner.id
+
+        defaults.update(custom_values)
+        return super(CrmClaim, self).message_new(msg, defaults)
 
     @api.multi
     def message_update(self, msg_dict, update_vals=None):
