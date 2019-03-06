@@ -7,7 +7,6 @@
             <tree colors="red:state == 'in';green:state == 'out'">
                 <button name="out" icon="fa-arrow-up" states="out"/>
                 <button name="in" icon="fa-arrow-down" states="in"/>
-                <field name="partner_id"/>
                 <field name="communication_date"/>
                 <field name="communication_type"/>
                 <field name="state" invisible="1"/>
@@ -42,25 +41,20 @@
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
             <search string="interaction_resume">
-                <field name="partner_id"/>
-                <field name="communication_date"/>
-                <field name="communication_type"/>
-                <field name="direction"/>
+                <field name="subject" filter_domain="['|', ('subject', 'ilike', self), ('body', 'ilike', self)]"/>
+                <separator/>
+                <filter name="filter_email" string="Email" domain="[('communication_type', '=', 'Email')]"/>
+                <filter name="filter_paper" string="Paper" domain="[('communication_type', '=', 'Paper')]"/>
+                <filter name="filter_phonecall" string="Phonecall" domain="[('communication_type', '=', 'Phone')]"/>
+                <filter name="filter_sms" string="SMS" domain="[('communication_type', '=', 'SMS')]"/>
+                <separator/>
+                <filter name="filter_incoming" string="Incoming" domain="[('direction', '=', 'in')]"/>
+                <filter name="filter_outgoing" string="Outgoing" domain="[('direction', '=', 'out')]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="Type" domain="[]" context="{'group_by':'communication_type'}"/>
                     <filter name="Direction" domain="[]" context="{'group_by':'direction'}"/>
                 </group>
             </search>
         </field>
-    </record>
-
-    <record id="action_view_interaction_resume_tree" model="ir.actions.act_window">
-        <field name="name">Interaction resume</field>
-        <field name="res_model">interaction.resume</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_partner_id':active_id}</field>
-        <field name="search_view_id" ref="interaction_resume_search"/>
     </record>
 </odoo>
