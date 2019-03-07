@@ -16,4 +16,3 @@ from . import product_template
 from . import compassion_correspondence
 from . import account_invoice
 from . import res_partner
-from . import ir_http

@@ -20,7 +20,7 @@ from werkzeug.exceptions import NotFound, MethodNotAllowed
 class RestController(http.Controller):
 
     @http.route('/mobile-app-api/login', type='json', methods=['GET'],
-                auth='oauth2_app')
+                auth='public')
     def mobile_app_login(self, username, password, view=None):
         """
         This is the first entry point for logging, which will setup the
@@ -62,7 +62,7 @@ class RestController(http.Controller):
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
     @http.route('/mobile-app-api/hub/<int:partner_id>', type='json',
-                auth='oauth2_app', methods=['GET'])
+                auth='public', methods=['GET'])
     def get_hub_messages(self, partner_id, **parameters):
         """
         This route is not authenticated with user, because it can be called
@@ -78,7 +78,7 @@ class RestController(http.Controller):
         return partner_obj.mobile_get_message(partner_id=partner_id)
 
     @http.route('/mobile-app-api/hero/', type='json',
-                auth='oauth2_app', methods=['GET'])
+                auth='public', methods=['GET'])
     def get_hero(self, hero_type=None, view=None, **parameters):
         """
         Hero view is the main header above the HUB in the app.
