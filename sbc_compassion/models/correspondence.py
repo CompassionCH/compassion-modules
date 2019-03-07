@@ -687,6 +687,7 @@ class Correspondence(models.Model):
             if letter.original_language_id not in \
                     letter.supporter_languages_ids:
                 res = res and letter.compose_letter_image()
+            letter.read_url = '/b2s_image?id={}'.format(letter.uuid)
         return res
 
     @api.multi

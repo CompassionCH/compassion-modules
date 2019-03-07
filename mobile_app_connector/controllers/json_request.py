@@ -12,7 +12,7 @@ import werkzeug
 import logging
 import simplejson
 
-from odoo.http import JsonRequest, Root
+from odoo.http import JsonRequest, Root, SessionExpiredException
 # Monkeypatch type of request root to use MobileAppJsonRequest
 from odoo.addons.message_center_compassion.controllers.json_request import \
     get_request as old_get_request
@@ -65,6 +65,17 @@ class MobileAppJsonRequest(JsonRequest):
             return self._json_response(error={
                 'code': code,
                 'http_code': code,
+                'http_status': code,
+                'message': str(exception)
+            })
+        if isinstance(exception, SessionExpiredException):
+            # This happens if user is not logged in while calling mobile
+            # app JSON endpoints.
+            code = 401
+            return self._json_response(error={
+                'code': code,
+                'http_code': code,
+                'http_status': code,
                 'message': str(exception)
             })
         _logger.warn(exception)

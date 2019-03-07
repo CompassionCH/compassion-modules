@@ -8,9 +8,7 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime
-
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 
 from odoo import models, fields, tools, _
 
@@ -110,19 +108,10 @@ if not testing:
         # Form submission
         #################
         def form_before_create_or_update(self, values, extra_values):
+            sponsorship = self.main_object.sudo()
+            values['partner_id'] = sponsorship.partner_id.id
             super(PartnerSmsRegistrationForm,
                   self).form_before_create_or_update(values, extra_values)
-
-            sponsorship = self.main_object.sudo()
-            partner = sponsorship.partner_id
-            partner_vals = self._get_partner_vals(values, extra_values)
-            if partner:
-                # update existing partner (later, to avoid rollbacks)
-                delay = datetime.now() + relativedelta(minutes=1)
-                partner.with_delay(eta=delay).update_partner(partner_vals)
-            else:
-                # create new partner
-                self.env['res.partner'].sudo().create(partner_vals)
 
         def _form_write(self, values):
             """ Nothing to do on write, we handle everything in other methods.
@@ -130,7 +119,7 @@ if not testing:
             return True
 
         def form_after_create_or_update(self, values, extra_values):
-            delay = datetime.now() + relativedelta(seconds=3)
+            delay = datetime.now() + timedelta(seconds=3)
             sponsorship = self.main_object.sudo()
             pay_first_month_ebanking = extra_values.get(
                 'pay_first_month_ebanking')
@@ -138,7 +127,7 @@ if not testing:
                 pay_first_month_ebanking, values['payment_mode_id'])
             if pay_first_month_ebanking and \
                     sponsorship.sms_request_id.new_partner:
-                delay = datetime.now() + relativedelta(seconds=5)
+                delay = datetime.now() + timedelta(seconds=5)
                 sponsorship.with_delay(eta=delay).create_first_sms_invoice()
             message_post_values = self._get_post_message_values(extra_values)
             if message_post_values:

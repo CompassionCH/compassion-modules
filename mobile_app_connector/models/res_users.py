@@ -11,6 +11,7 @@
 import logging
 
 from odoo import models, api
+from odoo.http import request
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 
 logger = logging.getLogger(__name__)
@@ -33,12 +34,12 @@ class CompassionLogin(models.Model):
         username = self._get_required_param('username', other_params)
         password = self._get_required_param('password', other_params)
 
-        user = self.search([
-            ('login', '=', username)
-        ], limit=1)
-        if user:
-            user.sudo(user.id).check_credentials(password)
+        uid = request.session.authenticate(
+            request.session.db, username, password)
+        if uid is not False:
+            self.save_session(request.cr, uid, request.context)
 
+        user = self.env['res.users'].browse(uid)
         mapping = MobileLoginMapping(self.env)
         result = mapping.get_connect_data(user)
         return result

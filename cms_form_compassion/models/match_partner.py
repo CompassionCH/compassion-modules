@@ -8,8 +8,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import datetime, timedelta
 
 from odoo import api, models
+from odoo.addons.queue_job.job import job
 
 
 class MatchPartner(models.AbstractModel):
@@ -21,15 +23,29 @@ class MatchPartner(models.AbstractModel):
     _name = 'res.partner.match'
 
     @api.model
-    def match_partner_to_infos(self, infos):
+    def match_partner_to_infos(self, infos, options=None):
         """
         Find the partner that match the given info or create one if none exists
         :param infos: A dict containing the information available to find the
             partner.
             The keys should match the fields of res.partner. There is one
             exception, the partner_id key (be careful with it).
+        :param options: An optional dict containing the options parameters.
         :return: The matched partner.
         """
+        if options is None:
+            options = {}
+
+        # Default options
+        opt = {
+            'skip_create': False,  # When True, do not create a partner and
+                                   # return None if no match is found.
+            'skip_update': False,  # When True, do not use the given infos to
+                                   # update the partner's fields.
+        }
+        opt.update(options)
+
+        self.match_process_infos(infos, opt)
 
         new_partner = False
         partner_obj = self.env['res.partner'].sudo()
@@ -42,35 +58,43 @@ class MatchPartner(models.AbstractModel):
         for rule in self._match_get_rules_order():
             if not partner or len(partner) > 1:
                 method = getattr(self, '_match_rule_' + rule)
-                partner = method(partner_obj, infos)
+                try:
+                    partner = method(partner_obj, infos, opt)
+                except KeyError:
+                    # Not enough info for the matching rule
+                    partner = False
             else:
                 break
 
         if not partner or len(partner) > 1:
             # no match found or not sure which one -> creating a new one.
-            partner = self.match_create(partner_obj, infos)
-            new_partner = True
+            if opt.get('skip_create'):
+                return None
+            else:
+                partner = self.match_create(partner_obj, infos, opt)
+                new_partner = True
 
-        partner = self.match_after_match(partner, new_partner, infos)
+        partner = self.match_after_match(partner, new_partner, infos, opt)
 
         return partner
 
     @api.model
-    def match_after_match(self, partner, new_partner, infos):
+    def match_after_match(self, partner, new_partner, infos, opt):
         """Once a match is found or created, this method allows to change it"""
-        if not new_partner:
-            self.match_update(partner, infos)
+        if not new_partner and not opt.get('skip_update'):
+            delay = datetime.now() + timedelta(minutes=1)
+            self.with_delay(eta=delay).match_update(partner, infos, opt)
         return partner
 
     @api.model
-    def match_create(self, partner_obj, infos):
+    def match_create(self, partner_obj, infos, options=None):
         """Create a new partner from a selection of the given infos."""
-        create_infos = self.match_process_create_infos(infos)
+        create_infos = self.match_process_create_infos(infos, options)
         infos.setdefault('lang', self.env.lang)
         return partner_obj.create(create_infos)
 
     @api.model
-    def match_process_create_infos(self, infos):
+    def match_process_create_infos(self, infos, options=None):
         """
         From the info given by the user, select the one that should be used
         for the creation of the partner.
@@ -84,13 +108,20 @@ class MatchPartner(models.AbstractModel):
         return create_infos
 
     @api.model
-    def match_update(self, partner, infos):
+    @job
+    def match_update(self, partner, infos, options=None):
         """Update the matched partner with a selection of the given infos."""
-        update_infos = self.match_process_update_infos(infos)
+        update_infos = self.match_process_update_infos(infos, options)
         partner.write(update_infos)
 
     @api.model
-    def match_process_update_infos(self, infos):
+    def match_process_infos(self, infos, options=None):
+        """Transform, if needed and before matching, the infos received"""
+        if 'church_name' in infos:
+            self._match_church(infos, options)
+
+    @api.model
+    def match_process_update_infos(self, infos, options=None):
         """
         From the info given by the user, select the one that should be used
         for the update of the partner.
@@ -103,6 +134,18 @@ class MatchPartner(models.AbstractModel):
         return update_infos
 
     @api.model
+    def _match_church(self, infos, options=None):
+        church_name = infos.pop('church_name')
+        church = self.env['res.partner'].with_context(lang='en_US').search([
+            ('name', 'like', church_name),
+            ('category_id.name', '=', 'Church')
+        ])
+        if len(church) == 1:
+            infos['church_id'] = church.id
+        else:
+            infos['church_unlinked'] = church_name
+
+    @api.model
     def _match_get_rules_order(self):
         """
         Get, in order, the name of the methods used to find a matching partner.
@@ -112,14 +155,14 @@ class MatchPartner(models.AbstractModel):
         return ['email', 'fullname_and_zip']
 
     @api.model
-    def _match_rule_email(self, partner_obj, infos):
+    def _match_rule_email(self, partner_obj, infos, options=None):
         return partner_obj.search([
             ('email', '=ilike', infos['email']),
             '|', ('active', '=', True), ('active', '=', False),
         ])
 
     @api.model
-    def _match_rule_fullname_and_zip(self, partner_obj, infos):
+    def _match_rule_fullname_and_zip(self, partner_obj, infos, options=None):
         return partner_obj.search([
             ('lastname', 'ilike', infos['lastname']),
             ('firstname', 'ilike', infos['firstname']),
@@ -130,12 +173,14 @@ class MatchPartner(models.AbstractModel):
     @api.model
     def _match_get_valid_create_fields(self):
         """Return the fields which can be used at creation."""
-        return ['firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title', 'lang', 'birthdate',
-                'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
+                'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
+                'birthdate', 'church_unlinked', 'church_id', 'function',
+                'spoken_lang_ids']
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
-        return ['email', 'phone', 'street', 'city', 'zip', 'country_id',
-                'state_id', 'church_unlinked', 'function', 'spoken_lang_ids']
+        return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
+                'country_id', 'state_id', 'church_unlinked', 'church_id',
+                'function', 'spoken_lang_ids']

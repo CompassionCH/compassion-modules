@@ -147,11 +147,14 @@ class OnrampConnector(object):
         """
         client = config.get('connect_client')
         secret = config.get('connect_secret')
-        environment = config.get('connect_env', 'core')
-        if not client or not secret:
-            raise UserError(
-                _('Please give connect_client and connect_secret values '
-                  'in your Odoo configuration file.'))
+        provider = config.get('connect_token_server')
+        endpoint = config.get('connect_token_endpoint')
+        if not client or not secret or not provider or not endpoint:
+            raise UserError(_(
+                'Please give connect_client, connect_secret, '
+                'connect_token_server and connect_token_endpoint '
+                'in your Odoo configuration file.'
+            ))
         api_client_secret = base64.b64encode(
             "{0}:{1}".format(client, secret))
         params_post = 'grant_type=client_credentials&scope=read+write'
@@ -161,9 +164,8 @@ class OnrampConnector(object):
             "Content-Length": 46,
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
-        conn = httplib.HTTPSConnection('api2.compassion.com')
-        auth_path = "/{}/connect/token".format(environment)
-        conn.request("POST", auth_path, params_post, header_post)
+        conn = httplib.HTTPSConnection(provider)
+        conn.request("POST", endpoint, params_post, header_post)
         response = conn.getresponse()
         try:
             token = simplejson.loads(response.read())

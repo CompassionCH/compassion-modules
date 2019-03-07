@@ -30,7 +30,10 @@ To configure this module, you need to:
 * connect_api_key = <api key for using GMC messages services>
 * connect_client = <username for token requests>
 * connect_secret = <password for token requests>
-* connect_env = core for TEST environment, pcore for STAGE and PROD environment
+* connect_token_server = <base URL of token server>
+* connect_token_endpoint = <endpoint for fetching token>
+* connect_token_issuer = <issuer name of the token>
+* connect_token_cert = <full URL of the public key of the token server>
 
 To allow incoming messages you must setup a user with required access rights
 and with login = <username sent by GMC in tokens> and password = <password

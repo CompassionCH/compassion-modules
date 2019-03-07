@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -9,11 +9,15 @@
 #
 ##############################################################################
 
-from . import compassion_child
-from . import res_users
-from . import compassion_project
-from . import product_template
-from . import compassion_correspondence
-from . import account_invoice
-from . import res_partner
-from . import ir_http
+
+def migrate(cr, version):
+    if not version:
+        return
+
+    # Remove SQL view
+    try:
+        cr.execute("""
+            DROP VIEW IF EXISTS interaction_resume;
+        """)
+    except:
+        cr.rollback()

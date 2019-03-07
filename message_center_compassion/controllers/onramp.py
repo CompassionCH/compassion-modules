@@ -9,9 +9,12 @@
 #
 ##############################################################################
 import logging
+import uuid
+import time
 
 from odoo import http, exceptions
 from odoo.http import request
+from odoo.tools import config
 from ..tools.onramp_connector import OnrampConnector
 
 _logger = logging.getLogger(__name__)
@@ -25,24 +28,32 @@ except ImportError:
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
 AUTHORIZED_SENDERS = ['CHTest', 'CISalesforce', 'CISFDC', 'CINetsuite',
-                      'SFDC-CI']
+                      'SFDC-CI', 'SponsorshipPool']
 
 _logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
-    @http.route('/onramp', type='json', auth='oauth2', methods=['POST'])
+
+    @http.route('/onramp-test', type='http', auth='oauth2', methods=['POST'],
+                csrf=False)
+    def test_onramp(self, **json_data):
+        # HACK to enable testing, because for a reason the requests sent
+        # with method  self.url_open() are sending http requests instead
+        # of json. If a fix is found, this route can be removed.
+        testing = config.get('test_enable')
+        if testing:
+            request.jsonrequest = dict(json_data)
+            request.uuid = str(uuid.uuid4())
+            request.timestamp = time.time()
+            result = json.dumps(self.handler_onramp())
+            return request.make_response(
+                result, [('content-type', 'application/json')])
+        return False
+
+    @http.route('/onramp', type='json', auth='oauth2', methods=['POST'],
+                csrf=False)
     def handler_onramp(self):
-        return self._process_post_message()
-
-    @http.route('/onramp-stage', type='json', auth='oauth2_stage',
-                methods=['POST'])
-    def handler_onramp_stage(self):
-        """ Handler for `/onramp` url for json data.
-        """
-        return self._process_post_message()
-
-    def _process_post_message(self):
         headers = request.httprequest.headers
         message_type = headers['x-cim-MessageType']
         OnrampConnector.log_message(

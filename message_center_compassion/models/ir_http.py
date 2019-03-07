@@ -11,8 +11,9 @@
 import logging
 import requests
 
-from odoo.http import request
 from odoo import models
+from odoo.http import request
+from odoo.tools import config
 from werkzeug.exceptions import Unauthorized
 
 _logger = logging.getLogger(__name__)
@@ -27,20 +28,6 @@ except ImportError:
 
 class IrHTTP(models.AbstractModel):
     _inherit = 'ir.http'
-
-    @classmethod
-    def _auth_method_oauth2(cls):
-        cls._oauth_validation(
-            'globalaccess.ci.org',
-            'https://globalaccessidp.ci.org/core/.well-known/jwks'
-        )
-
-    @classmethod
-    def _auth_method_oauth2_stage(cls):
-        cls._oauth_validation(
-            'globalaccess-stage.ci.org',
-            'https://globalaccessidp-stage.ci.org/core/.well-known/jwks'
-        )
 
     @classmethod
     def _auth_method_oauth2_legacy(cls):
@@ -90,7 +77,14 @@ class IrHTTP(models.AbstractModel):
             raise Unauthorized()
 
     @classmethod
-    def _oauth_validation(cls, issuer, cert_url):
+    def _auth_method_oauth2(cls):
+        client_id = cls._oauth_validation()
+        cls._validate_client_user(client_id)
+
+    @classmethod
+    def _oauth_validation(cls):
+        issuer = config.get('connect_token_issuer')
+        cert_url = config.get('connect_token_cert')
         if request.httprequest.method == 'GET':
             mode = 'read'
         if request.httprequest.method == 'POST':
@@ -105,9 +99,9 @@ class IrHTTP(models.AbstractModel):
             key_json = simplejson.dumps(cert.json()['keys'][0])
         except ValueError:
             # If any error occurs during token and certificate retrieval,
-            # we don't allow to go any further
-            _logger.error("Error during token validation", exc_info=True)
-            raise Unauthorized()
+            # we put a wrong certificate, and jwt library will fail
+            # to decrypt the token, leading to unauthorized error.
+            key_json = {}
 
         public_key = RSAAlgorithm.from_jwk(key_json)
         jwt_decoded = jwt.decode(
@@ -121,9 +115,20 @@ class IrHTTP(models.AbstractModel):
             raise Unauthorized()
         client_id = jwt_decoded.get('client_id') or jwt_decoded.get('ClientID')
         _logger.info("TOKEN CLIENT IS -----------------> " + client_id)
+        return client_id
+
+    @classmethod
+    def _validate_client_user(cls, client_id):
+        """
+        Validates that the client_id received in the token is a Odoo
+        user. This will change the current user in the session.
+        :param client_id: token client id
+        :return: res.user record
+        """
         user = request.env['res.users'].sudo().search(
             [('login', '=', client_id)])
         if user:
             request.uid = user.id
         else:
             raise Unauthorized()
+        return user
