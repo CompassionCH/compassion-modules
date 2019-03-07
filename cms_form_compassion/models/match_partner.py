@@ -33,6 +33,9 @@ class MatchPartner(models.AbstractModel):
         :param options: An optional dict containing the options parameters.
         :return: The matched partner.
         """
+        if options is None:
+            options = {}
+
         # Default options
         opt = {
             'skip_create': False,  # When True, do not create a partner and
