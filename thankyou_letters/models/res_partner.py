@@ -46,6 +46,7 @@ class ResPartner(models.Model):
 
     salutation = fields.Char(compute='_compute_salutation')
     short_salutation = fields.Char(compute='_compute_salutation')
+    informal_salutation = fields.Char(compute='_compute_salutation')
     gender = fields.Selection(related='title.gender', readonly=True)
     thankyou_preference = fields.Selection(
         '_get_delivery_preference', default='auto_digital', required=True)
