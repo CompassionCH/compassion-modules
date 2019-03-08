@@ -316,15 +316,3 @@ class RecurringContract(models.Model):
             'sds_state': 'sub',
             'color': 2  # Red until sub is active
         })
-
-    @api.model
-    def _needaction_domain_get(self):
-        domain = False
-        menu = self.env.context.get('count_menu')
-        if menu == 'menu_follow_sds':
-            # All contracts followed by user that are sub_waiting
-            domain = [
-                ('sds_uid', '=', self.env.user.id),
-                ('sds_state', '=', 'sub_waiting')]
-
-        return domain
