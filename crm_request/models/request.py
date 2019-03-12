@@ -42,3 +42,14 @@ class CrmClaim(models.Model):
                     'crm_request', 'stage_wait_customer')[1]
 
         return result
+
+    @api.multi
+    def write(self, values):
+        # Get all followers before change
+        super(CrmClaim, self)._get_followers
+
+        #  unsubscribe all followers before change
+        super(CrmClaim, self).message_unsubscribe(partner_ids=[self.message_partner_ids.id])
+
+        # launching the standard process "write"
+        return super(CrmClaim, self).write(values)
