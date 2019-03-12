@@ -14,3 +14,4 @@ from . import compassion_project_mapping
 from . import compassion_donation_mapping
 from . import compassion_correspondence_mapping
 from . import compassion_login_mapping
+from . import wp_post_mapping

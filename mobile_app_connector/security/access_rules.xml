@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="my_children" model="ir.rule">
+        <field name="name">My children</field>
+        <field name="model_id" ref="model_compassion_child"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.mapped('sponsorship_ids.child_id.id'))]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_sponsorships" model="ir.rule">
+        <field name="name">My sponsorships</field>
+        <field name="model_id" ref="sponsorship_compassion.model_recurring_contract"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.mapped('sponsorship_ids.id'))]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_contacts" model="ir.rule">
+        <field name="name">My contacts</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="domain_force">[('id', 'in', (user.partner_id.mapped('sponsorship_ids.correspondent_id')+user.partner_id.mapped('sponsorship_ids.partner_id')).ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="my_correspondence" model="ir.rule">
+        <field name="name">My correspondence</field>
+        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

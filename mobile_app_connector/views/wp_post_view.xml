@@ -1,0 +1,74 @@
+<odoo>
+    <record model="ir.ui.view" id="wp_post_form">
+        <field name="name">wp.post.form</field>
+        <field name="model">wp.post</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="post_type"/>
+                            <field name="category_id"/>
+                            <field name="lang"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="wp_id"/>
+                            <field name="url"/>
+                            <field name="image_url"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="wp_post_tree">
+        <field name="name">wp.post.tree</field>
+        <field name="model">wp.post</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="post_type"/>
+                <field name="category_id"/>
+                <field name="lang"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="wp_post_search">
+        <field name="name">app.banner.search</field>
+        <field name="model">wp.post</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="lang"/>
+                <field name="post_type"/>
+                <field name="category_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Lang" name="group_lang" domain="[]" context="{'group_by':'lang'}"/>
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Category" name="group_category" domain="[]" context="{'group_by':'category_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wp_post" model="ir.actions.act_window">
+        <field name="name">Wordpress Posts</field>
+        <field name="res_model">wp.post</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for WP Posts -->
+    <menuitem id="menu_wp_post"
+              name="Wordpress Posts"
+              parent="menu_mobile_app"
+              action="action_wp_post"
+              groups="sales_team.group_sale_manager"
+    />
+
+</odoo>

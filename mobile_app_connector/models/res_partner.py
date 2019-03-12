@@ -8,12 +8,16 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from ..mappings.compassion_child_mapping import MobileChildMapping
+from odoo import models, api, _
 
 
 class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
 
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
     @api.model
     def mobile_update_notification_preference(self, json_data, **params):
         """
@@ -35,44 +39,6 @@ class GetPartnerMessage(models.Model):
             "of Supporter ID : {} ({}, {})".format(
                 partner_id, notify_child, notify_info)
         }
-
-    @api.model
-    def mobile_get_message(self, **other_params):
-        values = dict(other_params)
-        partner_id = values.get('partner_id')
-        nb_sponsorships = len(self.env["recurring.contract"].search([
-            ('partner_id', '=', partner_id)
-        ]))
-
-        # TODO what is subtype, sortorder, actionDestination and type
-        messages = [{
-            "ActionDestination": "Child selector",
-            "Body": "You're changing " + str(nb_sponsorships) + " lives",
-            "SortOrder": 1001,
-            "SubType": "CH1",
-            "Title": "Thank You" if nb_sponsorships else "Oh no!",
-            "Type": "Child"
-        }]
-
-        # TODO change base link with correct URLs (for Switzerland)
-        links = {
-            "Base": "http://services.compassionuk.org/"
-                    "AppRest/AppRestService.svc",
-            "Next": "/mobile-app-api/get-message/" + str(partner_id)
-                    + "?limit=1&start=1",
-            "Self": "http://services.compassionuk.org/AppRest/"
-                    "AppRestService.svc/mobile-app-api/get-message/"
-                    + str(partner_id) + "?limit=1&start=0"
-        }
-
-        response = {
-            "Limit": 1,
-            "Messages": messages,
-            "Size": 1,
-            "Start": 0,
-            "_Links": links
-        }
-        return response
 
     @api.model
     def mobile_get_all_correspondence(self, **other_params):
