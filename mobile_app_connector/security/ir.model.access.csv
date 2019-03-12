@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wordpress_post,WP Post read access,model_wp_post,,1,0,0,0
+access_wordpress_post_category,WP Post Category read access,model_wp_post_category,,1,0,0,0
+access_admin_wp_post,WP Post full access,model_wp_post,base.group_erp_manager,1,1,1,1
+access_admin_wp_post_category,WP Post Category full access,model_wp_post_category,base.group_erp_manager,1,1,1,1
+read_access_child,Child read access,child_compassion.model_compassion_child,base.group_portal,1,0,0,0
+read_access_project,Project read access,child_compassion.model_compassion_project,base.group_portal,1,0,0,0
+read_access_contract,Recurring contract read access,sponsorship_compassion.model_recurring_contract,base.group_portal,1,0,0,0
+read_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,0,0,0

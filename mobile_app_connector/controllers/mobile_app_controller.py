@@ -12,6 +12,7 @@
 ##############################################################################
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
+from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed
@@ -21,7 +22,7 @@ class RestController(http.Controller):
 
     @http.route('/mobile-app-api/login', type='json', methods=['GET'],
                 auth='public')
-    def mobile_app_login(self, username, password, view=None):
+    def mobile_app_login(self, username, password, **kwargs):
         """
         This is the first entry point for logging, which will setup the
         session for the user so that he can later call the main entry point.
@@ -70,12 +71,12 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        partner_obj = request.env['res.partner'].sudo()
+        hub_obj = request.env['mobile.app.hub'].sudo()
         if partner_id:
             # This will ensure the user is logged in
             request.session.check_security()
-            partner_obj = partner_obj.sudo(request.session.uid)
-        return partner_obj.mobile_get_message(partner_id=partner_id)
+            hub_obj = hub_obj.sudo(request.session.uid)
+        return hub_obj.mobile_get_message(partner_id=partner_id, **parameters)
 
     @http.route('/mobile-app-api/hero/', type='json',
                 auth='public', methods=['GET'])

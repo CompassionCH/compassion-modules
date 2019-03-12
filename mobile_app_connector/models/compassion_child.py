@@ -74,6 +74,19 @@ class CompassionChild(models.Model):
         }
         return result
 
+    def get_mobile_app_tiles(self):
+        """
+        Returns JSON list of children tiles. Update the algorithm description
+        here as you change the code.
+        Tiles display algorithm:
+        - display by order of date of the relevant message
+        :return: List of JSON data for mobile app tiles
+        """
+        messages = []
+        for child in self:
+            test = 'test'
+        return messages
+
     def _get_required_param(self, key, params):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
