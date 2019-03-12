@@ -49,7 +49,8 @@ class CrmClaim(models.Model):
         super(CrmClaim, self)._get_followers
 
         #  unsubscribe all followers before change
-        super(CrmClaim, self).message_unsubscribe(partner_ids=[self.message_partner_ids.id])
+        super(CrmClaim, self).message_unsubscribe(
+            partner_ids=[self.message_partner_ids.id])
 
         # launching the standard process "write"
         return super(CrmClaim, self).write(values)
