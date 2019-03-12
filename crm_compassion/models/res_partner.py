@@ -51,3 +51,20 @@ class Partner(models.Model):
             partner.opportunity_count += self.env['crm.lead'].search_count(
                 [('partner_id', operator, partner.id),
                  ('type', '=', 'opportunity'), ('active', '=', False)])
+
+    def open_interaction(self):
+        """
+        Populates data for interaction resume and open the view
+        :return: action opening the view
+        """
+        self.ensure_one()
+        self.env['interaction.resume'].populate_resume(self.id)
+        return {
+            'name': _('Interaction resume'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'interaction.resume',
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.id)],
+            'target': 'current',
+        }
