@@ -27,12 +27,13 @@ class IrUiMenu(models.Model):
         # one menu an not for all menus of a model
         menu_follow_sds = \
             self.env.ref('sponsorship_tracking.menu_follow_sds')
-        domain = safe_eval(menu_follow_sds.action.domain)
-        model = menu_follow_sds.action.res_model
-        counter = \
-            len(self.env[model].search(domain, limit=100, order='id DESC'))
+        if menu_follow_sds.id in self.ids:
+            domain = safe_eval(menu_follow_sds.action.domain)
+            model = menu_follow_sds.action.res_model
+            counter = len(self.env[model]
+                          .search(domain, limit=100, order='id DESC'))
 
-        res[menu_follow_sds.id]['needaction_enabled'] = True
-        res[menu_follow_sds.id]['needaction_counter'] = counter
+            res[menu_follow_sds.id]['needaction_enabled'] = True
+            res[menu_follow_sds.id]['needaction_counter'] = counter
 
         return res
