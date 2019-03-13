@@ -120,6 +120,7 @@ class CrmClaim(models.Model):
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(
                     'crm_request', 'stage_wait_customer')[1]
+                request.user_id = self.env.user
 
         return result
 
