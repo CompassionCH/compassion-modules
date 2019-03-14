@@ -74,6 +74,8 @@ class ResPartner(models.Model):
                 p.salutation = _("Dear friends of ") + \
                     self.env.user.company_id.name
                 p.short_salutation = p.salutation
+                p.informal_salutation = ("Dear friend of ") + \
+                    self.env.user.company_id.name
 
     @api.multi
     def _compute_full_name(self):
