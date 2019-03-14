@@ -131,18 +131,6 @@ class AppHub(models.AbstractModel):
                 "Title": _("Help a mother and her baby today"),
                 "Type": "Giving"
             },
-            # Test a story tile
-            {
-                "Blog": {
-                    "ImageUrl": "http://myuatsystems.com/compassionWP/wp-content/uploads/2018/07/Philippines-typhoon-feature.jpg",
-                    "Title": "Typhoon Mangkhut: Please Pray",
-                    "Url": "http://www.myuatsystems.com/compassionWP/?post_type=news&#038;p=10119"
-                },
-                "SortOrder": 3004,
-                "SubType": "ST_T2",
-                "Title": "Typhoon Mangkhut: Please Pray",
-                "Type": "Story"
-            },
         ]
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         return self._construct_hub_message(0, messages, **pagination)
@@ -194,8 +182,7 @@ class AppHub(models.AbstractModel):
                 "Self": base_url + hub_endpoint.format(partner_id, start,
                                                        limit),
             },
-            "Messages": messages[
-                        int(start):min(len(messages), int(limit))],
+            "Messages": messages[int(start):min(len(messages), int(limit))],
         }
 
     def _assign_order(self, messages):

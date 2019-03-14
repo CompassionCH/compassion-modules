@@ -76,12 +76,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Add Top menu in Sales Module -->
-    <menuitem id="menu_mobile_app"
-              name="Mobile App"
-              parent="sales_team.menu_base_partner"
-              sequence="2"/>
-
     <!-- Add menu for app banners -->
     <menuitem id="menu_mobile_app_banner"
               name="Banners"
