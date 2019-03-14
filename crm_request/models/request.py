@@ -2,8 +2,7 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import email.utils
-
+from email.utils import parseaddr
 from odoo import api, fields, models
 
 
@@ -13,6 +12,9 @@ class CrmClaim(models.Model):
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
     name = fields.Char(string='Subject')
+    alias_id = fields.Many2one(
+        'mail.alias', 'Alias',
+        help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
     claim_type = fields.Many2one(string='Type')
     user_id = fields.Many2one(string='Assign to')
@@ -70,16 +72,22 @@ class CrmClaim(models.Model):
         """
         if custom_values is None:
             custom_values = {}
+
+        alias_char = parseaddr(msg.get('to'))[1].split('@')[0]
+        alias = self.env['mail.alias'].search(
+            [['alias_name', '=', alias_char]])
+
         defaults = {
             'description': msg.get('body'),
             'date': msg.get('date'),  # Get the time of the sending of the mail
+            'alias_id': alias.id
         }
 
         if 'partner_id' not in custom_values:
             match_obj = self.env['res.partner.match']
             options = {'skip_create': True}
             partner = match_obj.match_partner_to_infos({
-                'email': email.utils.parseaddr(msg.get('from'))[1]
+                'email': parseaddr(msg.get('from'))[1]
             }, options)
             if partner:
                 defaults['partner_id'] = partner.id
