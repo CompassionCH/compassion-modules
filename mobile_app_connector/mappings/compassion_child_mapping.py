@@ -17,12 +17,12 @@ class MobileChildMapping(OnrampMapping):
     MAPPING_NAME = 'mobile_app_child'
 
     CONNECT_MAPPING = {
-        'age': 'age',
+        'Age': 'age',
         'benData': None,
-        'beneficiaryGlobalID': 'global_id',
+        'BeneficiaryGlobalId': 'global_id',
         'bio': 'desc_en',
-        'Birthdate': 'birthdate',
-        'childNeedkey': 'local_id',
+        'BirthDate': 'birthdate',
+        'NeedId': 'local_id',
         'CommunityDescription': None,
         'country': ('project_id.country_id.name', 'res.country'),
         'countryId': ('project_id.country_id.id', 'res.country'),
@@ -44,8 +44,8 @@ class MobileChildMapping(OnrampMapping):
         'sponsorYearOfBirth': None,
         'sponsorshipplusflag': None,
         'SupportergroupID': None,
-        'Supporterid': ('partner_id.global_id', 'res.partner'),
-        'Supportername': ('partner_id.name', 'res.partner'),
+        'SupporterId': ('partner_id.global_id', 'res.partner'),
+        'SupporterName': ('partner_id.name', 'res.partner'),
         'timeTaken': None,
         'UpdatedpreferredName': ('partner_id.preferred_name', 'res.partner')
     }
