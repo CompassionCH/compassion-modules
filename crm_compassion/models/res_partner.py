@@ -18,6 +18,14 @@ class Partner(models.Model):
     interaction_resume_ids = fields.One2many(
         'interaction.resume', 'partner_id', 'Interaction resume')
 
+    # Do not clutter the mail thread with emails that can be seen in
+    # interaction resume
+    message_ids = fields.One2many(
+        'mail.message', 'res_id', string='Messages', domain=lambda self: [
+            ('model', '=', self._name),
+            ('subtype_id', 'in', [self.env.ref('mail.mt_note').id])
+        ], auto_join=True)
+
     @api.multi
     def open_events(self):
         event_ids = self.env['crm.event.compassion'].search(
