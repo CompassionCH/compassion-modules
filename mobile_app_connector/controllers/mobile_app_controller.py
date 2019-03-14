@@ -91,33 +91,13 @@ class RestController(http.Controller):
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
-        return [
-            {
-                "ID": "13",
-                "HERO_TITLE": "Bible Verses About Faith To Inspire You",
-                "HERO_DESCRIPTION": "Discover a daily devotion to bring you "
-                "encouragement. The Bible is full of incredible truths that "
-                "remind us that we can put our faith in God and trust Him.",
-                "HERO_IMAGE": "http://myuatsystems.com/appcp/upload/compassion"
-                              "/Bible-verses-about-faith.jpg",
-                "HERO_CTA_TEXT": "testing",
-                "HERO_CTA_DESTINATION": "Blog",
-                "HERO_CTA_DESTINATION_TYPE": "Internal",
-                "HERO_TYPE": "WithoutLogin",
-                "POST_ID": "10219",
-                "POST_TITLE": "50 Powerful Bible Promises To Build Your Faith",
-                "POST_URL": "http://www.myuatsystems.com/compassionWP/"
-                            "?post_type=blog&p=10219",
-                "CREATED_ON": "2018-09-03 19:34:37",
-                "UPDATED_ON": "2019-02-18 12:11:14",
-                "OA_ID": "820",
-                "OA_BRAND_ID": "856",
-                "USER_ID": "1566",
-                "CREATED_BY": "1",
-                "UPDATED_BY": "1566",
-                "IS_DELETED": "0"
-            },
-        ]
+        hero = request.env['mobile.app.banner'].search([
+            ('type', 'ilike', hero_type),
+            ('is_active', '=', True)
+        ], limit=1)
+        hero_mapping = AppBannerMapping(request.env)
+        res = hero_mapping.get_connect_data(hero)
+        return [res]
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='user', methods=['GET'])
