@@ -55,8 +55,8 @@
                 <filter name="story" string="Story" domain="[('type', '=', 'story')]"/>
                 <filter name="sentence" string="Sentence" domain="[('type', '=', 'sentence')]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Type" name="status" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type'}"/>
                 </group>
             </search>
         </field>
