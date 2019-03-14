@@ -76,3 +76,27 @@ class Partner(models.Model):
             'domain': [('partner_id', '=', self.id)],
             'target': 'current',
         }
+
+    @api.multi
+    def log_call(self):
+        """ Prepare crm.phonecall creation. """
+        self.ensure_one()
+        action_ctx = self.env.context.copy()
+        action_ctx.update({
+            'default_state': 'done',
+            'default_partner_id': self.id,
+            'default_partner_mobile': self.mobile,
+            'default_partner_phone': self.phone,
+        })
+        domain = [('partner_id', '=', self.id)]
+
+        return {
+            'name': _('Log your call'),
+            'domain': domain,
+            'res_model': 'crm.phonecall',
+            'view_mode': 'form,tree,calendar',
+            'type': 'ir.actions.act_window',
+            'nodestroy': False,  # close the pop-up wizard after action
+            'target': 'new',
+            'context': action_ctx,
+        }
