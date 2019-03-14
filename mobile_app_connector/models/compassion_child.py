@@ -35,7 +35,7 @@ class CompassionChild(models.Model):
         partner_ref = self._get_required_param('userid', other_params)
 
         sponsor = self.env['res.partner'].search([
-            # TODO add filter only portal users
+            # TODO change filter, we can directly search for connected user
             ('ref', '=', partner_ref),
         ], limit=1)
         children = self.search([
@@ -78,13 +78,12 @@ class CompassionChild(models.Model):
         """
         Returns JSON list of children tiles. Update the algorithm description
         here as you change the code.
+        TODO Implement this
         Tiles display algorithm:
         - display by order of date of the relevant message
         :return: List of JSON data for mobile app tiles
         """
         messages = []
-        for child in self:
-            test = 'test'
         return messages
 
     def _get_required_param(self, key, params):

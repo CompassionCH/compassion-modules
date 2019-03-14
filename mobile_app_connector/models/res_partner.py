@@ -8,8 +8,7 @@
 #
 ##############################################################################
 
-from ..mappings.compassion_child_mapping import MobileChildMapping
-from odoo import models, api, _
+from odoo import models, api
 
 
 class GetPartnerMessage(models.Model):

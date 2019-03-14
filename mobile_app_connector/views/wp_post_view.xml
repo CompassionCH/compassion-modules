@@ -1,4 +1,11 @@
 <odoo>
+    <!-- Add Top menu in Sales Module -->
+    <menuitem id="menu_mobile_app"
+              name="Mobile App"
+              parent="sales_team.menu_base_partner"
+              sequence="2"/>
+
+    <!-- WP Post views -->
     <record model="ir.ui.view" id="wp_post_form">
         <field name="name">wp.post.form</field>
         <field name="model">wp.post</field>
