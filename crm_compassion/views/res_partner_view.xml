@@ -77,4 +77,21 @@
         <field name="name">Make Ambassador</field>
         <field eval="'ir.actions.server,%d'%partner_ambassador_action" name="value"/>
     </record>
+
+    <record id="log_call_action" model="ir.actions.server">
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="name">Log your call</field>
+        <field name="code">
+if object:
+    action = object.log_call()
+        </field>
+    </record>
+    <record id="log_call_item" model="ir.values">
+        <field name="key">action</field>
+        <field name="key2">client_action_multi</field>
+        <field name="model">res.partner</field>
+        <field name="name">Log your call</field>
+        <field eval="'ir.actions.server,%d'%log_call_action" name="value"/>
+    </record>
+
 </odoo>
