@@ -19,3 +19,4 @@ from . import res_partner
 from . import app_hub
 from . import wordpress_post_category
 from . import wordpress_post
+from . import mobile_banner
