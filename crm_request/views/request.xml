@@ -1,5 +1,77 @@
 <?xml version="1.0"?>
 <odoo>
+    <!-- Search view -->
+    <record id="support_search_view" model="ir.ui.view">
+        <field name="name">support.search.view</field>
+        <field name="model">crm.claim</field>
+        <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[1]" position="attributes">
+                <attribute name="string">Unassigned</attribute>
+                <attribute name="name">unassigned</attribute>
+            </xpath>
+            <field name="partner_id" position="before">
+                <filter string="Assign to me" name="responsible"
+                        domain="[('user_id','=',uid)]"/>
+            </field>
+            <field name="user_id" position="after">
+                <separator/>
+                <filter string="Request open" name="stage_open"
+                        domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d),('stage_id', '!=', %(crm_claim.stage_claim3)d)]"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Kanban view -->
+    <record id="crm_request_kanban_view" model="ir.ui.view">
+        <field name="name">CRM - Requests Kanban</field>
+        <field name="model">crm.claim</field>
+        <field name="type">kanban</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id"
+                    group_create='false'
+                    group_delete='false'
+                    group_edit="false"
+                    quick_create='false'>
+                <field name='partner_id'/>
+                <field name='color'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                            <div class="oe_kanban_vignette">
+                                <div class='oe_kanban_card'>
+                                    <h4>
+                                        <a type="open">
+                                            <field name="name"/>
+                                        </a>
+                                    </h4>
+                                    <ul>
+                                        <li>
+                                            <field name='partner_id'/>
+                                        </li>
+                                        <li>
+                                            <field name='ref'/>
+                                        </li>
+                                        <li>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class='oe_kanban_bottom_right'>
+                                    <field name='user_id'/>
+                                </div>
+                                <div class='oe_kanban_footer_left'>
+                                    <field name='date'/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Form view -->
     <record model="ir.ui.view" id="crm_request_form_view">
         <field name="name">CRM - Requests Form</field>
         <field name="model">crm.claim</field>
@@ -29,34 +101,13 @@
         </field>
     </record>
 
-    <!-- Search view-->
-    <record id="support_search_view" model="ir.ui.view">
-        <field name="name">support.search.view</field>
-        <field name="model">crm.claim</field>
-        <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
-        <field name="arch" type="xml">
-            <xpath expr="//filter[1]" position="attributes">
-                <attribute name="string">Unassigned</attribute>
-                <attribute name="name">unassigned</attribute>
-            </xpath>
-            <field name="partner_id" position="before">
-                <filter string="Assign to me" name="responsible"
-                        domain="[('user_id','=',uid)]"/>
-            </field>
-            <field name="user_id" position="after">
-                <separator/>
-                <filter string="Request open" name="stage_open"
-                        domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d),('stage_id', '!=', %(crm_claim.stage_claim3)d)]"/>
-            </field>
-        </field>
-    </record>
-
+    <!-- Action -->
     <record model="ir.actions.act_window" id="request_action">
         <field name="name">Requests</field>
         <field name="res_model">crm.claim</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,calendar,form</field>
-        <field name="view_id" ref="crm_claim.crm_case_claims_tree_view"/>
+        <field name="view_mode">kanban,tree,calendar,form</field>
+        <field name="view_id" ref="crm_request_kanban_view"/>
         <field name="context">
             {"search_default_responsible":1,
             "search_default_unassigned":1,
@@ -76,7 +127,7 @@
         </field>
     </record>
 
-    <!-- Top menu item -->
+    <!-- Top menu -->
     <menuitem id="support_root"
               name="Support"
               groups="sales_team.group_sale_salesman"

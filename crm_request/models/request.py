@@ -16,6 +16,14 @@ class CrmClaim(models.Model):
     code = fields.Char(string='Number')
     claim_type = fields.Many2one(string='Type')
     user_id = fields.Many2one(string='Assign to')
+    stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
+    ref = fields.Char(related='partner_id.ref')
+    color = fields.Integer('Color index', compute='_compute_color')
+
+    def _compute_color(self):
+        for request in self:
+            if int(request.priority) == 2:
+                request.color = 2
 
     @api.multi
     def action_reply(self):
@@ -47,6 +55,11 @@ class CrmClaim(models.Model):
         """Unlink the email_from field from the partner"""
         if self.partner_id:
             self.partner_phone = self.partner_id.phone
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        stage_ids = stages._search([('active', '=', True)], order=order)
+        return stages.browse(stage_ids)
 
     # -------------------------------------------------------
     # Mail gateway
@@ -101,3 +114,11 @@ class CrmClaim(models.Model):
                     'crm_request', 'stage_wait_customer')[1]
 
         return result
+
+    @api.multi
+    def write(self, values):
+        # If move request in stage 'In Progress' assign the request to the
+        # current user.
+        if values.get('stage_id') == self.env.ref('crm_claim.stage_claim5').id:
+            values['user_id'] = self.env.uid
+        return super(CrmClaim, self).write(values)
