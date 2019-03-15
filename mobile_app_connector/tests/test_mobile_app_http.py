@@ -66,7 +66,20 @@ class TestMobileAppHttp(HttpCase):
 
     def test_entry_point(self):
         # Test we can only call entry point while authenticated
-        url = self.root_url + 'res.partner/get_message'
+        self.env['res.users'].sudo().browse(1).partner_id.ref = '1818'
+        url = self.root_url + 'compassion.child/sponsor_children?userid=1818'
+        response = self.url_open(url)
+        self.assertEqual(response.code, 401)
+        self.authenticate('admin', 'admin')
+        response = self.url_open(url)
+        self.assertEqual(response.code, 200)
+
+    def test_get_message_hub(self):
+        # Test we can only call hub entry point for user while authenticated
+        url = self.root_url + 'hub/0'
+        response = self.url_open(url)
+        self.assertEqual(response.code, 200)
+        url = self.root_url + 'hub/1'
         response = self.url_open(url)
         self.assertEqual(response.code, 401)
         self.authenticate('admin', 'admin')

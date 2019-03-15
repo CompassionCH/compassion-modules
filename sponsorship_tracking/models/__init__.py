@@ -10,4 +10,4 @@
 ##############################################################################
 
 from . import contracts
-# from . import ir_ui_menu
+from . import ir_ui_menu

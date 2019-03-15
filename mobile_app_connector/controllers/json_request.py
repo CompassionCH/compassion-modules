@@ -78,5 +78,4 @@ class MobileAppJsonRequest(JsonRequest):
                 'http_status': code,
                 'message': str(exception)
             })
-        _logger.warn(exception)
         raise exception

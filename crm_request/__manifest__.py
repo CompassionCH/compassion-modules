@@ -23,5 +23,6 @@
         'data/crm_request_data.xml',
         'views/request.xml',
         'views/request_type.xml',
+        'views/request_stage.xml',
     ],
 }

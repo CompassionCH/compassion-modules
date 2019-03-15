@@ -46,6 +46,7 @@ class ResPartner(models.Model):
 
     salutation = fields.Char(compute='_compute_salutation')
     short_salutation = fields.Char(compute='_compute_salutation')
+    informal_salutation = fields.Char(compute='_compute_salutation')
     gender = fields.Selection(related='title.gender', readonly=True)
     thankyou_preference = fields.Selection(
         '_get_delivery_preference', default='auto_digital', required=True)
@@ -67,10 +68,14 @@ class ResPartner(models.Model):
                 p.salutation = title_salutation + ' ' + \
                     title_name + ' ' + partner.lastname
                 p.short_salutation = title_salutation + ' ' + partner.firstname
+                p.informal_salutation = title_salutation + ' ' + \
+                    partner.firstname
             else:
                 p.salutation = _("Dear friends of ") + \
                     self.env.user.company_id.name
                 p.short_salutation = p.salutation
+                p.informal_salutation = ("Dear friend of ") + \
+                    self.env.user.company_id.name
 
     @api.multi
     def _compute_full_name(self):

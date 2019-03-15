@@ -16,4 +16,7 @@ from . import product_template
 from . import compassion_correspondence
 from . import account_invoice
 from . import res_partner
-from . import ir_http
+from . import app_hub
+from . import wordpress_post_category
+from . import wordpress_post
+from . import mobile_banner

@@ -12,6 +12,7 @@
 ##############################################################################
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
+from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed
@@ -20,8 +21,8 @@ from werkzeug.exceptions import NotFound, MethodNotAllowed
 class RestController(http.Controller):
 
     @http.route('/mobile-app-api/login', type='json', methods=['GET'],
-                auth='oauth2_app')
-    def mobile_app_login(self, username, password, view=None):
+                auth='public')
+    def mobile_app_login(self, username, password, **kwargs):
         """
         This is the first entry point for logging, which will setup the
         session for the user so that he can later call the main entry point.
@@ -62,7 +63,7 @@ class RestController(http.Controller):
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
     @http.route('/mobile-app-api/hub/<int:partner_id>', type='json',
-                auth='oauth2_app', methods=['GET'])
+                auth='public', methods=['GET'])
     def get_hub_messages(self, partner_id, **parameters):
         """
         This route is not authenticated with user, because it can be called
@@ -70,15 +71,15 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        partner_obj = request.env['res.partner'].sudo()
+        hub_obj = request.env['mobile.app.hub'].sudo()
         if partner_id:
             # This will ensure the user is logged in
             request.session.check_security()
-            partner_obj = partner_obj.sudo(request.session.uid)
-        return partner_obj.mobile_get_message(partner_id=partner_id)
+            hub_obj = hub_obj.sudo(request.session.uid)
+        return hub_obj.mobile_get_message(partner_id=partner_id, **parameters)
 
     @http.route('/mobile-app-api/hero/', type='json',
-                auth='oauth2_app', methods=['GET'])
+                auth='public', methods=['GET'])
     def get_hero(self, hero_type=None, view=None, **parameters):
         """
         Hero view is the main header above the HUB in the app.
@@ -90,33 +91,13 @@ class RestController(http.Controller):
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
-        return [
-            {
-                "ID": "13",
-                "HERO_TITLE": "Bible Verses About Faith To Inspire You",
-                "HERO_DESCRIPTION": "Discover a daily devotion to bring you "
-                "encouragement. The Bible is full of incredible truths that "
-                "remind us that we can put our faith in God and trust Him.",
-                "HERO_IMAGE": "http://myuatsystems.com/appcp/upload/compassion"
-                              "/Bible-verses-about-faith.jpg",
-                "HERO_CTA_TEXT": "testing",
-                "HERO_CTA_DESTINATION": "Blog",
-                "HERO_CTA_DESTINATION_TYPE": "Internal",
-                "HERO_TYPE": "WithoutLogin",
-                "POST_ID": "10219",
-                "POST_TITLE": "50 Powerful Bible Promises To Build Your Faith",
-                "POST_URL": "http://www.myuatsystems.com/compassionWP/"
-                            "?post_type=blog&p=10219",
-                "CREATED_ON": "2018-09-03 19:34:37",
-                "UPDATED_ON": "2019-02-18 12:11:14",
-                "OA_ID": "820",
-                "OA_BRAND_ID": "856",
-                "USER_ID": "1566",
-                "CREATED_BY": "1",
-                "UPDATED_BY": "1566",
-                "IS_DELETED": "0"
-            },
-        ]
+        hero = request.env['mobile.app.banner'].search([
+            ('type', 'ilike', hero_type),
+            ('is_active', '=', True)
+        ], limit=1)
+        hero_mapping = AppBannerMapping(request.env)
+        res = hero_mapping.get_connect_data(hero)
+        return [res]
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='user', methods=['GET'])

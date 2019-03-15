@@ -2,8 +2,7 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import email.utils
-
+from email.utils import parseaddr
 from odoo import api, fields, models
 
 
@@ -13,9 +12,20 @@ class CrmClaim(models.Model):
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
     name = fields.Char(string='Subject')
+    alias_id = fields.Many2one(
+        'mail.alias', 'Alias',
+        help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
     claim_type = fields.Many2one(string='Type')
     user_id = fields.Many2one(string='Assign to')
+    stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
+    ref = fields.Char(related='partner_id.ref')
+    color = fields.Integer('Color index', compute='_compute_color')
+
+    def _compute_color(self):
+        for request in self:
+            if int(request.priority) == 2:
+                request.color = 2
 
     @api.multi
     def action_reply(self):
@@ -48,6 +58,11 @@ class CrmClaim(models.Model):
         if self.partner_id:
             self.partner_phone = self.partner_id.phone
 
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        stage_ids = stages._search([('active', '=', True)], order=order)
+        return stages.browse(stage_ids)
+
     # -------------------------------------------------------
     # Mail gateway
     # -------------------------------------------------------
@@ -57,16 +72,22 @@ class CrmClaim(models.Model):
         """
         if custom_values is None:
             custom_values = {}
+
+        alias_char = parseaddr(msg.get('to'))[1].split('@')[0]
+        alias = self.env['mail.alias'].search(
+            [['alias_name', '=', alias_char]])
+
         defaults = {
             'description': msg.get('body'),
             'date': msg.get('date'),  # Get the time of the sending of the mail
+            'alias_id': alias.id
         }
 
         if 'partner_id' not in custom_values:
             match_obj = self.env['res.partner.match']
             options = {'skip_create': True}
             partner = match_obj.match_partner_to_infos({
-                'email': email.utils.parseaddr(msg.get('from'))[1]
+                'email': parseaddr(msg.get('from'))[1]
             }, options)
             if partner:
                 defaults['partner_id'] = partner.id
@@ -99,5 +120,14 @@ class CrmClaim(models.Model):
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(
                     'crm_request', 'stage_wait_customer')[1]
+                request.user_id = self.env.user
 
         return result
+
+    @api.multi
+    def write(self, values):
+        # If move request in stage 'In Progress' assign the request to the
+        # current user.
+        if values.get('stage_id') == self.env.ref('crm_claim.stage_claim5').id:
+            values['user_id'] = self.env.uid
+        return super(CrmClaim, self).write(values)
