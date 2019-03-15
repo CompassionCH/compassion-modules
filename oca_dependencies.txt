@@ -25,3 +25,4 @@ report-print-send https://github.com/CompassionCH/report-print-send 10.0
 server-tools
 web
 website-cms
+social

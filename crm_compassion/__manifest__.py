@@ -41,6 +41,7 @@
         'sponsorship_compassion',
         'project',
         'crm_request',
+        'mail_tracking',
     ],
     'data': [
         'security/ir.model.access.csv',
