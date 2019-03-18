@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from email.utils import parseaddr
-from odoo import api, fields, models
+from odoo import api, fields, models, exceptions, _
 
 
 class CrmClaim(models.Model):
@@ -43,6 +43,19 @@ class CrmClaim(models.Model):
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
         }
+
+        if self.partner_id:
+            partner = self._get_partner_alias(
+                self.partner_id, parseaddr(self.email_from)[1]
+            )
+            ctx['default_partner_ids'] = [partner.id]
+
+            # Un-archive the email_alias so that a mail can be sent and set a
+            # flag to re-archive them once the email is sent.
+            if partner.contact_type == 'attached' and not partner.active:
+                partner.toggle_active()
+                ctx['unarchived_partners'] = [partner.id]
+
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -51,6 +64,18 @@ class CrmClaim(models.Model):
             'target': 'new',
             'context': ctx,
         }
+
+    def _get_partner_alias(self, partner, email):
+        if partner.email != email:
+            for partner_alias in partner.other_contact_ids:
+                if partner_alias.email == email:
+                    return partner_alias
+            # No match is found
+            raise exceptions.Warning(
+                _('No partner aliases match: %s !') % email
+            )
+        else:
+            return partner
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
