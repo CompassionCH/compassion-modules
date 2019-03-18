@@ -14,7 +14,8 @@
 
     # any module necessary for this one to work correctly
     'depends': ['crm_claim_code',
-                'crm_claim_type', ],
+                'crm_claim_type',
+                'mail'],
 
     # always loaded
     'data': [
