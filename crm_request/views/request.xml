@@ -99,7 +99,7 @@
             </field>
 
             <field name="description" position="attributes">
-                <attribute name="widget">html</attribute>
+                <attribute name="widget">text_collapse_html</attribute>
             </field>
 
         </field>

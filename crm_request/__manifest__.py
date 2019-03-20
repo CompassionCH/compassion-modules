@@ -15,7 +15,9 @@
     # any module necessary for this one to work correctly
     'depends': ['crm_claim_code',
                 'crm_claim_type',
-                'mail'],
+                'mail',
+                'web_widget_text_collapse_html'
+                ],
 
     # always loaded
     'data': [
