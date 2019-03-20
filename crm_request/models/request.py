@@ -53,7 +53,6 @@ class CrmClaim(models.Model):
             # Un-archive the email_alias so that a mail can be sent and set a
             # flag to re-archive them once the email is sent.
             if partner.contact_type == 'attached' and not partner.active:
-                partner.toggle_active()
                 ctx['unarchived_partners'] = [partner.id]
         else:
             ctx['claim_no_partner'] = True
