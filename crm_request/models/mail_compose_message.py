@@ -7,7 +7,8 @@ from odoo import api, models
 
 class MailComposer(models.TransientModel):
     """
-    Extend the mail composer so that it can send message to archived partner.
+    Extend the mail composer so that it can send message to archived partner,
+    and put back the selected partner in the claim in case it was not linked.
     """
     _inherit = 'mail.compose.message'
 
@@ -19,5 +20,15 @@ class MailComposer(models.TransientModel):
         unarchived_partners = self.env.context.get('unarchived_partners', [])
         if unarchived_partners:
             self.env['res.partner'].browse(unarchived_partners).toggle_active()
+
+        # Put back selected partner into claim
+        if self.env.context.get('claim_no_partner'):
+            gen_mail = self.env['mail.mail'].search([
+                ('res_id', '=', self.res_id),
+                ('model', '=', 'crm.claim')
+            ], limit=1)
+            self.env['crm.claim'].browse(self.res_id).write({
+                'partner_id': gen_mail.recipient_ids[:1].id
+            })
 
         return res

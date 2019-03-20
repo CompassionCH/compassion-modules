@@ -55,6 +55,8 @@ class CrmClaim(models.Model):
             if partner.contact_type == 'attached' and not partner.active:
                 partner.toggle_active()
                 ctx['unarchived_partners'] = [partner.id]
+        else:
+            ctx['claim_no_partner'] = True
 
         return {
             'type': 'ir.actions.act_window',
@@ -151,8 +153,19 @@ class CrmClaim(models.Model):
 
     @api.multi
     def write(self, values):
-        # If move request in stage 'In Progress' assign the request to the
-        # current user.
+        """
+        - If move request in stage 'In Progress' assign the request to the
+          current user.
+        - Push partner to associated mail messages
+        """
         if values.get('stage_id') == self.env.ref('crm_claim.stage_claim5').id:
             values['user_id'] = self.env.uid
-        return super(CrmClaim, self).write(values)
+        super(CrmClaim, self).write(values)
+        if values.get('partner_id'):
+            for request in self:
+                request.message_ids.filtered(
+                    lambda m: m.email_from == request.email_from
+                ).write({
+                    'author_id': values['partner_id']
+                })
+        return True
