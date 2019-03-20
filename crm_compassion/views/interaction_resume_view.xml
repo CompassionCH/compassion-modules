@@ -11,11 +11,7 @@
                 <field name="communication_type"/>
                 <field name="state" invisible="1"/>
                 <field name="subject"/>
-                <field name="tracking_status" invisible="1"/>
-                <button name="error" icon="fa-times-circle-o" attrs="{'invisible': [('tracking_status','in',['sent','delivered','opened', 'not an email'])]}"/>
-                <button name="sent" icon="fa-paper-plane" attrs="{'invisible': [('tracking_status','!=','sent')]}"/>
-                <button name="delivered" icon="fa-check" attrs="{'invisible': [('tracking_status','!=','delivered')]}"/>
-                <button name="Opened" icon="fa-check-circle-o" attrs="{'invisible': [('tracking_status','!=','opened')]}"/>
+                <field name="tracking_status"/>
             </tree>
         </field>
     </record>

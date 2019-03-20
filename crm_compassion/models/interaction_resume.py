@@ -44,7 +44,6 @@ class InteractionResume(models.TransientModel):
         ('unsubscribed', 'Unsubscribed'),
         ('bounced', 'Bounced'),
         ('soft bounced', 'Soft bounced'),
-        ('not an email', 'Not an email')
     ])
 
     @api.model
@@ -67,7 +66,7 @@ class InteractionResume(models.TransientModel):
                 0 as email_id,
                 0 as message_id,
                 pcj.id as paper_id,
-                'not an email' as tracking_status
+                NULL as tracking_status
                 FROM "partner_communication_job" as pcj
                 WHERE pcj.state = 'done'
                 AND pcj.send_mode = 'physical'
@@ -88,7 +87,7 @@ class InteractionResume(models.TransientModel):
                 0 as email_id,
                 0 as message_id,
                 0 as paper_id,
-                'not an email' as tracking_status
+                NULL as tracking_status
                 FROM "crm_phonecall" as crmpc
                 WHERE crmpc.partner_id = %s
                 )
@@ -105,12 +104,12 @@ class InteractionResume(models.TransientModel):
                 mail.id as email_id,
                 0 as message_id,
                 0 as paper_id,
-                mt.state as tracking_status
+                COALESCE(mt.state, 'error') as tracking_status
                 FROM "mail_mail" as mail
                 JOIN mail_message m ON mail.mail_message_id = m.id
                 JOIN mail_mail_res_partner_rel rel
                 ON rel.mail_mail_id = mail.id
-                JOIN mail_tracking_email mt ON mail.id = mt.mail_id 
+                JOIN mail_tracking_email mt ON mail.id = mt.mail_id
                 WHERE mail.state = ANY (ARRAY ['sent', 'received'])
                 AND rel.res_partner_id = %s
                 )
@@ -127,7 +126,7 @@ class InteractionResume(models.TransientModel):
                 0 as email_id,
                 m.id as message_id,
                 0 as paper_id,
-                'not an email' as tracking_status
+                NULL as tracking_status
                 FROM "mail_message" as m
                 WHERE m.subject IS NOT NULL
                 AND m.message_type = 'email'
