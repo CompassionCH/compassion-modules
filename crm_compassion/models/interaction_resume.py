@@ -61,7 +61,7 @@ class InteractionResume(models.TransientModel):
                 pcj.sent_date as communication_date,
                 COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
                 NULL AS email,
-                c.name AS subject,
+                COALESCE(c.name, pcj.subject) AS subject,
                 pcj.body_html AS body,
                 'out' AS direction,
                 0 as phone_id,
@@ -71,7 +71,9 @@ class InteractionResume(models.TransientModel):
                 NULL as tracking_status
                 FROM "partner_communication_job" as pcj
                 JOIN res_partner p ON pcj.partner_id = p.id
-                JOIN partner_communication_config c ON pcj.config_id = c.id
+                FULL OUTER JOIN partner_communication_config c
+                    ON pcj.config_id = c.id
+                    AND c.name != 'Default communication'
                 WHERE pcj.state = 'done'
                 AND pcj.send_mode = 'physical'
                 AND (p.contact_id = %s OR p.id = %s)
@@ -110,7 +112,7 @@ class InteractionResume(models.TransientModel):
                 0 as phone_id,
                 mail.id as email_id,
                 0 as message_id,
-                0 as paper_id,
+                job.id as paper_id,
                 COALESCE(mt.state, 'error') as tracking_status
                 FROM "mail_mail" as mail
                 JOIN mail_message m ON mail.mail_message_id = m.id
@@ -122,6 +124,7 @@ class InteractionResume(models.TransientModel):
                     ON job.email_id = mail.id
                 FULL OUTER JOIN partner_communication_config config
                     ON job.config_id = config.id
+                    AND config.name != 'Default communication'
                 WHERE mail.state = ANY (ARRAY ['sent', 'received'])
                 AND (p.contact_id = %s OR p.id = %s)
                 )
