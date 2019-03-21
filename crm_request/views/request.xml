@@ -22,6 +22,13 @@
         </field>
     </record>
 
+    <act_window id="action_wizard_request_assign"
+                name="Request assign"
+                res_model="assign.request.wizard"
+                view_mode="form"
+                target="new"
+    />
+
     <!-- Kanban view -->
     <record id="crm_request_kanban_view" model="ir.ui.view">
         <field name="name">CRM - Requests Kanban</field>
@@ -78,7 +85,10 @@
         <field name="inherit_id" ref="crm_claim.crm_case_claims_form_view"/>
         <field name="arch" type="xml">
             <field name="stage_id" position="before">
-                <button name="action_reply" string="Reply" type="object" class="btn-primary"/>
+                <button name="action_reply" string="Reply" type="object"
+                        class="btn-default"/>
+                <button name="%(action_wizard_request_assign)d"
+                        string="Assign to" type="action" class="btn-default"/>
             </field>
             <xpath expr="//page[1]" position="attributes">
                 <attribute name="string">Request Description</attribute>
@@ -102,6 +112,33 @@
                 <attribute name="widget">text_collapse_html</attribute>
             </field>
 
+        </field>
+    </record>
+
+    <!-- Wizard-->
+    <record id='assign_request_wizard_form' model='ir.ui.view'>
+        <field name='name'>assign request wizard form view</field>
+        <field name='model'>assign.request.wizard</field>
+        <field name='arch' type='xml'>
+            <form string="Assign">
+                <sheet>
+                    <group>
+                        <field name='user_id'/>
+                    </group>
+                    <group>
+                        <field name='intern_note'/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name='assign_to'
+                            string='OK'
+                            class='btn-primary'
+                            type='object'/>
+                    <button string='Cancel'
+                            class='btn-default'
+                            special='cancel'/>
+                </footer>
+            </form>
         </field>
     </record>
 
