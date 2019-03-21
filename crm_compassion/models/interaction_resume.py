@@ -17,6 +17,7 @@ class InteractionResume(models.TransientModel):
     _order = "communication_date desc"
 
     partner_id = fields.Many2one("res.partner", "Partner")
+    email = fields.Char()
     communication_type = fields.Selection([('Paper', "Paper"),
                                            ("Phone", "Phone"),
                                            ("SMS", "SMS"),
@@ -58,7 +59,8 @@ class InteractionResume(models.TransientModel):
             SELECT
                 'Paper' as communication_type,
                 pcj.sent_date as communication_date,
-                pcj.partner_id,
+                COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
+                NULL AS email,
                 pcj.subject,
                 pcj.body_html AS body,
                 'out' AS direction,
@@ -68,15 +70,17 @@ class InteractionResume(models.TransientModel):
                 pcj.id as paper_id,
                 NULL as tracking_status
                 FROM "partner_communication_job" as pcj
+                JOIN res_partner p ON pcj.partner_id = p.id
                 WHERE pcj.state = 'done'
                 AND pcj.send_mode = 'physical'
-                AND pcj.partner_id = %s
+                AND (p.contact_id = %s OR p.id = %s)
     -- phonecalls
             UNION (
               SELECT
                 'Phone' as communication_type,
                 crmpc.date as communication_date,
-                crmpc.partner_id as partner_id,
+                COALESCE(p.contact_id, p.id) AS partner_id,
+                NULL AS email,
                 crmpc.name as subject,
                 crmpc.name as body,
                 CASE crmpc.direction
@@ -89,14 +93,16 @@ class InteractionResume(models.TransientModel):
                 0 as paper_id,
                 NULL as tracking_status
                 FROM "crm_phonecall" as crmpc
-                WHERE crmpc.partner_id = %s
+                JOIN res_partner p ON crmpc.partner_id = p.id
+                WHERE (p.contact_id = %s OR p.id = %s)
                 )
     -- outgoing e-mails
             UNION (
               SELECT
                 'Email' as communication_type,
                 m.date as communication_date,
-                rel.res_partner_id as partner_id,
+                COALESCE(p.contact_id, p.id) AS partner_id,
+                p.email,
                 m.subject as subject,
                 m.body,
                 'out' AS direction,
@@ -110,15 +116,17 @@ class InteractionResume(models.TransientModel):
                 JOIN mail_mail_res_partner_rel rel
                 ON rel.mail_mail_id = mail.id
                 JOIN mail_tracking_email mt ON mail.id = mt.mail_id
+                JOIN res_partner p ON rel.res_partner_id = p.id
                 WHERE mail.state = ANY (ARRAY ['sent', 'received'])
-                AND rel.res_partner_id = %s
+                AND (p.contact_id = %s OR p.id = %s)
                 )
     -- incoming messages from partners
             UNION (
               SELECT
                 'Email' as communication_type,
                 m.date as communication_date,
-                m.author_id as partner_id,
+                COALESCE(p.contact_id, p.id) AS partner_id,
+                p.email,
                 m.subject as subject,
                 m.body,
                 'in' AS direction,
@@ -128,11 +136,12 @@ class InteractionResume(models.TransientModel):
                 0 as paper_id,
                 NULL as tracking_status
                 FROM "mail_message" as m
+                JOIN res_partner p ON m.author_id = p.id
                 WHERE m.subject IS NOT NULL
                 AND m.message_type = 'email'
-                AND m.author_id = %s
+                AND (p.contact_id = %s OR p.id = %s)
                 )
-                """, [partner_id] * 4)
+                """, [partner_id] * 8)
         for row in self.env.cr.dictfetchall():
             self.create(row)
         return True
