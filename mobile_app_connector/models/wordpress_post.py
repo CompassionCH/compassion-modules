@@ -78,6 +78,9 @@ class WordpressPost(models.Model):
                                      str(i+1), str(len(wp_posts)))
                         post_id = post_data['id']
                         found_ids.append(post_id)
+                        if self.search([('wp_id', '=', post_id)]):
+                            # Skip post already fetched
+                            continue
                         try:
                             # Fetch image for thumbnail
                             image_json_url = post_data['_links'][
@@ -104,18 +107,17 @@ class WordpressPost(models.Model):
                             category = category_obj.create({
                                 'name': category_name
                             })
-                        if not self.search([('wp_id', '=', post_id)]):
-                            # Cache new post in database
-                            self.create({
-                                'name': post_data['title']['rendered'],
-                                'date': post_data['date'],
-                                'wp_id': post_id,
-                                'url': post_data['link'],
-                                'image_url': image_url,
-                                'post_type': post_data['type'],
-                                'category_id': category.id,
-                                'lang': lang.code
-                            })
+                        # Cache new post in database
+                        self.create({
+                            'name': post_data['title']['rendered'],
+                            'date': post_data['date'],
+                            'wp_id': post_id,
+                            'url': post_data['link'],
+                            'image_url': image_url,
+                            'post_type': post_data['type'],
+                            'category_id': category.id,
+                            'lang': lang.code
+                        })
             # Delete unpublished posts
             self.search([('wp_id', 'not in', found_ids)]).unlink()
             _logger.info("Fetch Wordpress Posts finished!")
