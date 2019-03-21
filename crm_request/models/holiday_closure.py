@@ -11,10 +11,9 @@
 from odoo import models, fields
 
 
-class Class(models.Model):
+class HolidayClosure(models.Model):
     _name = "holiday.closure"
 
-    start_date = fields.Date(string="Start of holiday")
-    end_date = fields.Date(string="End of holiday")
-    holiday_name = fields.Char(string="Name of holiday")
-    partner_id = fields.Many2one('res.partner', 'Partner', required=True)
+    start_date = fields.Date(string="Start of holiday", required=True)
+    end_date = fields.Date(string="End of holiday", required=True)
+    holiday_name = fields.Char(string="Name of holiday", required=True)

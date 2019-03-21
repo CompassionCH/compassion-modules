@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="crm_holiday_closure_tree" model="ir.ui.view">
+        <field name="name">crm.holiday.closure.tree</field>
+        <field name="model">holiday.closure</field>
+        <field name="arch" type="xml">
+            <tree string="Holiday periods">
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="holiday_name"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
