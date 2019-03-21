@@ -34,6 +34,10 @@ class CrmClaim(models.Model):
         template message loaded by default"""
         self.ensure_one()
 
+        if not self.partner_id:
+            raise exceptions.UserError(_(
+                "You can only reply if you set the partner."
+            ))
         template_id = self.claim_type.template_id.id
         ctx = {
             'default_model': 'crm.claim',
