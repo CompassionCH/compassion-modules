@@ -26,6 +26,7 @@
         'data/crm_request_data.xml',
         'views/request.xml',
         'views/request_type.xml',
+        'views/crm_holiday_automated_response.xml',
         'views/request_stage.xml',
     ],
 }

@@ -96,6 +96,19 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+
+        # Check here if the date of the mail is during a holiday
+        mail_date = msg.get('date')
+        holiday_closure = self.env["holiday.closure"]([
+            'start_date', '<=', mail_date,
+            'end_date', '>=', mail_date,
+        ], limit=1)
+
+        for h in holiday_closure:
+            template = self.env.ref(
+                'mass_mailing_switzerland.business_closed_email_template')
+            template.with_context().send_mail(h.id, force_send=True)
+
         if custom_values is None:
             custom_values = {}
 
