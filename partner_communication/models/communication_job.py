@@ -59,6 +59,7 @@ class CommunicationJob(models.Model):
      """
     _name = 'partner.communication.job'
     _description = 'Communication Job'
+    _rec_name = 'subject'
     _order = 'date desc,sent_date desc'
     _inherit = ['partner.communication.defaults', 'ir.needaction_mixin',
                 'mail.thread', 'partner.communication.orm.config.abstract']

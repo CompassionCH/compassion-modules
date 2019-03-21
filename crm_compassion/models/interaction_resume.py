@@ -42,7 +42,7 @@ class InteractionResume(models.TransientModel):
         ('opened', 'Opened'),
         ('rejected', 'Rejected'),
         ('spam', 'Spam'),
-        ('unsubscribed', 'Unsubscribed'),
+        ('unsub', 'Unsubscribed'),
         ('bounced', 'Bounced'),
         ('soft bounced', 'Soft bounced'),
     ])
@@ -61,7 +61,7 @@ class InteractionResume(models.TransientModel):
                 pcj.sent_date as communication_date,
                 COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
                 NULL AS email,
-                pcj.subject,
+                c.name AS subject,
                 pcj.body_html AS body,
                 'out' AS direction,
                 0 as phone_id,
@@ -71,6 +71,7 @@ class InteractionResume(models.TransientModel):
                 NULL as tracking_status
                 FROM "partner_communication_job" as pcj
                 JOIN res_partner p ON pcj.partner_id = p.id
+                JOIN partner_communication_config c ON pcj.config_id = c.id
                 WHERE pcj.state = 'done'
                 AND pcj.send_mode = 'physical'
                 AND (p.contact_id = %s OR p.id = %s)
@@ -103,7 +104,7 @@ class InteractionResume(models.TransientModel):
                 m.date as communication_date,
                 COALESCE(p.contact_id, p.id) AS partner_id,
                 p.email,
-                m.subject as subject,
+                COALESCE(config.name, m.subject) as subject,
                 m.body,
                 'out' AS direction,
                 0 as phone_id,
@@ -117,6 +118,10 @@ class InteractionResume(models.TransientModel):
                 ON rel.mail_mail_id = mail.id
                 JOIN mail_tracking_email mt ON mail.id = mt.mail_id
                 JOIN res_partner p ON rel.res_partner_id = p.id
+                FULL OUTER JOIN partner_communication_job job
+                    ON job.email_id = mail.id
+                FULL OUTER JOIN partner_communication_config config
+                    ON job.config_id = config.id
                 WHERE mail.state = ANY (ARRAY ['sent', 'received'])
                 AND (p.contact_id = %s OR p.id = %s)
                 )
