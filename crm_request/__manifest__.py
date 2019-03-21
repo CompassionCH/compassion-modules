@@ -10,11 +10,15 @@
     'website': 'http://www.compassion.ch',
 
     'category': 'CRM',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.1.0',
 
     # any module necessary for this one to work correctly
     'depends': ['crm_claim_code',
-                'crm_claim_type', ],
+                'crm_claim_type',
+                'mail',
+                'web_widget_text_collapse_html',
+                'partner_contact_in_several_companies'
+                ],
 
     # always loaded
     'data': [

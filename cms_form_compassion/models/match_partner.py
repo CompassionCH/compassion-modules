@@ -90,7 +90,7 @@ class MatchPartner(models.AbstractModel):
     def match_create(self, partner_obj, infos, options=None):
         """Create a new partner from a selection of the given infos."""
         create_infos = self.match_process_create_infos(infos, options)
-        infos.setdefault('lang', self.env.lang)
+        create_infos.setdefault('lang', self.env.lang)
         return partner_obj.create(create_infos)
 
     @api.model

@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from email.utils import parseaddr
-from odoo import api, fields, models
+from odoo import api, fields, models, exceptions, _
 
 
 class CrmClaim(models.Model):
@@ -34,6 +34,10 @@ class CrmClaim(models.Model):
         template message loaded by default"""
         self.ensure_one()
 
+        if not self.partner_id:
+            raise exceptions.UserError(_(
+                "You can only reply if you set the partner."
+            ))
         template_id = self.claim_type.template_id.id
         ctx = {
             'default_model': 'crm.claim',
@@ -43,6 +47,20 @@ class CrmClaim(models.Model):
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
         }
+
+        if self.partner_id:
+            partner = self._get_partner_alias(
+                self.partner_id, parseaddr(self.email_from)[1]
+            )
+            ctx['default_partner_ids'] = [partner.id]
+
+            # Un-archive the email_alias so that a mail can be sent and set a
+            # flag to re-archive them once the email is sent.
+            if partner.contact_type == 'attached' and not partner.active:
+                ctx['unarchived_partners'] = [partner.id]
+        else:
+            ctx['claim_no_partner'] = True
+
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -51,6 +69,18 @@ class CrmClaim(models.Model):
             'target': 'new',
             'context': ctx,
         }
+
+    def _get_partner_alias(self, partner, email):
+        if partner.email != email:
+            for partner_alias in partner.other_contact_ids:
+                if partner_alias.email == email:
+                    return partner_alias
+            # No match is found
+            raise exceptions.Warning(
+                _('No partner aliases match: %s !') % email
+            )
+        else:
+            return partner
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -126,8 +156,19 @@ class CrmClaim(models.Model):
 
     @api.multi
     def write(self, values):
-        # If move request in stage 'In Progress' assign the request to the
-        # current user.
+        """
+        - If move request in stage 'In Progress' assign the request to the
+          current user.
+        - Push partner to associated mail messages
+        """
         if values.get('stage_id') == self.env.ref('crm_claim.stage_claim5').id:
             values['user_id'] = self.env.uid
-        return super(CrmClaim, self).write(values)
+        super(CrmClaim, self).write(values)
+        if values.get('partner_id'):
+            for request in self:
+                request.message_ids.filtered(
+                    lambda m: m.email_from == request.email_from
+                ).write({
+                    'author_id': values['partner_id']
+                })
+        return True

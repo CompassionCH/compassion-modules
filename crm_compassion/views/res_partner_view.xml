@@ -18,6 +18,52 @@
         </field>
     </record>
 
+    <!-- Remove buttons replaced by interaction resume -->
+    <record id="view_res_partner_crm_remove_communications" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.communications</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_communication.view_partner_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(partner_communication.action_communication_job_partner)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+    <record id="view_res_partner_crm_remove_claims" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.claims</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="crm_claim.view_claim_res_partner_info_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(crm_claim.crm_claim_category_claim0)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+    <record id="view_res_partner_crm_remove_phones" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.phones</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="crm_phone.view_partner_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(crm_phone.crm_phonecall_action)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+    <record id="view_res_partner_crm_remove_tracking" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.tracking</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="mail_tracking.view_partner_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(mail_tracking.action_view_mail_tracking_email)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+
     <record id="partner_ambassador_action" model="ir.actions.server">
         <field name="name">Create Odoo User</field>
         <field name="model_id" ref="model_res_partner"/>
@@ -31,4 +77,21 @@
         <field name="name">Make Ambassador</field>
         <field eval="'ir.actions.server,%d'%partner_ambassador_action" name="value"/>
     </record>
+
+    <record id="log_call_action" model="ir.actions.server">
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="name">Log your call</field>
+        <field name="code">
+if object:
+    action = object.log_call()
+        </field>
+    </record>
+    <record id="log_call_item" model="ir.values">
+        <field name="key">action</field>
+        <field name="key2">client_action_multi</field>
+        <field name="model">res.partner</field>
+        <field name="name">Log your call</field>
+        <field eval="'ir.actions.server,%d'%log_call_action" name="value"/>
+    </record>
+
 </odoo>

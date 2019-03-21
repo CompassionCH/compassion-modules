@@ -23,5 +23,6 @@ partner-contact
 queue
 report-print-send https://github.com/CompassionCH/report-print-send 10.0
 server-tools
-web
+web https://github.com/CompassionCH/web 10.0-widget-collapse-html
 website-cms
+social

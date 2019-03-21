@@ -18,6 +18,14 @@ class Partner(models.Model):
     interaction_resume_ids = fields.One2many(
         'interaction.resume', 'partner_id', 'Interaction resume')
 
+    # Do not clutter the mail thread with emails that can be seen in
+    # interaction resume
+    message_ids = fields.One2many(
+        'mail.message', 'res_id', string='Messages', domain=lambda self: [
+            ('model', '=', self._name),
+            ('subtype_id', 'in', [self.env.ref('mail.mt_note').id])
+        ], auto_join=True)
+
     @api.multi
     def open_events(self):
         event_ids = self.env['crm.event.compassion'].search(
@@ -67,4 +75,28 @@ class Partner(models.Model):
             'view_mode': 'tree,form',
             'domain': [('partner_id', '=', self.id)],
             'target': 'current',
+        }
+
+    @api.multi
+    def log_call(self):
+        """ Prepare crm.phonecall creation. """
+        self.ensure_one()
+        action_ctx = self.env.context.copy()
+        action_ctx.update({
+            'default_state': 'done',
+            'default_partner_id': self.id,
+            'default_partner_mobile': self.mobile,
+            'default_partner_phone': self.phone,
+        })
+        domain = [('partner_id', '=', self.id)]
+
+        return {
+            'name': _('Log your call'),
+            'domain': domain,
+            'res_model': 'crm.phonecall',
+            'view_mode': 'form,tree,calendar',
+            'type': 'ir.actions.act_window',
+            'nodestroy': False,  # close the pop-up wizard after action
+            'target': 'new',
+            'context': action_ctx,
         }
