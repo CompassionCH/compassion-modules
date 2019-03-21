@@ -73,23 +73,3 @@ class EmailComposeMessage(models.TransientModel):
             wizard.onchange_template_id(
                 template.id, 'mass_mail', False, False)['value'])
         return wizard.get_mail_values(res_ids)
-
-    @api.multi
-    def send_mail(self, auto_commit=False):
-        """ Return to e-mails generated. """
-        super(EmailComposeMessage, self).send_mail(auto_commit)
-        mail_ids = self.env['mail.mail'].search([
-            ('res_id', 'in', self.env.context.get('active_ids', [])),
-            ('model', '=', self.env.context.get('active_model'))
-        ])
-        if mail_ids:
-            return {
-                'name': 'E-mails',
-                'view_mode': 'form,tree',
-                'view_type': 'form',
-                'domain': [('id', 'in', mail_ids.ids)],
-                'res_model': 'mail.mail',
-                'res_id': mail_ids.ids[0],
-                'type': 'ir.actions.act_window',
-            }
-        return True
