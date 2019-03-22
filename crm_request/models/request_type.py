@@ -4,7 +4,7 @@
 #    @author: Stephane Eicher <seicher@compassion.ch>
 
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class RequestType(models.Model):
@@ -13,3 +13,28 @@ class RequestType(models.Model):
     template_id = fields.Many2one('mail.template',
                                   'Template',
                                   domain="[('model_id', '=', 'crm.claim')]")
+    keywords = fields.Char(
+        string='Keywords',
+        help='List of keywords (separated by a comma ",") who could be '
+             'contained in the demand subject')
+
+    @api.constrains('keywords')
+    def _check_existing_key(self):
+        # Avoid having two identical keys
+        records = self.search([('keywords', '!=', False)])
+        for record in self:
+            records = records - record
+            keywords = records.get_keys()
+            if records:
+                for keyword in record.get_keys():
+                    if any([keyword in k for k in keywords]):
+                        raise models.ValidationError(
+                            'One keyword must be unique over all types and not'
+                            ' be included in another keyword')
+
+    @api.multi
+    def get_keys(self):
+        keywords_list = []
+        for record in self:
+            keywords_list.extend(record.keywords.split(','))
+        return keywords_list

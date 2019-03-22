@@ -107,10 +107,21 @@ class CrmClaim(models.Model):
         alias = self.env['mail.alias'].search(
             [['alias_name', '=', alias_char]])
 
+        # Find the corresponding type
+        subject = msg.get('subject')
+        type_ids = self.env['crm.claim.type'].search(
+            [('keywords', '!=', False)])
+        type_id = False
+        for record in type_ids:
+            if any(word in subject for word in record.get_keys()):
+                type_id = record.id
+                break
+
         defaults = {
             'description': msg.get('body'),
             'date': msg.get('date'),  # Get the time of the sending of the mail
-            'alias_id': alias.id
+            'alias_id': alias.id,
+            'claim_type': type_id,
         }
 
         if 'partner_id' not in custom_values:
