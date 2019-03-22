@@ -12,6 +12,11 @@
     'category': 'CRM',
     'version': '10.0.1.1.0',
 
+    # Python dependencies
+    'external_dependencies': {
+        'python': ['detectlanguage']
+    },
+
     # any module necessary for this one to work correctly
     'depends': ['crm_claim_code',
                 'crm_claim_type',
