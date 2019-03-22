@@ -960,7 +960,12 @@ class SponsorshipContract(models.Model):
                     contract.partner_id.set_privacy_statement(
                         origin='first_payment')
 
-        super(SponsorshipContract, self).invoice_paid(invoice)
+        # Super method will activate waiting contracts
+        # Only activate sponsorships with sponsorship invoice
+        to_activate = self
+        if invoice.invoice_type != 'sponsorship':
+            to_activate -= self.filtered(lambda s: 'S' in s.type)
+        super(SponsorshipContract, to_activate).invoice_paid(invoice)
 
     @api.multi
     @api.constrains('group_id')
