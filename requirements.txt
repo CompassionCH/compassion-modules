@@ -13,3 +13,4 @@ wand
 regex
 simplejson
 locustio
+detectlanguage
