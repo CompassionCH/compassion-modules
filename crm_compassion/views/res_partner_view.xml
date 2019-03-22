@@ -19,17 +19,6 @@
     </record>
 
     <!-- Remove buttons replaced by interaction resume -->
-    <record id="view_res_partner_crm_remove_communications" model="ir.ui.view">
-        <field name="name">res.partner.crm.compassion.remove.communications</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="partner_communication.view_partner_form"/>
-        <field eval="18" name="priority"/>
-        <field name="arch" type="xml">
-            <button name="%(partner_communication.action_communication_job_partner)d" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </button>
-        </field>
-    </record>
     <record id="view_res_partner_crm_remove_claims" model="ir.ui.view">
         <field name="name">res.partner.crm.compassion.remove.claims</field>
         <field name="model">res.partner</field>
@@ -92,6 +81,11 @@ if object:
         <field name="model">res.partner</field>
         <field name="name">Log your call</field>
         <field eval="'ir.actions.server,%d'%log_call_action" name="value"/>
+    </record>
+
+    <!-- Replace domain of communications button to display only pending communications -->
+    <record id="partner_communication.action_communication_job_partner" model="ir.actions.act_window">
+        <field name="domain">[('state', '=', 'pending')]</field>
     </record>
 
 </odoo>
