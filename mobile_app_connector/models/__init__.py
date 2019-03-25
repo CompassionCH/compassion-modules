@@ -20,3 +20,5 @@ from . import app_hub
 from . import wordpress_post_category
 from . import wordpress_post
 from . import mobile_banner
+from . import app_tile_type
+from . import app_tile
