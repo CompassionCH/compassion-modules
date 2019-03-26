@@ -11,7 +11,8 @@ class CrmClaim(models.Model):
     _description = "Request"
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
-    name = fields.Char(string='Subject')
+    name = fields.Char(compute='_compute_name', store=True)
+    subject = fields.Char(required=True)
     alias_id = fields.Many2one(
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
@@ -21,6 +22,12 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+
+    @api.depends('subject')
+    @api.multi
+    def _compute_name(self):
+        for rd in self:
+            rd.name = u'{} - {}'.format(rd.code, rd.subject)
 
     def _compute_color(self):
         for request in self:
@@ -118,10 +125,10 @@ class CrmClaim(models.Model):
                 break
 
         defaults = {
-            'description': msg.get('body'),
             'date': msg.get('date'),  # Get the time of the sending of the mail
             'alias_id': alias.id,
             'claim_type': type_id,
+            'subject': subject
         }
 
         if 'partner_id' not in custom_values:
@@ -132,6 +139,8 @@ class CrmClaim(models.Model):
             }, options)
             if partner:
                 defaults['partner_id'] = partner.id
+
+        defaults.pop('name', False)
 
         defaults.update(custom_values)
         return super(CrmClaim, self).message_new(msg, defaults)
