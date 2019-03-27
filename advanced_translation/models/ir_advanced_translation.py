@@ -143,12 +143,12 @@ class AdvancedTranslatable(models.AbstractModel):
         return res or ''
 
     @api.multi
-    def get_list(self, field, max=sys.maxint, substitution=None,
+    def get_list(self, field, limit=sys.maxint, substitution=None,
                  translate=True):
         """
         Get a list of values, separated with commas. (last separator 'and')
         :param field: the field values to retrieve from the recordset
-        :param max: optional max number of values to be displayed
+        :param limit: optional max number of values to be displayed
         :param substitution: optional substitution text, if number of values is
                              greater than max number provided
         :param translate: set to false to avoid translating values in list
@@ -160,10 +160,10 @@ class AdvancedTranslatable(models.AbstractModel):
             values = self.mapped(field)
         if isinstance(values, list):
             values = list(set(values))
-            if len(values) > max:
+            if len(values) > limit:
                 if substitution:
                     return substitution
-                values = values[:max]
+                values = values[:limit]
             if len(values) > 1:
                 res_string = ', '.join(values[:-1])
                 res_string += ' ' + _('and') + ' ' + values[-1]

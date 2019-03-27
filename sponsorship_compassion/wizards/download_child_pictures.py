@@ -48,11 +48,11 @@ class DownloadChildPictures(models.TransientModel):
         return fields.Date.context_today(self) + '_child_pictures.zip'
 
     @api.multi
-    def _get_picture_url(self, raw_url, type, width, height):
-        if type.lower() == 'headshot':
+    def _get_picture_url(self, raw_url, pic_type, width, height):
+        if pic_type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
                 width)
-        elif type.lower() == 'fullshot':
+        elif pic_type.lower() == 'fullshot':
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         image_split = raw_url.split('/')
@@ -73,7 +73,7 @@ class DownloadChildPictures(models.TransientModel):
             for child in children.filtered('image_url'):
                 child_code = child.local_id
                 url = self._get_picture_url(raw_url=child.image_url,
-                                            type=self.type,
+                                            pic_type=self.type,
                                             height=self.height,
                                             width=self.width)
                 try:
@@ -182,7 +182,7 @@ class DownloadChildPictures(models.TransientModel):
         for child in children.filtered('image_url'):
             url = self._get_picture_url(
                 raw_url=child.image_url,
-                type='fullshot', height=1, width=1
+                pic_type='fullshot', height=1, width=1
                 )
             try:
                 urllib2.urlopen(url)

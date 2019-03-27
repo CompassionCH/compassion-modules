@@ -36,8 +36,8 @@ class CompassionCorrespondence(models.Model):
             'base64string'
             ], json_data)
         mapping = MobileCorrespondenceMapping(self.env)
-        dict = mapping.get_vals_from_connect(json_data)
-        letter = self.env['correspondence'].create(dict)
+        vals = mapping.get_vals_from_connect(json_data)
+        letter = self.env['correspondence'].create(vals)
 
         if letter:
             return "Letter Submitted"
@@ -65,12 +65,12 @@ class CompassionCorrespondence(models.Model):
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
-        id = self._get_required_param('correspondenceid', other_params)
-        letter = self.env['correspondence'].browse([int(id)])
+        letter_id = self._get_required_param('correspondenceid', other_params)
+        letter = self.env['correspondence'].browse([int(letter_id)])
         if letter and letter.letter_image:
             base64_pdf = letter.letter_image
             return base64.decodestring(base64_pdf)
-        raise NotFound("Letter with id {} not found".format(id))
+        raise NotFound("Letter with id {} not found".format(letter_id))
 
     def _validate_required_fields(self, fields, params):
         missing = [key for key in fields if key not in params]
