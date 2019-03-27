@@ -29,7 +29,8 @@ class AppTileType(models.Model):
     subject_standard = fields.Char('Title standard')
 
     body_standard = fields.Html(string='Body standard',
-                                help='Enter the content of the template for this category')
+                                help='Enter the content of '
+                                'the template for this category')
 
     view_order = fields.Integer('View order', required=True, index=True)
 
