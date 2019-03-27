@@ -13,7 +13,6 @@ import string
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from functools import reduce
 
 
 # For more flexibility we have split "res.partner" by functionality

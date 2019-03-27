@@ -179,10 +179,10 @@ class SponsorshipContract(models.Model):
         context = self.env.context
         if 'active_id' in context and \
                 context.get('active_model') == self._name:
-            type = self.browse(context['active_id']).type
+            contract_type = self.browse(context['active_id']).type
         else:
-            type = context.get('default_type', 'O')
-        if 'S' in type:
+            contract_type = context.get('default_type', 'O')
+        if 'S' in contract_type:
             res.extend([
                 ('1', _("Depart of child")),
                 ('10', _("Subreject")),

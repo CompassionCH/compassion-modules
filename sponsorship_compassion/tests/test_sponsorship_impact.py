@@ -10,8 +10,7 @@
 
 from datetime import datetime, timedelta
 
-from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion \
-    import BaseSponsorshipTest
+from .test_sponsorship_compassion import BaseSponsorshipTest
 
 
 class TestSponsorshipImpact(BaseSponsorshipTest):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Christopher Meier <dev@c-meier.ch>
 #
@@ -11,7 +11,7 @@
 
 import requests
 
-from odoo import exceptions
+from odoo import exceptions, _
 from odoo.tools import config
 
 
@@ -30,7 +30,8 @@ class Session(requests.Session):
         }).json()
 
         if 'token' not in auth:
-            raise exceptions.AccessError('Wordpress authentication failed !')
+            raise exceptions.AccessError(_(
+                'Wordpress authentication failed !'))
 
         self.headers.update({'Authorization': 'Bearer %s' % auth['token']})
 
