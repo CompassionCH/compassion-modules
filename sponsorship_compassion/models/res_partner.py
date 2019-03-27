@@ -13,7 +13,6 @@ import string
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from functools import reduce
 
 
 # For more flexibility we have split "res.partner" by functionality
@@ -24,7 +23,7 @@ class ResPartner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    global_id = fields.Char()
+    global_id = fields.Char(copy=False)
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
@@ -57,7 +56,7 @@ class ResPartner(models.Model):
     has_sponsorships = fields.Boolean(
         compute='_compute_has_sponsorships', store=True,
         groups="child_compassion.group_sponsorship")
-    number_sponsorships = fields.Integer()
+    number_sponsorships = fields.Integer(copy=False)
     send_original = fields.Boolean(
         help='Indicates that we request the original letters for this sponsor',
         groups="child_compassion.group_sponsorship"
@@ -71,7 +70,7 @@ class ResPartner(models.Model):
         groups="child_compassion.group_sponsorship")
     privacy_statement_ids = fields.One2many(
         'privacy.statement.agreement', 'partner_id',
-        groups='child_compassion.group_sponsorship')
+        groups='child_compassion.group_sponsorship', copy=False)
     member_ids = fields.One2many('res.partner', 'church_id', 'Members',
                                  domain=[('active', '=', True)])
     is_church = fields.Boolean(string="Is a Church",

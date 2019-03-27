@@ -11,7 +11,8 @@ class CrmClaim(models.Model):
     _description = "Request"
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
-    name = fields.Char(string='Subject')
+    name = fields.Char(compute='_compute_name', store=True)
+    subject = fields.Char(required=True)
     alias_id = fields.Many2one(
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
@@ -21,6 +22,12 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+
+    @api.depends('subject')
+    @api.multi
+    def _compute_name(self):
+        for rd in self:
+            rd.name = u'{} - {}'.format(rd.code, rd.subject)
 
     def _compute_color(self):
         for request in self:
@@ -34,6 +41,10 @@ class CrmClaim(models.Model):
         template message loaded by default"""
         self.ensure_one()
 
+        if not self.partner_id:
+            raise exceptions.UserError(_(
+                "You can only reply if you set the partner."
+            ))
         template_id = self.claim_type.template_id.id
         ctx = {
             'default_model': 'crm.claim',
@@ -103,10 +114,21 @@ class CrmClaim(models.Model):
         alias = self.env['mail.alias'].search(
             [['alias_name', '=', alias_char]])
 
+        # Find the corresponding type
+        subject = msg.get('subject')
+        type_ids = self.env['crm.claim.type'].search(
+            [('keywords', '!=', False)])
+        type_id = False
+        for record in type_ids:
+            if any(word in subject for word in record.get_keys()):
+                type_id = record.id
+                break
+
         defaults = {
-            'description': msg.get('body'),
             'date': msg.get('date'),  # Get the time of the sending of the mail
-            'alias_id': alias.id
+            'alias_id': alias.id,
+            'claim_type': type_id,
+            'subject': subject
         }
 
         if 'partner_id' not in custom_values:
@@ -117,6 +139,8 @@ class CrmClaim(models.Model):
             }, options)
             if partner:
                 defaults['partner_id'] = partner.id
+
+        defaults.pop('name', False)
 
         defaults.update(custom_values)
         return super(CrmClaim, self).message_new(msg, defaults)
@@ -168,3 +192,21 @@ class CrmClaim(models.Model):
                     'author_id': values['partner_id']
                 })
         return True
+
+
+class AssignRequestWizard(models.TransientModel):
+    _name = 'assign.request.wizard'
+    user_id = fields.Many2one('res.users', 'Assign to',
+                              default=lambda self: self.env.user,)
+    intern_note = fields.Text('Internal note')
+
+    @api.multi
+    def assign_to(self):
+        self.ensure_one()
+        model = self.env.context.get('active_model')
+        model_id = self.env.context.get('active_id')
+        request = self.env[model].browse(model_id)
+        request.user_id = self.user_id
+        if self.intern_note:
+            request.message_post(subject='Message for ' + self.user_id.name,
+                                 body=self.intern_note)
