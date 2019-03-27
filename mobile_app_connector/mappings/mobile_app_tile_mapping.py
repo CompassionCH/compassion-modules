@@ -17,13 +17,13 @@ class TileMapping(OnrampMapping):
     MAPPING_NAME = 'mobile_app_tile'
 
     CONNECT_MAPPING = {
-            'Body': 'body',
-            'ActionText': 'action_text',
-            'Title': 'subject',
-            'SubType': 'sub_type',
-            'SortOrder': 'view_order',
-            'ActionDestination': 'action_destination',
-            'Type': ('type_id.libelle', 'mobile.app.tile.type'),
+        'Body': 'body',
+        'ActionText': 'action_text',
+        'Title': 'subject',
+        'SubType': 'sub_type',
+        'SortOrder': 'view_order',
+        'ActionDestination': 'action_destination',
+        'Type': ('type_id.libelle', 'mobile.app.tile.type'),
     }
 
     FIELDS_TO_SUBMIT = {
