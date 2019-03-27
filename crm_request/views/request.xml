@@ -86,6 +86,7 @@
             <form string="Claim">
                 <header>
                     <button name="action_reply" string="Reply" type="object" class="btn-primary"/>
+                    <button name="%(action_wizard_request_assign)d" string="Assign to" type="action" class="btn-default"/>
                     <field name="stage_id" widget="statusbar" clickable="True"/>
                 </header>
                 <sheet string="Claims">
@@ -104,11 +105,13 @@
                             <field name="priority" widget="priority"/>
                         </group>
                     </group>
-                    <group groups="base.group_user">
-                        <separator colspan="2" string="Claim Reporter"/>
-                        <field name="partner_id" string="Partner"/>
-                        <field name="partner_phone"/>
-                        <field name="email_from" widget="email"/>
+                    <group>
+                        <separator colspan="2" string="Reporter"/>
+                        <group groups="base.group_user">
+                            <field name="partner_id" string="Partner"/>
+                            <field name="partner_phone"/>
+                            <field name="email_from" widget="email"/>
+                        </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
