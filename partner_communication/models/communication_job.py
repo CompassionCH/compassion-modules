@@ -59,6 +59,7 @@ class CommunicationJob(models.Model):
      """
     _name = 'partner.communication.job'
     _description = 'Communication Job'
+    _rec_name = 'subject'
     _order = 'date desc,sent_date desc'
     _inherit = ['partner.communication.defaults', 'ir.needaction_mixin',
                 'mail.thread', 'partner.communication.orm.config.abstract']
@@ -494,23 +495,6 @@ class CommunicationJob(models.Model):
         }
 
     @api.multi
-    def message_post(self, **kwargs):
-        """
-        If message is not from a user, it is probably the answer of the
-        partner by e-mail. We post it on the partner thread instead of
-        the communication thread
-        :param kwargs: arguments
-        :return: mail_message record
-        """
-        message = super(CommunicationJob, self).message_post(**kwargs)
-        if not message.author_id.user_ids:
-            message.write({
-                'model': 'res.partner',
-                'res_id': self.partner_id.id
-            })
-        return message.id
-
-    @api.multi
     def add_omr_marks(self, pdf_data, is_latest_document):
         # Documentation
         # http://meteorite.unm.edu/site_media/pdf/reportlab-userguide.pdf
@@ -680,9 +664,6 @@ class CommunicationJob(models.Model):
 
             # Print attachments
             job.attachment_ids.print_attachments()
-            # Save info
-            job.partner_id.message_post(
-                job.body_html, job.subject)
             job.write({
                 'state': 'call' if job.need_call == 'after_sending'
                 else 'done',

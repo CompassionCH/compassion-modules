@@ -27,6 +27,16 @@ class Partner(models.Model):
         ], auto_join=True)
 
     @api.multi
+    def _compute_comm_count(self):
+        # Only count pending communications
+        for partner in self:
+            partner.communication_count = self.env[
+                'partner.communication.job'].search_count([
+                    ('partner_id', '=', partner.id),
+                    ('state', 'in', ('pending', 'call')),
+                ])
+
+    @api.multi
     def open_events(self):
         event_ids = self.env['crm.event.compassion'].search(
             [('partner_id', 'child_of', self.ids)]).ids

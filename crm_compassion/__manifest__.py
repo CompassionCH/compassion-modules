@@ -39,6 +39,7 @@
     'depends': [
         'base_location',
         'sponsorship_compassion',
+        'partner_communication',
         'project',
         'crm_request',
         'mail_tracking',
