@@ -8,12 +8,9 @@
 #
 ##############################################################################
 import logging
-from ..tools import wp_requests
 
 
 from odoo import api, models, fields, _
-from odoo.exceptions import UserError
-from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
@@ -58,7 +55,8 @@ class AppTile(models.Model):
 
     subject = fields.Char('Title', required=True)
 
-    type_id = fields.Many2one('mobile.app.tile.type', 'Type', required=True, index=True,
+    type_id = fields.Many2one('mobile.app.tile.type', 'Type',
+                              required=True, index=True,
                               help='Type & sub-type')
 
     date_debut = fields.Datetime('Start activation date', required=True)
@@ -68,7 +66,8 @@ class AppTile(models.Model):
     action_destination = fields.Selection([
         ('Youtube video opens', 'Youtube video opens'),
         ('Login overlay', 'Login overlay'),
-        ('Stories and prayer with relevant blog at the top', 'Stories and prayer with relevant blog at the top'),
+        ('Stories and prayer with relevant blog at the top',
+         'Stories and prayer with relevant blog at the top'),
         ('Child selector', 'Child selector'),
         ('Compass', 'Compass'),
         ('Top of letters hub', 'Top of letters hub'),
@@ -78,14 +77,16 @@ class AppTile(models.Model):
         ('Photos overlay', 'Photos overlay'),
         ('Read overlay', 'Read overlay'),
         ('My Community', 'My Community'),
-        ('Individual child page', 'Individual child page')], 'Action destination', required=True)
+        ('Individual child page', 'Individual child page')],
+        'Action destination', required=True)
 
     action_text = fields.Char('Action text', required=True)
 
     body = fields.Html(string='Body',
                        help='Enter the content of the message')
 
-    view_order = fields.Integer('View order', required=True, index=True)
+    view_order = fields.Integer('View order',
+                                required=True, index=True)
 
     enabled = fields.Selection([
         ('Active', 'Active'),
@@ -107,7 +108,8 @@ class AppTile(models.Model):
 
     # Constraints
     _sql_constraints = [
-        ('subject_unique', 'unique(subject)', 'This title already exists')
+        ('subject_unique', 'unique(subject)',
+         'This title already exists')
     ]
 
     @api.onchange('type_id')

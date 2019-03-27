@@ -23,13 +23,13 @@ class AppTileType(models.Model):
     code = fields.Char(required=True, index=True)
     libelle = fields.Char('Title', required=True)
 
-    enabled = fields.Boolean('Active',
-        default=True, help='enable/disable type', index=True)
+    enabled = fields.Boolean('Active', default=True,
+                             help='enable/disable type', index=True)
 
     subject_standard = fields.Char('Title standard')
 
     body_standard = fields.Html(string='Body standard',
-                       help='Enter the content of the template for this category')
+                                help='Enter the content of the template for this category')
 
     view_order = fields.Integer('View order', required=True, index=True)
 
