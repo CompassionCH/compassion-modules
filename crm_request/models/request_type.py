@@ -28,9 +28,9 @@ class RequestType(models.Model):
             if records:
                 for keyword in record.get_keys():
                     if any([keyword in k for k in keywords]):
-                        raise models.ValidationError(_(
-                            'One keyword must be unique over all types and not'
-                            ' be included in another keyword'))
+                        raise models.ValidationError(
+                            _('One keyword must be unique over all types and '
+                              'not be included in another keyword'))
 
     @api.multi
     def get_keys(self):
