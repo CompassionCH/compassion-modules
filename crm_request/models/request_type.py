@@ -4,7 +4,7 @@
 #    @author: Stephane Eicher <seicher@compassion.ch>
 
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class RequestType(models.Model):
@@ -28,9 +28,9 @@ class RequestType(models.Model):
             if records:
                 for keyword in record.get_keys():
                     if any([keyword in k for k in keywords]):
-                        raise models.ValidationError(
+                        raise models.ValidationError(_(
                             'One keyword must be unique over all types and not'
-                            ' be included in another keyword')
+                            ' be included in another keyword'))
 
     @api.multi
     def get_keys(self):

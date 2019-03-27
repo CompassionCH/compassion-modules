@@ -178,10 +178,11 @@ class OnrampConnector(object):
                 _('Token validation failed.'))
 
     @classmethod
-    def log_message(cls, type, url, headers=None, message=None, session=None):
+    def log_message(cls, req_type, url, headers=None, message=None,
+                    session=None):
         """
         Used to format GMC messages for console log
-        :param type: type of request (post/get/etc...)
+        :param req_type: type of request (post/get/etc...)
         :param url: url of request
         :param headers: headers of request
         :param message: content of request
@@ -199,7 +200,7 @@ class OnrampConnector(object):
             complete_headers = headers
         _logger.info(
             "[%s] %s %s %s",
-            type,
+            req_type,
             url,
             [(k, v) for k, v in complete_headers.iteritems()],
             simplejson.dumps(message))

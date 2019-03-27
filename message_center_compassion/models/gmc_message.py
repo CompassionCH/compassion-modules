@@ -439,9 +439,9 @@ class GmcMessagePool(models.Model):
     def _replace_object_string(self, object_match):
         """ Takes a string like ${object.field} and returns the field. """
         self.ensure_one()
-        object = self.env[self.action_id.model].browse(self.object_id)
+        obj = self.env[self.action_id.model].browse(self.object_id)
         field_name = object_match.groups()[1]
-        field_value = object.mapped(field_name)[0]
+        field_value = obj.mapped(field_name)[0]
         return str(field_value)
 
     def _validate_outgoing_action(self):
