@@ -11,6 +11,7 @@ import logging
 
 from ..mappings.compassion_child_mapping import MobileChildMapping
 from ..mappings.wp_post_mapping import WPPostMapping
+from ..mappings.mobile_app_tile_mapping import TileMapping
 from odoo import api, models, _
 
 _logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class AppHub(models.AbstractModel):
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed
     LIMIT_WORDPRESS_TILES = 10
+    LIMIT_PUBLIC_TILES = 10
 
     @api.model
     def mobile_get_message(self, partner_id, **pagination):
@@ -88,6 +90,23 @@ class AppHub(models.AbstractModel):
     @api.model
     def _public_hub(self, **pagination):
         """
+                Gets the cached wordpress posts
+                :return: List of JSON messages for use in the hub.
+                """
+        available_tiles = self.env['mobile.app.tile'].search([
+            ('enabled', '=', 'Active')
+        ])
+        tiles = []
+        if available_tiles:
+            start = int(pagination.get('start', 0))
+            number_mess = int(pagination.get('limit', 1000))
+            offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
+            tile_mapping = TileMapping(self.env)
+            for post in available_tiles[offset:self.LIMIT_PUBLIC_TILES]\
+                    .sorted(key=lambda r: r.type_id.view_order + r.view_order):
+                tiles.append(tile_mapping.get_connect_data(post))
+
+        """
         In Public mode, we return an invite to login and a feedback tile.
         The news and agenda feeds are fetched from the website.
         TODO Display a tile for inviting to sponsor a child
@@ -97,43 +116,43 @@ class AppHub(models.AbstractModel):
         dynamic configuration from Odoo user interface).
         :return: list of tiles displayed in mobile app.
         """
-        messages = [
-            # Login
-            {
-                "ActionDestination": "Login overlay",
-                "ActionText": _("Login"),
-                "Body": _("We've noticed you're not currently logged in"),
-                "SortOrder": 1007,
-                "SubType": "MI1",
-                "Title": "Log in",
-                "Type": "Miscellaneous"
-            },
-            # Feedback TODO move in mobile.app.tile object (see AP-37)
-            {
-                "ActionDestination": "Feedback overlay",
-                "ActionText": _("Feedback"),
-                "Body": _("We'd love to hear what you think about our App"),
-                "SortOrder": 1007,
-                "SubType": "MI2",
-                "Title": "Your comments",
-                "Type": "Miscellaneous"
-            },
-            # Child survival donation TODO move in mobile.app.tile (AP-37)
-            {
-                "ActionDestination": "Give overlay",
-                "ActionText": _("Give a Donation"),
-                "Appeal": {
-                    "FundType": "Child Survival Programme"
-                },
-                "Body": _("Child survival"),
-                "SortOrder": 1006,
-                "SubType": "GI1",
-                "Title": _("Help a mother and her baby today"),
-                "Type": "Giving"
-            },
-        ]
-        messages.extend(self._fetch_wordpress_tiles(**pagination))
-        return self._construct_hub_message(0, messages, **pagination)
+        # messages = [
+        #     # Login
+        #     {
+        #         "ActionDestination": "Login overlay",
+        #         "ActionText": _("Login"),
+        #         "Body": _("We've noticed you're not currently logged in"),
+        #         "SortOrder": 1007,
+        #         "SubType": "MI1",
+        #         "Title": "Log in",
+        #         "Type": "Miscellaneous"
+        #     },
+        #     # Feedback TODO move in mobile.app.tile object (see AP-37)
+        #     {
+        #         "ActionDestination": "Feedback overlay",
+        #         "ActionText": _("Feedback"),
+        #         "Body": _("We'd love to hear what you think about our App"),
+        #         "SortOrder": 1007,
+        #         "SubType": "MI2",
+        #         "Title": "Your comments",
+        #         "Type": "Miscellaneous"
+        #     },
+        #     # Child survival donation TODO move in mobile.app.tile (AP-37)
+        #     {
+        #         "ActionDestination": "Give overlay",
+        #         "ActionText": _("Give a Donation"),
+        #         "Appeal": {
+        #             "FundType": "Child Survival Programme"
+        #         },
+        #         "Body": _("Child survival"),
+        #         "SortOrder": 1006,
+        #         "SubType": "GI1",
+        #         "Title": _("Help a mother and her baby today"),
+        #         "Type": "Giving"
+        #     },
+        # ]
+        # tiles.extend(self._fetch_wordpress_tiles(**pagination))
+        return self._construct_hub_message(0, tiles, **pagination)
 
     def _fetch_wordpress_tiles(self, **pagination):
         """

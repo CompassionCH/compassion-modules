@@ -1,0 +1,70 @@
+<odoo>
+    <!-- Tile type views -->
+    <record model="ir.ui.view" id="tile_type_form">
+        <field name="name">mobile.app.tile.type.form</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="libelle"/>
+                            <field name="enabled"/>
+                        </group>
+                        <group>
+                            <field name="subject_standard"/>
+                            <field name="body_standard"/>
+                            <field name="view_order"/>
+                        </group>
+                         <group>
+                            <field name="param_1"/>
+                            <field name="param_2"/>
+                            <field name="param_3"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_type_tree">
+        <field name="name">mobile.app.tile.type.tree</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="view_order"/>
+                <field name="libelle"/>
+                <field name="code"/>
+                <field name="enabled"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="tile_type_search">
+        <field name="name">mobile.app.tile.type.search</field>
+        <field name="model">mobile.app.tile.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobile_app_tile_type" model="ir.actions.act_window">
+        <field name="name">Tile type</field>
+        <field name="res_model">mobile.app.tile.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for Tile Type -->
+    <menuitem id="menu_mobile_app_tile_type"
+              name="Types tile"
+              parent="menu_mobile_app"
+              action="action_mobile_app_tile_type"
+              groups="sales_team.group_sale_manager"
+              sequence="50"
+    />
+</odoo>

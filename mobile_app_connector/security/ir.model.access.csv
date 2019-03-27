@@ -9,3 +9,5 @@ read_access_contract,Recurring contract read access,sponsorship_compassion.model
 read_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,0,0,0
 access_admin_mobile_app_banner,Mobile App Banner full access,model_mobile_app_banner,sales_team.group_sale_manager,1,1,1,1
 access_app_banner,App banner read access,model_mobile_app_banner,,1,0,0,0
+access_mobile_app_tile,access_mobile_app_tile,model_mobile_app_tile,base.group_user,1,0,0,0
+access_mobile_app_tile_type,access_mobile_app_tile_type,model_mobile_app_tile_type,base.group_user,1,0,0,
