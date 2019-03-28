@@ -160,7 +160,7 @@ class CrmClaim(models.Model):
     @api.multi
     @api.returns('self', lambda value: value.id)
     def message_post(self, **kwargs):
-        """Change the stage to "Waiting on customer" when the employee answer
+        """Change the stage to "Resolve" when the employee answer
            to the supporter
         """
         result = super(CrmClaim, self).message_post(**kwargs)
@@ -169,7 +169,7 @@ class CrmClaim(models.Model):
             for request in self:
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(
-                    'crm_request', 'stage_wait_customer')[1]
+                    'crm_claim', 'stage_claim2')[1]
                 request.user_id = self.env.user
 
         return result
@@ -177,13 +177,16 @@ class CrmClaim(models.Model):
     @api.multi
     def write(self, values):
         """
-        - If move request in stage 'In Progress' assign the request to the
-          current user.
+        - If move request in stage 'Waiting on support' assign the request to
+        the current user.
         - Push partner to associated mail messages
         """
-        if values.get('stage_id') == self.env.ref('crm_claim.stage_claim5').id:
+        if values.get('stage_id') == self.env.ref(
+                'crm_request.stage_wait_support').id:
             values['user_id'] = self.env.uid
+
         super(CrmClaim, self).write(values)
+
         if values.get('partner_id'):
             for request in self:
                 request.message_ids.filtered(
