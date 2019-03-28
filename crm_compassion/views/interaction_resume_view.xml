@@ -13,6 +13,8 @@
                 <field name="email"/>
                 <field name="subject"/>
                 <field name="tracking_status"/>
+                <field name="subject"/>
+                <field name="body"/>
             </tree>
         </field>
     </record>
@@ -35,7 +37,7 @@
                 </group>
                 <group>
                     <field name="subject"/>
-                    <field name="body"/>
+                    <field name="body" />
                 </group>
             </form>
         </field>
@@ -57,6 +59,7 @@
                 <group expand="0" string="Group By...">
                     <filter name="Type" domain="[]" context="{'group_by':'communication_type'}"/>
                     <filter name="Direction" domain="[]" context="{'group_by':'direction'}"/>
+                    <filter name="communication_date" domain="[]" context="{'group_by':'communication_date'}"/>
                 </group>
             </search>
         </field>
