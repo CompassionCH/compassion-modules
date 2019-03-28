@@ -10,33 +10,34 @@
                 </header>
 
                 <sheet>
-                    <label for="type_id" class="oe_edit_only"/>
-                    <h2>
-                        <field name="type_id" class="oe_inline" style="margin-right: 5px"/>
-                        <field name="sub_type" class="oe_inline"/>
-                    </h2>
-                    <label for="subject" class="oe_edit_only"/>
-                    <h1><field name="subject"/></h1>
                     <group>
                         <group>
-                            <field name="body" widget="html" />
-                            <field name="date_debut"/>
-                            <field name="date_fin"/>
+                            <field name="name"/>
+                            <field name="subtype_id"/>
+                            <field name="model_id"/>
+                            <field name="mode" attrs="{'required': [('model_id', '!=', False)]}"/>
                         </group>
                         <group>
-                            <field name="action_destination" />
-                            <field name="action_text" />
+                            <field name="visibility"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="is_active"/>
+                        </group>
+                        <group>
                             <field name="priority" />
                             <field name="view_order"/>
-                            <field name="enabled"/>
-                            <field name="param_1"/>
-                            <field name="param_2"/>
-                            <field name="param_3"/>
+                            <field name="action_destination" />
+                            <field name="action_text" />
                         </group>
+                    </group>
+                    <group>
+                        <field name="title"/>
+                        <field name="body"/>
+                        <field name="preview" widget="image"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter oe_edit_only">
-                    <h2>AIDE</h2>
+                    <h2>Help</h2>
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                       <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="headingOne">
@@ -49,8 +50,8 @@
                         <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                           <div class="panel-body">
                                 <p>The subtype sets the display style of the tile in the Mobile application.</p>
-                                <img style="float:left;" src="/mobile_app_connector/static/src/img/Tiles_1.png" />
-                                <img style="float:left;" src="/mobile_app_connector/static/src/img/Tiles_2.png" />
+                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_1.png" />
+                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_2.png" />
                           </div>
                         </div>
                       </div>
@@ -94,14 +95,15 @@
         <field name="name">mobile.app.tile.tree</field>
         <field name="model">mobile.app.tile</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree colors="grey: not is_active">
                 <field name="view_order"/>
-                <field name="subject"/>
-                <field name="type_id"/>
+                <field name="name"/>
+                <field name="subtype_id"/>
+                <field name="visibility"/>
                 <field name="priority"/>
-                <field name="date_debut"/>
-                <field name="date_fin"/>
-                <field name="enabled"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="is_active" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -111,13 +113,14 @@
         <field name="model">mobile.app.tile</field>
         <field name="arch" type="xml">
             <search>
-                <field name="subject"/>
-                <field name="type_id"/>
+                <field name="name"/>
+                <field name="subtype_id"/>
+                <filter name="active" string="Active" domain="[('is_active', '=', True)]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type_id'}"/>
-                    <filter string="Priorité" name="group_priority" domain="[]" context="{'group_by':'priority'}"/>
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'subtype_id'}"/>
+                    <filter string="Priority" name="group_priority" domain="[]" context="{'group_by':'priority'}"/>
                     <filter string="Destination" name="group_destination" domain="[]" context="{'group_by':'action_destination'}"/>
-                    <filter string="SubType" name="group_sub_type" domain="[]" context="{'group_by':'sub_type'}"/>
+                    <filter string="Visibility" name="group_visibility" domain="[]" context="{'group_by':'visibility'}"/>
                 </group>
             </search>
         </field>
@@ -128,6 +131,7 @@
         <field name="res_model">mobile.app.tile</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
     </record>
 
 

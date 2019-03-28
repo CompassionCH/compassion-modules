@@ -19,17 +19,17 @@ class TileMapping(OnrampMapping):
     CONNECT_MAPPING = {
         'Body': 'body',
         'ActionText': 'action_text',
-        'Title': 'subject',
-        'SubType': 'sub_type',
+        'Title': 'title',
+        'SubType': 'subtype_id.code',
         'SortOrder': 'view_order',
         'ActionDestination': 'action_destination',
-        'Type': ('type_id.libelle', 'mobile.app.tile.type'),
+        'Type': ('subtype_id.type_id.code', 'mobile.app.tile.type'),
     }
 
     FIELDS_TO_SUBMIT = {
-        'Body': None,
-        'ActionText': None,
-        'Title': None,
+        'Body': unicode,
+        'ActionText': unicode,
+        'Title': unicode,
         'SubType': None,
         'SortOrder': None,
         'ActionDestination': None,
