@@ -33,7 +33,7 @@ class Partner(models.Model):
             partner.communication_count = self.env[
                 'partner.communication.job'].search_count([
                     ('partner_id', '=', partner.id),
-                    ('state', '=', 'pending'),
+                    ('state', 'in', ('pending', 'call')),
                 ])
 
     @api.multi

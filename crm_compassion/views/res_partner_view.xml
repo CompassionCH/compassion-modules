@@ -85,7 +85,7 @@ if object:
 
     <!-- Replace domain of communications button to display only pending communications -->
     <record id="partner_communication.action_communication_job_partner" model="ir.actions.act_window">
-        <field name="domain">[('state', '=', 'pending')]</field>
+        <field name="domain">[('state', '!=', 'done')]</field>
     </record>
 
 </odoo>

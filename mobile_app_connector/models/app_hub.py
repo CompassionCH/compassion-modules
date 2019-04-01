@@ -9,9 +9,8 @@
 ##############################################################################
 import logging
 
-from ..mappings.compassion_child_mapping import MobileChildMapping
 from ..mappings.wp_post_mapping import WPPostMapping
-from odoo import api, models, _
+from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
@@ -27,6 +26,7 @@ class AppHub(models.AbstractModel):
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed
     LIMIT_WORDPRESS_TILES = 10
+    LIMIT_PUBLIC_TILES = 10
 
     @api.model
     def mobile_get_message(self, partner_id, **pagination):
@@ -48,38 +48,30 @@ class AppHub(models.AbstractModel):
         partner = self.env['res.partner'].browse(partner_id)
         sponsorships = partner.sponsorship_ids.filtered('is_active')
         children = sponsorships.mapped('child_id')
-        # Start with child selector tile or sponsor a child (when no child)
-        first_tile = {
-            "SortOrder": 1001,
+
+        available_tiles = self.env['mobile.app.tile'].search([
+            ('is_active', '=', True),
+            ('mode', '!=', 'public')
+        ])
+        # TODO this is for testing purpose
+        #   Implement a way for defining donation products that will show in
+        #   tiles (AP-45)
+        fund = self.env.ref('contract_compassion.product_category_fund').sudo()
+        product = self.env['product.product'].sudo().search([
+            ('categ_id', '=', fund.id)
+        ], limit=1)
+        tile_data = {
+            'res.partner': partner,
+            'recurring.contract': sponsorships,
+            'compassion.child': children,
+            'product.product': product
         }
-        if children:
-            first_tile.update({
-                "ActionDestination": "Child selector",
-                "Type": "Child",
-                "SubType": "CH1",
-                "Title": _("Thank you!"),
-                "Body": _("You're changing {} lives").format(len(children)),
-            })
-        else:
-            first_tile.update({
-                # TODO Replace with child_sponsor destination when implemented
-                "ActionDestination": "Feedback overlay",
-                "Type": "Miscellaneous",
-                "SubType": "MI2",
-                "Title": _("Sponsor a child"),
-                "Body": _("Release one child from extreme poverty today"),
-            })
-        messages = [
-            first_tile,
-        ]
-        child_mapping = MobileChildMapping(self.env)
-        children_data = []
-        for child in children:
-            children_data.append(child_mapping.get_connect_data(child))
-        messages.extend(children.get_mobile_app_tiles())
+        # TODO handle pagination properly
+        limit = int(pagination.get('limit', 1000))
+        messages = available_tiles[:limit].render_tile(tile_data)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children_data, **pagination)
+            partner_id, messages, children, **pagination)
         return res
 
     ##########################################################################
@@ -88,52 +80,31 @@ class AppHub(models.AbstractModel):
     @api.model
     def _public_hub(self, **pagination):
         """
-        In Public mode, we return an invite to login and a feedback tile.
+        In Public mode, we return tiles defined in mobile.app.tile object
         The news and agenda feeds are fetched from the website.
         TODO Display a tile for inviting to sponsor a child
         (this can be done when we add the relevant action on the app)
-        TODO See if we send a link for a video (could be from website)
-        TODO Add tiles for fund donations (define how to order them or enable
-        dynamic configuration from Odoo user interface).
+        TODO See if we send a link for a video (could be a wordpress post)
+        TODO Add tiles for fund donations
+            (see how to configure with mobile.app.tile).
         :return: list of tiles displayed in mobile app.
         """
-        messages = [
-            # Login
-            {
-                "ActionDestination": "Login overlay",
-                "ActionText": _("Login"),
-                "Body": _("We've noticed you're not currently logged in"),
-                "SortOrder": 1007,
-                "SubType": "MI1",
-                "Title": "Log in",
-                "Type": "Miscellaneous"
-            },
-            # Feedback TODO move in mobile.app.tile object (see AP-37)
-            {
-                "ActionDestination": "Feedback overlay",
-                "ActionText": _("Feedback"),
-                "Body": _("We'd love to hear what you think about our App"),
-                "SortOrder": 1007,
-                "SubType": "MI2",
-                "Title": "Your comments",
-                "Type": "Miscellaneous"
-            },
-            # Child survival donation TODO move in mobile.app.tile (AP-37)
-            {
-                "ActionDestination": "Give overlay",
-                "ActionText": _("Give a Donation"),
-                "Appeal": {
-                    "FundType": "Child Survival Programme"
-                },
-                "Body": _("Child survival"),
-                "SortOrder": 1006,
-                "SubType": "GI1",
-                "Title": _("Help a mother and her baby today"),
-                "Type": "Giving"
-            },
-        ]
-        messages.extend(self._fetch_wordpress_tiles(**pagination))
-        return self._construct_hub_message(0, messages, **pagination)
+        available_tiles = self.env['mobile.app.tile'].search([
+            ('is_active', '=', True),
+            ('mode', '!=', 'private')
+        ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
+        tiles = []
+        if available_tiles:
+            start = int(pagination.get('start', 0))
+            number_mess = int(pagination.get('limit', 1000))
+            offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
+            tiles.extend(
+                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile()
+            )
+
+        # Fetch tiles from Wordpress
+        tiles.extend(self._fetch_wordpress_tiles(**pagination))
+        return self._construct_hub_message(0, tiles, **pagination)
 
     def _fetch_wordpress_tiles(self, **pagination):
         """
@@ -152,7 +123,7 @@ class AppHub(models.AbstractModel):
                 messages.append(wp_mapping.get_connect_data(post))
         return messages
 
-    def _construct_hub_message(self, partner_id, messages, children=False,
+    def _construct_hub_message(self, partner_id, messages, children=None,
                                start=0, limit=100, **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
@@ -160,7 +131,7 @@ class AppHub(models.AbstractModel):
         :param partner_id: Connected partner
         :param messages: List of messages to send (will display tiles in
                          app)
-        :param children: List of children of the sponsor (JSON data)
+        :param children: recordset of compassion.child
         :param start: optional start for loading subset of messages
         :param limit: optional limit for loading subset of messages
         :param kwargs: other request parameters (ignored)
@@ -170,8 +141,10 @@ class AppHub(models.AbstractModel):
             'web.base.url') + '/mobile-app-api'
         hub_endpoint = '/hub/{}?start={}&limit={}'
         self._assign_order(messages)
-        return {
-            "Children": children or [],
+        if children is None:
+            children = self.env['compassion.child']
+        result = children.get_app_json(multi=True)
+        result.update({
             "Size": len(messages),  # Total size of available messages
             "Start": start,  # Starting point of message subset returned
             "Limit": limit,  # Limit number of messages returned
@@ -183,7 +156,8 @@ class AppHub(models.AbstractModel):
                                                        limit),
             },
             "Messages": messages[int(start):min(len(messages), int(limit))],
-        }
+        })
+        return result
 
     def _assign_order(self, messages):
         """

@@ -6,8 +6,6 @@
         <field name="inherit_id"
                ref="crm_claim_type.crm_stage_claim_type_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="replace"/>
-
             <xpath expr="//group[1]" position="before">
                 <div class="oe_button_box" name="button_box">
                     <button name="toggle_active" type="object"
@@ -15,11 +13,6 @@
                         <field name="active" widget="boolean_button"
                                options='{"terminology": "archive"}'/>
                     </button>
-                </div>
-                <div class="oe_title">
-                    <h1>
-                        <field name="name"/>
-                    </h1>
                 </div>
             </xpath>
         </field>

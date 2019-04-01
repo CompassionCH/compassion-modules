@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Child type and subtypes -->
+    <record id="tile_type_child" model="mobile.app.tile.type">
+        <field name="name">Child</field>
+        <field name="code">Child</field>
+        <field name="view_order">1</field>
+    </record>
+
+    <record id="tile_subtype_ch1" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_child"/>
+        <field name="name">Default child card</field>
+        <field name="code">CH1</field>
+        <field name="view_order">1</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
+        <field name="default_title">${ctx['objects'].get_list('preferred_name', 1, 'Thank you')}</field>
+        <field name="default_body">
+<![CDATA[% set child = ctx['objects']
+% if len(child) == 1:
+    You're changing ${child.get('his')} life
+% else:
+    You're changing ${child.get_number()} lives
+% endif
+Thank You]]>
+        </field>
+        <field name="default_action_text">${"My child" if len(child) == 1 else "My children"}</field>
+        <field name="default_action_destination">Child selector</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CH1.jpg"/>
+    </record>
+    <record id="tile_subtype_ch2" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_child"/>
+        <field name="name">Child photo list</field>
+        <field name="code">CH2</field>
+        <field name="view_order">2</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
+        <field name="default_title">Photos</field>
+        <field name="default_body">${ctx['objects'].get_list('preferred_name', 1, 'My children photos')}</field>
+        <field name="default_action_destination">Photos overlay</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CH2.jpg"/>
+    </record>
+    <record id="tile_subtype_cht1" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_child"/>
+        <field name="name">Child new photo</field>
+        <field name="code">CH-T1</field>
+        <field name="view_order">2</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
+        <field name="default_title">New Photo</field>
+        <field name="default_body">${ctx['objects'].get_list('preferred_name', 1, 'My children photos')}</field>
+        <field name="default_action_destination">Photos overlay</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CH2.jpg"/>
+    </record>
+    <record id="tile_subtype_ch3" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_child"/>
+        <field name="name">Children random fact</field>
+        <field name="code">CH3</field>
+        <field name="view_order">3</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
+        <field name="default_action_destination">Child selector</field>
+        <field name="default_action_text">${"My child" if len(child) == 1 else "My children"}</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CH3.jpg"/>
+    </record>
+    <record id="tile_subtype_cht2" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_child"/>
+        <field name="name">Single child fact</field>
+        <field name="code">CH_T2</field>
+        <field name="view_order">3</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
+        <field name="default_action_destination">Individual child page</field>
+        <field name="default_action_text">Thank You</field>
+        <field name="default_body">You're changing ${ctx['objects'].get('his')} life</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CH1.jpg"/>
+    </record>
+
+    <!-- Gift type and subtypes -->
+    <record id="tile_type_donation" model="mobile.app.tile.type">
+        <field name="name">Donation</field>
+        <field name="code">Giving</field>
+        <field name="view_order">2</field>
+    </record>
+
+    <record id="tile_subtype_gi1" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_donation"/>
+        <field name="name">Fund donation</field>
+        <field name="code">GI1</field>
+        <field name="view_order">1</field>
+        <field name="default_model_id" ref="model_product_product"/>
+        <field name="default_title">${ctx['objects'].name}</field>
+        <field name="default_body">${ctx['objects'].description_sale}</field>
+        <field name="default_action_text">Donate</field>
+        <field name="default_action_destination">Give overlay</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI1.jpg"/>
+    </record>
+</odoo>
