@@ -28,5 +28,6 @@
         'views/request_type.xml',
         'views/crm_holiday_automated_response.xml',
         'views/request_stage.xml',
+        'views/holiday_closure_view.xml',
     ],
 }
