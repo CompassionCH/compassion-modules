@@ -9,6 +9,7 @@
 ##############################################################################
 
 from odoo import models, fields
+from datetime import datetime
 
 
 class HolidayClosure(models.Model):

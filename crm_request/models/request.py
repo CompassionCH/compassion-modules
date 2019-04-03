@@ -98,15 +98,16 @@ class CrmClaim(models.Model):
         """
 
         # Check here if the date of the mail is during a holiday
-        mail_date = msg.get('date')
-        holiday_closure = self.env["holiday.closure"]([
-            'start_date', '<=', mail_date,
-            'end_date', '>=', mail_date,
+        mail_date = fields.Date.from_string(msg.get('date'))
+        holiday_closure = self.env["holiday.closure"].search([
+            ('start_date', '<=', mail_date),
+            ('end_date', '>=', mail_date)
         ], limit=1)
 
+        # send automated holiday response
         for h in holiday_closure:
             template = self.env.ref(
-                'mass_mailing_switzerland.business_closed_email_template')
+                'crm_request.business_closed_email_template')
             template.with_context().send_mail(h.id, force_send=True)
 
         if custom_values is None:

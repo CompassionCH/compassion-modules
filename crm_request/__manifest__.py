@@ -24,10 +24,11 @@
         # 'security/ir.model.access.csv',
         'data/request_sequence.xml',
         'data/crm_request_data.xml',
+        'data/email_template.xml',
+        'data/communication_config.xml',
         'views/request.xml',
         'views/request_type.xml',
-        'views/crm_holiday_automated_response.xml',
+        'views/holiday_automated_response_view.xml',
         'views/request_stage.xml',
-        'views/holiday_closure_view.xml',
     ],
 }
