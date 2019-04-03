@@ -177,14 +177,8 @@ class CrmClaim(models.Model):
     @api.multi
     def write(self, values):
         """
-        - If move request in stage 'Waiting on support' assign the request to
-        the current user.
         - Push partner to associated mail messages
         """
-        if values.get('stage_id') == self.env.ref(
-                'crm_request.stage_wait_support').id:
-            values['user_id'] = self.env.uid
-
         super(CrmClaim, self).write(values)
 
         if values.get('partner_id'):
