@@ -48,6 +48,7 @@ install:
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
+  - printf '[options]\n\nrunning_env = dev\n' > ${HOME}/.openerp_serverrc
 
 #before_script:
 #  - echo "Installing opencv ..."; sh ${HOME}/build/CompassionCH/compassion-modules/sbc_compassion/tools/install_opencv.sh 1> ~/error.log
