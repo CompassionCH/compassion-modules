@@ -181,11 +181,13 @@ class CrmClaim(models.Model):
         the current user.
         - Push partner to associated mail messages
         """
+        super(CrmClaim, self).write(values)
+
         if values.get('stage_id') == self.env.ref(
                 'crm_request.stage_wait_support').id:
-            values['user_id'] = self.env.uid
-
-        super(CrmClaim, self).write(values)
+            for request in self:
+                if not request.user_id:
+                    request.user_id = self.env.uid
 
         if values.get('partner_id'):
             for request in self:
