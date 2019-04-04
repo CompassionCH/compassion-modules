@@ -1,0 +1,41 @@
+<odoo>
+
+    <data noupdate="1">
+        <!-- Business closed Communications -->
+        <record id="config_holiday_automated_response" model="partner.communication.config">
+            <field name="name">Holiday - Automated Response</field>
+            <field name="send_mode">digital</field>
+            <field name="print_if_not_email">True</field>
+            <field name="email_template_id" ref="business_closed_email_template"/>
+            <field name="report_id" ref="report_compassion.report_partner_communication"/>
+            <field name="model_id" ref="model_holiday_closure"/>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <record id="business_closed_email_template" model="mail.template">
+            <field name="name">Holiday - Automated response</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="use_default_to" eval="True"/>
+            <field name="subject">Holiday response</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set date_start = object.start_date
+                    % set date_end = object.end_date
+                    % set holiday_name = object.holiday_name
+                </div>
+                <div>
+                    Dear Compassion member,
+                    <br/>
+                    <br/>
+                    Our office is closed for ${holiday_name}, from the ${date_start} to the ${date_end}. You will get an answer as soon as we reopen.
+                    <br/>
+                    <br/>
+                    Yours sincerely
+                </div>
+            </field>
+        </record>
+    </data>
+
+</odoo>
