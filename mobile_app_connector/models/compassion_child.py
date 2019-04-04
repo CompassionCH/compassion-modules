@@ -22,6 +22,25 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _inherit = 'compassion.child'
 
+    @api.multi
+    def get_app_json(self, multi=False):
+        """
+        Called by HUB when data is needed for a tile
+        :param multi: used to change the wrapper if needed
+        :return: dictionary with JSON data of the children
+        """
+        if not self:
+            return {}
+        mapping = MobileChildMapping(self.env)
+        wrapper = 'Children' if multi else 'Child'
+        if len(self) == 1:
+            data = mapping.get_connect_data(self)
+        else:
+            data = []
+            for child in self:
+                data.append(mapping.get_connect_data(child))
+        return {wrapper: data}
+
     @api.model
     def mobile_sponsor_children(self, **other_params):
         """
@@ -73,18 +92,6 @@ class CompassionChild(models.Model):
             'ChildBioServiceResult': childbio
         }
         return result
-
-    def get_mobile_app_tiles(self):
-        """
-        Returns JSON list of children tiles. Update the algorithm description
-        here as you change the code.
-        TODO Implement this
-        Tiles display algorithm:
-        - display by order of date of the relevant message
-        :return: List of JSON data for mobile app tiles
-        """
-        messages = []
-        return messages
 
     def _get_required_param(self, key, params):
         if key not in params:

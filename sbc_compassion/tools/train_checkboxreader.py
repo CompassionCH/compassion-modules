@@ -159,7 +159,7 @@ DFalse = train(folder0 + '/False')
 # we compute the threshold which minimize the probability error. Set
 # display to False if you haven't matplotlib installed
 thresh = compute_threshold(DTrue, DFalse, display=True)
-# pylint: disable=print-statement
+# pylint: disable=print-used
 print('A nice decision threshold would be ' + str(thresh))
 
 # Test:
@@ -170,7 +170,7 @@ print('A nice decision threshold would be ' + str(thresh))
 TruePR = test(thresh, folder0 + '/True')
 FalsePR = test(thresh, folder0 + '/False')
 
-# pylint: disable=print-statement
+# pylint: disable=print-used
 print('True Rositive Rate: ' + str(TruePR))
-# pylint: disable=print-statement
+# pylint: disable=print-used
 print('False Positive Rate: ' + str(FalsePR))

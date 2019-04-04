@@ -41,3 +41,23 @@ class ProductTemplate(models.Model):
             result.append(mapping.get_connect_data(donation))
 
         return result
+
+
+class Product(models.Model):
+
+    _inherit = "product.product"
+
+    @api.multi
+    def get_app_json(self, multi=False):
+        """
+        Called by HUB when data is needed for a tile
+        :param multi: used to change the wrapper if needed
+        :return: dictionary with JSON data of the children
+        """
+        if not self:
+            return {}
+        return {
+            'Appeal': {
+                'FundType': self[:1].default_code
+            }
+        }

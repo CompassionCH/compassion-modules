@@ -39,7 +39,7 @@ class TestMobileAppConnector(BaseSponsorshipTest):
         self.assertIsInstance(res, list)
         self.assertEqual(len(res), 1)
         child_data = res[0]
-        self.assertEqual(child_data.get('NeedID'), 'UG4239181')
+        self.assertEqual(child_data.get('NeedKey'), 'UG4239181')
 
     def test_fetch_letters(self):
         res = self.env['correspondence'].mobile_get_letters(

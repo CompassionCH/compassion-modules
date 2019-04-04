@@ -16,7 +16,7 @@
     'depends': ['crm_claim_code',
                 'crm_claim_type',
                 'mail',
-                'web_widget_text_collapse_html'
+                'partner_contact_in_several_companies'
                 ],
 
     # always loaded
