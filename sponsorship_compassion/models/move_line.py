@@ -19,8 +19,6 @@ class MoveLine(models.Model):
     _inherit = 'account.move.line'
 
     def split_payment_and_reconcile(self):
-        move = False
-        move_line = False
         sum_credit = sum(self.mapped('credit'))
         sum_debit = sum(self.mapped('debit'))
         if sum_credit == sum_debit:
@@ -63,6 +61,4 @@ class MoveLine(models.Model):
         move.post()
 
         # Perform the reconciliation
-        self.reconcile()
-
-        return True
+        return self.reconcile()
