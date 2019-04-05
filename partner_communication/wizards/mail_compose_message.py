@@ -32,6 +32,9 @@ class EmailComposeMessage(models.TransientModel):
             mail_values = all_mail_values[res_id]
             if default_mail_values:
                 mail_values.update(default_mail_values)
+
+            if mail_values.get('body_html'):
+                mail_values['body'] = mail_values['body_html']
             emails += email_obj.create(mail_values)
         return emails
 
