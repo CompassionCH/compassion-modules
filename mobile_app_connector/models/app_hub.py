@@ -47,11 +47,16 @@ class AppHub(models.AbstractModel):
 
         partner = self.env['res.partner'].browse(partner_id)
         sponsorships = partner.sponsorship_ids.filtered('is_active')
+        # sponsorships = self.env['recurring.contract'].sudo().search([
+        #     ('partner_id', '=', partner_id),
+        #     ('is_active', '=', 'active')
+        # ])
         children = sponsorships.mapped('child_id')
+        children_pictures = children.sudo().mapped('pictures_ids')
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
-            ('mode', '!=', 'public')
+            ('visibility', '!=', 'public')
         ])
         # TODO this is for testing purpose
         #   Implement a way for defining donation products that will show in
@@ -64,14 +69,15 @@ class AppHub(models.AbstractModel):
             'res.partner': partner,
             'recurring.contract': sponsorships,
             'compassion.child': children,
-            'product.product': product
+            'product.product': product,
+
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children, **pagination)
+            partner_id, messages, children, children_pictures, **pagination)
         return res
 
     ##########################################################################
@@ -91,7 +97,7 @@ class AppHub(models.AbstractModel):
         """
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
-            ('mode', '!=', 'private')
+            ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
         if available_tiles:
@@ -124,7 +130,8 @@ class AppHub(models.AbstractModel):
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
-                               start=0, limit=100, **kwargs):
+                               children_pictures=None, start=0, limit=100,
+                               **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
         the main hub display.
@@ -144,6 +151,7 @@ class AppHub(models.AbstractModel):
         if children is None:
             children = self.env['compassion.child']
         result = children.get_app_json(multi=True)
+
         result.update({
             "Size": len(messages),  # Total size of available messages
             "Start": start,  # Starting point of message subset returned

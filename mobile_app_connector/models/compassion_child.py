@@ -29,17 +29,21 @@ class CompassionChild(models.Model):
         :param multi: used to change the wrapper if needed
         :return: dictionary with JSON data of the children
         """
+        children_pictures = self.sudo().mapped('pictures_ids')
         if not self:
             return {}
         mapping = MobileChildMapping(self.env)
         wrapper = 'Children' if multi else 'Child'
         if len(self) == 1:
             data = mapping.get_connect_data(self)
+            # data['Images'] = children_pictures.get_app_json(multi=True)
         else:
             data = []
             for child in self:
                 data.append(mapping.get_connect_data(child))
-        return {wrapper: data}
+        return {wrapper: data,
+                'Images': [children_pictures.filtered(lambda r: r.image_url)
+                               .get_app_json(multi=True)]}
 
     @api.model
     def mobile_sponsor_children(self, **other_params):
