@@ -23,7 +23,7 @@ class ResPartnerMapping(OnrampMapping):
     CONNECT_MAPPING = {
         'GlobalID': 'global_id',
         'GPID': 'ref',
-        'Gender': ('title.gender', 'res.partner.title'),
+        'Gender': ('title', 'res.partner.title'),
         'MandatoryReviewRequired': 'mandatory_review',
         'PreferredName': 'preferred_name',
         'CorrespondenceDeliveryPreference': 'send_original',
@@ -32,7 +32,9 @@ class ResPartnerMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Gender': lambda gender: 'Female' if gender == 'F' else 'Male',
+        'Gender': lambda title:
+            title.gender if title in
+            ['Mister', 'Madam', 'Misters', 'Ladies'] else None,
         'MandatoryReviewRequired': None,
         'PreferredName': None,
         'CorrespondenceDeliveryPreference':
