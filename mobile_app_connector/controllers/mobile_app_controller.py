@@ -92,7 +92,7 @@ class RestController(http.Controller):
                  note: only one item is used by the app.
         """
         hero = request.env['mobile.app.banner'].search([
-            ('type', 'ilike', hero_type),
+            # ('type', 'ilike', hero_type),
             ('is_active', '=', True)
         ], limit=1)
         hero_mapping = AppBannerMapping(request.env)
