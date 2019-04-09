@@ -4,6 +4,7 @@
 
 import logging
 from email.utils import parseaddr
+import cgi
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
 _logger = logging.getLogger(__name__)
@@ -11,7 +12,6 @@ try:
     import detectlanguage
 except ImportError:
     _logger.warning("Please install detectlanguage")
-
 
 class CrmClaim(models.Model):
     _inherit = "crm.claim"
@@ -75,6 +75,37 @@ class CrmClaim(models.Model):
                 self.partner_id, parseaddr(self.email_from)[1]
             )
             ctx['default_partner_ids'] = [partner.id]
+
+            request = self.env['crm.claim'].browse(self.id)
+            messages = request.mapped('message_ids')
+            if len(messages) > 0:
+                message = messages[0]
+                lib_subject = _('Subject')
+                lib_from = _('From')
+                lib_message = _('Original Message')
+                header1 = '<div style="font-size:10pt;color:#1f497d"><br></div>'
+                header2 = '<div style="font-size:10pt;color:#500050;">'
+                header3 = '----' + lib_message + '----'
+                br = '<br />'
+
+                email_from = 'no-email'
+                if message.email_from:
+                    email_from = message.email_from
+                email_from = '<b>' + lib_from + '</b>:' + cgi.\
+                    escape(email_from).encode('ascii', 'xmlcharrefreplace')
+                mail_date = '<b>Date</b>:' + message.date
+                body = ''
+                if message.body and message.body != u'':
+                    body = message.body.replace('#1f497d', '#500050') + '</div>'
+                subject = '<b>' + lib_subject + '</b>:'
+                if message.subject and message.subject != u'':
+                    subject = '<b>' + lib_subject + '</b>:' + cgi\
+                        .escape(message.subject)\
+                        .encode('ascii', 'xmlcharrefreplace') \
+                              or message.record_name or ''
+
+                ctx['default_body'] = header1 + header2 + header3 + br + str(
+                    email_from) + br + subject + br + mail_date + br + body
 
             # Un-archive the email_alias so that a mail can be sent and set a
             # flag to re-archive them once the email is sent.
