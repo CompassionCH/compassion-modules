@@ -57,8 +57,9 @@ class RevisionPreview(models.TransientModel):
     def _default_model(self):
         recs = self._reference_models()
         model = recs[0][0]
-        return model + ',' + str(self.env[model].search(
-            [('partner_id', '!=', False)], limit=1).id)
+        criteria = [('partner_id.lang', '=', self.env.lang)] \
+            if model != 'res.partner' else [('lang', '=', self.env.lang)]
+        return model + ',' + str(self.env[model].search(criteria, limit=1).id)
 
     @api.multi
     def unlink(self):
