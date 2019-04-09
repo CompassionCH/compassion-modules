@@ -10,4 +10,4 @@ def migrate(cr, version):
     # Remove all alias that was created by
     cr.execute(""" UPDATE crm_claim SET email_origin = email_from; """)
     cr.execute(""" DELETE FROM res_partner WHERE type = 'email_alias'
-    and email = 'xivo@xivo2016.sokl.ch'; """)
+        and email = 'xivo@xivo2016.sokl.ch'; """)
