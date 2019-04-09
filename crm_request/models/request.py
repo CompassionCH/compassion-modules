@@ -29,6 +29,7 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+    email_origin = fields.Char()
     language = fields.Selection('_get_lang')
 
     @api.depends('subject')
@@ -142,7 +143,8 @@ class CrmClaim(models.Model):
             'date': msg.get('date'),  # Get the time of the sending of the mail
             'alias_id': alias.id,
             'claim_type': type_id,
-            'subject': subject
+            'subject': subject,
+            'email_origin': msg.get('from'),
         }
 
         if 'partner_id' not in custom_values:
@@ -213,7 +215,7 @@ class CrmClaim(models.Model):
         if values.get('partner_id'):
             for request in self:
                 request.message_ids.filtered(
-                    lambda m: m.email_from == request.email_from
+                    lambda m: m.email_from == request.email_origin
                 ).write({
                     'author_id': values['partner_id']
                 })
