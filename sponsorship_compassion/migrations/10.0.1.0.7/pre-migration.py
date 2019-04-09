@@ -17,7 +17,7 @@ def migrate(env, version):
         return
 
     for partner in env['res.partner'].search(
-            ['partner.title.gender', '!=', False]):
+            [('partner.title.gender', '!=', False), ('global_id', '!=', False)]):
         if partner.title.name not in ['Madam', 'Mister', 'Misters', 'Ladies']:
             # send update to GMC
             partner.upsert_constituent()
