@@ -370,20 +370,22 @@ class RecurringContract(models.Model):
 
     @api.multi
     def contract_cancelled(self):
+        now = fields.Datetime.now()
         self.write({
             'state': 'cancelled',
-            'end_date': fields.Datetime.now()
+            'end_date': now
         })
-        self.clean_invoices()
+        self.clean_invoices(now)
         return True
 
     @api.multi
     def contract_terminated(self):
+        now = fields.Datetime.now()
         self.write({
             'state': 'terminated',
-            'end_date': fields.Datetime.now()
+            'end_date': now
         })
-        self.clean_invoices()
+        self.clean_invoices(now)
         return True
 
     @api.multi
