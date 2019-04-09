@@ -33,7 +33,7 @@ class ResPartnerMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {
         'Gender': lambda title:
-            title.gender if title in
+            title.gender if title.with_context(lang='en_US').name in
             ['Mister', 'Madam', 'Misters', 'Ladies'] else None,
         'MandatoryReviewRequired': None,
         'PreferredName': None,
