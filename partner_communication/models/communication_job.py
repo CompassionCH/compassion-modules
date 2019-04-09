@@ -356,7 +356,8 @@ class CommunicationJob(models.Model):
     def quick_refresh(self):
         # Only refresh text and subject, all at once
         jobs = self.filtered('email_template_id').filtered('object_ids')
-        lang = self.env.context.get('lang_preview', jobs.mapped('partner_id.lang'))
+        lang = self.env.context.get('lang_preview', jobs.mapped(
+            'partner_id.lang'))
         template = jobs.mapped('email_template_id')
         if len(template) > 1:
             raise UserError(_(
