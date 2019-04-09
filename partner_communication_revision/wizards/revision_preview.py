@@ -32,9 +32,9 @@ class RevisionPreview(models.TransientModel):
     model = fields.Char(related='revision_id.model', readonly=True)
     model_desc = fields.Char(
         related='revision_id.config_id.model_id.name', readonly=True)
-    res_id = fields.Selection(
-        '_select_res_id', default=lambda s: s._default_res_id()
-    )
+    res_id = fields.Reference(
+        selection='_reference_models',
+        default=lambda s: s._default_model())
     preview_job_id = fields.Many2one(
         'partner.communication.job', readonly=True)
     preview_html = fields.Html(related='preview_job_id.body_html')
@@ -43,26 +43,22 @@ class RevisionPreview(models.TransientModel):
     pdf_page_count = fields.Integer('Number of pages', readonly=True)
 
     @api.model
-    def _select_res_id(self):
+    def _reference_models(self):
         revision_id = self._context.get('revision_id')
         if not revision_id:
             return []
         revision = self.env['partner.communication.revision'].browse(
             int(revision_id))
-        domain = []
-        if revision.model == 'res.partner':
-            domain.append(('lang', '=', revision.lang))
-        else:
-            domain.append(('partner_id.lang', '=', revision.lang))
-        records = self.env[revision.model].search(domain, limit=10,
-                                                  order='id desc')
-        res = [(str(r[0]), r[1]) for r in records.name_get()]
-        return res
+        domain = [('model', '=', revision.model)]
+        models = self.env['ir.model'].search(domain)
+        return [(model.model, model.name) for model in models]
 
     @api.model
-    def _default_res_id(self):
-        recs = self._select_res_id()
-        return recs and recs[0][0]
+    def _default_model(self):
+        recs = self._reference_models()
+        model = recs[0][0]
+        return model + ',' + str(self.env[model].search(
+            [('partner_id', '!=', False)], limit=1).id)
 
     @api.multi
     def unlink(self):
@@ -75,18 +71,20 @@ class RevisionPreview(models.TransientModel):
         if not self.revision_id or not self.res_id:
             return self._reload()
         record = self.env[self.model].browse(int(self.res_id))
-        partner_id = record.id if self.model == 'res.partner' else \
+        partner_id = \
+            record.id if self.model == 'res.partner' else \
             record.partner_id.id
         config = self.revision_id.config_id
         job_vals = {
             'config_id': config.id,
-            'object_ids': self.res_id,
+            'object_ids': self.res_id.id,
             'partner_id': partner_id,
             'state': 'done',  # Prevents sending test jobs,
             'send_mode': 'digital',  # Prevents pdf generation
             'body_html': self._context.get('working_text'),  # Custom text
             'subject': self._context.get('working_subject'),
             'auto_send': False,  # Prevents automatic sending
+            'lang': self.revision_id.lang,
         }
         if not self.preview_job_id:
             # Avoid creating attachments for the communication
@@ -94,13 +92,13 @@ class RevisionPreview(models.TransientModel):
             if attachments_function:
                 config.write({'attachments_function': False})
             # Create a test communication_job record
-            self.preview_job_id = self.preview_job_id.with_context(
-                lang=self.revision_id.lang).create(job_vals)
+            self.preview_job_id = self.preview_job_id.create(job_vals)
             if attachments_function:
                 config.write({'attachments_function': attachments_function})
         elif self.state == 'active_revision':
             self.preview_job_id.write(job_vals)
-            self.preview_job_id.quick_refresh()
+            self.preview_job_id.with_context(
+                {'lang_preview': job_vals['lang']}).quick_refresh()
 
         if config.report_id:
             # Create a PDF preview
@@ -129,3 +127,8 @@ class RevisionPreview(models.TransientModel):
             'type': 'ir.actions.act_window',
             'target': 'new',
         }
+
+    @api.onchange('res_id')
+    def _res_id_change(self):
+        if self.res_id:
+            self._reload()
