@@ -56,8 +56,7 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_salutation(self):
-        for p in self:
-            partner = p.with_context(lang=p.lang)
+        for partner in self:
             if partner.title and partner.firstname and not partner.is_company:
                 title = partner.title
                 title_salutation = partner.env['ir.advanced.translation'].get(
@@ -65,16 +64,16 @@ class ResPartner(models.Model):
                     plural=title.plural
                 ).title()
                 title_name = title.name
-                p.salutation = title_salutation + ' ' + \
+                partner.salutation = title_salutation + ' ' + \
                     title_name + ' ' + partner.lastname
-                p.short_salutation = title_salutation + ' ' + partner.firstname
-                p.informal_salutation = title_salutation + ' ' + \
+                partner.short_salutation = title_salutation + ' ' + partner.firstname
+                partner.informal_salutation = title_salutation + ' ' + \
                     partner.firstname
             else:
-                p.salutation = _("Dear friends of ") + \
+                partner.salutation = _("Dear friends of ") + \
                     self.env.user.company_id.name
-                p.short_salutation = p.salutation
-                p.informal_salutation = ("Dear friend of ") + \
+                partner.short_salutation = p.salutation
+                partner.informal_salutation = ("Dear friend of ") + \
                     self.env.user.company_id.name
 
     @api.multi
