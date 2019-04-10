@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherits mail_message_views to add an attachment field -->
+   <record id="mail_mail_message_form_inherit" model="ir.ui.view">
+       <field name="name">mail.message.view</field>
+       <field name="model">mail.message</field>
+       <field name="inherit_id"
+              ref="mail.view_message_form"/>
+       <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="Attachments">
+                    <field name="attachment_ids"/>
+                </page>
+            </xpath>
+       </field>
+   </record>
+</odoo>
