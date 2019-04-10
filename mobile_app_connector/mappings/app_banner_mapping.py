@@ -23,7 +23,6 @@ class AppBannerMapping(OnrampMapping):
         'HERO_CTA_TEXT': 'button_text',
         'HERO_CTA_DESTINATION': 'internal_action',
         'HERO_CTA_DESTINATION_TYPE': 'destination_type',
-        'HERO_TYPE': 'type',
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}

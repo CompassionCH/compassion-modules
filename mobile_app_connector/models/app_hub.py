@@ -47,10 +47,6 @@ class AppHub(models.AbstractModel):
 
         partner = self.env['res.partner'].browse(partner_id)
         sponsorships = partner.sponsorship_ids.filtered('is_active')
-        # sponsorships = self.env['recurring.contract'].sudo().search([
-        #     ('partner_id', '=', partner_id),
-        #     ('is_active', '=', 'active')
-        # ])
         children = sponsorships.mapped('child_id')
 
         available_tiles = self.env['mobile.app.tile'].search([

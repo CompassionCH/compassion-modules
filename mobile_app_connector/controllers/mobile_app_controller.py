@@ -80,19 +80,16 @@ class RestController(http.Controller):
 
     @http.route('/mobile-app-api/hero/', type='json',
                 auth='public', methods=['GET'])
-    def get_hero(self, hero_type=None, view=None, **parameters):
+    def get_hero(self, view=None, **parameters):
         """
         Hero view is the main header above the HUB in the app.
         We return here what should appear in this view.
-        :param hero_type: "Default" == user logged in,
-                          "WithoutLogin" == user not logged in.
         :param view: always "hero"
         :param parameters: other parameters should be empty
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
         hero = request.env['mobile.app.banner'].search([
-            # ('type', 'ilike', hero_type),
             ('is_active', '=', True)
         ], limit=1)
         hero_mapping = AppBannerMapping(request.env)
