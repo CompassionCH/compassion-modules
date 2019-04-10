@@ -30,7 +30,7 @@ class InteractionResume(models.TransientModel):
     state = fields.Selection(related='direction')
     communication_date = fields.Datetime()
     subject = fields.Text()
-    attachment_ids = fields.Integer()
+    has_attachment = fields.Boolean(compute='_compute_has_attachment')
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one("partner.communication.job", "Communication")
@@ -66,7 +66,6 @@ class InteractionResume(models.TransientModel):
                 REGEXP_REPLACE(pcj.body_html, '<img[^>]*>', '') AS body,
                 'out' AS direction,
                 0 as phone_id,
-                0 as attachment_ids,
                 0 as email_id,
                 0 as message_id,
                 pcj.id as paper_id,
@@ -94,7 +93,6 @@ class InteractionResume(models.TransientModel):
                 AS direction,
                 crmpc.id as phone_id,
                 0 as email_id,
-                0 as attachment_ids,
                 0 as message_id,
                 0 as paper_id,
                 NULL as tracking_status
@@ -114,8 +112,6 @@ class InteractionResume(models.TransientModel):
                 'out' AS direction,
                 0 as phone_id,
                 mail.id as email_id,
-                (select count(a.message_id) from message_attachment_rel a where
-                 a.message_id = m.id) as attachment_ids,
                 0 as message_id,
                 job.id as paper_id,
                 COALESCE(mt.state, 'error') as tracking_status
@@ -140,12 +136,11 @@ class InteractionResume(models.TransientModel):
                 m.date as communication_date,
                 COALESCE(p.contact_id, p.id) AS partner_id,
                 p.email,
-                m.subject as subject,           
+                m.subject as subject,
                 REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                 'in' AS direction,
                 0 as phone_id,
                 0 as email_id,
-                0 as attachment_ids,
                 m.id as message_id,
                 0 as paper_id,
                 NULL as tracking_status
@@ -168,3 +163,10 @@ class InteractionResume(models.TransientModel):
         """
         self.ensure_one()
         return True
+
+    def _compute_has_attachment(self):
+        """
+        Check for each e-mail if there is at least 1 attachment
+        """
+        for row in self:
+            row.has_attachment = row.email_id.attachment_ids
