@@ -19,11 +19,11 @@ def migrate(env, version):
     if not version:
         return
 
-    partners = env['res.partner'].search_count(
-            [('global_id', '!=', False),
-             ('title.gender', '!=', False),
-             ('title.name', 'not in', [
-                 'Madam', 'Mister', 'Misters', 'Ladies'])])
+    partners = env['res.partner'].search_count([
+        ('global_id', '!=', False),
+        ('title.gender', '!=', False),
+        ('title.name', 'not in', ['Madam', 'Mister', 'Misters', 'Ladies'])
+    ])
     _logger.warning("Found %s partners to migrate gender on GMC. Don't forget "
                     "to call upsert_constituent method on those.", partners)
     # partners.upsert_constituent()
