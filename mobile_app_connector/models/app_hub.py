@@ -52,7 +52,6 @@ class AppHub(models.AbstractModel):
         #     ('is_active', '=', 'active')
         # ])
         children = sponsorships.mapped('child_id')
-        children_pictures = children.sudo().mapped('pictures_ids')
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
@@ -77,7 +76,7 @@ class AppHub(models.AbstractModel):
         messages = available_tiles[:limit].render_tile(tile_data)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children, children_pictures, **pagination)
+            partner_id, messages, children, **pagination)
         return res
 
     ##########################################################################
@@ -130,8 +129,7 @@ class AppHub(models.AbstractModel):
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
-                               children_pictures=None, start=0, limit=100,
-                               **kwargs):
+                               start=0, limit=100, **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
         the main hub display.
