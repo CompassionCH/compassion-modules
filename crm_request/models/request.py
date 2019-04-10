@@ -13,6 +13,7 @@ try:
 except ImportError:
     _logger.warning("Please install detectlanguage")
 
+
 class CrmClaim(models.Model):
     _inherit = "crm.claim"
     _description = "Request"
@@ -83,7 +84,8 @@ class CrmClaim(models.Model):
                 lib_subject = _('Subject')
                 lib_from = _('From')
                 lib_message = _('Original Message')
-                header1 = '<div style="font-size:10pt;color:#1f497d"><br></div>'
+                header1 = '<div style="font-size:10pt;color:#1f497d">' \
+                          '<br></div>'
                 header2 = '<div style="font-size:10pt;color:#500050;">'
                 header3 = '----' + lib_message + '----'
                 br = '<br />'
@@ -96,7 +98,8 @@ class CrmClaim(models.Model):
                 mail_date = '<b>Date</b>:' + message.date
                 body = ''
                 if message.body and message.body != u'':
-                    body = message.body.replace('#1f497d', '#500050') + '</div>'
+                    body = message.body.replace('#1f497d', '#500050')\
+                           + '</div>'
                 subject = '<b>' + lib_subject + '</b>:'
                 if message.subject and message.subject != u'':
                     subject = '<b>' + lib_subject + '</b>:' + cgi\
