@@ -66,13 +66,14 @@ class ResPartner(models.Model):
                 title_name = title.name
                 partner.salutation = title_salutation + ' ' + \
                     title_name + ' ' + partner.lastname
-                partner.short_salutation = title_salutation + ' ' + partner.firstname
+                partner.short_salutation =\
+                    title_salutation + ' ' + partner.firstname
                 partner.informal_salutation = title_salutation + ' ' + \
                     partner.firstname
             else:
                 partner.salutation = _("Dear friends of ") + \
                     self.env.user.company_id.name
-                partner.short_salutation = p.salutation
+                partner.short_salutation = partner.salutation
                 partner.informal_salutation = ("Dear friend of ") + \
                     self.env.user.company_id.name
 
