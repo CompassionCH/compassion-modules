@@ -2,8 +2,15 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import logging
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
+from odoo.tools import config
+_logger = logging.getLogger(__name__)
+try:
+    import detectlanguage
+except ImportError:
+    _logger.warning("Please install detectlanguage")
 
 
 class CrmClaim(models.Model):
@@ -22,6 +29,8 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+    email_origin = fields.Char()
+    language = fields.Selection('_get_lang')
 
     @api.depends('subject')
     @api.multi
@@ -33,6 +42,11 @@ class CrmClaim(models.Model):
         for request in self:
             if int(request.priority) == 2:
                 request.color = 2
+
+    @api.model
+    def _get_lang(self):
+        langs = self.env['res.lang'].search([])
+        return [(l.code, l.name) for l in langs]
 
     @api.multi
     def action_reply(self):
@@ -53,6 +67,7 @@ class CrmClaim(models.Model):
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
+            'lang': self.language,
         }
 
         if self.partner_id:
@@ -128,7 +143,8 @@ class CrmClaim(models.Model):
             'date': msg.get('date'),  # Get the time of the sending of the mail
             'alias_id': alias.id,
             'claim_type': type_id,
-            'subject': subject
+            'subject': subject,
+            'email_origin': msg.get('from'),
         }
 
         if 'partner_id' not in custom_values:
@@ -139,11 +155,19 @@ class CrmClaim(models.Model):
             }, options)
             if partner:
                 defaults['partner_id'] = partner.id
+                defaults['language'] = partner.lang
 
         defaults.pop('name', False)
 
         defaults.update(custom_values)
-        return super(CrmClaim, self).message_new(msg, defaults)
+
+        request_id = super(CrmClaim, self).message_new(msg, defaults)
+        request = self.browse(request_id)
+        if not request.language:
+            request.language = self.detect_lang(
+                request.description).lang_id.code
+
+        return request_id
 
     @api.multi
     def message_update(self, msg_dict, update_vals=None):
@@ -181,20 +205,48 @@ class CrmClaim(models.Model):
         the current user.
         - Push partner to associated mail messages
         """
+        super(CrmClaim, self).write(values)
+
         if values.get('stage_id') == self.env.ref(
                 'crm_request.stage_wait_support').id:
-            values['user_id'] = self.env.uid
-
-        super(CrmClaim, self).write(values)
+            for request in self:
+                if not request.user_id:
+                    request.user_id = self.env.uid
 
         if values.get('partner_id'):
             for request in self:
                 request.message_ids.filtered(
-                    lambda m: m.email_from == request.email_from
+                    lambda m: m.email_from == request.email_origin
                 ).write({
                     'author_id': values['partner_id']
                 })
         return True
+
+    @api.model
+    def detect_lang(self, text):
+        """
+        Use detectlanguage API to find the language of the given text
+        :param text: text to detect
+        :return: res.lang compassion record if the language is found, or False
+        """
+        detectlanguage.configuration.api_key = config.get(
+            'detect_language_api_key')
+        language_name = False
+        langs = detectlanguage.languages()
+        try:
+            code_lang = detectlanguage.simple_detect(text)
+        except (IndexError, detectlanguage.DetectLanguageError):
+            # Language could not be detected
+            return False
+        for lang in langs:
+            if lang.get("code") == code_lang:
+                language_name = lang.get("name")
+                break
+        if not language_name:
+            return False
+
+        return self.env['res.lang.compassion'].search(
+            [('name', '=ilike', language_name)], limit=1)
 
 
 class AssignRequestWizard(models.TransientModel):

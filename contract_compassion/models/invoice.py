@@ -8,7 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import itertools
 from datetime import date
 
 from odoo import api, models, fields
@@ -114,20 +113,32 @@ class AccountInvoice(models.Model):
             # Group several payments to match the invoiced amount
             # Limit to 12 move_lines to avoid too many computations
             open_payments = line_obj.search(payment_search, limit=12)
-            # Search for a combination giving the invoiced amount
-            # https://stackoverflow.com/questions/34517540/
-            # find-all-combinations-of-a-list-of-numbers-with-a-given-sum
+
+            # Search for a combination giving the invoiced amount recursively
+            # https://stackoverflow.com/questions/4632322/finding-all-possible-
+            # combinations-of-numbers-to-reach-a-given-sum
+            def find_sum(numbers, target, partial=None):
+                if partial is None:
+                    partial = []
+                s = sum(p.credit for p in partial)
+
+                if s == target:
+                    return partial
+                if s >= target:
+                    return  # if we reach the number why bother to continue
+
+                for i in range(len(numbers)):
+                    ret = find_sum(numbers[i+1:], target,
+                                   partial + [numbers[i]])
+                    if ret is not None:
+                        return ret
+
             matching_lines = line_obj
-            all_payment_combinations = \
-                (combination for n in range(2, len(open_payments) + 1)
-                 for combination in itertools.combinations(open_payments, n))
-            for payment_combination in all_payment_combinations:
-                combination_amount = sum(p.credit for p in payment_combination)
-                if combination_amount == reconcile_amount:
-                    for payment in payment_combination:
-                        matching_lines += payment
-                    (matching_lines | move_lines).reconcile()
-                    return True
+            sum_found = find_sum(open_payments, reconcile_amount)
+            if sum_found is not None:
+                for payment in sum_found:
+                    matching_lines += payment
+                return (matching_lines | move_lines).reconcile()
             else:
                 # No combination found: we must split one payment
                 payment_amount = 0
@@ -136,9 +147,7 @@ class AccountInvoice(models.Model):
                     if payment_line.credit > missing_amount:
                         # Split last added line amount to perfectly match
                         # the total amount we are looking for
-                        (open_payments[:index + 1] | move_lines) \
+                        return (open_payments[:index + 1] | move_lines) \
                             .split_payment_and_reconcile()
-                        return True
                     payment_amount += payment_line.credit
-                (open_payments | move_lines).reconcile()
-                return True
+                return (open_payments | move_lines).reconcile()

@@ -101,6 +101,7 @@
                             <field name="alias_id" groups="base.group_no_one"/>
                         </group>
                         <group>
+                            <field name="language"/>
                             <field name="date"/>
                             <field name="priority" widget="priority"/>
                         </group>
