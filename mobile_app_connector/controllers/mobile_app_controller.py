@@ -99,6 +99,17 @@ class RestController(http.Controller):
     @http.route('/mobile-app-api/donation_type/', type='json',
                 auth='public', methods=['GET'])
     def get_donation_type(self, view=None, **parameters):
+        """
+        This is called by the App to list all donation funds available.
+        TODO the FundNames are hardcoded in the app, so we cannot send
+        whatever we like. We want to discuss with UK if we can change this
+        and have an object in Odoo to configure the active funds we want
+        to promote in the app (with product_id link and picture defined in
+        Odoo)
+        :param view: ??
+        :param parameters: ??
+        :return: Json
+        """
         return [
             {
                 "DisplayOrder": "1",
