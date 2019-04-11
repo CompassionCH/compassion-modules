@@ -38,6 +38,7 @@
     'depends': [
         'sbc_compassion',
         'partner_contact_birthdate',
+        'base_geolocalize',
     ],
     'external_dependencies': {
         'python': ['simplejson'],
