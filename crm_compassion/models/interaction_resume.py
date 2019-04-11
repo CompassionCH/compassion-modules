@@ -119,7 +119,7 @@ class InteractionResume(models.TransientModel):
                 JOIN mail_message m ON mail.mail_message_id = m.id
                 JOIN mail_mail_res_partner_rel rel
                 ON rel.mail_mail_id = mail.id
-                JOIN mail_tracking_email mt ON mail.id = mt.mail_id
+                FULL OUTER JOIN mail_tracking_email mt ON mail.id = mt.mail_id
                 JOIN res_partner p ON rel.res_partner_id = p.id
                 FULL OUTER JOIN partner_communication_job job
                     ON job.email_id = mail.id

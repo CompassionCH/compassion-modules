@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion CH - Events',
-    'version': '10.0.1.3.0',
+    'version': '10.0.1.4.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
@@ -63,6 +63,7 @@
         'views/hold_view.xml',
         'views/calendar_view.xml',
         'views/mail_message_view.xml',
+        'views/partner_log_interaction_wizard_view.xml',
     ],
     'qweb': [
         'static/src/xml/web_fullcalendar_event.xml',
