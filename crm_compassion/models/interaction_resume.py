@@ -30,6 +30,7 @@ class InteractionResume(models.TransientModel):
     state = fields.Selection(related='direction')
     communication_date = fields.Datetime()
     subject = fields.Text()
+    has_attachment = fields.Boolean(compute='_compute_has_attachment')
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one("partner.communication.job", "Communication")
@@ -162,3 +163,12 @@ class InteractionResume(models.TransientModel):
         """
         self.ensure_one()
         return True
+
+    def _compute_has_attachment(self):
+        """
+        Check in each row if e-mail (outgoing) or message (incoming) contains
+        at least 1 attachment.
+        """
+        for row in self:
+            row.has_attachment = row.email_id.attachment_ids or \
+                row.message_id.attachment_ids
