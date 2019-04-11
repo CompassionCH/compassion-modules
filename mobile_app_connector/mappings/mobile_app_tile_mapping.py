@@ -27,11 +27,20 @@ class TileMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Body': unicode,
-        'ActionText': unicode,
-        'Title': unicode,
+        'Body': None,
+        'ActionText': None,
+        'Title': None,
         'SubType': None,
         'SortOrder': None,
         'ActionDestination': None,
         'Type': None,
     }
+
+    def _process_connect_data(self, connect_data):
+        for key, value in connect_data.copy().iteritems():
+            if key == 'ActionText':
+                if value:
+                    connect_data[key] = unicode(value)
+                else:
+                    del connect_data[key]
+        return connect_data

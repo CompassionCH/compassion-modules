@@ -198,7 +198,8 @@ class CrmClaim(models.Model):
         request_id = super(CrmClaim, self).message_new(msg, defaults)
         request = self.browse(request_id)
         if not request.language:
-            request.language = self.detect_lang(request.description)
+            request.language = self.detect_lang(
+                request.description).lang_id.code
 
         return request_id
 

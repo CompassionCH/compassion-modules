@@ -10,6 +10,7 @@
 ##############################################################################
 
 from . import compassion_child
+from . import compassion_child_pictures
 from . import res_users
 from . import compassion_project
 from . import product_template
