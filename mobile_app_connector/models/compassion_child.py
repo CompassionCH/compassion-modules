@@ -36,14 +36,17 @@ class CompassionChild(models.Model):
         wrapper = 'Children' if multi else 'Child'
         if len(self) == 1:
             data = mapping.get_connect_data(self)
-            # data['Images'] = children_pictures.get_app_json(multi=True)
         else:
             data = []
             for child in self:
                 data.append(mapping.get_connect_data(child))
-        return {wrapper: data,
-                'Images': [children_pictures.filtered(lambda r: r.image_url)
-                               .get_app_json(multi=True)]}
+        return {
+            wrapper: data,
+            'Images': [
+                children_pictures.filtered(
+                    lambda r: r.image_url).get_app_json(multi=True)
+            ]
+        }
 
     @api.model
     def mobile_sponsor_children(self, **other_params):

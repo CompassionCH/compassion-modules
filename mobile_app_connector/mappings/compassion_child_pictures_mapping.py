@@ -22,4 +22,3 @@ class MobileChildPicturesMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
-
