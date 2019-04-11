@@ -171,4 +171,4 @@ class InteractionResume(models.TransientModel):
         """
         for row in self:
             row.has_attachment = row.email_id.attachment_ids or \
-                                 row.message_id.attachment_ids
+                row.message_id.attachment_ids
