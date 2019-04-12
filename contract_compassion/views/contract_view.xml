@@ -83,6 +83,7 @@
                         <field name="group_freq"/>
                         <field name="months_paid"/>
                         <field name="last_paid_invoice_date"/>
+                        <field name="last_letter" invisible="1"/>
                         <field name="commitment_number" invisible="1"/>
                     </group>
                 </group>
