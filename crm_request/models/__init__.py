@@ -4,3 +4,4 @@ from . import request
 from . import request_type
 from . import request_stage
 from . import mail_compose_message
+from . import mail_message
