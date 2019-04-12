@@ -51,7 +51,7 @@ class AppHub(models.AbstractModel):
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
-            ('mode', '!=', 'public')
+            ('visibility', '!=', 'public')
         ])
         # TODO this is for testing purpose
         #   Implement a way for defining donation products that will show in
@@ -64,7 +64,8 @@ class AppHub(models.AbstractModel):
             'res.partner': partner,
             'recurring.contract': sponsorships,
             'compassion.child': children,
-            'product.product': product
+            'product.product': product,
+
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
@@ -91,7 +92,7 @@ class AppHub(models.AbstractModel):
         """
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
-            ('mode', '!=', 'private')
+            ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
         if available_tiles:
@@ -144,6 +145,7 @@ class AppHub(models.AbstractModel):
         if children is None:
             children = self.env['compassion.child']
         result = children.get_app_json(multi=True)
+
         result.update({
             "Size": len(messages),  # Total size of available messages
             "Start": start,  # Starting point of message subset returned

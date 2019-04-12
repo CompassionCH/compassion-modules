@@ -103,7 +103,7 @@ class AppTile(models.Model):
                 elif tile.mode == 'many':
                     for record in records:
                         tile_json.update(tile._render_single_tile(record))
-                        res.append(tile_json)
+                        res.append(tile_json.copy())
             else:
                 res.append(tile_json)
         return res

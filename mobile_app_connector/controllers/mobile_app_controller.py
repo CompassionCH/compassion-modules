@@ -80,24 +80,113 @@ class RestController(http.Controller):
 
     @http.route('/mobile-app-api/hero/', type='json',
                 auth='public', methods=['GET'])
-    def get_hero(self, hero_type=None, view=None, **parameters):
+    def get_hero(self, view=None, **parameters):
         """
         Hero view is the main header above the HUB in the app.
         We return here what should appear in this view.
-        :param hero_type: "Default" == user logged in,
-                          "WithoutLogin" == user not logged in.
         :param view: always "hero"
         :param parameters: other parameters should be empty
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
         hero = request.env['mobile.app.banner'].search([
-            ('type', 'ilike', hero_type),
             ('is_active', '=', True)
         ], limit=1)
         hero_mapping = AppBannerMapping(request.env)
         res = hero_mapping.get_connect_data(hero)
         return [res]
+
+    @http.route('/mobile-app-api/donation_type/', type='json',
+                auth='public', methods=['GET'])
+    def get_donation_type(self, view=None, **parameters):
+        """
+        This is called by the App to list all donation funds available.
+        TODO the FundNames are hardcoded in the app, so we cannot send
+        whatever we like. We want to discuss with UK if we can change this
+        and have an object in Odoo to configure the active funds we want
+        to promote in the app (with product_id link and picture defined in
+        Odoo)
+        :param view: ??
+        :param parameters: ??
+        :return: Json
+        """
+        return [
+            {
+                "DisplayOrder": "1",
+                "FundName": "Different Path Appeal",
+                "Id": 45
+            },
+            {
+                "DisplayOrder": "2",
+                "FundName": "Health Response",
+                "Id": 16
+            },
+            {
+                "DisplayOrder": "4",
+                "FundName": "Child Survival Programme",
+                "Id": 31
+            },
+            {
+                "DisplayOrder": "5",
+                "FundName": "Respond",
+                "Id": 15
+            },
+            {
+                "DisplayOrder": "6",
+                "FundName": "General Fund",
+                "Id": 2
+            },
+            {
+                "DisplayOrder": "8",
+                "FundName": "The Disaster Fund",
+                "Id": 3
+            },
+            {
+                "DisplayOrder": "9",
+                "FundName": "Education Response",
+                "Id": 17
+            },
+            {
+                "DisplayOrder": "10",
+                "FundName": "Stability Response",
+                "Id": 18
+            },
+            {
+                "DisplayOrder": "11",
+                "FundName": "Child Protection Response",
+                "Id": 19
+            },
+            {
+                "DisplayOrder": "21",
+                "FundName": "Christmas Appeal",
+                "Id": 26
+            },
+            {
+                "DisplayOrder": "26",
+                "FundName": "Tours & Visits Payment",
+                "Id": 6
+            },
+            {
+                "DisplayOrder": "105",
+                "FundName": "Ethiopia Drought",
+                "Id": 37
+            },
+            {
+                "DisplayOrder": "362",
+                "FundName": "Sponsorship Plus",
+                "Id": 32
+            },
+            {
+                "DisplayOrder": "364",
+                "FundName": "Water and Sanitation",
+                "Id": 38
+            },
+            {
+                "DisplayOrder": "522",
+                "FundName": "Brazil Handbook",
+                "Id": 43
+            }
+        ]
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='http', auth='user', methods=['GET'])

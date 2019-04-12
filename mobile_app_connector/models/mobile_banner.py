@@ -25,11 +25,6 @@ class AppBanner(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     name = fields.Char('Title', translate=True, required=True)
-    type = fields.Selection([
-        ('WithoutLogin', 'Public'),
-        ('Default', 'Logged In'),
-        ('Default and WithoutLogin', 'Both'),
-    ], default='WithoutLogin', required=True)
     destination_type = fields.Selection([
         ('Internal', 'Internal'),
         ('External', 'Open in web browser')

@@ -13,7 +13,8 @@
                 <field name="email"/>
                 <field name="tracking_status"/>
                 <field name="subject"/>
-                <field name="body"/>
+                <field name="has_attachment" invisible="1"/>
+                <button icon="fa-paperclip" attrs="{'invisible': [('has_attachment', '=', False)]}"/>
             </tree>
         </field>
     </record>
@@ -36,6 +37,7 @@
                 </group>
                 <group>
                     <field name="subject"/>
+                    <field name="has_attachment"/>
                     <field name="body" />
                 </group>
             </form>
