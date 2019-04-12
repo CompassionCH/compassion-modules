@@ -76,8 +76,10 @@ class CrmClaim(models.Model):
             )
             ctx['default_partner_ids'] = [partner.id]
 
-            messages = self.mapped('message_ids').filtered('body')
-            if len(messages) > 0:
+            messages = self.mapped('message_ids').filtered(
+                lambda m: m.body and (m.author_id == self.partner_id or
+                                      self.partner_id in m.partner_ids))
+            if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
                 message = messages[0]
