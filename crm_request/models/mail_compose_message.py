@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import api, models
+from odoo.tools import append_content_to_html
 
 
 class MailComposer(models.TransientModel):
@@ -37,3 +38,19 @@ class MailComposer(models.TransientModel):
             })
 
         return res
+
+    @api.multi
+    def onchange_template_id(self, template_id, composition_mode, model,
+                             res_id):
+        """
+        Append the quote of previous e-mail to the body of the message.
+        """
+        result = super(MailComposer, self).onchange_template_id(
+            template_id, composition_mode, model, res_id
+        )
+        reply_quote = self.env.context.get('reply_quote')
+        if reply_quote:
+            result['value']['body'] = append_content_to_html(
+                result['value']['body'],
+                '<br/><br/>' + reply_quote, plaintext=False)
+        return result
