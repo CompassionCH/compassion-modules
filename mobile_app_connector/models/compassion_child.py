@@ -22,6 +22,23 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _inherit = 'compassion.child'
 
+    def get_app_json_no_wrap(self):
+        """
+        Called by HUB when data is needed for a tile
+        :param multi: used to change the wrapper if needed
+        :return: dictionary with JSON data of the children
+        """
+        if not self:
+            return {}
+        mapping = MobileChildMapping(self.env)
+        if len(self) == 1:
+            data = mapping.get_connect_data(self)
+        else:
+            data = []
+            for child in self:
+                data.append(mapping.get_connect_data(child))
+        return data
+
     @api.multi
     def get_app_json(self, multi=False):
         """

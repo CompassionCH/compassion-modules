@@ -18,6 +18,26 @@ from werkzeug.exceptions import NotFound
 class CompassionCorrespondence(models.Model):
     _inherit = 'correspondence'
 
+    @api.multi
+    def get_app_json(self, multi=False):
+        """
+        Called by HUB when data is needed for a tile
+        :param multi: used to change the wrapper if needed
+        :return: dictionary with JSON data of the children
+        """
+        child = self.sudo().mapped('child_id')
+        if not self:
+            return {}
+        mapping = FromLetterMapping(self.env)
+        wrapper = 'Letters' if multi else 'Letter'
+        if len(self) == 1:
+            data = mapping.get_connect_data(self)
+        else:
+            data = []
+            for letter in self:
+                data.append(mapping.get_connect_data(letter))
+        return {'Child': child.get_app_json_no_wrap(), wrapper: data}
+
     @api.model
     def mobile_post_letter(self, json_data, **parameters):
         """

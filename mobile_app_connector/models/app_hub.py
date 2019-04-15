@@ -49,6 +49,15 @@ class AppHub(models.AbstractModel):
         sponsorships = partner.sponsorship_ids.filtered('is_active')
         children = sponsorships.mapped('child_id')
 
+        children = sponsorships.mapped('child_id')
+
+        letters = self.env['correspondence'].search([
+            ('direction', '=', 'Beneficiary To Supporter'),
+            ('partner_id', '=', partner_id),
+            ('email_read', '=', False),
+            ('letter_delivered', '=', True),
+        ])
+
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
             ('visibility', '!=', 'public')
@@ -65,7 +74,7 @@ class AppHub(models.AbstractModel):
             'recurring.contract': sponsorships,
             'compassion.child': children,
             'product.product': product,
-
+            'correspondence': letters,
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))

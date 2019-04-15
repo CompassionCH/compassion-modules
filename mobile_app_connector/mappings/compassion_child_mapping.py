@@ -29,7 +29,7 @@ class MobileChildMapping(OnrampMapping):
         'NeedKey': 'local_id',
         'ChildNeedKey': 'local_id',
         'CommunityDescription': None,
-        'country': ('project_id.country_id.name', 'res.country'),
+        'Country': ('project_id.country_id.name', 'res.country'),
         'countryId': ('project_id.country_id.id', 'res.country'),
         'directdebitflag': None,
         'Email': None,
