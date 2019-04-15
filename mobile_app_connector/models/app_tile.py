@@ -105,7 +105,8 @@ class AppTile(models.Model):
                         tile_json.update(tile._render_single_tile(record))
                         res.append(tile_json.copy())
             else:
-                res.append(tile_json)
+                if tile_json['Type'] != 'Letter':
+                    res.append(tile_json)
         return res
 
     def _render_single_tile(self, records):

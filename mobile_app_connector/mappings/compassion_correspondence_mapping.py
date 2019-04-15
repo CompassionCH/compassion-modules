@@ -37,9 +37,10 @@ class FromLetterMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'CorrespondenceID': 'id',
-        'DateProcessed': "status_date",
-        'FileID': 'uuid',  # Can be a string? int in example
+        'Date': "status_date",
+        'FileID': 'id',  # Can be a string? int in example
         'FileName': "file_name",
+        # 'Message': 'original_text',
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
@@ -48,4 +49,5 @@ class FromLetterMapping(OnrampMapping):
         mapped = super(FromLetterMapping, self) \
             .get_connect_data(odoo_object, fields_to_submit)
         mapped['Type'] = 1  # todo figure out what to use here
+        mapped['Message'] = None
         return mapped
