@@ -90,7 +90,9 @@ class RecurringContract(models.Model):
                                        help='Contract duration in days')
 
     # Field used to compute days number since last sponsor's letter
-    last_letter = fields.Integer(compute='_compute_last_letter')
+    last_letter = fields.Integer(
+        compute='_compute_last_letter',
+        help='Days number since last sponsor\'s letter')
 
     _sql_constraints = [('parent_id_unique',
                          'UNIQUE(parent_id)',
@@ -221,14 +223,29 @@ class RecurringContract(models.Model):
     def _compute_last_letter(self):
         """
         Get the date of the last letter sent to the child by the sponsor and
-        compute since how many days he didn't write him any letter
+        compute since how many days he didn't write him any letter.
+        If sponsor never wrote him, compute since how many days the sponsorship
+        has been created.
         :return: int value
         """
-        self.last_letter = (date.today() - datetime.strptime(
-            self.env['correspondence'].search([(
-                'direction', '=', 'Supporter To Beneficiary'), (
-                'sponsorship_id', '=', self.id)], limit=1).scanned_date,
-            '%Y-%m-%d').date()).days
+        for contract in self:
+            try:
+                # Try to get days difference between today and last letter
+                contract.last_letter = (
+                        date.today() - fields.Datetime.from_string(
+                            contract.env['correspondence'].search([
+                                ('direction', '=', 'Supporter To Beneficiary'),
+                                ('sponsorship_id', '=', contract.id)],
+                                limit=1).scanned_date).date()).days
+            except AttributeError:
+                try:
+                    # Try to get days difference between today and create_date
+                    contract.last_letter = (
+                            date.today() - fields.Datetime.from_string(
+                                contract.create_date).date()).days
+                except AttributeError:
+                    contract.last_letter = 0
+
 
     ##########################################################################
     #                              ORM METHODS                               #
