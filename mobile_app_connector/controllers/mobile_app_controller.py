@@ -15,7 +15,7 @@ from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
 from odoo.http import request
-from werkzeug.exceptions import NotFound, MethodNotAllowed
+from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 
 
 class RestController(http.Controller):
@@ -73,9 +73,13 @@ class RestController(http.Controller):
         """
         hub_obj = request.env['mobile.app.hub'].sudo()
         if partner_id:
-            # This will ensure the user is logged in
-            request.session.check_security()
-            hub_obj = hub_obj.sudo(request.session.uid)
+            # Check if requested url correspond to the current user
+            if partner_id == request.env.user.partner_id.id:
+                # This will ensure the user is logged in
+                request.session.check_security()
+                hub_obj = hub_obj.sudo(request.session.uid)
+            else:
+                raise Unauthorized()
         return hub_obj.mobile_get_message(partner_id=partner_id, **parameters)
 
     @http.route('/mobile-app-api/hero/', type='json',
