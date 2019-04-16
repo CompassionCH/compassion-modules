@@ -22,7 +22,6 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _inherit = 'recurring.contract'
 
-
     @api.multi
     def get_app_json(self, multi=False):
         """

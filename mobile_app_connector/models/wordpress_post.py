@@ -66,7 +66,6 @@ class WordpressPost(models.Model):
         wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/download'
         # This is for avoid loading all post content
         params = {'context': 'embed'}
-        category_obj = self.env['wp.post.category']
         found_ids = []
         try:
             with wp_requests.Session() as requests:
@@ -80,8 +79,7 @@ class WordpressPost(models.Model):
                                      str(i + 1), str(len(wp_posts)))
                         post_id = post_data['id']
                         found_ids.append(post_id)
-                        self_url = post_data['_links'][
-                                'self'][0]['href']
+                        self_url = post_data['_links']['self'][0]['href']
                         content = requests.get(self_url).json()
                         if not content['content']['rendered']:
                             # Skip download when content is empty
@@ -95,7 +93,7 @@ class WordpressPost(models.Model):
                                 'wp:featuredmedia'][0]['href']
                             image_json = requests.get(image_json_url).json()
                             if '.jpg' in image_json['media_details']['sizes'][
-                                'medium']['source_url']:
+                                    'medium']['source_url']:
                                 image_url = \
                                     image_json['media_details']['sizes'][
                                         'medium']['source_url']
@@ -122,7 +120,8 @@ class WordpressPost(models.Model):
                          ('post_type', '=', 'download')]).unlink()
             _logger.info("Fetch Wordpress Download finished!")
         except ValueError:
-            _logger.warning("Error fetching wordpress downloads", exc_info=True)
+            _logger.warning("Error fetching wordpress downloads",
+                            exc_info=True)
         return True
 
     @api.model
@@ -141,7 +140,6 @@ class WordpressPost(models.Model):
         wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/agendas'
         # This is for avoid loading all post content
         params = {'context': 'embed'}
-        category_obj = self.env['wp.post.category']
         found_ids = []
         try:
             with wp_requests.Session() as requests:

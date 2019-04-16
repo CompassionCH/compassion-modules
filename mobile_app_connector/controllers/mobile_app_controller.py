@@ -123,6 +123,5 @@ class RestController(http.Controller):
         letter_id = parameters['correspondenceid']
         letter = request.env['correspondence'].browse([int(letter_id)])
         if letter and letter.letter_image:
-            pdf = host + "b2s_image?id=" + \
-                  letter.uuid
+            pdf = host + "b2s_image?id=" + letter.uuid
         return pdf
