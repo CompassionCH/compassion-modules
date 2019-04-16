@@ -105,6 +105,7 @@ class AppTile(models.Model):
                         tile_json.update(tile._render_single_tile(record))
                         res.append(tile_json.copy())
             else:
+                # if we have no letters, then we do not show tiles letters
                 if tile_json['Type'] != 'Letter':
                     res.append(tile_json)
         return res
