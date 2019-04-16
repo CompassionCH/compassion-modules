@@ -34,8 +34,9 @@ class WordpressPost(models.Model):
     url = fields.Char('URL')
     image_url = fields.Char()
     post_type = fields.Selection([
-        ('post', 'News'),
-        ('agendas', 'Agenda')
+        ('posts', 'News'),
+        ('agendas', 'Agenda'),
+        ('download', 'Download')
     ])
     category_id = fields.Many2one('wp.post.category', 'Category')
     lang = fields.Selection('select_lang', 'Language', required=True)
@@ -48,6 +49,147 @@ class WordpressPost(models.Model):
     def select_lang(self):
         langs = self.env['res.lang'].search([])
         return [(lang.code, lang.name) for lang in langs]
+
+    @api.model
+    def fetch_downloads(self):
+        """
+        This is called by a CRON job in order to refresh the cache
+        of published downloads in the website.
+        https://developer.wordpress.org/rest-api/reference/posts/
+        :return: True
+        """
+        _logger.info("Fetch Wordpress download started!")
+        wp_host = config.get('wordpress_host')
+        if not wp_host:
+            raise UserError(_("Please add wp_host in your configuration"))
+        # This is standard Wordpress REST API URL
+        wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/download'
+        # This is for avoid loading all post content
+        params = {'context': 'embed'}
+        found_ids = []
+        try:
+            with wp_requests.Session() as requests:
+                for lang in self._supported_langs():
+                    params['lang'] = lang.code[:2]
+                    wp_posts = requests.get(wp_api_url,
+                                            params=params).json()
+                    _logger.info('Processing download in %s', lang.name)
+                    for i, post_data in enumerate(wp_posts):
+                        _logger.info("...processing download %s/%s",
+                                     str(i + 1), str(len(wp_posts)))
+                        post_id = post_data['id']
+                        found_ids.append(post_id)
+                        self_url = post_data['_links']['self'][0]['href']
+                        content = requests.get(self_url).json()
+                        if not content['content']['rendered']:
+                            # Skip download when content is empty
+                            continue
+                        if self.search([('wp_id', '=', post_id)]):
+                            # Skip agenda already fetched
+                            continue
+                        try:
+                            # Fetch image for thumbnail
+                            image_json_url = post_data['_links'][
+                                'wp:featuredmedia'][0]['href']
+                            image_json = requests.get(image_json_url).json()
+                            if '.jpg' in image_json['media_details']['sizes'][
+                                    'medium']['source_url']:
+                                image_url = \
+                                    image_json['media_details']['sizes'][
+                                        'medium']['source_url']
+                            else:
+                                image_url = image_json['source_url']
+                        except KeyError:
+                            # Some agenda images may not be accessible
+                            image_url = False
+                            _logger.warning('WP Post ID %s has no image',
+                                            str(post_id))
+                        # Cache new agenda in database
+                        self.create({
+                            'name': post_data['title']['rendered'],
+                            'date': post_data['date'],
+                            'wp_id': post_id,
+                            'url': post_data['link'],
+                            'image_url': image_url,
+                            'post_type': post_data['type'],
+                            'lang': lang.code
+                        })
+
+            # Delete unpublished download
+            self.search([('wp_id', 'not in', found_ids),
+                         ('post_type', '=', 'download')]).unlink()
+            _logger.info("Fetch Wordpress Download finished!")
+        except ValueError:
+            _logger.warning("Error fetching wordpress downloads",
+                            exc_info=True)
+        return True
+
+    @api.model
+    def fetch_agendas(self):
+        """
+        This is called by a CRON job in order to refresh the cache
+        of published agendas in the website.
+        https://developer.wordpress.org/rest-api/reference/posts/
+        :return: True
+        """
+        _logger.info("Fetch Wordpress Agendas started!")
+        wp_host = config.get('wordpress_host')
+        if not wp_host:
+            raise UserError(_("Please add wp_host in your configuration"))
+        # This is standard Wordpress REST API URL
+        wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/agendas'
+        # This is for avoid loading all post content
+        params = {'context': 'embed'}
+        found_ids = []
+        try:
+            with wp_requests.Session() as requests:
+                for lang in self._supported_langs():
+                    params['lang'] = lang.code[:2]
+                    wp_posts = requests.get(wp_api_url,
+                                            params=params).json()
+                    _logger.info('Processing posts in %s', lang.name)
+                    for i, post_data in enumerate(wp_posts):
+                        _logger.info("...processing post %s/%s",
+                                     str(i + 1), str(len(wp_posts)))
+                        post_id = post_data['id']
+                        found_ids.append(post_id)
+                        if self.search([('wp_id', '=', post_id)]):
+                            # Skip agenda already fetched
+                            continue
+                        try:
+                            # Fetch image for thumbnail
+                            image_json_url = post_data['_links'][
+                                'wp:featuredmedia'][0]['href']
+                            image_json = requests.get(image_json_url).json()
+                            if '.jpg' in image_json['media_details']['sizes'][
+                                    'medium']['source_url']:
+                                image_url = \
+                                    image_json['media_details']['sizes'][
+                                        'medium']['source_url']
+                            else:
+                                image_url = image_json['source_url']
+                        except KeyError:
+                            # Some agenda images may not be accessible
+                            image_url = False
+                            _logger.warning('WP Post ID %s has no image',
+                                            str(post_id))
+                        # Cache new agenda in database
+                        self.create({
+                            'name': post_data['title']['rendered'],
+                            'date': post_data['date'],
+                            'wp_id': post_id,
+                            'url': post_data['link'],
+                            'image_url': image_url,
+                            'post_type': post_data['type'],
+                            'lang': lang.code
+                        })
+            # Delete unpublished agendas
+            self.search([('wp_id', 'not in', found_ids),
+                         ('post_type', '=', 'agendas')]).unlink()
+            _logger.info("Fetch Wordpress Agendas finished!")
+        except ValueError:
+            _logger.warning("Error fetching wordpress agendas", exc_info=True)
+        return True
 
     @api.model
     def fetch_posts(self):
@@ -86,8 +228,13 @@ class WordpressPost(models.Model):
                             image_json_url = post_data['_links'][
                                 'wp:featuredmedia'][0]['href']
                             image_json = requests.get(image_json_url).json()
-                            image_url = image_json['media_details']['sizes'][
-                                'medium']['source_url']
+                            if '.jpg' in image_json['media_details']['sizes'][
+                                    'medium']['source_url']:
+                                image_url = \
+                                    image_json['media_details']['sizes'][
+                                        'medium']['source_url']
+                            else:
+                                image_url = image_json['source_url']
                         except KeyError:
                             # Some post images may not be accessible
                             image_url = False
@@ -114,12 +261,13 @@ class WordpressPost(models.Model):
                             'wp_id': post_id,
                             'url': post_data['link'],
                             'image_url': image_url,
-                            'post_type': post_data['type'],
+                            'post_type': post_data['type'] + 's',
                             'category_id': category.id,
                             'lang': lang.code
                         })
             # Delete unpublished posts
-            self.search([('wp_id', 'not in', found_ids)]).unlink()
+            self.search([('wp_id', 'not in', found_ids),
+                         ('post_type', '=', 'posts')]).unlink()
             _logger.info("Fetch Wordpress Posts finished!")
         except ValueError:
             _logger.warning("Error fetching wordpress posts", exc_info=True)
