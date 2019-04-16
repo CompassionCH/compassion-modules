@@ -12,7 +12,7 @@
 import logging
 
 
-from odoo import models, api
+from odoo import models, api, fields
 from ..mappings.compassion_donation_mapping import MobileDonationMapping
 
 logger = logging.getLogger(__name__)
@@ -22,22 +22,23 @@ class ProductTemplate(models.Model):
 
     _inherit = "product.template"
 
+    mobile_app = fields.Boolean('Show in Mobile App', index=True)
+
     @api.model
     def mobile_donation_type(self, **other_params):
         """
         Mobile app method:
         Returns the list of donation type
-        :param userid: the ref of the sponsor
         :param other_params: all request parameters
         :return: JSON list of donation type
         """
 
         result = []
 
-        donationtypes = self.search([('categ_id', '=', 'Fund')])
+        donation_types = self.search([('mobile_app', '=', True)])
 
         mapping = MobileDonationMapping(self.env)
-        for donation in donationtypes:
+        for donation in donation_types:
             result.append(mapping.get_connect_data(donation))
 
         return result

@@ -115,83 +115,8 @@ class RestController(http.Controller):
         :param parameters: ??
         :return: Json
         """
-        return [
-            {
-                "DisplayOrder": "1",
-                "FundName": "Different Path Appeal",
-                "Id": 45
-            },
-            {
-                "DisplayOrder": "2",
-                "FundName": "Health Response",
-                "Id": 16
-            },
-            {
-                "DisplayOrder": "4",
-                "FundName": "Child Survival Programme",
-                "Id": 31
-            },
-            {
-                "DisplayOrder": "5",
-                "FundName": "Respond",
-                "Id": 15
-            },
-            {
-                "DisplayOrder": "6",
-                "FundName": "General Fund",
-                "Id": 2
-            },
-            {
-                "DisplayOrder": "8",
-                "FundName": "The Disaster Fund",
-                "Id": 3
-            },
-            {
-                "DisplayOrder": "9",
-                "FundName": "Education Response",
-                "Id": 17
-            },
-            {
-                "DisplayOrder": "10",
-                "FundName": "Stability Response",
-                "Id": 18
-            },
-            {
-                "DisplayOrder": "11",
-                "FundName": "Child Protection Response",
-                "Id": 19
-            },
-            {
-                "DisplayOrder": "21",
-                "FundName": "Christmas Appeal",
-                "Id": 26
-            },
-            {
-                "DisplayOrder": "26",
-                "FundName": "Tours & Visits Payment",
-                "Id": 6
-            },
-            {
-                "DisplayOrder": "105",
-                "FundName": "Ethiopia Drought",
-                "Id": 37
-            },
-            {
-                "DisplayOrder": "362",
-                "FundName": "Sponsorship Plus",
-                "Id": 32
-            },
-            {
-                "DisplayOrder": "364",
-                "FundName": "Water and Sanitation",
-                "Id": 38
-            },
-            {
-                "DisplayOrder": "522",
-                "FundName": "Brazil Handbook",
-                "Id": 43
-            }
-        ]
+
+        return request.env['product.template'].sudo().mobile_donation_type()
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='json', auth='user', methods=['GET'])
@@ -202,6 +127,5 @@ class RestController(http.Controller):
         letter_id = parameters['correspondenceid']
         letter = request.env['correspondence'].browse([int(letter_id)])
         if letter and letter.letter_image:
-            pdf = host + "b2s_image?id=" + \
-                  letter.uuid
+            pdf = host + "b2s_image?id=" + letter.uuid
         return pdf

@@ -49,8 +49,6 @@ class AppHub(models.AbstractModel):
         sponsorships = partner.sponsorship_ids.filtered('is_active')
         children = sponsorships.mapped('child_id')
 
-        children = sponsorships.mapped('child_id')
-
         letters = self.env['correspondence'].search([
             ('direction', '=', 'Beneficiary To Supporter'),
             ('partner_id', '=', partner_id),
