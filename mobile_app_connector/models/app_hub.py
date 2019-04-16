@@ -25,7 +25,7 @@ class AppHub(models.AbstractModel):
 
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed
-    LIMIT_WORDPRESS_TILES = 10
+    LIMIT_WORDPRESS_TILES = 20
     LIMIT_PUBLIC_TILES = 10
 
     @api.model
