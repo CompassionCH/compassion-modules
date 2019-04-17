@@ -23,14 +23,14 @@ class MobileChildMapping(OnrampMapping):
         'bio': 'desc_en',
         'BirthDate': 'birthdate',
         'Id': 'id',
-        'Latitude': ('partner_id.partner_latitude', 'res.partner'),
-        'Longitude': ('partner_id.partner_longitude', 'res.partner'),
+        'Latitude': ('project_id.gps_latitude', 'compassion.project'),
+        'Longitude': ('project_id.gps_longitude', 'compassion.project'),
         'NeedId': 'id',
         'NeedKey': 'local_id',
         'ChildNeedKey': 'local_id',
         'CommunityDescription': None,
         'Country': ('project_id.country_id.name', 'res.country'),
-        'countryId': ('project_id.country_id.id', 'res.country'),
+        'CountryCode': ('project_id.country_id.code', 'res.country'),
         'directdebitflag': None,
         'Email': None,
         'FirstName': 'firstname',
@@ -50,7 +50,7 @@ class MobileChildMapping(OnrampMapping):
         'SupporterId': ('partner_id.global_id', 'res.partner'),
         'SupporterName': ('partner_id.name', 'res.partner'),
         'timeTaken': None,
-        'UpdatedpreferredName': ('partner_id.preferred_name', 'res.partner')
+        'UpdatedpreferredName': ('partner_id.preferred_name', 'res.partner'),
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
