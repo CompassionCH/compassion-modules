@@ -24,9 +24,8 @@ class CompassionChild(models.Model):
 
     def get_app_json_no_wrap(self):
         """
-        Called by HUB when data is needed for a tile
-        :param multi: used to change the wrapper if needed
-        :return: dictionary with JSON data of the children
+        Called by HUB when data is needed for a tiles letters
+        :return: dictionary with JSON data of the child
         """
         if not self:
             return {}
