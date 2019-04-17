@@ -55,11 +55,13 @@ class TestMobileAppHttp(HttpCase):
         json_data = simplejson.loads(response.read())
         self.assertIn('Messages', json_data)
         # Private messages without login should fail
-        response = self.url_open(url + self.env.ref('base.partner_root').id)
+        response = self.url_open(url + str(self.env.ref(
+            'base.partner_root').id))
         self.assertEqual(response.code, 401)
         # Private message while authenticated should work
         self.authenticate('admin', 'admin')
-        response = self.url_open(url + self.env.ref('base.partner_root').id)
+        response = self.url_open(url + str(self.env.ref(
+            'base.partner_root').id))
         self.assertEqual(response.code, 200)
         json_data = simplejson.loads(response.read())
         self.assertIn('Messages', json_data)
@@ -79,7 +81,8 @@ class TestMobileAppHttp(HttpCase):
         url = self.root_url + 'hub/0'
         response = self.url_open(url)
         self.assertEqual(response.code, 200)
-        url = self.root_url + 'hub/' + self.env.ref('base.partner_root').id
+        url = self.root_url + 'hub/' + str(self.env.ref(
+            'base.partner_root').id)
         response = self.url_open(url)
         self.assertEqual(response.code, 401)
         self.authenticate('admin', 'admin')
