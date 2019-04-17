@@ -24,4 +24,5 @@ class HolidayClosure(models.Model):
     def _validate_dates(self):
         for h in self:
             if h.start_date and h.end_date and (h.start_date >= h.end_date):
-                raise ValidationError("Please choose an end_date greater than the start_date")
+                raise ValidationError("Please choose an end_date greater than"
+                                      " the start_date")
