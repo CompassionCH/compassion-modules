@@ -5,7 +5,7 @@
         <field name="name">crm.holiday.closure.tree</field>
         <field name="model">holiday.closure</field>
         <field name="arch" type="xml">
-            <tree string="Holiday periods">
+            <tree string="Holiday periods" default_order='start_date, end_date, holiday_name'>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="holiday_name"/>
