@@ -232,20 +232,19 @@ class RecurringContract(models.Model):
             try:
                 # Try to get days difference between today and last letter
                 contract.last_letter = (
-                        date.today() - fields.Datetime.from_string(
-                            contract.env['correspondence'].search([
-                                ('direction', '=', 'Supporter To Beneficiary'),
-                                ('sponsorship_id', '=', contract.id)],
-                                limit=1).scanned_date).date()).days
+                    date.today() - fields.Datetime.from_string(
+                        contract.env['correspondence'].search([
+                            ('direction', '=', 'Supporter To Beneficiary'),
+                            ('sponsorship_id', '=', contract.id)],
+                            limit=1).scanned_date).date()).days
             except AttributeError:
                 try:
                     # Try to get days difference between today and create_date
                     contract.last_letter = (
-                            date.today() - fields.Datetime.from_string(
-                                contract.create_date).date()).days
+                        date.today() - fields.Datetime.from_string(
+                            contract.create_date).date()).days
                 except AttributeError:
                     contract.last_letter = 0
-
 
     ##########################################################################
     #                              ORM METHODS                               #
