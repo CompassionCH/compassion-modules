@@ -1,15 +1,17 @@
 <odoo>
 
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="business_closed_email_template" model="mail.template">
             <field name="name">Holiday - Automated response</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="model_id" ref="model_crm_claim"/>
             <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
             <field name="use_default_to" eval="True"/>
             <field name="subject">Holiday response</field>
             <field name="body_html" type="html">
                 <div>
-                    % set closure = object.get_objects()
+                    % set today = new Date()
+                    % set closure = object.env["holiday.closure"].search([('start_date', '&lt;=', today),('end_date', '&gt;=', today)], limit=1)
                     % set date_start = closure.start_date
                     % set date_end = closure.end_date
                     % set holiday_name = closure.holiday_name

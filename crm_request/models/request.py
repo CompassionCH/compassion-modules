@@ -4,6 +4,7 @@
 
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
+from datetime import datetime
 
 
 class CrmClaim(models.Model):
@@ -22,6 +23,7 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+    current_holiday_id = fields.Many2one(string='Holiday')
 
     @api.depends('subject')
     @api.multi
@@ -33,6 +35,13 @@ class CrmClaim(models.Model):
         for request in self:
             if int(request.priority) == 2:
                 request.color = 2
+
+    def _compute_holiday(self):
+        for request in self:
+            request.current_holiday_id = self.env['holiday.closure'].search([
+                ('start_date', '<=', datetime.today),
+                ('end_date', '>=', datetime.today)
+            ], limit=1).id
 
     @api.multi
     def action_reply(self):
@@ -117,9 +126,7 @@ class CrmClaim(models.Model):
 
         # send automated holiday response
         for h in holiday_closure:
-            template = self.env.ref(
-                'crm_request.business_closed_email_template')
-            template.with_context().send_mail(h.id, force_send=True)
+            self.message_post_with_template('business_closed_email_template')
 
         if custom_values is None:
             custom_values = {}
