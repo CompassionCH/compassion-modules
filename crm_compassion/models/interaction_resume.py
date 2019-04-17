@@ -38,6 +38,7 @@ class InteractionResume(models.TransientModel):
     message_id = fields.Many2one("mail.message", "Email")
     tracking_status = fields.Selection([
         ('error', 'Error'),
+        ('deferred', 'Deferred'),
         ('sent', 'Sent'),
         ('delivered', 'Delivered'),
         ('opened', 'Opened'),
@@ -45,7 +46,7 @@ class InteractionResume(models.TransientModel):
         ('spam', 'Spam'),
         ('unsub', 'Unsubscribed'),
         ('bounced', 'Bounced'),
-        ('soft bounced', 'Soft bounced'),
+        ('soft-bounced', 'Soft bounced'),
     ])
 
     @api.model
