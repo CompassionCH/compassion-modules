@@ -281,7 +281,7 @@ Thank You]]>
     </record>
     <record id="tile_subtype_le_co3" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_community"/>
-        <field name="name">Clock</field>
+        <field name="name">My Community</field>
         <field name="code">CO3</field>
         <field name="view_order">10</field>
         <field name="default_title">Clock</field>
