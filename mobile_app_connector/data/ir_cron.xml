@@ -8,6 +8,7 @@
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
             <field name="function">fetch_posts</field>
+            <field name="args">('posts',)</field>
             <field name="model">wp.post</field>
         </record>
 
@@ -17,7 +18,8 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">fetch_agendas</field>
+            <field name="function">fetch_posts</field>
+            <field name="args">('agendas',)</field>
             <field name="model">wp.post</field>
         </record>
 
@@ -27,7 +29,8 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">fetch_downloads</field>
+            <field name="function">fetch_posts</field>
+            <field name="args">('download',)</field>
             <field name="model">wp.post</field>
         </record>
 

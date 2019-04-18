@@ -24,6 +24,7 @@
                             <field name="wp_id"/>
                             <field name="url"/>
                             <field name="image_url"/>
+                            <field name="display_on_hub"/>
                         </group>
                     </group>
                 </sheet>
@@ -35,12 +36,13 @@
         <field name="name">wp.post.tree</field>
         <field name="model">wp.post</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree colors="grey: not display_on_hub">
                 <field name="name"/>
                 <field name="date"/>
                 <field name="post_type"/>
                 <field name="category_id"/>
                 <field name="lang"/>
+                <field name="display_on_hub" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -54,9 +56,11 @@
                 <field name="lang"/>
                 <field name="post_type"/>
                 <field name="category_id"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('display_on_hub', '=', True)]"/>
                 <group expand="0" string="Group By">
                     <filter string="Lang" name="group_lang" domain="[]" context="{'group_by':'lang'}"/>
-                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'post_type'}"/>
                     <filter string="Category" name="group_category" domain="[]" context="{'group_by':'category_id'}"/>
                 </group>
             </search>
@@ -68,6 +72,7 @@
         <field name="res_model">wp.post</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
     </record>
 
     <!-- Add menu for WP Posts -->

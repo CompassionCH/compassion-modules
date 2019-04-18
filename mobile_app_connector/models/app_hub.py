@@ -120,7 +120,9 @@ class AppHub(models.AbstractModel):
         :return: List of JSON messages for use in the hub.
         """
         available_posts = self.env['wp.post'].search([
-            ('lang', '=', self.env.lang)])
+            ('lang', '=', self.env.lang),
+            ('display_on_hub', '=', True)
+        ])
         messages = []
         if available_posts:
             start = int(pagination.get('start', 0))
