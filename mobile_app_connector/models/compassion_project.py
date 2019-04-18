@@ -9,12 +9,31 @@
 ##############################################################################
 
 from odoo import models, api
-from ..mappings.compassion_project_mapping import MobileProjectMapping
+from ..mappings.compassion_project_mapping import MobileProjectMapping, \
+    MobileLocationMapping
 
 
 class CompassionProject(models.Model):
     ''' A Compassion project '''
     _inherit = 'compassion.project'
+
+    @api.multi
+    def get_location_json(self, multi=False):
+        """
+        Called by HUB when data is needed for a tile
+        :param multi: used to change the wrapper if needed
+        :return: dictionary with JSON data of the children
+        """
+        if not self:
+            return {}
+        mapping = MobileLocationMapping(self.env)
+        if len(self) == 1:
+            data = mapping.get_connect_data(self)
+        else:
+            data = []
+            for child in self:
+                data.append(mapping.get_connect_data(child))
+        return data
 
     @api.multi
     def get_app_json(self, multi=False):
@@ -35,21 +54,19 @@ class CompassionProject(models.Model):
         return data
 
     @api.model
-    def mobile_get_project(self, **other_params):
+    def mobile_get_project(self, icpid):
         """
         Mobile app method:
         Returns the project for a given fcp ID.
-        :param fcpid: the id of the church associated with the project
-        :param other_params: all request parameters
+        :param icpid: the id of the church associated with the project
         :return: JSON containing the project
         """
         result = {
             'ProjectServiceResult': {
                 'Error': None,
-                'ICPResponseList': None
+                'ICPResponseList': []
             }
         }
-        icpid = self._get_required_param('icpid', other_params)
 
         project = self.search([
             ('fcp_id', '=', icpid)
@@ -57,8 +74,8 @@ class CompassionProject(models.Model):
 
         mapping = MobileProjectMapping(self.env)
         if project:
-            result['ProjectServiceResult']['ICPResponseList'] = (
-                mapping.get_connect_data(project))
+            result['ProjectServiceResult']['ICPResponseList'] = [(
+                mapping.get_connect_data(project))]
         return result
 
     def _get_required_param(self, key, params):

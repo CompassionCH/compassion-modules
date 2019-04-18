@@ -125,3 +125,13 @@ class RestController(http.Controller):
         if letter and letter.letter_image:
             pdf = host + "b2s_image?id=" + letter.uuid
         return pdf
+
+    @http.route('/mobile-app-api/get-project',
+                type='json', auth='user', methods=['GET'])
+    def get_project(self, **parameters):
+        icp_id = parameters.get('IcpId', '0')
+        if not icp_id:
+            raise UserError(_("Please add IcpId in your configuration"))
+        data = request.env['compassion.project'].sudo().mobile_get_project(
+            icp_id)
+        return data
