@@ -58,18 +58,14 @@ class AppHub(models.AbstractModel):
             ('is_active', '=', True),
             ('visibility', '!=', 'public')
         ])
-        # TODO this is for testing purpose
-        #   Implement a way for defining donation products that will show in
-        #   tiles (AP-45)
-        fund = self.env.ref('contract_compassion.product_category_fund').sudo()
-        product = self.env['product.product'].sudo().search([
-            ('categ_id', '=', fund.id)
-        ], limit=1)
+        products = self.env['product.product'].sudo().search([
+            ('mobile_app', '=', True)
+        ])
         tile_data = {
             'res.partner': partner,
             'recurring.contract': sponsorships,
             'compassion.child': children,
-            'product.product': product,
+            'product.product': products,
             'correspondence': letters,
         }
         # TODO handle pagination properly
@@ -91,8 +87,6 @@ class AppHub(models.AbstractModel):
         TODO Display a tile for inviting to sponsor a child
         (this can be done when we add the relevant action on the app)
         TODO See if we send a link for a video (could be a wordpress post)
-        TODO Add tiles for fund donations
-            (see how to configure with mobile.app.tile).
         :return: list of tiles displayed in mobile app.
         """
         available_tiles = self.env['mobile.app.tile'].search([
