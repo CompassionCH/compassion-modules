@@ -69,7 +69,7 @@ class CompassionChild(models.Model):
             'Images': children_pictures.filtered(
                 lambda r: r.image_url).get_app_json(multi=True),
             'Location':
-                project.get_app_json(multi=False),
+                project.get_location_json(multi=False),
             'Time': {
                     "ChildTime": datetime_child.strftime("%d/%m/%Y %H:%M:%S")
                     }
