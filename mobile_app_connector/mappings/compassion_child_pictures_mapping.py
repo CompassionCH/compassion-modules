@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import datetime
 from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
@@ -21,4 +22,10 @@ class MobileChildPicturesMapping(OnrampMapping):
         'Url': 'image_url'
     }
 
-    FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+    FIELDS_TO_SUBMIT = {
+        'Date': lambda date: datetime.datetime.strptime(
+            date, '%Y-%m-%d').strftime('%d-%m-%Y %H:%M:%S'),
+        'Url': None,
+    }
+
+    # FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
