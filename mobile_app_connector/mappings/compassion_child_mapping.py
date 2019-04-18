@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import datetime
 from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
@@ -54,3 +55,11 @@ class MobileChildMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+    def _process_connect_data(self, connect_data):
+        for key, value in connect_data.copy().iteritems():
+            if key == "BirthDate":
+                if value:
+                    connect_data[key] = datetime.datetime.strptime(
+                        value, '%Y-%m-%d').strftime('%d/%m/%Y %H:%M:%S')
+        return connect_data
