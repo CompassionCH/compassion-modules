@@ -97,7 +97,7 @@
         <field name="arch" type="xml">
             <tree colors="grey: not is_active">
                 <field name="view_order"/>
-                <field name="name"/>
+                <field name="display_name"/>
                 <field name="subtype_id"/>
                 <field name="visibility"/>
                 <field name="priority"/>
