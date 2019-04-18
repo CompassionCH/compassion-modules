@@ -95,19 +95,26 @@ Thank You]]>
         <field name="name">Give a gift</field>
         <field name="code">GI3</field>
         <field name="view_order">5</field>
-        <field name="default_model_id" ref="model_product_product"/>
+        <field name="default_model_id" ref="model_compassion_child"/>
         <field name="default_title">${ctx['objects'].name}</field>
-        <field name="default_body">${ctx['objects'].description_sale}</field>
+        <field name="default_body">Send a gift to your sponsored child</field>
         <field name="default_action_text">Give a gift</field>
         <field name="default_action_destination">Give a gift overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI3.png"/>
     </record>
     <record id="tile_subtype_gi5" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_donation"/>
-        <field name="name">Give a donation</field>
+        <field name="name">General donation call</field>
         <field name="code">GI5</field>
         <field name="view_order">10</field>
-        <field name="default_body">No donation given</field>
+        <field name="default_model_id" ref="model_res_partner"/>
+        <field name="default_body">
+<![CDATA[% set partner = ctx['objects'].sudo()
+% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)
+% if invoice:
+You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}
+% else:
+Make a donation]]></field>
         <field name="default_action_text">Give a donation</field>
         <field name="default_action_destination">Give overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI5.png"/>
