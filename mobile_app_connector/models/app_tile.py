@@ -28,6 +28,8 @@ class AppTile(models.Model):
         ('Low', 'Low')
     ], 'Priority', default='Normal', required=True)
     name = fields.Char(required=True)
+    display_name = fields.Char(
+        'Name', compute='_compute_display_name', store=True, readonly=True)
     view_order = fields.Integer('View order', required=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
@@ -60,10 +62,16 @@ class AppTile(models.Model):
     )
     subtype_id = fields.Many2one(
         'mobile.app.tile.subtype', 'Type', required=True)
+    code = fields.Char(related='subtype_id.code')
     preview = fields.Binary(related='subtype_id.tile_preview', readonly=True)
     action_destination = fields.Selection(
         lambda s: s.env['mobile.app.tile.subtype'].select_action_destination(),
         required=True)
+
+    @api.depends('subtype_id', 'subtype_id.code', 'name')
+    def _compute_display_name(self):
+        for tile in self:
+            tile.display_name = u'[{}] {}'.format(tile.code, tile.name)
 
     @api.onchange('subtype_id')
     def _onchange_subtype(self):
