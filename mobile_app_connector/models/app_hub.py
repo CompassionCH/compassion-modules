@@ -52,8 +52,6 @@ class AppHub(models.AbstractModel):
         letters = self.env['correspondence'].search([
             ('direction', '=', 'Beneficiary To Supporter'),
             ('partner_id', '=', partner_id),
-            ('email_read', '=', False),
-            ('letter_delivered', '=', True),
         ])
 
         available_tiles = self.env['mobile.app.tile'].search([
