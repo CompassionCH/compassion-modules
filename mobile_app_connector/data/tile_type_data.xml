@@ -310,6 +310,7 @@ You never wrote to your sponsored child.
         <field name="name">Compass</field>
         <field name="code">CO1</field>
         <field name="view_order">1</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_action_destination">Compass</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CO1.png"/>
     </record>
@@ -318,6 +319,7 @@ You never wrote to your sponsored child.
         <field name="name">Maps / Weather</field>
         <field name="code">CO2</field>
         <field name="view_order">5</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">Weather</field>
         <field name="default_action_text">My Community</field>
         <field name="default_action_destination">My Community</field>
@@ -325,9 +327,10 @@ You never wrote to your sponsored child.
     </record>
     <record id="tile_subtype_le_co3" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_community"/>
-        <field name="name">My Community</field>
+        <field name="name">Clock</field>
         <field name="code">CO3</field>
         <field name="view_order">10</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">Clock</field>
         <field name="default_action_text">My Community</field>
         <field name="default_action_destination">My Community</field>

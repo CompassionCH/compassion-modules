@@ -54,11 +54,11 @@ class CompassionProject(models.Model):
         return data
 
     @api.model
-    def mobile_get_project(self, icpid):
+    def mobile_get_project(self, **params):
         """
         Mobile app method:
         Returns the project for a given fcp ID.
-        :param icpid: the id of the church associated with the project
+        :param params: all GET parameters
         :return: JSON containing the project
         """
         result = {
@@ -69,7 +69,7 @@ class CompassionProject(models.Model):
         }
 
         project = self.search([
-            ('fcp_id', '=', icpid)
+            ('fcp_id', '=', self._get_required_param('IcpId', params))
         ], limit=1)
 
         mapping = MobileProjectMapping(self.env)

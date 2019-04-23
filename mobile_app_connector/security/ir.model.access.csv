@@ -8,6 +8,21 @@ read_access_project,Project read access,child_compassion.model_compassion_projec
 read_access_contract,Recurring contract read access,sponsorship_compassion.model_recurring_contract,base.group_portal,1,0,0,0
 read_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,0,0,0
 read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
+read_access_product_template,Product template read access,model_product_template,base.group_portal,1,0,0,0
+read_access_lang_compassion,Lang compassion read access,child_compassion.model_res_lang_compassion,base.group_portal,1,0,0,0
+read_access_field_office,Field office read access,child_compassion.model_compassion_field_office,base.group_portal,1,0,0,0
+read_access_fcp_program,FCP Program read access,child_compassion.model_fcp_program,base.group_portal,1,0,0,0
+read_access_fcp_church_utility,FCP church utility read access,child_compassion.model_fcp_church_utility,base.group_portal,1,0,0,0
+read_access_fcp_church_ministry,FCP church ministry read access,child_compassion.model_fcp_church_ministry,base.group_portal,1,0,0,0
+read_access_fcp_church_facility,FCP church facility read access,child_compassion.model_fcp_church_facility,base.group_portal,1,0,0,0
+read_access_fcp_physical_activity,FCP physical activity read access,child_compassion.model_fcp_physical_activity,base.group_portal,1,0,0,0
+read_access_fcp_spiritual_activity,FCP spiritual activity read access,child_compassion.model_fcp_spiritual_activity,base.group_portal,1,0,0,0
+read_access_fcp_cognitive_activity,FCP cognitive activity read access,child_compassion.model_fcp_cognitive_activity,base.group_portal,1,0,0,0
+read_access_fcp_sociological_activity,FCP sociological activity read access,child_compassion.model_fcp_sociological_activity,base.group_portal,1,0,0,0
+read_access_fcp_school_cost,FCP school cost read access,child_compassion.model_fcp_school_cost,base.group_portal,1,0,0,0
+read_access_fcp_community_occupation,FCP community occupation read access,child_compassion.model_fcp_community_occupation,base.group_portal,1,0,0,0
+read_access_fcp_diet,FCP diet read access,child_compassion.model_fcp_diet,base.group_portal,1,0,0,0
+read_access_connect_month,Connect month read access,child_compassion.model_connect_month,base.group_portal,1,0,0,0
 access_admin_mobile_app_banner,Mobile App Banner full access,model_mobile_app_banner,sales_team.group_sale_manager,1,1,1,1
 access_app_banner,App banner read access,model_mobile_app_banner,,1,0,0,0
 access_mobile_app_tile,access_mobile_app_tile,model_mobile_app_tile,base.group_portal,1,0,0,0
