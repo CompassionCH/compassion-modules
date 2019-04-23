@@ -9,6 +9,7 @@
 ##############################################################################
 import logging
 
+from odoo.tools.safe_eval import safe_eval
 from ..mappings.mobile_app_tile_mapping import TileMapping
 from odoo import api, models, fields
 
@@ -41,6 +42,10 @@ class AppTile(models.Model):
     )
     model_id = fields.Many2one('ir.model', "Associated records")
     model = fields.Char(related='model_id.model')
+    records_filter = fields.Char(
+        'Records filter function',
+        help='will use the filtered function on the associated records'
+    )
     mode = fields.Selection([
         ('one', 'Unique tile'),
         ('many', 'One tile per record')
@@ -82,6 +87,7 @@ class AppTile(models.Model):
             self.action_destination =\
                 self.subtype_id.default_action_destination
             self.model_id = self.subtype_id.default_model_id
+            self.records_filter = self.subtype_id.default_records_filter
 
     @api.multi
     def render_tile(self, tile_data=None):
@@ -102,7 +108,7 @@ class AppTile(models.Model):
             tile_data = {}
         for tile in self:
             tile_json = tile_mapping.get_connect_data(tile)
-            records = tile.model and tile_data.get(tile.model)
+            records = tile._get_records(tile_data)
             if records:
                 # Convert text templates
                 if tile.mode == 'one':
@@ -117,6 +123,24 @@ class AppTile(models.Model):
                 if tile.model not in ('correspondence', 'product.product'):
                     res.append(tile_json)
         return res
+
+    def _get_records(self, tile_data):
+        """
+        Retrieves and filters the associated records
+        :param tile_data: All records given by the main hub method
+        :return: filtered records needed for the tile
+        """
+        self.ensure_one()
+        records = self.model and tile_data.get(self.model)
+        if records and self.records_filter:
+            try:
+                records = records.filtered(safe_eval(self.records_filter))
+            except:
+                _logger.error(
+                    'Cannot filter recordset given the function',
+                    exc_info=True
+                )
+        return records
 
     def _render_single_tile(self, records):
         """

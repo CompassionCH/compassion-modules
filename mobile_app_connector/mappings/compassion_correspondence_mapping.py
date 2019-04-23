@@ -8,6 +8,7 @@
 #
 ##############################################################################
 
+from odoo import _
 from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
@@ -40,14 +41,15 @@ class FromLetterMapping(OnrampMapping):
         'Date': "status_date",
         'FileID': 'id',  # Can be a string? int in example
         'FileName': "file_name",
-        # 'Message': 'original_text',
+        'Message': 'original_text',
     }
 
-    FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+    FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems()}
 
     def get_connect_data(self, odoo_object, fields_to_submit=None):
         mapped = super(FromLetterMapping, self) \
             .get_connect_data(odoo_object, fields_to_submit)
         mapped['Type'] = 1  # todo figure out what to use here
-        mapped['Message'] = None
+        if not mapped['Message']:
+            mapped['Message'] = _("Physical letters cannot be displayed.")
         return mapped

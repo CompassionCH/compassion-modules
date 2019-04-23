@@ -45,6 +45,10 @@ class AppTileSubtype(models.Model):
     default_model_id = fields.Many2one(
         'ir.model', "Default model", help="Select related objects type")
     default_model = fields.Char(related='default_model_id.model')
+    default_records_filter = fields.Char(
+        'Records filter function',
+        help='will use the filtered function on the associated records'
+    )
     default_title = fields.Text(
         translate=True,
         help="Mako template enabled."

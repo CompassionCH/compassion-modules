@@ -13,9 +13,8 @@
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
-from odoo import http,  _
+from odoo import http
 from odoo.http import request
-from odoo.exceptions import UserError
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 
 
@@ -115,17 +114,14 @@ class RestController(http.Controller):
         :param parameters: ??
         :return: Json
         """
-
         return request.env['product.template'].sudo().mobile_donation_type()
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='json', auth='user', methods=['GET'])
     def download_pdf(self, **parameters):
         host = request.env['ir.config_parameter'].get_param('web.base.url')
-        if not host:
-            raise UserError(_("Please add web.base.url in your configuration"))
         letter_id = parameters['correspondenceid']
         letter = request.env['correspondence'].browse([int(letter_id)])
-        if letter and letter.letter_image:
-            pdf = host + "b2s_image?id=" + letter.uuid
-        return pdf
+        if letter.exists() and letter.letter_image:
+            return host + "b2s_image?id=" + letter.uuid
+        raise NotFound()

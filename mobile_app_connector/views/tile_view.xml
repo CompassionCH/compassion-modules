@@ -15,6 +15,7 @@
                             <field name="name"/>
                             <field name="subtype_id"/>
                             <field name="model_id"/>
+                            <field name="records_filter"/>
                             <field name="mode" attrs="{'required': [('model_id', '!=', False)]}"/>
                         </group>
                         <group>

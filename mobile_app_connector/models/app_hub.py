@@ -46,12 +46,15 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env['res.partner'].browse(partner_id)
-        sponsorships = partner.sponsorship_ids.filtered('is_active')
+        # TODO For now we only display the contracts for which the sponsor
+        #  is correspondent (to avoid viewing letters when he doesn't write)
+        sponsorships = (partner.contracts_correspondant +
+                        partner.contracts_fully_managed).filtered('is_active')
         children = sponsorships.mapped('child_id')
 
         letters = self.env['correspondence'].search([
-            ('direction', '=', 'Beneficiary To Supporter'),
             ('partner_id', '=', partner_id),
+            ('sponsorship_id', 'in', sponsorships.ids)
         ])
 
         available_tiles = self.env['mobile.app.tile'].search([
