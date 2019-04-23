@@ -13,9 +13,8 @@
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
-from odoo import http,  _
+from odoo import http
 from odoo.http import request
-from odoo.exceptions import UserError
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 
 
@@ -101,22 +100,6 @@ class RestController(http.Controller):
         res = hero_mapping.get_connect_data(hero)
         return [res]
 
-    @http.route('/mobile-app-api/donation_type/', type='json',
-                auth='public', methods=['GET'])
-    def get_donation_type(self, view=None, **parameters):
-        """
-        This is called by the App to list all donation funds available.
-        TODO the FundNames are hardcoded in the app, so we cannot send
-        whatever we like. We want to discuss with UK if we can change this
-        and have an object in Odoo to configure the active funds we want
-        to promote in the app (with product_id link and picture defined in
-        Odoo)
-        :param view: ??
-        :param parameters: ??
-        :return: Json
-        """
-        return request.env['product.template'].sudo().mobile_donation_type()
-
     @http.route('/mobile-app-api/correspondence/letter_pdf',
                 type='json', auth='user', methods=['GET'])
     def download_pdf(self, **parameters):
@@ -126,13 +109,3 @@ class RestController(http.Controller):
         if letter.exists() and letter.letter_image:
             return host + "b2s_image?id=" + letter.uuid
         raise NotFound()
-
-    @http.route('/mobile-app-api/get-project',
-                type='json', auth='user', methods=['GET'])
-    def get_project(self, **parameters):
-        icp_id = parameters.get('IcpId', '0')
-        if not icp_id:
-            raise UserError(_("Please add IcpId in your configuration"))
-        data = request.env['compassion.project'].sudo().mobile_get_project(
-            icp_id)
-        return data
