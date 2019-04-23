@@ -512,8 +512,14 @@ class CommunicationJob(models.Model):
         output = PdfFileWriter()
         total_pages = existing_pdf.getNumPages()
 
+        def lastpair(a):
+            b = a - 1
+            if b % 2 == 0:
+                return b
+            return lastpair(b)
+
         # print latest omr mark on latest pair page (recto)
-        latest_omr_page = total_pages // 2
+        latest_omr_page = lastpair(total_pages)
 
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)
