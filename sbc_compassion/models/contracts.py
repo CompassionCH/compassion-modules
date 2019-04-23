@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import date
 
 from odoo import api, fields, models, _
 
@@ -34,6 +35,10 @@ class Contracts(models.Model):
     nb_letters = fields.Integer(
         compute='_compute_get_letters'
     )
+    last_letter = fields.Integer(
+        'Days since sponsor wrote',
+        compute='_compute_last_letter'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -49,6 +54,22 @@ class Contracts(models.Model):
             sponsorship.sponsor_letter_ids = letters.filtered(
                 lambda l: l.direction == 'Supporter To Beneficiary')
             sponsorship.nb_letters = len(letters)
+
+    def _compute_last_letter(self):
+        """
+        Get the date of the last letter sent to the child by the sponsor and
+        compute since how many days he didn't write him any letter.
+        If sponsor never wrote him, return -1
+        :return: int value
+        """
+        for contract in self:
+            try:
+                # Try to get days difference between today and last letter
+                contract.last_letter = (
+                    date.today() - fields.Date.from_string(
+                        contract.sponsor_letter_ids[:1].scanned_date)).days
+            except AttributeError:
+                contract.last_letter = -1
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

@@ -7,6 +7,7 @@ read_access_child,Child read access,child_compassion.model_compassion_child,base
 read_access_project,Project read access,child_compassion.model_compassion_project,base.group_portal,1,0,0,0
 read_access_contract,Recurring contract read access,sponsorship_compassion.model_recurring_contract,base.group_portal,1,0,0,0
 read_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,0,0,0
+read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
 access_admin_mobile_app_banner,Mobile App Banner full access,model_mobile_app_banner,sales_team.group_sale_manager,1,1,1,1
 access_app_banner,App banner read access,model_mobile_app_banner,,1,0,0,0
 access_mobile_app_tile,access_mobile_app_tile,model_mobile_app_tile,base.group_portal,1,0,0,0

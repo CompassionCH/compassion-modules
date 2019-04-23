@@ -89,11 +89,6 @@ class RecurringContract(models.Model):
     contract_duration = fields.Integer(compute='_compute_contract_duration',
                                        help='Contract duration in days')
 
-    # Field used to compute days number since last sponsor's letter
-    last_letter = fields.Integer(
-        compute='_compute_last_letter',
-        help='Days number since last sponsor\'s letter')
-
     _sql_constraints = [('parent_id_unique',
                          'UNIQUE(parent_id)',
                          'Unfortunately this sponsorship is already used,'
@@ -219,32 +214,6 @@ class RecurringContract(models.Model):
                     contract.end_date) if contract.end_date else date.today()
                 contract.contract_duration = (
                     end_date - contract_start_date).days
-
-    def _compute_last_letter(self):
-        """
-        Get the date of the last letter sent to the child by the sponsor and
-        compute since how many days he didn't write him any letter.
-        If sponsor never wrote him, compute since how many days the sponsorship
-        has been created.
-        :return: int value
-        """
-        for contract in self:
-            try:
-                # Try to get days difference between today and last letter
-                contract.last_letter = (
-                    date.today() - fields.Datetime.from_string(
-                        contract.env['correspondence'].search([
-                            ('direction', '=', 'Supporter To Beneficiary'),
-                            ('sponsorship_id', '=', contract.id)],
-                            limit=1).scanned_date).date()).days
-            except AttributeError:
-                try:
-                    # Try to get days difference between today and create_date
-                    contract.last_letter = (
-                        date.today() - fields.Datetime.from_string(
-                            contract.create_date).date()).days
-                except AttributeError:
-                    contract.last_letter = 0
 
     ##########################################################################
     #                              ORM METHODS                               #

@@ -15,6 +15,7 @@
                 <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC'])]}">
                     <group>
                         <field name="reading_language" options="{'create':False}"/>
+                        <field name="last_letter"/>
                     </group>
                     <group>
                         <group>

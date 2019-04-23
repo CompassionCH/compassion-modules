@@ -48,7 +48,9 @@ class Correspondence(models.Model):
     """
     _name = 'correspondence'
     _inherit = [
-        'mail.thread', 'ir.needaction_mixin', 'correspondence.metadata']
+        'mail.thread', 'ir.needaction_mixin', 'correspondence.metadata',
+        'translatable.model'
+    ]
     _description = 'Letter'
     _order = 'status_date desc'
 
