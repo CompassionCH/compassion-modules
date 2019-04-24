@@ -117,17 +117,6 @@ class CrmClaim(models.Model):
         """ Use the html of the mail's body instead of html converted in text
         """
 
-        # Check here if the date of the mail is during a holiday
-        mail_date = fields.Date.from_string(msg.get('date'))
-        holiday_closure = self.env["holiday.closure"].search([
-            ('start_date', '<=', mail_date),
-            ('end_date', '>=', mail_date)
-        ], limit=1)
-
-        # send automated holiday response
-        for h in holiday_closure:
-            self.message_post_with_template('business_closed_email_template')
-
         if custom_values is None:
             custom_values = {}
 
@@ -164,7 +153,20 @@ class CrmClaim(models.Model):
         defaults.pop('name', False)
 
         defaults.update(custom_values)
-        return super(CrmClaim, self).message_new(msg, defaults)
+        res_id = super(CrmClaim, self).message_new(msg, defaults)
+
+        # Check here if the date of the mail is during a holiday
+        mail_date = fields.Date.from_string(msg.get('date'))
+        holiday_closure = self.env["holiday.closure"].search([
+            ('start_date', '<=', mail_date),
+            ('end_date', '>=', mail_date)
+        ], limit=1)
+
+        # send automated holiday response
+        if holiday_closure:
+            template_id = self.env.ref("crm_request.business_closed_email_template").id
+            self.browse(res_id).message_post_with_template(template_id)
+        return res_id
 
     @api.multi
     def message_update(self, msg_dict, update_vals=None):

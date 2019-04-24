@@ -10,11 +10,11 @@
             <field name="subject">Holiday response</field>
             <field name="body_html" type="html">
                 <div>
-                    % set today = new Date()
-                    % set closure = object.env["holiday.closure"].search([('start_date', '&lt;=', today),('end_date', '&gt;=', today)], limit=1)
-                    % set date_start = closure.start_date
-                    % set date_end = closure.end_date
-                    % set holiday_name = closure.holiday_name
+                    % set today = new Date();
+                    % set closure = object.env["holiday.closure"].search([('start_date', '&lt;=', today),('end_date', '&gt;=', today)], limit=1);
+                    % set date_start = closure.start_date;
+                    % set date_end = closure.end_date;
+                    % set holiday_name = closure.holiday_name;
                 </div>
                 <div>
                     Dear Compassion member,
