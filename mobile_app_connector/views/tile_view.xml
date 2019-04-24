@@ -15,6 +15,7 @@
                             <field name="name"/>
                             <field name="subtype_id"/>
                             <field name="model_id"/>
+                            <field name="records_filter"/>
                             <field name="mode" attrs="{'required': [('model_id', '!=', False)]}"/>
                         </group>
                         <group>
@@ -97,7 +98,7 @@
         <field name="arch" type="xml">
             <tree colors="grey: not is_active">
                 <field name="view_order"/>
-                <field name="name"/>
+                <field name="display_name"/>
                 <field name="subtype_id"/>
                 <field name="visibility"/>
                 <field name="priority"/>

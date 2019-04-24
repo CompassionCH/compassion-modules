@@ -22,6 +22,7 @@ class WPPostMapping(OnrampMapping):
             'Title': 'name',
             'Url': 'url',
             'WP_id': 'wp_id',
+            'Post_type': 'post_type',
         },
         'Title': 'name',
     }
@@ -31,6 +32,7 @@ class WPPostMapping(OnrampMapping):
         'Blog.Title': None,
         'Blog.Url': None,
         'Blog.WP_id': None,
+        'Blog.Post_type': None,
         'Title': None,
         'ActionDestination': None,
         'Type': None,

@@ -17,9 +17,9 @@
         <field name="default_body">
 <![CDATA[% set child = ctx['objects']
 % if len(child) == 1:
-    You're changing ${child.get('his')} life
+You're changing ${child.get('his')} life
 % else:
-    You're changing ${child.get_number()} lives
+You're changing ${child.get_number()} lives
 % endif
 Thank You]]>
         </field>
@@ -95,19 +95,26 @@ Thank You]]>
         <field name="name">Give a gift</field>
         <field name="code">GI3</field>
         <field name="view_order">5</field>
-        <field name="default_model_id" ref="model_product_product"/>
+        <field name="default_model_id" ref="model_compassion_child"/>
         <field name="default_title">${ctx['objects'].name}</field>
-        <field name="default_body">${ctx['objects'].description_sale}</field>
+        <field name="default_body">Send a gift to your sponsored child</field>
         <field name="default_action_text">Give a gift</field>
         <field name="default_action_destination">Give a gift overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI3.png"/>
     </record>
     <record id="tile_subtype_gi5" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_donation"/>
-        <field name="name">Give a donation</field>
+        <field name="name">General donation call</field>
         <field name="code">GI5</field>
         <field name="view_order">10</field>
-        <field name="default_body">No donation given</field>
+        <field name="default_model_id" ref="model_res_partner"/>
+        <field name="default_body">
+<![CDATA[% set partner = ctx['objects'].sudo()
+% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)
+% if invoice:
+You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}
+% else:
+Make a donation]]></field>
         <field name="default_action_text">Give a donation</field>
         <field name="default_action_destination">Give overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI5.png"/>
@@ -145,7 +152,7 @@ Thank You]]>
         <field name="default_action_destination">Read overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/PR1.png"/>
     </record>
-    <record id="tile_subtype_pr1" model="mobile.app.tile.subtype">
+    <record id="tile_subtype_pr2" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_prayer"/>
         <field name="name">Prayer</field>
         <field name="code">PR2</field>
@@ -196,28 +203,65 @@ Thank You]]>
         <field name="name">Write a letter</field>
         <field name="code">LE1</field>
         <field name="view_order">1</field>
-        <field name="default_title">Grace</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
+        <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
+        <field name="default_title">ctx['objects'].sudo().child_id.preferred_name</field>
+        <field name="default_body">
+<![CDATA[% set sponsorship = ctx['objects'].sudo()
+% set letters = sponsorship.sponsor_letter_ids
+% if sponsorship.last_letter == 0:
+You wrote today.
+% else:
+    % if sponsorship.last_letter > 0:
+You last wrote ${sponsorship.last_letter} days ago
+    % else:
+You never wrote to your sponsored child.
+    % endif
+% endif]]></field>
         <field name="default_action_text">Write a letter</field>
         <field name="default_action_destination">Top of letters hub</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE1.png"/>
     </record>
+
     <record id="tile_subtype_le_t1" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_letter"/>
-        <field name="name">Letter Read now</field>
+        <field name="name">New B2S Letter</field>
         <field name="code">LE_T1</field>
         <field name="view_order">5</field>
-        <field name="default_title">Grace</field>
+        <field name="default_model_id" ref="model_correspondence"/>
+        <!-- TODO AP-61 Add a field in sbc_compassion for checking when the letter is read by the sponsor and use this -->
+        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and not c.email_read</field>
+        <field name="default_title">ctx['objects'].sudo().child_id.preferred_name</field>
+        <field name="default_body">A new letter has arrived from your sponsored child</field>
         <field name="default_action_text">Read now</field>
         <field name="default_action_destination">Read overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T1.png"/>
     </record>
+    <record id="tile_subtype_le_t2" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_letter"/>
+        <field name="name">Supporter Letters</field>
+        <field name="code">LE_T2</field>
+        <field name="view_order">5</field>
+        <field name="default_model_id" ref="model_correspondence"/>
+        <field name="default_records_filter">lambda c: c.direction == 'Supporter To Beneficiary'</field>
+        <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
+        <field name="default_body">You wrote a letter to ${ctx['objects'].sudo().child_id.preferred_name} on ${ctx['objects'].get_date('scanned_date')}</field>
+        <field name="default_action_text">Read again</field>
+        <field name="default_action_destination">Read overlay</field>
+        <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T1.png"/>
+    </record>
+
+<!-- TODO AP-62 FIX THIS LE_T3 (maybe it's for child letters...) -->
     <record id="tile_subtype_le_t3" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_letter"/>
-        <field name="name">Write again</field>
+        <field name="name">Child anniversary letter</field>
         <field name="code">LE_T3</field>
         <field name="view_order">10</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
+        <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
         <field name="default_title">Anniversary</field>
-        <field name="default_action_text">Write again</field>
+        <field name="default_body">Write a letter for ${ctx['objects'].child_id.preferred_name}'s birthday on ${ctx['objects'].child_id.get_date('birthdate')}</field>
+        <field name="default_action_text">Write a card</field>
         <field name="default_action_destination">Top of letters hub</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T3.png"/>
     </record>
@@ -266,6 +310,7 @@ Thank You]]>
         <field name="name">Compass</field>
         <field name="code">CO1</field>
         <field name="view_order">1</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_action_destination">Compass</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/CO1.png"/>
     </record>
@@ -274,6 +319,7 @@ Thank You]]>
         <field name="name">Maps / Weather</field>
         <field name="code">CO2</field>
         <field name="view_order">5</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">Weather</field>
         <field name="default_action_text">My Community</field>
         <field name="default_action_destination">My Community</field>
@@ -284,6 +330,7 @@ Thank You]]>
         <field name="name">Clock</field>
         <field name="code">CO3</field>
         <field name="view_order">10</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">Clock</field>
         <field name="default_action_text">My Community</field>
         <field name="default_action_destination">My Community</field>

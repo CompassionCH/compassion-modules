@@ -35,7 +35,7 @@ class CompassionChildPictures(models.Model):
         mapping = MobileChildPicturesMapping(self.env)
         # wrapper = 'Images' if multi else 'Images'
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = [mapping.get_connect_data(self)]
         else:
             data = []
             for child in self:

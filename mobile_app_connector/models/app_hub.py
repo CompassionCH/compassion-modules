@@ -25,7 +25,7 @@ class AppHub(models.AbstractModel):
 
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed
-    LIMIT_WORDPRESS_TILES = 10
+    LIMIT_WORDPRESS_TILES = 20
     LIMIT_PUBLIC_TILES = 10
 
     @api.model
@@ -46,26 +46,30 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env['res.partner'].browse(partner_id)
-        sponsorships = partner.sponsorship_ids.filtered('is_active')
+        # TODO For now we only display the contracts for which the sponsor
+        #  is correspondent (to avoid viewing letters when he doesn't write)
+        sponsorships = (partner.contracts_correspondant +
+                        partner.contracts_fully_managed).filtered('is_active')
         children = sponsorships.mapped('child_id')
+
+        letters = self.env['correspondence'].search([
+            ('partner_id', '=', partner_id),
+            ('sponsorship_id', 'in', sponsorships.ids)
+        ])
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('is_active', '=', True),
             ('visibility', '!=', 'public')
         ])
-        # TODO this is for testing purpose
-        #   Implement a way for defining donation products that will show in
-        #   tiles (AP-45)
-        fund = self.env.ref('contract_compassion.product_category_fund').sudo()
-        product = self.env['product.product'].sudo().search([
-            ('categ_id', '=', fund.id)
-        ], limit=1)
+        products = self.env['product.product'].sudo().search([
+            ('mobile_app', '=', True)
+        ])
         tile_data = {
             'res.partner': partner,
             'recurring.contract': sponsorships,
             'compassion.child': children,
-            'product.product': product,
-
+            'product.product': products,
+            'correspondence': letters,
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
@@ -86,8 +90,6 @@ class AppHub(models.AbstractModel):
         TODO Display a tile for inviting to sponsor a child
         (this can be done when we add the relevant action on the app)
         TODO See if we send a link for a video (could be a wordpress post)
-        TODO Add tiles for fund donations
-            (see how to configure with mobile.app.tile).
         :return: list of tiles displayed in mobile app.
         """
         available_tiles = self.env['mobile.app.tile'].search([
@@ -113,7 +115,9 @@ class AppHub(models.AbstractModel):
         :return: List of JSON messages for use in the hub.
         """
         available_posts = self.env['wp.post'].search([
-            ('lang', '=', self.env.lang)])
+            ('lang', '=', self.env.lang),
+            ('display_on_hub', '=', True)
+        ])
         messages = []
         if available_posts:
             start = int(pagination.get('start', 0))

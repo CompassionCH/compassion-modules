@@ -12,6 +12,18 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
+class MobileLocationMapping(OnrampMapping):
+    ODOO_MODEL = 'compassion.project'
+    MAPPING_NAME = 'mobile_app_project'
+
+    CONNECT_MAPPING = {
+        'Latitude': 'gps_latitude',
+        'Longitude': 'gps_longitude',
+    }
+
+    FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+
 class MobileProjectMapping(OnrampMapping):
     ODOO_MODEL = 'compassion.project'
     MAPPING_NAME = 'mobile_app_project'
@@ -34,7 +46,7 @@ class MobileProjectMapping(OnrampMapping):
         'ChurchMinistry': ('ministry_ids.name', 'fcp.church.ministry'),
         'City': 'city',
         'Climate': 'community_climate',
-        'ClosestMajorCityEnglish': None,
+        'ClosestMajorCityEnglish': 'closest_city',
         'Cluster': 'cluster',
         'CognitiveActivities0To5': ('cognitive_activity_babies_ids.name',
                                     'fcp.cognitive.activity'),
@@ -158,3 +170,9 @@ class MobileProjectMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+    def _process_connect_data(self, connect_data):
+        for key, value in connect_data.copy().iteritems():
+            if not value:
+                del connect_data[key]
+        return connect_data

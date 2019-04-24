@@ -13,6 +13,9 @@ import logging
 
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
+from pytz import country_timezones
+from datetime import datetime
+import pytz
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +25,22 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _inherit = 'compassion.child'
 
+    def get_app_json_no_wrap(self):
+        """
+        Called by HUB when data is needed for a tiles letters
+        :return: dictionary with JSON data of the child
+        """
+        if not self:
+            return {}
+        mapping = MobileChildMapping(self.env)
+        if len(self) == 1:
+            data = mapping.get_connect_data(self)
+        else:
+            data = []
+            for child in self:
+                data.append(mapping.get_connect_data(child))
+        return data
+
     @api.multi
     def get_app_json(self, multi=False):
         """
@@ -30,6 +49,11 @@ class CompassionChild(models.Model):
         :return: dictionary with JSON data of the children
         """
         children_pictures = self.sudo().mapped('pictures_ids')
+        project = self.sudo().mapped('project_id')
+        tz = country_timezones('NI')
+        tz_child = pytz.timezone(tz[0])
+        datetime_child = datetime.now(tz_child)
+
         if not self:
             return {}
         mapping = MobileChildMapping(self.env)
@@ -42,10 +66,14 @@ class CompassionChild(models.Model):
                 data.append(mapping.get_connect_data(child))
         return {
             wrapper: data,
-            'Images': [
-                children_pictures.filtered(
-                    lambda r: r.image_url).get_app_json(multi=True)
-            ]
+            'Images': children_pictures.filtered(
+                lambda r: r.image_url).get_app_json(multi=True),
+            'Location':
+                project.get_location_json(multi=False),
+            'Time': {
+                    "ChildTime": datetime_child.strftime("%d/%m/%Y %H:%M:%S")
+                    }
+
         }
 
     @api.model
