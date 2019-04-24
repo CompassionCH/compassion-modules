@@ -10,7 +10,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+from odoo.exceptions import UserError
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
@@ -106,6 +106,41 @@ class RestController(http.Controller):
         host = request.env['ir.config_parameter'].get_param('web.base.url')
         letter_id = parameters['correspondenceid']
         letter = request.env['correspondence'].browse([int(letter_id)])
-        if letter.exists() and letter.letter_image:
-            return host + "b2s_image?id=" + letter.uuid
-        raise NotFound()
+
+        if letter and letter.letter_image:
+            pdf = host + "b2s_image?id=" + letter.uuid
+        return pdf
+
+    @http.route('/mobile-app-api/get-project',
+                type='json', auth='user', methods=['GET'])
+    def get_project(self, **parameters):
+        icp_id = parameters.get('IcpId', '0')
+        if not icp_id:
+            raise UserError(_("Please add IcpId in your configuration"))
+        data = request.env['compassion.project'].sudo().mobile_get_project(
+            icp_id)
+        return data
+
+    @http.route('/mobile-app-api/feedback',
+                type='json', auth='user', methods=['GET', 'POST'])
+    def feedback(self, **parameters):
+        user_id = parameters.get('userid', 0)
+        if not user_id:
+            raise UserError(_("Please add userid in your configuration"))
+        star = parameters.get('star', '3.0')
+        # convert to float for IOS
+        star = "%.1f" % int(star)
+        if not star:
+            raise UserError(_("Please add star in your configuration"))
+        what_did_u_like = parameters.get('Whatdidulike', '-')
+        if not what_did_u_like:
+            raise UserError(_("Please add Whatdidulike in your configuration"))
+        # source parameter is not defined in ios application
+        source = parameters.get('source', 'IOS')
+        improve_app = parameters.get('Improveapp', '-')
+        if not improve_app:
+            raise UserError(_("Please add Improveapp in your configuration"))
+        record = request.env['mobile.app.feedback'].sudo().create(
+            {'name': what_did_u_like, 'partner_id': user_id, 'source': source,
+             'improve_app': improve_app, 'star': star})
+        return record.id

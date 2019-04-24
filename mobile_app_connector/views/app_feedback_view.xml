@@ -1,0 +1,72 @@
+<odoo>
+    <record model="ir.ui.view" id="mobile_app_banner_form">
+        <field name="name">mobile.app.feedback.form</field>
+        <field name="model">mobile.app.feedback</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="star" widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="improve_app" widget="html"/>
+                            <field name="source"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mobile_app_banner_tree">
+        <field name="name">mobile.app.feedback.tree</field>
+        <field name="model">mobile.app.feedback</field>
+        <field name="arch" type="xml">
+            <tree colors="blue:star=='4';grey:star=='3';green:star=='5'"
+                create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="star"/>
+                <field name="improve_app" widget="html"/>
+                <field name="source"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mobile_app_banner_search">
+        <field name="name">app.feedback.search</field>
+        <field name="model">mobile.app.feedback</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <group expand="0" string="Group By">
+                    <filter string="Star" name="star"
+                            domain="[]" context="{'group_by':'star'}"/>
+                    <filter string="source" name="source"
+                            domain="[]" context="{'group_by':'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mobile_app_feedback" model="ir.actions.act_window">
+        <field name="name">Feedbacks</field>
+        <field name="res_model">mobile.app.feedback</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Add menu for app banners -->
+    <menuitem id="menu_mobile_app_feedback"
+              name="Feedback"
+              parent="menu_mobile_app"
+              action="action_mobile_app_feedback"/>
+
+</odoo>
