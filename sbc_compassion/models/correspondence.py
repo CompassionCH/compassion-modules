@@ -87,6 +87,7 @@ class Correspondence(models.Model):
         track_visibility='onchange')
     s2b_state = fields.Selection('get_s2b_states', compute='_compute_states')
     b2s_state = fields.Selection('get_b2s_states', compute='_compute_states')
+    email_read = fields.Boolean(initial=False)
 
     # 2. Attachments and scans
     ##########################
