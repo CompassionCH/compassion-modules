@@ -68,7 +68,7 @@ class Contracts(models.Model):
                 contract.last_letter = (
                     date.today() - fields.Date.from_string(
                         contract.sponsor_letter_ids[:1].scanned_date)).days
-            except AttributeError:
+            except TypeError:
                 contract.last_letter = -1
 
     ##########################################################################
