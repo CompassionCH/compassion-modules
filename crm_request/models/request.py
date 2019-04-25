@@ -23,7 +23,9 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
+
     current_holiday_id = fields.Many2one(string='Holiday')
+    today = fields.Date(string="Today date", compute="_compute_today")
 
     @api.depends('subject')
     @api.multi
@@ -42,6 +44,10 @@ class CrmClaim(models.Model):
                 ('start_date', '<=', datetime.today),
                 ('end_date', '>=', datetime.today)
             ], limit=1).id
+
+    def _compute_today(self):
+        for request in self:
+            request.today = datetime.today()
 
     @api.multi
     def action_reply(self):
@@ -165,7 +171,7 @@ class CrmClaim(models.Model):
         # send automated holiday response
         if holiday_closure:
             template_id = self.env.ref("crm_request.business_closed_email_template").id
-            self.browse(res_id).message_post_with_template(template_id)
+            self.with_context(today=datetime.today()).browse(res_id).message_post_with_template(template_id)
         return res_id
 
     @api.multi

@@ -8,13 +8,15 @@
             <field name="reply_to">info@compassion.ch</field>
             <field name="use_default_to" eval="True"/>
             <field name="subject">Holiday response</field>
-            <field name="body_html" type="html">
+            <field name="body_html"><![CDATA[
+
                 <div>
-                    % set today = new Date();
-                    % set closure = object.env["holiday.closure"].search([('start_date', '&lt;=', today),('end_date', '&gt;=', today)], limit=1);
-                    % set date_start = closure.start_date;
-                    % set date_end = closure.end_date;
-                    % set holiday_name = closure.holiday_name;
+                    % set claim = object
+                    % set today = claim.today
+                    % set closure = object.env["holiday.closure"].search([('start_date', '<=', today),('end_date', '>=', today)], limit=1)
+                    % set date_start = closure.start_date
+                    % set date_end = closure.end_date
+                    % set holiday_name = closure.holiday_name
                 </div>
                 <div>
                     Dear Compassion member,
@@ -25,7 +27,7 @@
                     <br/>
                     Yours sincerely
                 </div>
-            </field>
+            ]]></field>
         </record>
     </data>
 
