@@ -19,7 +19,15 @@ class MobileDonationMapping(OnrampMapping):
     CONNECT_MAPPING = {
         "DisplayOrder": "id",
         "FundName": "name",
-        "Id": "id"
+        "Id": "id",
+        "ImageIcon": "image_icon",
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
+
+    def _process_connect_data(self, connect_data):
+        for key, value in connect_data.copy().iteritems():
+            if key == "FundName":
+                if value:
+                    connect_data[key] = value
+        return connect_data

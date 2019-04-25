@@ -8,6 +8,9 @@
         <field name="arch" type="xml">
             <field name="uom_po_id" position="after" >
                 <field name="mobile_app"/>
+                <field name="image_icon"
+                       attrs="{'invisible': [('mobile_app','=',False)],
+                       'required': [('mobile_app','=',True)]}"/>
             </field>
         </field>
     </record>
