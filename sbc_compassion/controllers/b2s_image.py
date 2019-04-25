@@ -38,6 +38,7 @@ class RestController(http.Controller):
         if not correspondence:
             raise NotFound()
         data = correspondence.get_image()
+        correspondence.email_read = True
         headers = Headers()
         if correspondence.letter_format == 'zip':
             fname = fields.Date.today() + ' letters.zip'
