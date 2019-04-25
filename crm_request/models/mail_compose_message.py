@@ -20,6 +20,9 @@ class MailComposer(models.TransientModel):
         if unarchived_ids:
             unarchived_res = self.env['res.partner'].browse(unarchived_ids)
             unarchived_res.toggle_active()
+            self.write({
+                'partner_ids': unarchived_ids
+            })
 
         res = super(MailComposer, self).send_mail(auto_commit)
 
