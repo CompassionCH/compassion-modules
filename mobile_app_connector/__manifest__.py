@@ -38,6 +38,7 @@
     'depends': [
         'sbc_compassion',
         'partner_contact_birthdate',
+        'base_geolocalize',
     ],
     'external_dependencies': {
         'python': ['simplejson'],
@@ -51,6 +52,7 @@
         'views/app_banner_view.xml',
         'views/tile_type_view.xml',
         'views/tile_view.xml',
+        'views/product_view.xml',
     ],
     'demo': [
     ],

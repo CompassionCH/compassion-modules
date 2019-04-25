@@ -1,0 +1,258 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_request
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-09 13:48+0000\n"
+"PO-Revision-Date: 2019-04-09 15:49+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: fr_CH\n"
+"X-Generator: Poedit 2.2.1\n"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_stage_active
+msgid "Active"
+msgstr "Actif"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_alias_id
+msgid "Alias"
+msgstr "Alias"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
+msgid "Assign"
+msgstr "Assign"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_user_id
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+msgid "Assign to"
+msgstr "Assigner à moi"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.support_search_view
+msgid "Assign to me"
+msgstr "Assigner à moi"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+msgid "Claim"
+msgstr "Réclamation"
+
+#. module: crm_request
+#: model:ir.model,name:crm_request.model_crm_claim_stage
+msgid "Claim stages"
+msgstr "Étapes de réclamation"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_color
+msgid "Color index"
+msgstr "Color index"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: crm_request
+#: model:ir.model,name:crm_request.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr "Assistant de composition de courriel"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request.py:70
+#, python-format
+msgid "From"
+msgstr "De"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_ref
+msgid "Internal Reference"
+msgstr "Référence interne"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_intern_note
+msgid "Internal note"
+msgstr "Internal note"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_type_keywords
+msgid "Keywords"
+msgstr "Keywords"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard___last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard_write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: crm_request
+#: model:ir.model.fields,help:crm_request.field_crm_claim_type_keywords
+msgid "List of keywords (separated by a comma \",\") who could be contained in the demand subject"
+msgstr "List of keywords (separated by a comma \",\") who could be contained in the demand subject"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request.py:119
+#, python-format
+msgid "No partner aliases match: %s !"
+msgstr "No partner aliases match: %s !"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
+msgid "OK"
+msgstr "OK"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request_type.py:32
+#, python-format
+msgid "One keyword must be unique over all types and not be included in another keyword"
+msgstr "One keyword must be unique over all types and not be included in another keyword"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request.py:71
+#, python-format
+msgid "Original Message"
+msgstr "Message d'origine"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: crm_request
+#: model:ir.actions.act_window,help:crm_request.request_action
+msgid "Record and track your customers' requests. Requests may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a request (emails sent, intervention type and so on).Requests may automatically be linked to an email address using the mail gateway module."
+msgstr "Record and track your customers' requests. Requests may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a request (emails sent, intervention type and so on).Requests may automatically be linked to an email address using the mail gateway module."
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+msgid "Reply"
+msgstr "Répondre"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+msgid "Reporter"
+msgstr "Reporter"
+
+#. module: crm_request
+#: model:ir.model,name:crm_request.model_crm_claim
+msgid "Request"
+msgstr "Request"
+
+#. module: crm_request
+#: model:ir.actions.act_window,name:crm_request.action_wizard_request_assign
+msgid "Request assign"
+msgstr "Request assign"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.support_search_view
+msgid "Request open"
+msgstr "Request open"
+
+#. module: crm_request
+#: model:ir.actions.act_window,name:crm_request.request_action
+#: model:ir.ui.menu,name:crm_request.menu_crm_case_claims
+msgid "Requests"
+msgstr "Requests"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request.py:69
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_subject
+#, python-format
+msgid "Subject"
+msgstr "Objet"
+
+#. module: crm_request
+#: model:ir.ui.menu,name:crm_request.support_root
+msgid "Support"
+msgstr "Support"
+
+#. module: crm_request
+#: model:ir.model.fields,field_description:crm_request.field_crm_claim_type_template_id
+msgid "Template"
+msgstr "Modèle"
+
+#. module: crm_request
+#: model:ir.model.fields,help:crm_request.field_crm_claim_alias_id
+msgid "The destination email address that the contacts used."
+msgstr "The destination email address that the contacts used."
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
+#: model:ir.ui.view,arch_db:crm_request.crm_request_type_form
+msgid "Type"
+msgstr "Type"
+
+#. module: crm_request
+#: model:ir.ui.view,arch_db:crm_request.support_search_view
+msgid "Unassigned"
+msgstr "Non assigné"
+
+#. module: crm_request
+#: model:crm.claim.stage,name:crm_request.stage_wait_support
+msgid "Waiting for support"
+msgstr "Waiting for support"
+
+#. module: crm_request
+#: model:crm.claim.stage,name:crm_request.stage_wait_customer
+msgid "Waiting on customer"
+msgstr "Waiting on customer"
+
+#. module: crm_request
+#: code:addons/crm_request/models/request.py:46
+#, python-format
+msgid "You can only reply if you set the partner."
+msgstr "You can only reply if you set the partner."
+
+#. module: crm_request
+#: model:ir.model,name:crm_request.model_assign_request_wizard
+msgid "assign.request.wizard"
+msgstr "assign.request.wizard"
+
+#. module: crm_request
+#: model:ir.model,name:crm_request.model_crm_claim_type
+msgid "crm.claim.type"
+msgstr "crm.claim.type"
+
+#. module: crm_request
+#: model:ir.actions.client,name:crm_request.template_id
+msgid "template name"
+msgstr "template name"

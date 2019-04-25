@@ -1,6 +1,6 @@
 <odoo>
     <record model="ir.ui.view" id="generate_communication_wizard_form">
-        <field name="name">genereate.communication.wizard.form</field>
+        <field name="name">generate.communication.wizard.form</field>
         <field name="model">partner.communication.generate.wizard</field>
         <field name="arch" type="xml">
             <form>

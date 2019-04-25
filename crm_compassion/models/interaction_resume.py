@@ -30,6 +30,7 @@ class InteractionResume(models.TransientModel):
     state = fields.Selection(related='direction')
     communication_date = fields.Datetime()
     subject = fields.Text()
+    has_attachment = fields.Boolean(compute='_compute_has_attachment')
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one("partner.communication.job", "Communication")
@@ -37,6 +38,7 @@ class InteractionResume(models.TransientModel):
     message_id = fields.Many2one("mail.message", "Email")
     tracking_status = fields.Selection([
         ('error', 'Error'),
+        ('deferred', 'Deferred'),
         ('sent', 'Sent'),
         ('delivered', 'Delivered'),
         ('opened', 'Opened'),
@@ -44,7 +46,7 @@ class InteractionResume(models.TransientModel):
         ('spam', 'Spam'),
         ('unsub', 'Unsubscribed'),
         ('bounced', 'Bounced'),
-        ('soft bounced', 'Soft bounced'),
+        ('soft-bounced', 'Soft bounced'),
     ])
 
     @api.model
@@ -118,7 +120,7 @@ class InteractionResume(models.TransientModel):
                 JOIN mail_message m ON mail.mail_message_id = m.id
                 JOIN mail_mail_res_partner_rel rel
                 ON rel.mail_mail_id = mail.id
-                JOIN mail_tracking_email mt ON mail.id = mt.mail_id
+                FULL OUTER JOIN mail_tracking_email mt ON mail.id = mt.mail_id
                 JOIN res_partner p ON rel.res_partner_id = p.id
                 FULL OUTER JOIN partner_communication_job job
                     ON job.email_id = mail.id
@@ -162,3 +164,12 @@ class InteractionResume(models.TransientModel):
         """
         self.ensure_one()
         return True
+
+    def _compute_has_attachment(self):
+        """
+        Check in each row if e-mail (outgoing) or message (incoming) contains
+        at least 1 attachment.
+        """
+        for row in self:
+            row.has_attachment = row.email_id.attachment_ids or \
+                row.message_id.attachment_ids

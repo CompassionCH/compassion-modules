@@ -15,7 +15,7 @@ from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
 from odoo.http import request
-from werkzeug.exceptions import NotFound, MethodNotAllowed
+from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 
 
 class RestController(http.Controller):
@@ -73,26 +73,27 @@ class RestController(http.Controller):
         """
         hub_obj = request.env['mobile.app.hub'].sudo()
         if partner_id:
-            # This will ensure the user is logged in
-            request.session.check_security()
-            hub_obj = hub_obj.sudo(request.session.uid)
+            # Check if requested url correspond to the current user
+            if partner_id == request.env.user.partner_id.id:
+                # This will ensure the user is logged in
+                request.session.check_security()
+                hub_obj = hub_obj.sudo(request.session.uid)
+            else:
+                raise Unauthorized()
         return hub_obj.mobile_get_message(partner_id=partner_id, **parameters)
 
     @http.route('/mobile-app-api/hero/', type='json',
                 auth='public', methods=['GET'])
-    def get_hero(self, hero_type=None, view=None, **parameters):
+    def get_hero(self, view=None, **parameters):
         """
         Hero view is the main header above the HUB in the app.
         We return here what should appear in this view.
-        :param hero_type: "Default" == user logged in,
-                          "WithoutLogin" == user not logged in.
         :param view: always "hero"
         :param parameters: other parameters should be empty
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
         hero = request.env['mobile.app.banner'].search([
-            ('type', 'ilike', hero_type),
             ('is_active', '=', True)
         ], limit=1)
         hero_mapping = AppBannerMapping(request.env)
@@ -100,11 +101,11 @@ class RestController(http.Controller):
         return [res]
 
     @http.route('/mobile-app-api/correspondence/letter_pdf',
-                type='http', auth='user', methods=['GET'])
+                type='json', auth='user', methods=['GET'])
     def download_pdf(self, **parameters):
-        pdf = request.env['compassion.child'].mobile_letter_pdf(**parameters)
-        headers = [
-            ('Content-Type', 'application/pdf'),
-            ('Content-Length', len(pdf))
-        ]
-        return request.make_response(pdf, headers=headers)
+        host = request.env['ir.config_parameter'].get_param('web.base.url')
+        letter_id = parameters['correspondenceid']
+        letter = request.env['correspondence'].browse([int(letter_id)])
+        if letter.exists() and letter.letter_image:
+            return host + "b2s_image?id=" + letter.uuid
+        raise NotFound()

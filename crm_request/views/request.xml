@@ -82,6 +82,7 @@
     <record model="ir.ui.view" id="crm_request_form_view_id">
         <field name="name">CRM - Requests Form</field>
         <field name="model">crm.claim</field>
+        <field name ="priority" eval="15"/>
         <field name="arch" type="xml">
             <form string="Claim">
                 <header>
@@ -101,6 +102,7 @@
                             <field name="alias_id" groups="base.group_no_one"/>
                         </group>
                         <group>
+                            <field name="language"/>
                             <field name="date"/>
                             <field name="priority" widget="priority"/>
                         </group>

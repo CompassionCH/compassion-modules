@@ -10,6 +10,7 @@
 ##############################################################################
 
 from . import compassion_child
+from . import compassion_child_pictures
 from . import res_users
 from . import compassion_project
 from . import product_template
@@ -22,3 +23,4 @@ from . import wordpress_post
 from . import mobile_banner
 from . import app_tile_type
 from . import app_tile
+from . import recurring_contract

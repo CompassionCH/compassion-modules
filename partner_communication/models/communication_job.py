@@ -339,9 +339,10 @@ class CommunicationJob(models.Model):
         self.mapped('attachment_ids').unlink()
         self.set_attachments()
         for job in self:
+            lang = self.env.context.get('lang_preview', job.partner_id.lang)
             if job.email_template_id and job.object_ids:
                 fields = self.env['mail.compose.message'].with_context(
-                    lang=job.partner_id.lang).get_generated_fields(
+                    lang=lang).get_generated_fields(
                     job.email_template_id, [job.id])
                 job.write({
                     'body_html': fields['body_html'],
@@ -355,15 +356,14 @@ class CommunicationJob(models.Model):
     def quick_refresh(self):
         # Only refresh text and subject, all at once
         jobs = self.filtered('email_template_id').filtered('object_ids')
-        langs = set(jobs.mapped('partner_id.lang'))
+        lang = self.env.context.get('lang_preview', jobs.mapped(
+            'partner_id.lang'))
         template = jobs.mapped('email_template_id')
-        if len(langs) > 1:
-            raise UserError(_("This is only possible for one lang at time"))
         if len(template) > 1:
             raise UserError(_(
                 "This is only possible for one template at time"))
         values = self.env['mail.compose.message'].with_context(
-            lang=langs.pop()).get_generated_fields(template, jobs.ids)
+            lang=lang).get_generated_fields(template, jobs.ids)
         if not isinstance(values, list):
             values = [values]
         for index in range(0, len(values)):
@@ -512,8 +512,14 @@ class CommunicationJob(models.Model):
         output = PdfFileWriter()
         total_pages = existing_pdf.getNumPages()
 
+        def lastpair(a):
+            b = a - 1
+            if b % 2 == 0:
+                return b
+            return lastpair(b)
+
         # print latest omr mark on latest pair page (recto)
-        latest_omr_page = total_pages // 2
+        latest_omr_page = lastpair(total_pages)
 
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)

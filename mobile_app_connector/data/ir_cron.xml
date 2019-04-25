@@ -8,6 +8,29 @@
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
             <field name="function">fetch_posts</field>
+            <field name="args">('posts',)</field>
+            <field name="model">wp.post</field>
+        </record>
+
+        <record id="wp_fetch_agendas_cron" model="ir.cron">
+            <field name="name">Refresh Wordpress Agendas</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function">fetch_posts</field>
+            <field name="args">('agendas',)</field>
+            <field name="model">wp.post</field>
+        </record>
+
+        <record id="wp_fetch_downloads_cron" model="ir.cron">
+            <field name="name">Refresh Wordpress Download</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function">fetch_posts</field>
+            <field name="args">('download',)</field>
             <field name="model">wp.post</field>
         </record>
 
