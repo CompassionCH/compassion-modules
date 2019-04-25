@@ -172,9 +172,8 @@ class CrmClaim(models.Model):
                 defaults['language'] = partner.lang
 
         defaults.pop('name', False)
-
         defaults.update(custom_values)
-        
+
         request_id = super(CrmClaim, self).message_new(msg, defaults)
         request = self.browse(request_id)
         if not request.language:
@@ -190,9 +189,11 @@ class CrmClaim(models.Model):
 
         # send automated holiday response
         if holiday_closure:
-            template_id = self.env.ref("crm_request.business_closed_email_template").id
-            self.with_context(today=datetime.today()).browse(res_id).message_post_with_template(template_id)
-        
+            template_id = self.env.ref(
+                "crm_request.business_closed_email_template").id
+            self.with_context(today=datetime.today()).browse(request_id)\
+                .message_post_with_template(template_id)
+
         return request_id
 
     @api.multi
