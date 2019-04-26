@@ -11,12 +11,12 @@
 import logging
 
 from datetime import datetime
-from odoo import models, fields, _
+from odoo import models, fields
 
 logger = logging.getLogger(__name__)
 
 
-class AppBanner(models.Model):
+class MobileFeedback(models.Model):
     _name = 'mobile.app.feedback'
     _description = 'Mobile App Feedback'
     _order = 'id desc'
@@ -24,15 +24,17 @@ class AppBanner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char('What did you like', translate=True, required=True,
+    name = fields.Char('What did you like', required=True,
                        readonly=True)
     partner_id = fields.Many2one('res.partner', 'Partner', readonly=True)
-    improve_app = fields.Char(translate=True, readonly=True)
-    source = fields.Char(translate=True, readonly=True)
+    improve_app = fields.Char(readonly=True)
+    source = fields.Selection([
+        ('Android', 'Android'),
+        ('IOS', 'IOS')], select=True, readonly=True)
     star = fields.Selection([
-        ('1.0', 'disappointing'),
+        ('1.0', 'Disappointing'),
         ('2.0', 'Well'),
-        ('3.0', 'very well'),
+        ('3.0', 'Very well'),
         ('4.0', 'Great'),
         ('5.0', 'Extraordinary')], select=True, readonly=True)
     create_date = fields.Datetime(
