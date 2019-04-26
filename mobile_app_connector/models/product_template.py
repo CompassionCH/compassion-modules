@@ -25,8 +25,7 @@ class ProductTemplate(models.Model):
     mobile_app = fields.Boolean('Show in Mobile App', index=True)
     image_icon = fields.Char('Icon Mobile App',
                              help="See https://fontawesome.com to "
-                                  "find code icon. The code have to prefix "
-                                  "'faw'")
+                                  "find code icon.")
 
     @api.model
     def mobile_donation_type(self, **other_params):
