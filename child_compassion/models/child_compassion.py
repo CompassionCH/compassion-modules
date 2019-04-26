@@ -181,6 +181,7 @@ class CompassionChild(models.Model):
         ('Science', 'Science'),
         ('Sociology / Social Science', 'Sociology'),
         ('Theology', 'Theology'),
+        ('Theology / Christian Studies', 'Theology'),
         ('Tourism', 'Tourism'),
         ('Biology', 'Biology'),
         ('Social Science', 'Social Science'),
