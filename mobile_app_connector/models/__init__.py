@@ -24,3 +24,4 @@ from . import mobile_banner
 from . import app_tile_type
 from . import app_tile
 from . import recurring_contract
+from . import mobile_feedback

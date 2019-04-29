@@ -10,7 +10,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
