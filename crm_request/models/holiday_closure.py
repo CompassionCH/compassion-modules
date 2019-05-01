@@ -19,7 +19,6 @@ class HolidayClosure(models.Model):
     end_date = fields.Date(string="End of holiday", required=True)
     holiday_name = fields.Char(string="Name of holiday", required=True)
 
-    @api.one
     @api.constrains('end_date', 'start_date')
     def _validate_dates(self):
         for h in self:
