@@ -10,8 +10,6 @@
 #
 ##############################################################################
 from odoo import api, fields, models, _
-from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
-
 
 class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
@@ -53,13 +51,31 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_invoice_type(self):
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
-            categories = invoice.with_context(lang='en_US').mapped(
-                'invoice_line_ids.product_id.categ_name')
-            if SPONSORSHIP_CATEGORY in categories:
+
+            sponsorship_cat = self.env.ref('product.product_category_3')
+            fund_cat = self.env.ref('product.product_category_4')
+            gift_cat = self.env.ref('product.product_category_5')
+
+            # check if child_of Sponsorship category
+            category = self.env['product.category'].search([
+                (invoice.product_id.categ_id, 'child_of', sponsorship_cat.id)
+            ])
+            if category:
                 invoice.invoice_type = 'sponsorship'
-            elif GIFT_CATEGORY in categories:
-                invoice.invoice_type = 'gift'
-            elif FUND_CATEGORY in categories:
-                invoice.invoice_type = 'fund'
             else:
-                invoice.invoice_type = 'other'
+                # check if child_of Gift category
+                category = self.env['product.category'].search([
+                    (invoice.product_id.categ_id, 'child_of', gift_cat.id)
+                ])
+                if category:
+                    invoice.invoice_type = 'gift'
+                else:
+                    # check if child_of Fund category
+                    category = self.env['product.category'].search([
+                        (invoice.product_id.categ_id, 'child_of', fund_cat.id)
+                    ])
+                    if category:
+                        invoice.invoice_type = 'fund'
+                    else:
+                        # last choice -> Other category
+                        invoice.invoice_type = 'other'
