@@ -22,6 +22,11 @@ from odoo.addons.message_center_compassion.tools.onramp_connector import \
 
 logger = logging.getLogger(__name__)
 
+try:
+    from timezonefinder import TimezoneFinder
+except (ImportError, IOError) as err:
+    logger.debug(err)
+
 
 class CompassionProject(models.Model):
     """ A compassion project """
@@ -68,6 +73,8 @@ class CompassionProject(models.Model):
     zip_code = fields.Char(readonly=True)
     gps_latitude = fields.Float(readonly=True)
     gps_longitude = fields.Float(readonly=True)
+    timezone = fields.Char(readonly=True,
+                           compute='_compute_timezone', store=True)
     cluster = fields.Char(readonly=True)
     territory = fields.Char(readonly=True)
     field_office_id = fields.Many2one(
@@ -347,6 +354,16 @@ class CompassionProject(models.Model):
         ]
 
     @api.multi
+    @api.depends('gps_longitude', 'gps_latitude')
+    def _compute_timezone(self):
+        tf = TimezoneFinder()
+        for project in self:
+            if not project.gps_latitude or not project.gps_longitude:
+                project.timezone = ""
+            project.timezone = tf.timezone_at(lng=project.gps_longitude,
+                                              lat=project.gps_latitude)
+
+    @api.multi
     def _compute_usd(self):
         usd = self.env.ref('base.USD')
         for project in self:
@@ -398,12 +415,12 @@ class CompassionProject(models.Model):
         return True
 
     @api.multi
-    def get_activities(self, field, max=sys.maxint):
+    def get_activities(self, field, max_int=sys.maxint):
         all_activities = (
             self.mapped(field + '_babies_ids') +
             self.mapped(field + '_kids_ids') +
             self.mapped(field + '_ados_ids')).sorted()
-        return all_activities[:max].mapped('value')
+        return all_activities[:max_int].mapped('value')
 
     @api.multi
     def details_answer(self, vals):
