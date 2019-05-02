@@ -109,9 +109,7 @@ class InteractionResume(models.TransientModel):
                 'Email' as communication_type,
                 m.date as communication_date,
                 COALESCE(p.contact_id, p.id) AS partner_id,
-                (CASE WHEN mail.email_to != '' THEN mail.email_to
-                      ELSE p.email 
-                END) as email,
+                mt.recipient_address as email,
                 COALESCE(config.name, m.subject) as subject,
                 REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                 'out' AS direction,
@@ -157,8 +155,7 @@ class InteractionResume(models.TransientModel):
                 )
                 """, [partner_id] * 8)
         for row in self.env.cr.dictfetchall():
-            # if row['email']:
-            #     row['email'] = [x for x in row['email'].split(' ') if '@' in x][0]
+            # ensure that "Example <ex@exmaple.com>" is correctly printed
             row['email'] = html_sanitize(row['email'])
             self.create(row)
         return True
@@ -183,7 +180,8 @@ class InteractionResume(models.TransientModel):
 
     def _compute_color(self):
         for row in self:
-            if len(html2plaintext(row.body)) < 15 and row.direction == 'out':
+            if len(html2plaintext(row.body).strip()) < 15 \
+                    and row.direction == 'out':
                 # mass mailing
                 row.color = 'gray'
             elif row.direction == 'in':
