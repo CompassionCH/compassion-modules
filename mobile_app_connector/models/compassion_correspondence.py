@@ -8,7 +8,6 @@
 #
 ##############################################################################
 
-import base64
 from odoo import models, api
 from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
@@ -85,11 +84,12 @@ class CompassionCorrespondence(models.Model):
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
-        letter_id = self._get_required_param('correspondenceid', other_params)
-        letter = self.env['correspondence'].browse([int(letter_id)])
-        if letter and letter.letter_image:
-            base64_pdf = letter.letter_image
-            return base64.decodestring(base64_pdf)
+        host = self.env['ir.config_parameter'].get_param('web.external.url')
+        letter_id = other_params.get('correspondenceid')
+        if letter_id:
+            letter = self.browse(int(letter_id))
+            if letter.exists() and letter.letter_image:
+                return host + "/b2s_image?id=" + letter.uuid
         raise NotFound("Letter with id {} not found".format(letter_id))
 
     def _validate_required_fields(self, fields, params):

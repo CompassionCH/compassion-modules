@@ -76,8 +76,7 @@ class EventCompassion(models.Model):
         compute='_compute_income_lines', string='Income'
     )
     total_expense = fields.Float(
-        'Total expense', compute='_compute_expense', readonly=True,
-        store=True)
+        compute='_compute_expense', readonly=True, store=True)
     total_income = fields.Float(
         compute='_compute_income', readonly=True, store=True)
     balance = fields.Float(
@@ -97,7 +96,7 @@ class EventCompassion(models.Model):
     conversion_rate = fields.Float(
         related='origin_id.conversion_rate', store=True)
     project_id = fields.Many2one('project.project', 'Project')
-    use_tasks = fields.Boolean('Use tasks')
+    use_tasks = fields.Boolean()
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()

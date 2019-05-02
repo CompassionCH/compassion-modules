@@ -10,7 +10,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
@@ -99,13 +98,3 @@ class RestController(http.Controller):
         hero_mapping = AppBannerMapping(request.env)
         res = hero_mapping.get_connect_data(hero)
         return [res]
-
-    @http.route('/mobile-app-api/correspondence/letter_pdf',
-                type='json', auth='user', methods=['GET'])
-    def download_pdf(self, **parameters):
-        host = request.env['ir.config_parameter'].get_param('web.base.url')
-        letter_id = parameters['correspondenceid']
-        letter = request.env['correspondence'].browse([int(letter_id)])
-        if letter.exists() and letter.letter_image:
-            return host + "b2s_image?id=" + letter.uuid
-        raise NotFound()

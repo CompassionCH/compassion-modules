@@ -53,6 +53,7 @@
         'views/tile_type_view.xml',
         'views/tile_view.xml',
         'views/product_view.xml',
+        'views/app_feedback_view.xml',
     ],
     'demo': [
     ],
