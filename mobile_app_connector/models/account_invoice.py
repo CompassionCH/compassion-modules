@@ -8,8 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, api
-from datetime import date
+from odoo import models, api, fields
 
 
 class AccountInvoice(models.Model):
@@ -24,60 +23,98 @@ class AccountInvoice(models.Model):
             :param parameters: all request parameters
             :return: sample response
         """
-        wrapper = MobileAppWrapper(json_data)
-        invoice_line = self.env['account.invoice.line']
-        invoices_lines = invoice_line
-
-        for i in range(0, len(wrapper.appeal_id)):
-            product = self.env['product.template'].search(
-                [('id', '=', wrapper.appeal_id[i])]
-            )
-            invoices_lines += invoice_line.create({
-                'product_id': wrapper.appeal_id[i],
-                'account_id':  product.property_account_income_id.id,
-                'quantity': 1,
-                'price_unit': wrapper.appeal_price[i],
-                'name': product.name
+        wrapper = DonationDataWrapper(json_data, self.sudo().env)
+        result = {
+            'Gift': [],
+            'Donation': [],
+            # The typo is on purpose (UK did this)
+            'SendAGiftPublishResult': 'Donation data Recieved.'
+            if wrapper.gift_treated else
+            'Cannot send the appeals/gifts'
+        }
+        # TODO: could this work in public mode? We should get name info...
+        if not wrapper.gift_treated and wrapper.partner_id:
+            invoice_lines = []
+            product_obj = self.env['product.product'].sudo()
+            # Fund donations
+            for i, product_id in enumerate(wrapper.fund_ids):
+                product = product_obj.browse(product_id)
+                invoice_lines.append({
+                    'product_id': product.id,
+                    'account_id':  product.property_account_income_id.id,
+                    'quantity': 1,
+                    'price_unit': wrapper.fund_amounts[i],
+                    'name': product.name
+                })
+            # Sponsorship Gifts
+            for i, product in enumerate(wrapper.gift_products):
+                sponsorship = self.env['recurring.contract'].search([
+                    ('child_id', '=', wrapper.child_ids[i]),
+                    '|', ('correspondent_id', '=', wrapper.partner_id),
+                    ('partner_id', '=', wrapper.partner_id),
+                    ('state', 'not in', ['terminated', 'cancelled'])
+                ], limit=1)
+                invoice_lines.append({
+                    'product_id': product.id,
+                    'account_id':  product.property_account_income_id.id,
+                    'quantity': 1,
+                    'price_unit': wrapper.gift_amounts[i],
+                    'contract_id': sponsorship.id,
+                    'name': product.name
+                })
+            invoice = self.sudo().create({
+                'partner_id': wrapper.partner_id,
+                'invoice_line_ids': [(0, 0, invl) for invl in invoice_lines],
+                'origin': wrapper.source,
+                'type': 'out_invoice',
+                'date_invoice': fields.Date.today()
             })
-        for i in range(0, len(wrapper.gift_id)):
-            product = self.env['product.template'].search(
-                [('id', '=', wrapper.gift_id[i])]
-            ).sudo()
-            child = self.env['compassion.child'].search(
-                [('name', '=', wrapper.childs[i])]
-            )
-            sponsorship = self.env['recurring.contract'].search(
-                [('child_id', '=', child.id)]
-            )
-            invoices_lines += invoice_line.create({
-                'product_id': wrapper.gift_id[i],
-                'account_id':  product.property_account_income_id.id,
-                'quantity': 1,
-                'price_unit': wrapper.gift_amount[i],
-                'contract_id': sponsorship.id,
-                'name': product.name
-            })
-            # Todo Remove the sudo after the Login function is done
-        invoice = self.sudo().create({
-            'partner_id': int(wrapper.partner_id),
-            'invoice_line_ids': [(6, 0, invoices_lines.ids)],
-            'date_due': wrapper.date_out,
-            'write_date': wrapper.date_in})
-
-        if invoice:
-            return "The appeals/gifts have been correctly send"
-        else:
-            return "Cannot send the appeals/gifts"
+            for line in invoice.invoice_line_ids:
+                bckp_price = line.price_unit
+                line._onchange_product_id()
+                line.price_unit = bckp_price
+            result['Donation'].append(invoice.id)
+        return result
 
 
-class MobileAppWrapper:
+class DonationDataWrapper:
 
-    def __init__(self, json):
-        self.appeal_id = json['appealtype']
-        self.gift_id = json['gifttype']
-        self.appeal_price = json['appealamount']
-        self.gift_amount = json['giftamount']
-        self.date_in = date(json['startyear'], json['startmonth'], 1)
-        self.date_out = date(json['endyear'], json['endmonth'], 1)
-        self.childs = json['childname']
-        self.partner_id = json['supporter']
+    def __init__(self, json, env):
+        self.fund_ids = json.get('appealtype', [])
+        self.fund_amounts = json.get('appealamount', [])
+        self.gift_products = self._get_gift_product_ids(
+            json.get('gifttypetext', []), env)
+        self.gift_amounts = json.get('giftamount', [])
+        self.child_ids = json.get('need', [])
+        self.partner_id = int(json.get('supporter', 0) or 0)
+        self.gift_treated = json.get('LastInsertedDonationId') or \
+            json.get('LastInsertedGiftId')
+        self.source = json.get('source', 'iOS')
+
+    @staticmethod
+    def _get_gift_product_ids(gift_types, env):
+        """
+        Maps the app fund names to our gift products
+        :param gift_types: list of gift names sent by the app
+        :param env: odoo environment
+        :return: List of product.product ids
+        """
+        data_module = 'sponsorship_compassion.'
+        fund_mapping = {
+            'Birthday': env.ref(data_module +
+                                'product_template_gift_birthday').id,
+            'Individual': env.ref(data_module +
+                                  'product_template_gift_gen').id,
+            'Family': env.ref(data_module +
+                              'product_template_gift_family').id,
+            'Project': env.ref(data_module +
+                               'product_template_gift_project').id,
+            'Sponsorship': env.ref(data_module +
+                                   'product_template_sponsorship').id,
+        }
+        product_obj = env['product.product']
+        return [
+            product_obj.search([
+                ('product_tmpl_id', '=', fund_mapping[gift_type])], limit=1)
+            for gift_type in gift_types
+        ]
