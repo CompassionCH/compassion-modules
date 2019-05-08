@@ -34,5 +34,6 @@
         'views/request_type.xml',
         'views/holiday_automated_response_view.xml',
         'views/request_stage.xml',
+        'security/ir.model.access.csv',
     ],
 }
