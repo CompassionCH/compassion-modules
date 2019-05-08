@@ -5,7 +5,6 @@
 import logging
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
-from datetime import datetime
 from odoo.tools import config
 _logger = logging.getLogger(__name__)
 try:
@@ -32,8 +31,6 @@ class CrmClaim(models.Model):
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()
     language = fields.Selection('_get_lang')
-
-    today = fields.Date(string="Today date", compute="_compute_today")
 
     @api.depends('subject')
     @api.multi
@@ -191,7 +188,7 @@ class CrmClaim(models.Model):
         if holiday_closure:
             template_id = self.env.ref(
                 "crm_request.business_closed_email_template").id
-            self.with_context(today=datetime.today()).browse(request_id)\
+            self.with_context(lang=request.language).browse(request_id)\
                 .message_post_with_template(template_id)
 
         return request_id

@@ -21,7 +21,8 @@
     'depends': ['crm_claim_code',
                 'crm_claim_type',
                 'mail',
-                'partner_contact_in_several_companies'
+                'partner_contact_in_several_companies',
+                'advanced_translation',
                 ],
 
     # always loaded
