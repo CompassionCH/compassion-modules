@@ -68,8 +68,6 @@ class EmailComposeMessage(models.TransientModel):
             'composition_mode': 'mass_mail',
             'model': template.model,
             'author_id': self.env.user.partner_id.id,
-            'notification': True,
-            'auto_delete': True,
         })
         # Fetch template values.
         wizard.write(
