@@ -5,6 +5,7 @@
 import logging
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
+from datetime import datetime
 from odoo.tools import config
 _logger = logging.getLogger(__name__)
 try:
@@ -31,6 +32,8 @@ class CrmClaim(models.Model):
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()
     language = fields.Selection('_get_lang')
+
+    today = fields.Date(string="Today date", compute="_compute_today")
 
     @api.depends('subject')
     @api.multi
@@ -132,6 +135,7 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+
         if custom_values is None:
             custom_values = {}
 
@@ -168,7 +172,6 @@ class CrmClaim(models.Model):
                 defaults['language'] = partner.lang
 
         defaults.pop('name', False)
-
         defaults.update(custom_values)
 
         request_id = super(CrmClaim, self).message_new(msg, defaults)
@@ -176,6 +179,20 @@ class CrmClaim(models.Model):
         if not request.language:
             request.language = self.detect_lang(
                 request.description).lang_id.code
+
+        # Check here if the date of the mail is during a holiday
+        mail_date = msg.get('date')
+        holiday_closure = self.env["holiday.closure"].search([
+            ('start_date', '<=', mail_date),
+            ('end_date', '>=', mail_date)
+        ], limit=1)
+
+        # send automated holiday response
+        if holiday_closure:
+            template_id = self.env.ref(
+                "crm_request.business_closed_email_template").id
+            self.with_context(today=datetime.today()).browse(request_id)\
+                .message_post_with_template(template_id)
 
         return request_id
 

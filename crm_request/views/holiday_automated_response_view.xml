@@ -1,0 +1,27 @@
+
+<odoo>
+
+     <record id="crm_holiday_closure_tree" model="ir.ui.view">
+        <field name="name">crm.holiday.closure.tree</field>
+        <field name="model">holiday.closure</field>
+        <field name="arch" type="xml">
+            <tree string="Holiday periods" default_order='start_date, end_date, holiday_name'>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="holiday_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="crm_holiday_act" model="ir.actions.act_window">
+        <field name="name">Holiday</field>
+        <field name="res_model">holiday.closure</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem action="crm_holiday_act" name="Holiday"
+              id="menu_crm_holiday_act"
+              parent="crm_claim.menu_config_claim"
+              groups="base.group_no_one"/>
+</odoo>

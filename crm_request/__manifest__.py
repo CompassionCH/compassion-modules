@@ -29,8 +29,11 @@
         # 'security/ir.model.access.csv',
         'data/request_sequence.xml',
         'data/crm_request_data.xml',
+        'data/holiday_closure_email_template.xml',
         'views/request.xml',
         'views/request_type.xml',
+        'views/holiday_automated_response_view.xml',
         'views/request_stage.xml',
+        'security/ir.model.access.csv',
     ],
 }
