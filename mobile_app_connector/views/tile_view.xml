@@ -26,7 +26,8 @@
                         </group>
                         <group>
                             <field name="priority" />
-                            <field name="view_order"/>
+                            <field name="is_automatic_ordering"/>
+                            <field name="view_order" attrs="{'invisible': [('is_automatic_ordering', '==', True)]}"/>
                             <field name="action_destination" />
                             <field name="action_text" />
                         </group>

@@ -32,6 +32,8 @@ class AppTile(models.Model):
     display_name = fields.Char(
         'Name', compute='_compute_display_name', store=True, readonly=True)
     view_order = fields.Integer('View order', required=True)
+    order_date = fields.Date('Date of publication for ordering')
+    is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
     is_active = fields.Boolean('Active', default=True)
@@ -157,7 +159,10 @@ class AppTile(models.Model):
                 self.body, self._name, self.id),
             'ActionText': template_obj.render_template(
                 self.action_text, self._name, self.id),
+            'SortOrder': self.view_order,
+            'IsAutomaticOrdering': self.is_automatic_ordering,
         }
+
         if hasattr(records, 'get_app_json'):
             res.update(records.get_app_json(multi=len(records) > 1))
         return res

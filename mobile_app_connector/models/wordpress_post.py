@@ -42,6 +42,8 @@ class WordpressPost(models.Model):
     lang = fields.Selection('select_lang', 'Language', required=True)
     display_on_hub = fields.Boolean(
         default=True, help='Deactivate in order to hide tiles in App.')
+    view_order = fields.Integer('View order', required=True, default=6000)
+    is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')

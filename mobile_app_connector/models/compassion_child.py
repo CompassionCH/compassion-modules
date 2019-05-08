@@ -50,6 +50,7 @@ class CompassionChild(models.Model):
         """
         children_pictures = self.sudo().mapped('pictures_ids')
         project = self.sudo().mapped('project_id')
+        # TODO change timezone computation to one retrieving data from project
         tz = country_timezones('NI')
         tz_child = pytz.timezone(tz[0])
         datetime_child = datetime.now(tz_child)
@@ -72,7 +73,9 @@ class CompassionChild(models.Model):
                 project.get_location_json(multi=False),
             'Time': {
                     "ChildTime": datetime_child.strftime("%d/%m/%Y %H:%M:%S")
-                    }
+                    },
+            'OrderDate': max(x for y in self
+                             for x in y.sponsorship_ids.mapped('start_date')),
 
         }
 
