@@ -14,10 +14,13 @@ from odoo.exceptions import ValidationError
 
 class HolidayClosure(models.Model):
     _name = "holiday.closure"
+    _description = "Holiday closure"
+    _inherit = "translatable.model"
 
     start_date = fields.Date(string="Start of holiday", required=True)
     end_date = fields.Date(string="End of holiday", required=True)
-    holiday_name = fields.Char(string="Name of holiday", required=True)
+    holiday_name = fields.Char(string="Name of holiday", required=True,
+                               translate=True)
 
     @api.constrains('end_date', 'start_date')
     def _validate_dates(self):
