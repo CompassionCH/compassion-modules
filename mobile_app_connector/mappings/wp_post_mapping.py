@@ -25,6 +25,7 @@ class WPPostMapping(OnrampMapping):
             'Post_type': 'post_type',
         },
         'Title': 'name',
+        'ActionText': 'name',
     }
 
     FIELDS_TO_SUBMIT = {
@@ -37,6 +38,7 @@ class WPPostMapping(OnrampMapping):
         'ActionDestination': None,
         'Type': None,
         'SubType': None,
+        'ActionText': None,
     }
 
     CONSTANTS = {

@@ -272,6 +272,7 @@ class CommunicationConfig(models.Model):
             send_mode = False
 
         # missing email
+        removed_digital = False
         if send_mode in ['digital', 'both'] and not partner.email:
             removed_digital = True
             if (self.print_if_not_email or send_mode == 'both') \

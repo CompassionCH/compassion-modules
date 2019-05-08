@@ -97,12 +97,17 @@ class AppHub(models.AbstractModel):
             ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
+        # Fetch products for fund donations
+        products = self.env['product.product'].sudo().search([
+            ('mobile_app', '=', True)
+        ])
         if available_tiles:
             start = int(pagination.get('start', 0))
             number_mess = int(pagination.get('limit', 1000))
             offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
             tiles.extend(
-                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile()
+                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile({
+                    'product.product': products})
             )
 
         # Fetch tiles from Wordpress

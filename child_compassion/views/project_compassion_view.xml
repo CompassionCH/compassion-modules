@@ -97,6 +97,7 @@
                                     <field name="time_to_medical_facility"/>
                                     <field name="gps_latitude"/>
                                     <field name="gps_longitude"/>
+                                    <field name="timezone"/>
                                 </group>
                                 <group string="Church Information">
                                     <field name="church_foundation_date"/>

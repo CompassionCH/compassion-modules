@@ -205,7 +205,7 @@ Make a donation]]></field>
         <field name="view_order">1</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
-        <field name="default_title">ctx['objects'].sudo().child_id.preferred_name</field>
+        <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">
 <![CDATA[% set sponsorship = ctx['objects'].sudo()
 % set letters = sponsorship.sponsor_letter_ids
@@ -231,7 +231,7 @@ You never wrote to your sponsored child.
         <field name="default_model_id" ref="model_correspondence"/>
         <!-- TODO AP-61 Add a field in sbc_compassion for checking when the letter is read by the sponsor and use this -->
         <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and not c.email_read</field>
-        <field name="default_title">ctx['objects'].sudo().child_id.preferred_name</field>
+        <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">A new letter has arrived from your sponsored child</field>
         <field name="default_action_text">Read now</field>
         <field name="default_action_destination">Read overlay</field>

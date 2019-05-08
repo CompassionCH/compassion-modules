@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import models, fields, api
+from odoo.tools.mail import html2plaintext, html_sanitize
 
 
 class InteractionResume(models.TransientModel):
@@ -35,6 +36,7 @@ class InteractionResume(models.TransientModel):
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one("partner.communication.job", "Communication")
     email_id = fields.Many2one("mail.mail", "Email")
+    color = fields.Char(compute='_compute_color')
     message_id = fields.Many2one("mail.message", "Email")
     tracking_status = fields.Selection([
         ('error', 'Error'),
@@ -107,7 +109,7 @@ class InteractionResume(models.TransientModel):
                 'Email' as communication_type,
                 m.date as communication_date,
                 COALESCE(p.contact_id, p.id) AS partner_id,
-                p.email,
+                mt.recipient_address as email,
                 COALESCE(config.name, m.subject) as subject,
                 REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                 'out' AS direction,
@@ -136,7 +138,7 @@ class InteractionResume(models.TransientModel):
                 'Email' as communication_type,
                 m.date as communication_date,
                 COALESCE(p.contact_id, p.id) AS partner_id,
-                p.email,
+                m.email_from as email,
                 m.subject as subject,
                 REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                 'in' AS direction,
@@ -153,6 +155,8 @@ class InteractionResume(models.TransientModel):
                 )
                 """, [partner_id] * 8)
         for row in self.env.cr.dictfetchall():
+            # ensure that "Example <ex@exmaple.com>" is correctly printed
+            row['email'] = html_sanitize(row['email'])
             self.create(row)
         return True
 
@@ -173,3 +177,15 @@ class InteractionResume(models.TransientModel):
         for row in self:
             row.has_attachment = row.email_id.attachment_ids or \
                 row.message_id.attachment_ids
+
+    def _compute_color(self):
+        for row in self:
+            if len(html2plaintext(row.body).strip()) < 15 \
+                    and row.direction == 'out':
+                # mass mailing
+                row.color = 'gray'
+            elif row.direction == 'in':
+                row.color = 'red'
+            else:
+                # outgoing
+                row.color = 'green'
