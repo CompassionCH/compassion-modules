@@ -11,6 +11,7 @@
 ##############################################################################
 from odoo import api, fields, models, _
 
+
 class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
     _inherit = 'account.invoice'
@@ -52,29 +53,33 @@ class AccountInvoice(models.Model):
     def _compute_invoice_type(self):
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
 
-            sponsorship_cat = self.env.ref('product.product_category_3')
-            fund_cat = self.env.ref('product.product_category_4')
-            gift_cat = self.env.ref('product.product_category_5')
+            sponsorship_cat = self.env.ref('sponsorship_compassion.product_category_sponsorship')
+            fund_cat = self.env.ref('sponsorship_compassion.product_template_fund_gen')
+            gift_cat = self.env.ref('sponsorship_compassion.product_category_gift')
 
             # check if child_of Sponsorship category
-            category = self.env['product.category'].search([
-                (invoice.product_id.categ_id, 'child_of', sponsorship_cat.id)
+            category_lines = self.env['account.invoice.line'].search([
+                ('invoice_id', '=', invoice.id),
+                ('product_id.categ_id', 'child_of', sponsorship_cat.id)
             ])
-            if category:
+
+            if category_lines:
                 invoice.invoice_type = 'sponsorship'
             else:
                 # check if child_of Gift category
-                category = self.env['product.category'].search([
-                    (invoice.product_id.categ_id, 'child_of', gift_cat.id)
+                category_lines = self.env['account.invoice.line'].search([
+                    ('invoice_id', '=', invoice.id),
+                    ('product_id.categ_id', 'child_of', gift_cat.id)
                 ])
-                if category:
+                if category_lines:
                     invoice.invoice_type = 'gift'
                 else:
                     # check if child_of Fund category
-                    category = self.env['product.category'].search([
-                        (invoice.product_id.categ_id, 'child_of', fund_cat.id)
+                    category_lines = self.env['account.invoice.line'].search([
+                        ('invoice_id', '=', invoice.id),
+                        ('product_id.categ_id', 'child_of', fund_cat.id)
                     ])
-                    if category:
+                    if category_lines:
                         invoice.invoice_type = 'fund'
                     else:
                         # last choice -> Other category
