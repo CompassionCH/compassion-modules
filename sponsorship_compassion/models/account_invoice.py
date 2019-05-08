@@ -53,9 +53,12 @@ class AccountInvoice(models.Model):
     def _compute_invoice_type(self):
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
 
-            sponsorship_cat = self.env.ref('sponsorship_compassion.product_category_sponsorship')
-            fund_cat = self.env.ref('sponsorship_compassion.product_template_fund_gen')
-            gift_cat = self.env.ref('sponsorship_compassion.product_category_gift')
+            sponsorship_cat = self.env.ref(
+                'sponsorship_compassion.product_category_sponsorship')
+            fund_cat = self.env.ref(
+                'sponsorship_compassion.product_template_fund_gen')
+            gift_cat = self.env.ref(
+                'sponsorship_compassion.product_category_gift')
 
             # check if child_of Sponsorship category
             category_lines = self.env['account.invoice.line'].search([
