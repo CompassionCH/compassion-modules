@@ -54,7 +54,7 @@ class AccountInvoice(models.Model):
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
 
             sponsorship_cat = self.env.ref(
-                'sponsorship_compassion.product_category_sponsorship')
+                'sponsorship_compassion.product_category_sponsorship', -1)
             fund_cat = self.env.ref(
                 'contract_compassion.product_category_fund', -1)
             gift_cat = self.env.ref(
