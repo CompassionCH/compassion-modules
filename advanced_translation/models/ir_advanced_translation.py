@@ -76,7 +76,7 @@ class IrAdvancedTranslation(models.Model):
             return term.female_singular or ''
         if plural:
             return term.male_plural or ''
-        return term.male_singular
+        return term.male_singular or ''
 
 
 class AdvancedTranslatable(models.AbstractModel):
