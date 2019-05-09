@@ -240,7 +240,7 @@ class AppHub(models.AbstractModel):
             "GI3": giving,
             "GI5": giving,
             "GI_T1": giving,
-            "LE_1": letters,
+            "LE1": letters,
             "LE_T1": {'tiles': [], 'max_number_tile': 2},
             "LE_T2": {'tiles': [], 'max_number_tile': 0},
             'LE_T3': letters,
@@ -255,7 +255,7 @@ class AppHub(models.AbstractModel):
             "MI2": {'tiles': [], 'max_number_tile': 0},
         }
         fixed_group = []
-        fixed_group_tiles = ["CH_1", "CO1", "CO2", "CO3"]
+        fixed_group_tiles = ["CH1", "CO1", "CO2", "CO3"]
         rest_group = []
 
         for tile in to_order:

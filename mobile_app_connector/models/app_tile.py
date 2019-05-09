@@ -31,7 +31,7 @@ class AppTile(models.Model):
     name = fields.Char(required=True)
     display_name = fields.Char(
         'Name', compute='_compute_display_name', store=True, readonly=True)
-    view_order = fields.Integer('View order', required=True)
+    view_order = fields.Integer('View order', required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
@@ -89,6 +89,23 @@ class AppTile(models.Model):
                 self.subtype_id.default_action_destination
             self.model_id = self.subtype_id.default_model_id
             self.records_filter = self.subtype_id.default_records_filter
+
+    @api.model
+    def init_tiles(self, domain=None):
+        """
+        Use this to set all tiles to their default templates defined
+        in the tile subtypes. Called at module init.
+        :param domain: optional search domain to restrict the reinitialization
+        :return: True
+        """
+        if domain is None:
+            domain = []
+        # We iterate on all language to force the translations to be applied
+        # to the texts.
+        for lang in self.env['res.lang'].search([('active', '=', True)]):
+            for tile in self.search(domain).with_context(lang=lang.code):
+                tile._onchange_subtype()
+        return True
 
     @api.multi
     def render_tile(self, tile_data=None):

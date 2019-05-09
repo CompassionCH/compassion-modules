@@ -225,12 +225,11 @@ You never wrote to your sponsored child.
 
     <record id="tile_subtype_le_t1" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_letter"/>
-        <field name="name">New B2S Letter</field>
+        <field name="name">B2S Letter</field>
         <field name="code">LE_T1</field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_correspondence"/>
-        <!-- TODO AP-61 Add a field in sbc_compassion for checking when the letter is read by the sponsor and use this -->
-        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and not c.email_read</field>
+        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter'</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">A new letter has arrived from your sponsored child</field>
         <field name="default_action_text">Read now</field>
@@ -251,13 +250,13 @@ You never wrote to your sponsored child.
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T1.png"/>
     </record>
 
-<!-- TODO AP-62 FIX THIS LE_T3 (maybe it's for child letters...) -->
     <record id="tile_subtype_le_t3" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_letter"/>
         <field name="name">Child anniversary letter</field>
         <field name="code">LE_T3</field>
         <field name="view_order">10</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
+<!--        TODO AP-86 call a filter for only selecting those that have birthday in three months and not yet written-->
         <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
         <field name="default_title">Anniversary</field>
         <field name="default_body">Write a letter for ${ctx['objects'].child_id.preferred_name}'s birthday on ${ctx['objects'].child_id.get_date('birthdate')}</field>
