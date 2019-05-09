@@ -56,7 +56,7 @@ class AccountInvoice(models.Model):
             sponsorship_cat = self.env.ref(
                 'sponsorship_compassion.product_category_sponsorship')
             fund_cat = self.env.ref(
-                'sponsorship_compassion.product_template_fund_gen')
+                'contract_compassion.product_category_fund', -1)
             gift_cat = self.env.ref(
                 'sponsorship_compassion.product_category_gift')
 
