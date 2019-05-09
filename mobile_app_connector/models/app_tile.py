@@ -32,7 +32,6 @@ class AppTile(models.Model):
     display_name = fields.Char(
         'Name', compute='_compute_display_name', store=True, readonly=True)
     view_order = fields.Integer('View order', required=True)
-    order_date = fields.Date('Date of publication for ordering')
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()

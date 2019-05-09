@@ -25,7 +25,8 @@ class TileMapping(OnrampMapping):
         'ActionDestination': 'action_destination',
         'Type': ('subtype_id.type_id.code', 'mobile.app.tile.type'),
         'IsAutomaticOrdering': 'is_automatic_ordering',
-        'OrderDate': 'create_date',
+        'OrderDate': 'create_date',  # might be better with start_date as
+                                     # initial fallback
     }
 
     FIELDS_TO_SUBMIT = {
