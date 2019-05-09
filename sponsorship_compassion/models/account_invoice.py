@@ -58,7 +58,7 @@ class AccountInvoice(models.Model):
             fund_cat = self.env.ref(
                 'contract_compassion.product_category_fund', -1)
             gift_cat = self.env.ref(
-                'sponsorship_compassion.product_category_gift')
+                'sponsorship_compassion.product_category_gift', -1)
 
             # check if child_of Sponsorship category
             category_lines = self.env['account.invoice.line'].search([
