@@ -26,7 +26,7 @@
                                    options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
                                              'field_color':'state',
                                              'create': false, 'create_edit': false}"
-                                   domain="[('partner_id', '=', partner_id), ('type', 'like', 'S')]"/>
+                                   domain="[('correspondent_id', '=', partner_id), ('type', 'like', 'S')]"/>
                         </group>
                         <group>
                             <field name="template_id"/>
