@@ -445,8 +445,9 @@ class CommunicationRevision(models.Model):
         self.keyword_ids.unlink()
         text = self.with_context(lang=self.lang).body_html
         self.raw_template_edit_mode = False
-        self.with_context(
-            no_update=True).simplified_text = self._simplify_text(text)
+        if text:
+            self.with_context(
+                no_update=True).simplified_text = self._simplify_text(text)
 
     @api.multi
     def toggle_all_keywords(self):
