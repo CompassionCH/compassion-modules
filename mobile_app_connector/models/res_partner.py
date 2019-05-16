@@ -3,12 +3,13 @@
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#    @author: Nicolas Badoux <n.badoux@hotmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import api, fields, models
 
 
 class GetPartnerMessage(models.Model):
@@ -17,27 +18,6 @@ class GetPartnerMessage(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.model
-    def mobile_update_notification_preference(self, json_data, **params):
-        """
-        TODO Should we store these settings in Odoo and use them?
-        This is called when the user updates his notification preferences.
-        :param params: {
-            "SupporterId": the partner id
-            "appchild": boolean (receive child notification)
-            "appinfo": boolean (receive general notifications)
-        }
-        :return:
-        """
-        partner_id = json_data.get('SupporterId')
-        notify_child = json_data.get('appchild')
-        notify_info = json_data.get('appinfo')
-        return {
-            "UpdateRecordinContactcResult":
-            "App notification Child And App notification child Info updated "
-            "of Supporter ID : {} ({}, {})".format(
-                partner_id, notify_child, notify_info)
-        }
 
     @api.model
     def mobile_get_all_correspondence(self, **other_params):

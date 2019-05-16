@@ -15,4 +15,4 @@ simplejson
 locustio
 detectlanguage
 timezonefinder==3.4.2
-git+git://github.com/firebase/firebase-admin-python/commit/8f7148557933ecb51888fef2e29c488a40b64d66
+firebase-admin

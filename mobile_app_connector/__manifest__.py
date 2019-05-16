@@ -39,6 +39,7 @@
         'sbc_compassion',
         'partner_contact_birthdate',
         'base_geolocalize',
+        'firebase_connector',
     ],
     'external_dependencies': {
         'python': ['simplejson'],
@@ -55,6 +56,7 @@
         'views/tile_view.xml',
         'views/product_view.xml',
         'views/app_feedback_view.xml',
+        'views/firebase_registration.xml',
     ],
     'demo': [
     ],

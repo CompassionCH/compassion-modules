@@ -4,6 +4,7 @@
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Nicolas Badoux <n.badoux@hotmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -30,12 +31,19 @@ Root.get_request = get_request
 
 
 class MobileAppJsonRequest(JsonRequest):
-    """ Special RestJson Handler to accept empty JSON GET messages for
+    """
+    Special RestJson Handler to accept empty JSON GET messages for
     mobile-app-api and send back results in clean JSON format
     (remove wrapper made by Odoo)
     """
+
     def __init__(self, *args):
         try:
+            # The following statement seems to have no effect but it is not the
+            # case. It prevents the *super* of emptying the stream containing
+            # the post data. Without it, we loose access to the post data.
+            _ = args[0].values
+
             super(MobileAppJsonRequest, self).__init__(*args)
             self.params = {
                 key: val for key, val in self.httprequest.args.iteritems()
@@ -46,7 +54,7 @@ class MobileAppJsonRequest(JsonRequest):
                 self.jsonrequest = {}
                 # PUT The GET parameters as the parameters for the controller
                 self.params = {
-                    key: val for key, val in self.httprequest.args.iteritems()
+                    key: val for key, val in self.httprequest.values.iteritems()
                 }
                 self.context = dict(self.session.context)
             else:
