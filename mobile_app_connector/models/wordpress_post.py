@@ -88,7 +88,7 @@ class WordpressPost(models.Model):
         # This is standard Wordpress REST API URL
         wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/' + post_type
         # This is for avoid loading all post content
-        params = {'context': 'embed'}
+        params = {'context': 'embed', 'per_page': 100}
         category_obj = self.env['wp.post.category']
         found_ids = []
         try:
