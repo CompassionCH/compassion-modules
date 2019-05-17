@@ -1,0 +1,56 @@
+<odoo>
+    <record id="view_smart_tagger_kanban" model="ir.ui.view">
+        <field name="name">smart.tagger.kanban</field>
+        <field name="model">smart.tagger</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="name"
+                    group_create='false'
+                    group_delete='false'
+                    group_edit="false"
+                    quick_create='false'>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                            <div class="oe_kanban_vignette">
+                                <div class='oe_kanban_card'>
+                                    <h4>
+                                        <a type="open">
+                                            <field name="name"/>
+                                        </a>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <record id="view_smart_tagger_form" model="ir.ui.view">
+        <field name="name">smart.tagger.form</field>
+        <field name="model">smart.tagger</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="model"/>
+                    <field name="condition"/>
+                    <field name="condition_field"/>
+                    <field name="related_tag_field"/>
+                </group>
+                <group>
+                    <button type='object' name='open_tags' string="Tags"><field name="number_tags" readonly="1"/></button>
+                </group>
+                <group>
+                    <field name="under_tagger"/>
+                    <field name="upper_tagger"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <!-- TODO adding an update all button to the action menu for the smart_tagger
+    <menuitem id="smart_tagger.update_all" parent="menu_donation" name="Generate Communications" sequence="2"/>
+    -->
+</odoo>
