@@ -106,28 +106,33 @@ class CompassionChild(models.Model):
 
     @api.model
     def mobile_get_child_bio(self, **other_params):
+        """
+        Mobile app method:
+        Returns child bio of a given child
+        :param other_params: child's global id
+        :return: JSON list of child bio information
+        """
         values = dict(other_params)
         child = self.env['compassion.child'].search([
-            ('global_id', '=', str(values['child_global_id']))
+            ('global_id', '=', str(other_params['globalId']))
         ])
 
-        childbio = {
-            'name': child.name,
-            'firstName': child.firstname,
-            'lastName': child.lastname,
-            'gender': child.gender,
-            'birthdate': child.birthdate,
-            'age': child.age,
-            'weight': child.weight,
-            'height': child.height,
+        household = child.household_id
+
+        guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
+            .mapped('name')
+
+        childBio = {
             'educationLevel': child.education_level,
             'academicPerformance': child.academic_performance,
-            'vocationalTrainingType': child.vocational_training_type,
-            'sponsorshipStatus': child.sponsorship_status
+            'maleGuardianJob': household.male_guardian_job,
+            'femaleGuardianJob': household.female_guardian_job,
+            'hobbies': child.hobby_ids.mapped('name'),
+            'guardians': guardians
         }
 
         result = {
-            'ChildBioServiceResult': childbio
+            'ChildBioServiceResult': childBio
         }
         return result
 
