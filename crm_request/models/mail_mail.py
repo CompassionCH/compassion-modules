@@ -19,6 +19,6 @@ class MailMail(models.Model):
 
             # When we deactivate a partner, he is remove from the email.
             mail.write({'partner_ids': partner_ids})
-            
+
         s = super(MailMail, self)._postprocess_sent_message(mail_sent)
         return s
