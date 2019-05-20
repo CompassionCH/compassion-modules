@@ -120,15 +120,18 @@ class CompassionChild(models.Model):
         household = child.household_id
 
         guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
-            .mapped('name')
+            .mapped('role')
 
         childBio = {
             'educationLevel': child.education_level,
             'academicPerformance': child.academic_performance,
             'maleGuardianJob': household.male_guardian_job,
             'femaleGuardianJob': household.female_guardian_job,
+            'maleGuardianJobType': household.male_guardian_job_type,
+            'femaleGuardianJobType': household.female_guardian_job_type,
             'hobbies': child.hobby_ids.mapped('name'),
-            'guardians': guardians
+            'guardians': guardians,
+            'notEnrolledReason': child.not_enrolled_reason
         }
 
         result = {
