@@ -51,15 +51,16 @@ class AccountInvoice(models.Model):
     @api.depends('invoice_line_ids', 'state')
     @api.multi
     def _compute_invoice_type(self):
+        sponsorship_cat = self.env.ref(
+            'sponsorship_compassion.product_category_sponsorship', False)
+        fund_cat = self.env.ref(
+            'contract_compassion.product_category_fund', False)
+        gift_cat = self.env.ref(
+            'sponsorship_compassion.product_category_gift', False)
+        # At module installation, the categories are not yet loaded.
+        if not sponsorship_cat or not fund_cat or not gift_cat:
+            return
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
-
-            sponsorship_cat = self.env.ref(
-                'sponsorship_compassion.product_category_sponsorship', False)
-            fund_cat = self.env.ref(
-                'contract_compassion.product_category_fund', False)
-            gift_cat = self.env.ref(
-                'sponsorship_compassion.product_category_gift', False)
-
             # check if child_of Sponsorship category
             category_lines = self.env['account.invoice.line'].search([
                 ('invoice_id', '=', invoice.id),

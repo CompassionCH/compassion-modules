@@ -142,7 +142,7 @@ class ChildPictures(models.Model):
                 url = "/".join(image_split)
                 data = base64.encodestring(urllib2.urlopen(url).read())
                 _image_date = picture.child_id.last_photo_date or \
-                              fields.Date.today()
+                    fields.Date.today()
                 if type.lower() == 'headshot':
                     self.fullshot = data
                 elif type.lower() == 'fullshot':
