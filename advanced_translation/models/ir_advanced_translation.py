@@ -110,6 +110,8 @@ class AdvancedTranslatable(models.AbstractModel):
         """ helps getting the translated value of a
         char/selection field by adding a translate function.
         """
+        if not self.exists():
+            return ''
         pattern_keyword = re.compile("(\\{)(.*?)(\\})")
 
         def _replace_keyword(match):
