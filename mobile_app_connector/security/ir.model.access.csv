@@ -23,6 +23,9 @@ read_access_fcp_school_cost,FCP school cost read access,child_compassion.model_f
 read_access_fcp_community_occupation,FCP community occupation read access,child_compassion.model_fcp_community_occupation,base.group_portal,1,0,0,0
 read_access_fcp_diet,FCP diet read access,child_compassion.model_fcp_diet,base.group_portal,1,0,0,0
 read_access_connect_month,Connect month read access,child_compassion.model_connect_month,base.group_portal,1,0,0,0
+read_access_child_household,Child's household read access,child_compassion.model_compassion_household,base.group_portal,1,0,0,0
+read_access_household_members,Household members read access,child_compassion.model_compassion_household_member,base.group_portal,1,0,0,0
+read_access_hobby,Hobbies' names read access,child_compassion.model_child_hobby,base.group_portal,1,0,0,0
 access_admin_mobile_app_banner,Mobile App Banner full access,model_mobile_app_banner,sales_team.group_sale_manager,1,1,1,1
 access_app_banner,App banner read access,model_mobile_app_banner,,1,0,0,0
 access_mobile_app_tile,access_mobile_app_tile,model_mobile_app_tile,base.group_portal,1,0,0,0
