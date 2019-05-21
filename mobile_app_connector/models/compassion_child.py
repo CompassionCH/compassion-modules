@@ -112,7 +112,6 @@ class CompassionChild(models.Model):
         :param other_params: child's global id
         :return: JSON list of child bio information
         """
-        values = dict(other_params)
         child = self.env['compassion.child'].search([
             ('global_id', '=', str(other_params['globalId']))
         ])
