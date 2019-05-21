@@ -31,6 +31,7 @@ class CrmClaim(models.Model):
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()
     language = fields.Selection('_get_lang')
+    holiday_closure = fields.Many2one('holiday.closure')
 
     @api.depends('subject')
     @api.multi
@@ -168,6 +169,14 @@ class CrmClaim(models.Model):
                 defaults['partner_id'] = partner.id
                 defaults['language'] = partner.lang
 
+        # Check here if the date of the mail is during a holiday
+        mail_date = fields.Date.to_string(
+            fields.Date.from_string(msg.get('date')))
+        defaults['holiday_closure'] = self.env["holiday.closure"].search([
+            ('start_date', '<=', mail_date),
+            ('end_date', '>=', mail_date)
+        ], limit=1).id
+
         defaults.pop('name', False)
         defaults.update(custom_values)
 
@@ -177,19 +186,12 @@ class CrmClaim(models.Model):
             request.language = self.detect_lang(
                 request.description).lang_id.code
 
-        # Check here if the date of the mail is during a holiday
-        mail_date = msg.get('date')
-        holiday_closure = self.env["holiday.closure"].search([
-            ('start_date', '<=', mail_date),
-            ('end_date', '>=', mail_date)
-        ], limit=1)
-
-        # send automated holiday response
-        if holiday_closure:
+        # # send automated holiday response
+        if request.holiday_closure:
             template_id = self.env.ref(
                 "crm_request.business_closed_email_template").id
-            self.with_context(lang=request.language).browse(request_id)\
-                .message_post_with_template(template_id)
+            request.with_context(keep_stage=False).message_post_with_template(
+                template_id)
 
         return request_id
 
@@ -213,7 +215,7 @@ class CrmClaim(models.Model):
         """
         result = super(CrmClaim, self).message_post(**kwargs)
 
-        if 'mail_server_id' in kwargs:
+        if 'mail_server_id' in kwargs and self.env.context.get('keep_stage'):
             for request in self:
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(
