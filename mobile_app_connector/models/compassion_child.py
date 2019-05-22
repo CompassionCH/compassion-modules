@@ -119,18 +119,24 @@ class CompassionChild(models.Model):
         household = child.household_id
 
         guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
-            .mapped('role')
+            .translate('role')
 
+        at = self.env['ir.advanced.translation'].sudo()
         childBio = {
-            'educationLevel': child.education_level,
-            'academicPerformance': child.academic_performance,
-            'maleGuardianJob': household.male_guardian_job,
-            'femaleGuardianJob': household.female_guardian_job,
-            'maleGuardianJobType': household.male_guardian_job_type,
-            'femaleGuardianJobType': household.female_guardian_job_type,
-            'hobbies': child.hobby_ids.mapped('name'),
+            'educationLevel': child.translate('education_level').lower(),
+            'academicPerformance': child.translate(
+                'academic_performance').lower(),
+            'maleGuardianJob': at.get(
+                household.translate('male_guardian_job')),
+            'femaleGuardianJob': at.get(
+                household.translate('female_guardian_job'), female=True),
+            'maleGuardianJobType': household.translate(
+                'male_guardian_job_type'),
+            'femaleGuardianJobType': household.translate(
+                'female_guardian_job_type'),
+            'hobbies': child.translate('hobby_ids.value'),
             'guardians': guardians,
-            'notEnrolledReason': child.not_enrolled_reason
+            'notEnrolledReason': (child.not_enrolled_reason or '').lower()
         }
 
         result = {
