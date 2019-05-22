@@ -22,6 +22,16 @@ from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
+try:
+    firebase_credentials = \
+        credentials.Certificate(config.get('google_application_credentials'))
+    firebase_app = firebase_admin.initialize_app(
+        credential=firebase_credentials)
+except (KeyError, ValueError):
+    if not config.get("test_enable"):
+        logging.error("google_application_credentials is not correctly"
+                      " configured in odoo.conf")
+
 
 class FirebaseRegistration(models.Model):
     """
@@ -37,10 +47,6 @@ class FirebaseRegistration(models.Model):
                                   string="Firebase Registration ID")
     partner_id = fields.Many2one('res.partner', string="Partner")
     partner_name = fields.Char(related='partner_id.name', readonly=True)
-    firebase_credentials =\
-        credentials.Certificate(config.get('firebase_api_key'))
-    firebase_app = firebase_admin.initialize_app(
-        credential=firebase_credentials)
 
     _sql_constraints = [
         ('firebase_id_unique',
@@ -75,6 +81,12 @@ class FirebaseRegistration(models.Model):
         :param data: Data segment of a Firebase message (see the docs)
         :return: None
         """
+
+        if not firebase_app:
+            logging.error("google_application_credentials is not correctly"
+                          "configured in odoo.conf or invalid. Skipping "
+                          "sending notifications")
+            return
 
         notif = messaging.Notification(title=message_title, body=message_body)
 
