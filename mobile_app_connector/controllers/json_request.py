@@ -42,7 +42,8 @@ class MobileAppJsonRequest(JsonRequest):
             # The following statement seems to have no effect but it is not the
             # case. It prevents the *super* of emptying the stream containing
             # the post data. Without it, we loose access to the post data.
-            _ = args[0].values
+            # pylint: disable=pointless-statement
+            args[0].values
 
             super(MobileAppJsonRequest, self).__init__(*args)
             self.params = {
@@ -54,7 +55,8 @@ class MobileAppJsonRequest(JsonRequest):
                 self.jsonrequest = {}
                 # PUT The GET parameters as the parameters for the controller
                 self.params = {
-                    key: val for key, val in self.httprequest.values.iteritems()
+                    key: val for key, val in
+                    self.httprequest.values.iteritems()
                 }
                 self.context = dict(self.session.context)
             else:

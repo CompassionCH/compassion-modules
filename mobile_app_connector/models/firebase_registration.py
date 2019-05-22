@@ -78,15 +78,17 @@ class GetPartnerMessage(models.Model):
                     operation: Insert or Delete, depending if un/ registering
                     supId: optional partner_id as stored in Odoo
                }
-        :return:
+        :return: the return value of register firebase
         """
 
         firebase_id = params['firebaseId']
         operation = params['operation']
         partner_id = params.get('supId', None)
+        if partner_id == "":
+            partner_id = None
         logging.debug(
-            operation + "ing a Firebase ID from partner id: " + str(partner_id) +
-            " with value: " + firebase_id)
+            operation + "ing a Firebase ID from partner id: " +
+            str(partner_id) + " with value: " + firebase_id)
 
         if operation == 'Insert':
             return Firebase().firebase_register(

@@ -8,9 +8,13 @@
 #
 ##############################################################################
 import logging
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import messaging
+
+try:
+    import firebase_admin
+    from firebase_admin import credentials
+    from firebase_admin import messaging
+except ImportError as e:
+    raise e
 
 from odoo import api, models, fields
 from odoo.tools import config
@@ -39,10 +43,9 @@ class FirebaseRegistration(models.Model):
         credential=firebase_credentials)
 
     _sql_constraints = [
-                     ('firebase_id_unique',
-                      'UNIQUE(registration_id)',
-                      'Firebase registration ID should be unique')
-    ]
+        ('firebase_id_unique',
+         'UNIQUE(registration_id)',
+         'Firebase registration ID should be unique')]
 
     def name_get(self):
         res = []
@@ -58,7 +61,8 @@ class FirebaseRegistration(models.Model):
         :return: None
         """
 
-        self.send_message(context.get('message_title'), context.get('message_body'))
+        self.send_message(context.get('message_title'),
+                          context.get('message_body'))
 
     @api.multi
     def send_message(self, message_title, message_body, data=None):

@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import api, models
 
 
 class GetPartnerMessage(models.Model):
