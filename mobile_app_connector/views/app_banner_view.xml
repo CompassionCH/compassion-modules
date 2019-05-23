@@ -13,6 +13,7 @@
                             <field name="name"/>
                             <field name="destination_type"/>
                             <field name="internal_action" attrs="{'invisible': [('destination_type', '=', 'External')]}"/>
+                            <field name="external_url" attrs="{'invisible': [('destination_type', '=', 'Internal')]}"/>
                         </group>
                         <group>
                             <field name="date_start"/>
