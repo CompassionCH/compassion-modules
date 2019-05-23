@@ -25,11 +25,11 @@ def migrate(env, version):
         ('res_model', '=', pic_objname),
         '|', ('name', 'ilike', 'headshot'), ('name', 'ilike', 'fullshot')
     ]).with_context(bin_size=False)
-    to_migrate = pictures.filtered('datas')
-    total = len(to_migrate)
-    for count, picture in enumerate(to_migrate):
+    total = len(pictures)
+    for count, picture in enumerate(pictures):
         _logger.info('Migrating picture %s/%s', count+1, total)
-        pic_record = env[pic_objname].browse(picture.res_id)
-        # Spread the jobs with 3 seconds interval
-        pic_record.with_delay(eta=3*count)\
-            .migrate_unlink_old_attachments(picture)
+        pic_record = env[pic_objname].browse(picture.res_id).exists()
+        if pic_record:
+            # Spread the jobs with 1 second interval
+            pic_record.with_delay(eta=count)\
+                .migrate_unlink_old_attachments(picture)
