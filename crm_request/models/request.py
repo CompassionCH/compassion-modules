@@ -31,7 +31,7 @@ class CrmClaim(models.Model):
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()
     language = fields.Selection('_get_lang')
-    holiday_closure = fields.Many2one('holiday.closure')
+    holiday_closure_id = fields.Many2one('holiday.closure', 'Holiday closure', readonly=True)
 
     @api.depends('subject')
     @api.multi
