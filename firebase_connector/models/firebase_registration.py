@@ -7,20 +7,20 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+
+from odoo import api, models, fields
+from odoo.tools import config
 import logging
+
+_logger = logging.getLogger(__name__)
 
 try:
     import firebase_admin
     from firebase_admin import credentials
     from firebase_admin import messaging
 except ImportError as e:
-    raise e
+    _logger.error("Please install the PIP package firebase_admin")
 
-from odoo import api, models, fields
-from odoo.tools import config
-
-
-_logger = logging.getLogger(__name__)
 
 try:
     firebase_credentials = \
@@ -42,6 +42,7 @@ class FirebaseRegistration(models.Model):
 
     _name = 'firebase.registration'
     _description = 'Device registered with Firebase Cloud Messaging'
+    _rec_name = 'registration_id'
 
     registration_id = fields.Char(required=True,
                                   string="Firebase Registration ID")
@@ -53,22 +54,15 @@ class FirebaseRegistration(models.Model):
          'UNIQUE(registration_id)',
          'Firebase registration ID should be unique')]
 
-    def name_get(self):
-        res = []
-        for record in self:
-            res.append((record.id, record.registration_id))
-        return res
-
-    def send_message_from_interface(self, context):
+    def send_message_from_interface(self):
         """
         Allows to send a notification from Odoo web interface.
         Button is in the form view but generally hidden.
-        :param context: Context from the view
         :return: None
         """
 
-        self.send_message(context.get('message_title'),
-                          context.get('message_body'))
+        self.send_message(self.env.context.get('message_title'),
+                          self.env.context.get('message_body'))
 
     @api.multi
     def send_message(self, message_title, message_body, data=None):
