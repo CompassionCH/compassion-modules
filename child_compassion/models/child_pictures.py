@@ -157,8 +157,9 @@ class ChildPictures(models.Model):
 
     @job
     def migrate_unlink_old_attachments(self, attachment):
-        if 'Headshot' in attachment.name:
-            self.headshot = attachment.datas
-        else:
-            self.fullshot = attachment.datas
+        datas = attachment.datas
+        if datas and 'Headshot' in attachment.name:
+            self.headshot = datas
+        elif datas:
+            self.fullshot = datas
         return attachment.unlink()
