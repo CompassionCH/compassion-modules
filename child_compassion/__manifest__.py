@@ -43,7 +43,10 @@
         'message_center_compassion',
         'advanced_translation'],
     'external_dependencies': {
-        'python': ['enum', 'pyquery', 'timezonefinder']
+        'python': ['enum',
+                   'pyquery',
+                   'timezonefinder',
+                   ]
     },
     'data': [
         'security/sponsorship_groups.xml',
