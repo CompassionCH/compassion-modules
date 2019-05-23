@@ -172,7 +172,7 @@ class CrmClaim(models.Model):
         # Check here if the date of the mail is during a holiday
         mail_date = fields.Date.to_string(
             fields.Date.from_string(msg.get('date')))
-        defaults['holiday_closure'] = self.env["holiday.closure"].search([
+        defaults['holiday_closure_id'] = self.env["holiday.closure"].search([
             ('start_date', '<=', mail_date),
             ('end_date', '>=', mail_date)
         ], limit=1).id
