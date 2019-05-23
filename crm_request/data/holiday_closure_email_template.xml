@@ -13,12 +13,14 @@
                     % set claim = object
                     % set closure = object.holiday_closure
                     % set holiday_name = closure.holiday_name
+                    % set date_start = closure.get_date('start_date')
+                    % set date_end = closure.get_date('end_date')
                 </div>
                 <div>
                     Dear Compassion member,
                     <br/>
                     <br/>
-                    Our office is closed for ${holiday_name}, from the ${closure.start_date} to the ${closure.end_date}. You will get an answer as soon as we reopen.
+                    Our office is closed for ${holiday_name}, from the ${date_start} to the ${date_end}. You will get an answer as soon as we reopen.
                     <br/>
                     <br/>
                     Yours sincerely
