@@ -30,3 +30,11 @@ class AppBannerMapping(OnrampMapping):
     CONSTANTS = {
         'IS_DELETED': '0',
     }
+
+    def get_connect_data(self, odoo_object, fields_to_submit=None):
+        res = super(AppBannerMapping, self).get_connect_data(
+            odoo_object, fields_to_submit)
+        if odoo_object.destination_type == 'External':
+            # Replace destination with URL
+            res['HERO_CTA_DESTINATION'] = odoo_object.external_url
+        return res

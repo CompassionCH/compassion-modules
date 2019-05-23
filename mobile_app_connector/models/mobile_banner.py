@@ -41,6 +41,7 @@ class AppBanner(models.Model):
     button_text = fields.Char(translate=True)
     body = fields.Text(translate=True)
     image_url = fields.Char(translate=True)
+    external_url = fields.Char(translate=True)
     date_start = fields.Date(
         readonly=True,
         states={'new': [('readonly', False)]}
