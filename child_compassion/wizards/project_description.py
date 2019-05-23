@@ -17,7 +17,7 @@ try:
     from pyquery import PyQuery
 except ImportError:
     logger = logging.getLogger(__name__)
-    logger.error(_("Please install python pyquery"))
+    logger.error("Please install python pyquery")
 
 
 NOMINATIVE = 0

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 try:
     from enum import Enum
 except ImportError:
-    logger.error(_("Please install Python Enum"))
+    logger.error("Please install Python Enum")
 
 test_mode = config.get('test_enable')
 
