@@ -16,16 +16,16 @@ from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import config
 
-try:
-    from enum import Enum
-except ImportError:
-    raise UserError(_("Please install Python Enum"))
-
-
 from ..mappings.child_reinstatement_mapping import ReinstatementMapping
 from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
 
 logger = logging.getLogger(__name__)
+
+try:
+    from enum import Enum
+except ImportError:
+    logger.error("Please install Python Enum")
+
 test_mode = config.get('test_enable')
 
 

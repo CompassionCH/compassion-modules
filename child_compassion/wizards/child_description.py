@@ -9,14 +9,16 @@
 #
 ##############################################################################
 import os
+import logging
 
 from odoo import api, models, fields, _
-from odoo.exceptions import UserError
+
+logger = logging.getLogger(__name__)
 
 try:
     from pyquery import PyQuery
 except ImportError:
-    raise UserError(_("Please install python pyquery"))
+    logger.error("Please install python pyquery")
 
 NOMINATIVE = 0
 ACCUSATIVE = 1
