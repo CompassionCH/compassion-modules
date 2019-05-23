@@ -42,6 +42,7 @@
     },
     'data': [
         'views/firebase_registration.xml',
+        'security/ir.model.access.csv'
     ],
     'demo': [
     ],

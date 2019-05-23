@@ -46,7 +46,6 @@
     },
     'data': [
         'security/ir.model.access.csv',
-        'security/access_rules.xml',
         'data/tile_type_data.xml',
         'data/default_hub.xml',
         'data/ir_cron.xml',
