@@ -1,5 +1,5 @@
 <odoo>
-    <record model="ir.ui.view" id="mobile_app_banner_form">
+    <record model="ir.ui.view" id="mobile_app_feedback_form">
         <field name="name">mobile.app.feedback.form</field>
         <field name="model">mobile.app.feedback</field>
         <field name="arch" type="xml">
@@ -24,7 +24,7 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="mobile_app_banner_tree">
+    <record model="ir.ui.view" id="mobile_app_feedback_tree">
         <field name="name">mobile.app.feedback.tree</field>
         <field name="model">mobile.app.feedback</field>
         <field name="arch" type="xml">
@@ -40,7 +40,7 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="mobile_app_banner_search">
+    <record model="ir.ui.view" id="mobile_app_feedback_search">
         <field name="name">app.feedback.search</field>
         <field name="model">mobile.app.feedback</field>
         <field name="arch" type="xml">
@@ -63,7 +63,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Add menu for app banners -->
+    <!-- Add menu for app feedbacks -->
     <menuitem id="menu_mobile_app_feedback"
               name="Feedback"
               parent="menu_mobile_app"
