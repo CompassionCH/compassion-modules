@@ -24,6 +24,9 @@ class TileMapping(OnrampMapping):
         'SortOrder': 'view_order',
         'ActionDestination': 'action_destination',
         'Type': ('subtype_id.type_id.code', 'mobile.app.tile.type'),
+        'IsAutomaticOrdering': 'is_automatic_ordering',
+        'OrderDate': 'create_date',  # might be better with start_date as
+                                     # initial fallback
     }
 
     FIELDS_TO_SUBMIT = {
@@ -34,6 +37,8 @@ class TileMapping(OnrampMapping):
         'SortOrder': None,
         'ActionDestination': None,
         'Type': None,
+        'IsAutomaticOrdering': None,
+        'OrderDate': None,
     }
 
     def _process_connect_data(self, connect_data):

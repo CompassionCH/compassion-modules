@@ -36,6 +36,18 @@ class RestController(http.Controller):
         mapping = MobileLoginMapping(request.env)
         return mapping.get_connect_data(request.env.user)
 
+    @http.route('/mobile-app-api/firebase.registration/register',
+                auth='public', method='POST', type='json')
+    def firebase_registration(self, **parameters):
+        """
+        Handle firebase registration coming from the app when no user is logged
+        in.
+        :param parameters: Request params
+        :return: Request results
+        """
+        return request.env.get('firebase.registration').mobile_register(
+            request.jsonrequest, **parameters)
+
     @http.route(['/mobile-app-api/<string:model>/<string:method>',
                  '/mobile-app-api/<string:model>/<string:method>/'
                  '<request_code>'],

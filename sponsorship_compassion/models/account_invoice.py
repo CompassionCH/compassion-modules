@@ -10,7 +10,6 @@
 #
 ##############################################################################
 from odoo import api, fields, models, _
-from .product import GIFT_CATEGORY, SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 
 class AccountInvoice(models.Model):
@@ -52,14 +51,40 @@ class AccountInvoice(models.Model):
     @api.depends('invoice_line_ids', 'state')
     @api.multi
     def _compute_invoice_type(self):
+        sponsorship_cat = self.env.ref(
+            'sponsorship_compassion.product_category_sponsorship', False)
+        fund_cat = self.env.ref(
+            'contract_compassion.product_category_fund', False)
+        gift_cat = self.env.ref(
+            'sponsorship_compassion.product_category_gift', False)
+        # At module installation, the categories are not yet loaded.
+        if not sponsorship_cat or not fund_cat or not gift_cat:
+            return
         for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
-            categories = invoice.with_context(lang='en_US').mapped(
-                'invoice_line_ids.product_id.categ_name')
-            if SPONSORSHIP_CATEGORY in categories:
+            # check if child_of Sponsorship category
+            category_lines = self.env['account.invoice.line'].search([
+                ('invoice_id', '=', invoice.id),
+                ('product_id.categ_id', 'child_of', sponsorship_cat.id)
+            ])
+
+            if category_lines:
                 invoice.invoice_type = 'sponsorship'
-            elif GIFT_CATEGORY in categories:
-                invoice.invoice_type = 'gift'
-            elif FUND_CATEGORY in categories:
-                invoice.invoice_type = 'fund'
             else:
-                invoice.invoice_type = 'other'
+                # check if child_of Gift category
+                category_lines = self.env['account.invoice.line'].search([
+                    ('invoice_id', '=', invoice.id),
+                    ('product_id.categ_id', 'child_of', gift_cat.id)
+                ])
+                if category_lines:
+                    invoice.invoice_type = 'gift'
+                else:
+                    # check if child_of Fund category
+                    category_lines = self.env['account.invoice.line'].search([
+                        ('invoice_id', '=', invoice.id),
+                        ('product_id.categ_id', 'child_of', fund_cat.id)
+                    ])
+                    if category_lines:
+                        invoice.invoice_type = 'fund'
+                    else:
+                        # last choice -> Other category
+                        invoice.invoice_type = 'other'

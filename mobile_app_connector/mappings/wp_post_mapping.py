@@ -25,6 +25,10 @@ class WPPostMapping(OnrampMapping):
             'Post_type': 'post_type',
         },
         'Title': 'name',
+        'ActionText': 'name',
+        'SortOrder': 'view_order',
+        'IsAutomaticOrdering': 'is_automatic_ordering',
+        'OrderDate': 'date',
     }
 
     FIELDS_TO_SUBMIT = {
@@ -37,6 +41,10 @@ class WPPostMapping(OnrampMapping):
         'ActionDestination': None,
         'Type': None,
         'SubType': None,
+        'ActionText': None,
+        'SortOrder': None,
+        'IsAutomaticOrdering': None,
+        'OrderDate': None,
     }
 
     CONSTANTS = {

@@ -16,16 +16,7 @@ class MailComposer(models.TransientModel):
     @api.multi
     def send_mail(self, auto_commit=False):
 
-        unarchived_ids = self.env.context.get('unarchived_partners', [])
-        if unarchived_ids:
-            unarchived_res = self.env['res.partner'].browse(unarchived_ids)
-            unarchived_res.toggle_active()
-
         res = super(MailComposer, self).send_mail(auto_commit)
-
-        # Re-archive the unarchived recipient.
-        if unarchived_ids:
-            unarchived_res.toggle_active()
 
         # Put back selected partner into claim
         if self.env.context.get('claim_no_partner'):

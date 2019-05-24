@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import models, fields, api, _
+from odoo.addons.queue_job.job import job
 
 import logging
 import base64
@@ -31,8 +32,8 @@ class ChildPictures(models.Model):
     ##########################################################################
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade')
-    fullshot = fields.Binary(compute='_compute_pictures')
-    headshot = fields.Binary(compute='_compute_pictures')
+    fullshot = fields.Binary(attachment=True)
+    headshot = fields.Binary(attachment=True)
     image_url = fields.Char()
     date = fields.Date('Date of pictures', default=fields.Date.today)
     fname = fields.Char(compute='_compute_filename')
@@ -42,36 +43,6 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    def _compute_pictures(self):
-        """Get the picture given field_name (headshot or fullshot)"""
-        attachment_obj = self.env['ir.attachment']
-        for pictures in self:
-            # We search related images, and sort them by date of creation
-            # from newest to oldest
-            attachments = attachment_obj.search([
-                ('res_model', '=', self._name),
-                ('res_id', '=', pictures.id)],
-                order='create_date desc')
-
-            # We recover the newest Fullshot and Headshots
-            for rec in attachments:
-                if rec.datas_fname.split('.')[0] == 'Headshot':
-                    try:
-                        pictures.headshot = rec.datas
-                        break
-                    except:
-                        logger.error(
-                            "Couldn't find attachment for child headshot.")
-
-            for rec in attachments:
-                if rec.datas_fname.split('.')[0] == 'Fullshot':
-                    try:
-                        pictures.fullshot = rec.datas
-                        break
-                    except:
-                        logger.error(
-                            "Couldn't find attachement for child fullshot.")
-
     def _compute_filename(self):
         for pictures in self:
             date = pictures.date
@@ -95,7 +66,6 @@ class ChildPictures(models.Model):
         if same_url:
             pictures.child_id.message_post(
                 _('The picture was the same'), _('Picture update'))
-            pictures._unlink_related_attachment()
             pictures.unlink()
             return False
 
@@ -110,7 +80,6 @@ class ChildPictures(models.Model):
             # We could not retrieve a picture, we cancel the creation
             pictures.child_id.message_post(
                 _(pictures._error_msg), _('Picture update'))
-            pictures._unlink_related_attachment()
             pictures.unlink()
             return False
 
@@ -121,7 +90,6 @@ class ChildPictures(models.Model):
             #  changed, while the picture stay unchanged.
             pictures.child_id.message_post(
                 _('The picture was the same'), _('Picture update'))
-            pictures._unlink_related_attachment()
             pictures.unlink()
             return False
 
@@ -131,13 +99,6 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-
-    def _unlink_related_attachment(self):
-        self.ensure_one()
-        self.env['ir.attachment'].search([
-            ('res_model', '=', self._name),
-            ('res_id', '=', self.id)]).unlink()
-
     @api.multi
     def _find_same_picture_by_url(self):
         self.ensure_one()
@@ -163,7 +124,6 @@ class ChildPictures(models.Model):
     def _get_picture(self, type='Headshot', width=300, height=400):
         """ Gets a picture from Compassion webservice """
         self.ensure_one()
-        attach_id = self.id
         if type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
                 width) + ",z_1.2"
@@ -172,36 +132,34 @@ class ChildPictures(models.Model):
 
         _image_date = False
         for picture in self.filtered('image_url'):
-            image_split = picture.image_url.split('/')
-            if 'upload' in picture.image_url:
-                ind = image_split.index('upload')
-            else:
-                ind = image_split.index('media.ci.org')
-            image_split[ind + 1] = cloudinary
-            url = "/".join(image_split)
             try:
+                image_split = picture.image_url.split('/')
+                if 'upload' in picture.image_url:
+                    ind = image_split.index('upload')
+                else:
+                    ind = image_split.index('media.ci.org')
+                image_split[ind + 1] = cloudinary
+                url = "/".join(image_split)
                 data = base64.encodestring(urllib2.urlopen(url).read())
+                _image_date = picture.child_id.last_photo_date or \
+                    fields.Date.today()
+                if type.lower() == 'headshot':
+                    self.fullshot = data
+                elif type.lower() == 'fullshot':
+                    self.headshot = data
             except:
                 self._error_msg = 'Image cannot be fetched, invalid image ' \
-                                  'url : ' + picture.image_url
+                    'url : ' + picture.image_url
                 logger.error('Image cannot be fetched : ' + picture.image_url)
                 continue
 
-            # recover the extension of the file (should be 'jpg')
-            extension = url.split('.')[-1]
-            # name of the file (typically 'Fullshot.jpg' or 'Headshot.jpg'
-            _store_fname = type + '.' + extension
-
-            _image_date = picture.child_id.last_photo_date or \
-                fields.Date.today()
-
-            if not attach_id:
-                return data
-
-            picture.env['ir.attachment'].with_context({}).create({
-                'datas_fname': _store_fname,
-                'res_model': picture._name,
-                'res_id': attach_id,
-                'datas': data,
-                'name': _store_fname})
         return _image_date
+
+    @job
+    def migrate_unlink_old_attachments(self, attachment):
+        datas = attachment.datas
+        if datas and 'Headshot' in attachment.name:
+            self.headshot = datas
+        elif datas:
+            self.fullshot = datas
+        return attachment.unlink()

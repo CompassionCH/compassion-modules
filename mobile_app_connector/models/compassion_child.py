@@ -50,6 +50,7 @@ class CompassionChild(models.Model):
         """
         children_pictures = self.sudo().mapped('pictures_ids')
         project = self.sudo().mapped('project_id')
+        # TODO change timezone computation to one retrieving data from project
         tz = country_timezones('NI')
         tz_child = pytz.timezone(tz[0])
         datetime_child = datetime.now(tz_child)
@@ -72,7 +73,9 @@ class CompassionChild(models.Model):
                 project.get_location_json(multi=False),
             'Time': {
                     "ChildTime": datetime_child.strftime("%d/%m/%Y %H:%M:%S")
-                    }
+                    },
+            'OrderDate': max(x for y in self
+                             for x in y.sponsorship_ids.mapped('start_date')),
 
         }
 
@@ -103,28 +106,41 @@ class CompassionChild(models.Model):
 
     @api.model
     def mobile_get_child_bio(self, **other_params):
-        values = dict(other_params)
+        """
+        Mobile app method:
+        Returns child bio of a given child
+        :param other_params: child's global id
+        :return: JSON list of child bio information
+        """
         child = self.env['compassion.child'].search([
-            ('global_id', '=', str(values['child_global_id']))
+            ('global_id', '=', str(other_params['globalId']))
         ])
 
-        childbio = {
-            'name': child.name,
-            'firstName': child.firstname,
-            'lastName': child.lastname,
-            'gender': child.gender,
-            'birthdate': child.birthdate,
-            'age': child.age,
-            'weight': child.weight,
-            'height': child.height,
-            'educationLevel': child.education_level,
-            'academicPerformance': child.academic_performance,
-            'vocationalTrainingType': child.vocational_training_type,
-            'sponsorshipStatus': child.sponsorship_status
+        household = child.household_id
+
+        guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
+            .translate('role')
+
+        at = self.env['ir.advanced.translation'].sudo()
+        childBio = {
+            'educationLevel': child.translate('education_level').lower(),
+            'academicPerformance': child.translate(
+                'academic_performance').lower(),
+            'maleGuardianJob': at.get(
+                household.translate('male_guardian_job')),
+            'femaleGuardianJob': at.get(
+                household.translate('female_guardian_job'), female=True),
+            'maleGuardianJobType': household.translate(
+                'male_guardian_job_type'),
+            'femaleGuardianJobType': household.translate(
+                'female_guardian_job_type'),
+            'hobbies': child.translate('hobby_ids.value'),
+            'guardians': guardians,
+            'notEnrolledReason': (child.not_enrolled_reason or '').lower()
         }
 
         result = {
-            'ChildBioServiceResult': childbio
+            'ChildBioServiceResult': childBio
         }
         return result
 

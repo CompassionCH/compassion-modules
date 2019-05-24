@@ -159,6 +159,10 @@
             <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/GPInitiatedInterventionHoldNotification</field>
             <field name="action_id" ref="create_intervention_details"/>
         </record>
+        <record id="intervention_create_connect_2" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/availability/2016/04/GPInitiatedInterventionHoldNotification</field>
+            <field name="action_id" ref="create_intervention_details"/>
+        </record>
 
         <record id="intervention_create_opt_in_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionOptInHoldNotification</field>

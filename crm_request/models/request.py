@@ -31,6 +31,8 @@ class CrmClaim(models.Model):
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()
     language = fields.Selection('_get_lang')
+    holiday_closure_id = fields.Many2one(
+        'holiday.closure', 'Holiday closure', readonly=True)
 
     @api.depends('subject')
     @api.multi
@@ -89,7 +91,7 @@ class CrmClaim(models.Model):
             # Un-archive the email_alias so that a mail can be sent and set a
             # flag to re-archive them once the email is sent.
             if partner.contact_type == 'attached' and not partner.active:
-                ctx['unarchived_partners'] = [partner.id]
+                partner.toggle_active()
         else:
             ctx['claim_no_partner'] = True
 
@@ -132,6 +134,7 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+
         if custom_values is None:
             custom_values = {}
 
@@ -167,8 +170,15 @@ class CrmClaim(models.Model):
                 defaults['partner_id'] = partner.id
                 defaults['language'] = partner.lang
 
-        defaults.pop('name', False)
+        # Check here if the date of the mail is during a holiday
+        mail_date = fields.Date.to_string(
+            fields.Date.from_string(msg.get('date')))
+        defaults['holiday_closure_id'] = self.env["holiday.closure"].search([
+            ('start_date', '<=', mail_date),
+            ('end_date', '>=', mail_date)
+        ], limit=1).id
 
+        defaults.pop('name', False)
         defaults.update(custom_values)
 
         request_id = super(CrmClaim, self).message_new(msg, defaults)
@@ -176,6 +186,13 @@ class CrmClaim(models.Model):
         if not request.language:
             request.language = self.detect_lang(
                 request.description).lang_id.code
+
+        # # send automated holiday response
+        if request.holiday_closure:
+            template_id = self.env.ref(
+                "crm_request.business_closed_email_template").id
+            request.with_context(keep_stage=False).message_post_with_template(
+                template_id)
 
         return request_id
 
@@ -199,7 +216,7 @@ class CrmClaim(models.Model):
         """
         result = super(CrmClaim, self).message_post(**kwargs)
 
-        if 'mail_server_id' in kwargs:
+        if 'mail_server_id' in kwargs and self.env.context.get('keep_stage'):
             for request in self:
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(

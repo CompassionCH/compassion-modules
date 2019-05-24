@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2018-2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion EU Mobile App Connector',
-    'version': '10.0.1.4.0',
+    'version': '10.0.1.4.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -39,6 +39,7 @@
         'sbc_compassion',
         'partner_contact_birthdate',
         'base_geolocalize',
+        'firebase_connector',
     ],
     'external_dependencies': {
         'python': ['simplejson'],
@@ -47,6 +48,7 @@
         'security/ir.model.access.csv',
         'security/access_rules.xml',
         'data/tile_type_data.xml',
+        'data/default_hub.xml',
         'data/ir_cron.xml',
         'views/wp_post_view.xml',
         'views/app_banner_view.xml',
@@ -54,6 +56,7 @@
         'views/tile_view.xml',
         'views/product_view.xml',
         'views/app_feedback_view.xml',
+        'views/firebase_registration.xml',
     ],
     'demo': [
     ],

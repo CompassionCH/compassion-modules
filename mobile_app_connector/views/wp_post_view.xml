@@ -25,6 +25,8 @@
                             <field name="url"/>
                             <field name="image_url"/>
                             <field name="display_on_hub"/>
+                            <field name="is_automatic_ordering"/>
+                            <field name="view_order" attrs="{'invisible': [('is_automatic_ordering', '==', True)]}"/>
                         </group>
                     </group>
                 </sheet>

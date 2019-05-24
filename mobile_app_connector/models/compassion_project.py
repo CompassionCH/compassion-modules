@@ -27,12 +27,9 @@ class CompassionProject(models.Model):
         if not self:
             return {}
         mapping = MobileLocationMapping(self.env)
-        if len(self) == 1:
-            data = mapping.get_connect_data(self)
-        else:
-            data = []
-            for child in self:
-                data.append(mapping.get_connect_data(child))
+        # Location is only supported for one child (we take the first if
+        # we have many children)
+        data = mapping.get_connect_data(self[:1])
         return data
 
     @api.multi

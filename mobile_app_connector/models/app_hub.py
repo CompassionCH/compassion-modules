@@ -97,12 +97,17 @@ class AppHub(models.AbstractModel):
             ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
+        # Fetch products for fund donations
+        products = self.env['product.product'].sudo().search([
+            ('mobile_app', '=', True)
+        ])
         if available_tiles:
             start = int(pagination.get('start', 0))
             number_mess = int(pagination.get('limit', 1000))
             offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
             tiles.extend(
-                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile()
+                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile({
+                    'product.product': products})
             )
 
         # Fetch tiles from Wordpress
@@ -171,21 +176,124 @@ class AppHub(models.AbstractModel):
         value for each message, in order to control the order of the displayed
         tiles inside the mobile app. The algorithm for determining this
         order can be tweaked here.
-        TODO Implement a robust algorithm that can easily be tweaked by user
-        (with settings in user interface for instance)
+
+        We divide the tiles in three group: promoted, fixed and the rest.
+
+        The promoted group will appear first and is constitued of new letters
+        and a few other tiles. This can be tweaked in the recent_content dict.
+
+        The fixed group has all the children tiles that we always what to be
+        displayed not too far down. We take all the tiles of a type listed in
+        fixed group tiles.
+
+        The rest group has all the tile remaining.
+
+        We favor content which is marked as unread and otherwise sort on the
+        OrderDate attribute. This attribute is set in the mapping file of each
+        tile type with a fallback on the creation date of the tile.
+
+
+        ViewOrder values assigned:
+
+        0    Login tile
+        1000 Unread + recently read letters
+
+        2000 Other promoted content
+
+        3000 Fixed content (children, ...)
+
+        4000 Rest of tiles
+
         :param messages: List of JSON messages that will be sent to app
         :return: None
         """
-        base_score_mapping = {
-            "Miscellaneous": 1000,
-            "Child": 1000,
-            "Letter": 2000,
-            "Story": 3000,
-            "Community": 4000,
-            "Giving": 5000,
-            "Prayer": 6000,
+
+        category_length = 500
+        gap = 500
+        login_order = 0
+        unread_letter_order = login_order + category_length + gap
+        promoted_content_order = unread_letter_order + category_length + gap
+        fixed_content_order = promoted_content_order + category_length + gap
+        rest_of_tiles_order = fixed_content_order + category_length + gap
+
+        to_order = [m for m in messages if m['IsAutomaticOrdering']]
+        to_order.sort(key=lambda m: m["OrderDate"], reverse=True)
+
+        letters = {'tiles': [], 'max_number_tile': 1}
+        prayers = {'tiles': [], 'max_number_tile': 1}
+        community = {'tiles': [], 'max_number_tile': 0}
+        stories = {'tiles': [], 'max_number_tile': 0}
+        giving = {'tiles': [], 'max_number_tile': 1}
+        pictures = {'tiles': [], 'max_number_tile': 1}
+        child_fact = {'tiles': [], 'max_number_tile': 0}
+        # tiles that will be in first group of displayed tiles
+        recent_content = {
+            "CH1": {'tiles': [], 'max_number_tile': 0},
+            "CH2": pictures,
+            "CH3": child_fact,
+            "CH-T1": {'tiles': [], 'max_number_tile': 1},
+            "CH_T2": child_fact,
+            "CO1": community,
+            "CO2": community,
+            "CO3": community,
+            "GI1": giving,
+            "GI3": giving,
+            "GI5": giving,
+            "GI_T1": giving,
+            "LE1": letters,
+            "LE_T1": {'tiles': [], 'max_number_tile': 2},
+            "LE_T2": {'tiles': [], 'max_number_tile': 0},
+            'LE_T3': letters,
+            "PR1": prayers,
+            "PR_T1": prayers,
+            "PR-T2": prayers,
+            "PR2": prayers,
+            "ST_T1": stories,
+            "ST_T2": stories,
+            "ST1": stories,
+            "MI1": {'tiles': [], 'max_number_tile': 1},
+            "MI2": {'tiles': [], 'max_number_tile': 0},
         }
-        for i, message in enumerate(messages):
-            base_score = base_score_mapping.get(message.get("Type"), 10000)
-            message["SortOrder"] = str(base_score + i)
+        fixed_group = []
+        fixed_group_tiles = ["CH1", "CO1", "CO2", "CO3"]
+        rest_group = []
+
+        for tile in to_order:
+            recent_group = recent_content[tile['SubType']]
+            if recent_group['max_number_tile'] > len(recent_group['tiles']) \
+                    and (tile['SubType'] != 'LE_T1' or tile['UnReadRecently']):
+                recent_group['tiles'].append(tile)
+            elif tile['SubType'] in fixed_group_tiles:
+                fixed_group.append(tile)
+            else:
+                rest_group.append(tile)
+
+        for subtype, tiles in recent_content.iteritems():
+            if subtype == 'LE_T1':
+                for tile in tiles['tiles']:
+                    tile['SortOrder'] = unread_letter_order
+                    unread_letter_order += \
+                        category_length // len(tiles['tiles'])
+                tiles['tiles'] = []
+            else:
+                for tile in tiles['tiles']:
+                    tile['SortOrder'] = promoted_content_order
+                    promoted_content_order += 10
+                tiles['tiles'] = []
+
+        for tile in fixed_group:
+            tile['SortOrder'] = fixed_content_order
+            fixed_content_order += category_length // len(fixed_group)
+
+        rest_group.sort(key=lambda x: (x.get('UnReadRecently', False),
+                                       x['OrderDate']), reverse=True)
+        for tile in rest_group:
+            tile['SortOrder'] = rest_of_tiles_order
+            rest_of_tiles_order += category_length // len(rest_group)
+
+        for tile in to_order:
+            # login tile should be first
+            if tile['SubType'] == "MI1":
+                tile['SortOrder'] = login_order
+
         messages.sort(key=lambda m: int(m["SortOrder"]))

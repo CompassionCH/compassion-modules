@@ -42,6 +42,8 @@ class WordpressPost(models.Model):
     lang = fields.Selection('select_lang', 'Language', required=True)
     display_on_hub = fields.Boolean(
         default=True, help='Deactivate in order to hide tiles in App.')
+    view_order = fields.Integer('View order', required=True, default=6000)
+    is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')
@@ -86,7 +88,7 @@ class WordpressPost(models.Model):
         # This is standard Wordpress REST API URL
         wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/' + post_type
         # This is for avoid loading all post content
-        params = {'context': 'embed'}
+        params = {'context': 'embed', 'per_page': 100}
         category_obj = self.env['wp.post.category']
         found_ids = []
         try:
