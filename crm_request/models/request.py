@@ -188,7 +188,7 @@ class CrmClaim(models.Model):
                 request.description).lang_id.code
 
         # # send automated holiday response
-        if request.holiday_closure:
+        if request.holiday_closure_id:
             template_id = self.env.ref(
                 "crm_request.business_closed_email_template").id
             request.with_context(keep_stage=False).message_post_with_template(

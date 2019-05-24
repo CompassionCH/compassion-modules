@@ -11,7 +11,7 @@
             <field name="body_html" type="html">
                 <div>
                     % set claim = object
-                    % set closure = object.holiday_closure
+                    % set closure = object.holiday_closure_id
                     % set holiday_name = closure.holiday_name
                     % set date_start = closure.get_date('start_date')
                     % set date_end = closure.get_date('end_date')
