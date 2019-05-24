@@ -144,9 +144,9 @@ class ChildPictures(models.Model):
                 _image_date = picture.child_id.last_photo_date or \
                     fields.Date.today()
                 if type.lower() == 'headshot':
-                    self.fullshot = data
-                elif type.lower() == 'fullshot':
                     self.headshot = data
+                elif type.lower() == 'fullshot':
+                    self.fullshot = data
             except:
                 self._error_msg = 'Image cannot be fetched, invalid image ' \
                     'url : ' + picture.image_url
