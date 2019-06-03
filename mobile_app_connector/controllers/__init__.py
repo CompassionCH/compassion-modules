@@ -11,3 +11,4 @@
 
 from . import json_request
 from . import mobile_app_controller
+from . import registration_controller

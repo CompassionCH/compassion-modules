@@ -13,3 +13,4 @@ from . import models
 from . import mappings
 from . import tools
 from . import controllers
+from . import forms
