@@ -92,7 +92,12 @@ class AppBanner(models.Model):
             ('date_start', '<=', today),
             ('date_stop', '>=', today),
         ])
+        without_dates_banners = self.search([
+            ('date_start', '=', None),
+            ('date_stop', '=', None),
+        ])
         # Deactivate old stories
-        (active_banners - current_banners).write({'is_active': False})
+        (active_banners - current_banners - without_dates_banners).write(
+            {'is_active': False})
         # Activate current stories
         current_banners.write({'is_active': True})
