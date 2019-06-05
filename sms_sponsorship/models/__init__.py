@@ -19,3 +19,4 @@ from . import compassion_child
 from . import account_invoice
 from . import payment_transaction
 from . import weekly_demand
+from . import privacy_statement

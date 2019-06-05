@@ -176,11 +176,11 @@ class MatchPartner(models.AbstractModel):
         return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
                 'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
                 'birthdate', 'church_unlinked', 'church_id', 'function',
-                'spoken_lang_ids']
+                'spoken_lang_ids', 'opt_out']
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
         return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
                 'country_id', 'state_id', 'church_unlinked', 'church_id',
-                'function', 'spoken_lang_ids']
+                'function', 'spoken_lang_ids', 'opt_out']
