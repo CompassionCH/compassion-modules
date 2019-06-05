@@ -10,11 +10,14 @@
 ##############################################################################
 
 import logging
+from datetime import datetime, timedelta
+from pytz import timezone
 import sys
+
 
 from ..mappings.icp_mapping import ICPMapping
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, tools, _
 from odoo.exceptions import UserError
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
@@ -24,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from timezonefinder import TimezoneFinder
+    import requests
 except (ImportError, IOError) as err:
     logger.debug(err)
 
@@ -252,6 +256,19 @@ class CompassionProject(models.Model):
         'fcp.disaster.impact', 'project_id', 'FCP Disaster Impacts',
         oldname='icp_disaster_impact_ids'
     )
+    current_weather = fields.Selection(
+        [
+            ('Clear', 'Clear'),
+            ('Clouds', 'Clouds'),
+            ('Rainy', 'Rainy'),
+            ('Storm', 'Storm'),
+            ('Mist', 'Mist'),
+            ('Thunderstorm', 'Thunderstorm'),
+            ('Haze', 'Haze'),
+        ]
+    )
+    current_temperature = fields.Float()
+    last_weather_refresh_date = fields.Datetime()
 
     # Partnership
     #############
@@ -409,10 +426,46 @@ class CompassionProject(models.Model):
                 _("Project Suspended"), message_type='comment')
         return True
 
+    @api.multi
+    def get_time(self):
+        """
+        Compute the current time in the project location
+        :return: String in format
+        """
+        fmt = "%d/%m/%Y %H:%M:%S"
+        return self.mapped(
+            lambda x:
+                timezone(x.timezone).localize(datetime.now()).strftime(fmt))
+
     @api.model
     def set_missing_field_offices(self):
         self.search([('field_office_id', '=', False)])._compute_field_office()
         return True
+
+    @api.multi
+    def update_weather(self):
+        """
+        Update the weather infos of the centers if it was not accessed in the
+        last hour.
+        :return:
+        """
+        for project in self:
+            if not project.last_weather_refresh_date \
+                    or fields.Datetime.from_string(
+                        project.last_weather_refresh_date) - datetime.now()\
+                    > timedelta(hours=1):
+                json = requests.get(
+                    "https://api.openweathermap.org/data/2.5/weather" +
+                    "?lat=" + str(project.gps_latitude) +
+                    "&lon=" + str(project.gps_longitude) +
+                    "&appid=" + tools.config.get("openweathermap_api_key")
+                ).json()
+                if json["cod"] != 200:
+                    logging.error("Could not retrieve weather info.")
+                    continue
+                project.current_weather = json["weather"][0]["main"]
+                project.current_temperature = json["main"]["temp"]
+                project.last_weather_refresh_date = fields.Datetime.now()
 
     @api.multi
     def get_activities(self, field, max_int=sys.maxint):

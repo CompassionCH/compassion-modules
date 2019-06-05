@@ -45,6 +45,8 @@
     'external_dependencies': {
         'python': ['enum',
                    'pyquery',
+                   'pytz',
+                   'requests',
                    'timezonefinder',
                    ]
     },
