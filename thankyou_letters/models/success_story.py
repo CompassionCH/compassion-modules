@@ -33,23 +33,25 @@ class SuccessStory(models.Model):
     body_text = fields.Text(translate=True)
     date_start = fields.Date(
         readonly=True,
-        states={'new': [('readonly', False)]}
+        states={'new': [('readonly', False)]},
+        copy=False
     )
     date_stop = fields.Date(
         readonly=True,
-        states={'new': [('readonly', False)]}
+        states={'new': [('readonly', False)]},
+        copy=False
     )
-    is_active = fields.Boolean()
+    is_active = fields.Boolean(copy=False)
     state = fields.Selection([
         ('new', 'New'),
         ('active', 'Active'),
         ('used', 'Used')
-    ], compute='_compute_state', store=True, default='new')
+    ], compute='_compute_state', store=True, default='new', copy=False)
     only_when_chosen = fields.Boolean(
         help='Set this to use the story only for given products or when '
              'manually chosen. The story won\'t be used automatically.'
     )
-    print_count = fields.Integer()
+    print_count = fields.Integer(copy=False)
     current_usage_count = fields.Integer(compute='_compute_current_usage')
 
     ##########################################################################
