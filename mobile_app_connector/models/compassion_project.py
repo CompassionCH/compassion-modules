@@ -33,6 +33,19 @@ class CompassionProject(models.Model):
         return data
 
     @api.multi
+    def get_weather_json(self, multi=False):
+        if not self:
+            return {}
+        self.update_weather()
+        return {
+            'ChildWeather': self.current_weather,
+            'ChildTemperature': self.current_temperature,
+            # the following fields are not used but prevent app crashes
+            'UserWeather': self.current_weather,
+            'UserTemperature': self.current_temperature,
+        }
+
+    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile

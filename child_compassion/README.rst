@@ -15,9 +15,10 @@ Installation
 ============
 
 This module depends on message_center_compassion to manage
-messages with GMC Connect. You need to add pyquery library
+messages with GMC Connect. You need to add pyquery, requests,
+timezonefinder pytz libraries
 
-- sudo pip install pyquery
+- sudo pip install pyquery requests timezonefinder pytz
 
 Configuration
 =============
@@ -32,6 +33,10 @@ resupply quantities by setting the following keys:
 
 - `child_compassion.default_demand`
 - `child_compassion.default_resupply`
+
+To get weather information about each project location, you'll need to add an
+API key from opernweathermap.com to the odoo.conf file.
+`openweathermap_api_key = AAAAAAAAAAA`
 
 Usage
 =====
