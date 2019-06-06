@@ -6,24 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-10 13:57+0000\n"
-"PO-Revision-Date: 2018-10-10 16:01+0200\n"
-"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"POT-Creation-Date: 2019-06-05 13:47+0000\n"
+"PO-Revision-Date: 2019-06-05 15:50+0200\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 2.0.6\n"
-
-#. module: sms_sponsorship
-#: code:addons/sms_sponsorship/models/recurring_contract.py:118
-#, python-format
-msgid "A new partner was created by SMS and needs a manual confirmation"
-msgstr ""
-"Ein neuer Partner wurde per SMS angelegt und benötigt eine manuelle "
-"Bestätigung."
+"X-Generator: Poedit 2.2.3\n"
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_search
@@ -43,7 +35,7 @@ msgstr "Anfrage stornieren"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_child_id
 msgid "Child"
-msgstr "Patenkind"
+msgstr "Child"
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_form
@@ -53,7 +45,7 @@ msgstr "Child filter criteria"
 #. module: sms_sponsorship
 #: selection:sms.child.request,state:0
 msgid "Child reserved"
-msgstr "Patenkind reserviert"
+msgstr "Child reserved"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_city
@@ -66,7 +58,7 @@ msgid "Compassion event"
 msgstr "Compassion event"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:56
+#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:47
 #, python-format
 msgid "Confirm your sponsorship for %s "
 msgstr "Bestätige deine Patenschaft für %s "
@@ -85,12 +77,12 @@ msgstr "Land"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_create_uid
 msgid "Created by"
-msgstr "Erstellt von"
+msgstr "erstellt von"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_create_date
 msgid "Created on"
-msgstr "Angelegt am"
+msgstr "erstellt am"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_date
@@ -116,7 +108,7 @@ msgstr "E-Mail"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_crm_event_compassion_accepts_sms_booking
 msgid "Enable SMS Sponsorships"
-msgstr "SMS-Sponsoring aktivieren"
+msgstr "Enable SMS Sponsorships"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_event_id
@@ -126,7 +118,7 @@ msgstr "Event"
 #. module: sms_sponsorship
 #: selection:sms.child.request,gender:0
 msgid "Female"
-msgstr "Weiblich"
+msgstr "Female"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_field_office_id
@@ -154,7 +146,7 @@ msgid "Hold"
 msgstr "Hold"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:76
+#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:67
 #, python-format
 msgid "How did you hear about Compassion?"
 msgstr "Wie hast du von Compassion erfahren ?"
@@ -209,12 +201,12 @@ msgstr "Zuletzt geändert am"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_write_uid
 msgid "Last Updated by"
-msgstr "Zuletzt aktualisiert durch"
+msgstr "zuletzt aktualisiert von"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_write_date
 msgid "Last Updated on"
-msgstr "Zuletzt aktualisiert am"
+msgstr "zuletzt aktualisiert am"
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_registration_confirmation
@@ -227,6 +219,11 @@ msgid "Male"
 msgstr "Male"
 
 #. module: sms_sponsorship
+#: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_form
+msgid "Mark as completed"
+msgstr "Mark as completed"
+
+#. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_max_age
 msgid "Max age"
 msgstr "Max age"
@@ -237,21 +234,10 @@ msgid "Min age"
 msgstr "Min age"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/models/recurring_contract.py:120
-#, python-format
-msgid "New SMS partner"
-msgstr "New SMS partner"
-
-#. module: sms_sponsorship
-#: code:addons/sms_sponsorship/models/recurring_contract.py:146
+#: code:addons/sms_sponsorship/models/recurring_contract.py:109
 #, python-format
 msgid "New SMS sponsorship information"
 msgstr "Neue SMS Informationen angekommt"
-
-#. module: sms_sponsorship
-#: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_new_partner
-msgid "New partner ?"
-msgstr "New partner ?"
 
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_res_partner
@@ -276,7 +262,7 @@ msgid "Pay first month now"
 msgstr "Spende für den ersten Monat"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:83
+#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:74
 #, python-format
 msgid "Payment Method"
 msgstr "Payment Method"
@@ -289,10 +275,10 @@ msgstr "Zahlungstransaktion"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_phone
 msgid "Phone"
-msgstr "Telefon"
+msgstr "Handynummer"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/models/recurring_contract.py:143
+#: code:addons/sms_sponsorship/models/recurring_contract.py:106
 #, python-format
 msgid "Please verify the following information given by the sponsor:"
 msgstr "Bitte überprüfen Sie die folgenden Informationen des Sponsors:"
@@ -305,12 +291,12 @@ msgstr "Aufgabe in Warteschlange einreihen"
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_registration_confirmation
 msgid "Registration successful !"
-msgstr "Registrierung erfolgreich!"
+msgstr "Dankeschön!"
 
 #. module: sms_sponsorship
 #: selection:sms.child.request,state:0
 msgid "Request expired"
-msgstr "Antrag abgelaufen"
+msgstr "Request expired"
 
 #. module: sms_sponsorship
 #: model:ir.ui.view,arch_db:sms_sponsorship.sms_child_request_form
@@ -320,7 +306,7 @@ msgstr "Neues Patenkind anfordern"
 #. module: sms_sponsorship
 #: selection:sms.child.request,state:0
 msgid "Request received"
-msgstr "Anfrage erhalten"
+msgstr "Request received"
 
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_sms_child_request
@@ -372,18 +358,18 @@ msgstr "Sms request id"
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_compassion_child
 msgid "Sponsored Child"
-msgstr "Patenkind"
+msgstr "Sponsored Child"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_payment_transaction_sponsorship_id
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_sponsorship_id
 msgid "Sponsorship"
-msgstr "Patenschaft"
+msgstr "Sponsorship"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_sms_child_request_sponsorship_confirmed
 msgid "Sponsorship confirmed"
-msgstr "Patenschaft bestätigt"
+msgstr "Sponsorship confirmed"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_state_id
@@ -424,7 +410,7 @@ msgstr "Step2 url id"
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_partner_street
 msgid "Street"
-msgstr "Straße"
+msgstr "Strasse"
 
 #. module: sms_sponsorship
 #: model:ir.model.fields,field_description:sms_sponsorship.field_cms_form_recurring_contract_gtc_accept
@@ -460,7 +446,7 @@ msgid "Thank you for your sponsorship!"
 msgstr "Thank you for your sponsorship!"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/controllers/main.py:176
+#: code:addons/sms_sponsorship/controllers/main.py:178
 #, python-format
 msgid ""
 "The payment was not successful, but your sponsorship has still been "
@@ -484,6 +470,11 @@ msgid "Title"
 msgstr "Anrede"
 
 #. module: sms_sponsorship
+#: model:ir.model,name:sms_sponsorship.model_demand_weekly_demand
+msgid "Weekly Demand"
+msgstr "Weekly Demand"
+
+#. module: sms_sponsorship
 #: code:addons/sms_sponsorship/models/res_partner.py:23
 #, python-format
 msgid ""
@@ -504,7 +495,7 @@ msgstr ""
 ">Best regards"
 
 #. module: sms_sponsorship
-#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:64
+#: code:addons/sms_sponsorship/forms/sms_sponsorship_registration_form.py:55
 #, python-format
 msgid "Your personal data"
 msgstr "Deine Daten"
@@ -545,11 +536,23 @@ msgid "compassion.hold"
 msgstr "compassion.hold"
 
 #. module: sms_sponsorship
-#: model:ir.model.fields,help:sms_sponsorship.field_sms_child_request_new_partner
-msgid "is true if partner was created when sending sms"
-msgstr "is true if partner was created when sending sms"
+#: model:ir.model,name:sms_sponsorship.model_privacy_statement_agreement
+msgid "privacy.statement.agreement"
+msgstr "privacy.statement.agreement"
 
 #. module: sms_sponsorship
 #: model:ir.model,name:sms_sponsorship.model_staff_notification_settings
 msgid "staff.notification.settings"
 msgstr "staff.notification.settings"
+
+#. module: sms_sponsorship
+#: code:addons/sms_sponsorship/models/sms_child_request.py:365
+#, python-format
+msgid "{} SMS Sponsorship are ongoing"
+msgstr "{} SMS Sponsorship are ongoing"
+
+#. module: sms_sponsorship
+#: code:addons/sms_sponsorship/models/sms_child_request.py:363
+#, python-format
+msgid "{} partner(s) have ongoing SMS Sponsorship"
+msgstr "{} partner(s) have ongoing SMS Sponsorship"
