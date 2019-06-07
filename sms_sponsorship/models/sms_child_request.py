@@ -209,6 +209,7 @@ class SmsChildRequest(models.Model):
         :return: True
         """
         self.ensure_one()
+        self.partner_id.set_privacy_statement(origin='sms_sponsorship')
         self.partner_id.sms_send_step2_confirmation(self)
         return self.mark_done()
 
