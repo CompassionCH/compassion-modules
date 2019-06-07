@@ -6,4 +6,16 @@
             <field name="type">automatic</field>
         </record>
     </data>
+        <data noupdate="1">
+        <record id="utm_medium_android" model="utm.medium">
+            <field name="name">Android</field>
+            <field name="type">automatic</field>
+        </record>
+    </data>
+        <data noupdate="1">
+        <record id="utm_medium_ios" model="utm.medium">
+            <field name="name">iOS</field>
+            <field name="type">automatic</field>
+        </record>
+    </data>
 </odoo>

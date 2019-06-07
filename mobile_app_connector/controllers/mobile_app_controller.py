@@ -10,6 +10,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import werkzeug
+
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
@@ -98,3 +100,19 @@ class RestController(http.Controller):
         hero_mapping = AppBannerMapping(request.env)
         res = hero_mapping.get_connect_data(hero)
         return [res]
+
+    @http.route('/mobile-app-api/sponsor_a_child/<string:lang_code>&'
+                '<string:source>',
+                type='http', auth='public', website=True)
+    def mobile_app_sponsorship_request(self, lang_code=None, source=None,
+                                       **parameters):
+        """
+        Create a sms_child_request and redirect user to sms sponsorship form
+        It uses sms sponsorship
+        :return: Redirect to sms_sponsorship form
+        """
+        values = {'lang_code': lang_code,
+                  'source': source}
+        sms_child_request = request.env['sms.child.request'].\
+            sudo().create(values)
+        return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
