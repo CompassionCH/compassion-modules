@@ -101,8 +101,7 @@ class RestController(http.Controller):
         res = hero_mapping.get_connect_data(hero)
         return [res]
 
-    @http.route('/mobile-app-api/sponsor_a_child/<string:lang_code>&'
-                '<string:source>',
+    @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
                 type='http', auth='public', website=True)
     def mobile_app_sponsorship_request(self, lang_code=None, source=None,
                                        **parameters):
