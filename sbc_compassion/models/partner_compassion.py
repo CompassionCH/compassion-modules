@@ -13,8 +13,7 @@ from odoo import fields, models, api
 
 
 class ResPartner(models.Model):
-    """ Add correspondence preferences to Partners
-    """
+    """ Add correspondence preferences to Partners """
     _inherit = 'res.partner'
 
     ##########################################################################
