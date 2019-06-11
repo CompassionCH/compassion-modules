@@ -262,7 +262,7 @@ class AppHub(models.AbstractModel):
         for tile in to_order:
             recent_group = recent_content[tile['SubType']]
             if recent_group['max_number_tile'] > len(recent_group['tiles']) \
-                    and (tile['SubType'] != 'LE_T1' or tile['UnReadRecently']):
+                    and (tile['SubType'] != 'LE_T1' or tile.get('UnReadRecently', False)):
                 recent_group['tiles'].append(tile)
             elif tile['SubType'] in fixed_group_tiles:
                 fixed_group.append(tile)
