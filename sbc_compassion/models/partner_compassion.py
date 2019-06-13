@@ -58,7 +58,7 @@ class ResPartner(models.Model):
         ]).ids
         if 'spoken_lang_ids' not in vals:
             vals['spoken_lang_ids'] = [(6, 0, lang_id)]
-        else:
+        elif lang_id:
             base_language = (4, lang_id[0])
             spoken_languages = vals['spoken_lang_ids']
             # If the base language is not in the list of the spoken languages,

@@ -16,3 +16,4 @@ locustio
 detectlanguage
 timezonefinder==3.4.2
 firebase-admin
+pytz

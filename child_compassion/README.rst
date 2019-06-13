@@ -35,7 +35,7 @@ resupply quantities by setting the following keys:
 - `child_compassion.default_resupply`
 
 To get weather information about each project location, you'll need to add an
-API key from opernweathermap.com to the odoo.conf file.
+API key from opernweathermap.org to the odoo.conf file.
 `openweathermap_api_key = AAAAAAAAAAA`
 
 Usage
