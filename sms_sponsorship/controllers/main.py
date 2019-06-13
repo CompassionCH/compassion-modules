@@ -32,7 +32,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
     # STEP 1
     ########
     @route('/sms_sponsorship/step1/<int:child_request_id>', auth='public',
-           website=True)
+           website=True, noindex=['robots', 'meta', 'header'])
     def step1_redirect_react(self, child_request_id=None):
         """ URL for SMS step 1, redirects to REACT app showing the mobile
         form.
@@ -42,7 +42,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         return werkzeug.utils.redirect(url, 301)
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/get_child_data',
-           type='json', auth='public', methods=['POST'], csrf=False)
+           type='json', auth='public', methods=['POST'], csrf=False,
+           noindex=['robots', 'meta', 'header'])
     def get_child_data(self, child_request_id):
         """
         API Called by REACT app in order to get relevant data for displaying
@@ -78,7 +79,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         return {'has_a_child': False, 'invalid_sms_child_request': False}
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/confirm',
-           type='json', auth='public', methods=['POST'], csrf=False)
+           type='json', auth='public', methods=['POST'], csrf=False,
+           noindex=['robots', 'meta', 'header'])
     def sms_sponsor_confirm(self, child_request_id):
         """
         Route called by REACT app when step 1 form is submitted.
@@ -99,7 +101,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             return {'result': 'success'}
 
     @route('/sms_sponsorship/step1/<int:child_request_id>/change_child',
-           type='json', auth='public', methods=['POST'], csrf=False)
+           type='json', auth='public', methods=['POST'], csrf=False,
+           noindex=['robots', 'meta', 'header'])
     def sms_change_child(self, child_request_id):
         """
         Route called by REACT app for selecting another child.
@@ -135,7 +138,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
     # STEP 2
     ########
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/',
-           auth='public', website=True)
+           auth='public', website=True, noindex=['robots', 'meta', 'header'])
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
         sponsorship = request.env['recurring.contract'].sudo().browse(
@@ -151,7 +154,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
-           methods=['GET'], website=True)
+           methods=['GET'], website=True, noindex=['robots', 'meta', 'header'])
     def sms_registration_confirmation(self, sponsorship_id=None, **post):
         """
         This is either called after form submission, or when the user

@@ -15,7 +15,8 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_compassion', 'cms_form_compassion', 'link_tracker'],
+    'depends': ['crm_compassion', 'cms_form_compassion', 'link_tracker',
+                'website_no_index'],
     'data': [
         'security/ir.model.access.csv',
         'security/access_rules.xml',
