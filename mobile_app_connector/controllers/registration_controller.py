@@ -9,7 +9,7 @@
 ##############################################################################
 
 from odoo import http
-from odoo.http import Controller, request
+from odoo.http import Controller
 
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 
