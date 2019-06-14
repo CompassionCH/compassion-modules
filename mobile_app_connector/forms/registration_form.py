@@ -104,7 +104,8 @@ if not testing:
 
             # check if the email is already used as login for an account
             does_login_exists = self.env['res.users'].sudo().search([
-                ('login', '=', value)
+                ('login', '=', value),
+                ('login_date', '!=', False)
             ])
             if value and does_login_exists:
                 return 'login', _(
@@ -127,7 +128,7 @@ if not testing:
                 values.get('partner_id'))
 
             # partner has already an user linked, add skip user creation option
-            if partner.user_ids:
+            if any(partner.user_ids.mapped('login_date')):
                 raise ValidationError(
                     _("This email is already linked to an account."))
 
@@ -139,28 +140,37 @@ if not testing:
                     "We couldn't find your sponsorships. Please contact "
                     "us for setting up your account."))
 
-            # partner is sponsoring a child and answered no on the form,
-            # add skip user creation option
-            elif not has_sponsorship and partner.has_sponsorships:
-                raise ValidationError(_(
-                    "Your profile is already registered with sponsorships. "
-                    "Please make sure you entered the correct information "
-                    "or contact us if the problem persist."
-                ))
-
             # Push the email for user creation
             values['email'] = extra_values['partner_email']
 
         def _form_create(self, values):
-            """ Here we create the user using the portal wizard. """
-            wizard = self.env['portal.wizard'].sudo().create({
-                'portal_id': self.env['res.groups'].sudo().search([
-                    ('is_portal', '=', True)], limit=1).id
-            })
-            portal_user = self.env['portal.wizard.user'].sudo().create(
-                self._get_portal_user_vals(wizard.id, values))
-            portal_user.action_apply()
-            self.main_object = portal_user.user_id
+            """ Here we create the user using the portal wizard or
+            reactivate existing users that never connected. """
+            existing_users = self.env['res.users'].sudo().search([
+                ('login_date', '=', False),
+                '|', ('partner_id', '=', values['partner_id']),
+                ('login', '=', values['email'])
+            ])
+            if existing_users:
+                self._reactivate_users(existing_users)
+                self.main_object = existing_users[:1]
+            else:
+                wizard = self.env['portal.wizard'].sudo().create({
+                    'portal_id': self.env['res.groups'].sudo().search([
+                        ('is_portal', '=', True)], limit=1).id
+                })
+                portal_user = self.env['portal.wizard.user'].sudo().create(
+                    self._get_portal_user_vals(wizard.id, values))
+                portal_user.action_apply()
+                self.main_object = portal_user.user_id
+
+        def _reactivate_users(self, res_users):
+            """
+            Reactivate existing users that never connected to Odoo.
+            :param res_users: users recordset
+            :return: None
+            """
+            res_users.action_reset_password()
 
         def _get_portal_user_vals(self, wizard_id, form_values):
             """ Used to customize the portal wizard values if needed. """
