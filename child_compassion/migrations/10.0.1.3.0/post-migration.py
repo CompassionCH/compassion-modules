@@ -18,9 +18,7 @@ def migrate(cr, version):
         UPDATE compassion_child_pictures AS pics
         SET image_url = CONCAT(
             'https://erp.compassion.ch/web/image/compassion.child.pictures/',
-            id,
-            '/fullshot/child.jpg'
+            id, '/fullshot/', pics.date, '_', pics.child_id, '.jpg'
         )
         WHERE (pics.image_url <> '') IS NOT TRUE
     """)
-
