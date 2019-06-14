@@ -1,20 +1,14 @@
+
 .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-==========================================
 Smart Tagger
-==========================================
-The Smart Tagger Module give a way to add tags in a dynamic way. Create a tagger and make an update all to give
-all the record from a model with a given filter the tags. And after that the tags update themselves with a cron.
+============
 
-TODO
-----
-To finish this module we need to do:
-
-- Finish the cron
-- Make the test
-- Make a demo
+The Smart Tagger Module update the partner category to add tags in a dynamic way.
+Give the possibility to update all the partner linked to the tags with one button.
+A cron update all the smart tagger when you want it.
 
 Contributors
 ------------

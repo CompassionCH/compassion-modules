@@ -8,74 +8,62 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api, exceptions
+
+from odoo import models, fields, api
+from odoo.tools import safe_eval
 
 
 class SmartTagger(models.Model):
-    _name = "smart.tagger"
+    _inherit = "res.partner.category"
 
-    model = fields.Many2one('ir.model')
-    condition = fields.Many2one('ir.filters')
-    condition_field = fields.Many2one('ir.model.fields')
-    related_tag_field = fields.Many2one('ir.model.fields')
+    condition_id = fields.Many2one('ir.filters', string="Condition")
+    smart = fields.Boolean()
+    partner_ids = fields.Many2many("res.partner",
+                                   relation='res_partner_res_partner_'
+                                            'category_rel',
+                                   column1='category_id',
+                                   column2='partner_id')
 
-    tags = fields.One2many('smart.tags')
-    name = fields.Char()
-    number_tags = fields.Integer(compute='_tags_size', stored=True)
+    number_tags = fields.Integer(compute='_compute_number_tags', stored=True)
 
-    # tag who can't be put at the same time this one
-    under_tagger = fields.Many2many('smart.tagger')
-    upper_tagger = fields.Many2many('smart.tagger')
+    @api.constrains('condition_id')
+    def check_condition(self):
+        for me in self:
+            if me.condition_id.model_id != 'res.partner':
+                model_link = self.env[me.condition_id.model_id]
+                if 'partner_id' not in model_link:
+                    raise ValueError("Le model que vous voulez utiliser "
+                                     "n'as pas de lien avec Partner")
 
     @api.multi
     def update_all(self):
         for tagger in self:
-            data_to_update = self.env[tagger.model].search(
-                tagger.condition.domain)
-            if data_to_update:
-                tags = []
-                for data in data_to_update:
-                    if tagger.related_tag_field in data:
-                        data_tags = data[tagger.related_tag_field]
-                        taggers = get_all_tagger(data_tags)
-                        if tagger.id not in taggers and not \
-                                set(tagger.upper_tagger).intersection(taggers):
-                            tag = self.env['smart.tags'].create({
-                                'related_data': data,
-                                'related_field': data[tagger.condition_field]
-                            })
-                            tags.append(tag)
-                            value = [data[tagger.related_tag_field], tag.id]
-                            value = [x for x in value if x not in tagger.under_tagger]
-                            data.write({
-                                tagger.related_tag_field: value
-                                        })
-                    else:
-                        raise exceptions.ValidationError(
-                            "Model %s has no field %s", tagger.model,
-                            tagger.related_tag_field)
-            tagger.write({'tags': tags})
+            if tagger.smart:
+                parents = self.search([('id', 'parent_of', tagger.id)])
+                domain = safe_eval(tagger.condition_id.domain)
+                model = tagger.condition_id.model_id
+                data_to_update = self.env[model].search(domain)
+                if data_to_update:
+                    partners = []
+                    for data in data_to_update:
+                        if not model == 'res.partner':
+                            data = data.partner_id
+                        if not data.category_id & parents:
+                            partners.append(data.id)
+                    tagger.write({'partner_ids': [(6, 0, partners)]})
 
-    @api.onchange(tags)
-    def _tags_size(self):
-        self.number_tags = len(self.tags)
+    @api.depends('partner_ids')
+    def _compute_number_tags(self):
+        for category in self:
+            category.number_tags = len(category.partner_ids)
 
     @api.multi
     def open_tags(self):
         return {
             "type": "ir.actions.act_window",
-            "res_model": "smart.tags",
+            "res_model": "res.partner",
             "view_type": "form",
-            "view_mode": "form",
-            "target": "new",
-            "domain": "['id', in, tags]"
+            "view_mode": "list,form",
+            "name": "Partners",
+            "domain": [["id", "in", self.partner_ids.ids]]
         }
-
-
-def get_all_tagger(data):
-    result = []
-    for tag in data:
-        if tag.tagger not in result:
-            result.append(tag.tagger.id)
-
-    return result

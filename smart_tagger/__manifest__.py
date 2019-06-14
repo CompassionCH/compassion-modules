@@ -27,9 +27,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# pylint: disable=C8101
 {
     'name': "Smart Tagger",
-    'version': '0.0.0.0.1',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'summary': "Smart tagger, module to have smart tags who "
                "update themselves alone",
@@ -39,8 +40,7 @@
     'website': 'http://www.compassion.ch',
     'data': [
         'cron/update_cron.xml',
-        'views/smart_tagger_view.xml',
-        'views/smart_tags_view.xml',
+        'views/smart_tagger_view.xml'
     ],
     'installable': True,
     'auto_install': False,

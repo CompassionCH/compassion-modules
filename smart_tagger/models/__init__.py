@@ -8,5 +8,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import smart_tags
 from . import smart_tagger
