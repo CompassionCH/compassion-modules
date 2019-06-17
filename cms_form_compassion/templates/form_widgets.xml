@@ -7,7 +7,8 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
     <!-- Display a form in modal popup -->
     <template id="modal_form" name="CMS Modal Form">
         <div t-att-id="form.form_id" class="modal fade cms_modal_form" tabindex="-1" role="dialog" aria-labelledby="donation_modal_label" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <!-- TODO: When upgrading to Bootstrap 4.2 or higher, use class="modal-dialog modal-xl" -->
+            <div class="modal-dialog modal-lg" role="document">
                 <div t-attf-class="modal-content {{form.form_wrapper_css_klass}}">
                     <div class="modal-body">
                         <t t-if="form.form_title">
