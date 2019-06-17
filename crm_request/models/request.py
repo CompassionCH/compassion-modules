@@ -188,11 +188,14 @@ class CrmClaim(models.Model):
                 request.description).lang_id.code
 
         # # send automated holiday response
-        if request.holiday_closure_id:
-            template_id = self.env.ref(
-                "crm_request.business_closed_email_template").id
-            request.with_context(keep_stage=False).message_post_with_template(
-                template_id)
+        try:
+            if request.holiday_closure_id:
+                template_id = self.env.ref(
+                    "crm_request.business_closed_email_template").id
+                request.with_context(
+                    keep_stage=True).message_post_with_template(template_id)
+        except Exception as e:
+            _logger.error("The automatic mail failed\n{}".format(e))
 
         return request_id
 
@@ -212,11 +215,12 @@ class CrmClaim(models.Model):
     @api.returns('self', lambda value: value.id)
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
-           to the supporter
+           to the supporter but not if it's an automatic answer.
         """
         result = super(CrmClaim, self).message_post(**kwargs)
 
-        if 'mail_server_id' in kwargs and self.env.context.get('keep_stage'):
+        if 'mail_server_id' in kwargs and not self.env.context.get(
+                'keep_stage'):
             for request in self:
                 ir_data = self.env['ir.model.data']
                 request.stage_id = ir_data.get_object_reference(

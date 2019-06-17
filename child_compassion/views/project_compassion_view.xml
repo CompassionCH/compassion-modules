@@ -173,6 +173,8 @@
                                     <field name="planting_month_ids" widget="many2many_tags"/>
                                     <field name="harvest_month_ids" widget="many2many_tags"/>
                                     <field name="hunger_month_ids" widget="many2many_tags"/>
+                                    <field name="current_temperature"/>
+                                    <field name="current_weather"/>
                                 </group>
                                 <group string="Needs">
                                     <field name="project_need_ids" widget="many2many_tags"/>

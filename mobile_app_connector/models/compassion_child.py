@@ -13,10 +13,6 @@ import logging
 
 from odoo import models, api
 from ..mappings.compassion_child_mapping import MobileChildMapping
-from pytz import country_timezones
-from datetime import datetime
-import pytz
-
 
 logger = logging.getLogger(__name__)
 
@@ -50,10 +46,6 @@ class CompassionChild(models.Model):
         """
         children_pictures = self.sudo().mapped('pictures_ids')
         project = self.sudo().mapped('project_id')
-        # TODO change timezone computation to one retrieving data from project
-        tz = country_timezones('NI')
-        tz_child = pytz.timezone(tz[0])
-        datetime_child = datetime.now(tz_child)
 
         if not self:
             return {}
@@ -72,10 +64,12 @@ class CompassionChild(models.Model):
             'Location':
                 project.get_location_json(multi=False),
             'Time': {
-                    "ChildTime": datetime_child.strftime("%d/%m/%Y %H:%M:%S")
+                    "ChildTime": project.get_time()[0],
+                    "ChildTimezone": project[0].timezone,
                     },
             'OrderDate': max(x for y in self
                              for x in y.sponsorship_ids.mapped('start_date')),
+            'Weather': project[0].get_weather_json(multi=False)
 
         }
 
