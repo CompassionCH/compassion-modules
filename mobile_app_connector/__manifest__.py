@@ -53,6 +53,7 @@
         'data/ir_cron.xml',
         'views/wp_post_view.xml',
         'views/app_banner_view.xml',
+        'views/app_writing_view.xml',
         'views/tile_type_view.xml',
         'views/tile_view.xml',
         'views/product_view.xml',

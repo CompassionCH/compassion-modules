@@ -8,12 +8,14 @@
 #
 ##############################################################################
 
-from odoo import models, api  # , fields
+from odoo import models, api, fields
+from odoo.tools import plaintext2html
 from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
 from werkzeug.exceptions import NotFound
+from base64 import b64encode
 
-# from datetime import date, timedelta
+from datetime import date, timedelta
 
 
 class CompassionCorrespondence(models.Model):
@@ -37,11 +39,10 @@ class CompassionCorrespondence(models.Model):
             data = []
             for letter in self:
                 data.append(mapping.get_connect_data(letter))
-        # TODO change to
-        # unread_recently = not(self.email_read and self.read_date <
-        #                       fields.Date.toString(
-        #                           date.today() + timedelta(days=3)))
-        unread_recently = not self.email_read
+
+        unread_recently = not(self.email_read <
+                              fields.Date.to_string(
+                                  date.today() + timedelta(days=3)))
         return {
             'Child': child.get_app_json_no_wrap(),
             wrapper: data,
@@ -114,3 +115,70 @@ class CompassionCorrespondence(models.Model):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    def mobile_get_preview(self, *_, **other_params):
+        body = self._get_required_param('letter-copy', other_params)
+        body_html = '<div id="first_box">' + plaintext2html(body)
+        # supporter_id = self._get_required_param('sup-id', other_params)
+        child_id = self._get_required_param('selected-child', other_params)
+        template_id = \
+            self._get_required_param('selected-letter-id', other_params)
+        if template_id == '0':
+            # write a card -> default template
+            template_id = '2'
+        file = other_params.get('file_upl')
+        file_extension = other_params.get('path_info_extension')
+        gen = self.env['correspondence.s2b.generator'].create({
+            'name': 'app',
+            'selection_domain': "[('child_id', '=', '" + child_id + "')]",
+            'body_html': body_html,
+            's2b_template_id': template_id,
+        })
+        if file:
+            body_html += "<br><div id='included-img' style='width: 100%;'>" \
+                         "<img style='width:100%;"
+            body_html += "' src=\"data:image/" + file_extension[:] + \
+                         ";base64, " + b64encode(file.stream.read()) + \
+                         "\"/></div>"
+            gen.body_html = body_html
+        gen.body_html += "</div>"
+        gen.onchange_domain()
+        self.env.cr.commit()
+        gen.preview()
+        web_base_url = \
+            self.env['ir.config_parameter'].get_param('web.external.url')
+        url = web_base_url + "/web/image/" + gen._name + "/" + \
+            str(gen.id) + "/preview_pdf"
+        return url
+
+    @api.multi
+    def mobile_send_letter(self, *params, **other_params):
+        params = params[0]
+        template_id = self._get_required_param('TemplateID', params)
+        if 'DbId' in params:
+            # The letter was submitted on the last api call
+            if template_id == "0":
+                return "Letter Submitted "
+            return "Card Submitted "
+        # body = self._get_required_param('Message', params)
+        # partner_id = self._get_required_param('SupporterId', params)
+        # iOS and Android do not return the same format
+        if template_id == '0' or template_id == 0:
+            # write a card -> default template
+            template_id = '2'
+        child_id = self._get_required_param('Need', params)
+        if isinstance(child_id, list):
+            child_id = child_id[0]
+        child = \
+            self.env['compassion.child'].search([('id', '=', str(child_id))])
+        gen = self.env['correspondence.s2b.generator'].search([
+            ('name', '=', 'app'),
+            ('selection_domain', '=',
+             "[('child_id', '=', '" + child.local_id + "')]"),
+            ('s2b_template_id', '=', int(template_id)),
+            ('state', '=', 'preview')
+        ], limit=1, order='create_date DESC')
+        gen.generate_letters_job()
+        return {
+            'DbId': gen.letter_ids.mapped('id'),
+        }
