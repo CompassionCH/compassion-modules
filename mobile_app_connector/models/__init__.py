@@ -27,4 +27,3 @@ from . import recurring_contract
 from . import mobile_feedback
 from . import firebase_registration
 from . import privacy_statement
-from . import match_user
