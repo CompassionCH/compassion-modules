@@ -24,5 +24,6 @@ queue
 report-print-send https://github.com/CompassionCH/report-print-send 10.0
 server-tools
 web https://github.com/CompassionCH/web 10.0-widget-collapse-html
+website-cms
 website https://github.com/CompassionCH/website
 social
