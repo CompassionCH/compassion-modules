@@ -17,6 +17,7 @@ from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
+from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
 
 
 class RestController(http.Controller):
@@ -140,14 +141,34 @@ class RestController(http.Controller):
     def mobile_app_forgot_password(self, **parameters):
         """
         Called by app when user forgot his password, try to match his email
-        address and then send him reset instructions
-        :return:
+        address to an user and then send him reset instructions
+        :return: json containing status (0 if success, 1 if failed) and state
+        message
         """
         if 'email' not in parameters:
             return {
                 'status': 1,
                 'message': "No email entered"
-                    }
-        match_obj = request.env['res.user.match']
-        user = match_obj.sudo().match_user_to_email(parameters['email'])
-        return match_obj.sudo().reset_password(user)
+            }
+        user_obj = request.env['res.users'].sudo()
+
+        # search for an user match
+        user = user_obj.search([('login', '=', parameters['email'])])
+
+        # set default response
+        response = {
+            'status': 1,
+            'message': "No such account"
+        }
+
+        # if search didn't match any user, do not reset password and return
+        # default response
+        if user:
+            try:
+                user.action_reset_password()
+                response['status'] = 0
+                response['message'] = "Success"
+            except MailDeliveryException:
+                response['message'] = "Mail delivery error"
+
+        return response
