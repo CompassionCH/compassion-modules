@@ -342,7 +342,7 @@ You never wrote to your sponsored child.
         <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">Time and weather</field>
         <field name="default_body"><![CDATA[% set child = ctx['objects'].child_id
-${child.preferred_name} / ${child.country_id.name}
+${child.preferred_name} / ${child.project_id.country_id.name}
 ]]></field>
         <field name="default_action_text">My Community</field>
         <field name="default_action_destination">My Community</field>
