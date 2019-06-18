@@ -134,3 +134,20 @@ class RestController(http.Controller):
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
         return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
+
+    @http.route('/mobile-app-api/forgot-password',
+                type='json', auth='public', methods=['GET'])
+    def mobile_app_forgot_password(self, **parameters):
+        """
+        Called by app when user forgot his password, try to match his email
+        address and then send him reset instructions
+        :return:
+        """
+        if 'email' not in parameters:
+            return {
+                'status': 1,
+                'message': "No email entered"
+                    }
+        match_obj = request.env['res.user.match']
+        user = match_obj.sudo().match_user_to_email(parameters['email'])
+        return match_obj.sudo().reset_password(user)
