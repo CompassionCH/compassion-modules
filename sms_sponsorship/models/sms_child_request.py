@@ -361,8 +361,8 @@ class SmsChildRequest(models.Model):
             self.message_post(
                 body=_("{} partner(s) have ongoing SMS Sponsorship").format(
                     nb_sms_requests),
-                subject=_("{} SMS Sponsorship are ongoing").format(
-                    nb_sms_requests),
+                subject=_("{} SMS Sponsorship {} ongoing").format(
+                    nb_sms_requests, 'is' if nb_sms_requests <= 1 else 'are'),
                 partner_ids=notify_ids,
                 type='comment',
                 subtype='mail.mt_comment',
