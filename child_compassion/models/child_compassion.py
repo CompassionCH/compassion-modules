@@ -158,6 +158,7 @@ class CompassionChild(models.Model):
     major_course_study = fields.Selection([
         ('Accounting', 'Accounting'),
         ('Agriculture', 'Agriculture'),
+        ('Art / Design', 'Art / Design'),
         ('Biology / Medicine', 'Biology / Medicine'),
         ('Business / Management / Commerce', 'Business management'),
         ('Community Development', 'Community development'),
@@ -183,6 +184,7 @@ class CompassionChild(models.Model):
         ('Theology', 'Theology'),
         ('Theology / Christian Studies', 'Theology'),
         ('Tourism', 'Tourism'),
+        ('Transportation', 'Transportation'),
         ('Biology', 'Biology'),
         ('Social Science', 'Social Science'),
         ('Sociology', 'Sociology'),

@@ -34,7 +34,7 @@ class SmsChildRequest(models.Model):
     _rec_name = 'child_id'
     _order = 'date desc'
 
-    sender = Phone(required=True, partner_field='partner_id',
+    sender = Phone(partner_field='partner_id',
                    country_field='country_id')
     date = fields.Datetime(required=True, default=fields.Datetime.now)
     full_url = fields.Char(compute='_compute_full_url')
@@ -63,6 +63,7 @@ class SmsChildRequest(models.Model):
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
     lang_code = fields.Char('Language', required=True)
+    source = fields.Char()
 
     # Filter criteria made by sender
     gender = fields.Selection([
@@ -209,6 +210,7 @@ class SmsChildRequest(models.Model):
         :return: True
         """
         self.ensure_one()
+        self.partner_id.set_privacy_statement(origin='sms_sponsorship')
         self.partner_id.sms_send_step2_confirmation(self)
         return self.mark_done()
 
