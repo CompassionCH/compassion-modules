@@ -153,7 +153,12 @@ if not testing:
             if partner_id:
                 source_vals['partner_id'] = partner_id
 
-            partner = self.match_partner_to_infos(source_vals)
+            options = {
+                'skip_update': extra_values.get('skip_update'),
+                'skip_create': extra_values.get('skip_create')
+            }
+
+            partner = self.match_partner_to_infos(source_vals, options)
 
             values['partner_id'] = partner.id
 
@@ -175,5 +180,5 @@ if not testing:
             # Returns the partner fields used by the form
             return [
                 'firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title'
+                'zip', 'country_id', 'state_id', 'title', 'opt_out'
             ]

@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Children',
-    'version': '10.0.1.2.0',
+    'version': '10.0.1.3.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -45,11 +45,14 @@
     'external_dependencies': {
         'python': ['enum',
                    'pyquery',
+                   'pytz',
+                   'requests',
                    'timezonefinder',
                    ]
     },
     'data': [
         'security/sponsorship_groups.xml',
+        'security/child_pictures_security.xml',
         'security/ir.model.access.csv',
         'views/child_compassion_view.xml',
         'views/field_office_view.xml',

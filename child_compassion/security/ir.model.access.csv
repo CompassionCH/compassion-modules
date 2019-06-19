@@ -2,6 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_compassion_project,Full access on compassion_project,model_compassion_project,group_sponsorship,1,1,1,1
 access_compassion_child,Full access on compassion_child,model_compassion_child,group_sponsorship,1,1,1,1
 access_compassion_child_pictures,Full access on compassion_child_pictures,model_compassion_child_pictures,group_sponsorship,1,1,1,1
+access_public_compassion_child_pictures,Read access on compassion_child_pictures,model_compassion_child_pictures,base.group_portal,1,0,0,0
 access_res_lang_compassion,Read only access on res_lang_compassion,model_res_lang_compassion,group_sponsorship,1,0,0,0
 access_admin_res_lang_compassion,Full access on res_lang_compassion,model_res_lang_compassion,base.group_system,1,1,1,1
 access_child_assessement,Read access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,0

@@ -59,6 +59,11 @@ class RecurringContract(models.Model):
             'lang_code': partner.lang
         })
 
+        # prepare correct medium_id depending on sms_child_request's source
+        medium_name = "sms_sponsorship.utm_medium_"
+        medium_name += "android" if sms_child_request.source == "Android" \
+            else "ios" if sms_child_request.source == "iOS" else "sms"
+
         # Create sponsorship
         lines = self._get_sponsorship_standard_lines()
         if not vals['sponsorship_plus']:
@@ -69,7 +74,7 @@ class RecurringContract(models.Model):
             'child_id': sms_child_request.child_id.id,
             'type': 'S',
             'contract_line_ids': lines,
-            'medium_id': self.env.ref('sms_sponsorship.utm_medium_sms').id,
+            'medium_id': self.env.ref(medium_name).id,
             'origin_id': sms_child_request.event_id.origin_id.id,
         })
         sponsorship.on_change_origin()
