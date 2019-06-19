@@ -14,7 +14,7 @@ import werkzeug
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
-from odoo import http
+from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
@@ -148,7 +148,7 @@ class RestController(http.Controller):
         if 'email' not in parameters:
             return {
                 'status': 1,
-                'message': "No email entered"
+                'message': _("No email entered")
             }
         user_obj = request.env['res.users'].sudo()
 
@@ -158,7 +158,7 @@ class RestController(http.Controller):
         # set default response
         response = {
             'status': 1,
-            'message': "No such account"
+            'message': _("No such account")
         }
 
         # if search didn't match any user, do not reset password and return
@@ -167,8 +167,8 @@ class RestController(http.Controller):
             try:
                 user.action_reset_password()
                 response['status'] = 0
-                response['message'] = "Success"
+                response['message'] = _("We sent you the reset instructions.")
             except MailDeliveryException:
-                response['message'] = "Mail delivery error"
+                response['message'] = _("Mail delivery error")
 
         return response
