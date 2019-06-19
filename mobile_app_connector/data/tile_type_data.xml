@@ -256,9 +256,9 @@ You never wrote to your sponsored child.
         <field name="code">LE_T3</field>
         <field name="view_order">10</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
-        <field name="default_records_filter">write_for_birthday_alert</field>
+        <field name="default_records_filter">'write_for_birthday_alert'</field>
         <field name="default_title">Anniversary</field>
-        <field name="default_body">Write a letter for ${ctx['objects'].child_id.preferred_name}'s birthday on ${ctx['objects'].child_id.get_date('birthdate')}</field>
+        <field name="default_body">${ctx['objects'].child_id.preferred_name} has birthday on ${ctx['objects'].child_id.get_date('birthdate', 'date_month')}</field>
         <field name="default_action_text">Write a card</field>
         <field name="default_action_destination">Top of letters hub</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T3.png"/>
