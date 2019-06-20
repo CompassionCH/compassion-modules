@@ -19,7 +19,7 @@
 % if len(child) == 1:
 You're changing ${child.get('his')} life
 % else:
-You're changing ${child.get_number()}
+You're changing ${child.get_number()} lives
 % endif
 Thank You]]>
         </field>
@@ -118,6 +118,19 @@ Make a donation]]></field>
         <field name="default_action_text">Give a donation</field>
         <field name="default_action_destination">Give overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI5.png"/>
+    </record>
+    <record id="tile_subtype_gi7" model="mobile.app.tile.subtype">
+        <field name="type_id" ref="tile_type_donation"/>
+        <field name="name">Awaiting sponsorship</field>
+        <field name="code">GI7</field>
+        <field name="view_order">5</field>
+        <field name="default_model_id" ref="model_recurring_contract"/>
+        <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
+        <field name="default_records_filter">lambda c: c.is_active and c.state == 'waiting'</field>
+        <field name="default_body">You have not yet paid your sponsorship</field>
+       <field name="default_action_text">Pay now</field>
+       <field name="default_action_destination">Give overlay</field>
+       <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI7.png"/>
     </record>
 
     <!-- Prayer type and subtypes -->
