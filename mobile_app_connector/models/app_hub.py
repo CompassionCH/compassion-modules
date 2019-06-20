@@ -240,6 +240,7 @@ class AppHub(models.AbstractModel):
             "GI1": giving,
             "GI3": giving,
             "GI5": giving,
+            "GI7": giving,
             "GI_T1": giving,
             "LE1": letters,
             "LE_T1": {'tiles': [], 'max_number_tile': 2},
