@@ -187,8 +187,10 @@
                 <field name="category_id"/>
                 <field name="intervention_id"/>
                 <field name="field_office_id"/>
+                <field name="start_date"/>
                 <field name="description"/>
                 <field name="funding_status"/>
+                <field name="total_cost" sum="Total"/>
                 <field name="commited_percentage" widget="progressbar"/>
                 <field name="state"/>
             </tree>
