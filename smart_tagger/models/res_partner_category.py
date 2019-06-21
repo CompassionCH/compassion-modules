@@ -13,7 +13,7 @@ from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 
 
-class SmartTagger(models.Model):
+class ResPartnerCategory(models.Model):
     _inherit = "res.partner.category"
 
     condition_id = fields.Many2one('ir.filters', string="Condition")
@@ -32,24 +32,21 @@ class SmartTagger(models.Model):
             if me.condition_id.model_id != 'res.partner':
                 model_link = self.env[me.condition_id.model_id]
                 if 'partner_id' not in model_link:
-                    raise ValueError("Le model que vous voulez utiliser "
-                                     "n'as pas de lien avec Partner")
+                    raise ValueError(
+                        "The chosen model has no partner_id field")
 
     @api.multi
     def update_partner_tags(self):
         for tagger in self.filtered('smart'):
-            parents = self.search([('id', 'parent_of', tagger.id)])
             domain = safe_eval(tagger.condition_id.domain)
             model = tagger.condition_id.model_id
-            data_to_update = self.env[model].search(domain)
-            if data_to_update:
-                partners = []
-                for data in data_to_update:
-                    if not model == 'res.partner':
-                        data = data.partner_id
-                    if not data.category_id & parents:
-                        partners.append(data.id)
-                tagger.write({'partner_ids': [(6, 0, partners)]})
+            matching_records = self.env[model].search(domain)
+            if matching_records:
+                if model == 'res.partner':
+                    partner_ids = matching_records.ids
+                else:
+                    partner_ids = matching_records.mapped('partner_id').ids
+                tagger.write({'partner_ids': [(6, 0, partner_ids)]})
         return True
 
     @api.model

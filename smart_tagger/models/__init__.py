@@ -8,4 +8,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import smart_tagger
+from . import res_partner_category
