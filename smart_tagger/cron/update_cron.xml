@@ -1,4 +1,3 @@
-
 <odoo>
     <record id="smart_tags_updater" model="ir.cron">
         <field name="name">Smart Tags Updater</field>
@@ -8,8 +7,8 @@
         <field name="interval_type">weeks</field>
         <field name="numbercall">-1</field>
         <field name="doall">1</field>
-        <field name="model" eval="'model.res_partner_category'" />
-        <field name="function" eval="'update_all'" />
+        <field name="model">res.partner.category</field>
+        <field name="function" eval="'update_all_smart_tags'" />
         <field name="args" eval="" />
     </record>
 </odoo>

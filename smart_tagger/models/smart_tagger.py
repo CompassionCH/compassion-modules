@@ -36,21 +36,25 @@ class SmartTagger(models.Model):
                                      "n'as pas de lien avec Partner")
 
     @api.multi
-    def update_all(self):
-        for tagger in self:
-            if tagger.smart:
-                parents = self.search([('id', 'parent_of', tagger.id)])
-                domain = safe_eval(tagger.condition_id.domain)
-                model = tagger.condition_id.model_id
-                data_to_update = self.env[model].search(domain)
-                if data_to_update:
-                    partners = []
-                    for data in data_to_update:
-                        if not model == 'res.partner':
-                            data = data.partner_id
-                        if not data.category_id & parents:
-                            partners.append(data.id)
-                    tagger.write({'partner_ids': [(6, 0, partners)]})
+    def update_partner_tags(self):
+        for tagger in self.filtered('smart'):
+            parents = self.search([('id', 'parent_of', tagger.id)])
+            domain = safe_eval(tagger.condition_id.domain)
+            model = tagger.condition_id.model_id
+            data_to_update = self.env[model].search(domain)
+            if data_to_update:
+                partners = []
+                for data in data_to_update:
+                    if not model == 'res.partner':
+                        data = data.partner_id
+                    if not data.category_id & parents:
+                        partners.append(data.id)
+                tagger.write({'partner_ids': [(6, 0, partners)]})
+        return True
+
+    @api.model
+    def update_all_smart_tags(self):
+        return self.search([('smart', '=', True)]).update_partner_tags()
 
     @api.depends('partner_ids')
     def _compute_number_tags(self):
