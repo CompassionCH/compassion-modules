@@ -70,7 +70,6 @@ class CompassionChild(models.Model):
             'OrderDate': max(x for y in self
                              for x in y.sponsorship_ids.mapped('start_date')),
             'Weather': project[0].get_weather_json(multi=False)
-
         }
 
     @api.model

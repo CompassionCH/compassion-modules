@@ -50,6 +50,10 @@ class AppHub(models.AbstractModel):
         #  is correspondent (to avoid viewing letters when he doesn't write)
         sponsorships = (partner.contracts_correspondant +
                         partner.contracts_fully_managed).filtered('is_active')
+        unpaid = (partner.contracts_correspondant +
+                  partner.contracts_fully_managed).filtered(
+            lambda c: not c.is_active and not c.parent_id and
+                      (c.state == 'waiting' or c.state == 'draft'))
         children = sponsorships.mapped('child_id')
 
         letters = self.env['correspondence'].search([
@@ -71,9 +75,15 @@ class AppHub(models.AbstractModel):
             'product.product': products,
             'correspondence': letters,
         }
+        unpaid_data = {
+            'recurring.contract': unpaid
+        }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
+        messages.extend(self.env['mobile.app.tile'].search([
+            ('display_name', '=', '[GI7] Awaiting payment')
+        ]).render_unpaid_tile(unpaid_data))
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
