@@ -6,6 +6,7 @@
             <field name="subtype_id" ref="tile_subtype_ch1"/>
             <field name="mode">one</field>
             <field name="visibility">private</field>
+            <field name="priority">High</field>
             <!-- the correct action_destination will be set when the init method will be called -->
             <field name="action_destination">Compass</field>
         </record>
@@ -70,6 +71,15 @@
             <field name="subtype_id" ref="tile_subtype_le_t2"/>
             <field name="mode">many</field>
             <field name="visibility">private</field>
+            <!-- the correct action_destination will be set when the init method will be called -->
+            <field name="action_destination">Compass</field>
+        </record>
+        <record id="tile_co4" model="mobile.app.tile">
+            <field name="name">Time and weather</field>
+            <field name="subtype_id" ref="tile_subtype_le_co4"/>
+            <field name="mode">many</field>
+            <field name="visibility">private</field>
+            <field name="priority">High</field>
             <!-- the correct action_destination will be set when the init method will be called -->
             <field name="action_destination">Compass</field>
         </record>

@@ -138,7 +138,11 @@ class AppTile(models.Model):
                         res.append(tile_json.copy())
             else:
                 # Some tiles shouldn't rendered when no records are associated
-                if tile.model not in ('correspondence', 'product.product'):
+                module = 'mobile_app_connector.%s'
+                no_render = self.env.ref(module % 'tile_type_donation') + \
+                    self.env.ref(module % 'tile_type_letter') +\
+                    self.env.ref(module % 'tile_type_child')
+                if tile.subtype_id.type_id not in no_render:
                     res.append(tile_json)
         return res
 

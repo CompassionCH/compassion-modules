@@ -14,9 +14,10 @@ import werkzeug
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
-from odoo import http
+from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
+from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
 
 
 class RestController(http.Controller):
@@ -134,3 +135,40 @@ class RestController(http.Controller):
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
         return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
+
+    @http.route('/mobile-app-api/forgot-password',
+                type='json', auth='public', methods=['GET'])
+    def mobile_app_forgot_password(self, **parameters):
+        """
+        Called by app when user forgot his password, try to match his email
+        address to an user and then send him reset instructions
+        :return: json containing status (0 if success, 1 if failed) and state
+        message
+        """
+        if 'email' not in parameters:
+            return {
+                'status': 1,
+                'message': _("No email entered")
+            }
+        user_obj = request.env['res.users'].sudo()
+
+        # search for an user match
+        user = user_obj.search([('login', '=', parameters['email'])])
+
+        # set default response
+        response = {
+            'status': 1,
+            'message': _("No such account")
+        }
+
+        # if search didn't match any user, do not reset password and return
+        # default response
+        if user:
+            try:
+                user.action_reset_password()
+                response['status'] = 0
+                response['message'] = _("We sent you the reset instructions.")
+            except MailDeliveryException:
+                response['message'] = _("Mail delivery error")
+
+        return response

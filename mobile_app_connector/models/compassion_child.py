@@ -51,7 +51,7 @@ class CompassionChild(models.Model):
             return {}
         mapping = MobileChildMapping(self.env)
         wrapper = 'Children' if multi else 'Child'
-        if len(self) == 1:
+        if len(self) == 1 and not multi:
             data = mapping.get_connect_data(self)
         else:
             data = []

@@ -8,7 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import date, timedelta
+from datetime import date
 
 from odoo import api, fields, models, _
 
@@ -77,19 +77,22 @@ class Contracts(models.Model):
                 contract.last_letter = -1
 
     def _compute_write_for_birthday_alert(self):
+        today = date.today()
         for contract in self:
-            if contract.last_letter == -1 or contract.last_letter > 90:
-                next_birthday = fields.Date.from_string(
-                    contract.child_id.birthdate).replace(year=date.today.year)
+            next_birthday = fields.Date.from_string(
+                contract.child_id.birthdate).replace(
+                year=today.year)
 
-                # take next year birthday
-                # if birthday already pass for this year
-                if next_birthday < date.today():
-                    next_birthday = next_birthday.replace(
-                        year=next_birthday.year+1)
+            # take next year birthday
+            # if birthday already pass for this year
+            if next_birthday < today:
+                next_birthday = next_birthday.replace(
+                    year=next_birthday.year + 1)
 
-                contract.write_for_birthday_alert = \
-                    next_birthday - date.today() <= timedelta(days=90)
+            days_until_birthday = (next_birthday - today).days
+            contract.write_for_birthday_alert = days_until_birthday <= 90 and (
+                contract.last_letter == -1 or
+                contract.last_letter > 90 - days_until_birthday)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
