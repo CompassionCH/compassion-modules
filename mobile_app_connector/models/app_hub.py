@@ -173,8 +173,10 @@ class AppHub(models.AbstractModel):
             unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
             del unpaid_dict['Children']
             for i in range(len(unpaid_dict['UnpaidChildren'])):
-                unpaid_dict['UnpaidChildren'][i]['SupporterId'] = self.env.user.id
-                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] = self.env.user.id
+                unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
+                    self.env.user.id
+                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
+                    self.env.user.id
             result.update(unpaid_dict)
             result.update({'UnpaidAmounts': unpaid_amounts})
 
