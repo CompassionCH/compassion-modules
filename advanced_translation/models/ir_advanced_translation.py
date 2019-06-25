@@ -184,7 +184,7 @@ class AdvancedTranslatable(models.AbstractModel):
         """
         _format = self.env['ir.advanced.translation'].get(date_type).encode(
             'utf-8')
-        dates = map(fields.Date.from_string,
+        dates = map(fields.Datetime.from_string,
                     self.filtered(field).sorted(
                         key=lambda r: getattr(r, field)).mapped(field))
         with setlocale(self.env.lang):
