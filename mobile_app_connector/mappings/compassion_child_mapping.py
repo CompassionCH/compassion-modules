@@ -47,11 +47,11 @@ class MobileChildMapping(OnrampMapping):
         'sponsorBBID': None,
         'sponsorYearOfBirth': None,
         'sponsorshipplusflag': None,
-        'SupporterGroupId': ('partner_id.global_id', 'res.partner'),
-        'SupporterId': ('partner_id.global_id', 'res.partner'),
-        'SupporterName': ('partner_id.name', 'res.partner'),
+        'SupporterGroupId': ('sponsor_id.global_id', 'res.partner'),
+        'SupporterId': ('sponsor_id.global_id', 'res.partner'),
+        'SupporterName': ('sponsor_id.name', 'res.partner'),
         'timeTaken': None,
-        'UpdatedpreferredName': ('partner_id.preferred_name', 'res.partner'),
+        'UpdatedpreferredName': ('sponsor_id.preferred_name', 'res.partner'),
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
