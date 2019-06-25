@@ -55,6 +55,8 @@ class AppHub(models.AbstractModel):
             lambda c: not c.is_active and not c.parent_id and
                       (c.state == 'waiting' or c.state == 'draft'))
         children = sponsorships.mapped('child_id')
+        unpaid_children = unpaid.mapped('child_id')
+        unpaid_amounts = unpaid.mapped('total_amount')
 
         letters = self.env['correspondence'].search([
             ('partner_id', '=', partner_id),
@@ -82,11 +84,12 @@ class AppHub(models.AbstractModel):
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
         messages.extend(self.env['mobile.app.tile'].search([
-            ('display_name', '=', '[GI7] Awaiting payment')
+            ('name', '=', 'Awaiting payment')
         ]).render_unpaid_tile(unpaid_data))
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children, **pagination)
+            partner_id, messages, children, unpaid_children,
+            unpaid_amounts, **pagination)
         return res
 
     ##########################################################################
@@ -144,6 +147,7 @@ class AppHub(models.AbstractModel):
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
+                               unpaid_children=None, unpaid_amounts=None,
                                start=0, limit=100, **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
@@ -164,6 +168,15 @@ class AppHub(models.AbstractModel):
         if children is None:
             children = self.env['compassion.child']
         result = children.get_app_json(multi=True)
+        if unpaid_children is not None:
+            unpaid_dict = unpaid_children.get_app_json(multi=True)
+            unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
+            del unpaid_dict['Children']
+            for i in range(len(unpaid_dict['UnpaidChildren'])):
+                unpaid_dict['UnpaidChildren'][i]['SupporterId'] = self.env.user.id
+                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] = self.env.user.id
+            result.update(unpaid_dict)
+            result.update({'UnpaidAmounts': unpaid_amounts})
 
         result.update({
             "Size": len(messages),  # Total size of available messages

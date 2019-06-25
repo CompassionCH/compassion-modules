@@ -176,6 +176,7 @@ class AppTile(models.Model):
             elif self.mode == 'many':
                 for record in records:
                     tile_json.update(self._render_single_tile(record))
+                    tile_json['Child']['SupporterGroupId'] = self.env.user.id
                     res.append(tile_json.copy())
         return res
 
