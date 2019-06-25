@@ -48,3 +48,27 @@ class CrmLead(models.Model):
             'target': 'current',
             'context': context,
         }
+
+    @api.multi
+    def _merge_data(self, fields):
+        """ Update the _merge_data function to be able to merge many2many and
+            one2may
+
+            :param fields: list of fields to process
+            :return dict data: contains the merged values of the new opportunity
+        """
+        data = super(self, CrmLead)._merge_data(fields)
+
+        def get_all_linked(attr, opportunities):
+            val = []
+            for opp in opportunities:
+                val.append(opp[attr])
+
+            return (6, 0, val) if val else False
+
+        for field_name in fields:
+            field = self._fields.get(field_name)
+            if field.type in ('many2many', 'one2many'):
+                data[field_name] = get_all_linked(field_name, self)
+
+        return data
