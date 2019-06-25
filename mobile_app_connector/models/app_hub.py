@@ -147,8 +147,8 @@ class AppHub(models.AbstractModel):
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
-                               unpaid_children=None, unpaid_amounts=None,
-                               start=0, limit=100, **kwargs):
+                               start=0, limit=100, unpaid_children=None,
+                               unpaid_amounts=None, **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
         the main hub display.
