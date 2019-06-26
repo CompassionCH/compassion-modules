@@ -93,18 +93,20 @@ class AppHub(models.AbstractModel):
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
+
         # Handle children with awaiting payment
         if unpaid_children is not None:
             unpaid_dict = unpaid_children.get_app_json(multi=True)
-            unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
-            del unpaid_dict['Children']
-            for i in range(len(unpaid_dict['UnpaidChildren'])):
-                unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
-                    self.env.user.id
-                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
-                    self.env.user.id
-            res.update(unpaid_dict)
-            res.update({'UnpaidAmounts': unpaid_amounts})
+            if unpaid_dict.get('Children') is not None:
+                unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
+                del unpaid_dict['Children']
+                for i in range(len(unpaid_dict['UnpaidChildren'])):
+                    unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
+                        self.env.user.id
+                    unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
+                        self.env.user.id
+                res.update(unpaid_dict)
+                res.update({'UnpaidAmounts': unpaid_amounts})
         return res
 
     ##########################################################################
