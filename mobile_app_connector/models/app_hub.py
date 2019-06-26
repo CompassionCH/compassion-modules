@@ -83,13 +83,28 @@ class AppHub(models.AbstractModel):
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
-        messages.extend(self.env['mobile.app.tile'].search([
+        msg_tmp = self.env['mobile.app.tile'].search([
             ('name', '=', 'Awaiting payment')
-        ]).render_tile(unpaid_data))
+        ])[:limit].render_tile(unpaid_data)
+        for msg in msg_tmp:
+            msg['Child']['SupporterId'] = self.env.user.id
+            msg['Child']['SupporterGroupId'] = self.env.user.id
+        messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children, unpaid_children=unpaid_children,
-            unpaid_amounts=unpaid_amounts, **pagination)
+            partner_id, messages, children, **pagination)
+        # Handle children with awaiting payment
+        if unpaid_children is not None:
+            unpaid_dict = unpaid_children.get_app_json(multi=True)
+            unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
+            del unpaid_dict['Children']
+            for i in range(len(unpaid_dict['UnpaidChildren'])):
+                unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
+                    self.env.user.id
+                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
+                    self.env.user.id
+            res.update(unpaid_dict)
+            res.update({'UnpaidAmounts': unpaid_amounts})
         return res
 
     ##########################################################################
@@ -147,8 +162,7 @@ class AppHub(models.AbstractModel):
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
-                               start=0, limit=100, unpaid_children=None,
-                               unpaid_amounts=None, **kwargs):
+                               start=0, limit=100, **kwargs):
         """
         Wrapper for constructing the JSON message for the mobile app, for
         the main hub display.
@@ -168,17 +182,6 @@ class AppHub(models.AbstractModel):
         if children is None:
             children = self.env['compassion.child']
         result = children.get_app_json(multi=True)
-        if unpaid_children is not None:
-            unpaid_dict = unpaid_children.get_app_json(multi=True)
-            unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
-            del unpaid_dict['Children']
-            for i in range(len(unpaid_dict['UnpaidChildren'])):
-                unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
-                    self.env.user.id
-                unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
-                    self.env.user.id
-            result.update(unpaid_dict)
-            result.update({'UnpaidAmounts': unpaid_amounts})
 
         result.update({
             "Size": len(messages),  # Total size of available messages
