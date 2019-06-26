@@ -85,11 +85,11 @@ class AppHub(models.AbstractModel):
         messages = available_tiles[:limit].render_tile(tile_data)
         messages.extend(self.env['mobile.app.tile'].search([
             ('name', '=', 'Awaiting payment')
-        ]).render_unpaid_tile(unpaid_data))
+        ]).render_tile(unpaid_data))
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
-            partner_id, messages, children, unpaid_children,
-            unpaid_amounts, **pagination)
+            partner_id, messages, children, unpaid_children=unpaid_children,
+            unpaid_amounts=unpaid_amounts, **pagination)
         return res
 
     ##########################################################################

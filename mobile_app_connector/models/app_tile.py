@@ -146,40 +146,6 @@ class AppTile(models.Model):
                     res.append(tile_json)
         return res
 
-    @api.multi
-    def render_unpaid_tile(self, unpaid_tile=None):
-        """
-        This is the secondary function rendering part of the JSON
-        for the mobile app.
-        :param unpaid_tile: this is a dict containing all data needed for
-                          the tiles. The keys are the odoo models and values
-                          are the record ids (list). Example :
-                          {
-                            'compassion.child': <compassion.child> recordset,
-                            'res.partner': <res.partner> recordset,
-                          }
-        :return: Tiles of awaiting payments for mobile app (list of dict)
-        """
-        self.ensure_one()
-        unpaid_mapping = TileMapping(self.env)
-        res = []
-        if unpaid_tile is None:
-            unpaid_tile = {}
-        tile_json = unpaid_mapping.get_connect_data(self)
-        records = self._get_records(unpaid_tile)
-        if records:
-            # Convert text templates
-            if self.mode == 'one':
-                tile_json.update(self._render_single_tile(records))
-                tile_json['Child']['SupporterGroupId'] = self.env.user.id
-                res.append(tile_json)
-            elif self.mode == 'many':
-                for record in records:
-                    tile_json.update(self._render_single_tile(record))
-                    tile_json['Child']['SupporterGroupId'] = self.env.user.id
-                    res.append(tile_json.copy())
-        return res
-
     def _get_records(self, tile_data):
         """
         Retrieves and filters the associated records
