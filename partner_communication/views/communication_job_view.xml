@@ -51,7 +51,8 @@
                         <field name="body_html" widget="text_ckeditor4"/>
                     </group>
                     <group>
-                        <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}"/>
+                        <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />
+                        <field name="ir_attachment_tmp" widget="many2many_binary" string=' ' class="oe_edit_only"/>
                         <field name="email_id" readonly="1"/>
                         <field name="phonecall_id" readonly="1"/>
                     </group>
