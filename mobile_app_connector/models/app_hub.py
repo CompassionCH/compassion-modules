@@ -83,9 +83,8 @@ class AppHub(models.AbstractModel):
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
-        msg_tmp = self.env['mobile.app.tile'].search([
-            ('name', '=', 'Awaiting payment')
-        ])[:limit].render_tile(unpaid_data)
+        msg_tmp = self.env.ref('mobile_app_connector.tile_gi7')\
+            .render_tile(unpaid_data)
         for msg in msg_tmp:
             msg['Child']['SupporterId'] = self.env.user.id
             msg['Child']['SupporterGroupId'] = self.env.user.id
