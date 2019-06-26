@@ -348,9 +348,28 @@ class CompassionIntervention(models.Model):
             vals = intervention_mapping.get_vals_from_connect(
                 intervention_details_request)
 
+            vals['total_cost'] = vals['hold_amount'] = float(
+                vals['hold_amount'].replace("'", "").replace(",", ""))
+            if not vals['secondary_owner']:
+                del vals['secondary_owner']
+
             if 'service_level' not in vals:
                 vals['service_level'] = 'Level 1'
 
+            intervention_name = vals['name']
+
+            if intervention_name.find('FY') != -1:
+                split_name = intervention_name.split('FY')
+                search_value = split_name[0] + 'FY' + str(int(split_name[1])-1)
+                last_intervention = self.search([
+                    ('name', '=', search_value)
+                ])
+                if last_intervention:
+                    vals['product_template_id'] = \
+                        last_intervention.product_template_id.id
+
+            # By default we want to opt-in for next years
+            vals['next_year_opt_in'] = True
             intervention = self.create(vals)
 
         return intervention.ids
@@ -602,9 +621,7 @@ class CompassionIntervention(models.Model):
             'res_model': 'compassion.intervention.commitment.wizard',
             'context': self.with_context({
                 'default_intervention_id': self.id,
-                'default_commitment_amount': min(
-                    self.hold_amount,
-                    self.estimated_costs or self.hold_amount),
+                'default_commitment_amount': self.hold_amount,
             }).env.context,
             'target': 'new',
         }

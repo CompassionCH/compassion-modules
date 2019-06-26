@@ -78,6 +78,7 @@ class InterventionMapping(OnrampMapping):
         "SuccessFactors": 'success_factors',
         "TotalActualCosts": 'total_actual_cost_local',
         "TotalEstimatedCost": 'total_estimated_cost_local',
+        "ProgramActivitiesFirstDayDate": 'start_date',
 
         # Additional field used by InterventionHoldRemovalNotification
         "InterventionType_Name": 'type',
@@ -134,7 +135,6 @@ class InterventionMapping(OnrampMapping):
         "LinkToFieldOfficeStrategy": None,
         "MonthFundsRequested": None,
         "MonthOfNBRAllocation": None,
-        "ProgramActivitiesFirstDayDate": None,
         "ProgramType": None,
         "ProposedSLACost": None,
         "RequestedAdditionalFundingUSD": 'requested_additional_funding',
