@@ -37,7 +37,8 @@ class AppTile(models.Model):
     end_date = fields.Datetime()
     is_active = fields.Boolean('Active', default=True)
     visibility = fields.Selection(
-        [('public', 'Public'), ('private', 'Private'), ('both', 'Both')],
+        [('public', 'Public'), ('private', 'Private'),
+         ('both', 'Both'), ('not_sponsor', 'Not Sponsor')],
         required=True,
         help='Choose private if the sponsor must be logged in to see the tile'
     )
