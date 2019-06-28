@@ -85,7 +85,9 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        hub_obj = request.env['mobile.app.hub'].sudo()
+        lang = {'fr': 'fr_CH', 'en': 'en_US', 'de': 'de_DE', 'it': 'it_IT'}
+        hub_obj = request.env['mobile.app.hub'].\
+            with_context(lang=lang.get(parameters['language'])).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
             if partner_id == request.env.user.partner_id.id:
