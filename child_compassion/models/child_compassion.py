@@ -276,6 +276,7 @@ class CompassionChild(models.Model):
             ('P', _('Sponsored')),
             ('F', _('Departed')),
             ('R', _('Released')),
+            ('S', _('For SMS')),
         ]
 
     def _compute_available(self):
