@@ -86,6 +86,8 @@ class RestController(http.Controller):
         :return: messages for displaying the hub
         """
         lang = {'fr': 'fr_CH', 'en': 'en_US', 'de': 'de_DE', 'it': 'it_IT'}
+        if 'language' not in parameters:
+            parameters['language'] = 'en'
         hub_obj = request.env['mobile.app.hub'].\
             with_context(lang=lang.get(parameters['language'])).sudo()
         if partner_id:
