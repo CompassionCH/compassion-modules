@@ -40,7 +40,7 @@ class MobileChildMapping(OnrampMapping):
         'Gender': 'gender',
         'IcpId': ('project_id.fcp_id', 'compassion.project'),
         'image': None,
-        'ImageUrl': 'image_url',
+        'ImageURL': 'image_url',
         'Name': 'preferred_name',
         'PreferredName': 'preferred_name',
         'ProjectName': ('project_id.name', 'compassion.project'),
