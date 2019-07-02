@@ -50,8 +50,7 @@ class AppHub(models.AbstractModel):
         #  is correspondent (to avoid viewing letters when he doesn't write)
         sponsorships = (partner.contracts_correspondant +
                         partner.contracts_fully_managed).filtered('is_active')
-        unpaid = (partner.contracts_correspondant +
-                  partner.contracts_fully_managed).filtered(
+        unpaid = partner.contracts_fully_managed.filtered(
             lambda c: not c.is_active and not c.parent_id and
                       (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
