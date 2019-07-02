@@ -127,18 +127,16 @@ class RestController(http.Controller):
     @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
                 type='http', auth='public', website=True)
     def mobile_app_sponsorship_request(self, lang_code=None, source=None,
-                                       **parameters):
+                                       partner_id=False, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
-        public_partner = request.env.ref('base.public_partner')
-        partner = request.env.user.partner_id
         values = {
             'lang_code': lang_code,
             'source': source,
-            'partner_id': partner.id if partner != public_partner else False,
+            'partner_id': partner_id,
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
