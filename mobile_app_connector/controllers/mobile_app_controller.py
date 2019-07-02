@@ -58,6 +58,16 @@ class RestController(http.Controller):
         return request.env.get('firebase.registration').mobile_register(
             request.jsonrequest, **parameters)
 
+    @http.route('/mobile-app-api/contact_us',
+                type='json', auth='public', methods=['POST'])
+    def mobile_app_contact_us(self, **parameters):
+        """
+        This route is used when the user is logged out
+        :param parameters: request parameters
+        :return: json dict as expected by the app
+        """
+        return request.env['crm.claim'].mobile_contact_us(request.jsonrequest)
+
     @http.route(['/mobile-app-api/<string:model>/<string:method>',
                  '/mobile-app-api/<string:model>/<string:method>/'
                  '<request_code>'],

@@ -51,6 +51,8 @@
         'data/tile_type_data.xml',
         'data/default_hub.xml',
         'data/ir_cron.xml',
+        'data/request_sequence.xml',
+        'data/crm_claim_category_data.xml',
         'views/wp_post_view.xml',
         'views/app_banner_view.xml',
         'views/tile_type_view.xml',
