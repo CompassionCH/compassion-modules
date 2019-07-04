@@ -46,4 +46,3 @@ class PrivacyStatementAgreement(models.Model):
             faq.append({'Question': question, 'Answer': answer})
 
         return faq
-
