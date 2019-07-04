@@ -8,9 +8,16 @@
 #
 ##############################################################################
 
+import logging
 from odoo import api, models, _
-import requests
-from bs4 import BeautifulSoup
+
+_logger = logging.getLogger(__name__)
+
+try:
+    import requests
+    from bs4 import BeautifulSoup
+except ImportError:
+    _logger.log('Please install bs4 and requests')
 
 
 class PrivacyStatementAgreement(models.Model):
