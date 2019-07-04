@@ -27,8 +27,7 @@ class PrivacyStatementAgreement(models.Model):
     """
     _name = 'frequently.asked.questions'
 
-    @api.multi
-    def mobile_get_faq_json(self):
+    def mobile_get_faq_json(self, language):
         """
         Method that takes care of retrieving the FAQ from the website and
         returns it in a JSON format. The method should be called directly
@@ -40,7 +39,12 @@ class PrivacyStatementAgreement(models.Model):
         :return: a JSON formatted dictionary containing all the questions and
         answers of the FAQ.
         """
-        faq_link = _('https://compassion.ch/de/haeufig-gestellte-fragen/')
+        if language in ['fr', 'fr-CH']:
+            faq_link = 'https://compassion.ch/questions-frequentes/'
+        elif language in ['it', 'it-IT']:
+            faq_link = 'https://compassion.ch/it/domande-frequenti/'
+        else:
+            faq_link = 'https://compassion.ch/de/haeufig-gestellte-fragen/'
         html = requests.get(faq_link).text
         soup = BeautifulSoup(html, 'html.parser')
         questions_list = soup.find_all(class_='accordion-title')

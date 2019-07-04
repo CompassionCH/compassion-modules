@@ -180,3 +180,9 @@ class RestController(http.Controller):
                 response['message'] = _("Mail delivery error")
 
         return response
+
+    @http.route('/mobile-app-api/faq',
+                type='json', auth='public', methods=['GET'])
+    def mobile_app_faq(self, language=None, **parameters):
+        return request.env['frequently.asked.questions']\
+            .mobile_get_faq_json(language)
