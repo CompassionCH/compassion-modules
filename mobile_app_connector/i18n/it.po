@@ -19,5 +19,4 @@ msgstr ""
 #. module: mobile_app_connector
 #: code:compassion-modules/mobile_app_connector/models/frequently_asked_questions.py:35
 #, python-format
-msgid "https://compassion.ch/de/haeufig-gestellte-fragen/"
 msgstr "https://compassion.ch/questions-frequentes/"
