@@ -38,10 +38,11 @@ class CompassionChild(models.Model):
         return data
 
     @api.multi
-    def get_app_json(self, multi=False):
+    def get_app_json(self, multi=False, wrapper=False):
         """
         Called by HUB when data is needed for a tile
         :param multi: used to change the wrapper if needed
+        :param wrapper: optional custom wrapper key for the dict
         :return: dictionary with JSON data of the children
         """
         children_pictures = self.sudo().mapped('pictures_ids')
@@ -50,7 +51,8 @@ class CompassionChild(models.Model):
         if not self:
             return {}
         mapping = MobileChildMapping(self.env)
-        wrapper = 'Children' if multi else 'Child'
+        if not wrapper:
+            wrapper = 'Children' if multi else 'Child'
         if len(self) == 1 and not multi:
             data = mapping.get_connect_data(self)
         else:

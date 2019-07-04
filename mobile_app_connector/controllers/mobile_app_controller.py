@@ -117,7 +117,7 @@ class RestController(http.Controller):
         """
         hero_obj = request.env['mobile.app.banner'].sudo().with_context(
             lang=_get_lang(parameters))
-        hero = hero_obj.search([('is_active', '=', True)], limit=1)
+        hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
         hero.print_count += 1
         hero_mapping = AppBannerMapping(request.env)
