@@ -50,7 +50,12 @@ class AppHub(models.AbstractModel):
         #  is correspondent (to avoid viewing letters when he doesn't write)
         sponsorships = (partner.contracts_correspondant +
                         partner.contracts_fully_managed).filtered('is_active')
+        unpaid = partner.contracts_fully_managed.filtered(
+            lambda c: not c.is_active and not c.parent_id and
+            (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
+        unpaid_children = unpaid.mapped('child_id')
+        unpaid_amounts = unpaid.mapped('total_amount')
 
         letters = self.env['correspondence'].search([
             ('partner_id', '=', partner_id),
@@ -71,12 +76,35 @@ class AppHub(models.AbstractModel):
             'product.product': products,
             'correspondence': letters,
         }
+        unpaid_data = {
+            'recurring.contract': unpaid
+        }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
+        msg_tmp = self.env.ref('mobile_app_connector.tile_gi7')\
+            .render_tile(unpaid_data)
+        for msg in msg_tmp:
+            msg['Child']['SupporterId'] = self.env.user.id
+            msg['Child']['SupporterGroupId'] = self.env.user.id
+        messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
+
+        # Handle children with awaiting payment
+        if unpaid_children is not None:
+            unpaid_dict = unpaid_children.get_app_json(multi=True)
+            if unpaid_dict.get('Children') is not None:
+                unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
+                del unpaid_dict['Children']
+                for i in range(len(unpaid_dict['UnpaidChildren'])):
+                    unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
+                        self.env.user.id
+                    unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
+                        self.env.user.id
+                res.update(unpaid_dict)
+                res.update({'UnpaidAmounts': unpaid_amounts})
         return res
 
     ##########################################################################
@@ -240,6 +268,7 @@ class AppHub(models.AbstractModel):
             "GI1": giving,
             "GI3": giving,
             "GI5": giving,
+            "GI7": giving,
             "GI_T1": giving,
             "LE1": letters,
             "LE_T1": {'tiles': [], 'max_number_tile': 2},
