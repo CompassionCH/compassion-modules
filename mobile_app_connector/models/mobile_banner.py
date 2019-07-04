@@ -50,7 +50,7 @@ class AppBanner(models.Model):
         readonly=True,
         states={'new': [('readonly', False)]}
     )
-    is_active = fields.Boolean()
+    active = fields.Boolean(oldname='is_active', default=True)
     state = fields.Selection([
         ('new', 'New'),
         ('active', 'Active'),
@@ -62,10 +62,10 @@ class AppBanner(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('is_active')
+    @api.depends('active')
     def _compute_state(self):
         for banner in self:
-            if banner.is_active:
+            if banner.active:
                 banner.state = 'active'
             else:
                 banner.state = 'used' if banner.print_count else 'new'
@@ -85,9 +85,7 @@ class AppBanner(models.Model):
     @api.model
     def validity_cron(self):
         today = fields.Date.today()
-        active_banners = self.search([
-            ('is_active', '=', True),
-        ])
+        active_banners = self.search([])
         current_banners = self.search([
             ('date_start', '<=', today),
             ('date_stop', '>=', today),
@@ -98,6 +96,6 @@ class AppBanner(models.Model):
         ])
         # Deactivate old stories
         (active_banners - current_banners - without_dates_banners).write(
-            {'is_active': False})
+            {'active': False})
         # Activate current stories
-        current_banners.write({'is_active': True})
+        current_banners.write({'active': True})

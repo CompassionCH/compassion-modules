@@ -22,7 +22,7 @@
                             <field name="visibility"/>
                             <field name="start_date"/>
                             <field name="end_date"/>
-                            <field name="is_active"/>
+                            <field name="active"/>
                         </group>
                         <group>
                             <field name="priority" />
@@ -97,7 +97,7 @@
         <field name="name">mobile.app.tile.tree</field>
         <field name="model">mobile.app.tile</field>
         <field name="arch" type="xml">
-            <tree colors="grey: not is_active">
+            <tree colors="grey: not active">
                 <field name="view_order"/>
                 <field name="display_name"/>
                 <field name="subtype_id"/>
@@ -105,7 +105,7 @@
                 <field name="priority"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="is_active" invisible="1"/>
+                <field name="active" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -117,7 +117,7 @@
             <search>
                 <field name="name"/>
                 <field name="subtype_id"/>
-                <filter name="active" string="Active" domain="[('is_active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By">
                     <filter string="Type" name="group_type" domain="[]" context="{'group_by':'subtype_id'}"/>
                     <filter string="Priority" name="group_priority" domain="[]" context="{'group_by':'priority'}"/>
@@ -133,7 +133,6 @@
         <field name="res_model">mobile.app.tile</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_active': 1}</field>
     </record>
 
 

@@ -63,7 +63,6 @@ class AppHub(models.AbstractModel):
         ])
 
         available_tiles = self.env['mobile.app.tile'].search([
-            ('is_active', '=', True),
             ('visibility', '!=', 'public')
         ])
         products = self.env['product.product'].sudo().search([
@@ -82,29 +81,22 @@ class AppHub(models.AbstractModel):
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
-        msg_tmp = self.env.ref('mobile_app_connector.tile_gi7')\
-            .render_tile(unpaid_data)
-        for msg in msg_tmp:
-            msg['Child']['SupporterId'] = self.env.user.id
-            msg['Child']['SupporterGroupId'] = self.env.user.id
+        # GI7 is treated separately because it needs unpaid sponsorships
+        msg_tmp = self.env['mobile.app.tile'].search([
+            ('subtype_id', '=',
+             self.env.ref('mobile_app_connector.tile_subtype_gi7').id)
+        ]).render_tile(unpaid_data)
         messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
 
         # Handle children with awaiting payment
-        if unpaid_children is not None:
-            unpaid_dict = unpaid_children.get_app_json(multi=True)
-            if unpaid_dict.get('Children') is not None:
-                unpaid_dict['UnpaidChildren'] = unpaid_dict['Children']
-                del unpaid_dict['Children']
-                for i in range(len(unpaid_dict['UnpaidChildren'])):
-                    unpaid_dict['UnpaidChildren'][i]['SupporterId'] =\
-                        self.env.user.id
-                    unpaid_dict['UnpaidChildren'][i]['SupporterGroupId'] =\
-                        self.env.user.id
-                res.update(unpaid_dict)
-                res.update({'UnpaidAmounts': unpaid_amounts})
+        if unpaid_children:
+            unpaid_dict = unpaid_children.get_app_json(
+                multi=True, wrapper='UnpaidChildren')
+            res.update(unpaid_dict)
+            res.update({'UnpaidAmounts': unpaid_amounts})
         return res
 
     ##########################################################################
@@ -121,7 +113,6 @@ class AppHub(models.AbstractModel):
         :return: list of tiles displayed in mobile app.
         """
         available_tiles = self.env['mobile.app.tile'].search([
-            ('is_active', '=', True),
             ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
