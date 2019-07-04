@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -27,3 +28,4 @@ from . import recurring_contract
 from . import mobile_feedback
 from . import firebase_registration
 from . import privacy_statement
+from . import frequently_asked_questions
