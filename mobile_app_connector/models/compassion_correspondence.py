@@ -8,12 +8,12 @@
 #
 ##############################################################################
 
-from odoo import models, api  # , fields
+from odoo import models, api, fields
 from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
 from werkzeug.exceptions import NotFound
 
-# from datetime import date, timedelta
+from datetime import date, timedelta
 
 
 class CompassionCorrespondence(models.Model):
@@ -37,11 +37,9 @@ class CompassionCorrespondence(models.Model):
             data = []
             for letter in self:
                 data.append(mapping.get_connect_data(letter))
-        # TODO change to
-        # unread_recently = not(self.email_read and self.read_date <
-        #                       fields.Date.toString(
-        #                           date.today() + timedelta(days=3)))
-        unread_recently = not self.email_read
+        unread_recently = not(self.email_read and self.email_read <
+                              fields.Date.to_string(
+                                  date.today() + timedelta(days=3)))
         return {
             'Child': child.get_app_json_no_wrap(),
             wrapper: data,
