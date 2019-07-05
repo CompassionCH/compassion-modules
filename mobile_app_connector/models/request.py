@@ -49,14 +49,18 @@ class CrmClaim(models.Model):
         claim = self.sudo().create({
             'email_from': email,
             'subject': subject,
-            'code': self.env.ref('crm_claim_code.sequence_claim_app').sudo()._next(),
+            'code':
+                self.env.ref('crm_claim_code.sequence_claim_app')
+                    .sudo()._next(),
             'name': question,
-            'categ_id': self.env['crm.claim.category'].sudo().search([('name', '=', source)]).id,
+            'categ_id': self.env['crm.claim.category'].sudo().search(
+                [('name', '=', source)]).id,
             'partner_id': contact_id,
         })
         message = claim.message_post()
         message.body = question
-        message.subject = "Original request from %s %s " % (firstname, lastname)
+        message.subject = "Original request from %s %s " %\
+                          (firstname, lastname)
 
         return {
             "FeedbackAndContactusResult": _("Your question was well received")
