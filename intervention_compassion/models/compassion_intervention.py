@@ -10,6 +10,7 @@
 ##############################################################################
 
 import logging
+import time
 
 from odoo import models, fields, _, api
 from odoo.exceptions import UserError
@@ -612,7 +613,6 @@ class CompassionIntervention(models.Model):
     @api.multi
     def create_commitment(self):
         self.ensure_one()
-        self.get_infos()
         return {
             'name': _('Intervention Commitment Request'),
             'type': 'ir.actions.act_window',
@@ -713,6 +713,8 @@ class CompassionIntervention(models.Model):
                message (json)
         :return list of intervention ids which are concerned
                 by the message """
+        # sleep to prevent a concurence error
+        time.sleep(60)
         intervention_mapping = mapping.new_onramp_mapping(
             self._name,
             self.env,

@@ -20,6 +20,13 @@ from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
 
 
+def _get_lang(params):
+    """ Fetches the lang from the request parameters. """
+    lang_mapping = {'fr': 'fr_CH', 'en': 'en_US', 'de': 'de_DE', 'it': 'it_IT'}
+    app_lang = params.get('language', 'en')[:2]
+    return lang_mapping.get(app_lang)
+
+
 class RestController(http.Controller):
 
     @http.route('/mobile-app-api/login', type='json', methods=['GET'],
@@ -85,7 +92,8 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        hub_obj = request.env['mobile.app.hub'].sudo()
+        hub_obj = request.env['mobile.app.hub'].\
+            with_context(lang=_get_lang(parameters)).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
             if partner_id == request.env.user.partner_id.id:
@@ -107,11 +115,11 @@ class RestController(http.Controller):
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
-        hero = request.env['mobile.app.banner'].search([
-            ('is_active', '=', True)
-        ], limit=1)
+        hero_obj = request.env['mobile.app.banner'].sudo().with_context(
+            lang=_get_lang(parameters))
+        hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
-        hero.sudo().print_count += 1
+        hero.print_count += 1
         hero_mapping = AppBannerMapping(request.env)
         res = hero_mapping.get_connect_data(hero)
         return [res]
@@ -119,18 +127,16 @@ class RestController(http.Controller):
     @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
                 type='http', auth='public', website=True)
     def mobile_app_sponsorship_request(self, lang_code=None, source=None,
-                                       **parameters):
+                                       partner_id=False, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
-        public_partner = request.env.ref('base.public_partner')
-        partner = request.env.user.partner_id
         values = {
             'lang_code': lang_code,
             'source': source,
-            'partner_id': partner.id if partner != public_partner else False,
+            'partner_id': partner_id,
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)

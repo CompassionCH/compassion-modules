@@ -35,7 +35,7 @@ class AppTile(models.Model):
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
-    is_active = fields.Boolean('Active', default=True)
+    active = fields.Boolean(oldname='is_active', default=True)
     visibility = fields.Selection(
         [('public', 'Public'), ('private', 'Private'), ('both', 'Both')],
         required=True,
@@ -130,12 +130,16 @@ class AppTile(models.Model):
             if records:
                 # Convert text templates
                 if tile.mode == 'one':
-                    tile_json.update(tile._render_single_tile(records))
-                    res.append(tile_json)
+                    text_data = tile._render_single_tile(records)
+                    if text_data:
+                        tile_json.update(text_data)
+                        res.append(tile_json)
                 elif tile.mode == 'many':
                     for record in records:
-                        tile_json.update(tile._render_single_tile(record))
-                        res.append(tile_json.copy())
+                        text_data = tile._render_single_tile(record)
+                        if text_data:
+                            tile_json.update(text_data)
+                            res.append(tile_json.copy())
             else:
                 # Some tiles shouldn't rendered when no records are associated
                 module = 'mobile_app_connector.%s'
@@ -170,19 +174,24 @@ class AppTile(models.Model):
         :param records: associated records
         :return: JSON data of the tile.
         """
-        self.ensure_one()
-        template_obj = self.env['mail.template'].with_context(objects=records)
-        res = {
-            'Title': template_obj.render_template(
-                self.title, self._name, self.id),
-            'Body': template_obj.render_template(
-                self.body, self._name, self.id),
-            'ActionText': template_obj.render_template(
-                self.action_text, self._name, self.id),
-            'SortOrder': self.view_order,
-            'IsAutomaticOrdering': self.is_automatic_ordering,
-        }
+        try:
+            self.ensure_one()
+            template_obj = self.env['mail.template']\
+                .with_context(objects=records)
+            res = {
+                'Title': template_obj.render_template(
+                    self.title, self._name, self.id),
+                'Body': template_obj.render_template(
+                    self.body, self._name, self.id),
+                'ActionText': template_obj.render_template(
+                    self.action_text, self._name, self.id),
+                'SortOrder': self.view_order,
+                'IsAutomaticOrdering': self.is_automatic_ordering,
+            }
 
-        if hasattr(records, 'get_app_json'):
-            res.update(records.get_app_json(multi=len(records) > 1))
+            if hasattr(records, 'get_app_json'):
+                res.update(records.get_app_json(multi=len(records) > 1))
+        except:
+            _logger.error("Error rendering tile %s", self.name, exc_info=True)
+            res = {}
         return res
