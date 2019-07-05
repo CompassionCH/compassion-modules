@@ -18,7 +18,7 @@
                         <group>
                             <field name="date_start"/>
                             <field name="date_stop"/>
-                            <field name="is_active"/>
+                            <field name="active"/>
                             <field name="print_count"/>
                         </group>
                     </group>

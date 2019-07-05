@@ -35,7 +35,7 @@ class AppWriting(models.Model):
         readonly=True,
         states={'new': [('readonly', False)]}
     )
-    is_active = fields.Boolean()
+    active = fields.Boolean()
     state = fields.Selection([
         ('new', 'New'),
         ('active', 'Active'),
@@ -52,10 +52,10 @@ class AppWriting(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('is_active')
+    @api.depends('active')
     def _compute_state(self):
         for writing in self:
-            if writing.is_active:
+            if writing.active:
                 writing.state = 'active'
             else:
                 writing.state = 'used' if writing.print_count else 'new'
@@ -76,7 +76,7 @@ class AppWriting(models.Model):
     def validity_cron(self):
         today = fields.Date.today()
         active_writings = self.search([
-            ('is_active', '=', True),
+            ('active', '=', True),
         ])
         current_writings = self.search([
             ('date_start', '<=', today),
@@ -88,14 +88,14 @@ class AppWriting(models.Model):
         ])
         # Deactivate old stories
         (active_writings - current_writings - without_dates_writings).write(
-            {'is_active': False})
+            {'active': False})
         # Activate current stories
-        current_writings.write({'is_active': True})
+        current_writings.write({'active': True})
 
     @api.multi
     def mobile_get_templates(self):
         actives = self.env['mobile.app.writing'].search(
-            [('is_active', '=', True)])
+            [('active', '=', True)])
 
         return [
             x.get_json() for x in actives
