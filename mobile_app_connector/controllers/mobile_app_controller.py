@@ -6,6 +6,7 @@
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #    @author: Nicolas Bornand <n.badoux@hotmail.com>
 #    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#    @author: Théo Nikles <theo.nikles@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -18,6 +19,13 @@ from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
+
+
+def _get_lang(params):
+    """ Fetches the lang from the request parameters. """
+    lang_mapping = {'fr': 'fr_CH', 'en': 'en_US', 'de': 'de_DE', 'it': 'it_IT'}
+    app_lang = params.get('language', 'en')[:2]
+    return lang_mapping.get(app_lang)
 
 
 class RestController(http.Controller):
@@ -116,19 +124,18 @@ class RestController(http.Controller):
         res = hero_mapping.get_connect_data(hero)
         return [res]
 
-    @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
+    @http.route('/sponsor_a_child',
                 type='http', auth='public', website=True)
-    def mobile_app_sponsorship_request(self, lang_code=None, source=None,
-                                       partner_id=False, **parameters):
+    def mobile_app_sponsorship_request(self, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
         values = {
-            'lang_code': lang_code,
-            'source': source,
-            'partner_id': partner_id,
+            'lang_code': _get_lang(parameters),
+            'source': parameters['source'],
+            'partner_id': parameters.get('partner_id', False),
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
@@ -170,3 +177,9 @@ class RestController(http.Controller):
                 response['message'] = _("Mail delivery error")
 
         return response
+
+    @http.route('/mobile-app-api/privacy_notice',
+                type='json', auth='public', methods=['GET'])
+    def mobile_privacy_notice(self, **parameters):
+        return request.env['privacy.statement.agreement']\
+            .mobile_get_privacy_notice(_get_lang(parameters))
