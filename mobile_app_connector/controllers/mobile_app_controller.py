@@ -83,6 +83,12 @@ class RestController(http.Controller):
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
+    @http.route(['/no_json/correspondence/get_preview'],
+                auth='user', methods=['POST'], type="http", csrf=False)
+    def get_preview(self, **parameters):
+        return request.env['correspondence']\
+            .mobile_get_preview(self, **parameters)
+
     @http.route('/mobile-app-api/hub/<int:partner_id>', type='json',
                 auth='public', methods=['GET'])
     def get_hub_messages(self, partner_id, **parameters):
