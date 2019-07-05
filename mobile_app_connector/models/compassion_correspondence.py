@@ -39,8 +39,7 @@ class CompassionCorrespondence(models.Model):
             data = []
             for letter in self:
                 data.append(mapping.get_connect_data(letter))
-
-        unread_recently = not(self.email_read <
+        unread_recently = not(self.email_read and self.email_read <
                               fields.Date.to_string(
                                   date.today() + timedelta(days=3)))
         return {
