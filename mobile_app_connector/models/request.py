@@ -57,10 +57,9 @@ class CrmClaim(models.Model):
                 [('name', '=', source)]).id,
             'partner_id': contact_id,
         })
-        message = claim.message_post()
-        message.body = question
-        message.subject = "Original request from %s %s " %\
-                          (firstname, lastname)
+        claim.message_post(body=question,
+                           subject="Original request from %s %s " %
+                           (firstname, lastname))
 
         return {
             "FeedbackAndContactusResult": _("Your question was well received")
