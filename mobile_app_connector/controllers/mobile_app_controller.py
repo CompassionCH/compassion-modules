@@ -194,3 +194,9 @@ class RestController(http.Controller):
                 response['message'] = _("Mail delivery error")
 
         return response
+
+    @http.route('/mobile-app-api/privacy_notice',
+                type='json', auth='public', methods=['GET'])
+    def mobile_privacy_notice(self, **parameters):
+        return request.env['privacy.statement.agreement']\
+            .mobile_get_privacy_notice(_get_lang(parameters))
