@@ -204,7 +204,7 @@ class RestController(http.Controller):
         """
         return request.env['frequently.asked.questions']\
             .mobile_get_faq_json(_get_lang(parameters))
-      
+
     @http.route('/mobile-app-api/privacy_notice',
                 type='json', auth='public', methods=['GET'])
     def mobile_privacy_notice(self, **parameters):
