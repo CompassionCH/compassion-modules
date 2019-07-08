@@ -17,7 +17,7 @@ try:
     import requests
     from bs4 import BeautifulSoup
 except ImportError:
-    _logger.log('Please install bs4 and requests')
+    _logger.warning('Please install bs4 and requests')
 
 
 class PrivacyStatementAgreement(models.Model):
