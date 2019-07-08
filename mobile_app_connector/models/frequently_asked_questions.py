@@ -20,7 +20,7 @@ except ImportError:
     _logger.warning('Please install bs4 and requests')
 
 
-class PrivacyStatementAgreement(models.Model):
+class FAQ(models.AbstractModel):
     """
     This class contains everything that is related to the Frequently Asked
     Questions for the application.
