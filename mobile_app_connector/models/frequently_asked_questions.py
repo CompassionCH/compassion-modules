@@ -26,6 +26,7 @@ class FAQ(models.AbstractModel):
     Questions for the application.
     """
     _name = 'frequently.asked.questions'
+    _description = 'Mobile App FAQ'
 
     def mobile_get_faq_json(self, language):
         """
