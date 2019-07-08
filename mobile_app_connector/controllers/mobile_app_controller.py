@@ -58,6 +58,16 @@ class RestController(http.Controller):
         return request.env.get('firebase.registration').mobile_register(
             request.jsonrequest, **parameters)
 
+    @http.route('/mobile-app-api/contact_us',
+                type='json', auth='public', methods=['POST'])
+    def mobile_app_contact_us(self, **parameters):
+        """
+        This route is used when the user is logged out
+        :param parameters: request parameters
+        :return: json dict as expected by the app
+        """
+        return request.env['crm.claim'].mobile_contact_us(request.jsonrequest)
+
     @http.route(['/mobile-app-api/<string:model>/<string:method>',
                  '/mobile-app-api/<string:model>/<string:method>/'
                  '<request_code>'],
@@ -82,6 +92,12 @@ class RestController(http.Controller):
             return handler(request.jsonrequest, **parameters)
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
+
+    @http.route(['/no_json/correspondence/get_preview'],
+                auth='user', methods=['POST'], type="http", csrf=False)
+    def get_preview(self, **parameters):
+        return request.env['correspondence']\
+            .mobile_get_preview(self, **parameters)
 
     @http.route('/mobile-app-api/hub/<int:partner_id>', type='json',
                 auth='public', methods=['GET'])
@@ -117,7 +133,7 @@ class RestController(http.Controller):
         """
         hero_obj = request.env['mobile.app.banner'].sudo().with_context(
             lang=_get_lang(parameters))
-        hero = hero_obj.search([('is_active', '=', True)], limit=1)
+        hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
         hero.print_count += 1
         hero_mapping = AppBannerMapping(request.env)
@@ -127,18 +143,16 @@ class RestController(http.Controller):
     @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
                 type='http', auth='public', website=True)
     def mobile_app_sponsorship_request(self, lang_code=None, source=None,
-                                       **parameters):
+                                       partner_id=False, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
-        public_partner = request.env.ref('base.public_partner')
-        partner = request.env.user.partner_id
         values = {
             'lang_code': lang_code,
             'source': source,
-            'partner_id': partner.id if partner != public_partner else False,
+            'partner_id': partner_id,
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
@@ -183,6 +197,21 @@ class RestController(http.Controller):
 
     @http.route('/mobile-app-api/faq',
                 type='json', auth='public', methods=['GET'])
-    def mobile_app_faq(self, language=None, **parameters):
+    def mobile_app_faq(self, **parameters):
+        """
+        Called whenever the user want to access the FAQ. The question are
+        retrieved from the website and returned as a JSON message to the user.
+        """
         return request.env['frequently.asked.questions']\
-            .mobile_get_faq_json(language)
+            .mobile_get_faq_json(_get_lang(parameters))
+      
+    @http.route('/mobile-app-api/privacy_notice',
+                type='json', auth='public', methods=['GET'])
+    def mobile_privacy_notice(self, **parameters):
+        """
+        Called whenever the user want to access the Privacy notice agreement.
+        The question are retrieved from the website and returned as a JSON
+        message to the user.
+        """
+        return request.env['privacy.statement.agreement']\
+            .mobile_get_privacy_notice(_get_lang(parameters))

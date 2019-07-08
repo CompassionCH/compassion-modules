@@ -10,6 +10,7 @@
 ##############################################################################
 
 from odoo import api, models, fields
+from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
 
 
 class CrmLead(models.Model):
@@ -20,6 +21,8 @@ class CrmLead(models.Model):
     event_id = fields.Many2one('crm.event.compassion', 'Event')
     event_ids = fields.One2many(
         'crm.event.compassion', 'lead_id', 'Events')
+    phonecall_ids = fields.One2many('crm.phonecall', 'opportunity_id')
+    meeting_ids = fields.One2many('calendar.event', 'opportunity_id')
 
     @api.multi
     def create_event(self):
@@ -48,3 +51,27 @@ class CrmLead(models.Model):
             'target': 'current',
             'context': context,
         }
+
+    @api.multi
+    def _merge_data(self, fields):
+        """ Update the _merge_data function to be able to merge
+        many2many and one2may
+
+            :param fields: list of fields to process
+            :return dict data: contains the merged values of
+            the new opportunity
+        """
+        data = super(CrmLead, self)._merge_data(fields)
+
+        for field_name in fields:
+            field = self._fields.get(field_name)
+            if field.type in ('many2many', 'one2many'):
+                data[field_name] = [(6, 0, self.mapped(field_name).ids)]
+
+        return data
+
+    @api.multi
+    def merge_opportunity(self, user_id=False, team_id=False):
+        CRM_LEAD_FIELDS_TO_MERGE.extend(['phonecall_ids', 'meeting_ids'])
+        return super(CrmLead, self).merge_opportunity(
+            user_id, team_id)

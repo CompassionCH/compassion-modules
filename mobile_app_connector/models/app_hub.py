@@ -50,7 +50,12 @@ class AppHub(models.AbstractModel):
         #  is correspondent (to avoid viewing letters when he doesn't write)
         sponsorships = (partner.contracts_correspondant +
                         partner.contracts_fully_managed).filtered('is_active')
+        unpaid = partner.contracts_fully_managed.filtered(
+            lambda c: not c.is_active and not c.parent_id and
+            (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
+        unpaid_children = unpaid.mapped('child_id')
+        unpaid_amounts = unpaid.mapped('total_amount')
 
         letters = self.env['correspondence'].search([
             ('partner_id', '=', partner_id),
@@ -58,7 +63,6 @@ class AppHub(models.AbstractModel):
         ])
 
         available_tiles = self.env['mobile.app.tile'].search([
-            ('is_active', '=', True),
             ('visibility', '!=', 'public')
         ])
         products = self.env['product.product'].sudo().search([
@@ -71,12 +75,28 @@ class AppHub(models.AbstractModel):
             'product.product': products,
             'correspondence': letters,
         }
+        unpaid_data = {
+            'recurring.contract': unpaid
+        }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
+        # GI7 is treated separately because it needs unpaid sponsorships
+        msg_tmp = self.env['mobile.app.tile'].search([
+            ('subtype_id', '=',
+             self.env.ref('mobile_app_connector.tile_subtype_gi7').id)
+        ]).render_tile(unpaid_data)
+        messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
+
+        # Handle children with awaiting payment
+        if unpaid_children:
+            unpaid_dict = unpaid_children.get_app_json(
+                multi=True, wrapper='UnpaidChildren')
+            res.update(unpaid_dict)
+            res.update({'UnpaidAmounts': unpaid_amounts})
         return res
 
     ##########################################################################
@@ -93,7 +113,6 @@ class AppHub(models.AbstractModel):
         :return: list of tiles displayed in mobile app.
         """
         available_tiles = self.env['mobile.app.tile'].search([
-            ('is_active', '=', True),
             ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
         tiles = []
@@ -240,6 +259,7 @@ class AppHub(models.AbstractModel):
             "GI1": giving,
             "GI3": giving,
             "GI5": giving,
+            "GI7": giving,
             "GI_T1": giving,
             "LE1": letters,
             "LE_T1": {'tiles': [], 'max_number_tile': 2},
@@ -262,7 +282,8 @@ class AppHub(models.AbstractModel):
         for tile in to_order:
             recent_group = recent_content[tile['SubType']]
             if recent_group['max_number_tile'] > len(recent_group['tiles']) \
-                    and (tile['SubType'] != 'LE_T1' or tile['UnReadRecently']):
+                    and (tile['SubType'] != 'LE_T1' or
+                         tile.get('UnReadRecently')):
                 recent_group['tiles'].append(tile)
             elif tile['SubType'] in fixed_group_tiles:
                 fixed_group.append(tile)

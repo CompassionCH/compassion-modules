@@ -25,7 +25,9 @@ from . import mobile_banner
 from . import app_tile_type
 from . import app_tile
 from . import recurring_contract
+from . import request
 from . import mobile_feedback
+from . import mobile_writing
 from . import firebase_registration
 from . import privacy_statement
 from . import frequently_asked_questions

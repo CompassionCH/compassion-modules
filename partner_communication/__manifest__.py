@@ -36,12 +36,14 @@
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
-                'compassion_dashboard', 'queue_job', 'utm', 'web_ckeditor4'],
+                'compassion_dashboard', 'queue_job', 'utm', 'web_ckeditor4',
+                'report'],
     'external_dependencies': {
         'python': ['phonenumbers', 'pyPdf']
     },
     'data': [
         'security/ir.model.access.csv',
+        'report/a4_no_margin.xml',
         'views/partner_communication.xml',
         'views/communication_job_view.xml',
         'views/communication_config_view.xml',

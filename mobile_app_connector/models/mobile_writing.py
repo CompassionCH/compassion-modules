@@ -16,31 +16,16 @@ from odoo.exceptions import ValidationError
 logger = logging.getLogger(__name__)
 
 
-class AppBanner(models.Model):
-    _name = 'mobile.app.banner'
-    _description = 'Mobile App Banner'
+class AppWriting(models.Model):
+    _name = 'mobile.app.writing'
+    _description = 'Mobile App Writing'
     _order = 'state asc, print_count asc, date_start asc'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char('Title', translate=True, required=True)
-    destination_type = fields.Selection([
-        ('Internal', 'Internal'),
-        ('External', 'Open in web browser')
-    ], required=True)
-    internal_action = fields.Selection([
-        ('Pray', 'My prayers'),
-        ('Donation', 'Donation'),
-        ('Letter', 'Letter writing'),
-        ('Blog', 'Blog'),
-        # we disable this as it behaves the same as Blog:
-        # ('Prayer', 'Prayers hub'),
-        # ('News', 'News'),
-    ])
-    button_text = fields.Char(translate=True)
-    body = fields.Text(translate=True)
-    image_url = fields.Char(translate=True)
+    name = fields.Char('Category title', translate=True, required=True)
+    icon = fields.Char('FontAwesome icon name', required=True)
     external_url = fields.Char(translate=True)
     date_start = fields.Date(
         readonly=True,
@@ -50,13 +35,18 @@ class AppBanner(models.Model):
         readonly=True,
         states={'new': [('readonly', False)]}
     )
-    active = fields.Boolean(oldname='is_active', default=True)
+    active = fields.Boolean()
     state = fields.Selection([
         ('new', 'New'),
         ('active', 'Active'),
         ('used', 'Used')
-    ], compute='_compute_state', store=True, default='new')
+        ], compute='_compute_state', store=True, default='new')
+
+    template_ids = fields.Many2many('correspondence.template',
+                                    string="Templates")
+
     print_count = fields.Integer(readonly=True)
+    position = fields.Integer()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -64,18 +54,18 @@ class AppBanner(models.Model):
     @api.multi
     @api.depends('active')
     def _compute_state(self):
-        for banner in self:
-            if banner.active:
-                banner.state = 'active'
+        for writing in self:
+            if writing.active:
+                writing.state = 'active'
             else:
-                banner.state = 'used' if banner.print_count else 'new'
+                writing.state = 'used' if writing.print_count else 'new'
 
     @api.multi
     @api.constrains('date_start', 'date_stop')
     def _check_dates(self):
-        for banner in self:
-            date_start = fields.Date.from_string(banner.date_start)
-            date_stop = fields.Date.from_string(banner.date_stop)
+        for writing in self:
+            date_start = fields.Date.from_string(writing.date_start)
+            date_stop = fields.Date.from_string(writing.date_stop)
             if date_start and date_stop and date_stop <= date_start:
                 raise ValidationError(_("Period is not valid"))
 
@@ -85,17 +75,44 @@ class AppBanner(models.Model):
     @api.model
     def validity_cron(self):
         today = fields.Date.today()
-        active_banners = self.search([])
-        current_banners = self.search([
+        active_writings = self.search([
+            ('active', '=', True),
+        ])
+        current_writings = self.search([
             ('date_start', '<=', today),
             ('date_stop', '>=', today),
         ])
-        without_dates_banners = self.search([
+        without_dates_writings = self.search([
             ('date_start', '=', None),
             ('date_stop', '=', None),
         ])
         # Deactivate old stories
-        (active_banners - current_banners - without_dates_banners).write(
+        (active_writings - current_writings - without_dates_writings).write(
             {'active': False})
         # Activate current stories
-        current_banners.write({'active': True})
+        current_writings.write({'active': True})
+
+    @api.multi
+    def mobile_get_templates(self):
+        actives = self.env['mobile.app.writing'].search(
+            [('active', '=', True)])
+
+        return [
+            x.get_json() for x in actives
+        ]
+
+    @api.multi
+    def get_json(self):
+        self.ensure_one()
+        web_base_url = \
+            self.env['ir.config_parameter'].get_param('web.external.url')
+        base_url = web_base_url + "/web/image/" + self.template_ids[0]._name \
+            + "/"
+        return {
+            'templates': [
+                {'templateURL': base_url + str(t.id) + "/template_image",
+                 'id': str(t.id)} for t in self.template_ids
+            ],
+            'categoryIconString': self.icon,
+            'label': self.name,
+        }

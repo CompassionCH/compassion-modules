@@ -43,5 +43,15 @@
             <field name="function">validity_cron</field>
             <field name="model">mobile.app.banner</field>
         </record>
+
+        <record id="activate_writings" model="ir.cron">
+            <field name="name">Activate Mobile App Writings</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function">validity_cron</field>
+            <field name="model">mobile.app.writing</field>
+        </record>
     </data>
 </odoo>
