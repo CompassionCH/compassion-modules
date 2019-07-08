@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <report id="report_a4_no_margin"
+                model="partner.communication.job"
+                string="A4 no margin"
+                report_type="qweb-pdf"
+                name="partner_communication.a4_no_margin"
+        />
+        <record id="report_a4_no_margin" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="report.paperformat_euro"/>
+        </record>
+    </data>
+</odoo>

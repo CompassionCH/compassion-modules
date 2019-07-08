@@ -50,6 +50,14 @@
             <!-- the correct action_destination will be set when the init method will be called -->
             <field name="action_destination">Compass</field>
         </record>
+        <record id="tile_gi7" model="mobile.app.tile">
+            <field name="name">Awaiting payment</field>
+            <field name="subtype_id" ref="tile_subtype_gi7"/>
+            <field name="mode">one</field>
+            <field name="visibility">private</field>
+            <!-- the correct action_destination will be set when the init method will be called -->
+            <field name="action_destination">Compass</field>
+        </record>
         <record id="tile_le1" model="mobile.app.tile">
             <field name="name">Write a letter</field>
             <field name="subtype_id" ref="tile_subtype_LE1"/>

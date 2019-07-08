@@ -17,3 +17,7 @@ class PrivacyStatementAgreement(models.Model):
 
     origin_signature = fields.Selection(
         selection_add=[('mobile_app', 'Mobile App Registration')])
+
+    def mobile_get_privacy_notice(self, **params):
+        return {'PrivacyNotice': self.env['compassion.privacy.statement']
+                .sudo().search([], limit=1).text}

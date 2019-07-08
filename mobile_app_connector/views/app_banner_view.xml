@@ -18,7 +18,7 @@
                         <group>
                             <field name="date_start"/>
                             <field name="date_stop"/>
-                            <field name="is_active"/>
+                            <field name="active"/>
                             <field name="print_count"/>
                         </group>
                     </group>
@@ -57,6 +57,8 @@
                 <field name="state"/>
                 <field name="destination_type"/>
                 <field name="internal_action"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Destination type" name="group_dest" domain="[]" context="{'group_by':'destination_type'}"/>

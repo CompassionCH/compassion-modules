@@ -93,7 +93,8 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        hub_obj = request.env['mobile.app.hub'].sudo()
+        hub_obj = request.env['mobile.app.hub'].\
+            with_context(lang=_get_lang(parameters)).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
             if partner_id == request.env.user.partner_id.id:
@@ -115,11 +116,11 @@ class RestController(http.Controller):
         :return: list of messages to display in header
                  note: only one item is used by the app.
         """
-        hero = request.env['mobile.app.banner'].search([
-            ('is_active', '=', True)
-        ], limit=1)
+        hero_obj = request.env['mobile.app.banner'].sudo().with_context(
+            lang=_get_lang(parameters))
+        hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
-        hero.sudo().print_count += 1
+        hero.print_count += 1
         hero_mapping = AppBannerMapping(request.env)
         res = hero_mapping.get_connect_data(hero)
         return [res]

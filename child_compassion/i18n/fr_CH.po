@@ -6866,6 +6866,11 @@ msgid "start a business"
 msgstr "trouver un travail"
 
 #. module: child_compassion
+#: model:child.future.hope,value:child_compassion.future_hope_unknown
+msgid "Unknown"
+msgstr "Inconnu"
+
+#. module: child_compassion
 #: code:addons/child_compassion/models/household.py:262
 #: code:addons/child_compassion/models/household.py:263
 #, python-format

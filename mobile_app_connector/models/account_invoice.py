@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields
+from odoo import models, api, fields, _
 
 
 class AccountInvoice(models.Model):
@@ -82,8 +82,8 @@ class DonationDataWrapper:
     def __init__(self, json, env):
         self.fund_ids = json.get('appealtype', [])
         self.fund_amounts = json.get('appealamount', [])
-        self.gift_products = self._get_gift_product_ids(
-            json.get('gifttypetext', []), env)
+        self.gift_products = self._get_gift_products(
+            json.get('gifttype', []), env)
         self.gift_amounts = json.get('giftamount', [])
         self.child_ids = json.get('need', [])
         self.partner_id = int(json.get('supporter', 0) or 0)
@@ -92,29 +92,20 @@ class DonationDataWrapper:
         self.source = json.get('source', 'iOS')
 
     @staticmethod
-    def _get_gift_product_ids(gift_types, env):
+    def _get_gift_products(gift_types, env):
         """
         Maps the app fund names to our gift products
-        :param gift_types: list of gift names sent by the app
+        :param gift_types: list of product template ids sent by the app
         :param env: odoo environment
-        :return: List of product.product ids
+        :return: Recordset of product.product
         """
-        data_module = 'sponsorship_compassion.'
-        fund_mapping = {
-            'Birthday': env.ref(data_module +
-                                'product_template_gift_birthday').id,
-            'Individual': env.ref(data_module +
-                                  'product_template_gift_gen').id,
-            'Family': env.ref(data_module +
-                              'product_template_gift_family').id,
-            'Project': env.ref(data_module +
-                               'product_template_gift_project').id,
-            'Sponsorship': env.ref(data_module +
-                                   'product_template_sponsorship').id,
-        }
         product_obj = env['product.product']
-        return [
-            product_obj.search([
-                ('product_tmpl_id', '=', fund_mapping[gift_type])], limit=1)
-            for gift_type in gift_types
-        ]
+        products = product_obj
+        for gift_type in gift_types:
+            product = product_obj.search([
+                ('product_tmpl_id', '=', gift_type)], limit=1)
+            if not product:
+                raise ValueError(
+                    _("The product %s was not found") % gift_type)
+            products += product
+        return products

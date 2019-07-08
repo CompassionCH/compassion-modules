@@ -41,17 +41,18 @@ class MobileChildMapping(OnrampMapping):
         'IcpId': ('project_id.fcp_id', 'compassion.project'),
         'image': None,
         'ImageUrl': 'image_url',
+        'ImageURL': 'image_url',
         'Name': 'preferred_name',
         'PreferredName': 'preferred_name',
         'ProjectName': ('project_id.name', 'compassion.project'),
         'sponsorBBID': None,
         'sponsorYearOfBirth': None,
         'sponsorshipplusflag': None,
-        'SupporterGroupId': ('partner_id.global_id', 'res.partner'),
-        'SupporterId': ('partner_id.global_id', 'res.partner'),
-        'SupporterName': ('partner_id.name', 'res.partner'),
+        'SupporterGroupId': ('sponsor_id.id', 'res.partner'),
+        'SupporterId': ('sponsor_id.id', 'res.partner'),
+        'SupporterName': ('sponsor_id.name', 'res.partner'),
         'timeTaken': None,
-        'UpdatedpreferredName': ('partner_id.preferred_name', 'res.partner'),
+        'UpdatedpreferredName': ('sponsor_id.preferred_name', 'res.partner'),
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
