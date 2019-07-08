@@ -136,7 +136,7 @@ class RestController(http.Controller):
         values = {
             'lang_code': _get_lang(parameters),
             'source': parameters['source'],
-            'partner_id': parameters.get('partner_id', False),
+            'partner_id': parameters.get('partner_id'),
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
