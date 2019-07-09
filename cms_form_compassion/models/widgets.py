@@ -57,3 +57,9 @@ class ReadonlyWidget(models.AbstractModel):
     _name = 'cms_form_compassion.form.widget.readonly'
     _inherit = 'cms.form.widget.mixin'
     _w_template = 'cms_form_compassion.field_widget_readonly'
+
+
+class TimeWidget(models.AbstractModel):
+    _name = 'cms.form.widget.time'
+    _inherit = 'cms.form.widget.char'
+    _w_template = 'cms_form_compassion.field_time'
