@@ -6,6 +6,7 @@
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #    @author: Nicolas Bornand <n.badoux@hotmail.com>
 #    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#    @author: Théo Nikles <theo.nikles@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
@@ -140,19 +141,18 @@ class RestController(http.Controller):
         res = hero_mapping.get_connect_data(hero)
         return [res]
 
-    @http.route('/sponsor_a_child/<string:lang_code>/<string:source>',
+    @http.route('/sponsor_a_child',
                 type='http', auth='public', website=True)
-    def mobile_app_sponsorship_request(self, lang_code=None, source=None,
-                                       partner_id=False, **parameters):
+    def mobile_app_sponsorship_request(self, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
         values = {
-            'lang_code': lang_code,
-            'source': source,
-            'partner_id': partner_id,
+            'lang_code': _get_lang(parameters),
+            'source': parameters.get('source'),
+            'partner_id': parameters.get('partner_id'),
         }
         sms_child_request = request.env['sms.child.request'].\
             sudo().create(values)
