@@ -40,9 +40,9 @@ class FAQ(models.AbstractModel):
         :return: a JSON formatted dictionary containing all the questions and
         answers of the FAQ.
         """
-        if language in ['fr', 'fr-CH']:
+        if language == 'fr_CH':
             faq_link = 'https://compassion.ch/questions-frequentes/'
-        elif language in ['it', 'it-IT']:
+        elif language == 'it_IT':
             faq_link = 'https://compassion.ch/it/domande-frequenti/'
         else:
             faq_link = 'https://compassion.ch/de/haeufig-gestellte-fragen/'
