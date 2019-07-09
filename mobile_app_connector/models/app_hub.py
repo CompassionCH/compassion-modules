@@ -81,6 +81,7 @@ class AppHub(models.AbstractModel):
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
+
         # GI7 is treated separately because it needs unpaid sponsorships
         msg_tmp = self.env['mobile.app.tile'].search([
             ('subtype_id', '=',
