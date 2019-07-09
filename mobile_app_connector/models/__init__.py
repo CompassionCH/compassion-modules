@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
