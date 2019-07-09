@@ -115,4 +115,5 @@ class AppWriting(models.Model):
             ],
             'categoryIconString': self.icon,
             'label': self.name,
+            'position': self.position,
         }
