@@ -73,10 +73,11 @@ class PaymentFormController(website_account, FormControllerMixin):
                           (useful for modal forms that must close the modal)
         :return: Response object for client
         """
-        if response.status_code == 303:
-            # Prepend with lang, to avoid 302 redirection
+        if response.status_code in (302, 303):
             location = ''
-            if request.env.lang != request.website.default_lang_code:
+            if response.status_code == 303 and request.env.lang != \
+                    request.website.default_lang_code:
+                # Prepend with lang, to avoid 302 redirection
                 location += '/' + request.env.lang
             location += response.location
             res = Response(
