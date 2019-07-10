@@ -14,57 +14,58 @@
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="user_input">
                 <t t-set="print_header" t-value="True"/>
-                <t t-foreach="user_input.user_input_line_ids.mapped('page_id')" t-as="page">
-                    <div class="page">
-                        <style type="text/css">
-                            .user_data {
-                                margin: 10mm 0;
-                                margin-left: auto;
-                                width: 44%;
-                            }
-                            .answers {
-                                background-color: transparent;
-                                border-collapse: collapse;
-                                border-spacing: 0px
-                            }
-                            .answers .survey_label {
-                                width: 40%;
-                                text-align: left;
-                            }
-                            .answers .survey_value {
-                                width: 60%;
-                                padding-left: 10mm;
-                                font-style: italic;
-                            }
-                        </style>
-                        <!-- Header on first page -->
-                        <t t-if="print_header">
-                            <t t-set="print_header" t-value="False"/>
-                            <h1 t-esc="user_input.survey_id.title"/>
-                            <div class="user_data">
-                                <t t-set="partner" t-value="user_input.partner_id"/>
-                                <span t-esc="partner.firstname"/> <span t-esc="partner.lastname"/>
+                <div class="page">
+                    <style type="text/css">
+                        .user_data {
+                            margin: 10mm 0;
+                            margin-left: auto;
+                            width: 44%;
+                        }
+                        .answers {
+                            background-color: transparent;
+                            border-collapse: collapse;
+                            border-spacing: 0px
+                        }
+                        .answers .survey_label {
+                            width: 40%;
+                            text-align: left;
+                        }
+                        .answers .survey_value {
+                            width: 60%;
+                            padding-left: 10mm;
+                            font-style: italic;
+                        }
+                    </style>
+                    <!-- Header on first page -->
+                    <t t-if="print_header">
+                        <t t-set="print_header" t-value="False"/>
+                        <h1 t-esc="user_input.survey_id.title"/>
+                        <div class="user_data">
+                            <t t-set="partner" t-value="user_input.partner_id"/>
+                            <span t-esc="partner.firstname"/> <span t-esc="partner.lastname"/>
+                            <br/>
+                            <t t-if="partner.email">
+                                <span t-esc="partner.email or ''"/>
                                 <br/>
-                                <t t-if="partner.email">
-                                    <span t-esc="partner.email or ''"/>
-                                    <br/>
-                                </t>
-                                <t t-if="partner.birthdate_date">
-                                    Born on <span t-esc="partner.get_date('birthdate_date', 'date_full') or ''"/>
-                                    <br/>
-                                </t>
-                                <t t-if="partner.gender">
-                                    <span t-esc="partner.translate('gender') or ''"/>
-                                    <br/>
-                                </t>
-                                <span t-esc="partner.phone or partner.mobile or ''"/>
-                            </div>
-                        </t>
+                            </t>
+                            <t t-if="partner.birthdate_date">
+                                Born on <span t-esc="partner.get_date('birthdate_date', 'date_full') or ''"/>
+                                <br/>
+                            </t>
+                            <t t-if="partner.gender">
+                                <span t-esc="partner.translate('gender') or ''"/>
+                                <br/>
+                            </t>
+                            <span t-esc="partner.phone or partner.mobile or ''"/>
+                        </div>
+                    </t>
 
-                        <br/>
-                        <br/>
-
-                        <h2 t-esc="page.title"/>
+                    <br/>
+                    <br/>
+                    <t t-set="last_title" t-value="''"/>
+                    <t t-foreach="user_input.user_input_line_ids.mapped('page_id')" t-as="page">
+                        <h2 t-esc="page.title" t-if="page.title != last_title"/>
+                        <t t-set="last_title" t-value="page.title"/>
                         <!-- Answers -->
                         <table class="answers">
                             <t t-foreach="user_input.user_input_line_ids" t-as="answer">
@@ -76,8 +77,8 @@
                                 </t>
                             </t>
                         </table>
-                    </div>
-                </t>
+                    </t>
+                </div>
             </t>
         </t>
     </template>
@@ -97,52 +98,53 @@
         <t t-call="report.html_container">
             <t t-foreach="docs" t-as="survey">
                 <t t-set="print_header" t-value="True"/>
-                <t t-foreach="survey.page_ids" t-as="page">
-                    <div class="page">
-                        <style type="text/css">
-                            .user_data {
-                                margin: 10mm 0;
-                                margin-left: auto;
-                                width: 44%;
-                            }
-                            .answers {
-                                background-color: transparent;
-                                border-collapse: collapse;
-                                border-spacing: 0px
-                            }
-                            .answers .survey_label {
-                                width: 40%;
-                                text-align: left;
-                                padding-right: 10mm;
-                                vertical-align: middle;
-                            }
-                            .answers .survey_value {
-                                width: 60%;
-                                height: 20mm;
-                                border: 2px solid black;
-                            }
-                        </style>
-                        <t t-if="print_header">
-                            <!-- Header on first page -->
-                            <h1 t-esc="survey.title"/>
-                            <div class="user_data">
-                                Name:
-                                <br/>
-                                E-mail:
-                                <br/>
-                                Birthdate:
-                                <br/>
-                                Gender:
-                                <br/>
-                                Phone:
-                            </div>
-                            <t t-set="print_header" t-value="False"/>
-                        </t>
+                <div class="page">
+                    <style type="text/css">
+                        .user_data {
+                            margin: 10mm 0;
+                            margin-left: auto;
+                            width: 44%;
+                        }
+                        .answers {
+                            background-color: transparent;
+                            border-collapse: collapse;
+                            border-spacing: 0px
+                        }
+                        .answers .survey_label {
+                            width: 40%;
+                            text-align: left;
+                            padding-right: 10mm;
+                            vertical-align: middle;
+                        }
+                        .answers .survey_value {
+                            width: 60%;
+                            height: 20mm;
+                            border: 2px solid black;
+                        }
+                    </style>
+                    <t t-if="print_header">
+                        <!-- Header on first page -->
+                        <h1 t-esc="survey.title"/>
+                        <div class="user_data">
+                            Name:
+                            <br/>
+                            E-mail:
+                            <br/>
+                            Birthdate:
+                            <br/>
+                            Gender:
+                            <br/>
+                            Phone:
+                        </div>
+                        <t t-set="print_header" t-value="False"/>
+                    </t>
 
-                        <br/>
-                        <br/>
-
-                        <h2 t-esc="page.title"/>
+                    <br/>
+                    <br/>
+                    <t t-set="last_title" t-value="''"/>
+                    <t t-foreach="survey.page_ids" t-as="page">
+                        <h2 t-esc="page.title" t-if="page.title != last_title"/>
+                        <t t-set="last_title" t-value="page.title"/>
                         <!-- Answers -->
                         <table class="answers">
                             <t t-foreach="page.question_ids" t-as="question">
@@ -152,8 +154,8 @@
                                 </tr>
                             </t>
                         </table>
-                    </div>
-                </t>
+                    </t>
+                </div>
             </t>
         </t>
     </template>
