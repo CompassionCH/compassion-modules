@@ -57,7 +57,7 @@ class HoldWizard(models.TransientModel):
         # For whatever reason, we have a TransactionRollback issue with this
         # message. To avoid that, we create and process the message in two
         # steps and commit in between.
-        message = self.env['gmc.message.pool'].create({
+        message = self.env['gmc.message'].create({
             'action_id': create_commitment.id,
             'object_id': self.id,
         })

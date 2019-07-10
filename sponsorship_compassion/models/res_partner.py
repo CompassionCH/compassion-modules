@@ -316,7 +316,7 @@ class ResPartner(models.Model):
         """
         if self.global_id:
             action = self.env.ref('sponsorship_compassion.anonymize_partner')
-            message = self.env['gmc.message.pool'].with_context(
+            message = self.env['gmc.message'].with_context(
                 async_mode=False).create({
                     'action_id': action.id,
                     'object_id': self.id,
@@ -365,7 +365,7 @@ class ResPartner(models.Model):
         self.bank_ids.unlink()
         self.privacy_statement_ids.unlink()
         self.user_ids.sudo().unlink()
-        self.env['gmc.message.pool'].search([
+        self.env['gmc.message'].search([
             ('partner_id', '=', self.id)]).write({
                 'res_name': self.name
             })
@@ -376,7 +376,7 @@ class ResPartner(models.Model):
     ##########################################################################
     def upsert_constituent(self):
         """If partner has active contracts, UPSERT Constituent in GMC."""
-        message_obj = self.env['gmc.message.pool'].with_context(
+        message_obj = self.env['gmc.message'].with_context(
             async_mode=False)
         messages = message_obj
         action_id = self.env.ref('sponsorship_compassion.upsert_partner').id

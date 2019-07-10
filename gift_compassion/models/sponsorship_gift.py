@@ -57,7 +57,7 @@ class SponsorshipGift(models.Model):
         'account.move', 'Inverse move', copy=False
     )
     message_id = fields.Many2one(
-        'gmc.message.pool', 'GMC message', copy=False
+        'gmc.message', 'GMC message', copy=False
     )
 
     # Gift information
@@ -628,7 +628,7 @@ class SponsorshipGift(models.Model):
     @api.multi
     def _create_gift_message(self):
         for gift in self:
-            message_obj = self.env['gmc.message.pool']
+            message_obj = self.env['gmc.message']
 
             action_id = self.env.ref(
                 'gift_compassion.create_gift').id

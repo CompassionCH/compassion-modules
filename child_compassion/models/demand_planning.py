@@ -78,7 +78,7 @@ class DemandPlanning(models.Model):
     ##########################################################################
     @api.multi
     def send_planning(self):
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message']
         pool = message_obj
         action_id = self.env.ref('child_compassion.create_demand_planning').id
 

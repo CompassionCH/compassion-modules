@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -9,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,14 +29,15 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion CH Message Center',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
+    'development_status': 'Stable',
     'depends': ['base', 'queue_job'],
     'external_dependencies': {
-        'python': ['requests', 'jwt', 'httplib', 'simplejson'],
+        'python': ['jwt'],
     },
     'data': [
         'security/gmc_groups.xml',
@@ -45,10 +45,13 @@
         'views/gmc_message_view.xml',
         'views/advanced_query_view.xml',
         'data/query_operators.xml',
+        'views/compassion_mapping_view.xml',
+        'views/import_json_mapping_view.xml'
     ],
     'demo': [
         'demo/res_users.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': 'load_mappings',
 }

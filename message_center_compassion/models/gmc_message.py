@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
@@ -11,48 +10,22 @@
 import logging
 import re
 import traceback
+import json
 from datetime import datetime
 
 from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-from ..mappings import base_mapping as mapping
 from ..tools.onramp_connector import OnrampConnector
 
 logger = logging.getLogger(__name__)
 
-try:
-    import simplejson as json
-except ImportError:
-    logger.warning("Please install simplejson")
 
-
-class GmcMessagePoolProcess(models.TransientModel):
-    _name = 'gmc.message.pool.process'
-
-    @api.multi
-    def process_messages(self):
-        active_ids = self.env.context.get('active_ids', [])
-        self.env['gmc.message.pool'].browse(active_ids).process_messages()
-        action = {
-            'name': 'Message treated',
-            'type': 'ir.actions.act_window',
-            'view_type': 'form',
-            'view_mode': 'tree, form',
-            'views': [(False, 'tree'), (False, 'form')],
-            'res_model': 'gmc.message.pool',
-            'domain': [('id', 'in', active_ids)],
-            'target': 'current',
-        }
-
-        return action
-
-
-class GmcMessagePool(models.Model):
+class GmcMessage(models.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
-    _name = 'gmc.message.pool'
-    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _name = 'gmc.message'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Connect Message'
 
     _order = 'date desc'
@@ -64,7 +37,8 @@ class GmcMessagePool(models.Model):
         related='action_id.name', readonly=True)
     description = fields.Text(
         'Action to execute', related='action_id.description', readonly=True)
-    direction = fields.Selection(related='action_id.direction', store=True)
+    direction = fields.Selection(related='action_id.direction', store=True,
+                                 readonly=True)
     object_id = fields.Integer('Resource')
     object_ids = fields.Char(
         'Related records', help='Used for incoming messages containing '
@@ -125,7 +99,7 @@ class GmcMessagePool(models.Model):
             ])
 
         if not message:
-            message = super(GmcMessagePool, self).create(vals)
+            message = super().create(vals)
 
         if message.action_id.auto_process:
             message.process_messages()
@@ -230,10 +204,10 @@ class GmcMessagePool(models.Model):
         if action.direction == 'in':
             try:
                 message_update.update(self._perform_incoming_action())
-            except Exception:
+            except:
                 # Abort pending operations
                 self.env.cr.rollback()
-                self.env.invalidate_all()
+                self.env.clear()
                 # Write error
                 message_update.update({
                     'state': 'failure',
@@ -282,8 +256,7 @@ class GmcMessagePool(models.Model):
         if hasattr(data_objects, 'on_send_to_connect'):
             data_objects.on_send_to_connect()
 
-        object_mapping = mapping.new_onramp_mapping(
-            action.model, self.env, action.mapping_name)
+        object_mapping = action.mapping_id
         if action.connect_outgoing_wrapper:
             # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             if action.batch_send:
@@ -297,7 +270,7 @@ class GmcMessagePool(models.Model):
                     message_data = {action.connect_outgoing_wrapper: list()}
                     for data_object in data_objects[i:i+split]:
                         message_data[action.connect_outgoing_wrapper].append(
-                            object_mapping.get_connect_data(data_object)
+                            object_mapping.data_to_json(data_object)
                         )
                     self[i:i+split]._send_message(message_data)
             else:
@@ -305,14 +278,14 @@ class GmcMessagePool(models.Model):
                 message_data = dict()
                 for i in range(0, len(data_objects)):
                     message_data[action.connect_outgoing_wrapper] = [
-                        object_mapping.get_connect_data(data_objects[i])
+                        object_mapping.data_to_json(data_objects[i])
                     ]
                     self[i]._send_message(message_data)
 
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
-                message_data = object_mapping.get_connect_data(
+                message_data = object_mapping.data_to_json(
                     data_objects[i])
                 self[i]._send_message(message_data)
 
@@ -346,8 +319,7 @@ class GmcMessagePool(models.Model):
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
 
-            object_mapping = mapping.new_onramp_mapping(
-                action.model, self.env, action.mapping_name)
+            object_mapping = action.mapping_id
 
             for i in range(0, len(results)):
                 result = results[i]
@@ -363,7 +335,7 @@ class GmcMessagePool(models.Model):
                 if isinstance(result, dict) and result.get('Code',
                                                            2000) == 2000:
                     # Individual message was successfully processed
-                    answer_vals = [object_mapping.get_vals_from_connect(
+                    answer_vals = [object_mapping.json_to_data(
                         result)]
                     try:
                         getattr(data_objects[i], action.success_method)(
@@ -421,7 +393,7 @@ class GmcMessagePool(models.Model):
         self.write({
             'state': 'failure',
             'failure_reason':
-                '[%s] %s' % (error_code, error_message or 'None'),
+                f"[{error_code}] {error_message or 'None'}",
             'answer': json.dumps(results, indent=4, sort_keys=True)
         })
 

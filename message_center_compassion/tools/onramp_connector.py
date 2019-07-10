@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -9,6 +8,7 @@
 #
 ##############################################################################
 import logging
+import json
 import requests
 import base64
 from datetime import datetime, timedelta
@@ -18,12 +18,6 @@ from odoo.exceptions import UserError
 from odoo.tools.config import config
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import httplib
-    import simplejson
-except ImportError:
-    _logger.warning("Please install httplib and simplejson")
 
 
 class OnrampConnector(object):
@@ -111,7 +105,7 @@ class OnrampConnector(object):
         self.log_message(status, 'RESULT', message=r.text)
         try:
             # Receiving some weird encoded strings
-            result['content'] = simplejson.JSONDecoder(strict=False).decode(
+            result['content'] = json.JSONDecoder(strict=False).decode(
                 r.text.replace('\\\\n', '\n'))
         except ValueError:
             # No json content returned
@@ -125,13 +119,13 @@ class OnrampConnector(object):
         :return: string
         """
         formatted_params = self._session.params.copy()
-        for key, value in params.iteritems():
+        for key, value in params.items():
             if isinstance(value, list):
                 value = ','.join([str(v) for v in value])
             formatted_params[key] = value
 
         string_returned = u'&'.join(u'%s=%s' % (k, v) for k, v in
-                                    formatted_params.iteritems())
+                                    formatted_params.items())
         return string_returned.encode('utf-8')
 
     def _retrieve_token(self):
@@ -164,11 +158,10 @@ class OnrampConnector(object):
             "Content-Length": 46,
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
-        conn = httplib.HTTPSConnection(provider)
-        conn.request("POST", endpoint, params_post, header_post)
-        response = conn.getresponse()
+        response = requests.post(provider, params=params_post,
+                                 headers=header_post)
         try:
-            token = simplejson.loads(response.read())
+            token = response.json()
             return {
                 'Authorization': '{token_type} {access_token}'.format(**token)
             }
@@ -202,5 +195,5 @@ class OnrampConnector(object):
             "[%s] %s %s %s",
             req_type,
             url,
-            [(k, v) for k, v in complete_headers.iteritems()],
-            simplejson.dumps(message))
+            [(k, v) for k, v in complete_headers.items()],
+            json.dumps(message))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,7 @@ class QueueJob(models.Model):
         action = {
             'name': _("Messages"),
             'type': 'ir.actions.act_window',
-            'res_model': 'gmc.message.pool',
+            'res_model': 'gmc.message',
             'domain': [('id', 'in', self.record_ids)],
             'view_type': 'form',
             'view_mode': 'tree,form',

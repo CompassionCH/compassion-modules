@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -33,13 +32,14 @@ class GmcAction(models.Model):
     """
     _name = 'gmc.action'
 
+    name = fields.Char('GMC Message', required=True)
     direction = fields.Selection(
         [('in', _('Incoming Message')), ('out', _('Outgoing Message'))],
-        'Message Direction', required=True)
-    name = fields.Char('GMC Message', required=True)
-    model = fields.Char('Model')
+        'Message Direction', required=True, index=True)
     description = fields.Text('Action to execute')
-    mapping_name = fields.Char()
+    mapping_id = fields.Many2one(
+        'compassion.mapping', 'Mapping', required=True, index=True)
+    model = fields.Char(related='mapping_id.model_id.model', readonly=True)
     connect_service = fields.Char(
         help='URL endpoint for sending messages to GMC'
     )
@@ -75,23 +75,20 @@ class GmcAction(models.Model):
     ])
 
     @api.multi
-    @api.constrains('model', 'direction', 'incoming_method')
+    @api.constrains('mapping_id', 'direction', 'incoming_method',
+                    'success_method', 'failure_method')
     def _validate_action(self):
         """ Test if the action can be performed on given model. """
         for action in self:
             valid = True
-            model_obj = self.env[self.model]
+            model_obj = self.env[action.mapping_id.model_id.model]
             if action.direction == 'in':
                 valid = hasattr(model_obj, action.incoming_method)
+            else:
+                valid = hasattr(model_obj, action.success_method)
+                if action.failure_method:
+                    valid &= hasattr(model_obj, action.failure_method)
 
             if not valid:
                 raise ValidationError(
-                    _("Invalid action (%s, %s).") % (
-                        action.direction, action.model))
-
-    def get_action_id(self, name):
-        """ Returns the id of the action given its name. """
-        action_id = self.search([('name', '=', name)], limit=1)
-        if action_id:
-            return action_id.id
-        return False
+                    _(f"Invalid action ({action.direction}, {action.model})."))

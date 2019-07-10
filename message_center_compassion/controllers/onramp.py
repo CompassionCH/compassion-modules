@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -9,21 +8,14 @@
 #
 ##############################################################################
 import logging
-import uuid
-import time
+import json
 
 from odoo import http, exceptions
 from odoo.http import request
-from odoo.tools import config
 from ..tools.onramp_connector import OnrampConnector
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import simplejson as json
-except ImportError:
-    _logger.error("Please install simplejson")
 
 
 # Put any authorized sender here. Its address must be part of the headers
@@ -36,21 +28,21 @@ _logger = logging.getLogger(__name__)
 
 class RestController(http.Controller):
 
-    @http.route('/onramp-test', type='http', auth='oauth2', methods=['POST'],
-                csrf=False)
-    def test_onramp(self, **json_data):
-        # HACK to enable testing, because for a reason the requests sent
-        # with method  self.url_open() are sending http requests instead
-        # of json. If a fix is found, this route can be removed.
-        testing = config.get('test_enable')
-        if testing:
-            request.jsonrequest = dict(json_data)
-            request.uuid = str(uuid.uuid4())
-            request.timestamp = time.time()
-            result = json.dumps(self.handler_onramp())
-            return request.make_response(
-                result, [('content-type', 'application/json')])
-        return False
+    # @http.route('/onramp-test', type='http', auth='oauth2', methods=['POST'],
+    #             csrf=False)
+    # def test_onramp(self, **json_data):
+    #     # HACK to enable testing, because for a reason the requests sent
+    #     # with method  self.url_open() are sending http requests instead
+    #     # of json. If a fix is found, this route can be removed.
+    #     testing = config.get('test_enable')
+    #     if testing:
+    #         request.jsonrequest = dict(json_data)
+    #         request.uuid = str(uuid.uuid4())
+    #         request.timestamp = time.time()
+    #         result = json.dumps(self.handler_onramp())
+    #         return request.make_response(
+    #             result, [('content-type', 'application/json')])
+    #     return False
 
     @http.route('/onramp', type='json', auth='oauth2', methods=['POST'],
                 csrf=False)
@@ -101,7 +93,7 @@ class RestController(http.Controller):
                     "Unknown message type received: " + message_type)
                 result["Message"] = "Unknown message type - not processed."
 
-        request.env['gmc.message.pool'].sudo(request.uid).create(params)
+        request.env['gmc.message'].sudo(request.uid).create(params)
 
         return result
 

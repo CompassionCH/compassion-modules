@@ -17,6 +17,6 @@ logger = logging.getLogger(__name__)
 
 class GmcMessage(models.Model):
     """ Add child in messages. """
-    _inherit = 'gmc.message.pool'
+    _inherit = 'gmc.message'
 
     child_id = fields.Many2one('compassion.child', 'Child')

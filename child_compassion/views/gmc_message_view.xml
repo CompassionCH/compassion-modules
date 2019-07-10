@@ -6,10 +6,10 @@
 -->
 <openerp>
     <data>
-        <record id="view_gmc_message_pool_child_tree" model="ir.ui.view">
-            <field name="name">gmc.message.pool.child.tree</field>
-            <field name="model">gmc.message.pool</field>
-            <field name="inherit_id" ref="message_center_compassion.view_gmc_message_pool_outgoing_tree"/>
+        <record id="view_gmc_message_child_tree" model="ir.ui.view">
+            <field name="name">gmc.message.child.tree</field>
+            <field name="model">gmc.message</field>
+            <field name="inherit_id" ref="message_center_compassion.view_gmc_message_outgoing_tree"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="child_id" />
@@ -18,10 +18,10 @@
         </record>
 
          <!-- Search Filters -->
-        <record id="view_gmc_message_pool_child_filter" model="ir.ui.view">
-            <field name="name">gmc.message.pool.child.filter</field>
-            <field name="model">gmc.message.pool</field>
-            <field name="inherit_id" ref="message_center_compassion.view_gmc_message_pool_filter"/>
+        <record id="view_gmc_message_child_filter" model="ir.ui.view">
+            <field name="name">gmc.message.child.filter</field>
+            <field name="model">gmc.message</field>
+            <field name="inherit_id" ref="message_center_compassion.view_gmc_message_filter"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="child_id"/>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_import_json_wizard_form" model="ir.ui.view">
+        <field name="name">import_json_wizard.form</field>
+        <field name="model">import.json.mapping.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="file"/>
+                </group>
+                <button name="import_json_mapping" string="Import" type="object" class="oe_highlight"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_import_json_wizard_form" model="ir.actions.act_window">
+        <field name="name">Import Mapping</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">import.json.mapping.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_import_json_wizard" parent="menu_compassion_mapping" action="action_view_import_json_wizard_form" sequence="1" />
+</odoo>

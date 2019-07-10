@@ -131,7 +131,7 @@ class CompassionReservation(models.Model):
         return True
 
     def handle_reservation(self, cancel=False):
-        messages = self.env['gmc.message.pool']
+        messages = self.env['gmc.message']
         action = False
         for reservation in self:
             if reservation.reservation_type == 'child':
