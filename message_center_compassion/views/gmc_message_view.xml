@@ -101,6 +101,7 @@
                             <field name="request_type"/>
                         </group>
                         <group>
+                            <field name="mapping_id"/>
                             <field name="connect_outgoing_wrapper"/>
                             <field name="connect_answer_wrapper"/>
                             <field name="success_method"/>

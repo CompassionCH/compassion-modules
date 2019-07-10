@@ -10,7 +10,6 @@
 ##############################################################################
 
 from odoo import api, models, fields
-from ..mappings.base_mapping import new_onramp_mapping
 
 
 class QueryFilter(models.TransientModel):
@@ -42,11 +41,12 @@ class QueryFilter(models.TransientModel):
         mapping_name = self.env.context.get('default_mapping_name', 'default')
         for query in self.filtered('model'):
             try:
-                mapping = new_onramp_mapping(
-                    query.model, self.env, mapping_name)
+                mapping = self.env['compassion_mapping'].search([
+                    'name', '=', mapping_name
+                ])
                 query.mapped_fields = self.env['ir.model.fields'].search([
                     ('model', '=', query.model),
-                    ('name', 'in', mapping.CONNECT_MAPPING.values())
+                    ('name', 'in', [n for n in mapping.fields_json_ids.field_name])
                 ])
             except ValueError:
                 continue

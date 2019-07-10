@@ -20,10 +20,10 @@ from odoo.tools.config import config
 _logger = logging.getLogger(__name__)
 
 try:
-    import httplib
+    import http.client
     import simplejson
 except ImportError:
-    _logger.warning("Please install httplib and simplejson")
+    _logger.warning("Please install http.client and simplejson")
 
 
 class OnrampConnector(object):
@@ -164,7 +164,7 @@ class OnrampConnector(object):
             "Content-Length": 46,
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
-        conn = httplib.HTTPSConnection(provider)
+        conn = http.client.HTTPSConnection(provider)
         conn.request("POST", endpoint, params_post, header_post)
         response = conn.getresponse()
         try:

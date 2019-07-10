@@ -9,8 +9,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import tools
-from . import mappings
-from . import controllers
-from . import wizards
+from . import import_json_mapping

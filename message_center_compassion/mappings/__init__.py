@@ -8,5 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import base_mapping
-from . import advanced_query_mapping
+from . import field_to_json
+from . import compassion_mapping
+from . import compassion_mapped_model

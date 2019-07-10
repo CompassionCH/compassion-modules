@@ -30,14 +30,14 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion CH Message Center',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['base', 'queue_job'],
     'external_dependencies': {
-        'python': ['requests', 'jwt', 'httplib', 'simplejson'],
+        'python': ['requests', 'jwt', 'http.client', 'simplejson'],
     },
     'data': [
         'security/gmc_groups.xml',
@@ -45,6 +45,8 @@
         'views/gmc_message_view.xml',
         'views/advanced_query_view.xml',
         'data/query_operators.xml',
+        'views/compassion_mapping_view.xml',
+        'views/import_json_mapping_view.xml'
     ],
     'demo': [
         'demo/res_users.xml'

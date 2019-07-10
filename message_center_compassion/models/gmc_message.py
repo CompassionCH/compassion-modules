@@ -17,7 +17,6 @@ from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-from ..mappings import base_mapping as mapping
 from ..tools.onramp_connector import OnrampConnector
 
 logger = logging.getLogger(__name__)
@@ -52,7 +51,7 @@ class GmcMessagePoolProcess(models.TransientModel):
 class GmcMessagePool(models.Model):
     """ Pool of messages exchanged between Compassion CH and GMC. """
     _name = 'gmc.message.pool'
-    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Connect Message'
 
     _order = 'date desc'
@@ -282,8 +281,7 @@ class GmcMessagePool(models.Model):
         if hasattr(data_objects, 'on_send_to_connect'):
             data_objects.on_send_to_connect()
 
-        object_mapping = mapping.new_onramp_mapping(
-            action.model, self.env, action.mapping_name)
+        object_mapping = action.mapping_id
         if action.connect_outgoing_wrapper:
             # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             if action.batch_send:
@@ -297,7 +295,7 @@ class GmcMessagePool(models.Model):
                     message_data = {action.connect_outgoing_wrapper: list()}
                     for data_object in data_objects[i:i+split]:
                         message_data[action.connect_outgoing_wrapper].append(
-                            object_mapping.get_connect_data(data_object)
+                            object_mapping.data_to_json(data_object)
                         )
                     self[i:i+split]._send_message(message_data)
             else:
@@ -305,14 +303,14 @@ class GmcMessagePool(models.Model):
                 message_data = dict()
                 for i in range(0, len(data_objects)):
                     message_data[action.connect_outgoing_wrapper] = [
-                        object_mapping.get_connect_data(data_objects[i])
+                        object_mapping.data_to_json(data_objects[i])
                     ]
                     self[i]._send_message(message_data)
 
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
-                message_data = object_mapping.get_connect_data(
+                message_data = object_mapping.data_to_json(
                     data_objects[i])
                 self[i]._send_message(message_data)
 
@@ -346,8 +344,7 @@ class GmcMessagePool(models.Model):
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
 
-            object_mapping = mapping.new_onramp_mapping(
-                action.model, self.env, action.mapping_name)
+            object_mapping = action.mapping_id
 
             for i in range(0, len(results)):
                 result = results[i]
@@ -363,7 +360,7 @@ class GmcMessagePool(models.Model):
                 if isinstance(result, dict) and result.get('Code',
                                                            2000) == 2000:
                     # Individual message was successfully processed
-                    answer_vals = [object_mapping.get_vals_from_connect(
+                    answer_vals = [object_mapping.json_to_data(
                         result)]
                     try:
                         getattr(data_objects[i], action.success_method)(

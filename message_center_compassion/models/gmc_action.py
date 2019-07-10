@@ -39,7 +39,7 @@ class GmcAction(models.Model):
     name = fields.Char('GMC Message', required=True)
     model = fields.Char('Model')
     description = fields.Text('Action to execute')
-    mapping_name = fields.Char()
+    mapping_id = fields.Many2one('compassion_mapping')
     connect_service = fields.Char(
         help='URL endpoint for sending messages to GMC'
     )
