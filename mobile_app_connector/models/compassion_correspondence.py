@@ -146,7 +146,7 @@ class CompassionCorrespondence(models.Model):
             template_id = '2'
         file = other_params.get('file_upl')
         file_extension = other_params.get('path_info_extension')
-        gen = self.env['correspondence.s2b.generator'].create({
+        gen = self.env['correspondence.s2b.generator'].sudo().create({
             'name': 'app',
             'selection_domain': "[('child_id', '=', '" + child_id + "')]",
             'body_html': body_html,
@@ -204,7 +204,7 @@ class CompassionCorrespondence(models.Model):
             child_id = child_id[0]
         child = \
             self.env['compassion.child'].browse(int(child_id))
-        gen = self.env['correspondence.s2b.generator'].search([
+        gen = self.env['correspondence.s2b.generator'].sudo().search([
             ('name', '=', 'app'),
             ('selection_domain', '=',
              "[('child_id', '=', '" + child.local_id + "')]"),
