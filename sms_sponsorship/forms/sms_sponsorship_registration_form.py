@@ -87,6 +87,7 @@ if not testing:
                 'acquirer_ids':
                 'cms_form_compassion.form.widget.payment.hidden',
                 'gtc_accept': 'cms_form_compassion.form.widget.terms',
+                'partner_birthdate': 'cms.form.widget.date.ch',
             })
             return res
 
@@ -166,6 +167,6 @@ if not testing:
 
         def _get_partner_keys(self):
             res = super(PartnerSmsRegistrationForm, self)._get_partner_keys()
-            res.extend(['lang', 'birthdate'])
+            res.extend(['lang'])
             res.remove('state_id')
             return res

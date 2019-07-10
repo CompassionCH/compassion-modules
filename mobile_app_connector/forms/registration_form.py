@@ -61,6 +61,7 @@ if not testing:
                         'partner_zip',
                         'partner_city',
                         'partner_country_id',
+                        'partner_birthdate'
                     ]
                 },
                 {
@@ -80,6 +81,7 @@ if not testing:
             res = super(UserRegistrationForm, self).form_widgets
             res.update({
                 'gtc_accept': 'cms_form_compassion.form.widget.terms',
+                'partner_birthdate': 'cms.form.widget.date.ch',
             })
             return res
 
