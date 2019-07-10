@@ -2,7 +2,8 @@
 # Copyright 2017 Simone Orsi
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
-from odoo import models
+from datetime import datetime
+from odoo import models, fields
 
 
 class HiddenWidget(models.AbstractModel):
@@ -63,3 +64,17 @@ class TimeWidget(models.AbstractModel):
     _name = 'cms.form.widget.time'
     _inherit = 'cms.form.widget.char'
     _w_template = 'cms_form_compassion.field_time'
+
+
+class CHDateWidget(models.AbstractModel):
+    _name = 'cms.form.widget.date.ch'
+    _inherit = 'cms.form.widget.date'
+    _w_template = 'cms_form_compassion.field_widget_date_ch'
+
+    def w_extract(self, **req_values):
+        value = super(CHDateWidget, self).w_extract(**req_values)
+        if value:
+            # Convert the date to ORM format
+            value = fields.Date.to_string(
+                datetime.strptime(value, '%d.%m.%Y').date())
+        return value
