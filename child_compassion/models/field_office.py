@@ -80,7 +80,7 @@ class FieldOffice(models.Model):
     def update_informations(self):
         """ Get the most recent informations for selected field offices and
         update them accordingly. """
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message']
         action_id = self.env.ref(
             'child_compassion.field_office_details').id
 

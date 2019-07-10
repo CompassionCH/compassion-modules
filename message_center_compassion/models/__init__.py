@@ -1,14 +1,6 @@
-# -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
-#
-#    The licence is in the file __manifest__.py
-#
-##############################################################################
-
+from . import compassion_mapped_model
+from . import compassion_mapping
+from . import field_to_json
 from . import gmc_message
 from . import gmc_action
 from . import gmc_action_connect
@@ -16,3 +8,4 @@ from . import ir_http
 from . import connect_multipicklist
 from . import advanced_query
 from . import queue_job
+from . import res_partner_test

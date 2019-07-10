@@ -477,7 +477,7 @@ class Correspondence(models.Model):
                           "translation or already sent to GMC."))
         # Remove unsent messages
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure', 'postponed'])
@@ -492,7 +492,7 @@ class Correspondence(models.Model):
     def create_commkit(self):
         for letter in self:
             action_id = self.env.ref('sbc_compassion.create_letter').id
-            message = self.env['gmc.message.pool'].create({
+            message = self.env['gmc.message'].create({
                 'action_id': action_id,
                 'object_id': letter.id,
                 'child_id': letter.child_id.id,
@@ -732,7 +732,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('Letter was put on hold'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure'])
@@ -748,7 +748,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('The letter can now be sent.'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', '=', 'postponed')

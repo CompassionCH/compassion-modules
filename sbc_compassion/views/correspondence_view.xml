@@ -189,10 +189,10 @@
     <record id="action_gmc_message_create_letter" model="ir.actions.act_window">
         <field name="name">Letter</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">gmc.message.pool</field>
+        <field name="res_model">gmc.message</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="message_center_compassion.view_gmc_message_pool_filter"/>
+        <field name="search_view_id" ref="message_center_compassion.view_gmc_message_filter"/>
         <field name="context">{'search_default_pending':1, 'search_default_failure':1}</field>
         <field name="domain">[('action_id.model', '=', 'correspondence'),('direction','=','out')]</field>
         <field name="help" type="html">

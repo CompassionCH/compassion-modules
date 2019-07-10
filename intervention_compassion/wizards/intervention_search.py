@@ -166,7 +166,7 @@ class InterventionSearch(models.TransientModel):
         self.intervention_ids = False
         action = self.env.ref(
             'intervention_compassion.intervention_search_action')
-        message = self.env['gmc.message.pool'].with_context(
+        message = self.env['gmc.message'].with_context(
             async_mode=False).create({
                 'action_id': action.id,
                 'object_id': self.id

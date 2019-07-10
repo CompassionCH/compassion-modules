@@ -57,7 +57,7 @@ class ChildHoldWizard(models.TransientModel):
             _logger.info(
                 "Processing chunk {} for sending hold requests".format(i))
             try:
-                messages = self.env['gmc.message.pool']
+                messages = self.env['gmc.message']
                 for child in child_search[i:i + chunk_size]:
                     # Save children form global children to compassion children
                     child_comp = self.env['compassion.child'].create(

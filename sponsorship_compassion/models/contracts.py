@@ -669,7 +669,7 @@ class SponsorshipContract(models.Model):
             partner = contract.correspondent_id
             partner.upsert_constituent()
 
-            message_obj = self.env['gmc.message.pool']
+            message_obj = self.env['gmc.message']
             action_id = self.env.ref(
                 'sponsorship_compassion.create_sponsorship').id
 
@@ -739,7 +739,7 @@ class SponsorshipContract(models.Model):
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         action = self.env.ref('sponsorship_compassion.create_sponsorship')
-        message_obj = self.env['gmc.message.pool'].with_context(
+        message_obj = self.env['gmc.message'].with_context(
             async_mode=False)
         for sponsorship in self.filtered(
                 lambda s: s.global_id and s.state not in ('cancelled',
@@ -774,7 +774,7 @@ class SponsorshipContract(models.Model):
         one.
         But in Odoo, we will not see the commitment has changed.
         """
-        message_obj = self.env['gmc.message.pool'].with_context(
+        message_obj = self.env['gmc.message'].with_context(
             async_mode=False)
         cancel_action = self.env.ref(
             'sponsorship_compassion.cancel_sponsorship')
@@ -816,7 +816,7 @@ class SponsorshipContract(models.Model):
         one.
         But in Odoo, we will not see the commitment has changed.
         """
-        message_obj = self.env['gmc.message.pool'].with_context(
+        message_obj = self.env['gmc.message'].with_context(
             async_mode=False)
         create_action = self.env.ref(
             'sponsorship_compassion.create_sponsorship')
@@ -861,7 +861,7 @@ class SponsorshipContract(models.Model):
             if sponsorship.global_id and \
                     sponsorship.end_reason_id != departure:
                 # Cancel Sponsorship Message
-                message_obj = self.env['gmc.message.pool']
+                message_obj = self.env['gmc.message']
                 action_id = self.env.ref(
                     'sponsorship_compassion.cancel_sponsorship').id
 
@@ -874,7 +874,7 @@ class SponsorshipContract(models.Model):
                 message_obj.create(message_vals)
             elif not sponsorship.global_id:
                 # Remove CreateSponsorship message.
-                message_obj = self.env['gmc.message.pool']
+                message_obj = self.env['gmc.message']
                 action_id = self.env.ref(
                     'sponsorship_compassion.create_sponsorship').id
                 message_obj.search([

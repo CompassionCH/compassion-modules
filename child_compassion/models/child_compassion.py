@@ -421,7 +421,7 @@ class CompassionChild(models.Model):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
         """
-        message_obj = self.env['gmc.message.pool']
+        message_obj = self.env['gmc.message']
         action_id = self.env.ref('child_compassion.beneficiaries_details').id
         for child in self:
             message_vals = {

@@ -418,7 +418,7 @@ class CompassionIntervention(models.Model):
     def update_hold(self):
         action_id = self.env.ref(
             'intervention_compassion.intervention_update_hold_action').id
-        message = self.env['gmc.message.pool'].with_context(
+        message = self.env['gmc.message'].with_context(
             async_mode=False).create({
                 'action_id': action_id,
                 'object_id': self.id
@@ -591,7 +591,7 @@ class CompassionIntervention(models.Model):
                 'action_id': action_id,
                 'object_id': intervention.id,
             }
-            message = intervention.env['gmc.message.pool'].with_context(
+            message = intervention.env['gmc.message'].with_context(
                 hold_update=False).create(message_vals)
             if message.state == 'failure':
                 raise UserError(message.failure_reason)
@@ -601,7 +601,7 @@ class CompassionIntervention(models.Model):
     def cancel_hold(self):
         action_id = self.env.ref(
             'intervention_compassion.intervention_cancel_hold_action').id
-        message = self.env['gmc.message.pool'].with_context(
+        message = self.env['gmc.message'].with_context(
             async_mode=False).create({
                 'action_id': action_id,
                 'object_id': self.id

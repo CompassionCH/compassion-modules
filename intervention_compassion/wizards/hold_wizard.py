@@ -75,7 +75,7 @@ class HoldWizard(models.TransientModel):
         self.ensure_one()
         create_hold = self.env.ref(
             'intervention_compassion.intervention_create_hold_action')
-        message = self.env['gmc.message.pool'].with_context(
+        message = self.env['gmc.message'].with_context(
             async_mode=False).create({
                 'action_id': create_hold.id,
                 'object_id': self.id,

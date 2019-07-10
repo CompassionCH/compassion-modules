@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -16,6 +15,7 @@ class GmcActionConnect(models.Model):
     Maps an Action with a Connect Message Type
     """
     _name = 'gmc.action.connect'
+    _description = 'GMC Action Connect'
     _rec_name = 'connect_schema'
 
     connect_schema = fields.Char(required=True)
