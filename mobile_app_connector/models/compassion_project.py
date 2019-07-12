@@ -37,11 +37,27 @@ class CompassionProject(models.Model):
         if not self:
             return {}
         self.update_weather()
+        mapping = {
+            'Clear': 'Clear',
+            'Clouds': 'Clouds',
+            'Rain': 'Rainy',
+            'Storm': 'Storm',
+            'Mist': 'Clouds',
+            'Thunderstorm': 'Storm',
+            'Haze': 'Clouds',
+            'Drizzle': 'Clouds',
+            'Snow': 'Rainy',
+            'Smoke': 'Clouds',
+            'Dust': 'Clouds',
+            'Fog': 'Clouds',
+            'Sand': 'Storm',
+            'Ash': 'Storm',
+        }
         return {
-            'ChildWeather': self.current_weather,
+            'ChildWeather': mapping[self.current_weather],
             'ChildTemperature': self.current_temperature,
             # the following fields are not used but prevent app crashes
-            'UserWeather': self.current_weather,
+            'UserWeather': mapping[self.current_weather],
             'UserTemperature': self.current_temperature,
         }
 
