@@ -101,6 +101,7 @@ class CompassionCorrespondence(models.Model):
         if letter_id:
             letter = self.browse(int(letter_id))
             if letter.exists() and letter.letter_image:
+                letter.email_read = fields.Datetime.now()
                 return host + "/b2s_image?id=" + letter.uuid
         raise NotFound("Letter with id {} not found".format(letter_id))
 

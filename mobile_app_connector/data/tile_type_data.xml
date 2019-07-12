@@ -239,7 +239,7 @@ You never wrote to your sponsored child.
         <field name="code">LE_T1</field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_correspondence"/>
-        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and c.state == 'Published to Global Partner'</field>
+        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and c.state == 'Published to Global Partner' and c.letter_image</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">A new letter has arrived from your sponsored child</field>
         <field name="default_action_text">Read now</field>
