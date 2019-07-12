@@ -260,18 +260,18 @@ class CompassionProject(models.Model):
         [
             ('Clear', 'Clear'),
             ('Clouds', 'Clouds'),
-            ('Rain', 'Rainy'),
+            ('Rain', 'Rain'),
             ('Storm', 'Storm'),
-            ('Mist', 'Clouds'),
-            ('Thunderstorm', 'Storm'),
-            ('Haze', 'Clouds'),
-            ('Drizzle', 'Clouds'),
-            ('Snow', 'Rainy'),
-            ('Smoke', 'Clouds'),
-            ('Dust', 'Clouds'),
-            ('Fog', 'Clouds'),
-            ('Sand', 'Storm'),
-            ('Ash', 'Storm')
+            ('Mist', 'Mist'),
+            ('Thunderstorm', 'Thunderstorm'),
+            ('Haze', 'Haze'),
+            ('Drizzle', 'Drizzle'),
+            ('Snow', 'Snow'),
+            ('Smoke', 'Smoke'),
+            ('Dust', 'Dust'),
+            ('Fog', 'Fog'),
+            ('Sand', 'Sand'),
+            ('Ash', 'Ash')
         ]
     )
     current_temperature = fields.Float()
