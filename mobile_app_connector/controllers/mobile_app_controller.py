@@ -21,11 +21,11 @@ from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
 
 
-def _get_lang(params):
+def _get_lang(req, params):
     """ Fetches the lang from the request parameters. """
     lang_mapping = {'fr': 'fr_CH', 'en': 'en_US', 'de': 'de_DE', 'it': 'it_IT'}
-    app_lang = params.get('language', 'en')[:2]
-    return lang_mapping.get(app_lang)
+    app_lang = params.get('language', '')[:2]
+    return lang_mapping.get(app_lang, req.env.lang)
 
 
 class RestController(http.Controller):
@@ -81,7 +81,8 @@ class RestController(http.Controller):
         :param parameters: all other optional parameters sent by the request
         :return: json data for mobile app
         """
-        odoo_obj = request.env.get(model)
+        odoo_obj = request.env.get(model).with_context(
+            lang=_get_lang(request, parameters))
         model_method = 'mobile_' + method
         if odoo_obj is None or not hasattr(odoo_obj, model_method):
             raise NotFound("Unknown API path called.")
@@ -110,7 +111,7 @@ class RestController(http.Controller):
         :return: messages for displaying the hub
         """
         hub_obj = request.env['mobile.app.hub'].\
-            with_context(lang=_get_lang(parameters)).sudo()
+            with_context(lang=_get_lang(request, parameters)).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
             if partner_id == request.env.user.partner_id.id:
@@ -133,7 +134,7 @@ class RestController(http.Controller):
                  note: only one item is used by the app.
         """
         hero_obj = request.env['mobile.app.banner'].sudo().with_context(
-            lang=_get_lang(parameters))
+            lang=_get_lang(request, parameters))
         hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
         hero.print_count += 1
@@ -150,7 +151,7 @@ class RestController(http.Controller):
         :return: Redirect to sms_sponsorship form
         """
         values = {
-            'lang_code': _get_lang(parameters),
+            'lang_code': _get_lang(request, parameters),
             'source': parameters.get('source'),
             'partner_id': parameters.get('partner_id'),
         }
@@ -203,7 +204,7 @@ class RestController(http.Controller):
         retrieved from the website and returned as a JSON message to the user.
         """
         return request.env['frequently.asked.questions']\
-            .mobile_get_faq_json(_get_lang(parameters))
+            .mobile_get_faq_json(_get_lang(request, parameters))
 
     @http.route('/mobile-app-api/privacy_notice',
                 type='json', auth='public', methods=['GET'])
@@ -214,4 +215,4 @@ class RestController(http.Controller):
         message to the user.
         """
         return request.env['privacy.statement.agreement']\
-            .mobile_get_privacy_notice(_get_lang(parameters))
+            .mobile_get_privacy_notice(_get_lang(request, parameters))
