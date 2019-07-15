@@ -271,7 +271,9 @@ class CompassionProject(models.Model):
             ('Dust', 'Dust'),
             ('Fog', 'Fog'),
             ('Sand', 'Sand'),
-            ('Ash', 'Ash')
+            ('Ash', 'Ash'),
+            ('Squall', 'Squall'),
+            ('Tornado', 'Tornado'),
         ]
     )
     current_temperature = fields.Float()
