@@ -81,6 +81,7 @@ class AppHub(models.AbstractModel):
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
         messages = available_tiles[:limit].render_tile(tile_data)
+
         # GI7 is treated separately because it needs unpaid sponsorships
         msg_tmp = self.env['mobile.app.tile'].search([
             ('subtype_id', '=',
@@ -282,7 +283,8 @@ class AppHub(models.AbstractModel):
         for tile in to_order:
             recent_group = recent_content[tile['SubType']]
             if recent_group['max_number_tile'] > len(recent_group['tiles']) \
-                    and (tile['SubType'] != 'LE_T1' or tile['UnReadRecently']):
+                    and (tile['SubType'] != 'LE_T1' or
+                         tile.get('UnReadRecently')):
                 recent_group['tiles'].append(tile)
             elif tile['SubType'] in fixed_group_tiles:
                 fixed_group.append(tile)

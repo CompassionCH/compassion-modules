@@ -14,8 +14,7 @@
         <field name="view_order">1</field>
         <field name="default_model_id" ref="model_compassion_child"/>
         <field name="default_title">${ctx['objects'].get_list('preferred_name', 1, 'Thank you')}</field>
-        <field name="default_body">
-<![CDATA[% set child = ctx['objects']
+        <field name="default_body"><![CDATA[% set child = ctx['objects']
 % if len(child) == 1:
 You're changing ${child.get('his')} life
 % else:
@@ -108,8 +107,7 @@ Thank You]]>
         <field name="code">GI5</field>
         <field name="view_order">10</field>
         <field name="default_model_id" ref="model_res_partner"/>
-        <field name="default_body">
-<![CDATA[% set partner = ctx['objects'].sudo()
+        <field name="default_body"><![CDATA[% set partner = ctx['objects'].sudo()
 % set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)
 % if invoice:
 You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}
@@ -126,8 +124,7 @@ Make a donation]]></field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
-        <field name="default_records_filter">lambda c: (c.state in ['draft', 'waiting'])
-            and not c.parent_id</field>
+        <field name="default_records_filter">lambda c: (c.state in ['draft', 'waiting']) and not c.parent_id</field>
         <field name="default_body">You have not yet paid your sponsorship</field>
        <field name="default_action_text">Pay now</field>
        <field name="default_action_destination">Give overlay</field>
@@ -220,8 +217,7 @@ Make a donation]]></field>
         <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
-        <field name="default_body">
-<![CDATA[% set sponsorship = ctx['objects'].sudo()
+        <field name="default_body"><![CDATA[% set sponsorship = ctx['objects'].sudo()
 % set letters = sponsorship.sponsor_letter_ids
 % if sponsorship.last_letter == 0:
 You wrote today.
@@ -243,7 +239,7 @@ You never wrote to your sponsored child.
         <field name="code">LE_T1</field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_correspondence"/>
-        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter'</field>
+        <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and c.state == 'Published to Global Partner' and c.letter_image</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">A new letter has arrived from your sponsored child</field>
         <field name="default_action_text">Read now</field>

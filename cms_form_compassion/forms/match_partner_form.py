@@ -180,5 +180,6 @@ if not testing:
             # Returns the partner fields used by the form
             return [
                 'firstname', 'lastname', 'email', 'phone', 'street', 'city',
-                'zip', 'country_id', 'state_id', 'title', 'opt_out'
+                'zip', 'country_id', 'state_id', 'title', 'opt_out',
+                'birthdate'
             ]

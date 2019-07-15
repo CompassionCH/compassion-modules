@@ -145,7 +145,8 @@ class AppTile(models.Model):
                 module = 'mobile_app_connector.%s'
                 no_render = self.env.ref(module % 'tile_type_donation') + \
                     self.env.ref(module % 'tile_type_letter') +\
-                    self.env.ref(module % 'tile_type_child')
+                    self.env.ref(module % 'tile_type_child') +\
+                    self.env.ref(module % 'tile_type_community')
                 if tile.subtype_id.type_id not in no_render:
                     res.append(tile_json)
         return res

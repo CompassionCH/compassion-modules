@@ -43,7 +43,7 @@
         'sms_sponsorship',
     ],
     'external_dependencies': {
-        'python': ['simplejson'],
+        'python': ['simplejson', 'bs4', 'requests'],
     },
     'data': [
         'security/ir.model.access.csv',
@@ -51,8 +51,11 @@
         'data/tile_type_data.xml',
         'data/default_hub.xml',
         'data/ir_cron.xml',
+        'data/request_sequence.xml',
+        'data/crm_claim_category_data.xml',
         'views/wp_post_view.xml',
         'views/app_banner_view.xml',
+        'views/app_writing_view.xml',
         'views/tile_type_view.xml',
         'views/tile_view.xml',
         'views/product_view.xml',

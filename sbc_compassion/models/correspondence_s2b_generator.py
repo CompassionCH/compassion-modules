@@ -14,7 +14,7 @@ import logging
 from io import BytesIO
 
 from odoo import api, fields, models
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.addons.queue_job.job import job, related_action
 
 _logger = logging.getLogger(__name__)
@@ -78,6 +78,7 @@ class CorrespondenceS2bGenerator(models.Model):
     )
     nb_letters = fields.Integer(compute='_compute_nb_letters')
     preview_image = fields.Binary(readonly=True)
+    preview_pdf = fields.Binary(readonly=True)
     month = fields.Selection('_get_months')
 
     def _compute_nb_letters(self):
@@ -130,7 +131,13 @@ class CorrespondenceS2bGenerator(models.Model):
         with Image(blob=pdf) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
 
-        return self.write({'state': 'preview', 'preview_image': preview})
+        pdf_image = base64.b64encode(pdf)
+
+        return self.write({
+            'state': 'preview',
+            'preview_image': preview,
+            'preview_pdf': pdf_image,
+        })
 
     @api.multi
     def edit(self):

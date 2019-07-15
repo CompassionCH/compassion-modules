@@ -156,8 +156,9 @@ class MatchPartner(models.AbstractModel):
 
     @api.model
     def _match_rule_email(self, partner_obj, infos, options=None):
+        email = infos['email'].strip()
         return partner_obj.search([
-            ('email', '=ilike', infos['email']),
+            ('email', '=ilike', email),
             '|', ('active', '=', True), ('active', '=', False),
         ])
 
