@@ -6,7 +6,7 @@ access_admin_wp_post_category,WP Post Category full access,model_wp_post_categor
 read_access_child,Child read access,child_compassion.model_compassion_child,base.group_portal,1,0,0,0
 read_access_project,Project read access,child_compassion.model_compassion_project,base.group_portal,1,0,0,0
 read_access_contract,Recurring contract read access,sponsorship_compassion.model_recurring_contract,base.group_portal,1,0,0,0
-read_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,0,0,0
+write_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,1,0,0
 read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
 read_access_product_template,Product template read access,model_product_template,base.group_portal,1,0,0,0
 read_access_lang_compassion,Lang compassion read access,child_compassion.model_res_lang_compassion,base.group_portal,1,0,0,0
