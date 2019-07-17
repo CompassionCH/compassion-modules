@@ -98,6 +98,7 @@ class AppHub(models.AbstractModel):
                 multi=True, wrapper='UnpaidChildren')
             res.update(unpaid_dict)
             res.update({'UnpaidAmounts': unpaid_amounts})
+
         return res
 
     ##########################################################################
