@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-12 13:03+0000\n"
-"PO-Revision-Date: 2019-07-12 15:18+0200\n"
+"POT-Creation-Date: 2019-07-17 08:55+0000\n"
+"PO-Revision-Date: 2019-07-17 11:51+0200\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Generator: Poedit 2.2.3\n"
 
 #. module: mobile_app_connector
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
+#: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
 msgid ""
 "\n"
 "% set child = ctx['objects']\n"
@@ -38,31 +38,7 @@ msgstr ""
 "% endif"
 
 #. module: mobile_app_connector
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
-msgid ""
-"\n"
-"% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
-"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
-"order='last_payment desc', limit=1)\n"
-"% if invoice:\n"
-"You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
-"% else:\n"
-"Make a donation"
-msgstr ""
-"% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
-"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
-"order='last_payment desc', limit=1)\n"
-"% if invoice:\n"
-"Du hast CHF ${invoice.amount_total} am ${invoice.get_date('last_payment')} "
-"gespendet.\n"
-"% else:\n"
-"Spenden"
-
-#. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le1
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
 msgid ""
 "\n"
 "% set sponsorship = ctx['objects'].sudo()\n"
@@ -151,7 +127,7 @@ msgid "${ctx['objects'].sudo().child_id.preferred_name}"
 msgstr "${ctx['objects'].sudo().child_id.preferred_name}"
 
 #. module: mobile_app_connector
-#: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
 msgid ""
 "% set child = ctx['objects']\n"
 "% if len(child) == 1:\n"
@@ -178,6 +154,55 @@ msgid ""
 msgstr ""
 "% set child = ctx['objects'].child_id\n"
 "${child.preferred_name} / ${child.project_id.country_id.name}\n"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
+msgid ""
+"% set partner = ctx['objects'].sudo()\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
+"% if invoice:\n"
+"You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
+"% else:\n"
+"Make a donation"
+msgstr ""
+"% set partner = ctx['objects'].sudo()\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
+"% if invoice:\n"
+"Du gabst am ${invoice.get_date('last_payment')} den Betrag von CHF ${invoice."
+"amount_total}.\n"
+"% else:\n"
+"Geld senden"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
+msgid ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"You wrote today.\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"You last wrote ${sponsorship.last_letter} days ago\n"
+"    % else:\n"
+"You never wrote to your sponsored child.\n"
+"    % endif\n"
+"% endif"
+msgstr ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"Du hast heute geschrieben\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"Letztes Mal vor ${sponsorship.last_letter} Tagen geschrieben\n"
+"    % else:\n"
+"Du hast noch nie geschrieben\n"
+"    % endif\n"
+"% endif"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le_t1
@@ -272,7 +297,7 @@ msgid "Button text"
 msgstr "Button text"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_id_21947
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_id_21816
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
 msgid "Category"
 msgstr "Kategorie"
@@ -353,7 +378,7 @@ msgstr "Compass (opens the compass on the project page)"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_confirm_email
 msgid "Confirm your email"
-msgstr "Bestätigung der E-Mail-Adresse"
+msgstr "Bestätige deine Mailadresse"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_recurring_contract
@@ -496,7 +521,7 @@ msgstr "Display on hub"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_has_sponsorship
 msgid "Do you currently sponsor a child?"
-msgstr "Hast du schon einen Patenkind?"
+msgstr "Bist du Pate eines Kindes?"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_gi1
@@ -518,7 +543,7 @@ msgstr "Download"
 #: code:addons/mobile_app_connector/forms/registration_form.py:105
 #, python-format
 msgid "Emails fields don't match"
-msgstr "Bestätige deine E-Mailadresse"
+msgstr "E-Mail Adressen stimmen nicht überein"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_end_date
@@ -789,10 +814,10 @@ msgid "Low"
 msgstr "Low"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:194
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:195
 #, python-format
 msgid "Mail delivery error"
-msgstr "Mail delivery error"
+msgstr "E-Mail konnte nicht gesandt werden"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_action_text
@@ -826,7 +851,6 @@ msgstr "Mobile App Feedback"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_writing
-#| msgid "Mobile App"
 msgid "Mobile App Writing"
 msgstr "Mobile App Writing"
 
@@ -834,7 +858,7 @@ msgstr "Mobile App Writing"
 #: code:addons/mobile_app_connector/forms/registration_form.py:46
 #, python-format
 msgid "Mobile app account registration"
-msgstr "Anmeldung für Mobile App"
+msgstr "App registrieren"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_mode
@@ -888,16 +912,16 @@ msgid "News"
 msgstr "News"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:173
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:174
 #, python-format
 msgid "No email entered"
-msgstr "Kein E-Mail"
+msgstr "Keine E-Mailadresse eingetragen"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:183
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:184
 #, python-format
 msgid "No such account"
-msgstr "Kein Konto gefunden"
+msgstr "Dieses Konto existiert nicht "
 
 #. module: mobile_app_connector
 #: selection:mobile.app.tile,priority:0
@@ -907,7 +931,7 @@ msgstr "Normal"
 #. module: mobile_app_connector
 #: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_firebase_registration
 msgid "Notifications"
-msgstr "Notifications"
+msgstr "Benachrichtigung"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -963,7 +987,7 @@ msgstr "Photos overlay (opens the photos of child)"
 #: code:addons/mobile_app_connector/mappings/compassion_correspondence_mapping.py:64
 #, python-format
 msgid "Physical letters cannot be displayed."
-msgstr "Handschriftliche Briefe können nicht angezeigt werden."
+msgstr "Physische Briefe können nicht angezeigt werden."
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/models/wordpress_post.py:87
@@ -974,11 +998,10 @@ msgstr "Please add wp_host in your configuration"
 #. module: mobile_app_connector
 #: model:ir.model.fields,help:mobile_app_connector.field_cms_form_res_users_has_sponsorship
 msgid "Please click the box if the answer is yes."
-msgstr "Bitte klicke auf das Kästchen, wenn die Antwort ja ist."
+msgstr "Bitte klicke hier, wenn du einverstanden bist."
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_position
-#| msgid "Description"
 msgid "Position"
 msgstr "Position"
 
@@ -1140,14 +1163,13 @@ msgstr "Subtypes"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_template_ids
-#| msgid "Product Template"
 msgid "Templates"
 msgstr "Templates"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_gtc_accept
 msgid "Terms and conditions"
-msgstr "Geschäftsbedingungen"
+msgstr "AGB"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht2
@@ -1182,7 +1204,7 @@ msgstr "This defines how to process related data"
 #: code:addons/mobile_app_connector/forms/registration_form.py:135
 #, python-format
 msgid "This email is already linked to an account."
-msgstr "Diese E-Mail ist bereits mit einem Konto verknüpft."
+msgstr "Diese E-Mailadresse ist bereits einem Konto zugeordnet."
 
 #. module: mobile_app_connector
 #: sql_constraint:wp.post:0
@@ -1267,7 +1289,7 @@ msgid "Top of letters hub (opens the letter writing page)"
 msgstr "Top of letters hub (opens the letter writing page)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_22011
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_21880
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
@@ -1337,14 +1359,14 @@ msgid ""
 "We couldn't find your sponsorships. Please contact us for setting up your "
 "account."
 msgstr ""
-"Wir konnten deine Patenschaften nicht finden. Bitte kontaktiere uns, um dein "
-"Konto einzurichten."
+"Wir konnten deine Patenschaften nicht finden. Bitte kontaktiere uns, damit "
+"wir dein Konto aufschalten können."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:192
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:193
 #, python-format
 msgid "We sent you the reset instructions."
-msgstr "Wir haben Ihnen die Reset-Anweisungen geschickt."
+msgstr "Wir haben dir die Anleitung per E-Mail geschickt."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_mi2
@@ -1421,7 +1443,7 @@ msgstr "Writings"
 #: code:addons/mobile_app_connector/mappings/compassion_login_mapping.py:96
 #, python-format
 msgid "Wrong user or password"
-msgstr "Falscher Benutzer oder Passwort"
+msgstr "Falscher Benutzername oder Passwort"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
@@ -1454,14 +1476,14 @@ msgid ""
 "Your account has been successfully created, you will now receive an email to "
 "finalize your registration."
 msgstr ""
-"Dein Konto wurde erfolgreich erstellt, du erhaltest nun eine E-Mail, um "
-"deine Registrierung abzuschliessen."
+"Dein Konto wurde erfolgreich erstellt. Du wirst nun ein E-Mail erhalten, um "
+"die Registrierung abzuschliessen."
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:53
 #, python-format
 msgid "Your personal data"
-msgstr "Deine Daten"
+msgstr "Persönliche Angaben"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/models/request.py:65
@@ -1497,7 +1519,6 @@ msgstr "first parameter"
 
 #. module: mobile_app_connector
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_ios
-#| msgid "IOS"
 msgid "iOS"
 msgstr "iOS"
 
