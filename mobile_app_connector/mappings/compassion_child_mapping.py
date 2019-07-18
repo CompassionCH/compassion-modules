@@ -66,4 +66,6 @@ class MobileChildMapping(OnrampMapping):
             if key == "SupporterGroupId":
                 if value:
                     connect_data[key] = int(value)
+            if key == "Gender":
+                connect_data[key] = "Female" if value == "F" else "Male"
         return connect_data
