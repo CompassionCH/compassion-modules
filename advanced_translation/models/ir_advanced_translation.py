@@ -11,7 +11,6 @@
 
 import logging
 import re
-import sys
 import threading
 import locale
 from collections import OrderedDict
@@ -145,7 +144,7 @@ class AdvancedTranslatable(models.AbstractModel):
         return res or ''
 
     @api.multi
-    def get_list(self, field, limit=sys.maxint, substitution=None,
+    def get_list(self, field, limit=float("inf"), substitution=None,
                  translate=True):
         """
         Get a list of values, separated with commas. (last separator 'and')
