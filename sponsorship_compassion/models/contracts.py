@@ -115,18 +115,21 @@ class SponsorshipContract(models.Model):
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
                                                   'global ids for contracts')
     ]
+    #
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.model
     def _get_standard_lines(self):
-        if 'S' in self.env.context.get('default_type', 'O'):
-            return self._get_sponsorship_standard_lines()
+        full_sponsor = 'S' in self.env.context.get('default_type', 'O')
+        if full_sponsor or 'SC' in self.env.context.get('default_type', 'O'):
+            return self._get_sponsorship_standard_lines(full_sponsor=full_sponsor)
+
         return []
 
     @api.model
-    def _get_sponsorship_standard_lines(self):
+    def _get_sponsorship_standard_lines(self, full_sponsor):
         """ Select Sponsorship and General Fund by default """
         res = []
         sponsorship_product = self.env.ref(
@@ -144,7 +147,7 @@ class SponsorshipContract(models.Model):
         gen_vals = {
             'product_id': gen_product.id,
             'quantity': 1,
-            'amount': gen_product.list_price,
+            'amount': gen_product.list_price if full_sponsor else 0,
             'subtotal': gen_product.list_price
         }
         res.append([0, 6, sponsorship_vals])
