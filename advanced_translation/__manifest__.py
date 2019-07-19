@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -29,19 +28,22 @@
 # pylint: disable=C8101
 {
     'name': 'Advanced Translation',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'sequence': 150,
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
+    'development_status': 'Stable',
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir.advanced.translation.csv',
         'views/advanced_translation_view.xml',
     ],
-    'demo': [],
-    'installable': False,
+    'demo': [
+        'demo/ir.advanced.translation.csv'
+    ],
+    'installable': True,
     'auto_install': False,
 }
