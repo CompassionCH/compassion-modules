@@ -75,4 +75,4 @@ class MobileChildMapping(OnrampMapping):
             if key == "SupporterGroupId":
                 if value:
                     connect_data[key] = int(value)
-        return connect_dataq
+        return connect_data
