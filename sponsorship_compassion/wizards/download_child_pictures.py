@@ -48,7 +48,7 @@ class DownloadChildPictures(models.TransientModel):
         return fields.Date.context_today(self) + '_child_pictures.zip'
 
     @api.multi
-    def _get_picture_url(self, raw_url, pic_type, width, height):
+    def get_picture_url(self, raw_url, pic_type, width, height):
         if pic_type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
                 width)
@@ -72,10 +72,10 @@ class DownloadChildPictures(models.TransientModel):
 
             for child in children.filtered('image_url'):
                 child_code = child.local_id
-                url = self._get_picture_url(raw_url=child.image_url,
-                                            pic_type=self.type,
-                                            height=self.height,
-                                            width=self.width)
+                url = self.get_picture_url(raw_url=child.image_url,
+                                           pic_type=self.type,
+                                           height=self.height,
+                                           width=self.width)
                 try:
                     data = base64.encodestring(
                         urllib2.urlopen(url).read())
@@ -154,8 +154,8 @@ class DownloadChildPictures(models.TransientModel):
         for child in children.filtered('image_url'):
             url = child.image_url
             try:
-                url = self._get_picture_url(url, self.type, self.width,
-                                            self.height)
+                url = self.get_picture_url(url, self.type, self.width,
+                                           self.height)
                 self.preview = base64.encodestring(
                     urllib2.urlopen(url[0]).read())
                 break
@@ -180,7 +180,7 @@ class DownloadChildPictures(models.TransientModel):
         # To find them, we have to try to open their url and catch exceptions.
         children_with_invalid_url = []
         for child in children.filtered('image_url'):
-            url = self._get_picture_url(
+            url = self.get_picture_url(
                 raw_url=child.image_url,
                 pic_type='fullshot', height=1, width=1
                 )
