@@ -28,7 +28,7 @@ class FAQ(models.AbstractModel):
     _name = 'frequently.asked.questions'
     _description = 'Mobile App FAQ'
 
-    def mobile_get_faq_json(self, language):
+    def mobile_get_faq_json(self, language, **params):
         """
         Method that takes care of retrieving the FAQ from the website and
         returns it in a JSON format. The method should be called directly
