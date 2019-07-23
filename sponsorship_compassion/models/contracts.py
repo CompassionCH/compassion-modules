@@ -115,6 +115,7 @@ class SponsorshipContract(models.Model):
         ('unique_global_id', 'unique(global_id)', 'You cannot have same '
                                                   'global ids for contracts')
     ]
+    #
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -122,11 +123,16 @@ class SponsorshipContract(models.Model):
     @api.model
     def _get_standard_lines(self):
         if 'S' in self.env.context.get('default_type', 'O'):
-            return self._get_sponsorship_standard_lines()
+            return self._get_sponsorship_standard_lines(False)
         return []
 
+    @api.onchange('type')
+    def _create_empty_lines_for_correspondence(self):
+        self.contract_line_ids = self._get_sponsorship_standard_lines(
+            self.type == 'SC')
+
     @api.model
-    def _get_sponsorship_standard_lines(self):
+    def _get_sponsorship_standard_lines(self, correspondence):
         """ Select Sponsorship and General Fund by default """
         res = []
         sponsorship_product = self.env.ref(
@@ -137,15 +143,15 @@ class SponsorshipContract(models.Model):
             'product_template_fund_gen').product_variant_id
         sponsorship_vals = {
             'product_id': sponsorship_product.id,
-            'quantity': 1,
-            'amount': sponsorship_product.list_price,
-            'subtotal': sponsorship_product.list_price
+            'quantity': 0 if correspondence else 1,
+            'amount': 0 if correspondence else sponsorship_product.list_price,
+            'subtotal': 0 if correspondence else sponsorship_product.list_price
         }
         gen_vals = {
             'product_id': gen_product.id,
-            'quantity': 1,
-            'amount': gen_product.list_price,
-            'subtotal': gen_product.list_price
+            'quantity': 0 if correspondence else 1,
+            'amount': 0 if correspondence else gen_product.list_price,
+            'subtotal': 0 if correspondence else gen_product.list_price
         }
         res.append([0, 6, sponsorship_vals])
         res.append([0, 6, gen_vals])
@@ -566,7 +572,7 @@ class SponsorshipContract(models.Model):
             Correspondence sponsorships don't create invoice lines.
             Add analytic account to invoice_lines.
         """
-        contracts = self.filtered(lambda c: c.type != 'SC')
+        contracts = self.filtered(lambda c: c.total_amount != 0)
         suspend_config = int(self.env['ir.config_parameter'].get_param(
             'sponsorship_compassion.suspend_product_id', 0))
         res = list()
@@ -575,7 +581,7 @@ class SponsorshipContract(models.Model):
                                contract).get_inv_lines_data()
 
             # If project is suspended, either skip invoice or replace product
-            if contract.type == 'S' and \
+            if contract.type in ['S', 'SC'] and \
                     contract.project_id.hold_cdsp_funds:
                 if not suspend_config:
                     continue
@@ -738,6 +744,10 @@ class SponsorshipContract(models.Model):
                     'expiration_date': hold.get_default_hold_expiration(
                         HoldType.NO_MONEY_HOLD)
                 })
+                if contract.total_amount == 0:
+                    raise UserError(_(
+                        "You cannot validate a sponsorship without any amount"
+                    ))
 
         return super(SponsorshipContract, self).contract_waiting()
 
