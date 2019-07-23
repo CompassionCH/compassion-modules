@@ -96,7 +96,7 @@ Thank You]]>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_compassion_child"/>
         <field name="default_title">${ctx['objects'].name}</field>
-        <field name="default_body">Send a donation to your sponsored child</field>
+        <field name="default_body">Send a gift to your sponsored child</field>
         <field name="default_action_text">Give a gift</field>
         <field name="default_action_destination">Give a gift overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/GI3.png"/>

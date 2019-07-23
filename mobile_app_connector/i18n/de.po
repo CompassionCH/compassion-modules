@@ -1082,7 +1082,7 @@ msgstr "Select related objects type"
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi3
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi3
-msgid "Send a donation to your sponsored child"
+msgid "Send a gift to your sponsored child"
 msgstr "Spende etwas für dein Patenkind"
 
 #. module: mobile_app_connector

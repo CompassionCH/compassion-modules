@@ -1095,8 +1095,8 @@ msgstr "Select related objects type"
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi3
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi3
-msgid "Send a donation to your sponsored child"
-msgstr "Un don pour ${ctx['objects'].get('ton filleul')}"
+msgid "Send a gift to your sponsored child"
+msgstr "Un cadeau pour ${ctx['objects'].get('ton filleul')}"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_product_product_mobile_app
