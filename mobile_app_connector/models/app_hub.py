@@ -99,6 +99,12 @@ class AppHub(models.AbstractModel):
             res.update(unpaid_dict)
             res.update({'UnpaidAmounts': unpaid_amounts})
 
+        # To allow donation for users that are not sponsor
+        res.update({
+            'SupporterGroupId': partner_id,
+            'SupporterId': partner_id,
+        })
+
         return res
 
     ##########################################################################
