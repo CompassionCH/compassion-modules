@@ -57,6 +57,16 @@ class MobileChildMapping(OnrampMapping):
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
 
+    def get_connect_data(self, odoo_object, fields_to_submit=None):
+        res = super(MobileChildMapping, self).get_connect_data(
+            odoo_object, fields_to_submit)
+        if res['FullBodyImageURL']:
+            image_url = self.env['child.pictures.download.wizard']\
+                .get_picture_url(res['FullBodyImageURL'], 'headshot', 300, 300)
+            res['ImageUrl'] = image_url
+            res['ImageURL'] = image_url
+        return res
+
     def _process_connect_data(self, connect_data):
         for key, value in connect_data.copy().iteritems():
             if key == "BirthDate":
