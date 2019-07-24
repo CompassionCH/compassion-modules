@@ -62,6 +62,6 @@ class Product(models.Model):
         return {
             'Appeal': {
                 'FundType': self[:1].default_code,
-                'FundId': self[:1].id
+                'FundId': self[:1].product_tmpl_id.id
             }
         }
