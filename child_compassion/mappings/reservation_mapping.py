@@ -67,6 +67,9 @@ class ReservationCreateMapping(OnrampMapping):
                                                "%Y-%m-%d %H:%M:%S")
             connect_data['HoldExpirationDate'] = expirationDate.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")
+        for key, val in connect_data.copy().iteritems():
+            if not val:
+                del connect_data[key]
 
 
 class ProjetReservationCancelMapping(ReservationCreateMapping):

@@ -519,8 +519,8 @@ class EventCompassion(models.Model):
             self.number_allocate_children - self.planned_sponsorships
         )
         if self.number_allocate_children > 1:
-            no_money_yield /= (self.number_allocate_children * 100)
-            yield_rate /= float(self.number_allocate_children * 100)
+            no_money_yield /= self.number_allocate_children
+            yield_rate /= self.number_allocate_children
         expiration_date = fields.Datetime.from_string(self.end_date) + \
             timedelta(days=self.env['demand.planning.settings'].
                       get_param('days_hold_after_event'))
@@ -537,8 +537,8 @@ class EventCompassion(models.Model):
                 'default_channel': 'event',
                 'default_ambassador': self.user_id.partner_id.id,
                 'default_source_code': self.name,
-                'default_no_money_yield_rate': no_money_yield,
-                'default_yield_rate': yield_rate,
+                'default_no_money_yield_rate': no_money_yield*100,
+                'default_yield_rate': yield_rate*100,
                 'default_expiration_date':
                     fields.Datetime.to_string(expiration_date),
                 'default_campaign_id': self.campaign_id.id

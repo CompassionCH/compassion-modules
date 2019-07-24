@@ -226,7 +226,10 @@ class GlobalChildSearch(models.TransientModel):
             'view_mode': 'form',
             'res_model': 'child.hold.wizard',
             'context': self.with_context(
-                active_id=self.id, active_model=self._name).env.context,
+                active_id=self.id, active_model=self._name,
+                default_yield_rate=80,
+                default_no_money_yield_rate=20
+            ).env.context,
             'target': 'new',
         }
 
@@ -352,8 +355,8 @@ class GlobalChildSearch(models.TransientModel):
                 "%Y-%m-%dT%H:%M:%SZ"),
             'primary_owner': user_id,
             'secondary_owner': 'Carole Rochat',
-            'no_money_yield_rate': '1.1',
-            'yield_rate': '1.1',
+            'no_money_yield_rate': '20',
+            'yield_rate': '80',
             'channel': 'Website',
         })
         holds.send()
