@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import logging
+from HTMLParser import HTMLParser
 from ..tools import wp_requests
 
 
@@ -92,10 +93,15 @@ class WordpressPost(models.Model):
         category_obj = self.env['wp.post.category']
         found_ids = []
         try:
+            h = HTMLParser()
             with wp_requests.Session() as requests:
                 for lang in self._supported_langs():
                     params['lang'] = lang.code[:2]
                     wp_posts = requests.get(wp_api_url, params=params).json()
+                    for post in wp_posts:
+                        post['excerpt']['rendered'] = h.unescape(post['excerpt']['rendered'])
+                        post['title']['rendered'] = h.unescape(post['title']['rendered'])
+
                     _logger.info('Processing posts in %s', lang.name)
                     for i, post_data in enumerate(wp_posts):
                         _logger.info("...processing post %s/%s",
