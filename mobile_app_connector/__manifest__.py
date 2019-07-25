@@ -43,7 +43,7 @@
         'sms_sponsorship',
     ],
     'external_dependencies': {
-        'python': ['simplejson', 'bs4', 'requests'],
+        'python': ['simplejson', 'bs4', 'requests', 'HTMLParser'],
     },
     'data': [
         'security/ir.model.access.csv',

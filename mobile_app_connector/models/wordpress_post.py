@@ -8,15 +8,18 @@
 #
 ##############################################################################
 import logging
-from HTMLParser import HTMLParser
 from ..tools import wp_requests
-
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
+
+try:
+    from HTMLParser import HTMLParser
+except ImportError:
+    _logger.warning("Please install HTMLParser")
 
 
 class WordpressPost(models.Model):
