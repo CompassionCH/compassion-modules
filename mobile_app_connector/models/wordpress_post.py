@@ -99,8 +99,10 @@ class WordpressPost(models.Model):
                     params['lang'] = lang.code[:2]
                     wp_posts = requests.get(wp_api_url, params=params).json()
                     for post in wp_posts:
-                        post['excerpt']['rendered'] = h.unescape(post['excerpt']['rendered'])
-                        post['title']['rendered'] = h.unescape(post['title']['rendered'])
+                        post['excerpt']['rendered'] =\
+                            h.unescape(post['excerpt']['rendered'])
+                        post['title']['rendered'] =\
+                            h.unescape(post['title']['rendered'])
 
                     _logger.info('Processing posts in %s', lang.name)
                     for i, post_data in enumerate(wp_posts):
