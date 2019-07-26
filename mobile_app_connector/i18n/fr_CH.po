@@ -217,10 +217,10 @@ msgstr ""
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le_t1
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t1
-msgid "A new letter has arrived from your sponsored child"
+msgid "A letter has arrived from your sponsored child on ${ctx['objects'].get_date('scanned_date')}"
 msgstr ""
 "${ctx['objects'].child_id.get('your sponsored child').title()} vous a écrit "
-"une nouvelle lettre"
+"une lettre le ${ctx['objects'].get_date('scanned_date')}"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_action_destination
