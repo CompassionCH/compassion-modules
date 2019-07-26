@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -10,11 +9,11 @@
 ##############################################################################
 
 from odoo import api, models, fields, _
-from ..mappings.field_office_disaster_mapping import FieldOfficeDisasterMapping
 
 
 class ICPDisasterImpact(models.Model):
     _name = 'fcp.disaster.impact'
+    _inherit = 'compassion.mapped.model'
     _description = 'FCP Disaster Impact'
     _order = 'id desc'
 
@@ -35,6 +34,7 @@ class FieldOfficeDisasterUpdate(models.Model):
     _name = 'fo.disaster.update'
     _description = 'Field Office Disaster Update'
     _order = 'id desc'
+    _inherit = 'compassion.mapped.model'
 
     disaster_id = fields.Many2one(
         'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
@@ -52,9 +52,21 @@ class FieldOfficeDisasterUpdate(models.Model):
          'The disaster update already exists in database.'),
     ]
 
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(
+            json, mapping_name
+        )
+        if 'summary' in odoo_data:
+            odoo_data['summary'] = odoo_data['summary'].replace(
+                '\\r', '\n').replace('\\n', '\n').replace('\\t', '\t')
+
+        return odoo_data
+
 
 class ChildDisasterImpact(models.Model):
     _name = 'child.disaster.impact'
+    _inherit = 'compassion.mapped.model'
     _description = 'Child Disaster Impact'
     _order = 'id desc'
 
@@ -81,11 +93,11 @@ class ChildDisasterImpact(models.Model):
     @api.model
     def create(self, vals):
         """ Log a note in child when new disaster impact is registered. """
-        impact = super(ChildDisasterImpact, self).create(vals)
+        impact = super().create(vals)
         if impact.child_id:
             impact.child_id.message_post(
-                _("Child was affected by the natural disaster {}".format(
-                    impact.disaster_id.name)),
+                _(f"Child was affected by the natural disaster "
+                  f"{impact.disaster_id.name}"),
                 _("Disaster Alert")
             )
         return impact
@@ -94,6 +106,7 @@ class ChildDisasterImpact(models.Model):
 class DisasterLoss(models.Model):
     _inherit = 'connect.multipicklist'
     _name = 'fo.disaster.loss'
+    _description = 'Field office disaster loss'
     res_model = 'child.disaster.impact'
     res_field = 'loss_ids'
 
@@ -101,7 +114,7 @@ class DisasterLoss(models.Model):
 class FieldOfficeDisasterAlert(models.Model):
     _name = 'fo.disaster.alert'
     _description = 'Field Office Disaster Alert'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'compassion.mapped.model']
     _order = 'disaster_date desc, id desc'
 
     ##########################################################################
@@ -116,8 +129,27 @@ class FieldOfficeDisasterAlert(models.Model):
     state = fields.Selection([
         ('Active', 'Active'),
         ('Closed', 'Closed')])
-    disaster_type = fields.Selection('_get_type')
-
+    disaster_type = fields.Selection([
+        ("Animal / Insect Infestation", "Animal / Insect Infestation"),
+        ("Civil Or Political Unrest / Rioting",
+         "Civil Or Political Unrest / Rioting"),
+        ("Disease / Epidemic", "Disease / Epidemic"),
+        ("Earthquake", "Earthquake"),
+        ("Extreme Temperatures", "Extreme Temperatures"),
+        ("Fire", "Fire"),
+        ("Hail Storm", "Hail Storm"),
+        ("Heavy Rains / Flooding", "Heavy Rains / Flooding"),
+        ("Hurricanes / Tropical Storms / Cyclones / Typhoons",
+         "Hurricanes / Tropical Storms / Cyclones / Typhoons"),
+        ("Industrial Accident", "Industrial Accident"),
+        ("Landslide", "Landslide"),
+        ("Strong Winds", "Strong Winds"),
+        ("Tornado", "Tornado"),
+        ("Transport Accident", "Transport Accident"),
+        ("Tsunami", "Tsunami"),
+        ("Volcanic Activity", "Volcanic Activity"),
+        ("Water Contamination Crisis", "Water Contamination Crisis")
+    ])
     estimated_basic_supplies_needed = fields.Char()
     estimated_homes_destroyed = fields.Char()
     estimated_loss_of_life = fields.Char()
@@ -165,7 +197,6 @@ class FieldOfficeDisasterAlert(models.Model):
 
     fcp_disaster_impact_ids = fields.One2many(
         'fcp.disaster.impact', 'disaster_id', 'FCP Disaster Impact',
-        oldname='icp_disaster_impact_ids'
     )
     fo_disaster_update_ids = fields.One2many(
         'fo.disaster.update', 'disaster_id', 'Field Office Update'
@@ -180,30 +211,6 @@ class FieldOfficeDisasterAlert(models.Model):
         ('disaster_id', 'unique(disaster_id)',
          'The disaster alert already exists in database.'),
     ]
-
-    @api.model
-    def _get_type(self):
-        return [
-            ("Animal / Insect Infestation", "Animal / Insect Infestation"),
-            ("Civil Or Political Unrest / Rioting",
-             "Civil Or Political Unrest / Rioting"),
-            ("Disease / Epidemic", "Disease / Epidemic"),
-            ("Earthquake", "Earthquake"),
-            ("Extreme Temperatures", "Extreme Temperatures"),
-            ("Fire", "Fire"),
-            ("Hail Storm", "Hail Storm"),
-            ("Heavy Rains / Flooding", "Heavy Rains / Flooding"),
-            ("Hurricanes / Tropical Storms / Cyclones / Typhoons",
-             "Hurricanes / Tropical Storms / Cyclones / Typhoons"),
-            ("Industrial Accident", "Industrial Accident"),
-            ("Landslide", "Landslide"),
-            ("Strong Winds", "Strong Winds"),
-            ("Tornado", "Tornado"),
-            ("Transport Accident", "Transport Accident"),
-            ("Tsunami", "Tsunami"),
-            ("Volcanic Activity", "Volcanic Activity"),
-            ("Water Contamination Crisis", "Water Contamination Crisis")
-        ]
 
     @api.depends('child_disaster_impact_ids')
     def _compute_impacted_children(self):
@@ -234,7 +241,7 @@ class FieldOfficeDisasterAlert(models.Model):
                     content_subtype='plaintext'
                 )
         else:
-            disaster = super(FieldOfficeDisasterAlert, self).create(vals)
+            disaster = super().create(vals)
             if notify_ids:
                 disaster.message_post(
                     body=_("The disaster alert has just been received."),
@@ -280,11 +287,23 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     @api.model
     def process_commkit(self, commkit_data):
-        mapping = FieldOfficeDisasterMapping(self.env)
         fo_ids = list()
         for single_data in commkit_data.get(
                 'DisasterResponseList', [commkit_data]):
-            vals = mapping.get_vals_from_connect(single_data)
+            vals = self.json_to_data(single_data, 'field_office_disaster')
             fo_disaster = self.create(vals)
             fo_ids.append(fo_disaster.id)
         return fo_ids
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(json, mapping_name)
+        disaster = self.env[self.ODOO_MODEL].search(
+            [('disaster_id', '=', odoo_data['disaster_id'])])
+
+        # Remove old impacts
+        if 'child_disaster_impact_ids' in odoo_data:
+            disaster.child_disaster_impact_ids.unlink()
+        if 'fcp_disaster_impact_ids' in odoo_data:
+            disaster.fcp_disaster_impact_ids.unlink()
+        return odoo_data

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -9,22 +8,17 @@
 #
 ##############################################################################
 from odoo import models, fields, api, _
-from odoo.addons.queue_job.job import job
 
 import logging
 import base64
-import urllib2
+from urllib.request import urlopen
 
 logger = logging.getLogger(__name__)
 
 
 class ChildPictures(models.Model):
-    """ Holds two pictures of a given child
-        - Headshot
-        - Fullshot
-    """
-
     _name = 'compassion.child.pictures'
+    _description = 'Child picture'
     _order = 'date desc, id desc'
 
     ##########################################################################
@@ -60,7 +54,7 @@ class ChildPictures(models.Model):
         and attach the pictures to the last case study.
         """
 
-        pictures = super(ChildPictures, self).create(vals)
+        pictures = super().create(vals)
 
         same_url = pictures._find_same_picture_by_url()
         if same_url:
@@ -140,7 +134,7 @@ class ChildPictures(models.Model):
                     ind = image_split.index('media.ci.org')
                 image_split[ind + 1] = cloudinary
                 url = "/".join(image_split)
-                data = base64.encodestring(urllib2.urlopen(url).read())
+                data = base64.encodebytes(urlopen(url).read())
                 _image_date = picture.child_id.last_photo_date or \
                     fields.Date.today()
                 if type.lower() == 'headshot':
@@ -154,12 +148,3 @@ class ChildPictures(models.Model):
                 continue
 
         return _image_date
-
-    @job
-    def migrate_unlink_old_attachments(self, attachment):
-        datas = attachment.datas
-        if datas and 'Headshot' in attachment.name:
-            self.headshot = datas
-        elif datas:
-            self.fullshot = datas
-        return attachment.unlink()

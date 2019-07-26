@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -13,7 +12,7 @@ import logging
 
 from odoo import models, fields, api
 import base64
-import urllib2
+from urllib.request import urlopen
 from datetime import date
 
 logger = logging.getLogger(__name__)
@@ -25,6 +24,7 @@ class GenericChild(models.AbstractModel):
         - compassion.global.child : available children in global pool
     """
     _name = 'compassion.generic.child'
+    _inherit = ['compassion.mapped.model']
 
     # General Information
     #####################
@@ -106,6 +106,16 @@ class GenericChild(models.AbstractModel):
             child.age = today.year - born.year - \
                 ((today.month, today.day) < (born.month, born.day))
 
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(json, mapping_name)
+
+        # Put firstname in preferred_name if not defined
+        preferred_name = odoo_data.get('preferred_name')
+        if not preferred_name:
+            odoo_data['preferred_name'] = odoo_data.get('firstname')
+        return odoo_data
+
 
 class GlobalChild(models.TransientModel):
     """ Available child in the global childpool
@@ -126,8 +136,6 @@ class GlobalChild(models.TransientModel):
     )
     priority_score = fields.Float(help='How fast the child should be '
                                        'sponsored')
-    correspondent_score = fields.Float(help='Score based on how long the '
-                                            'child is waiting')
     holding_global_partner_id = fields.Many2one(
         'compassion.global.partner', 'Holding global partner'
     )
@@ -141,9 +149,9 @@ class GlobalChild(models.TransientModel):
     def _compute_color(self):
         available = self.filtered(lambda c: c.beneficiary_state == 'Available')
         for child in available:
-            child.color = 6 if child.gender == 'M' else 9
+            child.color = 4 if child.gender == 'M' else 9
         for child in self - available:
-            child.color = 5 if child.gender == 'M' else 2
+            child.color = 7 if child.gender == 'M' else 5
 
     @api.multi
     def _load_image(self, thumb=False, binar=False):
@@ -171,7 +179,7 @@ class GlobalChild(models.TransientModel):
                 url = child.image_url if not thumb else child.thumbnail_url
                 try:
                     child.portrait = base64.encodestring(
-                        urllib2.urlopen(url).read())
+                        urlopen(url).read())
                 except:
                     logger.error('Image cannot be fetched : ' + str(url))
 

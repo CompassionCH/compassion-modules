@@ -1,0 +1,36 @@
+{
+  "name": "advanced_search",
+  "model": "compassion.childpool.search",
+  "mapping": {
+    "BeneficiarySearchRequestList": {
+      "sub_mapping": {
+        "name": "advanced_search data",
+        "model": "compassion.childpool.search",
+        "mapping": {
+          "NumberOfBeneficiaries": "take",
+          "Start": "skip",
+          "SortBy": {
+            "to_json_conversion": "'PriorityScore'"
+          },
+          "Filter": {
+            "field": "search_filter_ids",
+            "sub_mapping": {
+              "name": "Childpool Advanced Search Query",
+              "model": "compassion.query.filter",
+              "mapping": {
+                "Field": {
+                  "field": "field_id.id",
+                  "to_json_conversion": "self.search([('field_id', '=', odoo_value)], limit=1).json_name"
+                },
+                "Operator": {
+                  "field": "operator"
+                },
+                "Value": "value"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

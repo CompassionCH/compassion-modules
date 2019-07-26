@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -53,23 +52,27 @@ class ChildHobby(models.Model):
 class ChristianActivity(models.Model):
     _name = 'child.christian.activity'
     _inherit = 'child.property'
+    _description = 'Child christian activity'
     res_field = 'christian_activity_ids'
 
 
 class PhysicalDisability(models.Model):
     _name = 'child.physical.disability'
     _inherit = 'child.property'
+    _description = 'Child physical disability'
     res_field = 'physical_disability_ids'
 
 
 class ChronicIllness(models.Model):
     _name = 'child.chronic.illness'
     _inherit = 'child.property'
+    _description = 'Child chronic illness'
     res_field = 'chronic_illness_ids'
 
 
 class FutureHope(models.Model):
     _name = 'child.future.hope'
     _inherit = 'child.property'
+    _description = 'Child future hope'
     res_model = 'compassion.child.ble'
     res_field = 'future_hope_ids'

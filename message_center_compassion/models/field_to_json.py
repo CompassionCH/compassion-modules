@@ -8,6 +8,7 @@
 #
 ##############################################################################
 from odoo import models, fields, _
+from odoo.exceptions import UserError
 from odoo.tools import safe_eval
 
 
@@ -43,6 +44,10 @@ class FieldToJson(models.Model):
              "for a matching record given the JSON value. If not activated, "
              "the field won't be used in the conversion."
     )
+    allow_relational_creation = fields.Boolean(
+        help="If set to true, new records will be created if no matching "
+             "records are found with the given JSON values"
+    )
     field_name = fields.Char(related='field_id.name', readonly=True)
     json_name = fields.Char("Json Field Name", required=True, index=True)
     sub_mapping_id = fields.Many2one(
@@ -72,7 +77,15 @@ class FieldToJson(models.Model):
         self.ensure_one()
         res = {self.json_name: odoo_value}
         if self.to_json_conversion:
-            res[self.json_name] = safe_eval(self.to_json_conversion)
+            res[self.json_name] = safe_eval(
+                self.to_json_conversion,
+                locals_dict={'odoo_value': odoo_value, 'self': self},
+                globals_dict={'fields': fields}
+            )
+        elif self.field_id.ttype not in ('boolean', 'float', 'integer',
+                                         'monetary') and not odoo_value:
+            # Don't include null fields
+            return {}
         return res
 
     def from_json(self, json_value):
@@ -81,7 +94,105 @@ class FieldToJson(models.Model):
         :param json_value: JSON representation of the field
         :return: odoo data (dict)
         """
-        res = {self.field_name: json_value}
+        self.ensure_one()
+        # Skip empty values
+        if not json_value and not isinstance(json_value, (bool, int,
+                                                          float)):
+            return {}
+        # Skip invalid data
+        if isinstance(json_value, str) and json_value.lower() in (
+                'null', 'false', 'none', 'other', 'unknown'):
+            return {}
+        converted_value = json_value
+        field_name = self.field_name
         if self.from_json_conversion:
-            res[self.field_name] = safe_eval(self.from_json_conversion)
-        return res
+            # Calls a conversion method defined in mapping
+            converted_value = safe_eval(
+                self.from_json_conversion,
+                locals_dict={'json_value': json_value, 'self': self})
+        if self.relational_field_id:
+            converted_value = self._json_to_relational_value(converted_value)
+            field_name = self.relational_field_id.name
+        return {field_name: converted_value}
+
+    def _json_to_relational_value(self, value):
+        """
+        Converts a received JSON value into valid data for a relational record
+        https://www.odoo.com/documentation/11.0/reference/
+        orm.html#odoo.models.Model.write
+        Example of output:
+        {
+            "partner_id": 12,
+            "follower_ids": [(6, 0, [12, 34, 53])],
+            "my_teacher_ids": [(0, 0, {'name'; 'Emanuel Cino'})]
+        }
+        :param value: JSON value (could be dict, list of dict, or string)
+        :return: odoo value for a relational field
+        """
+        self.ensure_one()
+        field = self.relational_field_id
+        relational_model = self.env[field.relation]
+        if self.search_relational_record:
+            # Lookup for records that match the values received
+            records = relational_model
+            values = value if isinstance(value, list) else [value]
+            for val in values:
+                records |= relational_model.search([
+                    (self.field_name, '=ilike', val)])
+            if records and field.ttype == 'many2one':
+                return records[:1].id
+            elif records:
+                # Replace relations with the found records
+                return [(6, 0, records.ids)]
+
+        if self.allow_relational_creation:
+            # Replace relations with new associated records
+            if field.ttype == 'many2one':
+                # We must create the record and return its id
+                if isinstance(value, dict):
+                    return relational_model.create(value).id
+                else:
+                    return relational_model.create({self.field_name: value}).id
+
+            # In that case we are in many2many or one2many and will replace
+            # relations.
+            orm_vals = [(5, 0, 0)]
+            record_vals = value if isinstance(value, list) else [value]
+            orm_vals.extend([(0, 0, vals) for vals in record_vals
+                             if isinstance(vals, dict)])
+            return orm_vals
+
+        # No records found given the values, we raise the error
+        # to let user verify integrity of the data.
+        raise UserError(_(
+            f"Trying to find a {relational_model._description} "
+            f"that has the following values, but nothing was found: "
+            f"\n\n{value}"))
+
+    def _get_relational_creation_values(self, field_values):
+        """
+        Given a dictionary with JSON field values, will create an ORM
+        list of values that can be used by Odoo to create new relational
+        records.
+        See https://www.odoo.com/documentation/11.0/reference/
+        orm.html#odoo.models.Model.write
+
+        :param field: ir.model.fields record of the relational field
+        :param field_values: dict with JSON values
+        :return: list of tuples for ORM creation i.e.
+        [(0, 0, record_values)]
+        """
+        record_values = []
+        if isinstance(field_values, dict):
+            nb_records = 1
+            for field_name, field_val in field_values.items():
+                if isinstance(field_val, list):
+                    nb_records = max(nb_records, len(field_val))
+                for i in range(0, nb_records):
+                    record_values.append({
+                        field_name: field_val[i]
+                        if isinstance(field_val, list) and
+                        len(field_val) >= i else field_val
+                        for field_name, field_val in field_values.items()
+                    })
+        return [(0, 0, values) for values in record_values]

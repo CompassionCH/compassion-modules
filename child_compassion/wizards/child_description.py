@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -122,8 +121,8 @@ class ChildDescription(models.TransientModel):
         """ This will automatically generate all descriptions and save them
         in the related child.
         """
-        generator = super(ChildDescription, self).create(vals)
-        for lang, field in self._supported_languages().iteritems():
+        generator = super().create(vals)
+        for lang, field in self._supported_languages().items():
             desc = generator.with_context(lang=lang)._generate_translation()
             generator.child_id.write({field: desc})
         return generator

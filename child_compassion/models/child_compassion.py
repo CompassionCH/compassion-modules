@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
@@ -14,11 +13,8 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
-from odoo.addons.advanced_translation.models.ir_advanced_translation \
-    import setlocale
 from datetime import datetime, date
 
-from ..mappings.compassion_child_mapping import CompassionChildMapping
 from .compassion_hold import HoldType
 
 from odoo.exceptions import UserError
@@ -55,13 +51,22 @@ class CompassionChild(models.Model):
     ], track_visibility='onchange', readonly=True)
     last_review_date = fields.Date(track_visibility='onchange', readonly=True)
     last_photo_date = fields.Date()
-    type = fields.Selection('_get_ctype', required=True, default='CDSP')
+    type = fields.Selection([('CDSP', 'CDSP'), ('LDP', 'LDP')],
+                            required=True, default='CDSP')
     date = fields.Date('Allocation date')
     completion_date = fields.Date(readonly=True)
     completion_date_change_reason = fields.Char(readonly=True)
     state = fields.Selection(
-        '_get_child_states', readonly=True, required=True,
-        track_visibility='onchange', default='N',)
+        [
+            ('W', 'Waiting Hold'),
+            ('N', 'Consigned'),
+            ('I', 'On Internet'),
+            ('P', 'Sponsored'),
+            ('F', 'Departed'),
+            ('R', 'Released'),
+            ('S', 'For SMS'),
+        ], readonly=True, required=True,
+        track_visibility='onchange', default='W',)
     is_available = fields.Boolean(compute='_compute_available')
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
@@ -272,22 +277,10 @@ class CompassionChild(models.Model):
         index=True,
         default=lambda self: self.env.user.company_id.id
     )
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-
-    @api.model
-    def _get_child_states(self):
-        return [
-            ('W', _('Waiting Hold')),
-            ('N', _('Consigned')),
-            ('I', _('On Internet')),
-            ('P', _('Sponsored')),
-            ('F', _('Departed')),
-            ('R', _('Released')),
-            ('S', _('For SMS')),
-        ]
-
     def _compute_available(self):
         for child in self:
             child.is_available = child.state in self._available_states()
@@ -305,20 +298,14 @@ class CompassionChild(models.Model):
                 child.exit_reason = exit_details[0].request_reason
 
     @api.model
-    def _get_ctype(self):
-        return [('CDSP', 'CDSP'), ('LDP', 'LDP')]
-
-    @api.model
     def _get_months(self):
         return self.env['connect.month'].get_months_selection()[12:]
 
     @api.depends('birthdate')
     def _compute_birthday_month(self):
-        with setlocale('en_US'):
-            for child in self.filtered('birthdate'):
-                birthday = fields.Date.from_string(child.birthdate)
-                child.birthday_month = birthday.strftime('%B')
-                child.birthday_dm = birthday.strftime('%m-%d')
+        for child in self.filtered('birthdate'):
+            child.birthday_month = child.get_date('birthdate', '%B')
+            child.birthday_dm = child.get_date('birthdate', '%m-%d')
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -334,9 +321,9 @@ class CompassionChild(models.Model):
         if child:
             child.write(vals)
         else:
-            child = super(CompassionChild, self).create(vals)
+            child = super().create(vals)
             # directly fetch picture to have it before get_infos
-            child.update_child_pictures()
+            child.with_delay().update_child_pictures()
         return child
 
     @api.multi
@@ -344,7 +331,7 @@ class CompassionChild(models.Model):
         holds = self.mapped('hold_id').filtered(
             lambda h: h.state == 'active' and
             h.type != HoldType.NO_MONEY_HOLD.value)
-        res = super(CompassionChild, self).unlink()
+        res = super().unlink()
         holds.release_hold()
         return res
 
@@ -354,6 +341,28 @@ class CompassionChild(models.Model):
     def unlink_job(self):
         """ Small wrapper to unlink only released children. """
         return self.filtered(lambda c: c.state == 'R').unlink()
+
+    @api.multi
+    def write(self, vals):
+        result = super().write(vals)
+
+        if self.state == 'W' and self.hold_id and self.hold_id.hold_id:
+            self.child_consigned()
+        elif self.state == 'N' and self.sponsor_id:
+            self.child_sponsored()
+        elif self.state == 'P' and self.hold_id:
+            self.child_waiting_hold()
+        elif self.state == 'P' and not self.hold_id and (
+            not self.lifecycle_ids or 'Exit' not in self.lifecycle_ids[0].type
+        ):
+            self.child_released()
+            self.child_departed()
+        elif self.state == 'R' and self.hold_id:
+            self.child_waiting_hold()
+        elif self.state == 'R' and self.lifecycle_ids and 'Exit' in \
+                self.lifecycle_ids[0].type:
+            self.child_departed()
+        return result
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -370,21 +379,19 @@ class CompassionChild(models.Model):
     def major_revision(self, commkit_data):
         """ Called when a MajorRevision Kit is received. """
         child_ids = list()
-        child_mapping = CompassionChildMapping(self.env)
         for child_data in commkit_data.get('BeneficiaryMajorRevisionList',
                                            [commkit_data]):
             global_id = child_data.get('Beneficiary_GlobalID')
             child = self.search([('global_id', '=', global_id)])
             if child:
                 child_ids.append(child.id)
-                child._major_revision(child_mapping.get_vals_from_connect(
+                child._major_revision(self.json_to_data(
                     child_data))
         return child_ids
 
     @api.model
     def new_kit(self, commkit_data):
         """ New child kit is received. """
-        child_mapping = CompassionChildMapping(self.env)
         children = self
         for child_data in commkit_data.get('BeneficiaryResponseList',
                                            [commkit_data]):
@@ -392,7 +399,7 @@ class CompassionChild(models.Model):
             child = self.search([('global_id', '=', global_id)])
             if child:
                 children += child
-                child.write(child_mapping.get_vals_from_connect(child_data))
+                child.write(self.json_to_data(child_data))
         children.update_child_pictures()
         return children.ids
 
@@ -422,6 +429,29 @@ class CompassionChild(models.Model):
             }
             self.education_level = grade_mapping.get(self.us_grade_level)
 
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        data = super().json_to_data(json, mapping_name)
+        child = self.search([
+            ('global_id', '=', data.get('global_id'))
+        ])
+        # Remove old revision fields before creating new ones
+        revised_values = data.get('revised_value_ids')
+        if revised_values:
+            child.revised_value_ids.unlink()
+
+        # Update household
+        household_data = data.pop('household_id')
+        household_id = household_data.get('household_id')
+        household = self.env['compassion.household'].search([
+            ('household_id', '=', household_id)
+        ])
+        if household:
+            household.write(household_data)
+        else:
+            data['household_id'] = household.create(household_data).id
+        return data
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -445,6 +475,8 @@ class CompassionChild(models.Model):
         return True
 
     @api.multi
+    @job
+    @related_action('related_action_child_compassion')
     def update_child_pictures(self):
         """
         Check if there is a new picture if all conditions are satisfied:
@@ -473,7 +505,7 @@ class CompassionChild(models.Model):
     ###################
     @api.multi
     def depart(self):
-        self.signal_workflow('release')
+        self.child_released()
 
     @api.multi
     def reinstatement(self):
@@ -520,14 +552,14 @@ class CompassionChild(models.Model):
         """Called on child allocation."""
         self.write({'state': 'N'})
         # Cancel planned deletion
-        jobs = self.env['queue.job'].search([
+        jobs = self.env['queue.job'].sudo().search([
             ('name', '=', 'Job for deleting released children.'),
             ('func_string', 'like', self.ids),
             ('state', '=', 'enqueued')
         ])
         jobs.button_done()
         jobs.unlink()
-        self.with_context(async_mode=False).get_infos()
+        self.get_infos()
         return True
 
     @api.multi

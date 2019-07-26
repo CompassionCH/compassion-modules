@@ -1,0 +1,40 @@
+{
+  "name": "Field Office",
+  "model": "compassion.field.office",
+  "mapping": {
+    "BeneficiaryHighRisk_Name": {
+      "field": "high_risk_ids.name",
+      "search_relational_record": true
+    },
+    "ActiveDate": "date_start",
+    "AlternateAddressCountry": "country",
+    "Country": "country_id.name",
+    "CountryInformationContent": "country_information",
+    "Currency": "currency",
+    "FieldOfficeDirector": "country_director",
+    "FieldOffice_ID": "field_office_id",
+    "IssueResolutionEmailAddress": "issue_email",
+    "LanguagesTranslated": {
+      "field": "translated_language_ids.name",
+      "search_relational_record": true
+    },
+    "FieldOffice_Name": "name",
+    "NumberOfFieldOfficeStaff": "staff_number",
+    "Phone": "phone_number",
+    "PrimaryAddressCity": "city",
+    "PrimaryAddressCountryDivision": "province",
+    "PrimaryAddressPostalCode": "zip_code",
+    "PrimaryAddressStreet": "street",
+    "PrimaryLanguage": {
+      "field": "primary_language_id.name",
+      "search_relational_record": true
+    },
+    "RegionName": "region",
+    "SocialMedia": "social_media_site",
+    "SpokenLanguage": {
+      "field": "spoken_language_ids.name",
+      "search_relational_record": true
+    },
+    "Website": "website"
+  }
+}

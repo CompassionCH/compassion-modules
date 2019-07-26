@@ -20,6 +20,7 @@ from odoo import api, models, fields, _
 LOCALE_LOCK = threading.Lock()
 
 
+# TODO Remove this and replace (maybe with Babel package)
 @contextmanager
 def setlocale(name):
     with LOCALE_LOCK:

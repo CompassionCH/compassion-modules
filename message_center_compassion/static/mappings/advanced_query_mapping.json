@@ -4,14 +4,11 @@
   "mapping": {
     "Field": {
       "field": "field_id.id",
-      "to_json_conversion": "field_mapping = self.search([('field_id', '=', odoo_value)], limit=1) \nreturn field_mapping.json_name"
+      "to_json_conversion": "self.search([('field_id', '=', odoo_value)], limit=1).json_name"
     },
     "Operator": {
       "field": "operator"
     },
-    "Value": {
-      "field": "value",
-      "to_json_conversion": "return odoo_value.split(';')"
-    }
+    "Value": "value"
   }
 }

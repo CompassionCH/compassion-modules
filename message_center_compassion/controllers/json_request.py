@@ -100,7 +100,7 @@ Sample Unsuccessful Response
             status = error.get('ErrorCode')
             response = error
         if result is not None:
-            status = result.pop('code')
+            status = result.pop('code', 200)
             response = result
 
         mime = 'application/json'

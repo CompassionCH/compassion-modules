@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -19,7 +18,7 @@ class TestWebservice(common.TransactionCase):
     """ Test Project Webservices """
 
     def setUp(self):
-        super(TestWebservice, self).setUp()
+        super().setUp()
         self.project_id = self._create_project("TZ112", "Project 1")
         self.child_id = self._create_child("TZ1120316", "Child 1")
 

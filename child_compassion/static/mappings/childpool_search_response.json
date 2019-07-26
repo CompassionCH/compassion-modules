@@ -1,0 +1,37 @@
+{
+  "name": "Childpool Search Response",
+  "model": "compassion.global.child",
+  "mapping": {
+    "Age": "age",
+    "Beneficiary_LocalID": "local_id",
+    "FullName": "name",
+    "FullBodyImageURL": "image_url",
+    "PriorityScore": "priority_score",
+    "BeneficiaryState": "beneficiary_state",
+    "ICP_ID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true,
+      "allow_relational_creation": true
+    },
+    "BirthDate": "birthdate",
+    "Gender": {
+      "field": "gender",
+      "from_json_conversion": "json_value and json_value[0]"
+    },
+    "Beneficiary_GlobalID": "global_id",
+    "HoldingGlobalPartnerID": {
+      "field": "holding_global_partner_id.code",
+      "search_relational_record": true
+    },
+    "HoldExpirationDate": "hold_expiration_date",
+    "PreferredName": "preferred_name",
+    "IsInHIVAffectedArea": "is_area_hiv_affected",
+    "IsSpecialNeeds": "is_special_needs",
+    "FirstName": "firstname",
+    "LastName": "lastname",
+    "IsOrphan": "is_orphan",
+    "WaitingSinceDate": "unsponsored_since",
+    "MinDaysWaiting": "waiting_days",
+    "SourceCode": "source_code"
+  }
+}

@@ -33,7 +33,7 @@
                                 <button name="filter" string="Apply Filter" type="object" attrs="{'invisible': [('nb_selected', '=', 0)]}" style="margin-left: 5px"/>
                             </div>
                             <notebook>
-                                <page String="Common filters">
+                                <page string="Common filters">
                                     <group col="4">
                                         <group>
                                             <label for="state_chooser" string="Status selection"/>
@@ -249,7 +249,6 @@
                     <group>
                         <field name="unsponsored_since"/>
                         <field name="priority_score"/>
-                        <field name="correspondent_score"/>
                         <field name="waiting_days"/>
                     </group>
                     <group>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -20,26 +19,18 @@ class ChildHoldWizard(models.TransientModel):
     _name = 'child.hold.wizard'
     _inherit = 'compassion.abstract.hold'
 
-    return_action = fields.Selection(
-        'get_action_selection', required=True, default='view_children')
-
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    @api.model
-    def get_action_selection(self):
-        return [
-            ('view_children', _('View Children')),
-            ('view_holds', _('View Holds')),
-            ('search', _('Search for other children')),
-        ]
+    return_action = fields.Selection([
+        ('view_children', 'View Children'),
+        ('view_holds', 'View Holds'),
+        ('search', 'Search for other children'),
+    ], required=True, default='view_children')
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
     def get_hold_values(self):
-        hold_vals = super(ChildHoldWizard, self).get_hold_values()
+        hold_vals = super().get_hold_values()
         if self.channel in ('ambassador', 'event'):
             hold_vals['secondary_owner'] = self.ambassador.name
         return hold_vals
@@ -53,9 +44,9 @@ class ChildHoldWizard(models.TransientModel):
         child_search = self.env['compassion.childpool.search'].browse(
             self.env.context.get('active_id')).global_child_ids
         chunk_size = 10
-        for i in xrange(0, len(child_search), chunk_size):
+        for i in range(0, len(child_search), chunk_size):
             _logger.info(
-                "Processing chunk {} for sending hold requests".format(i))
+                f"Processing chunk {i} for sending hold requests")
             try:
                 messages = self.env['gmc.message']
                 for child in child_search[i:i + chunk_size]:

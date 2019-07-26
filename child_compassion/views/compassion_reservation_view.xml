@@ -61,8 +61,8 @@
         <field name="name">compassion.reservation.tree</field>
         <field name="model">compassion.reservation</field>
         <field name="arch" type="xml">
-            <tree string="Reservations"
-                  colors="blue:state == 'draft';black:state == 'active';grey:state == 'expired'">
+            <tree decoration-primary="state=='draft'"
+                  decoration-muted="state=='expired'">
                 <field name="reservation_type" />
                 <field name="reservation_id" />
                 <field name="child_id" />

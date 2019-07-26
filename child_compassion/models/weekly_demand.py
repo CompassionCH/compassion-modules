@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -14,6 +13,7 @@ from datetime import datetime, timedelta
 
 class WeeklyDemand(models.Model):
     _name = 'demand.weekly.demand'
+    _inherit = 'compassion.mapped.model'
     _description = 'Weekly Demand'
     _rec_name = 'week_start_date'
     _order = 'week_start_date asc, id desc'

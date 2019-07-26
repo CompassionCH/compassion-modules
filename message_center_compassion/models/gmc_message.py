@@ -256,21 +256,20 @@ class GmcMessage(models.Model):
         if hasattr(data_objects, 'on_send_to_connect'):
             data_objects.on_send_to_connect()
 
-        object_mapping = action.mapping_id
         if action.connect_outgoing_wrapper:
             # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             if action.batch_send:
                 # Send multiple objects in a single message to GMC
                 # make batch of 20 messages to avoid timeouts
                 split = 20
-                nb_batches = len(data_objects) / split
+                nb_batches = len(data_objects) // split
                 remaining = (len(data_objects) % split) and 1
                 for j in range(0, nb_batches + remaining):
                     i = j*split
                     message_data = {action.connect_outgoing_wrapper: list()}
                     for data_object in data_objects[i:i+split]:
                         message_data[action.connect_outgoing_wrapper].append(
-                            object_mapping.data_to_json(data_object)
+                            data_object.data_to_json(action.mapping_id.name)
                         )
                     self[i:i+split]._send_message(message_data)
             else:
@@ -278,15 +277,15 @@ class GmcMessage(models.Model):
                 message_data = dict()
                 for i in range(0, len(data_objects)):
                     message_data[action.connect_outgoing_wrapper] = [
-                        object_mapping.data_to_json(data_objects[i])
+                        data_objects[i].data_to_json(action.mapping_id.name)
                     ]
                     self[i]._send_message(message_data)
 
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
-                message_data = object_mapping.data_to_json(
-                    data_objects[i])
+                message_data = data_objects[i].data_to_json(
+                    action.mapping_id.name)
                 self[i]._send_message(message_data)
 
     def _send_message(self, message_data):
@@ -304,9 +303,12 @@ class GmcMessage(models.Model):
         # Extract the Answer
         results = onramp_answer.get('content', {})
         answer_wrapper = action.connect_answer_wrapper
-        if answer_wrapper:
-            for wrapper in answer_wrapper.split('.'):
-                results = results.get(wrapper, results)
+        try:
+            if answer_wrapper:
+                for wrapper in answer_wrapper.split('.'):
+                    results = results.get(wrapper, results)
+        except (AttributeError, KeyError):
+            logger.error("Unexpected answer: %s", results)
         if not results:
             self._answer_failure(onramp_answer)
             return
@@ -318,9 +320,6 @@ class GmcMessage(models.Model):
 
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
-
-            object_mapping = action.mapping_id
-
             for i in range(0, len(results)):
                 result = results[i]
                 content_sent = message_data.get(
@@ -335,21 +334,24 @@ class GmcMessage(models.Model):
                 if isinstance(result, dict) and result.get('Code',
                                                            2000) == 2000:
                     # Individual message was successfully processed
-                    answer_vals = [object_mapping.json_to_data(
-                        result)]
+                    answer_vals = [data_objects[i].json_to_data(
+                        result, action.mapping_id.name)]
                     try:
+                        # Commit state before processing the success
+                        self.env.cr.commit()  # pylint:disable=invalid-commit
                         getattr(data_objects[i], action.success_method)(
                             *answer_vals)
                         mess_vals['state'] = 'success'
                         mess_vals['answer'] = json.dumps(
                             result, indent=4, sort_keys=True)
                     except Exception as e:
+                        self.env.cr.rollback()
                         if action.failure_method:
                             getattr(data_objects[i], action.failure_method)(
                                 result)
                         mess_vals.update({
                             'state': 'failure',
-                            'failure_reason': e.message,
+                            'failure_reason': e,
                             'answer': json.dumps(
                                 result, indent=4, sort_keys=True)
                         })
@@ -370,12 +372,11 @@ class GmcMessage(models.Model):
                     })
                 self[i].write(mess_vals)
         else:
-            if action.failure_method:
-                for i in range(0, len(results)):
-                    result = results[i]
+            for i in range(0, len(results)):
+                result = results[i]
+                if action.failure_method:
                     getattr(data_objects[i], action.failure_method)(result)
-
-            self._answer_failure(onramp_answer, results)
+                self[i]._answer_failure(onramp_answer, result)
 
     def _answer_failure(self, onramp_answer, results=None):
         """ Write error message when onramp answer is not a success.
@@ -387,13 +388,12 @@ class GmcMessage(models.Model):
             error_message = '\n'.join(
                 map(lambda m: m.get('Message', ''), results))
         else:
-            fail = onramp_answer.get('content', {
+            error_message = onramp_answer.get('content', {
                 'Error': onramp_answer.get('Error', 'None')})
-            error_message = str(fail.get('Error', 'None'))
         self.write({
             'state': 'failure',
             'failure_reason':
-                f"[{error_code}] {error_message or 'None'}",
+                f"[{error_code}] {error_message}",
             'answer': json.dumps(results, indent=4, sort_keys=True)
         })
 

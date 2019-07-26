@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -11,13 +10,11 @@
 
 
 from odoo import models, fields, api
-from odoo.addons.message_center_compassion.mappings \
-    import base_mapping as mapping
 
 
 class ProjectLifecycle(models.Model):
     _name = 'compassion.project.ile'
-    _inherit = 'translatable.model'
+    _inherit = ['translatable.model', 'compassion.mapped.model']
     _description = 'Project lifecycle event'
     _order = 'date desc, id desc'
 
@@ -25,7 +22,11 @@ class ProjectLifecycle(models.Model):
         'compassion.project', required=True, ondelete='cascade',
         readonly=True)
     date = fields.Date(readonly=True, default=fields.Date.today)
-    type = fields.Selection('_get_type', readonly=True)
+    type = fields.Selection([
+        ('Suspension', 'Suspension'),
+        ('Reactivation', 'Reactivation'),
+        ('Transition', 'Transition'),
+    ], readonly=True)
     action_plan = fields.Text(readonly=True)
 
     # Reactivation
@@ -86,14 +87,6 @@ class ProjectLifecycle(models.Model):
     ]
 
     @api.model
-    def _get_type(self):
-        return [
-            ('Suspension', 'Suspension'),
-            ('Reactivation', 'Reactivation'),
-            ('Transition', 'Transition'),
-        ]
-
-    @api.model
     def _get_project_status(self):
         return [
             ('Active', 'Active'),
@@ -114,7 +107,7 @@ class ProjectLifecycle(models.Model):
         if lifecycle:
             lifecycle.write(vals)
         else:
-            lifecycle = super(ProjectLifecycle, self).create(vals)
+            lifecycle = super().create(vals)
         if lifecycle.type == 'Suspension':
             if lifecycle.hold_cdsp_funds and not fund_suspended:
                 project.suspend_funds()
@@ -133,11 +126,6 @@ class ProjectLifecycle(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        project_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'new_project_lifecyle')
-
         lifecycle_ids = list()
         for single_data in commkit_data.get('ICPLifecycleEventList',
                                             [commkit_data]):
@@ -146,7 +134,7 @@ class ProjectLifecycle(models.Model):
             ])
             if not project:
                 project.create({'fcp_id': single_data['ICP_ID']})
-            vals = project_mapping.get_vals_from_connect(single_data)
+            vals = self.json_to_data(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
 
@@ -154,3 +142,17 @@ class ProjectLifecycle(models.Model):
             lifecycle.project_id.last_update_date = fields.Date.today()
 
         return lifecycle_ids
+
+    @api.multi
+    def data_to_json(self, mapped_name=None):
+        odoo_data = super().data_to_json(mapped_name)
+        status = odoo_data.get('project_status')
+        if status:
+            status_mapping = {
+                'Active': 'A',
+                'Phase Out': 'P',
+                'Suspended': 'S',
+                'Transitioned': 'T',
+            }
+            odoo_data['project_status'] = status_mapping[status]
+        return odoo_data

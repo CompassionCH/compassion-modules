@@ -10,7 +10,6 @@
 import logging
 import json
 import requests
-import base64
 from datetime import datetime, timedelta
 
 from odoo import _
@@ -80,18 +79,14 @@ class OnrampConnector(object):
         headers = {'Content-type': 'application/json'}
         url = self._connect_url + service_name
         self.log_message(message_type, url, headers, body, self._session)
-        if params is None:
-            params = dict()
-        param_string = self._encode_params(params)
         if message_type == 'GET':
-            r = self._session.get(
-                url, headers=headers, params=param_string)
+            r = self._session.get(url, headers=headers, params=params)
         elif message_type == 'POST':
-            r = self._session.post(
-                url, headers=headers, json=body, params=param_string)
+            r = self._session.post(url, headers=headers, json=body,
+                                   params=params)
         elif message_type == 'PUT':
-            r = self._session.put(
-                url, headers=headers, json=body, params=param_string)
+            r = self._session.put(url, headers=headers, json=body,
+                                  params=params)
         else:
             return {
                 'code': 404,
@@ -112,22 +107,6 @@ class OnrampConnector(object):
             result['content'] = r.text
         return result
 
-    def _encode_params(self, params):
-        """
-        Takes a dictionary and encode it for URL parameters
-        :param params: dictionary
-        :return: string
-        """
-        formatted_params = self._session.params.copy()
-        for key, value in params.items():
-            if isinstance(value, list):
-                value = ','.join([str(v) for v in value])
-            formatted_params[key] = value
-
-        string_returned = u'&'.join(u'%s=%s' % (k, v) for k, v in
-                                    formatted_params.items())
-        return string_returned.encode('utf-8')
-
     def _retrieve_token(self):
         """ Retrieves the token from Connect. """
         self._token_time = datetime.now()
@@ -142,24 +121,19 @@ class OnrampConnector(object):
         client = config.get('connect_client')
         secret = config.get('connect_secret')
         provider = config.get('connect_token_server')
-        endpoint = config.get('connect_token_endpoint')
-        if not client or not secret or not provider or not endpoint:
+        if not client or not secret or not provider:
             raise UserError(_(
                 'Please give connect_client, connect_secret, '
-                'connect_token_server and connect_token_endpoint '
-                'in your Odoo configuration file.'
+                'connect_token_server in your Odoo configuration file.'
             ))
-        api_client_secret = base64.b64encode(
-            "{0}:{1}".format(client, secret))
         params_post = 'grant_type=client_credentials&scope=read+write'
         header_post = {
-            "Authorization": "Basic " + api_client_secret,
             "Content-type": "application/x-www-form-urlencoded",
-            "Content-Length": 46,
+            "Content-Length": "46",
             "Expect": "100-continue",
             "Connection": "Keep-Alive"}
-        response = requests.post(provider, params=params_post,
-                                 headers=header_post)
+        response = requests.post(provider, data=params_post,
+                                 auth=(client, secret), headers=header_post)
         try:
             token = response.json()
             return {

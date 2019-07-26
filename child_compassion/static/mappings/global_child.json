@@ -1,0 +1,55 @@
+{
+  "name": "GlobalChildMapping",
+  "model": "compassion.global.child",
+  "mapping": {
+    "LocalBeneficiaryId": "local_id",
+    "Age": "age",
+    "BeneficiaryState": "beneficiary_state",
+    "BeneficiaryStatus": "beneficiary_state",
+    "Beneficiary_Gender": "gender",
+    "Beneficiary_GlobalID": "global_id",
+    "Beneficiary_LocalID": "local_id",
+    "Birthdate": "birthdate",
+    "CorrespondenceLanguage": {
+      "field": "correspondence_language_id.name",
+      "search_relational_record": true
+    },
+    "FirstName": "firstname",
+    "FullBodyImageURL": "image_url",
+    "FullName": "name",
+    "Gender": "gender",
+    "GlobalId": "global_id",
+    "HoldExpirationDate": "hold_expiration_date",
+    "HoldingGlobalPartner": {
+      "field": "holding_global_partner_id.name",
+      "search_relational_record": true
+    },
+    "HoldingGlobalPartnerID": {
+      "field": "holding_global_partner_id.code",
+      "search_relational_record": true
+    },
+    "ICPID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true,
+      "allow_relational_creation": true
+    },
+    "ICP_ID": {
+      "field": "project_id.fcp_id",
+      "search_relational_record": true,
+      "allow_relational_creation": true
+    },
+    "IsHivAffectedArea": "is_area_hiv_affected",
+    "IsInHIVAffectedArea": "is_area_hiv_affected",
+    "IsOrphan": "is_orphan",
+    "IsSpecialNeeds": "is_special_needs",
+    "LastName": "lastname",
+    "LocalNumber": "local_id",
+    "MinDaysWaiting": "waiting_days",
+    "PreferredName": "preferred_name",
+    "PriorityScore": "priority_score",
+    "SourceCode": "source_code",
+    "SponsorshipStatus": "sponsorship_status",
+    "SponsoredStatus": "sponsorship_status",
+    "WaitingSinceDate": "unsponsored_since"
+  }
+}

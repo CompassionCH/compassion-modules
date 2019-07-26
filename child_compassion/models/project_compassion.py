@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -9,13 +8,10 @@
 #
 ##############################################################################
 
+import requests
 import logging
 from datetime import datetime, timedelta
-from pytz import timezone
-import sys
-
-
-from ..mappings.icp_mapping import ICPMapping
+import re
 
 from odoo import models, fields, api, tools, _
 from odoo.exceptions import UserError
@@ -27,16 +23,16 @@ logger = logging.getLogger(__name__)
 
 try:
     from timezonefinder import TimezoneFinder
-    import requests
+    from pytz import timezone
 except (ImportError, IOError) as err:
-    logger.debug(err)
+    logger.warning("Please install timezonefinder and pytz")
 
 
 class CompassionProject(models.Model):
     """ A compassion project """
     _name = 'compassion.project'
     _rec_name = 'fcp_id'
-    _inherit = ['mail.thread', 'translatable.model']
+    _inherit = ['mail.thread', 'translatable.model', 'compassion.mapped.model']
     _description = "Frontline Church Partner"
 
     ##########################################################################
@@ -126,7 +122,11 @@ class CompassionProject(models.Model):
     utility_ids = fields.Many2many(
         'fcp.church.utility', string='Church utilities', readonly=True
     )
-    electrical_power = fields.Selection('_get_electrical_power', readonly=True)
+    electrical_power = fields.Selection([
+        ('Not Available', 'Not Available'),
+        ('Available Sometimes', 'Available Sometimes'),
+        ('Available Most Of The Time', 'Available Most of the Time'),
+    ], readonly=True)
 
     # FCP Activities
     ################
@@ -256,26 +256,24 @@ class CompassionProject(models.Model):
         'fcp.disaster.impact', 'project_id', 'FCP Disaster Impacts',
         oldname='icp_disaster_impact_ids'
     )
-    current_weather = fields.Selection(
-        [
-            ('Clear', 'Clear'),
-            ('Clouds', 'Clouds'),
-            ('Rain', 'Rain'),
-            ('Storm', 'Storm'),
-            ('Mist', 'Mist'),
-            ('Thunderstorm', 'Thunderstorm'),
-            ('Haze', 'Haze'),
-            ('Drizzle', 'Drizzle'),
-            ('Snow', 'Snow'),
-            ('Smoke', 'Smoke'),
-            ('Dust', 'Dust'),
-            ('Fog', 'Fog'),
-            ('Sand', 'Sand'),
-            ('Ash', 'Ash'),
-            ('Squall', 'Squall'),
-            ('Tornado', 'Tornado'),
-        ]
-    )
+    current_weather = fields.Selection([
+        ('Clear', 'Clear'),
+        ('Clouds', 'Clouds'),
+        ('Rain', 'Rain'),
+        ('Storm', 'Storm'),
+        ('Mist', 'Mist'),
+        ('Thunderstorm', 'Thunderstorm'),
+        ('Haze', 'Haze'),
+        ('Drizzle', 'Drizzle'),
+        ('Snow', 'Snow'),
+        ('Smoke', 'Smoke'),
+        ('Dust', 'Dust'),
+        ('Fog', 'Fog'),
+        ('Sand', 'Sand'),
+        ('Ash', 'Ash'),
+        ('Squall', 'Squall'),
+        ('Tornado', 'Tornado'),
+    ])
     current_temperature = fields.Float()
     last_weather_refresh_date = fields.Datetime()
 
@@ -290,12 +288,6 @@ class CompassionProject(models.Model):
     first_scheduled_letter = fields.Selection('_get_months', readonly=True)
     second_scheduled_letter = fields.Selection('_get_months', readonly=True)
 
-    # Project needs
-    ###############
-    project_need_ids = fields.One2many(
-        'compassion.project.need', 'project_id', 'Project needs', readonly=True
-    )
-
     # Project state
     ###############
     lifecycle_ids = fields.One2many(
@@ -304,11 +296,15 @@ class CompassionProject(models.Model):
     )
     suspension = fields.Selection([
         ('suspended', 'Suspended'),
-        ('fund-suspended', 'Suspended & fund retained')], 'Suspension',
-        compute='_compute_suspension_state', store=True,
+        ('fund-suspended', 'Suspended & fund retained')
+    ], 'Suspension', compute='_compute_suspension_state', store=True,
         track_visibility='onchange')
-    status = fields.Selection(
-        '_get_state', track_visibility='onchange', default='A', readonly=True)
+    status = fields.Selection([
+        ('A', _('Active')),
+        ('P', _('Phase-out')),
+        ('T', _('Terminated')),
+        ('S', _('Suspended')),
+    ], track_visibility='onchange', default='A', readonly=True)
     last_reviewed_date = fields.Date(
         'Last reviewed date', track_visibility='onchange', readonly=True,
         oldname="status_date")
@@ -349,15 +345,6 @@ class CompassionProject(models.Model):
                     last_info.hold_cdsp_funds else 'suspended'
             elif last_info.type == 'Reactivation':
                 project.suspension = False
-
-    @api.model
-    def _get_state(self):
-        return [
-            ('A', _('Active')),
-            ('P', _('Phase-out')),
-            ('T', _('Terminated')),
-            ('S', _('Suspended')),
-        ]
 
     @api.model
     def _get_materials(self):
@@ -404,20 +391,12 @@ class CompassionProject(models.Model):
                 income = project.monthly_income / project.usd.rate
             project.chf_income = income
 
-    @api.model
-    def _get_electrical_power(self):
-        return [
-            ('Not Available', 'Not Available'),
-            ('Available Sometimes', 'Available Sometimes'),
-            ('Available Most Of The Time', 'Available Most of the Time'),
-        ]
-
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
-        project = super(CompassionProject, self).create(vals)
+        project = super().create(vals)
         project.with_context(async_mode=True).update_informations()
         return project
 
@@ -477,7 +456,7 @@ class CompassionProject(models.Model):
                 project.last_weather_refresh_date = fields.Datetime.now()
 
     @api.multi
-    def get_activities(self, field, max_int=sys.maxint):
+    def get_activities(self, field, max_int=float("inf")):
         all_activities = (
             self.mapped(field + '_babies_ids') +
             self.mapped(field + '_kids_ids') +
@@ -497,19 +476,51 @@ class CompassionProject(models.Model):
     @api.model
     def new_kit(self, commkit_data):
         """ New project kit is received. """
-        project_mapping = ICPMapping(self.env)
         projects = self
         for project_data in commkit_data.get('ICPResponseList',
                                              [commkit_data]):
             fcp_id = project_data.get('ICP_ID')
             project = self.search([('fcp_id', '=', fcp_id)])
-            vals = project_mapping.get_vals_from_connect(project_data)
+            vals = self.json_to_data(project_data)
             if project:
                 projects += project
                 project.write(vals)
             else:
                 projects += self.create(vals)
         return projects.ids
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(json, mapping_name)
+        status = odoo_data.get('status')
+        if status:
+            status_mapping = {
+                'Active': 'A',
+                'Phase Out': 'P',
+                'Suspended': 'S',
+                'Transitioned': 'T',
+            }
+            odoo_data['status'] = status_mapping[status]
+
+        for key, val in odoo_data.items():
+            if isinstance(val, str) and val.lower() in (
+                    'null', 'false', 'none', 'other', 'unknown'):
+                odoo_data[key] = False
+
+        monthly_income = odoo_data.get('monthly_income')
+        if monthly_income:
+            monthly_income = monthly_income.replace(',', '')
+            # Replace all but last dot
+            monthly_income = re.sub(r"\.(?=[^.]*\.)", "", monthly_income)
+            # Replace any alpha character
+            monthly_income = re.sub(r'[a-zA-Z$ ]', "", monthly_income)
+            try:
+                float(monthly_income)
+                odoo_data['monthly_income'] = monthly_income
+            except ValueError:
+                # Weird value received, we prefer to ignore it.
+                del odoo_data['monthly_income']
+        return odoo_data
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

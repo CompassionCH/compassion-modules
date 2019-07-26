@@ -15,6 +15,7 @@
 # sale-workflow https://github.com/OCA/sale-workflow branchname
 queue
 bank-payment
+web
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
 # Uncomment when needed
 # connector-telephony
@@ -24,7 +25,6 @@ compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
 # partner-contact
 # report-print-send
 # server-tools
-# web
 # website-cms
 # website
 # social

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -29,61 +28,38 @@ class AvailabilitySettings(models.TransientModel):
     sub_child_hold_duration = fields.Integer(help='In Days')
 
     @api.multi
-    def set_consignment_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+    def set_values(self):
+        config = self.env['ir.config_parameter']
+        config.set_param(
             'child_compassion.consignment_hold_duration',
             str(self.consignment_hold_duration))
-
-    @api.multi
-    def set_e_commerce_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.e_commerce_hold_duration',
             str(self.e_commerce_hold_duration))
-
-    @api.multi
-    def set_no_money_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.no_money_hold_duration',
             str(self.no_money_hold_duration))
-
-    @api.multi
-    def set_no_money_hold_extension(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.no_money_hold_extension',
             str(self.no_money_hold_extension))
-
-    @api.multi
-    def set_reinstatement_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.reinstatement_hold_duration',
             str(self.reinstatement_hold_duration))
-
-    @api.multi
-    def set_reservation_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.reservation_duration',
             str(self.reservation_duration))
-
-    @api.multi
-    def set_reservation_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.reservation_hold_duration',
             str(self.reservation_hold_duration))
-
-    @api.multi
-    def set_sponsor_cancel_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.sponsor_cancel_hold_duration',
             str(self.sponsor_cancel_hold_duration))
-
-    @api.multi
-    def set_sub_child_hold_duration(self):
-        self.env['ir.config_parameter'].set_param(
+        config.set_param(
             'child_compassion.sub_child_hold_duration',
             str(self.sub_child_hold_duration))
 
     @api.model
-    def get_default_values(self, _fields):
+    def get_values(self):
         param_obj = self.env['ir.config_parameter']
         consignment = int(param_obj.get_param(
             'child_compassion.consignment_hold_duration', '14'))
@@ -104,7 +80,7 @@ class AvailabilitySettings(models.TransientModel):
         sub_child = int(param_obj.get_param(
             'child_compassion.sub_child_hold_duration', '30'))
 
-        all_values = {
+        return {
             'consignment_hold_duration': consignment,
             'e_commerce_hold_duration': e_commerce,
             'no_money_hold_duration': no_money,
@@ -116,9 +92,7 @@ class AvailabilitySettings(models.TransientModel):
             'sub_child_hold_duration': sub_child,
         }
 
-        return {key: all_values.get(key, 7) for key in _fields}
-
     @api.model
     def get_param(self, param):
         """ Retrieve a single parameter. """
-        return self.get_default_values([param])[param]
+        return self.sudo().get_values()[param]

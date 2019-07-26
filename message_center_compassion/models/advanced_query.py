@@ -59,6 +59,17 @@ class QueryFilter(models.TransientModel):
                 'domain': {'field_id': [('id', 'in', self.mapped_fields.ids)]}
             }
 
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        # Queries should always be lists
+        result = []
+        for query in self:
+            query_json = super(QueryFilter, query).data_to_json(mapping_name)
+            # Value is always a list
+            query_json['Value'] = query_json['Value'].split(';')
+            result.append(query_json)
+        return result
+
 
 class QueryOperator(models.Model):
     """ An operator, valid for certain field types. """

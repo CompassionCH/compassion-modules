@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -29,22 +28,22 @@ class StaffNotificationSettings(models.TransientModel):
     )
 
     @api.multi
-    def set_disaster_notify_ids(self):
+    def set_values(self):
         self.env['ir.config_parameter'].set_param(
             'child_compassion.disaster_notify_ids',
             ','.join(map(str, self.disaster_notify_ids.ids)))
 
     @api.model
-    def get_default_values(self, _fields):
+    def get_values(self):
         param_obj = self.env['ir.config_parameter']
         res = {}
         partners = param_obj.get_param(
             'child_compassion.disaster_notify_ids', False)
         if partners:
-            res['disaster_notify_ids'] = map(int, partners.split(','))
+            res['disaster_notify_ids'] = list(map(int, partners.split(',')))
         return res
 
     @api.model
     def get_param(self, param):
         """ Retrieve a single parameter. """
-        return self.get_default_values([param])[param]
+        return self.sudo().get_default_values()[param]

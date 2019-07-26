@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -18,6 +17,7 @@ class ResLang(models.Model):
     """
 
     _name = 'res.lang.compassion'
+    _description = 'Compassion language'
 
     ##########################################################################
     #                                 FIELDS                                 #

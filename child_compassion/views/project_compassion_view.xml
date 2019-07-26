@@ -177,7 +177,6 @@
                                     <field name="current_weather"/>
                                 </group>
                                 <group string="Needs">
-                                    <field name="project_need_ids" widget="many2many_tags"/>
                                     <field name="economic_needs"/>
                                     <field name="health_needs"/>
                                     <field name="education_needs"/>

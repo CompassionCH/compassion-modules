@@ -54,31 +54,44 @@ class CompassionMapping(models.Model):
         self.ensure_one()
         self.json_spec_ids.unlink()
         for json_name, odoo_spec in json.items():
-            if not isinstance(odoo_spec, dict):
+            if not isinstance(odoo_spec, (str, dict)):
                 raise UserError(
                     _(f"Invalid data for JSON field {json_name}. "
-                      f"Expected a dictionary."))
+                      f"Expected a dictionary or a string."))
+            short_spec = isinstance(odoo_spec, str)
             field_spec_vals = {
                 'mapping_id': self.id,
                 'json_name': json_name,
-                'to_json_conversion': odoo_spec.get('to_json_conversion'),
-                'from_json_conversion': odoo_spec.get('from_json_conversion')
             }
-            field_name = odoo_spec.get('field')
-            if field_name:
-                if isinstance(field_name, dict):
+            # Check for sub_mapping
+            if not short_spec and odoo_spec.get('sub_mapping'):
+                sub_mapping = odoo_spec.pop('sub_mapping')
+                if isinstance(sub_mapping, str):
+                    # We search for a mapping with given name
+                    sub_mapping_record = self.search([
+                        ('name', '=', sub_mapping)])
+                    if not sub_mapping_record:
+                        raise UserError(_(
+                            f"No mapping found with name {sub_mapping}"))
+                    if len(sub_mapping_record) > 1:
+                        raise UserError(_(
+                            f"Ambiguous mapping name {sub_mapping}"
+                        ))
+                    field_spec_vals['sub_mapping_id'] = sub_mapping_record.id
+                if isinstance(sub_mapping, dict):
                     # In this case we create a sub_mapping
-                    field_spec_vals['sub_mapping_id'] =\
-                        self.create_from_json(field_name).id
-                    continue
+                    field_spec_vals['sub_mapping_id'] = \
+                        self.create_from_json(sub_mapping).id
 
-                # Normal case, field_name is an odoo field name
+            field_name = odoo_spec if short_spec else odoo_spec.pop(
+                'field', False)
+            if field_name:
                 relational_count = field_name.count('.')
                 if relational_count > 1:
                     raise UserError(_(
                         f"Mapping supports only direct relations. You cannot "
                         f"link a value to further relational fields like you "
-                        f"did for field {json}: {field_name}"))
+                        f"did for field {json_name}: {field_name}"))
                 if relational_count:
                     # Relational field
                     relational_field = self.env['ir.model.fields'].search([
@@ -91,8 +104,6 @@ class CompassionMapping(models.Model):
                     ])
                     field_spec_vals.update({
                         'relational_field_id': relational_field.id,
-                        'search_relational_record': odoo_spec.get(
-                            'search_relational_record')
                     })
                 else:
                     # Regular field
@@ -100,9 +111,28 @@ class CompassionMapping(models.Model):
                         ('model_id', '=', self.model_id.id),
                         ('name', '=', field_name)
                     ])
+                    # If the spec indicates relational search, we copy
+                    # it in relational field, to make sure JSON conversion
+                    # will work.
+                    if not short_spec and (
+                            odoo_spec.get('search_relational_record') or
+                            odoo_spec.get('allow_relational_creation')):
+                        field_spec_vals['relational_field_id'] = field.id
                 # We should have found a valid field
-                field.ensure_one()
+                try:
+                    field.ensure_one()
+                except ValueError:
+                    # Raise a meaningful error
+                    field = field_name.split('.')[-1] if relational_count \
+                        else field_name.split('.')[0]
+                    model = relational_field.relation if relational_count \
+                        else self.model_id.model
+                    raise UserError(_(
+                        f"[{self.name}] Invalid mapping: field {field} "
+                        f"in {model} doesn't exist"))
                 field_spec_vals['field_id'] = field.id
+            if not short_spec:
+                field_spec_vals.update(odoo_spec)
             self.env['compassion.field.to.json'].create(field_spec_vals)
         return True
 
@@ -125,6 +155,7 @@ class CompassionMapping(models.Model):
             if not hasattr(model, 'data_to_json') or not \
                     hasattr(model, 'json_to_data'):
                 raise ValidationError(_(
-                    "You can only add mapping to models that inherit "
-                    "compassion.mapped.model"
+                    f"You can only add mapping to models that inherit "
+                    f"compassion.mapped.model\n"
+                    f"{model._name} doesn't support mappings."
                 ))

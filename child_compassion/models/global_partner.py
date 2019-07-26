@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -15,6 +14,7 @@ from odoo import models, fields
 
 class GlobalPartner(models.Model):
     _name = 'compassion.global.partner'
+    _description = 'Compassion Global Partner'
 
     name = fields.Char(required=True)
     country_id = fields.Many2one('res.country', 'Country')

@@ -36,9 +36,13 @@
     'website': 'http://www.compassion.ch',
     'development_status': 'Stable',
     'depends': ['base'],
+    'external_dependencies': {
+        'python': [
+            'babel',
+        ]
+    },
     'data': [
         'security/ir.model.access.csv',
-        'data/ir.advanced.translation.csv',
         'views/advanced_translation_view.xml',
     ],
     'demo': [

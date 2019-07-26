@@ -1,29 +1,13 @@
 import re
-import threading
-import locale
 import logging
-from contextlib import contextmanager
 from collections import OrderedDict
+from babel.dates import format_datetime
 
 
 from odoo import models, fields, api, _
 
 
-LOCALE_LOCK = threading.Lock()
 logger = logging.getLogger(__name__)
-
-
-@contextmanager
-def setlocale(name):
-    with LOCALE_LOCK:
-        saved = locale.setlocale(locale.LC_ALL)
-        try:
-            yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
-        except:
-            logger.error("unable to set locale.")
-            yield
-        finally:
-            locale.setlocale(locale.LC_ALL, saved)
 
 
 class AdvancedTranslatable(models.AbstractModel):
@@ -129,22 +113,21 @@ class AdvancedTranslatable(models.AbstractModel):
         return values
 
     @api.multi
-    def get_date(self, field, date_type='date_short'):
+    def get_date(self, field, date_type='short'):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
         :param date_type: a valid src of a ir.advanced.translation date format
         :return: the formatted dates
         """
-        _format = self.env['ir.advanced.translation'].get(date_type).encode(
-            'utf-8')
+        _format = self.env['ir.advanced.translation'].get(date_type)
         dates = map(fields.Datetime.from_string,
                     self.filtered(field).sorted(
                         key=lambda r: getattr(r, field)).mapped(field))
-        with setlocale(self.env.lang):
-            ordered_dates = OrderedDict.fromkeys(dates)
-            for d in dates:
-                ordered_dates[d] = d.strftime(_format).decode('utf-8')
+        ordered_dates = OrderedDict.fromkeys(dates)
+        for d in dates:
+            ordered_dates[d] = format_datetime(
+                d, _format, tzinfo=self.env.tz, locale=self.env.lang)
         # Filter unique dates
         unique = set()
         unique_add = unique.add

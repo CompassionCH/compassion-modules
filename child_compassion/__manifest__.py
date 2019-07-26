@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -9,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2017 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester <csester@compassion.ch>, Emanuel Cino
+#    Copyright (C) 2014-2019 Compassion CH (http://www.compassion.ch)
+#    @author: Cyril Sester, Emanuel Cino
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,29 +29,28 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Children',
-    'version': '10.0.1.4.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
+    'development_status': 'Stable',
     'depends': [
-        'sale',
         'mail',
-        'web_m2x_options',
-        'web_sheet_full_width',  # Allows a better view of childpool
+        'web_sheet_full_width',  # OCA/web
         'message_center_compassion',
-        'advanced_translation'],
+        'advanced_translation'
+    ],
     'external_dependencies': {
-        'python': ['enum',
-                   'pyquery',
-                   'pytz',
-                   'requests',
-                   'timezonefinder',
-                   ]
+        'python': [
+            'pyquery',
+            'pytz',
+            'timezonefinder',
+        ]
     },
     'data': [
         'security/sponsorship_groups.xml',
-        'security/child_pictures_security.xml',
+        'security/ir_rules.xml',
         'security/ir.model.access.csv',
         'views/child_compassion_view.xml',
         'views/field_office_view.xml',
@@ -67,7 +65,7 @@
         'views/notification_settings_view.xml',
         'views/child_pictures_view.xml',
         'views/demand_planning.xml',
-        'workflow/child_workflow.xml',
+        'views/res_lang_compassion_view.xml',
         'data/validity_checks_cron.xml',
         'data/child.hobby.csv',
         'data/child.household.duty.csv',
@@ -78,11 +76,12 @@
         'data/child.physical.disability.csv',
         'data/child.future.hope.csv',
         'data/connect.month.csv',
+        'data/compassion_mapping.xml',
         'data/gmc_action.xml',
         'data/compassion.field.office.csv',
         'data/field.office.learning.csv',
         'data/global_partner.xml',
-        'data/lang_data.xml',
+        'data/res.lang.compassion.csv',
         'data/fcp.involvement.csv',
         'data/fcp.church.ministry.csv',
         'data/fcp.program.csv',
@@ -103,6 +102,7 @@
         'data/fo.disaster.loss.csv',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings"
 }
