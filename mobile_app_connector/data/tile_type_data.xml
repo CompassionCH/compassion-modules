@@ -241,7 +241,7 @@ You never wrote to your sponsored child.
         <field name="default_model_id" ref="model_correspondence"/>
         <field name="default_records_filter">lambda c: c.direction == 'Beneficiary To Supporter' and c.state == 'Published to Global Partner' and c.letter_image</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
-        <field name="default_body">A new letter has arrived from your sponsored child</field>
+        <field name="default_body">A letter has arrived from your sponsored child on ${ctx['objects'].get_date('status_date')}</field>
         <field name="default_action_text">Read now</field>
         <field name="default_action_destination">Read overlay</field>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/LE_T1.png"/>

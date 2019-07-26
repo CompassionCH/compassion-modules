@@ -6,66 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 10:04+0000\n"
-"PO-Revision-Date: 2019-07-17 12:41+0200\n"
+"POT-Creation-Date: 2019-07-29 12:54+0000\n"
+"PO-Revision-Date: 2019-07-29 15:16+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"Language: it\n"
 "X-Generator: Poedit 2.2.3\n"
-
-#. module: mobile_app_connector
-#: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
-msgid ""
-"\n"
-"% set child = ctx['objects']\n"
-"% if len(child) == 1:\n"
-"You're changing ${child.get('his')} life\n"
-"% else:\n"
-"You're changing ${child.get_number()} lives\n"
-"% endif\n"
-"Thank You\n"
-"        "
-msgstr ""
-"\n"
-"% set child = ctx['objects']\n"
-"% if len(child) == 1:\n"
-"Stai cambiando la sua vita\n"
-"% else:\n"
-"Cambiando la vita di ${child.get_number()} bambini\n"
-"% endif\n"
-"        "
-
-#. module: mobile_app_connector
-#: model:mobile.app.tile,body:mobile_app_connector.tile_le1
-msgid ""
-"\n"
-"% set sponsorship = ctx['objects'].sudo()\n"
-"% set letters = sponsorship.sponsor_letter_ids\n"
-"% if sponsorship.last_letter == 0:\n"
-"You wrote today.\n"
-"% else:\n"
-"    % if sponsorship.last_letter > 0:\n"
-"You last wrote ${sponsorship.last_letter} days ago\n"
-"    % else:\n"
-"You never wrote to your sponsored child.\n"
-"    % endif\n"
-"% endif"
-msgstr ""
-"% set sponsorship = ctx['objects'].sudo()\n"
-"% set letters = sponsorship.sponsor_letter_ids\n"
-"% if sponsorship.last_letter == 0:\n"
-"Hai scritto oggi.\n"
-"% else:\n"
-"    % if sponsorship.last_letter > 0:\n"
-"Sono passati ${sponsorship.last_letter} giorni da quando hai scritto\n"
-"    % else:\n"
-"Non hai mai scritto prima d'ora.\n"
-"    % endif\n"
-"% endif"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch3
@@ -80,8 +30,12 @@ msgstr "${ctx['objects'].get(\"My child\")}"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t3
-msgid "${ctx['objects'].child_id.preferred_name} has birthday on ${ctx['objects'].child_id.get_date('birthdate', 'date_month')}"
-msgstr "${ctx['objects'].child_id.preferred_name} ha il suo compleanno il ${ctx['objects'].child_id.get_date('birthdate', 'date_month')}"
+msgid ""
+"${ctx['objects'].child_id.preferred_name} has birthday on ${ctx['objects']."
+"child_id.get_date('birthdate', 'date_month')}"
+msgstr ""
+"${ctx['objects'].child_id.preferred_name} ha il suo compleanno il "
+"${ctx['objects'].child_id.get_date('birthdate', 'date_month')}"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi1
@@ -94,7 +48,8 @@ msgstr "${ctx['objects'].description_sale}"
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch2
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht1
 msgid "${ctx['objects'].get_list('preferred_name', 1, 'My children photos')}"
-msgstr "${ctx['objects'].get_list('preferred_name', 1, 'Le foto dei miei bambini')}"
+msgstr ""
+"${ctx['objects'].get_list('preferred_name', 1, 'Le foto dei miei bambini')}"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,title:mobile_app_connector.tile_ch1
@@ -123,6 +78,7 @@ msgid "${ctx['objects'].sudo().child_id.preferred_name}"
 msgstr "${ctx['objects'].sudo().child_id.preferred_name}"
 
 #. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
 msgid ""
 "% set child = ctx['objects']\n"
@@ -156,20 +112,25 @@ msgstr ""
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
 msgid ""
 "% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
 "% if invoice:\n"
 "You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
 "% else:\n"
 "Make a donation"
 msgstr ""
 "% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
 "% if invoice:\n"
 "Ha dato CHF ${invoice.amount_total} il ${invoice.get_date('last_payment')}\n"
 "% else:\n"
 "Fare una donazione"
 
 #. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_le1
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
 msgid ""
 "% set sponsorship = ctx['objects'].sudo()\n"
@@ -199,8 +160,12 @@ msgstr ""
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le_t1
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t1
-msgid "A new letter has arrived from your sponsored child"
-msgstr "Il tuo bambino ha scritto una lettera"
+msgid ""
+"A letter has arrived from your sponsored child on ${ctx['objects']."
+"get_date('status_date')}"
+msgstr ""
+"Il tuo bambino ha scritto una lettera il ${ctx['objects']."
+"get_date('status_date')}"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_action_destination
@@ -689,8 +654,12 @@ msgstr "Improve app"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
-msgid "Individual child page (seems not working, opening the list of children instead of individual child)"
-msgstr "Individual child page (seems not working, opening the list of children instead of individual child)"
+msgid ""
+"Individual child page (seems not working, opening the list of children "
+"instead of individual child)"
+msgstr ""
+"Individual child page (seems not working, opening the list of children "
+"instead of individual child)"
 
 #. module: mobile_app_connector
 #: selection:mobile.app.banner,destination_type:0
@@ -1137,8 +1106,12 @@ msgstr "Stato"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
-msgid "Stories and prayer with relevant blog at the top (opens the story and puts other blog posts at the bottom)"
-msgstr "Stories and prayer with relevant blog at the top (opens the story and puts other blog posts at the bottom)"
+msgid ""
+"Stories and prayer with relevant blog at the top (opens the story and puts "
+"other blog posts at the bottom)"
+msgstr ""
+"Stories and prayer with relevant blog at the top (opens the story and puts "
+"other blog posts at the bottom)"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_subtype_ids
@@ -1168,8 +1141,10 @@ msgstr "The product %s was not found"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
-msgid "The subtype sets the display style of the tile in the Mobile application."
-msgstr "The subtype sets the display style of the tile in the Mobile application."
+msgid ""
+"The subtype sets the display style of the tile in the Mobile application."
+msgstr ""
+"The subtype sets the display style of the tile in the Mobile application."
 
 #. module: mobile_app_connector
 #: sql_constraint:wp.post.category:0
@@ -1196,8 +1171,12 @@ msgstr "This post already exists"
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/models/wordpress_post.py:68
 #, python-format
-msgid "This post was disabled probably because it doesn't have a content. Please make sure the post has a body to avoid any display issues in the mobile app."
-msgstr "This post was disabled probably because it doesn't have a content. Please make sure the post has a body to avoid any display issues in the mobile app."
+msgid ""
+"This post was disabled probably because it doesn't have a content. Please "
+"make sure the post has a body to avoid any display issues in the mobile app."
+msgstr ""
+"This post was disabled probably because it doesn't have a content. Please "
+"make sure the post has a body to avoid any display issues in the mobile app."
 
 #. module: mobile_app_connector
 #: sql_constraint:mobile.app.tile.subtype:0
@@ -1333,8 +1312,12 @@ msgstr "Warning"
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:141
 #, python-format
-msgid "We couldn't find your sponsorships. Please contact us for setting up your account."
-msgstr "Non abbiamo potuto associare automaticamente i tuoi sostegni. Grazie di contattarci per la creazione del tuo account."
+msgid ""
+"We couldn't find your sponsorships. Please contact us for setting up your "
+"account."
+msgstr ""
+"Non abbiamo potuto associare automaticamente i tuoi sostegni. Grazie di "
+"contattarci per la creazione del tuo account."
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:193
@@ -1445,8 +1428,12 @@ msgstr "Il suo account"
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:205
 #, python-format
-msgid "Your account has been successfully created, you will now receive an email to finalize your registration."
-msgstr "Il tuo account è stato creato con successo, riceverai una mail per finalizzare la tua registrazione."
+msgid ""
+"Your account has been successfully created, you will now receive an email to "
+"finalize your registration."
+msgstr ""
+"Il tuo account è stato creato con successo, riceverai una mail per "
+"finalizzare la tua registrazione."
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:53
@@ -1521,3 +1508,49 @@ msgstr "third parameter"
 #: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype_default_records_filter
 msgid "will use the filtered function on the associated records"
 msgstr "will use the filtered function on the associated records"
+
+#~ msgid ""
+#~ "\n"
+#~ "% set child = ctx['objects']\n"
+#~ "% if len(child) == 1:\n"
+#~ "You're changing ${child.get('his')} life\n"
+#~ "% else:\n"
+#~ "You're changing ${child.get_number()} lives\n"
+#~ "% endif\n"
+#~ "Thank You\n"
+#~ "        "
+#~ msgstr ""
+#~ "\n"
+#~ "% set child = ctx['objects']\n"
+#~ "% if len(child) == 1:\n"
+#~ "Stai cambiando la sua vita\n"
+#~ "% else:\n"
+#~ "Cambiando la vita di ${child.get_number()} bambini\n"
+#~ "% endif\n"
+#~ "        "
+
+#~ msgid ""
+#~ "\n"
+#~ "% set sponsorship = ctx['objects'].sudo()\n"
+#~ "% set letters = sponsorship.sponsor_letter_ids\n"
+#~ "% if sponsorship.last_letter == 0:\n"
+#~ "You wrote today.\n"
+#~ "% else:\n"
+#~ "    % if sponsorship.last_letter > 0:\n"
+#~ "You last wrote ${sponsorship.last_letter} days ago\n"
+#~ "    % else:\n"
+#~ "You never wrote to your sponsored child.\n"
+#~ "    % endif\n"
+#~ "% endif"
+#~ msgstr ""
+#~ "% set sponsorship = ctx['objects'].sudo()\n"
+#~ "% set letters = sponsorship.sponsor_letter_ids\n"
+#~ "% if sponsorship.last_letter == 0:\n"
+#~ "Hai scritto oggi.\n"
+#~ "% else:\n"
+#~ "    % if sponsorship.last_letter > 0:\n"
+#~ "Sono passati ${sponsorship.last_letter} giorni da quando hai scritto\n"
+#~ "    % else:\n"
+#~ "Non hai mai scritto prima d'ora.\n"
+#~ "    % endif\n"
+#~ "% endif"
