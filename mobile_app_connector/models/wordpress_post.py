@@ -98,11 +98,6 @@ class WordpressPost(models.Model):
                 for lang in self._supported_langs():
                     params['lang'] = lang.code[:2]
                     wp_posts = requests.get(wp_api_url, params=params).json()
-                    for post in wp_posts:
-                        post['excerpt']['rendered'] =\
-                            h.unescape(post['excerpt']['rendered'])
-                        post['title']['rendered'] =\
-                            h.unescape(post['title']['rendered'])
 
                     _logger.info('Processing posts in %s', lang.name)
                     for i, post_data in enumerate(wp_posts):
@@ -159,7 +154,7 @@ class WordpressPost(models.Model):
                             category = category_obj
                         # Cache new post in database
                         self.create({
-                            'name': post_data['title']['rendered'],
+                            'name': h.unescape(post_data['title']['rendered']),
                             'date': post_data['date'],
                             'wp_id': post_id,
                             'url': post_data['link'],
