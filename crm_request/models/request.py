@@ -281,7 +281,7 @@ class CrmClaim(models.Model):
         mail sending to the requester. """
         template = self.env.ref("crm_request.business_closed_email_template")
         for request in self:
-            template.send_mail(
+            template.with_context(lang=request.language).send_mail(
                 request.id, force_send=True, email_values={
                     'email_to': request.email_origin}
             )
