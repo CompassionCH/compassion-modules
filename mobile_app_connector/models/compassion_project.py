@@ -52,6 +52,8 @@ class CompassionProject(models.Model):
             'Fog': 'Clouds',
             'Sand': 'Storm',
             'Ash': 'Storm',
+            'Squall': 'Storm',
+            'Tornado': 'Storm',
         }
         return {
             'ChildWeather': mapping[self.current_weather],

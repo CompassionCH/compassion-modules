@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-12 13:03+0000\n"
-"PO-Revision-Date: 2019-07-12 15:07+0200\n"
+"POT-Creation-Date: 2019-07-29 12:54+0000\n"
+"PO-Revision-Date: 2019-07-29 15:15+0200\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -16,81 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 "X-Generator: Poedit 2.2.3\n"
-
-#. module: mobile_app_connector
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
-msgid ""
-"\n"
-"% set child = ctx['objects']\n"
-"% if len(child) == 1:\n"
-"You're changing ${child.get('his')} life\n"
-"% else:\n"
-"You're changing ${child.get_number()} lives\n"
-"% endif\n"
-"Thank You\n"
-"        "
-msgstr ""
-"% set child = ctx['objects']\n"
-"Vous changez\n"
-"% if len(child) == 1:\n"
-"${child.get('his')} vie\n"
-"% else:\n"
-"la vie de ${child.get_number()} enfants\n"
-"% endif\n"
-"       "
-
-#. module: mobile_app_connector
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
-msgid ""
-"\n"
-"% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
-"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
-"order='last_payment desc', limit=1)\n"
-"% if invoice:\n"
-"You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
-"% else:\n"
-"Make a donation"
-msgstr ""
-"\n"
-"% set partner = ctx['objects'].sudo()\n"
-"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
-"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
-"order='last_payment desc', limit=1)\n"
-"% if invoice:\n"
-"Vous avez donné CHF ${invoice.amount_total} le ${invoice."
-"get_date('last_payment')}\n"
-"% else:\n"
-"Faire un don"
-
-#. module: mobile_app_connector
-#: model:mobile.app.tile,body:mobile_app_connector.tile_le1
-#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
-msgid ""
-"\n"
-"% set sponsorship = ctx['objects'].sudo()\n"
-"% set letters = sponsorship.sponsor_letter_ids\n"
-"% if sponsorship.last_letter == 0:\n"
-"You wrote today.\n"
-"% else:\n"
-"    % if sponsorship.last_letter > 0:\n"
-"You last wrote ${sponsorship.last_letter} days ago\n"
-"    % else:\n"
-"You never wrote to your sponsored child.\n"
-"    % endif\n"
-"% endif"
-msgstr ""
-"% set sponsorship = ctx['objects'].sudo()\n"
-"% set letters = sponsorship.sponsor_letter_ids\n"
-"% if sponsorship.last_letter == 0:\n"
-"Vous avez écrit aujourd'hui\n"
-"% else:\n"
-"    % if sponsorship.last_letter > 0:\n"
-"Cela fait ${sponsorship.last_letter} jours que vous avez écrit\n"
-"    % else:\n"
-"Vous n'avez encore jamais écrit\n"
-"    % endif\n"
-"% endif"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch3
@@ -161,6 +86,7 @@ msgstr "${ctx['objects'].sudo().child_id.preferred_name}"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_ch1
 msgid ""
 "% set child = ctx['objects']\n"
 "% if len(child) == 1:\n"
@@ -174,7 +100,7 @@ msgstr ""
 "% set child = ctx['objects']\n"
 "Vous changez\n"
 "% if len(child) == 1:\n"
-"${child.get('his')} vie\n"
+"${child.get('sa')} vie\n"
 "% else:\n"
 "la vie de ${child.get_number()} enfants\n"
 "% endif\n"
@@ -191,12 +117,64 @@ msgstr ""
 "${child.preferred_name} / ${child.project_id.country_id.name}\n"
 
 #. module: mobile_app_connector
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi5
+msgid ""
+"% set partner = ctx['objects'].sudo()\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
+"% if invoice:\n"
+"You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}\n"
+"% else:\n"
+"Make a donation"
+msgstr ""
+"% set partner = ctx['objects'].sudo()\n"
+"% set invoice = partner.env['account.invoice'].search([('partner_id', '=', "
+"partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], "
+"order='last_payment desc', limit=1)\n"
+"% if invoice:\n"
+"Vous avez donné CHF ${invoice.amount_total} le ${invoice."
+"get_date('last_payment')}\n"
+"% else:\n"
+"Faire un don"
+
+#. module: mobile_app_connector
+#: model:mobile.app.tile,body:mobile_app_connector.tile_le1
+#: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_LE1
+msgid ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"You wrote today.\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"You last wrote ${sponsorship.last_letter} days ago\n"
+"    % else:\n"
+"You never wrote to your sponsored child.\n"
+"    % endif\n"
+"% endif"
+msgstr ""
+"% set sponsorship = ctx['objects'].sudo()\n"
+"% set letters = sponsorship.sponsor_letter_ids\n"
+"% if sponsorship.last_letter == 0:\n"
+"Vous avez écrit aujourd'hui\n"
+"% else:\n"
+"    % if sponsorship.last_letter > 0:\n"
+"Cela fait ${sponsorship.last_letter} jours que vous avez écrit\n"
+"    % else:\n"
+"Vous n'avez encore jamais écrit\n"
+"    % endif\n"
+"% endif"
+
+#. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le_t1
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_le_t1
-msgid "A new letter has arrived from your sponsored child"
+msgid ""
+"A letter has arrived from your sponsored child on ${ctx['objects']."
+"get_date('status_date')}"
 msgstr ""
-"${ctx['objects'].child_id.get('your sponsored child').title()} vous a écrit "
-"une nouvelle lettre"
+"Votre filleul${ctx['objects'].child_id.get('accord_e') or ''} vous a écrit "
+"une lettre le ${ctx['objects'].get_date('status_date')}"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_action_destination
@@ -285,7 +263,7 @@ msgid "Button text"
 msgstr "Button text"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_id_21947
+#: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_id_21816
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
 msgid "Category"
 msgstr "Catégorie"
@@ -531,7 +509,7 @@ msgstr "Download"
 #: code:addons/mobile_app_connector/forms/registration_form.py:105
 #, python-format
 msgid "Emails fields don't match"
-msgstr "L'e-mail ne correspond pas"
+msgstr "L'adresse e-mail ne coïncide pas"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_end_date
@@ -802,7 +780,7 @@ msgid "Low"
 msgstr "Low"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:194
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:195
 #, python-format
 msgid "Mail delivery error"
 msgstr "Erreur lors de l'envoi de l'e-mail"
@@ -839,7 +817,6 @@ msgstr "Feedback App"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_writing
-#| msgid "Mobile App"
 msgid "Mobile App Writing"
 msgstr "Mobile App Writing"
 
@@ -901,13 +878,13 @@ msgid "News"
 msgstr "News"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:173
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:174
 #, python-format
 msgid "No email entered"
 msgstr "E-mail manquant"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:183
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:184
 #, python-format
 msgid "No such account"
 msgstr "Ce compte n'existe pas"
@@ -991,7 +968,6 @@ msgstr "Merci de cocher si la réponse est positive."
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_position
-#| msgid "Description"
 msgid "Position"
 msgstr "Position"
 
@@ -1279,7 +1255,7 @@ msgid "Top of letters hub (opens the letter writing page)"
 msgstr "Top of letters hub (opens the letter writing page)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_22011
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_21880
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
@@ -1353,7 +1329,7 @@ msgstr ""
 "contacter pour la création de votre compte."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:192
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:193
 #, python-format
 msgid "We sent you the reset instructions."
 msgstr "Instructions envoyées par e-mail."
@@ -1451,7 +1427,7 @@ msgstr ""
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_cht2
 msgid "You're changing ${ctx['objects'].get('his')} life"
-msgstr "Vous changez ${ctx['objects'].get('his')} vie"
+msgstr "Vous changez ${ctx['objects'].get('sa')} vie"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:69
@@ -1509,7 +1485,6 @@ msgstr "first parameter"
 
 #. module: mobile_app_connector
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_ios
-#| msgid "IOS"
 msgid "iOS"
 msgstr "iOS"
 
@@ -1543,6 +1518,52 @@ msgstr "third parameter"
 #: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype_default_records_filter
 msgid "will use the filtered function on the associated records"
 msgstr "will use the filtered function on the associated records"
+
+#~ msgid ""
+#~ "\n"
+#~ "% set child = ctx['objects']\n"
+#~ "% if len(child) == 1:\n"
+#~ "You're changing ${child.get('his')} life\n"
+#~ "% else:\n"
+#~ "You're changing ${child.get_number()} lives\n"
+#~ "% endif\n"
+#~ "Thank You\n"
+#~ "        "
+#~ msgstr ""
+#~ "% set child = ctx['objects']\n"
+#~ "Vous changez\n"
+#~ "% if len(child) == 1:\n"
+#~ "${child.get('his')} vie\n"
+#~ "% else:\n"
+#~ "la vie de ${child.get_number()} enfants\n"
+#~ "% endif\n"
+#~ "       "
+
+#~ msgid ""
+#~ "\n"
+#~ "% set sponsorship = ctx['objects'].sudo()\n"
+#~ "% set letters = sponsorship.sponsor_letter_ids\n"
+#~ "% if sponsorship.last_letter == 0:\n"
+#~ "You wrote today.\n"
+#~ "% else:\n"
+#~ "    % if sponsorship.last_letter > 0:\n"
+#~ "You last wrote ${sponsorship.last_letter} days ago\n"
+#~ "    % else:\n"
+#~ "You never wrote to your sponsored child.\n"
+#~ "    % endif\n"
+#~ "% endif"
+#~ msgstr ""
+#~ "% set sponsorship = ctx['objects'].sudo()\n"
+#~ "% set letters = sponsorship.sponsor_letter_ids\n"
+#~ "% if sponsorship.last_letter == 0:\n"
+#~ "Vous avez écrit aujourd'hui\n"
+#~ "% else:\n"
+#~ "    % if sponsorship.last_letter > 0:\n"
+#~ "Cela fait ${sponsorship.last_letter} jours que vous avez écrit\n"
+#~ "    % else:\n"
+#~ "Vous n'avez encore jamais écrit\n"
+#~ "    % endif\n"
+#~ "% endif"
 
 #~ msgid "Is active"
 #~ msgstr "Actif"

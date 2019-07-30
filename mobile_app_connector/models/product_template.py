@@ -28,7 +28,7 @@ class ProductTemplate(models.Model):
                                   "find code icon.")
 
     @api.model
-    def mobile_donation_type(self, **other_params):
+    def mobile_donation_type(self, **params):
         """
         Mobile app method:
         Returns the list of donation type
@@ -37,7 +37,6 @@ class ProductTemplate(models.Model):
         """
 
         result = []
-
         donation_types = self.search([('mobile_app', '=', True)])
 
         mapping = MobileDonationMapping(self.env)
@@ -62,6 +61,7 @@ class Product(models.Model):
             return {}
         return {
             'Appeal': {
-                'FundType': self[:1].default_code
+                'FundType': self[:1].default_code,
+                'FundId': self[:1].product_tmpl_id.id
             }
         }

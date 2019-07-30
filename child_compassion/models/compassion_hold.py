@@ -72,8 +72,8 @@ class AbstractHold(models.AbstractModel):
     )
     secondary_owner = fields.Char()
     ambassador = fields.Many2one('res.partner')
-    yield_rate = fields.Float()
-    no_money_yield_rate = fields.Float()
+    yield_rate = fields.Integer()
+    no_money_yield_rate = fields.Integer()
     channel = fields.Selection([
         ('web', _('Website')),
         ('event', _('Event')),

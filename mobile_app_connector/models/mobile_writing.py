@@ -93,7 +93,7 @@ class AppWriting(models.Model):
         current_writings.write({'active': True})
 
     @api.multi
-    def mobile_get_templates(self):
+    def mobile_get_templates(self, **params):
         actives = self.env['mobile.app.writing'].search(
             [('active', '=', True)])
 

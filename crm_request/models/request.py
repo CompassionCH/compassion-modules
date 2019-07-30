@@ -190,10 +190,7 @@ class CrmClaim(models.Model):
         # # send automated holiday response
         try:
             if request.holiday_closure_id:
-                template_id = self.env.ref(
-                    "crm_request.business_closed_email_template").id
-                request.with_context(
-                    keep_stage=True).message_post_with_template(template_id)
+                request.send_holiday_answer()
         except Exception as e:
             _logger.error("The automatic mail failed\n{}".format(e))
 
@@ -277,6 +274,17 @@ class CrmClaim(models.Model):
 
         return self.env['res.lang.compassion'].search(
             [('name', '=ilike', language_name)], limit=1)
+
+    @api.multi
+    def send_holiday_answer(self):
+        """ This will use the holiday mail template and enforce a
+        mail sending to the requester. """
+        template = self.env.ref("crm_request.business_closed_email_template")
+        for request in self:
+            template.send_mail(
+                request.id, force_send=True, email_values={
+                    'email_to': request.email_origin}
+            )
 
 
 class AssignRequestWizard(models.TransientModel):
