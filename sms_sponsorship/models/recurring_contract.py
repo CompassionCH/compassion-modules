@@ -65,7 +65,7 @@ class RecurringContract(models.Model):
             else "ios" if sms_child_request.source == "iOS" else "sms"
 
         # Create sponsorship
-        lines = self._get_sponsorship_standard_lines()
+        lines = self._get_sponsorship_standard_lines(False)
         if not vals['sponsorship_plus']:
             lines = lines[:-1]
         sponsorship = self.create({
