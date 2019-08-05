@@ -511,7 +511,7 @@ class Correspondence(models.Model):
     @api.multi
     def compose_letter_button(self):
         """ Remove old images, download original and compose translation. """
-        self.attach_original()
+        # self.attach_original() TODO not commit this!
         return self.compose_letter_image()
 
     @api.multi
