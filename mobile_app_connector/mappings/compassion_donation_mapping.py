@@ -21,6 +21,7 @@ class MobileDonationMapping(OnrampMapping):
         "FundName": "name",
         "Id": "id",
         "ImageIcon": "image_icon",
+        "FundAmount": "list_price"
     }
 
     FIELDS_TO_SUBMIT = {k: None for k, v in CONNECT_MAPPING.iteritems() if v}
