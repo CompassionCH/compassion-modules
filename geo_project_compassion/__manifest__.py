@@ -39,4 +39,6 @@
  ],
  'data': [
      'views/project_compassion_geoengine_view.xml'
- ]}
+ ],
+ 'installable': False,
+ }

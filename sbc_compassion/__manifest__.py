@@ -64,6 +64,6 @@
         ],
     'demo': ['demo/correspondence_template.xml',
              ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     }

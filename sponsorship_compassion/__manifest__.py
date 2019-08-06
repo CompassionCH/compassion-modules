@@ -63,6 +63,6 @@
         'demo/demo_data.yml',
         'data/demo_data.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

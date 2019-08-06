@@ -46,6 +46,6 @@
     ],
     'css': ['static/src/css/hr_planning.css'],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

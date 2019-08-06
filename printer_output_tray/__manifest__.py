@@ -45,6 +45,6 @@
     'external_dependencies': {
         'python': ['cups'],
     },
-    'installable': True,
+    'installable': False,
     'application': False,
 }

@@ -1,7 +1,9 @@
 language: python
 
 python:
-  - "2.7"
+  - "3.5"
+cache:
+  pip: true
 
 sudo: false
 cache: pip
@@ -12,33 +14,23 @@ addons:
     packages:
       - expect-dev  # provides unbuffer utility
       - python-lxml  # because pip installation is slow
-      - python-simplejson
-      - python-serial
-      - python-yaml
-      - python-cups
-      - wkhtmltopdf
-      # OpenCV requirements packages
-      - zbar-tools
-      - python-zbar
 
 env:
   global:
-  - VERSION="10.0" TESTS="0" LINT_CHECK="0" TRANSIFEX="0"
+  - VERSION="11.0" TESTS="0" LINT_CHECK="0" TRANSIFEX="0"
 
   matrix:
   - LINT_CHECK="1"
-  - TESTS="1" ODOO_REPO="odoo/odoo" EXCLUDE="geo_project_compassion"
+  - TESTS="1" ODOO_REPO="odoo/odoo"
 
 
 virtualenv:
   system_site_packages: true
 
-
 install:
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
-  - printf '[options]\n\nrunning_env = dev\n' > ${HOME}/.openerp_serverrc
 
 
 script:

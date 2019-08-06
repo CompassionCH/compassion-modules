@@ -49,6 +49,6 @@
     'demo': [
         'demo/res_users.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

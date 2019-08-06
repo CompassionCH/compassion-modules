@@ -37,4 +37,5 @@
         'views/request_stage.xml',
         'security/ir.model.access.csv',
     ],
+    'installable': False,
 }

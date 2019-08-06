@@ -42,6 +42,6 @@
         'cron/update_cron.xml',
         'views/smart_tagger_view.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

@@ -101,6 +101,6 @@
         'data/fo.disaster.loss.csv',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

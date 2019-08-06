@@ -50,6 +50,6 @@
         'data/utm_data.xml',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

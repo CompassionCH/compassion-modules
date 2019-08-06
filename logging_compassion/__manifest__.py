@@ -40,6 +40,6 @@
     'data': [
         'data/compassion_auditlog_rules.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

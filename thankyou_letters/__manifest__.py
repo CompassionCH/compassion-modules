@@ -55,6 +55,6 @@
     'demo': [
         'demo/success_story.xml'
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }
