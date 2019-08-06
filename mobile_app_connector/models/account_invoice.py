@@ -39,7 +39,7 @@ class AccountInvoice(models.Model):
             # Fund donations
             for i, product_id in enumerate(wrapper.fund_ids):
                 product = product_obj.search(
-                    [('product_tmpl_id', '=', product_id)]qga q
+                    [('product_tmpl_id', '=', product_id)]
                 )
                 invoice_lines.append({
                     'product_id': product.id,
