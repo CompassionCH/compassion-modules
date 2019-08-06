@@ -56,6 +56,7 @@
         'workflow/contract_workflow.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',
+        'data/end_reasons.xml',
         'data/partner_category_data.xml',
         'security/ir.model.access.csv'
     ],

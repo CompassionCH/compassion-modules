@@ -39,10 +39,11 @@ class ChildCompassion(models.Model):
 
     def depart(self):
         """ End the sponsorship. """
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
         for child in self.filtered('sponsor_id'):
             sponsorship = child.sponsorship_ids[0]
             sponsorship.with_context(default_type='S').write({
-                'end_reason': '1',  # Child departure
+                'end_reason_id': depart.id,
                 'end_date': fields.Date.today(),
             })
             sponsorship.signal_workflow('contract_terminated')
@@ -56,10 +57,12 @@ class ChildCompassion(models.Model):
         :return: True
         """
         res = super(ChildCompassion, self).child_released()
+        never_paid = self.env.ref(
+            'sponsorship_compassion.end_reason_never_paid')
         waiting_sponsorships = self.mapped('sponsorship_ids').filtered(
             lambda s: s.state in ('draft', 'waiting', 'waiting_payment'))
         waiting_sponsorships.with_context(default_type='S').write({
-            'end_reason': '9',  # Never Paid
+            'end_reason_id': never_paid.id,
             'end_date': fields.Date.today(),
         })
         waiting_sponsorships.signal_workflow('contract_terminated')

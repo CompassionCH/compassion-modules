@@ -1,0 +1,41 @@
+<odoo>
+    <record id="end_reason_depart" model="recurring.contract.end.reason">
+        <field name="Depart of child"/>
+    </record>
+    <record id="end_reason_mistake" model="recurring.contract.end.reason">
+        <field name="Mistake from our staff"/>
+    </record>
+    <record id="end_reason_death" model="recurring.contract.end.reason">
+        <field name="Death of partner"/>
+    </record>
+    <record id="end_reason_moved" model="recurring.contract.end.reason">
+        <field name="Moved to foreign country"/>
+    </record>
+    <record id="end_reason_not_satisfied" model="recurring.contract.end.reason">
+        <field name="Not satisfied"/>
+    </record>
+    <record id="end_reason_dont_pay" model="recurring.contract.end.reason">
+        <field name="Doesn't pay"/>
+    </record>
+    <record id="end_reason_personal" model="recurring.contract.end.reason">
+        <field name="Personal reasons"/>
+    </record>
+    <record id="end_reason_never_paid" model="recurring.contract.end.reason">
+        <field name="Never paid"/>
+    </record>
+    <record id="end_reason_subreject" model="recurring.contract.end.reason">
+        <field name="Subreject"/>
+    </record>
+    <record id="end_reason_sponsor_exchange" model="recurring.contract.end.reason">
+        <field name="Exchange of sponsor"/>
+    </record>
+    <record id="end_reason_child_exchange" model="recurring.contract.end.reason">
+        <field name="Exchange of beneficiary"/>
+    </record>
+    <record id="end_reason_financial" model="recurring.contract.end.reason">
+        <field name="Financial reasons"/>
+    </record>
+    <record id="end_reason_not_given" model="recurring.contract.end.reason">
+        <field name="Not given"/>
+    </record>
+</odoo>

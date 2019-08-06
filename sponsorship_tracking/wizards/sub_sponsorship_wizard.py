@@ -51,8 +51,7 @@ class SubSponsorshipWizard(models.TransientModel):
         self.ensure_one()
 
         sponsorship_id = self.env.context.get('active_id')
-        contract_obj = self.env['recurring.contract'].with_context(
-            allow_rewind=True)
+        contract_obj = self.env['recurring.contract']
         contract = contract_obj.browse(sponsorship_id)
         contract.sds_uid = self.env.user
         sub_contract = contract.copy({

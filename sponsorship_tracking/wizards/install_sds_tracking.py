@@ -42,6 +42,7 @@ class InstallSdsTracking(models.TransientModel):
                See Method _get_contract_sub for more details.
         """
         contract_obj = self.env['recurring.contract']
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
         waiting_contract_ids = contract_obj.search(
             [('state', 'in', ['waiting', 'mandate'])]).ids
         active_contract_ids = contract_obj.search(
@@ -50,8 +51,9 @@ class InstallSdsTracking(models.TransientModel):
             [('state', '=', 'draft')]).ids
         cancelled_contract_ids = contract_obj.search(
             [('state', '=', 'cancelled')]).ids
-        terminated_contract_ids = contract_obj.search(
-            [('state', '=', 'terminated'), ('end_reason', '!=', '1')]).ids
+        terminated_contract_ids = contract_obj.search([
+            ('state', '=', 'terminated'),
+            ('end_reason_id', '!=', depart.id)]).ids
         no_sub_ids, sub_ids, sub_accept_ids, sub_reject_ids, \
             sub_waiting_ids = self._get_contract_sub()
 
@@ -91,9 +93,10 @@ class InstallSdsTracking(models.TransientModel):
             4. If no other condition above is met -> sub_reject
         """
         contract_obj = self.env['recurring.contract']
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
         max_sub_waiting = datetime.today() + timedelta(days=-50)
         child_departed_contracts = contract_obj.search(
-            [('state', '=', 'terminated'), ('end_reason', '=', '1'),
+            [('state', '=', 'terminated'), ('end_reason_id', '=', depart.id),
              ('end_date', '!=', False)])
 
         no_sub_ids = list()
@@ -101,6 +104,8 @@ class InstallSdsTracking(models.TransientModel):
         sub_waiting_ids = list()
         sub_accept_ids = list()
         sub_reject_ids = list()
+
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
 
         for contract in child_departed_contracts:
             sub_contracts = contract_obj.search(
@@ -122,7 +127,7 @@ class InstallSdsTracking(models.TransientModel):
                             sub_contract.end_date)
                         sub_start_date = fields.Datetime.from_string(
                             sub_contract.start_date)
-                        if (sub_contract.end_reason == '1' or
+                        if (sub_contract.end_reason_id == depart or
                             sub_end_date >
                                 sub_start_date + timedelta(days=50)):
                             sub_accept_ids.append(

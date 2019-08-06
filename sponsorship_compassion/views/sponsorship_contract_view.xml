@@ -46,7 +46,7 @@
             </field>
 
             <!-- Add transfer field -->
-            <field name="end_reason" position="after">
+            <field name="end_reason_id" position="after">
                 <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
             </field>
 

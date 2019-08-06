@@ -11,7 +11,7 @@
         <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
         <field name="arch" type="xml">
             <!-- End sponsorship form -->
-            <field name="end_reason" position="after">
+            <field name="end_reason_id" position="after">
                 <field name="contract_type" invisible="1"/>
                 <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
                 <field name="hold_expiration_date"
