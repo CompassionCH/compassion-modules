@@ -169,21 +169,21 @@
         </record>
 
         <record id="b2s_l7" model="correspondence.b2s.layout">
-            <field name="name">L7</field>
+            <field name="name">L7 Intro 9-11</field>
             <field name="code">7S11</field>
             <field name="page_1_box_ids" eval="[(4,l7_box_1)]"/>
             <field name="page_2_box_ids" eval="[(4,l7_box_2)]"/>
         </record>
 
         <record id="b2s_l8" model="correspondence.b2s.layout">
-            <field name="name">L8</field>
+            <field name="name">L8 Intro 12+</field>
             <field name="code">8S11</field>
             <field name="page_1_box_ids" eval="[(4,l8_box_1)]"/>
             <field name="page_2_box_ids" eval="[(4,l8_box_2)]"/>
         </record>
 
         <record id="b2s_l9" model="correspondence.b2s.layout">
-            <field name="name">L9</field>
+            <field name="name">L9 Final Letter</field>
             <field name="code">9S11</field>
             <field name="page_2_box_ids" eval="[(4,l9_box_1)]"/>
         </record>
