@@ -30,7 +30,8 @@ if not testing:
         _inherit = ['cms.form.wizard', 'cms.form.match.partner']
 
         _wiz_name = _name
-        form_buttons_template = 'mobile_app_connector.wizard_form_buttons_registration'
+        form_buttons_template = 'mobile_app_connector.' \
+                                'mobile_form_buttons_registration'
 
         _wiz_step_stored_fields = ()
 
@@ -146,7 +147,8 @@ if not testing:
         def form_after_create_or_update(self, values, extra_values):
             """ Mark the privacy statement as accepted.
             """
-            super(UserRegistrationForm, self).form_after_create_or_update(values, extra_values)
+            super(UserRegistrationForm, self).form_after_create_or_update(
+                values, extra_values)
             if self.form_next_url() == '/':  # form submitted
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id')).exists()
@@ -168,12 +170,15 @@ if not testing:
 
         def form_validate(self, request_values=None):
             if self.form_next_url() == '/':  # form submitted
-                return super(UserRegistrationForm, self).form_validate(request_values)
+                return super(UserRegistrationForm, self).form_validate(
+                    request_values)
             else:  # form not submitted (previous)
                 return 0, 0
 
-
     class FakeWizBaseForm(models.AbstractModel):
+        """
+        Registration form base
+        """
 
         _name = 'fake.wiz.base.form'
         _inherit = 'cms.form.res.users'
@@ -183,7 +188,6 @@ if not testing:
         has_sponsorship = fields.Boolean(
             'Do you currently sponsor a child?',
             help="Please click the box if the answer is yes.")
-
 
         @property
         def _form_fieldsets(self):
@@ -216,8 +220,10 @@ if not testing:
         def _form_create(self, values):
             pass
 
-
     class FakeWizNotSupporter(models.AbstractModel):
+        """
+        Registration form for new users
+        """
 
         _name = 'fake.wiz.not.supporter'
         _inherit = ['cms.form.res.users', 'cms.form.match.partner']
@@ -265,12 +271,14 @@ if not testing:
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
-                super(FakeWizNotSupporter, self).form_before_create_or_update(values, extra_values)
+                super(FakeWizNotSupporter, self).form_before_create_or_update(
+                    values, extra_values)
 
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id'))
 
-                # partner has already an user linked, add skip user creation option
+                # partner has already an user linked, add skip user creation
+                # option
                 if any(partner.user_ids.mapped('login_date')):
                     raise ValidationError(
                         _("This email is already linked to an account."))
@@ -284,8 +292,10 @@ if not testing:
             if self.form_next_url() == '/':
                 super(FakeWizNotSupporter, self)._form_create(values)
 
-
     class FakeWizSupporterForm(models.AbstractModel):
+        """
+        Registration form for people that are supporters
+        """
 
         _name = 'fake.wiz.supporter.form'
         _inherit = 'cms.form.res.users'
@@ -336,12 +346,14 @@ if not testing:
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
-                super(FakeWizSupporterForm, self).form_before_create_or_update(values, extra_values)
+                super(FakeWizSupporterForm, self).form_before_create_or_update(
+                    values, extra_values)
 
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id'))
 
-                # partner has already an user linked, add skip user creation option
+                # partner has already an user linked, add skip user creation
+                # option
                 if any(partner.user_ids.mapped('login_date')):
                     raise ValidationError(
                         _("This email is already linked to an account."))
