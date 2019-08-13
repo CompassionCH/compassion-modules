@@ -23,4 +23,5 @@ class RegistrationController(Controller, WizardFormControllerMixin):
     def cms_wiz(self, model_id=None, **kw):
         """Handle a wizard route.
         """
-        return self.make_response("cms.form.res.users", model_id=model_id, **kw)
+        return self.make_response("cms.form.res.users", model_id=model_id,
+                                  **kw)
