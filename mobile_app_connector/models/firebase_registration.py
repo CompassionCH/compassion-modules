@@ -104,4 +104,4 @@ class GetPartnerMessage(models.Model):
             raise NotImplemented('Operation %s is not supported by Odoo' %
                                  operation)
 
-        return {"Registration": reg_id}
+        return reg_id
