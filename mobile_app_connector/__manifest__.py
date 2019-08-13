@@ -61,6 +61,7 @@
         'views/product_view.xml',
         'views/app_feedback_view.xml',
         'views/firebase_registration.xml',
+        'templates/registration_form.xml',
     ],
     'demo': [
     ],
