@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-29 12:54+0000\n"
-"PO-Revision-Date: 2019-07-29 15:16+0200\n"
+"POT-Creation-Date: 2019-08-15 07:12+0000\n"
+"PO-Revision-Date: 2019-08-15 09:57+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -333,11 +333,6 @@ msgid "Compass (opens the compass on the project page)"
 msgstr "Compass (opens the compass on the project page)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_confirm_email
-msgid "Confirm your email"
-msgstr "Confermare la tua e-mail"
-
-#. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_recurring_contract
 msgid "Contract for recurring invoicing"
 msgstr "Contract for recurring invoicing"
@@ -464,6 +459,9 @@ msgstr "Disappointing"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form_display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter_display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_display_name
 msgid "Display Name"
@@ -476,7 +474,7 @@ msgid "Display on hub"
 msgstr "Display on hub"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_has_sponsorship
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form_has_sponsorship
 msgid "Do you currently sponsor a child?"
 msgstr "Sostieni un bambino?"
 
@@ -495,12 +493,6 @@ msgstr "Donazione"
 #: selection:wp.post,post_type:0
 msgid "Download"
 msgstr "Download"
-
-#. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:105
-#, python-format
-msgid "Emails fields don't match"
-msgstr "L'indirizzo email non corrisponde"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_end_date
@@ -625,6 +617,9 @@ msgstr "High"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_id
 msgid "ID"
@@ -696,6 +691,9 @@ msgstr "Lingua"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing___last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_base_form___last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter___last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category___last_update
 msgid "Last Modified on"
@@ -812,7 +810,7 @@ msgid "Mobile App Writing"
 msgstr "Mobile App Writing"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:46
+#: code:addons/mobile_app_connector/forms/registration_form.py:83
 #, python-format
 msgid "Mobile app account registration"
 msgstr "Iscrizione"
@@ -867,6 +865,16 @@ msgstr "New Photo"
 #: selection:wp.post,post_type:0
 msgid "News"
 msgstr "News"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Next"
+msgstr "Avanti"
+
+#. module: mobile_app_connector
+#: selection:registration.base.form,has_sponsorship:0
+msgid "No"
+msgstr "No"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:174
@@ -947,15 +955,10 @@ msgid "Physical letters cannot be displayed."
 msgstr "Le lettere fisiche non possono essere visualizzate."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:87
+#: code:addons/mobile_app_connector/models/wordpress_post.py:88
 #, python-format
 msgid "Please add wp_host in your configuration"
 msgstr "Please add wp_host in your configuration"
-
-#. module: mobile_app_connector
-#: model:ir.model.fields,help:mobile_app_connector.field_cms_form_res_users_has_sponsorship
-msgid "Please click the box if the answer is yes."
-msgstr "Spunta se la risposta è si"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_position
@@ -971,6 +974,11 @@ msgstr "Post type"
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_pr1
 msgid "Pray now"
 msgstr "Prega ora!"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Prev"
+msgstr "Precedente"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_print_count
@@ -1114,6 +1122,11 @@ msgstr ""
 "other blog posts at the bottom)"
 
 #. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_form_buttons_registration
+msgid "Submit"
+msgstr "Invia"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_subtype_ids
 msgid "Subtypes"
 msgstr "Subtypes"
@@ -1124,7 +1137,8 @@ msgid "Templates"
 msgstr "Templates"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_gtc_accept
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_not_supporter_gtc_accept
+#: model:ir.model.fields,field_description:mobile_app_connector.field_registration_supporter_form_gtc_accept
 msgid "Terms and conditions"
 msgstr "Termini e Condizioni"
 
@@ -1134,7 +1148,7 @@ msgid "Thank You"
 msgstr "Grazie"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/account_invoice.py:109
+#: code:addons/mobile_app_connector/models/account_invoice.py:111
 #, python-format
 msgid "The product %s was not found"
 msgstr "The product %s was not found"
@@ -1157,8 +1171,9 @@ msgid "This defines how to process related data"
 msgstr "This defines how to process related data"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:113
-#: code:addons/mobile_app_connector/forms/registration_form.py:135
+#: code:addons/mobile_app_connector/forms/registration_form.py:99
+#: code:addons/mobile_app_connector/forms/registration_form.py:279
+#: code:addons/mobile_app_connector/forms/registration_form.py:349
 #, python-format
 msgid "This email is already linked to an account."
 msgstr "This email is already linked to an account."
@@ -1169,7 +1184,7 @@ msgid "This post already exists"
 msgstr "This post already exists"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:68
+#: code:addons/mobile_app_connector/models/wordpress_post.py:69
 #, python-format
 msgid ""
 "This post was disabled probably because it doesn't have a content. Please "
@@ -1279,7 +1294,7 @@ msgid "Users"
 msgstr "Utenti"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:101
+#: code:addons/mobile_app_connector/forms/registration_form.py:91
 #, python-format
 msgid "Verify your e-mail address"
 msgstr "Grazie di verificare il tuo indirizzo email"
@@ -1304,13 +1319,13 @@ msgid "Visibility"
 msgstr "Visibility"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:67
+#: code:addons/mobile_app_connector/models/wordpress_post.py:68
 #, python-format
 msgid "Warning"
 msgstr "Warning"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:141
+#: code:addons/mobile_app_connector/forms/registration_form.py:353
 #, python-format
 msgid ""
 "We couldn't find your sponsorships. Please contact us for setting up your "
@@ -1403,6 +1418,11 @@ msgid "Wrong user or password"
 msgstr "Nome Utente o password errata"
 
 #. module: mobile_app_connector
+#: selection:registration.base.form,has_sponsorship:0
+msgid "Yes"
+msgstr "Si"
+
+#. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi7
 msgid "You have not yet paid your sponsorship"
@@ -1420,13 +1440,13 @@ msgid "You're changing ${ctx['objects'].get('his')} life"
 msgstr "Stai cambiando la sua vita"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:69
+#: code:addons/mobile_app_connector/forms/registration_form.py:195
 #, python-format
 msgid "Your account"
 msgstr "Il suo account"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:205
+#: code:addons/mobile_app_connector/forms/registration_form.py:160
 #, python-format
 msgid ""
 "Your account has been successfully created, you will now receive an email to "
@@ -1436,7 +1456,8 @@ msgstr ""
 "finalizzare la tua registrazione."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:53
+#: code:addons/mobile_app_connector/forms/registration_form.py:241
+#: code:addons/mobile_app_connector/forms/registration_form.py:311
 #, python-format
 msgid "Your personal data"
 msgstr "I tuoi dati personali"
@@ -1469,6 +1490,21 @@ msgid "compassion.child.pictures"
 msgstr "compassion.child.pictures"
 
 #. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_fake_wiz_base_form
+msgid "fake.wiz.base.form"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_fake_wiz_not_supporter
+msgid "fake.wiz.not.supporter"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_fake_wiz_supporter_form
+msgid "fake.wiz.supporter.form"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_param_1
 msgid "first parameter"
 msgstr "first parameter"
@@ -1487,6 +1523,21 @@ msgstr "mobile.app.hub"
 #: model:ir.model,name:mobile_app_connector.model_privacy_statement_agreement
 msgid "privacy.statement.agreement"
 msgstr "privacy.statement.agreement"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_base_form
+msgid "registration.base.form"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_not_supporter
+msgid "registration.not.supporter"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_registration_supporter_form
+msgid "registration.supporter.form"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_param_2
@@ -1509,48 +1560,11 @@ msgstr "third parameter"
 msgid "will use the filtered function on the associated records"
 msgstr "will use the filtered function on the associated records"
 
-#~ msgid ""
-#~ "\n"
-#~ "% set child = ctx['objects']\n"
-#~ "% if len(child) == 1:\n"
-#~ "You're changing ${child.get('his')} life\n"
-#~ "% else:\n"
-#~ "You're changing ${child.get_number()} lives\n"
-#~ "% endif\n"
-#~ "Thank You\n"
-#~ "        "
-#~ msgstr ""
-#~ "\n"
-#~ "% set child = ctx['objects']\n"
-#~ "% if len(child) == 1:\n"
-#~ "Stai cambiando la sua vita\n"
-#~ "% else:\n"
-#~ "Cambiando la vita di ${child.get_number()} bambini\n"
-#~ "% endif\n"
-#~ "        "
+#~ msgid "Confirm your email"
+#~ msgstr "Confermare la tua e-mail"
 
-#~ msgid ""
-#~ "\n"
-#~ "% set sponsorship = ctx['objects'].sudo()\n"
-#~ "% set letters = sponsorship.sponsor_letter_ids\n"
-#~ "% if sponsorship.last_letter == 0:\n"
-#~ "You wrote today.\n"
-#~ "% else:\n"
-#~ "    % if sponsorship.last_letter > 0:\n"
-#~ "You last wrote ${sponsorship.last_letter} days ago\n"
-#~ "    % else:\n"
-#~ "You never wrote to your sponsored child.\n"
-#~ "    % endif\n"
-#~ "% endif"
-#~ msgstr ""
-#~ "% set sponsorship = ctx['objects'].sudo()\n"
-#~ "% set letters = sponsorship.sponsor_letter_ids\n"
-#~ "% if sponsorship.last_letter == 0:\n"
-#~ "Hai scritto oggi.\n"
-#~ "% else:\n"
-#~ "    % if sponsorship.last_letter > 0:\n"
-#~ "Sono passati ${sponsorship.last_letter} giorni da quando hai scritto\n"
-#~ "    % else:\n"
-#~ "Non hai mai scritto prima d'ora.\n"
-#~ "    % endif\n"
-#~ "% endif"
+#~ msgid "Emails fields don't match"
+#~ msgstr "L'indirizzo email non corrisponde"
+
+#~ msgid "Please click the box if the answer is yes."
+#~ msgstr "Spunta se la risposta è si"

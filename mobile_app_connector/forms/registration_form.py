@@ -37,9 +37,9 @@ if not testing:
 
         def wiz_configure_steps(self):
             return {
-                1: {'form_model': 'fake.wiz.base.form'},
-                2: {'form_model': 'fake.wiz.supporter.form'},
-                3: {'form_model': 'fake.wiz.not.supporter'},
+                1: {'form_model': 'registration.base.form'},
+                2: {'form_model': 'registration.supporter.form'},
+                3: {'form_model': 'registration.not.supporter'},
             }
 
         def wiz_next_step(self):
@@ -89,10 +89,6 @@ if not testing:
             # check if value is a correct email address
             if value and not re.match(r'[^@]+@[^@]+\.[^@]+', value):
                 return 'email', _('Verify your e-mail address')
-
-            # check if email and confirm_email correspond
-            if value and req_values['confirm_email'] != value:
-                return 'email', _('Emails fields don\'t match')
 
             # check if the email is already used as login for an account
             does_login_exists = self.env['res.users'].sudo().search([
@@ -175,26 +171,27 @@ if not testing:
             else:  # form not submitted (previous)
                 return 0, 0
 
-    class FakeWizBaseForm(models.AbstractModel):
+    class RegistrationBaseForm(models.AbstractModel):
         """
         Registration form base
         """
 
-        _name = 'fake.wiz.base.form'
+        _name = 'registration.base.form'
         _inherit = 'cms.form.res.users'
 
         _nextPage = 1
 
-        has_sponsorship = fields.Boolean(
+        has_sponsorship = fields.Selection(
+            [('yes', 'Yes'), ('no', 'No')],
             'Do you currently sponsor a child?',
-            help="Please click the box if the answer is yes.")
+            required=True
+        )
 
         @property
         def _form_fieldsets(self):
             fieldset = [
                 {
                     'id': 'user',
-                    'title': _('Your account'),
                     'fields': [
                         'has_sponsorship',
                     ]
@@ -212,7 +209,7 @@ if not testing:
             return None
 
         def form_before_create_or_update(self, values, extra_values):
-            if values['has_sponsorship']:
+            if values['has_sponsorship'] == 'yes':
                 self._nextPage = 2
             else:
                 self._nextPage = 3
@@ -220,19 +217,17 @@ if not testing:
         def _form_create(self, values):
             pass
 
-    class FakeWizNotSupporter(models.AbstractModel):
+    class RegistrationNotSupporter(models.AbstractModel):
         """
         Registration form for new users
         """
 
-        _name = 'fake.wiz.not.supporter'
-        _inherit = ['cms.form.res.users', 'cms.form.match.partner']
+        _name = 'registration.not.supporter'
+        _inherit = 'cms.form.res.users'
 
         _form_model = 'res.users'
-        _form_required_fields = 'confirm_email'
         _display_type = 'full'
 
-        confirm_email = fields.Char('Confirm your email')
         gtc_accept = fields.Boolean(
             "Terms and conditions", required=True
         )
@@ -248,7 +243,6 @@ if not testing:
                         'partner_firstname',
                         'partner_lastname',
                         'partner_email',
-                        'confirm_email',
                         'partner_street',
                         'partner_zip',
                         'partner_city',
@@ -271,8 +265,8 @@ if not testing:
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
-                super(FakeWizNotSupporter, self).form_before_create_or_update(
-                    values, extra_values)
+                super(RegistrationNotSupporter,
+                      self).form_before_create_or_update(values, extra_values)
 
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id'))
@@ -290,21 +284,20 @@ if not testing:
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
             if self.form_next_url() == '/':
-                super(FakeWizNotSupporter, self)._form_create(values)
+                super(RegistrationNotSupporter, self)._form_create(values)
 
-    class FakeWizSupporterForm(models.AbstractModel):
+    class RegistrationSupporterForm(models.AbstractModel):
         """
         Registration form for people that are supporters
         """
 
-        _name = 'fake.wiz.supporter.form'
+        _name = 'registration.supporter.form'
         _inherit = 'cms.form.res.users'
 
         _form_model = 'res.users'
-        _form_required_fields = 'confirm_email'
+        _form_required_fields = ['partner_email', 'gtc_accept']
         _display_type = 'full'
 
-        confirm_email = fields.Char('Confirm your email')
         gtc_accept = fields.Boolean(
             "Terms and conditions", required=True
         )
@@ -317,7 +310,6 @@ if not testing:
                     'title': _('Your personal data'),
                     'fields': [
                         'partner_email',
-                        'confirm_email',
                         'gtc_accept',
                     ]
                 },
@@ -343,22 +335,19 @@ if not testing:
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
             if self.form_next_url() == '/':  # form submitted
-                # Forbid update of an existing partner
-                extra_values.update({'skip_update': True})
-
-                super(FakeWizSupporterForm, self).form_before_create_or_update(
-                    values, extra_values)
-
-                partner = self.env['res.partner'].sudo().browse(
-                    values.get('partner_id'))
+                # Find sponsor given the e-mail
+                partner = self.env['res.partner'].sudo().search([
+                    ('email', 'ilike', extra_values['partner_email']),
+                    ('has_sponsorships', '=', True)
+                ])
 
                 # partner has already an user linked, add skip user creation
                 # option
-                if any(partner.user_ids.mapped('login_date')):
+                if any(partner.mapped('user_ids.login_date')):
                     raise ValidationError(
                         _("This email is already linked to an account."))
                 # partner is not sponsoring a child (but answered yes (form))
-                if not partner.has_sponsorships:
+                if not partner or len(partner) > 1:
                     # TODO AP-102 :Ask child ref to try to get a match
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
@@ -366,9 +355,10 @@ if not testing:
 
                 # Push the email for user creation
                 values['email'] = extra_values['partner_email']
+                values['partner_id'] = partner.id
 
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
             if self.form_next_url() == '/':
-                super(FakeWizSupporterForm, self)._form_create(values)
+                super(RegistrationSupporterForm, self)._form_create(values)

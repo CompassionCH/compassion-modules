@@ -19,9 +19,9 @@ class RegistrationController(Controller, WizardFormControllerMixin):
     @http.route([
         '/registration/page/<int:page>',
         '/registration/',
-    ], type='http', auth='user', website=True)
-    def cms_wiz(self, model_id=None, **kw):
+    ], type='http', auth='public', website=True)
+    def registration(self, model_id=None, **kw):
         """Handle a wizard route.
         """
-        return self.make_response("cms.form.res.users", model_id=model_id,
-                                  **kw)
+        return self.make_response(
+            "cms.form.res.users", model_id=model_id, **kw)
