@@ -58,7 +58,8 @@ class AccountInvoiceLine(models.Model):
         if existing_comm:
             invoice_lines = existing_comm.get_objects() | invoice_lines
 
-        config = invoice_lines.get_thankyou_config()
+        config = invoice_lines.mapped('product_id.thankyou_config')\
+            or invoice_lines.get_thankyou_config()
         comm_vals = {
             'partner_id': partner.id,
             'config_id': config.id,
