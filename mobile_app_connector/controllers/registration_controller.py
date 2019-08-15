@@ -11,18 +11,17 @@
 from odoo import http
 from odoo.http import Controller
 
-from odoo.addons.cms_form.controllers.main import FormControllerMixin
+from odoo.addons.cms_form.controllers.main import WizardFormControllerMixin
 
 
-class RegistrationController(Controller, FormControllerMixin):
+class RegistrationController(Controller, WizardFormControllerMixin):
 
-    @http.route('/registration/', type='http', auth='public', website=True)
-    def registration_form(self, **kwargs):
-        """
-        Return registration form
+    @http.route([
+        '/registration/page/<int:page>',
+        '/registration/',
+    ], type='http', auth='public', website=True)
+    def registration(self, model_id=None, **kw):
+        """Handle a wizard route.
         """
         return self.make_response(
-            'res.users',
-            model_id=None,
-            **kwargs
-        )
+            "cms.form.res.users", model_id=model_id, **kw)
