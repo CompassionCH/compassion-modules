@@ -1,42 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-    Resource: utm.medium
-    -->
-    <record id="utm_medium_post" model="utm.medium">
-        <field name="name">Post</field>
-    </record>
-    <record id="utm_medium_payment" model="utm.medium">
-        <field name="name">Payment</field>
-    </record>
-    <record id="utm_medium_instagram" model="utm.medium">
-        <field name="name">Instagram</field>
-        <field name="type">automatic</field>
-    </record>
-    <record id="utm_medium_mass_mailing" model="utm.medium">
-        <field name="name">Mass mailing</field>
-        <field name="type">automatic</field>
-    </record>
-
-    <!-- Redefine existing mediums -->
-    <record model="utm.medium" id="utm.utm_medium_google_adwords">
-        <field name="name">Google</field>
-        <field name="type">automatic</field>
-    </record>
-    <record model="utm.medium" id="utm.utm_medium_facebook">
-        <field name="name">Facebook</field>
-        <field name="type">automatic</field>
-    </record>
-    <record model="utm.medium" id="utm.utm_medium_twitter">
-        <field name="name">Twitter</field>
-        <field name="type">automatic</field>
-    </record>
-    <record model="utm.medium" id="utm.utm_medium_banner">
-        <field name="name">Banner Ads</field>
-        <field name="type">automatic</field>
-    </record>
-
-    <!--
     Resource: utm.campaign
     -->
     <record id="utm_campaign_sub" model="utm.campaign">

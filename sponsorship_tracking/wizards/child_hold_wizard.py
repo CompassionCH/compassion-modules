@@ -43,8 +43,7 @@ class ChildHoldWizard(models.TransientModel):
         action = super(ChildHoldWizard, self)._get_action(holds)
         if self.return_action == 'sub':
             sub_contract = self.env['recurring.contract'].browse(
-                self.env.context.get('contract_id')).with_context(
-                allow_rewind=True)
+                self.env.context.get('contract_id'))
             # Prevent choosing child completing in less than 2 years
             in_two_years = datetime.today() + relativedelta(years=2)
             child = holds[0].child_id

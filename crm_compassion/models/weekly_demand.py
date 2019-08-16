@@ -210,10 +210,11 @@ class WeeklyDemand(models.Model):
     def _default_cancellation(self):
         """ Compute average of sponsor cancellations since one year. """
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
         cancellations = self.env['recurring.contract'].search_count([
             ('type', 'like', 'S'),
             ('state', '=', 'terminated'),
-            ('end_reason', '!=', '1'),
+            ('end_reason_id', '!=', depart.id),
             ('end_date', '>=', fields.Date.to_string(start_date))
         ])
         return float(cancellations) / STATS_DURATION

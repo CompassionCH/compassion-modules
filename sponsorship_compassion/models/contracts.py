@@ -179,25 +179,6 @@ class SponsorshipContract(models.Model):
 
         return res
 
-    @api.model
-    def get_ending_reasons(self):
-        res = super(SponsorshipContract, self).get_ending_reasons()
-        context = self.env.context
-        if 'active_id' in context and \
-                context.get('active_model') == self._name:
-            contract_type = self.browse(context['active_id']).type
-        else:
-            contract_type = context.get('default_type', 'O')
-        if 'S' in contract_type:
-            res.extend([
-                ('1', _("Depart of child")),
-                ('10', _("Subreject")),
-                ('11', _("Exchange of sponsor")),
-                ('13', _("Exchange of beneficiary")),
-            ])
-            res.sort(key=lambda tup: int(float(tup[0])))  # Sort res
-        return res
-
     @api.multi
     @api.depends('partner_id', 'correspondent_id')
     def _compute_fully_managed(self):
@@ -866,6 +847,7 @@ class SponsorshipContract(models.Model):
         """ Called when a sponsorship is terminated or cancelled:
         Remove sponsor from the child and terminate related gift contracts.
         """
+        departure = self.env.ref('sponsorship_compassion.end_reason_depart')
         for sponsorship in self:
             gift_contract_lines = self.env['recurring.contract.line'].search([
                 ('sponsorship_id', '=', sponsorship.id)])
@@ -876,7 +858,8 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.signal_workflow('contract_terminated')
 
-            if sponsorship.global_id and sponsorship.end_reason != '1':
+            if sponsorship.global_id and \
+                    sponsorship.end_reason_id != departure:
                 # Cancel Sponsorship Message
                 message_obj = self.env['gmc.message.pool']
                 action_id = self.env.ref(

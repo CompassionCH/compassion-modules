@@ -47,6 +47,6 @@
     'demo': [
     ],
     'development_status': 'Beta',
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

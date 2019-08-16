@@ -5,128 +5,67 @@
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
         <field name="arch" type="xml">
-            <tree position="attributes">
-                <attribute name="colors">blue:state == 'draft';green:state == 'waiting';black:state == 'active';gray:state in ('terminated','cancelled')</attribute>
-            </tree>
             <field name="partner_id" position="after">
                 <field name="child_code" />
-            </field>
-            <field name="start_date" position="after">
-                <field name="activation_date"/>
             </field>
             <field name="reference" position="replace" />
         </field>
     </record>
-<!--pylint:disable=dangerous-view-replace-wo-priority-->
+
+    <!--pylint:disable=dangerous-view-replace-wo-priority-->
     <record id="view_recurring_contract_form_compassion" model="ir.ui.view">
         <field name="name">recurring.contract.compassion.form</field>
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
         <field name="arch" type="xml">
-            <!-- Modify header to add the waiting state -->
-            <field name="state" position="attributes">
-                <attribute name="statusbar_visible">draft,active,waiting,terminated</attribute>
-            </field>
-            <header>
-                <button name="action_cancel_draft" type="object" string="Set back to draft" attrs="{'invisible': [('state', '!=', 'cancelled')]}"/>
-            </header>
-            <button name="button_generate_invoices" position="attributes">
-                <attribute name="states" position="replace">
-                    <attribute name="states">waiting,active</attribute>
-                </attribute>
-            </button>
-
-            <button name="contract_terminated" position="replace">
-                <button name="%(action_end_contract)d" type="action" string="Terminate" class="oe_highlight"
-                        attrs="{'invisible': ['|', ('state', 'not in', ['waiting', 'mandate', 'active']), ('end_date', '!=', False)]}"/>
-            </button>
-
-            <button name="open_invoices" position="attributes">
-                <attribute name="groups" position="replace"/>
-            </button>
-
             <!-- Hide reference -->
             <field name="reference" position="replace">
                 <field name="name"/>
             </field>
 
-            <!-- Redefine the top group view -->
-            <xpath expr="//sheet/group[1]" position="replace">
-                <group>
-                    <group>
-                        <field name="partner_id"
-                               options="{'create': false, 'm2o_dialog': false}"/>
-                        <field name="group_id" domain="[('partner_id', '=', partner_id)]"
-                               context="{'default_partner_id': partner_id}"/>
-                        <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
-                               context="{'default_type':'S'}"/>
-                        <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
-                    </group>
-                    <group>
-                        <field name="create_date" string="Creation date"/>
-                        <field name="start_date" string="Start date"/>
-                        <field name="activation_date" states="active,terminated,cancelled" />
-                        <field name="end_date" attrs="{'invisible':[('end_date', '=', False)]}" />
-                        <field name="next_invoice_date" states="draft,waiting,active" />
-                        <field name="end_reason" states="terminated,cancelled"/>
-                    </group>
-                    <group>
-                        <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
-                               options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
-                        <field name="origin_id"/>
-                        <field name="medium_id" domain="[('type', '=', 'manual')]"/>
-                        <field name="campaign_id"/>
-                        <field name="source_id" readonly="1"/>
-                    </group>
-                    <group>
-                        <field name="type" />
-                        <field name="group_freq"/>
-                        <field name="months_paid"/>
-                        <field name="last_paid_invoice_date"/>
-                        <field name="commitment_number" invisible="1"/>
-                    </group>
-                </group>
-            </xpath>
+            <field name="group_id" position="after">
+                <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
+                                   context="{'default_type':'S'}"/>
+                <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
+            </field>
+            <field name="medium_id" position="before">
+                <field name="child_id" domain="[('state', 'in', ('N', 'I'))]" options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
+                <field name="origin_id"/>
+            </field>
+            <field name="last_paid_invoice_date" position="before">
+                <field name="type"/>
+                <field name="group_freq"/>
+                <field name="months_paid"/>
+            </field>
         </field>
     </record>
-<!--pylint:disable=dangerous-view-replace-wo-priority-->
+
+    <!--pylint:disable=dangerous-view-replace-wo-priority-->
     <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
         <field name="name">recurring.contract.compassion.select</field>
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
         <field name="arch" type="xml">
-            <data>
-                <field name="reference" position="attributes">
-                    <attribute name="filter_domain">
-                        ['|', '|', '|', '|', '|', '|',
-                        ('reference','ilike',self),
-                        ('partner_id','child_of',self),
-                        ('payment_mode_id', 'ilike', self),
-                        ('partner_codega', 'ilike', self),
-                        ('child_code', 'ilike', self),
-                        ('child_name', 'ilike', self),
-                        ('origin_id', 'ilike', self),
-                        ]
-                    </attribute>
-                </field>
-                <field name="payment_mode_id" position="after">
-                    <field name="origin_id"/>
-                </field>
-                <xpath expr="//filter[@name='draft']" position="replace">
-                    <filter name="draft" string="Draft" domain="[('state','=', 'draft')]"/>
-                    <filter name="waiting" string="Waiting" domain="[('state','in', ('waiting','mandate'))]"/>
-                </xpath>
-                <xpath expr="//filter[@name='terminated']" position="replace">
-                    <filter name="finished" string="Finished" domain="[('state','=', 'terminated')]"/>
-                </xpath>
-                <xpath expr="//filter[@name='active']" position="attributes">
-                    <attribute name="domain">[('is_active', '=', True), ('state', 'not in', ('cancelled','terminated'))]</attribute>
-                </xpath>
-                <xpath expr="//filter[@name='state']" position="after">
-                    <separator />
-                    <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
-                </xpath>
-            </data>
+            <field name="reference" position="attributes">
+                <attribute name="filter_domain">
+                    ['|', '|', '|', '|', '|', '|',
+                    ('reference','ilike',self),
+                    ('partner_id','child_of',self),
+                    ('payment_mode_id', 'ilike', self),
+                    ('partner_codega', 'ilike', self),
+                    ('child_code', 'ilike', self),
+                    ('child_name', 'ilike', self),
+                    ('origin_id', 'ilike', self),
+                    ]
+                </attribute>
+            </field>
+            <field name="payment_mode_id" position="after">
+                <field name="origin_id"/>
+            </field>
+            <xpath expr="//filter[@name='state']" position="after">
+                <separator />
+                <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
+            </xpath>
         </field>
     </record>
 

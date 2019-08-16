@@ -30,6 +30,6 @@
         'templates/assets.xml',
         'templates/sms_registration_confirmation_template.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

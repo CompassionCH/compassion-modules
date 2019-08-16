@@ -131,6 +131,8 @@ class RecurringContract(models.Model):
 
     @api.multi
     def action_sub_reject(self):
+        sub_reject = self.env.ref(
+            'sponsorship_compassion.end_reason_subreject')
         for contract in self:
             contract.partner_id.message_post(
                 subject=_('{} - SUB Reject'.format(contract.child_code)),
@@ -140,7 +142,7 @@ class RecurringContract(models.Model):
             if sub and sub.state == 'draft':
                 super(RecurringContract, sub).unlink()
             elif sub:
-                sub.end_reason = '10'   # Subreject reason
+                sub.end_reason_id = sub_reject
                 self.env['end.contract.wizard'].create({
                     'contract_id': sub.id
                 }).end_contract()
@@ -242,11 +244,14 @@ class RecurringContract(models.Model):
     ##########################################################################
     def _check_need_sub(self):
         """ Called when a contract is terminated, update the sds states. """
+        departure = self.env.ref('sponsorship_compassion.end_reason_depart')
+        child_exchange = self.env.ref(
+            'sponsorship_compassion.end_reason_child_exchange')
         for contract in self.filtered('child_id'):
             lang = contract.correspondent_id.lang[:2]
             sds_user = self.env['sds.follower.settings'].get_param(
                 'sub_' + lang)
-            if contract.end_reason == '1':  # Child departure
+            if contract.end_reason_id == departure:
                 # When a departure comes for a sub sponsorship, we consider
                 # the sub proposal as accepted.
                 if contract.parent_id.sds_state == 'sub':
@@ -261,14 +266,14 @@ class RecurringContract(models.Model):
                 }
             else:
                 if contract.parent_id.sds_state == 'sub' and \
-                        contract.end_reason != '13':    # 13=Exchange of child
+                        contract.end_reason_id != child_exchange:
                     # This is as subreject
                     contract.parent_id.write({
                         'sds_state': 'sub_reject',
                         'color': 2
                     })
                 elif contract.parent_id.sds_state == 'sub' and \
-                        contract.end_reason == '13':    # 13=Exchange of child
+                        contract.end_reason_id == child_exchange:
                     # Remove parent to allow a new subsponsorship
                     contract.with_context(
                         allow_removing_sub=True).parent_id = False

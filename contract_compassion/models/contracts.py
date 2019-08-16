@@ -21,15 +21,8 @@ from odoo.addons.queue_job.job import job, related_action
 logger = logging.getLogger(__name__)
 
 
-class ContractGroup(models.Model):
-    _inherit = 'recurring.contract.group'
-
-    def _get_gen_states(self):
-        return ['active', 'waiting']
-
-
 class RecurringContract(models.Model):
-    _inherit = ['recurring.contract', 'utm.mixin']
+    _inherit = 'recurring.contract'
     _order = 'id desc'
     _rec_name = 'name'
     _name = 'recurring.contract'
@@ -49,17 +42,12 @@ class RecurringContract(models.Model):
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(
         'Sponsored child code', related='child_id.local_id', readonly=True)
-    activation_date = fields.Date(readonly=True, copy=False)
-    is_active = fields.Boolean(
-        'Contract Active', compute='_compute_active', store=True,
-        help="It indicates that the first invoice has been paid and the "
-             "contract was activated.")
+
     # Field used for identifying gifts from sponsor
     commitment_number = fields.Integer(
         'Partner Contract Number', required=True, copy=False,
         oldname='num_pol_ga'
     )
-    end_reason = fields.Selection('get_ending_reasons', copy=False)
     months_paid = fields.Integer(compute='_compute_months_paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
@@ -73,10 +61,6 @@ class RecurringContract(models.Model):
         'recurring.contract', 'sub sponsorship', readonly=True, copy=False)
 
     name = fields.Char(compute='_compute_name', store=True)
-    partner_id = fields.Many2one(
-        'res.partner', 'Partner', required=True,
-        readonly=False, states={'terminated': [('readonly', True)]},
-        ondelete='restrict', track_visibility='onchange')
     type = fields.Selection('_get_type', required=True, default='O')
     group_freq = fields.Char(
         string='Payment frequency', compute='_compute_frequency',
@@ -101,14 +85,6 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def _get_states(self):
-        """ Add a waiting and a cancelled state """
-        states = super(RecurringContract, self)._get_states()
-        states.insert(1, ('waiting', _('Waiting Payment')))
-        states.insert(len(states), ('cancelled', _('Cancelled')))
-        return states
-
     @api.multi
     @api.depends('partner_id', 'partner_id.ref', 'child_id',
                  'child_id.local_id')
@@ -123,27 +99,6 @@ class RecurringContract(models.Model):
                     name += ' - ' + contract.contract_line_ids[
                         0].product_id.name
                 contract.name = name
-
-    @api.multi
-    @api.depends('activation_date', 'state')
-    def _compute_active(self):
-        for contract in self:
-            contract.is_active = bool(contract.activation_date) and \
-                contract.state not in ('terminated', 'cancelled')
-
-    def get_ending_reasons(self):
-        """Returns all the ending reasons of sponsorships"""
-        return [
-            ('2', _("Mistake from our staff")),
-            ('3', _("Death of partner")),
-            ('4', _("Moved to foreign country")),
-            ('5', _("Not satisfied")),
-            ('6', _("Doesn't pay")),
-            ('8', _("Personal reasons")),
-            ('9', _("Never paid")),
-            ('12', _("Financial reasons")),
-            ('25', _("Not given")),
-        ]
 
     def _get_type(self):
         return [('O', _('General'))]
@@ -268,53 +223,6 @@ class RecurringContract(models.Model):
         return res
 
     ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
-    @api.multi
-    def invoice_unpaid(self, invoice):
-        """ Hook when invoice is unpaid """
-        pass
-
-    @api.multi
-    def invoice_paid(self, invoice):
-        """ Activate contract if it is waiting for payment. """
-        activate_contracts = self.filtered(lambda c: c.state == 'waiting')
-        activate_contracts.signal_workflow('contract_active')
-
-    @api.multi
-    def force_activation(self):
-        """ Used to transition sponsorships in active state. """
-        self.signal_workflow('contract_validated')
-        self.signal_workflow('contract_active')
-        logger.info("Contracts " + str(self.ids) + " activated.")
-        return True
-
-    def clean_invoices_paid(self, since_date, to_date):
-        """
-        Unreconcile paid invoices in the given period, so that they
-        can be cleaned with the clean_invoices process.
-        :param since_date: clean invoices with date greater than this
-        :param to_date: clean invoices with date lower than this
-        :return: invoices cleaned that contained other contracts than the
-                 the ones we are cleaning.
-        """
-        # Find all paid invoice lines after the given date
-        inv_line_obj = self.env['account.invoice.line']
-        invl_search = self._filter_clean_invoices(since_date, to_date)
-        inv_lines = inv_line_obj.search(invl_search)
-        move_lines = inv_lines.mapped('invoice_id.move_id.line_ids').filtered(
-            'reconciled')
-        reconciles = inv_lines.mapped(
-            'invoice_id.payment_move_line_ids.full_reconcile_id')
-
-        # Unreconcile paid invoices
-        move_lines |= reconciles.mapped('reconciled_line_ids')
-        move_lines.remove_move_reconcile()
-
-        return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
-            lambda l: l.contract_id not in self).mapped('invoice_id')
-
-    ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.onchange('parent_id')
@@ -368,90 +276,12 @@ class RecurringContract(models.Model):
         self.with_delay(eta=delay).cancel_old_invoices()
         return True
 
-    @api.multi
-    def contract_cancelled(self):
-        now = fields.Datetime.now()
-        self.write({
-            'state': 'cancelled',
-            'end_date': now
-        })
-        self.clean_invoices(now)
-        return True
-
-    @api.multi
-    def contract_terminated(self):
-        now = fields.Datetime.now()
-        self.write({
-            'state': 'terminated',
-            'end_date': now
-        })
-        self.clean_invoices(now)
-        return True
-
-    @api.multi
-    def contract_waiting(self):
-        return self.write({
-            'state': 'waiting',
-            'start_date': fields.Datetime.now()
-        })
-
-    @api.multi
-    def action_cancel_draft(self):
-        """ Set back a cancelled contract to draft state. """
-        update_sql = "UPDATE recurring_contract " \
-            "SET state='draft', end_date=NULL, activation_date=NULL, " \
-            "start_date=CURRENT_DATE, end_reason=NULL"
-        for contract in self.filtered(lambda c: c.state == 'cancelled'):
-            query = update_sql
-            if contract.child_id and not contract.child_id.is_available:
-                query += ', child_id = NULL'
-            query += " WHERE id = %s"
-            self.env.cr.execute(query, [contract.id])
-            contract.delete_workflow()
-            contract.create_workflow()
-            self.env.invalidate_all()
-        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.multi
-    def _on_change_next_invoice_date(self, new_invoice_date):
-        """ Disable rewind check on draft and mandate contracts. """
-        contracts = self.filtered(
-            lambda c: c.state not in ('draft', 'mandate'))
-        super(RecurringContract, contracts)._on_change_next_invoice_date(
-            new_invoice_date)
-
     def _get_filtered_invoice_lines(self, invoice_lines):
         return invoice_lines.filtered(lambda l: l.contract_id.id in self.ids)
-
-    @api.multi
-    @job(default_channel='root.recurring_invoicer')
-    @related_action(action='related_action_contract')
-    def _clean_invoices(self, since_date=None, to_date=None,
-                        keep_lines=None, clean_invoices_paid=True):
-        """ Clean invoices
-        Take into consideration when the sponsor has paid in advance,
-        so that we cancel/modify the paid invoices and let the user decide
-        what to do with the payment.
-        :param since_date: optional date from which invoices will be cleaned
-        :param to_date: optional date limit for invoices we want to clean
-        :param keep_lines: set to true to avoid deleting invoice lines
-        :param clean_invoices_paid: set to true to unreconcile paid invoices
-                                    and clean them as well.
-        :return: invoices cleaned (which should be in cancel state)
-        """
-        if clean_invoices_paid:
-            sponsorships = self.filtered(lambda s: s.type == 'S')
-            paid_invoices = sponsorships.clean_invoices_paid(since_date,
-                                                             to_date)
-
-        invoices = super(RecurringContract, self)._clean_invoices(
-            since_date, to_date, keep_lines)
-        if clean_invoices_paid:
-            paid_invoices.reconcile_after_clean()
-        return invoices
 
     @job(default_channel='root.recurring_invoicer')
     @related_action(action='related_action_contract')
@@ -486,14 +316,6 @@ class RecurringContract(models.Model):
                 inv_lines.unlink()
                 invoice.action_invoice_open()
 
-    def _clean_error(self):
-        raise UserError(
-            _('The sponsor has already paid in advance for this '
-              'sponsorship, but the system was unable to automatically '
-              'cancel the invoices. Please refer to an accountant for '
-              'changing the attribution of his payment before cancelling '
-              'the sponsorship.'))
-
     @api.multi
     def _reset_open_invoices_job(self):
         """Clean the open invoices in order to generate new invoices.
@@ -524,19 +346,6 @@ class RecurringContract(models.Model):
             validate_invoices = invoice_obj.browse(list(inv_update_ids))
             validate_invoices.action_invoice_open()
         return True
-
-    @api.multi
-    def _filter_clean_invoices(self, since_date, to_date):
-        """ Construct filter domain to be passed on method
-        clean_invoices_paid, which will determine which invoice lines will
-        be removed from invoices. """
-        if not since_date:
-            since_date = fields.Date.today()
-        invl_search = [('contract_id', 'in', self.ids), ('state', '=', 'paid'),
-                       ('due_date', '>=', since_date)]
-        if to_date:
-            invl_search.append(('due_date', '<=', to_date))
-        return invl_search
 
     def _on_group_id_changed(self):
         """Remove lines of open invoices and generate them again

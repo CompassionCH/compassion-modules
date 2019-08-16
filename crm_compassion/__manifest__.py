@@ -69,6 +69,6 @@
         'static/src/xml/web_fullcalendar_event.xml',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

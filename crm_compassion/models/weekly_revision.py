@@ -68,6 +68,7 @@ class WeeklyRevision(models.Model):
         return revision
 
     def recompute_effective_numbers(self):
+        depart = self.env.ref('sponsorship_compassion.end_reason_depart')
         for revision in self:
             start_date = revision.week_start_date
             end_date = revision.week_end_date
@@ -103,7 +104,7 @@ class WeeklyRevision(models.Model):
                     ('end_date', '<=', end_date),
                     ('end_date', '!=', False),
                     ('hold_expiration_date', '!=', False),
-                    ('end_reason', '!=', '1'),
+                    ('end_reason_id', '!=', depart.id),
                 ])
                 # Cancellations for which we didn't keep the child on hold
                 resupply = len(cancellations.filtered(lambda c: (

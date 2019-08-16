@@ -144,8 +144,7 @@ class RecurringContract(models.Model):
         online.
         :return: True
         """
-        invoicer = self.env['recurring.invoicer'].create({
-            'source': "SMS Sponsorship"})
+        invoicer = self.env['recurring.invoicer'].create({})
         journal = self.env['account.journal'].search(
             [('type', '=', 'sale'), ('company_id', '=', 1)], limit=1)
         inv_data = self.group_id._setup_inv_data(journal, invoicer, self)

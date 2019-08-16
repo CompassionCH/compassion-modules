@@ -171,9 +171,11 @@ class TestTracking(BaseSponsorshipTest):
         subsponsorship2.with_context(async_mode=True).force_activation()
 
         # The subsponsorship is ended, the sponsor choose another child.
+        exchange = self.env.ref(
+            'sponsorship_compassion.end_reason_child_exchange')
         self.env['end.contract.wizard'].with_context(default_type='S').create({
             'contract_id': subsponsorship2.id,
-            'end_reason': '13'}).end_contract()
+            'end_reason_id': exchange.id}).end_contract()
 
         self.assertEqual(self.list_sponsorships[1].sds_state, 'sub')
 
@@ -210,9 +212,10 @@ class TestTracking(BaseSponsorshipTest):
         self.assertEqual(self.list_sponsorships[2].sds_state, 'sub')
         # Setup a sponsorship end wizard and put and end to the subsponsorship
         # that we just created.
+        subreject = self.env.ref('sponsorship_compassion.end_reason_subreject')
         self.env['end.contract.wizard'].with_context(default_type='S').create(
             {'contract_id': subsponsorship3.id,
-             'end_reason': '10'}).end_contract()
+             'end_reason_id': subreject.id}).end_contract()
 
         self.assertEqual(self.list_sponsorships[2].sds_state, 'sub_reject')
         self.assertEqual(subsponsorship3.sds_state, 'cancelled')

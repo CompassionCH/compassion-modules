@@ -62,7 +62,7 @@ class ContractGroup(models.Model):
 
         if invoicer is None:
             invoicer = self.env['recurring.invoicer'].with_context(
-                lang='en_US').create({'source': self._name})
+                lang='en_US').create({})
 
         # Search active Sponsorships with automatic birthday gift
         gen_states = self._get_gen_states()
