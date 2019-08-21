@@ -35,6 +35,11 @@ class FieldOffice(models.Model):
     province = fields.Char()
     zip_code = fields.Char()
     currency = fields.Char()
+    learning_image_url = fields.Char()
+    learning_summary = fields.Text()
+    learning_ids = fields.One2many(
+        'field.office.learning', 'field_office_id', string='What I learn'
+    )
     available_on_childpool = fields.Boolean(
         default=True,
         help='Uncheck to restrict child selection from this field office.'
