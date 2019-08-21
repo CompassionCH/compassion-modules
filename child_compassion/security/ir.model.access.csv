@@ -92,5 +92,7 @@ access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_wee
 read_access_demand_weekly_demand,Read only access on demand_weekly_demand,model_demand_weekly_demand,group_sponsorship,1,0,0,0
 access_user_field_office,access_user_field_office,model_compassion_field_office,base.group_user,1,0,0,0
 access_field_office,access_field_office,model_compassion_field_office,base.group_portal,1,0,0,0
+access_admin_field_office,access_admin_field_office,model_compassion_field_office,base.group_system,1,1,1,1
 access_user_learning_info,access_user_learning_info,model_learning_info,base.group_user,1,0,0,0
 access_learning_info,access_learning_info,model_learning_info,base.group_portal,1,0,0,0
+access_admin_learning_info,access_admin_learning_info,model_learning_info,base.group_system,1,1,1,1
