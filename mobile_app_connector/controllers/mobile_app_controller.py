@@ -195,24 +195,3 @@ class RestController(http.Controller):
                 response['message'] = _("Mail delivery error")
 
         return response
-
-    @http.route('/mobile-app-api/faq',
-                type='json', auth='public', methods=['GET'])
-    def mobile_app_faq(self, **parameters):
-        """
-        Called whenever the user want to access the FAQ. The question are
-        retrieved from the website and returned as a JSON message to the user.
-        """
-        return request.env['frequently.asked.questions']\
-            .mobile_get_faq_json(_get_lang(request, parameters))
-
-    @http.route('/mobile-app-api/privacy_notice',
-                type='json', auth='public', methods=['GET'])
-    def mobile_privacy_notice(self, **parameters):
-        """
-        Called whenever the user want to access the Privacy notice agreement.
-        The question are retrieved from the website and returned as a JSON
-        message to the user.
-        """
-        return request.env['privacy.statement.agreement']\
-            .mobile_get_privacy_notice(_get_lang(request, parameters))

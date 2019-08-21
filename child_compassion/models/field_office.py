@@ -11,6 +11,7 @@
 
 
 from odoo import api, models, fields
+from werkzeug.exceptions import BadRequest
 
 
 class FieldOffice(models.Model):
@@ -35,6 +36,11 @@ class FieldOffice(models.Model):
     province = fields.Char()
     zip_code = fields.Char()
     currency = fields.Char()
+    image_url = fields.Char()
+    summary = fields.Text()
+    learning_info_list = fields.One2many(
+        'learning.info', 'field_office_id', string='Learning information list'
+    )
     available_on_childpool = fields.Boolean(
         default=True,
         help='Uncheck to restrict child selection from this field office.'
@@ -90,6 +96,60 @@ class FieldOffice(models.Model):
         }
         message_obj.with_context(async_mode=False).create(message_vals)
         return True
+
+    @api.model
+    def mobile_get_learning(self, **other_params):
+        if 'country' not in other_params:
+            raise BadRequest()
+
+        country = other_params['country']
+        country_id = self.env['res.country'].search([
+            ('name', '=', country)
+        ])
+        field_office = self.search([
+            ('country_id', '=', country_id.id)
+        ])
+        res = []
+        for field_id in field_office.ids:
+            res.append({
+                'ID': field_id,
+                'PROJECT_ID': country,
+                'SUMMARY': field_office.summary,
+                'IMAGE': field_office.image_url,
+                'SCHEDULE': field_office._get_schedules_json()
+            })
+        return res
+
+    def _get_schedules_json(self):
+        res = []
+        for schedule in self.learning_info_list:
+            res.append(schedule.get_learning_json())
+        return res
+
+
+class LearningInfo(models.Model):
+    _name = 'learning.info'
+    _description = 'Learning information'
+
+    time = fields.Datetime()
+    title = fields.Text(
+        translate=True,
+        help="Contains the title of the learning information."
+    )
+    description = fields.Text(
+        translate=True,
+        help="Contains the description of the learning information."
+    )
+    field_office_id = fields.Many2one(
+        'compassion.field.office', 'learning_info_list'
+    )
+
+    def get_learning_json(self):
+        return {
+            'TIME': self.time,
+            'DESCRIPTION': self.description,
+            'TITLE': self.title
+        }
 
 
 class FieldOfficeHighRisks(models.Model):
