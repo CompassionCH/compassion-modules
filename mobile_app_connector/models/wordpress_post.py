@@ -46,16 +46,37 @@ class WordpressPost(models.Model):
         default=True, help='Deactivate in order to hide tiles in App.')
     view_order = fields.Integer('View order', required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
-    tile_type = fields.Char(compute='_compute_tile_type',
-                            string='Type of tile', store=True,
-                            required=True)
-    tile_subtype = fields.Char(compute='_compute_tile_subtype',
-                               string='Subtype of tile', store=True,
-                               required=True)
+    tile_type = fields.Selection([
+        ('Prayer', 'Prayer'),
+        ('Story', 'Story')
+    ], compute='_compute_tile_type', inverse='_inverse_tile_type', store=True)
+    tile_subtype = fields.Selection([
+        ('PR2', 'PR2'),
+        ('ST_T1', 'ST_T1'),
+    ], compute='_compute_tile_subtype')
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')
     ]
+
+    @api.multi
+    @api.depends('category_ids', 'category_ids.default_tile_type')
+    def _compute_tile_type(self):
+        for post in self:
+            default_types = post.category_ids.mapped('default_tile_type')
+            if default_types and not post.tile_type:
+                post.tile_type = default_types[0]
+
+    @api.multi
+    def _compute_tile_subtype(self):
+        for post in self:
+            post.tile_subtype = 'PR2' if post.tile_type == 'Prayer' \
+                else 'ST_T1'
+
+    @api.multi
+    def _inverse_tile_type(self):
+        # Simply allows to write in field
+        return True
 
     @api.model
     def select_lang(self):
@@ -80,20 +101,6 @@ class WordpressPost(models.Model):
                 },
             }
 
-    @api.depends('category_ids')
-    def _compute_tile_type(self):
-        if 'Prières' in self.category_ids.mapped('name'):
-            self.tile_type = 'Prayer'
-        else:
-            self.tile_type = 'Story'
-
-    @api.depends('category_ids')
-    def _compute_tile_subtype(self):
-        if 'Prières' in self.category_ids.mapped('name'):
-            self.tile_subtype = 'PR2'
-        else:
-            self.tile_subtype = 'ST_T1'
-
     @api.model
     def fetch_posts(self, post_type):
         """
@@ -112,7 +119,6 @@ class WordpressPost(models.Model):
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
         category_obj = self.env['wp.post.category']
-        categories_id = []
         found_ids = []
         try:
             h = HTMLParser()
@@ -156,6 +162,7 @@ class WordpressPost(models.Model):
                             _logger.warning('WP Post ID %s has no image',
                                             str(post_id))
                         # Fetch post category
+                        categories_id = []
                         try:
                             category_data = [
                                 d for d in post_data['_links']['wp:term']
@@ -165,19 +172,18 @@ class WordpressPost(models.Model):
 
                             categories_request = requests.get(
                                 category_json_url).json()
-                            for c_name in categories_request.mapped('name'):
+                            for c in categories_request:
                                 category = category_obj.search([
-                                    ('name', '=', c_name)])
+                                    ('name', '=', c['name'])])
                                 if not category:
                                     category = category_obj.create({
-                                        'name': c_name
+                                        'name': c['name']
                                     })
                                 categories_id.append(category.id)
 
                         except (IndexError, KeyError):
                             _logger.info('WP Post ID %s has no category.',
                                          str(post_id))
-                            categories_id = category_obj.id
                         # Cache new post in database
                         self.create({
                             'name': h.unescape(post_data['title']['rendered']),

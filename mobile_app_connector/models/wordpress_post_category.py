@@ -28,6 +28,12 @@ class WordpressPostCategory(models.Model):
         default=1000,
         help='Decrease order weight to display tiles above others'
     )
+    display_on_hub = fields.Boolean(
+        default=True, help='Deactivate in order to hide tiles in App.')
+    default_tile_type = fields.Selection([
+        ('Prayer', 'Prayer'),
+        ('Story', 'Story')
+    ], default='Story')
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'This category already exists')

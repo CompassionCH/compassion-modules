@@ -35,6 +35,9 @@
                     <group>
                         <field name="title"/>
                         <field name="body"/>
+                        <field name="is_prayer" invisible="1"/>
+                        <field name="prayer_title" attrs="{'invisible': [('is_prayer','=',False)]}"/>
+                        <field name="prayer_body" attrs="{'invisible': [('is_prayer','=',False)]}"/>
                         <field name="preview" widget="image"/>
                     </group>
                 </sheet>

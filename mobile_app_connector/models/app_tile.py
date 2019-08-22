@@ -73,6 +73,7 @@ class AppTile(models.Model):
     action_destination = fields.Selection(
         lambda s: s.env['mobile.app.tile.subtype'].select_action_destination(),
         required=True)
+    is_prayer = fields.Boolean(compute='_compute_is_prayer')
     prayer_title = fields.Text(
         translate=True,
         help="Mako template enabled."
@@ -88,6 +89,11 @@ class AppTile(models.Model):
     def _compute_display_name(self):
         for tile in self:
             tile.display_name = u'[{}] {}'.format(tile.code, tile.name)
+
+    def _compute_is_prayer(self):
+        prayer_type = self.env.ref('mobile_app_connector.tile_type_prayer')
+        for tile in self:
+            tile.is_prayer = tile.subtype_id.type_id == prayer_type
 
     @api.onchange('subtype_id')
     def _onchange_subtype(self):
