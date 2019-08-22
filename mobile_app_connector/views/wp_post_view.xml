@@ -16,7 +16,7 @@
                         <group>
                             <field name="name"/>
                             <field name="post_type"/>
-                            <field name="category_id"/>
+                            <field name="category_ids"/>
                             <field name="lang"/>
                             <field name="date"/>
                         </group>
@@ -42,7 +42,7 @@
                 <field name="name"/>
                 <field name="date"/>
                 <field name="post_type"/>
-                <field name="category_id"/>
+                <field name="category_ids"/>
                 <field name="lang"/>
                 <field name="display_on_hub" invisible="1"/>
             </tree>
@@ -57,7 +57,7 @@
                 <field name="name"/>
                 <field name="lang"/>
                 <field name="post_type"/>
-                <field name="category_id"/>
+                <field name="category_ids"/>
                 <separator/>
                 <filter name="active" string="Active" domain="[('display_on_hub', '=', True)]"/>
                 <group expand="0" string="Group By">

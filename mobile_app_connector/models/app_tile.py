@@ -73,6 +73,16 @@ class AppTile(models.Model):
     action_destination = fields.Selection(
         lambda s: s.env['mobile.app.tile.subtype'].select_action_destination(),
         required=True)
+    prayer_title = fields.Text(
+        translate=True,
+        help="Mako template enabled."
+             "Use ctx['objects'] to get associated records."
+    )
+    prayer_body = fields.Html(
+        translate=True,
+        help="Mako template enabled."
+             "Use ctx['objects'] to get associated records."
+    )
 
     @api.depends('subtype_id', 'subtype_id.code', 'name')
     def _compute_display_name(self):
@@ -189,6 +199,14 @@ class AppTile(models.Model):
                 'SortOrder': self.view_order,
                 'IsAutomaticOrdering': self.is_automatic_ordering,
             }
+
+            if self.prayer_title and self.prayer_body:
+                res['PrayerPoint'] = {
+                    'Body': template_obj.render_template(
+                        self.prayer_body, self._name, self.id),
+                    'Title': template_obj.render_template(
+                        self.prayer_title, self._name, self.id),
+                }
 
             if hasattr(records, 'get_app_json'):
                 res.update(records.get_app_json(multi=len(records) > 1))

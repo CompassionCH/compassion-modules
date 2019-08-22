@@ -50,6 +50,7 @@
         'security/access_rules.xml',
         'data/tile_type_data.xml',
         'data/default_hub.xml',
+        'data/prayer_tile.xml',
         'data/ir_cron.xml',
         'data/request_sequence.xml',
         'data/crm_claim_category_data.xml',
