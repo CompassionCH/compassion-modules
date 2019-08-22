@@ -32,6 +32,7 @@ class MobileFeedback(models.Model):
         ('Android', 'Android'),
         ('IOS', 'IOS')], readonly=True)
     star = fields.Selection([
+        ('0.0', 'None'),
         ('1.0', 'Disappointing'),
         ('2.0', 'Well'),
         ('3.0', 'Very well'),
