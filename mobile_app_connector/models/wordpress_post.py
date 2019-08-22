@@ -46,12 +46,12 @@ class WordpressPost(models.Model):
         default=True, help='Deactivate in order to hide tiles in App.')
     view_order = fields.Integer('View order', required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
-    tile_type = fields.Char(compute='_compute_tile_type',
+    tile_type = fields.Char(compute='_compute_tile_type', default='Story',
                             string='Type of tile', store=True,
                             required=True)
     tile_subtype = fields.Char(compute='_compute_tile_subtype',
-                               string='Subtype of tile', store=True,
-                               required=True)
+                               default='ST_T1', string='Subtype of tile',
+                               store=True, required=True)
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')
@@ -82,14 +82,14 @@ class WordpressPost(models.Model):
 
     @api.depends('category_ids')
     def _compute_tile_type(self):
-        if 'Prières' in self.category_ids.mapped('name'):
+        if 'Prieres' in self.category_ids.mapped('name'):
             self.tile_type = 'Prayer'
         else:
             self.tile_type = 'Story'
 
     @api.depends('category_ids')
     def _compute_tile_subtype(self):
-        if 'Prières' in self.category_ids.mapped('name'):
+        if 'Prieres' in self.category_ids.mapped('name'):
             self.tile_subtype = 'PR2'
         else:
             self.tile_subtype = 'ST_T1'
@@ -165,12 +165,12 @@ class WordpressPost(models.Model):
 
                             categories_request = requests.get(
                                 category_json_url).json()
-                            for c_name in categories_request.mapped('name'):
+                            for c in categories_request:
                                 category = category_obj.search([
-                                    ('name', '=', c_name)])
+                                    ('name', '=', c['name'])])
                                 if not category:
                                     category = category_obj.create({
-                                        'name': c_name
+                                        'name': c['name']
                                     })
                                 categories_id.append(category.id)
 
