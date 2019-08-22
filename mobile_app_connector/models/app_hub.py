@@ -152,7 +152,8 @@ class AppHub(models.AbstractModel):
         """
         available_posts = self.env['wp.post'].search([
             ('lang', '=', self.env.lang),
-            ('display_on_hub', '=', True)
+            ('display_on_hub', '=', True),
+            ('category_ids.name', '=', 'Afficher dans le hub')
         ])
         messages = []
         if available_posts:

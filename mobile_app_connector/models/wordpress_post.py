@@ -39,12 +39,19 @@ class WordpressPost(models.Model):
         ('agendas', 'Agenda'),
         ('download', 'Download')
     ])
-    category_id = fields.Many2one('wp.post.category', 'Category')
+    category_ids = fields.Many2many('wp.post.category', string='Categories')
+
     lang = fields.Selection('select_lang', 'Language', required=True)
     display_on_hub = fields.Boolean(
         default=True, help='Deactivate in order to hide tiles in App.')
     view_order = fields.Integer('View order', required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
+    tile_type = fields.Char(compute='_compute_tile_type',
+                            string='Type of tile', store=True,
+                            required=True)
+    tile_subtype = fields.Char(compute='_compute_tile_subtype',
+                               string='Subtype of tile', store=True,
+                               required=True)
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')
@@ -73,6 +80,20 @@ class WordpressPost(models.Model):
                 },
             }
 
+    @api.depends('category_ids')
+    def _compute_tile_type(self):
+        if 'Prières' in self.category_ids.mapped('name'):
+            self.tile_type = 'Prayer'
+        else:
+            self.tile_type = 'Story'
+
+    @api.depends('category_ids')
+    def _compute_tile_subtype(self):
+        if 'Prières' in self.category_ids.mapped('name'):
+            self.tile_subtype = 'PR2'
+        else:
+            self.tile_subtype = 'ST_T1'
+
     @api.model
     def fetch_posts(self, post_type):
         """
@@ -91,6 +112,7 @@ class WordpressPost(models.Model):
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
         category_obj = self.env['wp.post.category']
+        categories_id = []
         found_ids = []
         try:
             h = HTMLParser()
@@ -140,18 +162,22 @@ class WordpressPost(models.Model):
                                 if d['taxonomy'] == 'category'
                             ][0]
                             category_json_url = category_data['href']
-                            category_name = requests.get(
-                                category_json_url).json()[0]['name']
-                            category = category_obj.search([
-                                ('name', '=', category_name)])
-                            if not category:
-                                category = category_obj.create({
-                                    'name': category_name
-                                })
+
+                            categories_request = requests.get(
+                                category_json_url).json()
+                            for c_name in categories_request.mapped('name'):
+                                category = category_obj.search([
+                                    ('name', '=', c_name)])
+                                if not category:
+                                    category = category_obj.create({
+                                        'name': c_name
+                                    })
+                                categories_id.append(category.id)
+
                         except (IndexError, KeyError):
                             _logger.info('WP Post ID %s has no category.',
                                          str(post_id))
-                            category = category_obj
+                            categories_id = category_obj.id
                         # Cache new post in database
                         self.create({
                             'name': h.unescape(post_data['title']['rendered']),
@@ -160,7 +186,7 @@ class WordpressPost(models.Model):
                             'url': post_data['link'],
                             'image_url': image_url,
                             'post_type': post_type,
-                            'category_id': category.id,
+                            'category_ids': [(6, 0, categories_id)],
                             'lang': lang.code,
                             'display_on_hub': not content_empty
                         })
