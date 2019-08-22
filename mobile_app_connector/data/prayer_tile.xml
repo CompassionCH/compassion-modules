@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="tile_pr1_1" model="mobile.app.tile">
+            <field name="name">Prayer now</field>
+            <field name="subtype_id" ref="tile_subtype_pr1"/>
+            <field name="mode">many</field>
+            <field name="visibility">private</field>
+            <field name="prayer_title">Pray for ${ctx['objects'].preferred_name} to make strong friendships</field>
+            <field name="prayer_body" type="html">
+                <p>
+                    Who is your closest friend? Take a moment to thank God for them today. Praise God that He is the one who created relationship.
+                </p><p>
+                    Pray for ${ctx['objects'].preferred_name} to have good friends who will encourage and support ${ctx['objects'].get('him')}. Ask that ${ctx['objects'].get('he')} develops really strong friendships at ${ctx['objects'].get('his')} Compassion project.<br />
+                </p><p>
+                    Pray also that ${ctx['objects'].preferred_name} will know the friendship and love of ${ctx['objects'].get('his')} Heavenly Father.
+                </p>
+            </field>
+            <field name="action_text">Pray now</field>
+            <!-- the correct action_destination will be set when the init method will be called -->
+            <field name="action_destination">Compass</field>
+        </record>
+
+        <function model="mobile.app.tile" name="init_tiles"/>
+    </data>
+</odoo>

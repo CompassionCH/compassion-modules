@@ -29,6 +29,8 @@ class WPPostMapping(OnrampMapping):
         'SortOrder': 'view_order',
         'IsAutomaticOrdering': 'is_automatic_ordering',
         'OrderDate': 'date',
+        'Type': 'tile_type',
+        'SubType': 'tile_subtype'
     }
 
     FIELDS_TO_SUBMIT = {
@@ -49,8 +51,5 @@ class WPPostMapping(OnrampMapping):
 
     CONSTANTS = {
         'ActionDestination': 'Stories and prayer with relevant blog at '
-                             'the top',
-        'Type': 'Story',
-        # TODO See if we must change subtype depending on post
-        'SubType': 'ST_T1'
+                             'the top'
     }
