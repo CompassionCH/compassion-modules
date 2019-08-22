@@ -153,7 +153,7 @@ class AppHub(models.AbstractModel):
         available_posts = self.env['wp.post'].search([
             ('lang', '=', self.env.lang),
             ('display_on_hub', '=', True),
-            ('category_ids.name', '=', 'Afficher dans le hub')
+            ('category_ids.display_on_hub', '=', True)
         ])
         messages = []
         if available_posts:
@@ -280,7 +280,7 @@ class AppHub(models.AbstractModel):
             'LE_T3': letters,
             "PR1": prayers,
             "PR_T1": prayers,
-            "PR-T2": prayers,
+            "PR_T2": prayers,
             "PR2": prayers,
             "ST_T1": stories,
             "ST_T2": stories,

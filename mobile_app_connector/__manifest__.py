@@ -55,6 +55,7 @@
         'data/request_sequence.xml',
         'data/crm_claim_category_data.xml',
         'views/wp_post_view.xml',
+        'views/wp_post_category_view.xml',
         'views/app_banner_view.xml',
         'views/app_writing_view.xml',
         'views/tile_type_view.xml',
