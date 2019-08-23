@@ -61,6 +61,16 @@ class CompassionIntervention(models.Model):
     )
     product_template_id = fields.Many2one('product.template', 'Linked product')
 
+    #Multicompany
+    company_id = fields.Many2one(
+        'res.company',
+        'Company',
+        required=True,
+        index=True,
+        default=lambda self: self.env.user.company_id.id
+    )
+
+
     # Schedule Information
     ######################
     start_date = fields.Date(help='Actual start date', readonly=True)

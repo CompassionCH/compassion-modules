@@ -46,6 +46,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/crm_compassion_security.xml',
         'data/account_analytic_data.xml',
         'data/calendar_event_type.xml',
         'data/demand_planning_server_actions.xml',
