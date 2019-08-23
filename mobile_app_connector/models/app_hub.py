@@ -54,6 +54,7 @@ class AppHub(models.AbstractModel):
             lambda c: not c.is_active and not c.parent_id and
             (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
+        sponsorship_amounts = sponsorships.mapped('total_amount')
         unpaid_children = unpaid.mapped('child_id')
         unpaid_amounts = unpaid.mapped('total_amount')
 
@@ -91,6 +92,9 @@ class AppHub(models.AbstractModel):
         messages.extend(self._fetch_wordpress_tiles(**pagination))
         res = self._construct_hub_message(
             partner_id, messages, children, **pagination)
+
+        # Amount for monthly sponsorship
+        res.update({'SponsorshipAmounts': sponsorship_amounts})
 
         # Handle children with awaiting payment
         if unpaid_children:
