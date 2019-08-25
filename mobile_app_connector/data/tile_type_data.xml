@@ -163,7 +163,7 @@ Make a donation]]></field>
         <field name="default_action_text">Pray now</field>
         <field name="default_action_destination">Read overlay</field>
         <field name="default_title">${ctx['objects'].preferred_name}</field>
-        <field name="default_body">Pray for my child</field>
+        <field name="default_body"/>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/PR1.png"/>
     </record>
     <record id="tile_subtype_pr2" model="mobile.app.tile.subtype">

@@ -79,7 +79,7 @@ class AppTile(models.Model):
         help="Mako template enabled."
              "Use ctx['objects'] to get associated records."
     )
-    prayer_body = fields.Html(
+    prayer_body = fields.Text(
         translate=True,
         help="Mako template enabled."
              "Use ctx['objects'] to get associated records."
@@ -98,7 +98,8 @@ class AppTile(models.Model):
     @api.onchange('subtype_id')
     def _onchange_subtype(self):
         if self.subtype_id:
-            self.body = self.subtype_id.default_body
+            if self.subtype_id.default_body:
+                self.body = self.subtype_id.default_body
             self.title = self.subtype_id.default_title
             self.action_text = self.subtype_id.default_action_text
             self.action_destination =\
