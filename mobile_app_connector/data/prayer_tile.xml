@@ -87,7 +87,7 @@
             <field name="action_destination">Read overlay</field>
         </record>
 
-        <record id="tile_pr1_6" model="mobile.app.tile">
+        <record id="tile_pr1_27" model="mobile.app.tile">
             <field name="name">Home visits</field>
             <field name="subtype_id" ref="tile_subtype_pr1"/>
             <field name="mode">many</field>
