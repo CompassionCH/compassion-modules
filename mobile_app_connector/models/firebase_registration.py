@@ -39,7 +39,7 @@ class GetPartnerMessage(models.Model):
         firebase_id = json_data.get('firebaseId')
         partner_id = json_data.get('SupporterId'),
         reg = self.env['firebase.registration'].search([
-            ('registration_id', '=', firebase_id)])
+            ('registration_id', '=', firebase_id)]).sudo()
 
         if len(reg) == 0:
             # id is not yet registered in Odoo
