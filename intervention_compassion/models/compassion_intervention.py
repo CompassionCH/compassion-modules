@@ -61,7 +61,7 @@ class CompassionIntervention(models.Model):
     )
     product_template_id = fields.Many2one('product.template', 'Linked product')
 
-    #Multicompany
+    # Multicompany
     company_id = fields.Many2one(
         'res.company',
         'Company',
@@ -69,7 +69,6 @@ class CompassionIntervention(models.Model):
         index=True,
         default=lambda self: self.env.user.company_id.id
     )
-
 
     # Schedule Information
     ######################

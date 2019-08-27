@@ -102,7 +102,7 @@ class EventCompassion(models.Model):
     hold_end_date = fields.Date()
     campaign_id = fields.Many2one('utm.campaign', 'Campaign')
 
-    #Multicompany
+    # Multicompany
     company_id = fields.Many2one(
         'res.company',
         'Company',
