@@ -104,6 +104,10 @@ class CompassionProject(models.Model):
         if project:
             result['ProjectServiceResult']['ICPResponseList'] = [(
                 mapping.get_connect_data(project))]
+            result['ProjectServiceResult']['ICPResponseList'][0].update({
+                'NumberOfSponsorshipBeneficiaries':
+                    project.mapped('nb_cdsp_kids')[0]
+            })
         return result
 
     def _get_required_param(self, key, params):
