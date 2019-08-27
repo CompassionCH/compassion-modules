@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-26 06:35+0000\n"
-"PO-Revision-Date: 2019-08-26 08:38+0200\n"
+"POT-Creation-Date: 2019-08-27 07:48+0000\n"
+"PO-Revision-Date: 2019-08-27 09:50+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -292,13 +292,6 @@ msgstr ""
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_27
-#| msgid ""
-#| "% set child = ctx['objects']\n"
-#| "                <p>\n"
-#| "                    Pray for unity in ${child.preferred_name}'s "
-#| "church. Pray that ${child.get('he')} will know acceptance, love and "
-#| "belonging in ${child.get('his')} community.</p>\n"
-#| "            "
 msgid ""
 "% set child = ctx['objects']\n"
 "                <p>\n"
@@ -469,7 +462,7 @@ msgid ""
 "% if len(child) == 1:\n"
 "You're changing ${child.get('his')} life\n"
 "% else:\n"
-"You're changing ${child.get_number()} lives\n"
+"You're changing ${child.get_number()}\n"
 "% endif\n"
 "Thank You\n"
 "        "
@@ -478,7 +471,7 @@ msgstr ""
 "% if len(child) == 1:\n"
 "Stai cambiando la sua vita\n"
 "% else:\n"
-"Cambiando la vita di ${child.get_number()} bambini\n"
+"Cambiando la vita di ${child.get_number()}\n"
 "% endif\n"
 "        "
 
@@ -1012,7 +1005,6 @@ msgstr "Give overlay (opens the donation page)"
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_27
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_27
-#| msgid "Pray that ${ctx['objects'].preferred_name} will be free from fear."
 msgid ""
 "Give thanks that ${ctx['objects'].preferred_name} receives regular home "
 "visits from caring project staff."
@@ -2131,19 +2123,16 @@ msgstr "compassion.field.office"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_fake_wiz_base_form
-#| msgid "registration.base.form"
 msgid "fake.wiz.base.form"
 msgstr "fake.wiz.base.form"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_fake_wiz_not_supporter
-#| msgid "registration.not.supporter"
 msgid "fake.wiz.not.supporter"
 msgstr "fake.wiz.not.supporter"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_fake_wiz_supporter_form
-#| msgid "registration.supporter.form"
 msgid "fake.wiz.supporter.form"
 msgstr "fake.wiz.supporter.form"
 

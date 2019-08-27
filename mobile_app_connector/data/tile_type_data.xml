@@ -18,7 +18,7 @@
 % if len(child) == 1:
 You're changing ${child.get('his')} life
 % else:
-You're changing ${child.get_number()} lives
+You're changing ${child.get_number()}
 % endif
 Thank You]]>
         </field>
