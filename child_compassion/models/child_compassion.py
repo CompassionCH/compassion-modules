@@ -264,7 +264,7 @@ class CompassionChild(models.Model):
 
     is_special_needs = fields.Boolean()
 
-    #Multicompany
+    # Multicompany
     company_id = fields.Many2one(
         'res.company',
         'Company',
