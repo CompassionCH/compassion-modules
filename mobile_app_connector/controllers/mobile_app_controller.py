@@ -82,7 +82,7 @@ class RestController(http.Controller):
 
     @http.route(
         '/mobile-app-api/privacy.statement.agreement/get_privacy_notice',
-                type='json', auth='public', methods=['GET'])
+        type='json', auth='public', methods=['GET'])
     def mobile_app_get_privacy_statement(self, **parameters):
         """
         Privacy statement entry point for not logged in users
