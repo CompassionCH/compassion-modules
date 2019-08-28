@@ -80,6 +80,18 @@ class RestController(http.Controller):
         return request.env.get('frequently.asked.questions').mobile_get_faq(
             **parameters)
 
+    @http.route(
+        '/mobile-app-api/privacy.statement.agreement/get_privacy_notice',
+                type='json', auth='public', methods=['GET'])
+    def mobile_app_get_privacy_statement(self, **parameters):
+        """
+        Privacy statement entry point for not logged in users
+        :param parameters: all other optional parameters sent by the request
+        :return: json data for mobile app
+        """
+        return request.env.get('privacy.statement.agreement').\
+            mobile_get_privacy_notice(**parameters)
+
     @http.route(['/mobile-app-api/<string:model>/<string:method>',
                  '/mobile-app-api/<string:model>/<string:method>/'
                  '<request_code>'],
