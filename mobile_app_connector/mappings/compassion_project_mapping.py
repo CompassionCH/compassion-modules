@@ -110,7 +110,7 @@ class MobileProjectMapping(OnrampMapping):
         'NumberOfActiveMembers': 'number_church_members',
         'NumberOfClassrooms': 'nb_classrooms',
         'NumberOfLatrines': 'nb_latrines',
-        'NumberOfSponsorshipBeneficiaries': None,
+        'NumberOfSponsorshipBeneficiaries': 'nb_cdsp_kids',
         'NumberOfSurvivalBeneficiaries': None,
         'OnSiteInternetQuality': None,
         'PhysicalActivities0To5': ('physical_activity_babies_ids.name',
