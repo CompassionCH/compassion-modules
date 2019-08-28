@@ -61,7 +61,7 @@ class MobileProjectMapping(OnrampMapping):
         'ComputersForStaffUse': 'nb_staff_computers',
         'CoolestMonth': 'coolest_month',
         'Country': ('country_id.name', 'res.country'),
-        'CountryDivision': None,
+        'CountryDivision': 'state_province',
         'Country_Name': None,
         'CulturalRitualsAndCustoms': 'cultural_rituals',
         'CurrentStageInQavahProcess': None,
