@@ -69,8 +69,7 @@ class RestController(http.Controller):
         """
         return request.env['crm.claim'].mobile_contact_us(request.jsonrequest)
 
-    @http.route(['/mobile-app-api/frequently.asked.questions/get_faq',
-                 '/mobile-app-api/frequently.asked.questions/get_faq/'],
+    @http.route('/mobile-app-api/frequently.asked.questions/get_faq',
                 type='json', auth='public', methods=['GET'])
     def mobile_app_get_faq(self, **parameters):
         """
@@ -78,11 +77,8 @@ class RestController(http.Controller):
         :param parameters: all other optional parameters sent by the request
         :return: json data for mobile app
         """
-        odoo_obj = request.env.get('frequently.asked.questions').with_context(
-            lang=_get_lang(request, parameters))
-        model_method = 'mobile_get_faq'
-        handler = getattr(odoo_obj, model_method)
-        return handler(**parameters)
+        return request.env.get('frequently.asked.questions').mobile_get_faq(
+            **parameters)
 
     @http.route(['/mobile-app-api/<string:model>/<string:method>',
                  '/mobile-app-api/<string:model>/<string:method>/'
