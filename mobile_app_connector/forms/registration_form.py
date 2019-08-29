@@ -349,9 +349,17 @@ if not testing:
                 # partner is not sponsoring a child (but answered yes (form))
                 if not partner or len(partner) > 1:
                     # TODO AP-102 :Ask child ref to try to get a match
+                    link_text = 'Click here to send the template ' \
+                                 'email request.'
+                    to = 'info@compassion.ch'
+                    subject = 'Account Setup: User Not Found'
+                    body = 'Please set my mobile app account with the ' \
+                           'following email address: %22' + str(
+                            extra_values['partner_email']) + '%22'
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
-                        "us for setting up your account."))
+                        "us for setting up your account. " +
+                        self._add_mailto(link_text, to, subject, body)))
 
                 # Push the email for user creation
                 values['email'] = extra_values['partner_email']
@@ -362,3 +370,9 @@ if not testing:
             reactivate existing users that never connected. """
             if self.form_next_url() == '/':
                 super(RegistrationSupporterForm, self)._form_create(values)
+
+        def _add_mailto(self, link_text, to, subject, body):
+            subject_mail = subject.replace(' ', '%20')
+            body_mail = body.replace(' ', '%20')
+            return '<a href="mailto:' + to + '?subject=' + subject_mail + \
+                   '&body=' + body_mail + '">' + link_text + '</a>'
