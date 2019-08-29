@@ -1961,8 +1961,8 @@ msgid ""
 "We couldn't find your sponsorships. Please contact us for setting up your "
 "account."
 msgstr ""
-"Nous n'avons pu associer automatiquement vos parrainages. Merci de nous "
-"contacter pour la création de votre compte."
+"Nous n'avons pu associer automatiquement vos parrainages. Merci de prendre "
+"contact avec nous pour la création de votre compte."
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:193
