@@ -350,12 +350,12 @@ if not testing:
                 if not partner or len(partner) > 1:
                     # TODO AP-102 :Ask child ref to try to get a match
                     link_text = 'Click here to send the template ' \
-                                 'email request.'
+                                'email request.'
                     to = 'info@compassion.ch'
                     subject = 'Account Setup: User Not Found'
                     body = 'Please set my mobile app account with the ' \
                            'following email address: %22' + str(
-                            extra_values['partner_email']) + '%22'
+                        extra_values['partner_email']) + '%22'
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
                         "us for setting up your account. " +
