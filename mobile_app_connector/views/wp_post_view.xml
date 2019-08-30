@@ -16,7 +16,8 @@
                         <group>
                             <field name="name"/>
                             <field name="post_type"/>
-                            <field name="category_id"/>
+                            <field name="category_ids" widget="many2many_tags"/>
+                            <field name="tile_type"/>
                             <field name="lang"/>
                             <field name="date"/>
                         </group>
@@ -42,7 +43,8 @@
                 <field name="name"/>
                 <field name="date"/>
                 <field name="post_type"/>
-                <field name="category_id"/>
+                <field name="category_ids"/>
+                <field name="tile_type"/>
                 <field name="lang"/>
                 <field name="display_on_hub" invisible="1"/>
             </tree>
@@ -50,14 +52,15 @@
     </record>
 
     <record model="ir.ui.view" id="wp_post_search">
-        <field name="name">app.banner.search</field>
+        <field name="name">wp.post.search</field>
         <field name="model">wp.post</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
                 <field name="lang"/>
                 <field name="post_type"/>
-                <field name="category_id"/>
+                <field name="category_ids"/>
+                <field name="tile_type"/>
                 <separator/>
                 <filter name="active" string="Active" domain="[('display_on_hub', '=', True)]"/>
                 <group expand="0" string="Group By">

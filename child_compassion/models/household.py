@@ -256,7 +256,7 @@ class HouseholdMembers(models.Model):
     @api.model
     def _get_male_roles(self):
         return [
-            ('Father', 'Father'),
+            ('Father', _('father')),
             ('Grandfather', _('grandfather')),
             ('Uncle', _('uncle')),
             ('Step Father', _('step father')),
@@ -269,7 +269,7 @@ class HouseholdMembers(models.Model):
     @api.model
     def _get_female_roles(self):
         return [
-            ('Mother', 'Mother'),
+            ('Mother', _('mother')),
             ('Grandmother', _('grandmother')),
             ('Aunt', _('aunt')),
             ('Step Mother', _('step mother')),

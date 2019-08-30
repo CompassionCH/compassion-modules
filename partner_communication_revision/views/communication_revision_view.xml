@@ -33,10 +33,15 @@
                             <field name="raw_subject"/>
                         </group>
                     </group>
-                    <field name="raw_template_edit_mode" invisible="1"/>
-                    <field name="proposition_text" groups="base.group_erp_manager"/>
-                    <hr groups="base.group_erp_manager"/>
-                    <field name="simplified_text" widget="html" attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"/>
+                    <group>
+                        <group>
+                            <field name="raw_template_edit_mode" invisible="1"/>
+                            <field name="proposition_text" groups="base.group_erp_manager"/>
+                        </group>
+                        <group>
+                            <field name="simplified_text" widget="html" attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"/>
+                        </group>
+                    </group>
                     <button name="toggle_all_keywords" type="object" class="oe_stat_button">
                         <field name="show_all_keywords" widget="boolean_button" options='{"terminology": {
                             "string_true": "All keywords",

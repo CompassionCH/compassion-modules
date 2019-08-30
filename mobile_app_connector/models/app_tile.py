@@ -73,16 +73,33 @@ class AppTile(models.Model):
     action_destination = fields.Selection(
         lambda s: s.env['mobile.app.tile.subtype'].select_action_destination(),
         required=True)
+    is_prayer = fields.Boolean(compute='_compute_is_prayer')
+    prayer_title = fields.Text(
+        translate=True,
+        help="Mako template enabled."
+             "Use ctx['objects'] to get associated records."
+    )
+    prayer_body = fields.Text(
+        translate=True,
+        help="Mako template enabled."
+             "Use ctx['objects'] to get associated records."
+    )
 
     @api.depends('subtype_id', 'subtype_id.code', 'name')
     def _compute_display_name(self):
         for tile in self:
             tile.display_name = u'[{}] {}'.format(tile.code, tile.name)
 
+    def _compute_is_prayer(self):
+        prayer_type = self.env.ref('mobile_app_connector.tile_type_prayer')
+        for tile in self:
+            tile.is_prayer = tile.subtype_id.type_id == prayer_type
+
     @api.onchange('subtype_id')
     def _onchange_subtype(self):
         if self.subtype_id:
-            self.body = self.subtype_id.default_body
+            if self.subtype_id.default_body:
+                self.body = self.subtype_id.default_body
             self.title = self.subtype_id.default_title
             self.action_text = self.subtype_id.default_action_text
             self.action_destination =\
@@ -147,7 +164,9 @@ class AppTile(models.Model):
                     self.env.ref(module % 'tile_type_letter') +\
                     self.env.ref(module % 'tile_type_child') +\
                     self.env.ref(module % 'tile_type_community')
-                if tile.subtype_id.type_id not in no_render:
+                if tile.subtype_id.type_id not in no_render and \
+                        tile.subtype_id != self.env.ref(
+                            module % 'tile_subtype_pr1'):
                     res.append(tile_json)
         return res
 
@@ -189,6 +208,14 @@ class AppTile(models.Model):
                 'SortOrder': self.view_order,
                 'IsAutomaticOrdering': self.is_automatic_ordering,
             }
+
+            if self.prayer_title and self.prayer_body:
+                res['PrayerPoint'] = {
+                    'Body': template_obj.render_template(
+                        self.prayer_body, self._name, self.id),
+                    'Title': template_obj.render_template(
+                        self.prayer_title, self._name, self.id),
+                }
 
             if hasattr(records, 'get_app_json'):
                 res.update(records.get_app_json(multi=len(records) > 1))

@@ -8,7 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+from ..controllers.mobile_app_controller import _get_lang
 from odoo import models, fields
 
 
@@ -18,7 +18,8 @@ class PrivacyStatementAgreement(models.Model):
     origin_signature = fields.Selection(
         selection_add=[('mobile_app', 'Mobile App Registration')])
 
-    def mobile_get_privacy_notice(self, language, **params):
+    def mobile_get_privacy_notice(self, **params):
+        lang = _get_lang(self, params)
         return {'PrivacyNotice': self.env['compassion.privacy.statement']
-                .with_context(lang=language)
+                .with_context(lang=lang)
                 .sudo().search([], limit=1).text}

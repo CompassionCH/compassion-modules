@@ -53,6 +53,20 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="Learning">
+                            <group>
+                                <field name="learning_image_url"/>
+                                <field name="learning_summary"/>
+                            </group>
+                            <field name="learning_ids">
+                                <tree>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="time"/>
+                                    <field name="title"/>
+                                    <field name="description"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Disaster Alerts">
                             <group>
                                 <field name="disaster_alert_ids">

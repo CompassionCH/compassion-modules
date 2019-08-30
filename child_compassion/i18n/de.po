@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-22 12:06+0000\n"
-"PO-Revision-Date: 2019-02-22 13:06+0100\n"
-"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"POT-Creation-Date: 2019-08-30 09:22+0000\n"
+"PO-Revision-Date: 2019-08-30 11:40+0200\n"
+"Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/compassion_hold.py:323
@@ -24,7 +24,7 @@ msgid "%s - Reservation converted to hold"
 msgstr "%s - Reservation converted to hold"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:154
+#: code:addons/child_compassion/wizards/child_description.py:156
 #, python-format
 msgid "* The birthday is an estimation."
 msgstr "Der Geburtstag ist eine Schätzung."
@@ -80,7 +80,7 @@ msgid "Action plan"
 msgstr "Action plan"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:323
+#: code:addons/child_compassion/models/project_compassion.py:356
 #: selection:compassion.hold,state:0 selection:compassion.reservation,state:0
 #: selection:fo.disaster.alert,state:0
 #: model:ir.ui.view,arch_db:child_compassion.view_hold_filter
@@ -92,7 +92,7 @@ msgstr "Aktiv"
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_child_form
 msgid "Activities"
-msgstr "Activities"
+msgstr "Aktivitäten"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_activities_for_parents
@@ -276,6 +276,7 @@ msgid "Art"
 msgstr "Kunst"
 
 #. module: child_compassion
+#: selection:compassion.child,major_course_study:0
 #: selection:compassion.child,vocational_training_type:0
 msgid "Art / Design"
 msgstr "Art / Design"
@@ -289,6 +290,11 @@ msgstr "Kunst und Musik"
 #: model:child.hobby,value:child_compassion.child_hobby_art
 msgid "Art or drawing"
 msgstr "Gestalten und Malen"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Ash"
+msgstr "Ash"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_cdpr_assesment_type
@@ -424,6 +430,14 @@ msgid "Beef"
 msgstr "Rindfleisch"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_rw1
+msgid ""
+"Before lessons start, children get to tuck into a mug of steaming porridge."
+msgstr ""
+"Bevor der Unterricht beginnt, bekommen die Kinder einen Becher mit "
+"dampfendem Haferbrei."
+
+#. module: child_compassion
 #: selection:compassion.child,academic_performance:0
 msgid "Below average"
 msgstr "Unter dem Durchschnitt"
@@ -471,7 +485,7 @@ msgid "Bengali"
 msgstr "Bengali"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:209
+#: code:addons/child_compassion/wizards/child_description.py:211
 #, python-format
 msgid "Best school subject"
 msgstr "Bestes Schulfach:"
@@ -565,6 +579,46 @@ msgid "Bread"
 msgstr "Brot"
 
 #. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_gu3
+#: model:field.office.learning,title:child_compassion.learning_ke3
+#: model:field.office.learning,title:child_compassion.learning_ph3
+#: model:field.office.learning,title:child_compassion.learning_rw3
+#: model:field.office.learning,title:child_compassion.learning_tg3
+#: model:field.office.learning,title:child_compassion.learning_tz3
+#: model:field.office.learning,title:child_compassion.learning_ug3
+msgid "Break and snack time"
+msgstr "Pause mit Snacks"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd3
+#: model:field.office.learning,title:child_compassion.learning_bf3
+#: model:field.office.learning,title:child_compassion.learning_bo3
+#: model:field.office.learning,title:child_compassion.learning_br3
+#: model:field.office.learning,title:child_compassion.learning_co3
+#: model:field.office.learning,title:child_compassion.learning_dr3
+#: model:field.office.learning,title:child_compassion.learning_ec3
+#: model:field.office.learning,title:child_compassion.learning_es3
+#: model:field.office.learning,title:child_compassion.learning_et3
+#: model:field.office.learning,title:child_compassion.learning_gh_3
+#: model:field.office.learning,title:child_compassion.learning_ha3
+#: model:field.office.learning,title:child_compassion.learning_ho3
+#: model:field.office.learning,title:child_compassion.learning_id3
+#: model:field.office.learning,title:child_compassion.learning_io3
+#: model:field.office.learning,title:child_compassion.learning_lk3
+#: model:field.office.learning,title:child_compassion.learning_me3
+#: model:field.office.learning,title:child_compassion.learning_ni3
+#: model:field.office.learning,title:child_compassion.learning_pe3
+#: model:field.office.learning,title:child_compassion.learning_th3
+msgid "Break time"
+msgstr "Pause"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_ha1
+#: model:field.office.learning,title:child_compassion.learning_pe1
+msgid "Breakfast and devotional time"
+msgstr "Gebet und Morgenandacht"
+
+#. module: child_compassion
 #: selection:compassion.child,major_course_study:0
 msgid "Business"
 msgstr "Business"
@@ -623,7 +677,7 @@ msgstr "Can be translated by GP"
 #: model:ir.ui.view,arch_db:child_compassion.view_availability_management_settings_form
 #: model:ir.ui.view,arch_db:child_compassion.view_notification_settings_form
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "abbrechen"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_reservation_form
@@ -636,7 +690,7 @@ msgid "Cancer"
 msgstr "Krebs"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/global_child_search.py:278
+#: code:addons/child_compassion/wizards/global_child_search.py:281
 #, python-format
 msgid "Cannot find enough availalbe children in all countries. Try with less"
 msgstr "Cannot find enough availalbe children in all countries. Try with less"
@@ -878,15 +932,162 @@ msgid "Children and caregiver reconciliation"
 msgstr "Versöhnung Kind-Eltern/Bezugspersonen"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ha1
+msgid ""
+"Children are given breakfast at the project which may include an egg or "
+"bread rolls."
+msgstr ""
+"Die Kinder erhalten im Zentrum ein Frühstück, entweder mit Eiern oder mit "
+"Brötchen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_id4
+#: model:field.office.learning,description:child_compassion.learning_io4
+msgid ""
+"Children are given meals once to twice a week. Meals might consist of rice, "
+"meat, vegetables and fruit. The children also get a snack. A snack might be "
+"cake, bread, or a donut and milk. Typical Indonesian foods that are rich "
+"with protein such as \"Tempe\" and tofu are widely provided for the children."
+msgstr ""
+"Die Kinder besuchen die Zentren ein- bis zweimal pro Woche und erhalten dort "
+"immer eine Mahlzeit. Das Essen besteht aus Reis, Fleisch, Gemüse und "
+"Früchten. Die Kinder bekommen auch einen Snack, zum Beispiel Kuchen, Brot "
+"oder einen Donut, und dazu Milch. Oft gibt es auch typisch indonesische "
+"proteinreiche Mahlzeiten wie \"Tempe\" und Tofu."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_id5
+#: model:field.office.learning,description:child_compassion.learning_io5
+msgid ""
+"Children are taught practical health and hygiene tips like learning to brush "
+"their teeth."
+msgstr ""
+" Den Kindern werden praktische Dinge über Gesundheit und Hygiene "
+"beigebracht, wie zum Beispiel das Zähneputzen."
+
+#. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_child_conference
 msgid "Children conferences"
 msgstr "Kinderkonferenzen"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_pe5
+msgid ""
+"Children eat lunch at the project at least three times a week. A meal is "
+"likely to be a salad followed by meat stew with beans and rice with fruit "
+"for dessert."
+msgstr ""
+"Die Kinder erhalten im Kinderzentrum mindestens dreimal pro Woche ein "
+"Mittagessen. Eine typische Mahlzeit ist ein Fleischeintopf mit Bohnen und "
+"Reis, dazu Salat, und zum Dessert Früchte."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ni8
+msgid ""
+"Children get to go to an annual camp as well as participate in sports and "
+"art classes. Teenagers also take part in vocational training activities such "
+"as music, computer literacy, sewing, carpentry, baking, hair styling, "
+"entrepreneurship, and handicrafts. Caregivers receive training on child care "
+"from the church as well as bi-annual medical check-ups and church activities."
+msgstr ""
+"Die Kinder können jedes Jahr ausserhalb des Lehrplans ein Lager besuchen. "
+"Sie können an Sport- und Kunstkursen teilnehmen. Teenager erhalten "
+"Berufsausbildungsunterricht in Musik, Informatik, Nähen, Backen, als "
+"Coiffeur, aber auch in handwerklichen Fähigkeiten wie Schreinerarbeiten, "
+"oder wie man ein kleines Geschäft aufbaut und führt. Die Eltern oder "
+"Betreuer können an Schulungen von der Kirche über Kindererziehung und an "
+"anderen Gemeindeaktivitäten teilnehmen und erhalten zudem halbjährliche "
+"medizinische Untersuchungen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gu8
+msgid ""
+"Children get to go to camps, drama classes, painting classes and museum "
+"visits. Teenagers also take part in vocational training activities such as "
+"beauty school, carpentry, pastry baking, seamstress training and "
+"handicrafts. Parents meet regularly to discuss child development topics such "
+"as health issues and child care tips."
+msgstr ""
+"Die Kinder können in Lager, zum Theater- oder Malunterricht gehen oder auch "
+"mal ein Museum besuchen. Teenager nehmen an berufsbildenden Ausbildungen "
+"teil wie zum Beispiel Schönheitspflege, in einer Schreinerei, einer "
+"Konditorei oder einer Schneiderei, wo sie etwas Handwerkliches lernen "
+"können. Ihre Eltern treffen sich regelmässig, um über Themen in der "
+"Kinderentwicklung, Gesundheitsfragen und Erziehung zu sprechen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_tg5
+msgid ""
+"Children in Togo are given breakfast and a meal each day they come to the "
+"project. Rice or pasta with fish or meat is normally on the menu! There are "
+"some critical situations where children from extremely poor families are "
+"given more food to take home."
+msgstr ""
+"Die Kinder in Togo erhalten jeden Tag, an dem sie ins Zentrum kommen, ein "
+"Frühstück und eine Hauptmahlzeit. Reis oder Nudeln mit Fisch oder Fleisch "
+"stehen normalerweise auf der Speisekarte. Kinder aus sehr armen Familien "
+"erhalten zusätzliches Essen, das sie ihren Familien mit nach Hause bringen "
+"können. "
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_bd2
+#: model:field.office.learning,description:child_compassion.learning_bf2
+#: model:field.office.learning,description:child_compassion.learning_bo2
+#: model:field.office.learning,description:child_compassion.learning_br2
+#: model:field.office.learning,description:child_compassion.learning_co2
+#: model:field.office.learning,description:child_compassion.learning_dr2
+#: model:field.office.learning,description:child_compassion.learning_ec2
+#: model:field.office.learning,description:child_compassion.learning_es2
+#: model:field.office.learning,description:child_compassion.learning_et2
+#: model:field.office.learning,description:child_compassion.learning_ho2
+#: model:field.office.learning,description:child_compassion.learning_id2
+#: model:field.office.learning,description:child_compassion.learning_io2
+#: model:field.office.learning,description:child_compassion.learning_ke2
+#: model:field.office.learning,description:child_compassion.learning_lk2
+#: model:field.office.learning,description:child_compassion.learning_me2
+#: model:field.office.learning,description:child_compassion.learning_ni2
+#: model:field.office.learning,description:child_compassion.learning_ph2
+#: model:field.office.learning,description:child_compassion.learning_rw2
+#: model:field.office.learning,description:child_compassion.learning_tg2
+#: model:field.office.learning,description:child_compassion.learning_th2
+#: model:field.office.learning,description:child_compassion.learning_tz2
+#: model:field.office.learning,description:child_compassion.learning_ug2
+msgid "Children learn Bible stories and sing songs."
+msgstr "Die Kinder hören biblische Geschichten und singen Lieder."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gu2
+#: model:field.office.learning,description:child_compassion.learning_ha2
+msgid ""
+"Children learn Bible stories and sing songs. They also get an age-"
+"appropriate Bible."
+msgstr ""
+"Die Kinder hören biblische Geschichten und singen Lieder. Sie erhalten auch "
+"eine altersgerechte Bibel."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gh_2
+msgid ""
+"Children learn Bible stories and sing songs. “I have a big God by my side” "
+"is a favourite."
+msgstr ""
+"Die Kinder hören biblische Geschichten und singen Lieder. \"Ich habe einen "
+"grossen Gott an meiner Seite\" ist einer der Favoriten."
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_hold_wizard.py:102
 #, python-format
 msgid "Children on hold"
 msgstr "Children on hold"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_pe2
+msgid ""
+"Children sing songs and learn Bible stories. They also receive an age "
+"appropriate Bible."
+msgstr ""
+"Die Kinder hören biblische Geschichten und singen Lieder.  Sie erhalten auch "
+"eine altersgerechte Bibel."
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_choir
@@ -975,6 +1176,11 @@ msgid "Cleaning"
 msgstr "Saubermachen"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Clear"
+msgstr "Clear"
+
+#. module: child_compassion
 #: model:ir.actions.act_window,help:child_compassion.open_view_project_tree
 msgid "Cliquez ici pour ajouter un nouveau document"
 msgstr "Cliquez ici pour ajouter un nouveau document"
@@ -995,7 +1201,7 @@ msgid "Closest airport distance"
 msgstr "Closest airport distance"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:83
+#: code:addons/child_compassion/wizards/project_description.py:84
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_closest_city
 #, python-format
 msgid "Closest city"
@@ -1005,6 +1211,11 @@ msgstr "Nächste Stadt:"
 #: selection:compassion.child,vocational_training_type:0
 msgid "Clothing trades"
 msgstr "Textilverkauf"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Clouds"
+msgstr "Clouds"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_cluster
@@ -1027,7 +1238,7 @@ msgid "Code:"
 msgstr "Code:"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:157
+#: code:addons/child_compassion/wizards/project_description.py:158
 #, python-format
 msgid "Cognitive activities"
 msgstr "Kognitive Förderung:"
@@ -1123,6 +1334,11 @@ msgid "Community terrain"
 msgstr "Community terrain"
 
 #. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_company_id
+msgid "Company"
+msgstr ""
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_compass_id
 msgid "Compass ID"
 msgstr "Compass ID"
@@ -1188,7 +1404,7 @@ msgid "Connect month"
 msgstr "Connect month"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:271
+#: code:addons/child_compassion/models/child_compassion.py:283
 #: model:ir.ui.view,arch_db:child_compassion.view_child_compassion_filter
 #, python-format
 msgid "Consigned"
@@ -1208,6 +1424,16 @@ msgstr "Bauwesen"
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
 msgid "Contact Information"
 msgstr "Contact Information"
+
+#. module: child_compassion
+#: model:ir.model.fields,help:child_compassion.field_field_office_learning_description
+msgid "Contains the description of the learning information."
+msgstr ""
+
+#. module: child_compassion
+#: model:ir.model.fields,help:child_compassion.field_field_office_learning_title
+msgid "Contains the title of the learning information."
+msgstr ""
 
 #. module: child_compassion
 #: selection:compassion.child,vocational_training_type:0
@@ -1327,6 +1553,7 @@ msgstr "Augenbohnen"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_create_uid
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_create_uid
@@ -1334,7 +1561,7 @@ msgstr "Augenbohnen"
 #: model:ir.model.fields,field_description:child_compassion.field_res_lang_compassion_create_uid
 #: model:ir.model.fields,field_description:child_compassion.field_staff_notification_settings_create_uid
 msgid "Created by"
-msgstr "Erstellt von"
+msgstr "erstellt von"
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_hold_wizard.py:108
@@ -1393,6 +1620,7 @@ msgstr "Created holds"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_create_date
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_create_date
@@ -1400,7 +1628,7 @@ msgstr "Created holds"
 #: model:ir.model.fields,field_description:child_compassion.field_res_lang_compassion_create_date
 #: model:ir.model.fields,field_description:child_compassion.field_staff_notification_settings_create_date
 msgid "Created on"
-msgstr "Angelegt am"
+msgstr "erstellt am"
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_creativity
@@ -1437,6 +1665,16 @@ msgstr "Währung"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble_current_project
 msgid "Current project"
 msgstr "Current project"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_current_temperature
+msgid "Current temperature"
+msgstr "Current temperature"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_current_weather
+msgid "Current weather"
+msgstr "Current weather"
 
 #. module: child_compassion
 #: model:child.chronic.illness,value:child_compassion.illness_cysticfibrosis
@@ -1529,7 +1767,7 @@ msgid "Demand Planning"
 msgstr "Demand Planning"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:274
+#: code:addons/child_compassion/models/child_compassion.py:286
 #: model:ir.ui.view,arch_db:child_compassion.view_child_compassion_filter
 #, python-format
 msgid "Departed"
@@ -1539,6 +1777,11 @@ msgstr "Departed"
 #: model:ir.ui.view,arch_db:child_compassion.view_child_compassion_filter
 msgid "Departed children"
 msgstr "Departed children"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_description
+msgid "Description"
+msgstr "Beschreibung"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_child_form
@@ -1562,6 +1805,26 @@ msgstr "Details"
 #: model:child.chronic.illness,value:child_compassion.illness_diabetes
 msgid "Diabetes"
 msgstr "Diabetes"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_gh_8
+#: model:field.office.learning,title:child_compassion.learning_gu8
+#: model:field.office.learning,title:child_compassion.learning_ha8
+#: model:field.office.learning,title:child_compassion.learning_ho8
+#: model:field.office.learning,title:child_compassion.learning_id7
+#: model:field.office.learning,title:child_compassion.learning_io7
+#: model:field.office.learning,title:child_compassion.learning_ke8
+#: model:field.office.learning,title:child_compassion.learning_me8
+#: model:field.office.learning,title:child_compassion.learning_ni8
+#: model:field.office.learning,title:child_compassion.learning_pe8
+#: model:field.office.learning,title:child_compassion.learning_ph8
+#: model:field.office.learning,title:child_compassion.learning_rw8
+#: model:field.office.learning,title:child_compassion.learning_tg8
+#: model:field.office.learning,title:child_compassion.learning_th8
+#: model:field.office.learning,title:child_compassion.learning_tz8
+#: model:field.office.learning,title:child_compassion.learning_ug8
+msgid "Did you know?"
+msgstr "Hast du das gewusst?"
 
 #. module: child_compassion
 #: model:child.physical.disability,value:child_compassion.disability_leftarm
@@ -1721,6 +1984,7 @@ msgstr "Jüngerschaft Eltern/Bezugspersonen"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_display_name
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_display_name
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_display_name
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_display_name
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_display_name
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_display_name
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_display_name
@@ -1764,9 +2028,33 @@ msgid "Driver"
 msgstr "Fahrer"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Drizzle"
+msgstr "Drizzle"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Dust"
+msgstr "Dust"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_availability_management_settings_e_commerce_hold_duration
 msgid "E commerce hold duration"
 msgstr "E commerce hold duration"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_pe8
+msgid ""
+"Each month children do one extra-curriculum activity such as camping or "
+"visiting a museum. Teenagers also get to participate in vocational training "
+"such as silk screening, jewellery-making, baking and buffet preparation. "
+"Parents are offer monthly parenting classes."
+msgstr ""
+"Jeden Monat wird eine Campingzeit angeboten, an der die Kinder teilnehmen "
+"können, oder sie können ein Museum besuchen. Teenager erhalten eine "
+"Berufsausbildung, zum Beispiel im Siebdruck, in der Herstellung von Schmuck, "
+"im Backen oder im Catering und Servieren. Den Eltern werden monatlich "
+"diverse Kurse angeboten."
 
 #. module: child_compassion
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_mentorship_early
@@ -1818,6 +2106,11 @@ msgstr "Exkursionen und Ausflüge"
 #: model:fcp.diet,value:child_compassion.icp_diet_egg
 msgid "Egg"
 msgstr "Ei"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_pe1
+msgid "Eggs, bread rolls and tea are likely to be on the menu."
+msgstr "Zu essen gibt es wahrscheinlich Eier, Brötchen und Tee."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_electrical_power
@@ -1926,6 +2219,24 @@ msgstr "Evangelistische Aktionen"
 #, python-format
 msgid "Event"
 msgstr "Event"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ho8
+msgid ""
+"Every time children go to the project, they get a snack of fruit, cereal and "
+"milk. They also get to participate in sports tournaments, retreats, camps "
+"and educational visits. Teenagers get to take part in vocational training "
+"activities such as welding, beauty, sports, baking, music, and computing. "
+"There are regular “School for Parents” meetings with topics such as domestic "
+"violence, preventing child abuse and the dangers of alcoholism. "
+msgstr ""
+"Jedes Mal, wenn Kinder ins Zentrum kommen, erhalten sie einen Snack mit "
+"Früchten, Getreideprodukten und Milch. Sie können an Sportturnieren, "
+"Freizeiten, Lagern und Bildungsangeboten teilnehmen. Teenager erhalten "
+"Berufsausbildungsunterricht in verschiedenen Bereichen wie Schönheitspflege, "
+"Sport, Metall schweissen, Backen, Musik oder Informatik. Auch für Eltern "
+"gibt es regelmässige Kurse zu Themen wie häusliche Gewalt, Vorbeugung von "
+"Kindesmissbrauch oder den Gefahren von Alkoholmissbrauch."
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_ewe
@@ -2090,7 +2401,7 @@ msgid "Father"
 msgstr "Vater"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:167
+#: code:addons/child_compassion/wizards/child_description.py:169
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search_father_alive
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household_father_alive
 #, python-format
@@ -2098,7 +2409,7 @@ msgid "Father alive"
 msgstr "Vater am Leben"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:341
+#: code:addons/child_compassion/wizards/child_description.py:343
 #, python-format
 msgid "Father job"
 msgstr "Arbeit des Vaters:"
@@ -2186,6 +2497,11 @@ msgid "Field Office Disaster Update"
 msgstr "Field Office Disaster Update"
 
 #. module: child_compassion
+#: model:ir.model,name:child_compassion.model_field_office_learning
+msgid "Field Office Learning information"
+msgstr ""
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_fo_disaster_update_ids
 msgid "Field Office Update"
 msgstr "Field Office Update"
@@ -2207,6 +2523,7 @@ msgstr "Field Status"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_field_office_id
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child_field_office_id
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child_field_office_id
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_field_office_id
 msgid "Field office"
 msgstr "Field office"
 
@@ -2288,6 +2605,11 @@ msgid "Fodu id"
 msgstr "Fodu id"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Fog"
+msgstr "Fog"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_message_follower_ids
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_hold_message_follower_ids
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_message_follower_ids
@@ -2313,6 +2635,12 @@ msgstr "Beobachter (Kanäle)"
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Beobachter (Partner)"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/child_compassion.py:288
+#, python-format
+msgid "For SMS"
+msgstr "For SMS"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_french
@@ -2536,6 +2864,11 @@ msgid "Has special needs"
 msgstr "Has special needs"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Haze"
+msgstr "Haze"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures_headshot
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_portrait
 msgid "Headshot"
@@ -2551,6 +2884,36 @@ msgstr "Gesundheit"
 #: model:fcp.physical.activity,value:child_compassion.physical_act_health_kits
 msgid "Health kits"
 msgstr "Hygienepäckchen"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd6
+#: model:field.office.learning,title:child_compassion.learning_bf6
+#: model:field.office.learning,title:child_compassion.learning_bo6
+#: model:field.office.learning,title:child_compassion.learning_br6
+#: model:field.office.learning,title:child_compassion.learning_co6
+#: model:field.office.learning,title:child_compassion.learning_dr6
+#: model:field.office.learning,title:child_compassion.learning_ec6
+#: model:field.office.learning,title:child_compassion.learning_es6
+#: model:field.office.learning,title:child_compassion.learning_et6
+#: model:field.office.learning,title:child_compassion.learning_gh_6
+#: model:field.office.learning,title:child_compassion.learning_gu6
+#: model:field.office.learning,title:child_compassion.learning_ha6
+#: model:field.office.learning,title:child_compassion.learning_ho6
+#: model:field.office.learning,title:child_compassion.learning_id5
+#: model:field.office.learning,title:child_compassion.learning_io5
+#: model:field.office.learning,title:child_compassion.learning_ke6
+#: model:field.office.learning,title:child_compassion.learning_lk6
+#: model:field.office.learning,title:child_compassion.learning_me6
+#: model:field.office.learning,title:child_compassion.learning_ni6
+#: model:field.office.learning,title:child_compassion.learning_pe6
+#: model:field.office.learning,title:child_compassion.learning_ph6
+#: model:field.office.learning,title:child_compassion.learning_rw6
+#: model:field.office.learning,title:child_compassion.learning_tg6
+#: model:field.office.learning,title:child_compassion.learning_th6
+#: model:field.office.learning,title:child_compassion.learning_tz6
+#: model:field.office.learning,title:child_compassion.learning_ug6
+msgid "Health lessons"
+msgstr "Gesundheitsunterricht"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_health_needs
@@ -2846,6 +3209,7 @@ msgstr "I want children from all countries"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_id
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_id
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_id
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_id
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_id
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_id
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_id
@@ -2872,6 +3236,176 @@ msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
 #: model:ir.model.fields,help:child_compassion.field_fo_disaster_alert_message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Falls markiert, benötigen neue Nachrichten Ihre Kenntnisnahme."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bangladesh
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bf
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bo
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_br
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_co
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_dr
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ec
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ei
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_es
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_et
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: "
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_in
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_lk
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_rw
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_th
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_tz
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. "
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: "
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_id
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_io
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. During a typical project day in "
+"Indonesia, children will participate in activities such as…"
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: An einem typischen Tag in einem "
+"Kinderzentrum in Indonesien nehmen die Kinder an folgenden Aktivitäten teil:"
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_gh
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Ghana, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Ghana besuchen die Kinder das "
+"Kinderzentrum in der Regel am Samstag."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_gu
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Guatemala, children attend their "
+"Compassion projects before or after school. Older sponsored children also "
+"attend on a Saturday."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Guatemala besuchen Kinder vor oder "
+"nach der Schule ihre Compassion Kinderzentren. Ältere Patenkinder gehen auch "
+"am Samstag hin."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ha
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Haiti, children attend their "
+"Compassion projects on Saturdays. They may also attend for a couple of hours "
+"after school."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Haiti besuchen die Kinder das "
+"Kinderzentrum in der Regel am Samstag. Oft verbringen sie auch ein paar "
+"Stunden nach der Schule im Kinderzentrum."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ho
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Honduras, children attend their "
+"Compassion projects before or after school."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Honduras besuchen die Kinder ihre "
+"Compassion Kinderzentren vor oder nach der Schule."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ke
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Kenya, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Kenia besuchen die Kinder das "
+"Kinderzentrum in der Regel am Samstag."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_me
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Mexico, children attend their "
+"Compassion projects after school and on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Mexiko besuchen die Kinder das "
+"Kinderzentrum nach der Schule und jeweils am Samstag."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ni
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Nicaragua, children attend their "
+"Compassion projects after school and on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Nicaragua besuchen die Kinder das "
+"Kinderzentrum nach der Schule und jeweils am Samstag."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_pe
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Peru, children typically attend "
+"their Compassion projects on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Peru besuchen die Kinder das "
+"Kinderzentrum in der Regel am Samstag, oft aber auch unter der Woche."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_tg
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Togo, project days are normally held "
+"on Saturdays. Older sponsored children will also attend for a couple of "
+"hours after school during the week."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Togo besuchen die Kinder das "
+"Kinderzentrum in der Regel am Samstag. Ältere Patenkinder besuchen das "
+"Zentrum auch unter der Woche nach der Schule für mehrere Stunden."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ug
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Uganda, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In Uganda finden die "
+"Kinderzentrumtage in der Regel am Samstag statt."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ph
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In the Philippines, project days are "
+"normally held on Saturdays."
+msgstr ""
+"Wenn du heute das Kinderzentrum von deinem Patenkind besuchen würdest, "
+"könntest du etwa folgendes miterleben: In den Philippinen besuchen die "
+"Kinder das Kinderzentrum in der Regel am Samstag."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_image_url
@@ -2963,12 +3497,26 @@ msgid "In Days"
 msgstr "In Days"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_id7
+#: model:field.office.learning,description:child_compassion.learning_io7
+msgid ""
+"In Indonesia Children participate in a sporting activity at least twice a "
+"month and enjoy extracurricular activities such as traditional dance, "
+"painting, singing, and music. Teenagers at the project will also take part "
+"in computer and English courses"
+msgstr ""
+"In Indonesien betreiben Kinder mindestens zweimal im Monat eine Sportart. "
+"Nebst dem Lernplan haben sie auch die Möglichkeit, tanzen, malen, singen und "
+"ein Musikinstrument spielen zu lernen. Die Teenager nehmen auch an Computer- "
+"und Englischkursen teil."
+
+#. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_availability_management_settings_e_commerce_hold_duration
 msgid "In Minutes"
 msgstr "In Minutes"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:170
+#: code:addons/child_compassion/wizards/project_description.py:171
 #, python-format
 msgid ""
 "In addition, the project offers special activities for the parents such as "
@@ -3116,6 +3664,175 @@ msgid "Italian description"
 msgstr "Italian description"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_bd7
+#: model:field.office.learning,description:child_compassion.learning_bf7
+#: model:field.office.learning,description:child_compassion.learning_bo7
+#: model:field.office.learning,description:child_compassion.learning_br7
+#: model:field.office.learning,description:child_compassion.learning_co7
+#: model:field.office.learning,description:child_compassion.learning_dr7
+#: model:field.office.learning,description:child_compassion.learning_ec7
+#: model:field.office.learning,description:child_compassion.learning_es7
+#: model:field.office.learning,description:child_compassion.learning_et7
+#: model:field.office.learning,description:child_compassion.learning_gh_7
+#: model:field.office.learning,description:child_compassion.learning_gu7
+#: model:field.office.learning,description:child_compassion.learning_ha7
+#: model:field.office.learning,description:child_compassion.learning_ho7
+#: model:field.office.learning,description:child_compassion.learning_id6
+#: model:field.office.learning,description:child_compassion.learning_io6
+#: model:field.office.learning,description:child_compassion.learning_ke7
+#: model:field.office.learning,description:child_compassion.learning_lk7
+#: model:field.office.learning,description:child_compassion.learning_me7
+#: model:field.office.learning,description:child_compassion.learning_ni7
+#: model:field.office.learning,description:child_compassion.learning_ph7
+#: model:field.office.learning,description:child_compassion.learning_rw7
+#: model:field.office.learning,description:child_compassion.learning_tg7
+#: model:field.office.learning,description:child_compassion.learning_th7
+#: model:field.office.learning,description:child_compassion.learning_tz7
+#: model:field.office.learning,description:child_compassion.learning_ug7
+msgid "It’s letter writing time!"
+msgstr "Zeit zum Briefeschreiben!"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_th5
+msgid ""
+"It’s lunchtime and each child a meal consisting of rice, vegetables and "
+"meat. Milk is provided for young children. Children who are malnourished "
+"receive additional food to take home with them every month, such as rice, "
+"eggs, canned fish and milk."
+msgstr ""
+"Jedes Kind bekommt eine Mahlzeit aus Reis, Gemüse und Fleisch. Die "
+"Kleinkinder erhalten Milch. Unterernährte Kinder bekommen jeden Monat "
+"zusätzliche Lebensmittel, die sie mit nach Hause nehmen können, wie Reis, "
+"Eier, Fischkonserven und Milch."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ph5
+msgid ""
+"It’s lunchtime and this time a meal is likely to consist of fish or meat, "
+"vegetables and rice. This meal is really important as children in the "
+"Philippines often skip meals at home due to food scarcity."
+msgstr ""
+"Das Essen besteht wahrscheinlich aus Fisch oder Fleisch, Gemüse und Reis. "
+"Diese Mahlzeit ist sehr wichtig, da Kinder in den Philippinen oft unter "
+"Nahrungsmangel leiden und zu Hause zu wenig zu essen bekommen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gh_5
+msgid ""
+"It’s lunchtime up and this time it’s likely to be rice, chicken, fish or "
+"meat. And for dessert, an orange, banana, pineapple or seasonal fruits. Our "
+"trained project cooks also give parents guidance about cooking nutritious "
+"food at home."
+msgstr ""
+"Es gibt Mittagessen, und diesmal ist es wahrscheinlich Reis, Poulet, Fisch "
+"oder anderes Fleisch. Und zum Dessert eine Orange, eine Banane, eine Ananas "
+"oder saisonale Früchte. Unsere geschulten Köche oder Köchinnen in den "
+"Kinderzentren geben den Eltern eine Anleitung, wie sie zu Hause gesunde und "
+"nahrhafte Speisen zubereiten können. "
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ug5
+msgid ""
+"It’s lunchtime! Maize, rice or plantains with beans, peas or beef are likely "
+"to be on the menu."
+msgstr ""
+"Zum Essen gibt es Mais, Reis oder Kochbananen mit Bohnen, Erbsen oder "
+"Rindfleisch."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ho5
+msgid ""
+"It’s lunchtime! Meals normally include meat, cereals, vegatables, fruit and "
+"natural juice. Malnourished children receive extra food or nutritional "
+"supplements as advised by doctors."
+msgstr ""
+"Zum Mittagessen gehören normalerweise Fleisch, Getreideflocken, Gemüse und "
+"Fruchtsaft. Unterernährte Kinder erhalten zusätzliche Lebensmittel oder "
+"Nahrungsergänzungsmittel, die von einem Arzt verschrieben werden."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_me5
+msgid ""
+"It’s lunchtime! Meals normally include meat, chicken or soy cooked with "
+"vegetables, fruit and fresh water."
+msgstr ""
+"Zum Mittagessen gibt es normalerweise Poulet, anderes Fleisch oder Tofu, "
+"dazu Gemüse, Früchte und Süssgetränke."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gu5
+msgid ""
+"It’s lunchtime! Meals normally include meat, rice, vegetables and tortillas. "
+"They may also have chicken broth, a piece of chicken, vegetables and "
+"tortillas."
+msgstr ""
+"Es gibt Mittagessen, und dazu gehören in der Regel Fleisch, Reis, Gemüse und "
+"Tortillas. Manchmal gibt es Hühnersuppe oder ein Stück Poulet."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ni5
+msgid ""
+"It’s lunchtime! Meals normally include rice, meat and tortillas with natural "
+"juice, tea or cereal. They also sometimes get fruit salad."
+msgstr ""
+"Zu den Mahlzeiten gehören in der Regel Reis, Fleisch und Tortillas mit "
+"Fruchtsaft, Tee oder Getreideflocken. Manchmal gibt es auch Fruchtsalat."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ha5
+msgid ""
+"It’s lunchtime! Meals normally include sandwiches with juice or a hot meal "
+"of rice, beans, vegetables and meat with juice. There is a special "
+"nutritional programme for malnourished children."
+msgstr ""
+"Zum Mittagessen gehören normalerweise Sandwiches mit Fruchtsaft oder eine "
+"warme Mahlzeit aus Reis, Bohnen, Gemüse und Fleisch mit Fruchtsaft. Für "
+"unterernährte Kinder gibt es ein spezielles Ernährungsprogramm."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_tz5
+msgid ""
+"It’s lunchtime! Rice and beef, beans and fruit, or ugali (stiff porridge) "
+"and beef are likely to be on the menu. Project staff aim to increase "
+"children’s protein intake as few receive enough at home."
+msgstr ""
+"Zum Essen gibt es wahrscheinlich Reis und Rindfleisch, Bohnen und Früchte, "
+"oder Ugali (Maisbrei). Das Essen ist immer möglichst proteinreich, da nur "
+"wenige Kinder zu Hause genug Eiweiss erhalten."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ke5
+msgid ""
+"It’s lunchtime! Rice or ugali, beef stew or bean stew and green leafy "
+"vegetables such as kale or cabbage are likely to be on the menu. Our trained "
+"project cooks also give parents guidance about cooking nutritious food at "
+"home."
+msgstr ""
+"Reis oder Ugali, Rindfleisch- oder Bohnen-Eintopf, Kohl oder anderes grünes "
+"Blattgemüse werden wahrscheinlich auf der Speisekarte stehen. Unsere "
+"ausgebildeten Köche in den Kinderzentren lehren auch die Eltern, wie sie zu "
+"Hause gesunden und nahrhafte Speisen zubereiten können."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_rw5
+msgid ""
+"It’s lunchtime! Rice, posho (a common East African dish made with cornmeal) "
+"or Irish potatoes with beans and green vegetables are likely to be on the "
+"menu."
+msgstr ""
+"Zu essen gibt es Reis, Posho (ein ostafrikanisches Gericht aus Maismehl) "
+"oder Kartoffelstock mit Bohnen und grünem Gemüse."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_pe7
+msgid ""
+"It’s time to write a letter! Older children may also plan life goals based "
+"on their talents and interests."
+msgstr ""
+"Teenager lernen, sich gemäss ihrer Fähigkeiten und Interessen Lebensziele zu "
+"setzen."
+
+#. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_jacks
 msgid "Jacks"
 msgstr "Spielkarten"
@@ -3182,6 +3899,80 @@ msgid "Kembatigna"
 msgstr "Kembatigna"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_bd3
+#: model:field.office.learning,description:child_compassion.learning_bf3
+#: model:field.office.learning,description:child_compassion.learning_bo3
+#: model:field.office.learning,description:child_compassion.learning_br3
+#: model:field.office.learning,description:child_compassion.learning_co3
+#: model:field.office.learning,description:child_compassion.learning_dr3
+#: model:field.office.learning,description:child_compassion.learning_ec3
+#: model:field.office.learning,description:child_compassion.learning_es3
+#: model:field.office.learning,description:child_compassion.learning_et3
+#: model:field.office.learning,description:child_compassion.learning_gh_3
+#: model:field.office.learning,description:child_compassion.learning_ha3
+#: model:field.office.learning,description:child_compassion.learning_ho3
+#: model:field.office.learning,description:child_compassion.learning_id3
+#: model:field.office.learning,description:child_compassion.learning_io3
+#: model:field.office.learning,description:child_compassion.learning_lk3
+#: model:field.office.learning,description:child_compassion.learning_me3
+#: model:field.office.learning,description:child_compassion.learning_ni3
+#: model:field.office.learning,description:child_compassion.learning_pe3
+#: model:field.office.learning,description:child_compassion.learning_rw3
+#: model:field.office.learning,description:child_compassion.learning_tg3
+#: model:field.office.learning,description:child_compassion.learning_th3
+#: model:field.office.learning,description:child_compassion.learning_tz3
+msgid ""
+"Kids and young people are given the chance to have fun, develop "
+"relationships and play in a safe space."
+msgstr ""
+"Die Kinder und Jugendlichen haben Spass, knüpfen Freundschaften und können "
+"in einem sicheren Umfeld spielen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ke3
+msgid ""
+"Kids and young people are given the chance to have fun, develop "
+"relationships and play in a safe space. A typical snack may be a cup of "
+"porridge, a slice of bread, fruit or an egg."
+msgstr ""
+"Die Kinder und Jugendlichen haben Spass, knüpfen Freundschaften und können "
+"in einem sicheren Umfeld spielen. Ein typischer Snack ist eine Schale "
+"Haferbrei, eine Scheibe Brot, eine Frucht oder ein Ei."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ph3
+msgid ""
+"Kids and young people are given the chance to have fun, develop "
+"relationships and play in a safe space. Bread, soup or another local "
+"delicacy are often served as a snack."
+msgstr ""
+"Die Kinder und Jugendlichen haben Spass, knüpfen Freundschaften und können "
+"in einem sicheren Umfeld spielen. Als Snack bekommen die Kinder Brot, Suppe "
+"oder Reiskuchen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gu3
+msgid ""
+"Kids and young people are given the chance to have fun, develop "
+"relationships and play in a safe space. Children are get a substantial snack "
+"such as cereal and a banana or a sandwich and fruit."
+msgstr ""
+"Die Kinder und Jugendlichen haben Spass, knüpfen Freundschaften und können "
+"in einem sicheren Umfeld spielen. Und es gibt einen reichhaltigen Snack wie "
+"Getreideflocken mit Banane oder ein Sandwich und Früchte."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ug3
+msgid ""
+"Kids and young people are given the chance to have fun, develop "
+"relationships and play in a safe space. Every child is provided with a "
+"nutritional snack such as tea, porridge and a bun."
+msgstr ""
+"Die Kinder und Jugendlichen haben Spass, knüpfen Freundschaften und können "
+"in einem sicheren Umfeld spielen. Jedes Kind erhält einen Snack. Es gibt "
+"Tee, Haferbrei und ein Brötchen."
+
+#. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_kinyarwanda
 msgid "Kinyarwanda"
 msgstr "Kinyarwanda"
@@ -3207,7 +3998,7 @@ msgid "Lang id"
 msgstr "Lang id"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:107
+#: code:addons/child_compassion/wizards/project_description.py:108
 #: model:child.school.subject,value:child_compassion.school_language
 #, python-format
 msgid "Language"
@@ -3277,6 +4068,7 @@ msgstr "Letzte Benachrichtigung"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity___last_update
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity___last_update
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason___last_update
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning___last_update
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert___last_update
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss___last_update
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update___last_update
@@ -3342,6 +4134,7 @@ msgstr "Last Update"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_write_uid
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_write_uid
@@ -3349,7 +4142,7 @@ msgstr "Last Update"
 #: model:ir.model.fields,field_description:child_compassion.field_res_lang_compassion_write_uid
 #: model:ir.model.fields,field_description:child_compassion.field_staff_notification_settings_write_uid
 msgid "Last Updated by"
-msgstr "Zuletzt aktualisiert durch"
+msgstr "zuletzt aktualisiert von"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_availability_management_settings_write_date
@@ -3402,6 +4195,7 @@ msgstr "Zuletzt aktualisiert durch"
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason_write_date
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update_write_date
@@ -3409,7 +4203,7 @@ msgstr "Zuletzt aktualisiert durch"
 #: model:ir.model.fields,field_description:child_compassion.field_res_lang_compassion_write_date
 #: model:ir.model.fields,field_description:child_compassion.field_staff_notification_settings_write_date
 msgid "Last Updated on"
-msgstr "Zuletzt aktualisiert am"
+msgstr "zuletzt aktualisiert am"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble_last_attended_project
@@ -3435,6 +4229,11 @@ msgstr "Last reviewed date"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_last_update_date
 msgid "Last update"
 msgstr "Last update"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_last_weather_refresh_date
+msgid "Last weather refresh date"
+msgstr "Last weather refresh date"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_lastname
@@ -3464,9 +4263,29 @@ msgid "Leadership training"
 msgstr "Leiterschaftsschulungen"
 
 #. module: child_compassion
+#: model:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
+msgid "Learning"
+msgstr ""
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office_learning_image_url
+msgid "Learning image url"
+msgstr ""
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office_learning_summary
+msgid "Learning summary"
+msgstr ""
+
+#. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_lentils
 msgid "Lentils"
 msgstr "Linsen"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_pe7
+msgid "Letter writing and career planning"
+msgstr "Zeit zum Briefeschreiben und Karriereplanung."
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
@@ -3522,7 +4341,7 @@ msgid "Local church original name"
 msgstr "Local church original name"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:101
+#: code:addons/child_compassion/wizards/project_description.py:102
 #, python-format
 msgid "Local community"
 msgstr "Lokale Gemeinde"
@@ -3538,9 +4357,46 @@ msgid "Location"
 msgstr "Lagerort"
 
 #. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd5
+#: model:field.office.learning,title:child_compassion.learning_bf5
+#: model:field.office.learning,title:child_compassion.learning_bo5
+#: model:field.office.learning,title:child_compassion.learning_br5
+#: model:field.office.learning,title:child_compassion.learning_co5
+#: model:field.office.learning,title:child_compassion.learning_dr5
+#: model:field.office.learning,title:child_compassion.learning_ec5
+#: model:field.office.learning,title:child_compassion.learning_es5
+#: model:field.office.learning,title:child_compassion.learning_et5
+#: model:field.office.learning,title:child_compassion.learning_gh_5
+#: model:field.office.learning,title:child_compassion.learning_gu5
+#: model:field.office.learning,title:child_compassion.learning_ha5
+#: model:field.office.learning,title:child_compassion.learning_ho5
+#: model:field.office.learning,title:child_compassion.learning_id4
+#: model:field.office.learning,title:child_compassion.learning_io4
+#: model:field.office.learning,title:child_compassion.learning_ke5
+#: model:field.office.learning,title:child_compassion.learning_lk5
+#: model:field.office.learning,title:child_compassion.learning_me5
+#: model:field.office.learning,title:child_compassion.learning_ni5
+#: model:field.office.learning,title:child_compassion.learning_pe5
+#: model:field.office.learning,title:child_compassion.learning_ph5
+#: model:field.office.learning,title:child_compassion.learning_rw5
+#: model:field.office.learning,title:child_compassion.learning_tg5
+#: model:field.office.learning,title:child_compassion.learning_th5
+#: model:field.office.learning,title:child_compassion.learning_tz5
+#: model:field.office.learning,title:child_compassion.learning_ug5
+msgid "Lunch and social time"
+msgstr "Sozialkompetenz entwickeln."
+
+#. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_maize
 msgid "Maize"
 msgstr "Mais"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gh_1
+msgid "Maize porridge, milk, sugar and bread are likely to be on the menu."
+msgstr ""
+"Es werden wahrscheinlich Maisbrei, Milch, Zucker und Brot auf der "
+"Speisekarte stehen."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_major_course_study
@@ -3746,6 +4602,11 @@ msgid "Missing dates"
 msgstr "Missing dates"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Mist"
+msgstr "Mist"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_mobile_device_ids
 msgid "Mobile devices"
 msgstr "Mobile devices"
@@ -3761,7 +4622,7 @@ msgid "Mother"
 msgstr "Mutter"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:175
+#: code:addons/child_compassion/wizards/child_description.py:177
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search_mother_alive
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_household_mother_alive
 #, python-format
@@ -3769,7 +4630,7 @@ msgid "Mother alive"
 msgstr "Mutter am Leben"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:346
+#: code:addons/child_compassion/wizards/child_description.py:348
 #, python-format
 msgid "Mother job"
 msgstr "Arbeit der Mutter:"
@@ -3946,7 +4807,7 @@ msgid "No"
 msgstr "Nein"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/global_child_search.py:491
+#: code:addons/child_compassion/wizards/global_child_search.py:494
 #, python-format
 msgid "No children found meeting criterias"
 msgstr "No children found meeting criterias"
@@ -4065,13 +4926,13 @@ msgid "Number of beneficiaries"
 msgstr "Number of beneficiaries"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:182
+#: code:addons/child_compassion/wizards/child_description.py:184
 #, python-format
 msgid "Number of brothers"
 msgstr "Anzahl Brüder:"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:88
+#: code:addons/child_compassion/wizards/project_description.py:89
 #, python-format
 msgid "Number of children"
 msgstr "Anzahl Kinder im Kinderzentrum:"
@@ -4096,7 +4957,7 @@ msgid "Number of restricted children"
 msgstr "Number of restricted children"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:187
+#: code:addons/child_compassion/wizards/child_description.py:189
 #, python-format
 msgid "Number of sisters"
 msgstr "Anzahl Schwestern:"
@@ -4158,7 +5019,20 @@ msgid "Old value"
 msgstr "Old value"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:272
+#: model:field.office.learning,description:child_compassion.learning_ug8
+msgid ""
+"Older sponsored children are also given vocational training in skills such "
+"as carpentry, tailoring, and mat-making. Parents are offered monthly classes "
+"on adult literacy and quarterly training on topics such as hygiene, "
+"parenting and income-generating activities."
+msgstr ""
+"Ältere Patenkinder erhalten eine Berufsausbildung als Schreiner, Schneider "
+"oder als Hersteller von Schlafmatten. Den Eltern werden monatlich "
+"Alphabetisierungskurse und vierteljährlich Schulungen über Hygiene, "
+"Kindererziehung oder Geschäftsgründung und -führung angeboten."
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/child_compassion.py:284
 #, python-format
 msgid "On Internet"
 msgstr "On Internet"
@@ -4254,7 +5128,7 @@ msgid "Period locked"
 msgstr "Period locked"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:324
+#: code:addons/child_compassion/models/project_compassion.py:357
 #, python-format
 msgid "Phase-out"
 msgstr "Phase-out"
@@ -4265,7 +5139,7 @@ msgid "Phone number"
 msgstr "Phone number"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:151
+#: code:addons/child_compassion/wizards/project_description.py:152
 #, python-format
 msgid "Physical activities"
 msgstr "Physische Förderung:"
@@ -4306,10 +5180,10 @@ msgid "Picnics"
 msgstr "Ausflüge"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:588
-#: code:addons/child_compassion/models/child_pictures.py:97
-#: code:addons/child_compassion/models/child_pictures.py:112
-#: code:addons/child_compassion/models/child_pictures.py:123
+#: code:addons/child_compassion/models/child_compassion.py:601
+#: code:addons/child_compassion/models/child_pictures.py:68
+#: code:addons/child_compassion/models/child_pictures.py:82
+#: code:addons/child_compassion/models/child_pictures.py:92
 #, python-format
 msgid "Picture update"
 msgstr "Picture update"
@@ -4350,25 +5224,12 @@ msgid "Playing musical instrument"
 msgstr "ein Musikinstrument spielen lernen"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/compassion_hold.py:22
-#, python-format
-msgid "Please install Python Enum"
-msgstr "Please install Python Enum"
-
-#. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:19
-#: code:addons/child_compassion/wizards/project_description.py:19
-#, python-format
-msgid "Please install python pyquery"
-msgstr "Please install python pyquery"
-
-#. module: child_compassion
 #: model:child.chronic.illness,value:child_compassion.illness_polio
 msgid "Polio"
 msgstr "Kinderlähmung"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:102
+#: code:addons/child_compassion/wizards/project_description.py:103
 #, python-format
 msgid "Population"
 msgstr "Bevölkerung:"
@@ -4397,6 +5258,42 @@ msgstr "Kartoffeln"
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer
 msgid "Prayer"
 msgstr "Gebet"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_gh_1
+msgid "Prayer and breakfast"
+msgstr "Gebet und Frühstück"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_rw1
+#: model:field.office.learning,title:child_compassion.learning_tg1
+#: model:field.office.learning,title:child_compassion.learning_tz1
+#: model:field.office.learning,title:child_compassion.learning_ug1
+msgid "Prayer and breakfast time"
+msgstr "Gebet und Frühstückszeit"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd1
+#: model:field.office.learning,title:child_compassion.learning_bf1
+#: model:field.office.learning,title:child_compassion.learning_bo1
+#: model:field.office.learning,title:child_compassion.learning_br1
+#: model:field.office.learning,title:child_compassion.learning_co1
+#: model:field.office.learning,title:child_compassion.learning_dr1
+#: model:field.office.learning,title:child_compassion.learning_ec1
+#: model:field.office.learning,title:child_compassion.learning_es1
+#: model:field.office.learning,title:child_compassion.learning_et1
+#: model:field.office.learning,title:child_compassion.learning_gu1
+#: model:field.office.learning,title:child_compassion.learning_ho1
+#: model:field.office.learning,title:child_compassion.learning_id1
+#: model:field.office.learning,title:child_compassion.learning_io1
+#: model:field.office.learning,title:child_compassion.learning_ke1
+#: model:field.office.learning,title:child_compassion.learning_lk1
+#: model:field.office.learning,title:child_compassion.learning_me1
+#: model:field.office.learning,title:child_compassion.learning_ni1
+#: model:field.office.learning,title:child_compassion.learning_ph1
+#: model:field.office.learning,title:child_compassion.learning_th1
+msgid "Prayer and devotional time"
+msgstr "Gebet und Morgenandacht."
 
 #. module: child_compassion
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer_group
@@ -4532,7 +5429,7 @@ msgid "Project Need"
 msgstr "Project Need"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:476
+#: code:addons/child_compassion/models/project_compassion.py:555
 #, python-format
 msgid "Project Reactivation"
 msgstr "Project Reactivation"
@@ -4544,7 +5441,7 @@ msgid "Project Reservation"
 msgstr "Project Reservation"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:392
+#: code:addons/child_compassion/models/project_compassion.py:435
 #, python-format
 msgid "Project Suspended"
 msgstr "Project Suspended"
@@ -4555,7 +5452,7 @@ msgid "Project activities"
 msgstr "Project activities"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:140
+#: code:addons/child_compassion/wizards/project_description.py:141
 #, python-format
 msgid "Project activities for children"
 msgstr "Angebote des Kinderzentrums"
@@ -4573,7 +5470,7 @@ msgid "Project lifecycle event"
 msgstr "Project lifecycle event"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:81
+#: code:addons/child_compassion/wizards/project_description.py:82
 #, python-format
 msgid "Project name"
 msgstr "Name des Kinderzentrums:"
@@ -4589,6 +5486,39 @@ msgid "Project reservation"
 msgstr "Project reservation"
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_bd4
+#: model:field.office.learning,description:child_compassion.learning_bf4
+#: model:field.office.learning,description:child_compassion.learning_bo4
+#: model:field.office.learning,description:child_compassion.learning_br4
+#: model:field.office.learning,description:child_compassion.learning_co4
+#: model:field.office.learning,description:child_compassion.learning_dr4
+#: model:field.office.learning,description:child_compassion.learning_ec4
+#: model:field.office.learning,description:child_compassion.learning_es4
+#: model:field.office.learning,description:child_compassion.learning_et4
+#: model:field.office.learning,description:child_compassion.learning_gh_4
+#: model:field.office.learning,description:child_compassion.learning_gu4
+#: model:field.office.learning,description:child_compassion.learning_ha4
+#: model:field.office.learning,description:child_compassion.learning_ho4
+#: model:field.office.learning,description:child_compassion.learning_ke4
+#: model:field.office.learning,description:child_compassion.learning_lk4
+#: model:field.office.learning,description:child_compassion.learning_me4
+#: model:field.office.learning,description:child_compassion.learning_ni4
+#: model:field.office.learning,description:child_compassion.learning_pe4
+#: model:field.office.learning,description:child_compassion.learning_ph4
+#: model:field.office.learning,description:child_compassion.learning_rw4
+#: model:field.office.learning,description:child_compassion.learning_tg4
+#: model:field.office.learning,description:child_compassion.learning_th4
+#: model:field.office.learning,description:child_compassion.learning_tz4
+#: model:field.office.learning,description:child_compassion.learning_ug4
+msgid ""
+"Project tutors share valuable life skills e.g. how to resolve conflict and "
+"the importance of developing healthy self-esteem."
+msgstr ""
+"Die Mitarbeitenden des Kinderzentrums vermitteln wertvolle Lebensweisheiten, "
+"z.B. wie man Konflikte löst und wie wichtig es ist, ein gesundes "
+"Selbstwertgefühl zu entwickeln."
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile_projected_transition_date
 msgid "Projected transition date"
 msgstr "Projected transition date"
@@ -4597,7 +5527,67 @@ msgstr "Projected transition date"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search_fcp_ids
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_project
 msgid "Projects"
-msgstr "Kinderzentren"
+msgstr "Projekte"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ke8
+msgid ""
+"Projects in Kenya also offer a variety of extracurricular activities "
+"including an annual football competition, teen camps held during the "
+"holidays and talent days where children perform music, drama or poems. When "
+"they reach the age of 12, young people benefit from skills training, such as "
+"computer training, carpentry, motor vehicle repair, dressmaking, cooking, "
+"hairdressing, driving and life skills."
+msgstr ""
+"Die Kinderzentren in Kenia bieten ausserhalb des Lehrplans auch eine "
+"Vielzahl von Aktivitäten an, darunter ein jährliches Fussballtournier, "
+"Teenager-Lager während der Ferien und Talentetage, an denen die kleineren "
+"Kinder Musik machen, Theater aufführen oder Gedichte aufsagen."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_tz8
+msgid ""
+"Projects in Tanzania also offer extra curriculum activities including "
+"sports, games, camping and tree-planting in community areas. Children also "
+"participate in public celebrations such as AIDS Day, the Day of the African "
+"Child or Uhuru Day. Parents and caregivers are offered parenting classes."
+msgstr ""
+"Die Kinderzentren in Tansania führen ausserhalb ihres Lehrplans auch "
+"Aktivitäten wie Sport, Spiele, Lager und andere gemeinschaftsfördernde Dinge "
+"durch. Die Kinder lernen, Bäume zu pflanzen, und nehmen an öffentlichen "
+"Feiern wie dem AIDS-Tag, dem Tag des afrikanischen Kindes oder dem Uhuru-Tag "
+"teil. Ihren Eltern und Betreuern werden ebenfalls diverse Kurse angeboten."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_th8
+msgid ""
+"Projects in Thailand offer extracurricular activities such as music, "
+"community sports days, as well as community service opportunities such as "
+"anti-drug campaigns. These activities are generally held during school "
+"holidays. Parents and caregivers are also offered income-generation classes "
+"and projects hold special family events such as camps and celebrations for "
+"Mother's Day and Father's Day."
+msgstr ""
+"Die Kinderzentren in Thailand führen ausserhalb des Lehrplans auch "
+"Gemeinschaftssporttage und Anti-Drogen-Kampagnen durch und leisten "
+"gemeinnützige Dienste in ihrer Region. Die Kinder können ein Musikinstrument "
+"erlernen. Diese Dinge finden in der Regel während der Schulferien statt. "
+"Eltern und Betreuern werden Schulungen angeboten, wie sie ein kleines "
+"Geschäft aufbauen und führen können, und es gibt spezielle Veranstaltungen "
+"für die ganze Familie sowie Feste zum Muttertag und zum Vatertag."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_tg8
+msgid ""
+"Projects in Togo also offer a variety of extracurricular activities "
+"including musical instrument playing, choreography, choir, artwork, football "
+"and puzzles. Parents and caregivers are offered parenting classes."
+msgstr ""
+"In den Kinderzentren in Togo können die Kinder auch ausserhalb ihres "
+"Lehrplans Dinge lernen wie zum Beispiel ein Musikinstrument zu spielen, zu "
+"tanzen oder in einem Chor mitzusingen. Sie können sich künstlerisch "
+"betätigen, Fussball oder Puzzle spielen. Eltern und Betreuern werden "
+"Erziehungskurse angeboten."
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -4650,6 +5640,11 @@ msgid "Ragi"
 msgstr "Fingerhirse"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Rain"
+msgstr "Rain"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_rainy_month_ids
 msgid "Rainy months"
 msgstr "Rainy months"
@@ -4698,7 +5693,7 @@ msgid "Release Hold"
 msgstr "Release Hold"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:275
+#: code:addons/child_compassion/models/child_compassion.py:287
 #, python-format
 msgid "Released"
 msgstr "Released"
@@ -4912,6 +5907,11 @@ msgid "Salesperson"
 msgstr "Verkäufer"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Sand"
+msgstr "Sand"
+
+#. module: child_compassion
 #: model:fcp.physical.activity,value:child_compassion.physical_act_sanitation
 msgid "Sanitation demonstration units"
 msgstr "Übungsmodelle zu Hygiene "
@@ -4927,7 +5927,7 @@ msgid "School"
 msgstr "School"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:125
+#: code:addons/child_compassion/wizards/project_description.py:126
 #, python-format
 msgid "School begins in"
 msgstr "Schulbeginn im:"
@@ -4938,7 +5938,7 @@ msgid "School costs paid by FCP"
 msgstr "School costs paid by FCP"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:203
+#: code:addons/child_compassion/wizards/child_description.py:205
 #, python-format
 msgid "School performance"
 msgstr "Schulische Leistungen:"
@@ -4977,7 +5977,7 @@ msgstr "Score based on how long the child is waiting"
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
 msgid "Search"
-msgstr "Suche"
+msgstr "Suchen"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
@@ -5077,6 +6077,11 @@ msgid "September"
 msgstr "September"
 
 #. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: child_compassion
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_service
 msgid "Service opportunities"
 msgstr "Gemeinnützige Aktionen"
@@ -5133,6 +6138,16 @@ msgid "Skip"
 msgstr "Skip"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Smoke"
+msgstr "Smoke"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Snow"
+msgstr "Snow"
+
+#. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_foot
 msgid "Soccer or football"
 msgstr "Fussball"
@@ -5152,6 +6167,34 @@ msgstr "Social Science"
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_social_clubs
 msgid "Social clubs"
 msgstr "Kinder-/Jugendclub"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd4
+#: model:field.office.learning,title:child_compassion.learning_bf4
+#: model:field.office.learning,title:child_compassion.learning_bo4
+#: model:field.office.learning,title:child_compassion.learning_br4
+#: model:field.office.learning,title:child_compassion.learning_co4
+#: model:field.office.learning,title:child_compassion.learning_dr4
+#: model:field.office.learning,title:child_compassion.learning_ec4
+#: model:field.office.learning,title:child_compassion.learning_es4
+#: model:field.office.learning,title:child_compassion.learning_et4
+#: model:field.office.learning,title:child_compassion.learning_gh_4
+#: model:field.office.learning,title:child_compassion.learning_gu4
+#: model:field.office.learning,title:child_compassion.learning_ha4
+#: model:field.office.learning,title:child_compassion.learning_ho4
+#: model:field.office.learning,title:child_compassion.learning_ke4
+#: model:field.office.learning,title:child_compassion.learning_lk4
+#: model:field.office.learning,title:child_compassion.learning_me4
+#: model:field.office.learning,title:child_compassion.learning_ni4
+#: model:field.office.learning,title:child_compassion.learning_pe4
+#: model:field.office.learning,title:child_compassion.learning_ph4
+#: model:field.office.learning,title:child_compassion.learning_rw4
+#: model:field.office.learning,title:child_compassion.learning_tg4
+#: model:field.office.learning,title:child_compassion.learning_th4
+#: model:field.office.learning,title:child_compassion.learning_tz4
+#: model:field.office.learning,title:child_compassion.learning_ug4
+msgid "Social lessons"
+msgstr "Sozialkompetenz entwickeln"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office_social_media_site
@@ -5175,7 +6218,7 @@ msgid "Socio-Emotional score"
 msgstr "Socio-Emotional score"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:163
+#: code:addons/child_compassion/wizards/project_description.py:164
 #, python-format
 msgid "Socio-emotional activities"
 msgstr "Sozial-emotionale Förderung:"
@@ -5235,7 +6278,7 @@ msgstr "Spanisch"
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/global_child_search.py:223
-#: code:addons/child_compassion/wizards/global_child_search.py:237
+#: code:addons/child_compassion/wizards/global_child_search.py:240
 #, python-format
 msgid "Specify Attributes"
 msgstr "Specify Attributes"
@@ -5246,7 +6289,7 @@ msgid "Spina bifida"
 msgstr "Offener Rücken"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:145
+#: code:addons/child_compassion/wizards/project_description.py:146
 #, python-format
 msgid "Spiritual activities"
 msgstr "Geistliche Förderung:"
@@ -5270,6 +6313,36 @@ msgstr "Spiritual activities (6-11)"
 #: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_conventions
 msgid "Spiritual conventions"
 msgstr "Geistliche Versammlungen/Konferenzen"
+
+#. module: child_compassion
+#: model:field.office.learning,title:child_compassion.learning_bd2
+#: model:field.office.learning,title:child_compassion.learning_bf2
+#: model:field.office.learning,title:child_compassion.learning_bo2
+#: model:field.office.learning,title:child_compassion.learning_br2
+#: model:field.office.learning,title:child_compassion.learning_co2
+#: model:field.office.learning,title:child_compassion.learning_dr2
+#: model:field.office.learning,title:child_compassion.learning_ec2
+#: model:field.office.learning,title:child_compassion.learning_es2
+#: model:field.office.learning,title:child_compassion.learning_et2
+#: model:field.office.learning,title:child_compassion.learning_gh_2
+#: model:field.office.learning,title:child_compassion.learning_gu2
+#: model:field.office.learning,title:child_compassion.learning_ha2
+#: model:field.office.learning,title:child_compassion.learning_ho2
+#: model:field.office.learning,title:child_compassion.learning_id2
+#: model:field.office.learning,title:child_compassion.learning_io2
+#: model:field.office.learning,title:child_compassion.learning_ke2
+#: model:field.office.learning,title:child_compassion.learning_lk2
+#: model:field.office.learning,title:child_compassion.learning_me2
+#: model:field.office.learning,title:child_compassion.learning_ni2
+#: model:field.office.learning,title:child_compassion.learning_pe2
+#: model:field.office.learning,title:child_compassion.learning_ph2
+#: model:field.office.learning,title:child_compassion.learning_rw2
+#: model:field.office.learning,title:child_compassion.learning_tg2
+#: model:field.office.learning,title:child_compassion.learning_th2
+#: model:field.office.learning,title:child_compassion.learning_tz2
+#: model:field.office.learning,title:child_compassion.learning_ug2
+msgid "Spiritual lessons"
+msgstr "Bibellektion"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_spiritual_needs
@@ -5324,7 +6397,7 @@ msgid "Sponsor reference"
 msgstr "Sponsor reference"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:273
+#: code:addons/child_compassion/models/child_compassion.py:285
 #: selection:compassion.child,sponsorship_status:0
 #: selection:compassion.generic.child,sponsorship_status:0
 #: selection:compassion.global.child,sponsorship_status:0
@@ -5337,6 +6410,27 @@ msgstr "Sponsored"
 #: model:ir.model,name:child_compassion.model_compassion_child
 msgid "Sponsored Child"
 msgstr "Sponsored Child"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_rw8
+msgid ""
+"Sponsored children in Rwanda are also introduced to Rwandan national values "
+"such as self-identity, loving the nation, unity, reconciliation and striving "
+"toward self-reliance. Many projects teach Rwandan cultural dance as a way of "
+"maintaining and owning the Rwandan culture.\n"
+"\n"
+"When they reach the age of 12, young people are involved in skills training, "
+"such as computer training, carpentry, motor vehicle repair, dressmaking, "
+"cooking, hair dressing, driving and life skills."
+msgstr ""
+"Patenkinder in Ruanda erhalten auch Unterricht über die nationalen "
+"Wertevorstellungen ihres Landes wie beispielsweise Identität, Patriotismus, "
+"Einheit, Versöhnung und das Streben nach Selbstständigkeit. In vielen "
+"Kinderzentren werden den Kindern auch ruandische Tänze beigebracht, um die "
+"Kultur ihres Landes zu erhalten.\n"
+"Ab 12 Jahren lernen die Kinder, mit dem Computer umzugehen, handwerkliche "
+"Fertigkeiten wie Holzbearbeitung, Autoreparatur, Schneidern, Kochen, Haare "
+"schneiden, später dann auch Autofahren und andere nützliche Dinge."
 
 #. module: child_compassion
 #: model:ir.ui.menu,name:child_compassion.menu_sponsorship_root
@@ -5357,6 +6451,11 @@ msgstr "Sponsorship status"
 #: model:fcp.sociological.activity,value:child_compassion.socio_act_sports
 msgid "Sports"
 msgstr "Sport"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Squall"
+msgstr "Squall"
 
 #. module: child_compassion
 #: model:ir.ui.menu,name:child_compassion.menu_notification_configuration
@@ -5418,6 +6517,11 @@ msgid "Status:"
 msgstr "Status:"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Storm"
+msgstr "Storm"
+
+#. module: child_compassion
 #: model:child.hobby,value:child_compassion.child_hobby_storytelling
 msgid "Story telling"
 msgstr "Geschichten erzählen"
@@ -5426,12 +6530,28 @@ msgstr "Geschichten erzählen"
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office_street
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_street
 msgid "Street"
-msgstr "Strasse"
+msgstr "Straße"
 
 #. module: child_compassion
 #: model:fcp.community.occupation,value:child_compassion.icp_occupation_street_vending
 msgid "Street vending"
 msgstr "Strassenverkäufer"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_ha8
+msgid ""
+"Student clubs are held each Saturday and children get to church retreats at "
+"Easter. Teenagers also take part in vocational training activities such as "
+"painting, crafts, sewing, computer skills, music, photography, videography, "
+"cooking and foreign language classes. Caregivers receive weekly parenting "
+"classes which include income generation training."
+msgstr ""
+"Jeden Samstag finden Studiengruppen statt, und an Ostern dürfen die Kinder "
+"an Gemeindefreizeiten teilnehmen. Teenager werden in der Berufswahl "
+"geschult. Sie können malen, basteln, nähen, sich Computerkenntnisse "
+"aneignen, Musik machen, fotografieren oder Videos aufnehmen, kochen oder "
+"Fremdsprachen lernen. Ihre Eltern oder Betreuer erhalten wöchentliche Kurse, "
+"wie man ein kleines Geschäft aufbauen kann.  "
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_availability_management_settings_sub_child_hold_duration
@@ -5460,7 +6580,7 @@ msgid "Supplemental feeding"
 msgstr "Ergänzende Mahlzeiten"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:326
+#: code:addons/child_compassion/models/project_compassion.py:359
 #: selection:compassion.project,suspension:0
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_project_filter
 #, python-format
@@ -5554,6 +6674,37 @@ msgid "Team building activities"
 msgstr "Gemeinschaftsfördernde Aktionen "
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_gh_8
+msgid ""
+"Teenagers at the project will also take part in skill training workshops "
+"such as bead making, shoe making, soap preparation and basket weaving. "
+"Parents and caregivers are offered health education classes as well as "
+"quarterly training on children’s rights, good parenting, business management "
+"and financial management."
+msgstr ""
+"Die Teenager können in den Kinderzentren an Workshops wie Perlen-, Schuh- "
+"oder Seifenherstellung und Korbflechten teilnehmen. Den Eltern oder "
+"Betreuungspersonen werden Kurse zum Beispiel über Gesundheit und Hygiene "
+"angeboten, und es gibt vierteljährliche Schulungen über Kinderrechte, "
+"Kindererziehung, die Führung von Kleinunternehmen und Budgetplanung."
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_me8
+msgid ""
+"Teenagers get to take part in vocational training activities such as "
+"carpentry, painting, cooking, computer classes, English, hammock making, "
+"silk screening, embroidery, hair styling and fish farming. Leadership skills "
+"are also taught to children. Caregivers participate in activities such as "
+"parenting classes, income-generating activities and health training."
+msgstr ""
+"Teenager erhalten Berufsausbildungsunterricht, zum Beispiel als Schreiner, "
+"als Maler oder als Koch. Sie erhalten Computerkurse, lernen Englisch, den "
+"Bau von Hängematten, Siebdruck, Stickerei, Haare schneiden oder Fischzucht. "
+"Den Kindern werden bewusst auch Führungsqualitäten vermittelt. Eltern oder "
+"Betreuer können an Elternkursen teilnehmen und erhalten Schulungen in "
+"Hygiene oder wie man ein kleines Geschäft aufbauen kann."
+
+#. module: child_compassion
 #: model:fcp.diet,value:child_compassion.icp_diet_teff
 msgid "Teff"
 msgstr "Teff (äthiop. Zwerghirse)"
@@ -5569,7 +6720,7 @@ msgid "Telegu"
 msgstr "Telegu"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:325
+#: code:addons/child_compassion/models/project_compassion.py:358
 #, python-format
 msgid "Terminated"
 msgstr "Terminated"
@@ -5616,6 +6767,38 @@ msgid "The child already exists in database."
 msgstr "The child already exists in database."
 
 #. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_bd6
+#: model:field.office.learning,description:child_compassion.learning_bf6
+#: model:field.office.learning,description:child_compassion.learning_bo6
+#: model:field.office.learning,description:child_compassion.learning_br6
+#: model:field.office.learning,description:child_compassion.learning_co6
+#: model:field.office.learning,description:child_compassion.learning_dr6
+#: model:field.office.learning,description:child_compassion.learning_ec6
+#: model:field.office.learning,description:child_compassion.learning_es6
+#: model:field.office.learning,description:child_compassion.learning_et6
+#: model:field.office.learning,description:child_compassion.learning_gh_6
+#: model:field.office.learning,description:child_compassion.learning_gu6
+#: model:field.office.learning,description:child_compassion.learning_ha6
+#: model:field.office.learning,description:child_compassion.learning_ho6
+#: model:field.office.learning,description:child_compassion.learning_ke6
+#: model:field.office.learning,description:child_compassion.learning_lk6
+#: model:field.office.learning,description:child_compassion.learning_me6
+#: model:field.office.learning,description:child_compassion.learning_ni6
+#: model:field.office.learning,description:child_compassion.learning_pe6
+#: model:field.office.learning,description:child_compassion.learning_ph6
+#: model:field.office.learning,description:child_compassion.learning_rw6
+#: model:field.office.learning,description:child_compassion.learning_tg6
+#: model:field.office.learning,description:child_compassion.learning_th6
+#: model:field.office.learning,description:child_compassion.learning_tz6
+#: model:field.office.learning,description:child_compassion.learning_ug6
+msgid ""
+"The children may learn how to brush their teeth or discover tips for "
+"preventing malaria."
+msgstr ""
+"Die Kinder lernen, wie man sich die Zähne putzt oder sich vor Malaria "
+"schützen kann."
+
+#. module: child_compassion
 #: sql_constraint:fo.disaster.alert:0
 msgid "The disaster alert already exists in database."
 msgstr "The disaster alert already exists in database."
@@ -5652,38 +6835,49 @@ msgid "The lifecycle already exists in database."
 msgstr "The lifecycle already exists in database."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:587
+#: code:addons/child_compassion/models/child_compassion.py:600
 #, python-format
 msgid "The picture has been updated."
 msgstr "The picture has been updated."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_pictures.py:97
-#: code:addons/child_compassion/models/child_pictures.py:123
+#: code:addons/child_compassion/models/child_pictures.py:68
+#: code:addons/child_compassion/models/child_pictures.py:92
 #, python-format
 msgid "The picture was the same"
 msgstr "The picture was the same"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:95
+#: model:field.office.learning,description:child_compassion.learning_ph8
+msgid ""
+"The project also runs extracurricular activities include camps, field trips, "
+"sport tournaments and talent shows. Parents and caregivers are also invited "
+"to join Bible studies and care groups."
+msgstr ""
+"Die Kinderzentren führen ausserhalb des Lehrplans auch Lager, Ausflüge, "
+"Sportturniere und Talentshows durch. Eltern und Betreuer sind auch "
+"eingeladen, am Bibelunterricht und in Kleingruppen der Gemeinde teilzunehmen."
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:96
 #, python-format
 msgid "The project has no electricity."
 msgstr "Das Kinderzentrum hat keinen Strom."
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:75
+#: code:addons/child_compassion/wizards/project_description.py:76
 #, python-format
 msgid "The project is located in %s, close to the border."
 msgstr "Das Kinderzentrum ist in %s, nahe der Grenze."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:475
+#: code:addons/child_compassion/models/project_compassion.py:554
 #, python-format
 msgid "The project is reactivated."
 msgstr "The project is reactivated."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/project_compassion.py:390
+#: code:addons/child_compassion/models/project_compassion.py:433
 #, python-format
 msgid "The project was suspended and funds are retained."
 msgstr "The project was suspended and funds are retained."
@@ -5713,9 +6907,19 @@ msgid "Thumbnail url"
 msgstr "Thumbnail url"
 
 #. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Thunderstorm"
+msgstr "Thunderstorm"
+
+#. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_tigrigna
 msgid "Tigrigna"
 msgstr "Tigrigna"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_time
+msgid "Time"
+msgstr ""
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project_time_to_airport
@@ -5733,9 +6937,24 @@ msgid "Time to medical facility"
 msgstr "Time to medical facility"
 
 #. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_timezone
+msgid "Timezone"
+msgstr "Zeitzone"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_title
+msgid "Title"
+msgstr ""
+
+#. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_childpool_form
 msgid "Today I'm feeling we will sponsor new children!"
 msgstr "Today I'm feeling we will sponsor new children!"
+
+#. module: child_compassion
+#: selection:compassion.project,current_weather:0
+msgid "Tornado"
+msgstr "Tornado"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_demand_weekly_demand_total_demand
@@ -5808,6 +7027,7 @@ msgid "Transport mode to airport"
 msgstr "Transport mode to airport"
 
 #. module: child_compassion
+#: selection:compassion.child,major_course_study:0
 #: selection:compassion.child,vocational_training_type:0
 msgid "Transportation"
 msgstr "Transportwesen"
@@ -5839,13 +7059,13 @@ msgid "Typical floor material"
 msgstr "Typical floor material"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:120
+#: code:addons/child_compassion/wizards/project_description.py:121
 #, python-format
 msgid "Typical food"
 msgstr "Typisches Essen:"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/project_description.py:113
+#: code:addons/child_compassion/wizards/project_description.py:114
 #, python-format
 msgid "Typical job"
 msgstr "Typische Arbeit in dieser Region:"
@@ -5892,6 +7112,8 @@ msgstr "University year"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/household.py:122
+#: model:child.future.hope,value:child_compassion.future_hope_unavailable
+#: model:child.future.hope,value:child_compassion.future_hope_unknown
 #, python-format
 msgid "Unknown"
 msgstr "Unbekannt"
@@ -6018,7 +7240,7 @@ msgid "Visibility"
 msgstr "Visibility"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:217
+#: code:addons/child_compassion/wizards/child_description.py:219
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_ex
 #: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_in
 #, python-format
@@ -6036,7 +7258,7 @@ msgid "Volleyball or handball"
 msgstr "Volleyball oder Handball"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:270
+#: code:addons/child_compassion/models/child_compassion.py:282
 #, python-format
 msgid "Waiting Hold"
 msgstr "Waiting Hold"
@@ -6117,6 +7339,11 @@ msgid "Weight"
 msgstr "Weight"
 
 #. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office_learning_ids
+msgid "What I learn"
+msgstr "Was ich lerne"
+
+#. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_global_child_attributes_form
 msgid "What to do next?"
 msgstr "Was noch zu machen dann?"
@@ -6125,6 +7352,13 @@ msgstr "Was noch zu machen dann?"
 #: model:fcp.diet,value:child_compassion.icp_diet_wheat
 msgid "Wheat"
 msgstr "Weizen"
+
+#. module: child_compassion
+#: model:field.office.learning,description:child_compassion.learning_tz1
+msgid ""
+"When they arrive, children are given tea served with an egg, bread or buns."
+msgstr ""
+"Bei ihrer Ankunft erhalten die Kinder Tee und ein Ei oder ein Brötchen."
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_child_reservation_wizard_form
@@ -6235,7 +7469,7 @@ msgstr "Bücher"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/household.py:265
-#: code:addons/child_compassion/wizards/child_description.py:317
+#: code:addons/child_compassion/wizards/child_description.py:319
 #, python-format
 msgid "brother"
 msgstr "Bruder"
@@ -6392,7 +7626,8 @@ msgid "family circumstances have changed positively"
 msgstr "sich die Lebensumstände der Familie verbessert haben."
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:306
+#: code:addons/child_compassion/models/household.py:259
+#: code:addons/child_compassion/wizards/child_description.py:308
 #, python-format
 msgid "father"
 msgstr "Vater"
@@ -6547,13 +7782,13 @@ msgid "illiteracy"
 msgstr "Analphabetentum"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:311
+#: code:addons/child_compassion/wizards/child_description.py:313
 #, python-format
 msgid "in a youth headed house."
 msgstr "in einem Haushalt mit jugendlichem Haushaltsvorstand"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:324
+#: code:addons/child_compassion/wizards/child_description.py:326
 #, python-format
 msgid "in an institution."
 msgstr "in einem Heim."
@@ -6610,7 +7845,7 @@ msgid "listening to bible stories"
 msgstr "hört biblische Geschichten"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:300
+#: code:addons/child_compassion/wizards/child_description.py:302
 #, python-format
 msgid "lives"
 msgstr "lebt"
@@ -6636,7 +7871,8 @@ msgid "mentoring"
 msgstr "mentoring"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:309
+#: code:addons/child_compassion/models/household.py:272
+#: code:addons/child_compassion/wizards/child_description.py:311
 #, python-format
 msgid "mother"
 msgstr "Mutter"
@@ -6678,9 +7914,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -6699,9 +7933,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -6740,7 +7972,7 @@ msgid "other"
 msgstr "other"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:303
+#: code:addons/child_compassion/wizards/child_description.py:305
 #, python-format
 msgid "parents"
 msgstr "Eltern"
@@ -6863,7 +8095,7 @@ msgstr "Liede singen"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/household.py:278
-#: code:addons/child_compassion/wizards/child_description.py:319
+#: code:addons/child_compassion/wizards/child_description.py:321
 #, python-format
 msgid "sister"
 msgstr "Schwester"
@@ -6887,11 +8119,6 @@ msgstr "staffing issues"
 #: model:child.future.hope,value:child_compassion.future_hope_business
 msgid "start a business"
 msgstr "eine Arbeitstelle finden"
-
-#. module: child_compassion
-#: model:child.future.hope,value:child_compassion.future_hope_unknown
-msgid "Unknown"
-msgstr "Unbekannte"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/household.py:262
@@ -6960,10 +8187,10 @@ msgid "vocational training"
 msgstr "Handwerkliche Ausbildung"
 
 #. module: child_compassion
-#: code:addons/child_compassion/wizards/child_description.py:302
-#: code:addons/child_compassion/wizards/child_description.py:305
-#: code:addons/child_compassion/wizards/child_description.py:308
-#: code:addons/child_compassion/wizards/child_description.py:320
+#: code:addons/child_compassion/wizards/child_description.py:304
+#: code:addons/child_compassion/wizards/child_description.py:307
+#: code:addons/child_compassion/wizards/child_description.py:310
+#: code:addons/child_compassion/wizards/child_description.py:322
 #, python-format
 msgid "with"
 msgstr "mit"
@@ -6985,9 +8212,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -7011,9 +8236,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -7123,9 +8346,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -7149,9 +8370,7 @@ msgstr ""
 "erneute Teilnahme bewirken. \n"
 "Weil die Arbeit von Compassion aber auf Freiwilligkeit beruht, müssen wir "
 "den Wunsch der Eltern und des Kindes respektieren, wenn sie das "
-"Patenschaftsprogramm verlassen. Es tut uns sehr leid, dass dadurch Ihre "
-"Patenschaft für {child_id.preferred_name} endet. Wir sind uns jedoch sicher, "
-"dass Ihre Unterstützung Segensspuren in {seinem} Leben hinterlassen wird!"
+"Patenschaftsprogramm verlassen."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
