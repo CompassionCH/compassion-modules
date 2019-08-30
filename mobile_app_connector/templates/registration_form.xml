@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="mobile_form_buttons_registration" name="CMS wizard form buttons"
+        inherit_id="cms_form.base_form_buttons" primary="True">
+
+        <xpath expr="//div[hasclass('form-controls')]" position="replace">
+            <div class="form-group form-controls">
+                <t t-if="form.wiz_next_step()">
+                    <button type="submit" name="wiz_submit" value="next" class="btn btn-primary btn-next pull-right">Next</button>
+                </t>
+                <t t-else="">
+                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                </t>
+                <t t-if="form.wiz_prev_step()">
+                    <button type="submit" name="wiz_submit" value="prev" class="btn btn-primary btn-prev pull-left" formnovalidate="True">Prev</button>
+                </t>
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

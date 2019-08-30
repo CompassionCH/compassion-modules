@@ -43,6 +43,7 @@
     },
     'data': [
         'security/ir.model.access.csv',
+        'security/communication_job_security.xml',
         'report/a4_no_margin.xml',
         'views/partner_communication.xml',
         'views/communication_job_view.xml',

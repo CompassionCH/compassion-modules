@@ -87,6 +87,7 @@
                                 </div>
                                 <field name="country_id"/>
                             </div>
+                            <field name="company_id"/>
                         </group>
                         <group>
                             <field name="number_allocate_children"/>

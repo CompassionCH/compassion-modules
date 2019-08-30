@@ -18,7 +18,7 @@
 % if len(child) == 1:
 You're changing ${child.get('his')} life
 % else:
-You're changing ${child.get_number()} lives
+You're changing ${child.get_number()}
 % endif
 Thank You]]>
         </field>
@@ -156,16 +156,19 @@ Make a donation]]></field>
     </record>
     <record id="tile_subtype_pr1" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_prayer"/>
-        <field name="name">Prayer now</field>
+        <field name="name">Pray now</field>
         <field name="code">PR1</field>
         <field name="view_order">10</field>
+        <field name="default_model_id" ref="model_compassion_child"/>
         <field name="default_action_text">Pray now</field>
         <field name="default_action_destination">Read overlay</field>
+        <field name="default_title">${ctx['objects'].preferred_name}</field>
+        <field name="default_body"/>
         <field name="tile_preview" type="base64" file="mobile_app_connector/static/img/PR1.png"/>
     </record>
     <record id="tile_subtype_pr2" model="mobile.app.tile.subtype">
         <field name="type_id" ref="tile_type_prayer"/>
-        <field name="name">Prayer</field>
+        <field name="name">News for prayer</field>
         <field name="code">PR2</field>
         <field name="view_order">15</field>
         <field name="default_action_destination">Stories and prayer with relevant blog at the top</field>

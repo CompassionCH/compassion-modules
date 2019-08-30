@@ -149,7 +149,7 @@ class CompassionCorrespondence(models.Model):
         file_extension = other_params.get('path_info_extension')
         gen = self.env['correspondence.s2b.generator'].sudo().create({
             'name': 'app',
-            'selection_domain': "[('child_id', '=', '" + child_id + "')]",
+            'selection_domain': "[('child_id', '=', " + child_id + ")]",
             'body_html': body_html,
             's2b_template_id': template_id,
         })

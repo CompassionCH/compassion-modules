@@ -263,6 +263,15 @@ class CompassionChild(models.Model):
     ]
 
     is_special_needs = fields.Boolean()
+
+    # Multicompany
+    company_id = fields.Many2one(
+        'res.company',
+        'Company',
+        required=True,
+        index=True,
+        default=lambda self: self.env.user.company_id.id
+    )
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################

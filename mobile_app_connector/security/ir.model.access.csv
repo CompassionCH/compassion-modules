@@ -6,7 +6,9 @@ access_admin_wp_post_category,WP Post Category full access,model_wp_post_categor
 read_access_child,Child read access,child_compassion.model_compassion_child,base.group_portal,1,0,0,0
 read_access_project,Project read access,child_compassion.model_compassion_project,base.group_portal,1,0,0,0
 read_access_contract,Recurring contract read access,sponsorship_compassion.model_recurring_contract,base.group_portal,1,0,0,0
-write_access_correspondence,Correspondence read access,sbc_compassion.model_correspondence,base.group_portal,1,1,0,0
+write_access_user_correspondence,Correspondence write user access,sbc_compassion.model_correspondence,base.group_user,1,1,0,0
+read_access_user_correspondence_page,Correspondence page read user access,sbc_compassion.model_correspondence_page,base.group_user,1,0,0,0
+write_access_correspondence,Correspondence write access,sbc_compassion.model_correspondence,base.group_portal,1,1,0,0
 read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
 read_access_product_template,Product template read access,model_product_template,base.group_portal,1,0,0,0
 read_access_lang_compassion,Lang compassion read access,child_compassion.model_res_lang_compassion,base.group_portal,1,0,0,0
@@ -28,13 +30,24 @@ read_access_household_members,Household members read access,child_compassion.mod
 read_access_hobby,Hobbies' names read access,child_compassion.model_child_hobby,base.group_portal,1,0,0,0
 access_admin_mobile_app_banner,Mobile App Banner full access,model_mobile_app_banner,sales_team.group_sale_manager,1,1,1,1
 access_app_banner,App banner read access,model_mobile_app_banner,,1,0,0,0
+access_user_mobile_app_tile,access_user_mobile_app_tile,model_mobile_app_tile,base.group_user,1,0,0,0
+access_user_mobile_app_tile_type,access_user_mobile_app_tile_type,model_mobile_app_tile_type,base.group_user,1,0,0,0
+access_user_mobile_app_tile_subtype,access_user_mobile_app_tile_subtype,model_mobile_app_tile_subtype,base.group_user,1,0,0,0
+access_user_mobile_app_writing,access_user_mobile_app_writing,model_mobile_app_writing,base.group_user,1,0,0,0
+access_user_mobile_app_feedback,access user app feedback,model_mobile_app_feedback,base.group_user,1,1,1,0
+access_user_mobile_app_firebase_registration,access user app firebase registration,model_firebase_registration,base.group_user,1,1,1,1
 access_mobile_app_tile,access_mobile_app_tile,model_mobile_app_tile,base.group_portal,1,0,0,0
 access_mobile_app_tile_type,access_mobile_app_tile_type,model_mobile_app_tile_type,base.group_portal,1,0,0,0
 access_mobile_app_tile_subtype,access_mobile_app_tile_subtype,model_mobile_app_tile_subtype,base.group_portal,1,0,0,0
 access_mobile_app_writing,access_mobile_app_writing,model_mobile_app_writing,base.group_portal,1,0,0,0
+access_mobile_app_feedback,Access app feedback,model_mobile_app_feedback,base.group_portal,1,1,1,0
+access_mobile_app_firebase_registration,access app firebase registration,model_firebase_registration,base.group_portal,1,1,1,1
 admin_access_mobile_app_tile,full access_mobile_app_tile,model_mobile_app_tile,sales_team.group_sale_manager,1,1,1,1
 admin_access_mobile_app_tile_type,admin access_mobile_app_tile_type,model_mobile_app_tile_type,sales_team.group_sale_manager,1,1,0,0
 admin_access_mobile_app_tile_subtype,admin access_mobile_app_tile_subtype,model_mobile_app_tile_subtype,sales_team.group_sale_manager,1,1,0,0
 admin_access_mobile_app_writing,full access_mobile_app_writing,model_mobile_app_writing,sales_team.group_sale_manager,1,1,1,1
-user_access_mobile_app_feedback,User access app feedback,model_mobile_app_feedback,base.group_portal,1,1,1,0
 admin_access_mobile_app_feedback,Admin access app feedback,model_mobile_app_feedback,base.group_system,1,1,1,1
+access_user_field_office,access_user_field_office,model_compassion_field_office,base.group_user,1,0,0,0
+access_field_office,access_field_office,model_compassion_field_office,base.group_portal,1,0,0,0
+access_user_learning_info,access_user_learning_info,child_compassion.model_field_office_learning,base.group_user,1,0,0,0
+access_learning_info,access_learning_info,child_compassion.model_field_office_learning,base.group_portal,1,0,0,0

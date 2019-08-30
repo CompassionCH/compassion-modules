@@ -38,7 +38,9 @@ class AccountInvoice(models.Model):
             product_obj = self.env['product.product'].sudo()
             # Fund donations
             for i, product_id in enumerate(wrapper.fund_ids):
-                product = product_obj.browse(product_id)
+                product = product_obj.search(
+                    [('product_tmpl_id', '=', product_id)]
+                )
                 invoice_lines.append({
                     'product_id': product.id,
                     'account_id':  product.property_account_income_id.id,

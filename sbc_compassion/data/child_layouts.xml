@@ -84,6 +84,43 @@
             <field name="width">7</field>
         </record>
 
+        <record id="l7_box_1" model="correspondence.translation.box">
+            <field name="name">L7-1-1</field>
+            <field name="nb_lines">14</field>
+            <field name="left">4.6</field>
+            <field name="top">7.7</field>
+            <field name="width">2.90</field>
+        </record>
+        <record id="l7_box_2" model="correspondence.translation.box">
+            <field name="name">L7-2-1</field>
+            <field name="nb_lines">10</field>
+            <field name="left">0.59</field>
+            <field name="top">8.52</field>
+            <field name="width">7.25</field>
+        </record>
+
+        <record id="l8_box_1" model="correspondence.translation.box">
+            <field name="name">L8-1-1</field>
+            <field name="nb_lines">38</field>
+            <field name="left">4.3</field>
+            <field name="top">2.18</field>
+            <field name="width">3.20</field>
+        </record>
+        <record id="l8_box_2" model="correspondence.translation.box">
+            <field name="name">L8-2-1</field>
+            <field name="nb_lines">46</field>
+            <field name="left">4.32</field>
+            <field name="top">0.78</field>
+            <field name="width">3.50</field>
+        </record>
+        <record id="l9_box_1" model="correspondence.translation.box">
+            <field name="name">L9-1-1</field>
+            <field name="nb_lines">51</field>
+            <field name="left">0.64</field>
+            <field name="top">0.75</field>
+            <field name="width">6.98</field>
+        </record>
+
 
         <!-- Child letter layouts -->
         <record id="b2s_l1" model="correspondence.b2s.layout">
@@ -129,6 +166,26 @@
             <field name="name">L6</field>
             <field name="code">6S11</field>
             <field name="additional_page_box_id" ref="l6_box_1"/>
+        </record>
+
+        <record id="b2s_l7" model="correspondence.b2s.layout">
+            <field name="name">L7 Intro 9-11</field>
+            <field name="code">7S11</field>
+            <field name="page_1_box_ids" eval="[(4,l7_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l7_box_2)]"/>
+        </record>
+
+        <record id="b2s_l8" model="correspondence.b2s.layout">
+            <field name="name">L8 Intro 12+</field>
+            <field name="code">8S11</field>
+            <field name="page_1_box_ids" eval="[(4,l8_box_1)]"/>
+            <field name="page_2_box_ids" eval="[(4,l8_box_2)]"/>
+        </record>
+
+        <record id="b2s_l9" model="correspondence.b2s.layout">
+            <field name="name">L9 Final Letter</field>
+            <field name="code">9S11</field>
+            <field name="page_2_box_ids" eval="[(4,l9_box_1)]"/>
         </record>
     </data>
 </odoo>

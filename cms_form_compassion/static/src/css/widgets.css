@@ -7,14 +7,14 @@
 }
 
 /* This ensures the datepicker is above the modal */
-.ui-datepicker { position: relative; z-index: 10000 !important; }
+.ui-datepicker { position: relative; z-index: 10000 !important; font-size: medium;}
 
 .gtc {
-    font-size: small;
+    font-size: medium;
 }
 
 .label-gtc{
-    font-size: smaller;
+    font-size: medium;
     padding-left: 5px;
 }
 

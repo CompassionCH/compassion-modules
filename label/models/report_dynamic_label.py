@@ -10,7 +10,7 @@
 ##############################################################################
 from odoo import api, models
 from odoo.osv.orm import browse_record
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from copy import deepcopy
 from math import ceil
 
