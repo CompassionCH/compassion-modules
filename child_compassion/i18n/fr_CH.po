@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-24 09:55+0000\n"
-"PO-Revision-Date: 2019-08-29 09:25+0200\n"
+"PO-Revision-Date: 2019-08-30 10:49+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -433,7 +433,7 @@ msgstr "Boeuf"
 #: model:field.office.learning,description:child_compassion.learning_rw1
 msgid ""
 "Before lessons start, children get to tuck into a mug of steaming porridge."
-msgstr ""
+msgstr " "
 
 #. module: child_compassion
 #: selection:compassion.child,academic_performance:0
@@ -954,7 +954,7 @@ msgstr ""
 "indonésiens traditionnels riches en protéines tel le Tempe sont également "
 "préparés pour les enfants. Des collations sont aussi servies lors des "
 "activités au centre d’accueil. Ce dernier est constitué de cake, de pain, de "
-"lait par exemple. "
+"lait par exemple."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_id5
@@ -1064,7 +1064,7 @@ msgid ""
 "appropriate Bible."
 msgstr ""
 "Les enfants découvrent des histoires bibliques et apprennent des chants. "
-"Chaque enfant reçoit une Bible en adéquation avec son âge. "
+"Chaque enfant reçoit une Bible en adéquation avec son âge."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_gh_2
@@ -1073,7 +1073,7 @@ msgid ""
 "is a favourite."
 msgstr ""
 "Les enfants découvrent des histoires bibliques et apprennent des chants. "
-"«J’ai un grand Dieu à mes côtés» est un des chants les plus populaires. "
+"«J’ai un grand Dieu à mes côtés» est un des chants les plus populaires."
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_hold_wizard.py:102
@@ -1088,7 +1088,7 @@ msgid ""
 "appropriate Bible."
 msgstr ""
 "Les enfants découvrent des histoires bibliques et apprennent des chants. "
-"Chaque enfant reçoit une Bible en adéquation avec son âge. "
+"Chaque enfant reçoit une Bible en adéquation avec son âge."
 
 #. module: child_compassion
 #: model:child.christian.activity,value:child_compassion.christian_activity_choir
@@ -1424,12 +1424,12 @@ msgstr "Contact Information"
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_field_office_learning_description
 msgid "Contains the description of the learning information."
-msgstr "Contient la description de l'information à apprendre"
+msgstr "Contient la description de l'information à apprendre."
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_field_office_learning_title
 msgid "Contains the title of the learning information."
-msgstr "Contient le titre de l'information à apprendre"
+msgstr "Contient le titre de l'information à apprendre."
 
 #. module: child_compassion
 #: selection:compassion.child,vocational_training_type:0
@@ -1703,7 +1703,7 @@ msgstr "Date of pictures"
 #: model:ir.model.fields,help:child_compassion.field_compassion_reservation_message_last_post
 #: model:ir.model.fields,help:child_compassion.field_fo_disaster_alert_message_last_post
 msgid "Date of the last message posted on the record."
-msgstr "Date du dernier message publié sur cet enregistrement"
+msgstr "Date du dernier message publié sur cet enregistrement."
 
 #. module: child_compassion
 #: model:fcp.community.occupation,value:child_compassion.icp_occupation_day_labor
@@ -3234,7 +3234,7 @@ msgstr "Si coché, de nouveaux messages demandent votre attention."
 #: model:ir.model.fields,help:child_compassion.field_compassion_reservation_message_needaction
 #: model:ir.model.fields,help:child_compassion.field_fo_disaster_alert_message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "si elle est cochée, de nouveaux messages requièrent votre attention."
+msgstr "Si elle est cochée, de nouveaux messages requièrent votre attention."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_image_url
@@ -3337,7 +3337,7 @@ msgstr ""
 "En Indonésie, les enfants participant à des activités sportives au moins "
 "deux fois par mois. Des activités de peinture, de chant, de musique et de "
 "danse sont également organisées. Les ados participent à des ateliers "
-"informatiques et d’apprentissage de langues étrangères."
+"informatiques et d’apprentissage de langues étrangères"
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_availability_management_settings_e_commerce_hold_duration
@@ -3352,7 +3352,7 @@ msgid ""
 "education courses."
 msgstr ""
 "De plus, le centre d'accueil propose des activités pour les parents ainsi "
-"que des cours d'éducation"
+"que des cours d'éducation."
 
 #. module: child_compassion
 #: model:ir.model.fields,help:child_compassion.field_compassion_project_annual_primary_school_cost
@@ -3559,7 +3559,7 @@ msgstr ""
 "<childpreferredname’s>  recevra une orange, une banane, un ananas ou des "
 "fruits de saison. \n"
 "Les cuisiniers du centre d’accueil prodiguent également des conseils "
-"nutritionnels aux parents des enfants parrainés. "
+"nutritionnels aux parents des enfants parrainés."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_ug5
@@ -3577,6 +3577,10 @@ msgid ""
 "natural juice. Malnourished children receive extra food or nutritional "
 "supplements as advised by doctors."
 msgstr ""
+"Les repas servis aux enfants sont en principe constitués de viande, de "
+"légumes, de céréales, de fruits et de jus de fruits. Les enfants souffrant "
+"de malnutrition bénéficient de compléments alimentaires, selon les "
+"indications données par le personnel médical."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_me5
@@ -3585,7 +3589,7 @@ msgid ""
 "vegetables, fruit and fresh water."
 msgstr ""
 "C’est l’heure du repas. Les repas sont constitués de viande, de poulet, de "
-"soja, cuisinés avec des légumes, des fruits et de l’eau fraîche. "
+"soja, cuisinés avec des légumes, des fruits et de l’eau fraiche."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_gu5
@@ -3642,7 +3646,7 @@ msgstr ""
 "C’est l’heure du repas. Au menu: riz ou ugali (plat à base de mil), ragoût "
 "de bœuf ou de haricots, légumes verts. Les cuisiniers du centre d’accueil "
 "prodiguent également des conseils nutritionnels aux parents des enfants "
-"parrainés. "
+"parrainés."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_rw5
@@ -3653,7 +3657,7 @@ msgid ""
 msgstr ""
 "C’est l’heure du repas. Au menu, du riz, du posho (repas à base de mil), des "
 "patates avec des haricots ou des légumes verts seront très probablement "
-"servis. "
+"servis."
 
 #. module: child_compassion
 #: model:field.office.learning,description:child_compassion.learning_pe7
@@ -4122,7 +4126,7 @@ msgid "Letter writing and career planning"
 msgstr ""
 "C’est l’heure d’écrire une lettre à son parrain, sa marraine. Les enfants "
 "plus âgés bénéficient également de coaching pour préparer leur avenir en "
-"fonction de leurs intérêts et talents."
+"fonction de leurs intérêts et talents"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
@@ -6522,7 +6526,7 @@ msgid ""
 "quarterly training on children’s rights, good parenting, business management "
 "and financial management."
 msgstr ""
-" Les adolescents vont participer à des ateliers pour apprendre à construire "
+"Les adolescents vont participer à des ateliers pour apprendre à construire "
 "un lit, à fabriquer des chaussures, à préparer un savon ou à tisser une "
 "corbeille. Les parents (ou les adultes qui ont la responsabilité de "
 "l’enfant) se voient proposer périodiquement des cours d’éducation des "
@@ -6704,7 +6708,7 @@ msgstr ""
 #: code:addons/child_compassion/wizards/project_description.py:96
 #, python-format
 msgid "The project has no electricity."
-msgstr "Le centre d'accueil n'a pas l'électricité"
+msgstr "Le centre d'accueil n'a pas l'électricité."
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/project_description.py:76
@@ -7740,7 +7744,7 @@ msgstr "d'un déménagement  pour son enseignement supérieur"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "of a relocation of {his} caregiver's work."
-msgstr "d'un déménagement de la place de travail de {son} responsable"
+msgstr "d'un déménagement de la place de travail de {son} responsable."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -7760,7 +7764,7 @@ msgstr "de conflits d'emploi du temps avec l'école ou le travail"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "of project capacity issue"
-msgstr "d'un problème lié à la capacité d'accueil du centre "
+msgstr "d'un problème lié à la capacité d'accueil du centre"
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -7979,7 +7983,7 @@ msgstr "l'annulation était une erreur"
 #. module: child_compassion
 #: model:res.groups,comment:child_compassion.group_sponsorship
 msgid "the user will have access to all sponsorships and related data."
-msgstr "Accès aux parrainages et tous objets liés."
+msgstr "accès aux parrainages et tous objets liés."
 
 #. module: child_compassion
 #: model:fcp.involvement,value:child_compassion.involvement_training
@@ -8005,7 +8009,7 @@ msgstr "à l'université"
 #. module: child_compassion
 #: model:fcp.school.cost,value:child_compassion.icp_school_cost_vocational
 msgid "vocational training"
-msgstr "Formation professionnelle"
+msgstr "formation professionnelle"
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/child_description.py:304
@@ -8114,7 +8118,7 @@ msgstr "{he} a atteint l'âge maximum"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "{he} reached maximum age or completion date."
-msgstr "{he} a atteint l'âge maximum ou la date de fin du programme"
+msgstr "{he} a atteint l'âge maximum ou la date de fin du programme."
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
