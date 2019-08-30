@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-24 09:55+0000\n"
-"PO-Revision-Date: 2019-08-30 10:49+0200\n"
+"POT-Creation-Date: 2019-08-30 09:22+0000\n"
+"PO-Revision-Date: 2019-08-30 11:33+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -607,7 +607,6 @@ msgstr "Pause"
 #: model:field.office.learning,title:child_compassion.learning_ni3
 #: model:field.office.learning,title:child_compassion.learning_pe3
 #: model:field.office.learning,title:child_compassion.learning_th3
-#| msgid "meal time"
 msgid "Break time"
 msgstr "Pause"
 
@@ -1335,6 +1334,11 @@ msgid "Community terrain"
 msgstr "Community terrain"
 
 #. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_compass_id
 msgid "Compass ID"
 msgstr "Compass ID"
@@ -1400,7 +1404,7 @@ msgid "Connect month"
 msgstr "Mois de connection"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:274
+#: code:addons/child_compassion/models/child_compassion.py:283
 #: model:ir.ui.view,arch_db:child_compassion.view_child_compassion_filter
 #, python-format
 msgid "Consigned"
@@ -1763,7 +1767,7 @@ msgid "Demand Planning"
 msgstr "Demand Planning"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:277
+#: code:addons/child_compassion/models/child_compassion.py:286
 #: model:ir.ui.view,arch_db:child_compassion.view_child_compassion_filter
 #, python-format
 msgid "Departed"
@@ -1776,7 +1780,6 @@ msgstr "Enfants departed"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_description
-#| msgid "Descriptions"
 msgid "Description"
 msgstr "Description"
 
@@ -2635,7 +2638,7 @@ msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:279
+#: code:addons/child_compassion/models/child_compassion.py:288
 #, python-format
 msgid "For SMS"
 msgstr "For SMS"
@@ -2910,7 +2913,6 @@ msgstr "Kits sanitaires"
 #: model:field.office.learning,title:child_compassion.learning_th6
 #: model:field.office.learning,title:child_compassion.learning_tz6
 #: model:field.office.learning,title:child_compassion.learning_ug6
-#| msgid "Health needs"
 msgid "Health lessons"
 msgstr "Leçon de santé"
 
@@ -3235,6 +3237,179 @@ msgstr "Si coché, de nouveaux messages demandent votre attention."
 #: model:ir.model.fields,help:child_compassion.field_fo_disaster_alert_message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si elle est cochée, de nouveaux messages requièrent votre attention."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bangladesh
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bf
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_bo
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_br
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_co
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_dr
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ec
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ei
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_es
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_et
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_in
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_lk
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_rw
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_th
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_tz
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. "
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_id
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_io
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. During a typical project day in "
+"Indonesia, children will participate in activities such as…"
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. En Indonésie, les activités du centre d’accueil se "
+"déroulent avec les éléments suivants."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_gh
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Ghana, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Ghana, les activités du centre d’accueil se "
+"déroulent en principe le samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_gu
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Guatemala, children attend their "
+"Compassion projects before or after school. Older sponsored children also "
+"attend on a Saturday."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Guatemala, les activités du centre d’accueil se "
+"déroulent après l’école pour les plus petits et le samedi pour les ados. "
+"Voici un aperçu du programme du samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ha
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Haiti, children attend their "
+"Compassion projects on Saturdays. They may also attend for a couple of hours "
+"after school."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. En Haïti, les activités du centre d’accueil se "
+"déroulent en principe le samedi. Certains enfants y viennent également après "
+"l’école."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ho
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Honduras, children attend their "
+"Compassion projects before or after school."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Honduras, les activités du centre d’accueil se "
+"déroulent en principe avant et après l’école, deux à trois fois par "
+"semaine.\n"
+"Le programme prévoit les activités suivantes :"
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ke
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Kenya, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Kenya, les activités du centre d’accueil se "
+"déroulent en principe le samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_me
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Mexico, children attend their "
+"Compassion projects after school and on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Mexique, les activités du centre d’accueil se "
+"déroulent après l’école et le samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ni
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Nicaragua, children attend their "
+"Compassion projects after school and on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Nicaragua, les activités du centre d’accueil se "
+"déroulent en semaine après l’école et le samedi. Voici le déroulement "
+"typique d’un samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_pe
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Peru, children typically attend "
+"their Compassion projects on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Pérou, les activités du centre d’accueil se "
+"déroulent en principe le samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_tg
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Togo, project days are normally held "
+"on Saturdays. Older sponsored children will also attend for a couple of "
+"hours after school during the week."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Au Togo, les activités du centre d’accueil se "
+"déroulent en principe le samedi. Les enfants plus âgés se rendent également "
+"au centre d’accueil pour quelques heures, en sortant de l’école."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ug
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In Uganda, project days are normally "
+"held on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. En Ouganda, les activités du centre d’accueil se "
+"déroulent en principe le samedi."
+
+#. module: child_compassion
+#: model:compassion.field.office,learning_summary:child_compassion.field_office_ph
+msgid ""
+"If you were to visit the project of your sponsored child today, here’s a "
+"taster of what you might experience. In the Philippines, project days are "
+"normally held on Saturdays."
+msgstr ""
+"Si vous rendiez visite à votre filleul aujourd’hui, voici un aperçu de ce "
+"que vous expérimenteriez. Aux Philippines, les activités du centre d’accueil "
+"se déroulent en principe le samedi."
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_child_image_url
@@ -4101,7 +4276,6 @@ msgstr "Formation au leadership"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_form
-#| msgid "Cleaning"
 msgid "Learning"
 msgstr "Apprentissage"
 
@@ -4873,7 +5047,7 @@ msgstr ""
 "produire du revenu."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:275
+#: code:addons/child_compassion/models/child_compassion.py:284
 #, python-format
 msgid "On Internet"
 msgstr "Sur Internet"
@@ -5021,7 +5195,7 @@ msgid "Picnics"
 msgstr "Pique-niques"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:592
+#: code:addons/child_compassion/models/child_compassion.py:601
 #: code:addons/child_compassion/models/child_pictures.py:68
 #: code:addons/child_compassion/models/child_pictures.py:82
 #: code:addons/child_compassion/models/child_pictures.py:92
@@ -5534,7 +5708,7 @@ msgid "Release Hold"
 msgstr "Release Hold"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:278
+#: code:addons/child_compassion/models/child_compassion.py:287
 #, python-format
 msgid "Released"
 msgstr "Released"
@@ -5919,7 +6093,6 @@ msgstr "Septembre"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_sequence
-#| msgid "Science"
 msgid "Sequence"
 msgstr ""
 
@@ -6035,7 +6208,6 @@ msgstr "Clubs sociaux"
 #: model:field.office.learning,title:child_compassion.learning_th4
 #: model:field.office.learning,title:child_compassion.learning_tz4
 #: model:field.office.learning,title:child_compassion.learning_ug4
-#| msgid "Social clubs"
 msgid "Social lessons"
 msgstr "Leçon de socialisation"
 
@@ -6184,7 +6356,6 @@ msgstr "Conventions spirituelles"
 #: model:field.office.learning,title:child_compassion.learning_th2
 #: model:field.office.learning,title:child_compassion.learning_tz2
 #: model:field.office.learning,title:child_compassion.learning_ug2
-#| msgid "Spiritual needs"
 msgid "Spiritual lessons"
 msgstr "Leçon spirituelle"
 
@@ -6241,7 +6412,7 @@ msgid "Sponsor reference"
 msgstr "Sponsor reference"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:276
+#: code:addons/child_compassion/models/child_compassion.py:285
 #: selection:compassion.child,sponsorship_status:0
 #: selection:compassion.generic.child,sponsorship_status:0
 #: selection:compassion.global.child,sponsorship_status:0
@@ -6680,7 +6851,7 @@ msgid "The lifecycle already exists in database."
 msgstr "The lifecycle already exists in database."
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:591
+#: code:addons/child_compassion/models/child_compassion.py:600
 #, python-format
 msgid "The picture has been updated."
 msgstr "The picture has been updated."
@@ -6764,7 +6935,6 @@ msgstr "Tigrigna"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_field_office_learning_time
-#| msgid "Timezone"
 msgid "Time"
 msgstr ""
 
@@ -7105,7 +7275,7 @@ msgid "Volleyball or handball"
 msgstr "Volleyball ou handball"
 
 #. module: child_compassion
-#: code:addons/child_compassion/models/child_compassion.py:273
+#: code:addons/child_compassion/models/child_compassion.py:282
 #, python-format
 msgid "Waiting Hold"
 msgstr "En attente du Hold"
@@ -7472,6 +7642,7 @@ msgid "family circumstances have changed positively"
 msgstr "la situation familiale s'est améliorée"
 
 #. module: child_compassion
+#: code:addons/child_compassion/models/household.py:259
 #: code:addons/child_compassion/wizards/child_description.py:308
 #, python-format
 msgid "father"
@@ -7716,6 +7887,7 @@ msgid "mentoring"
 msgstr "mentoring"
 
 #. module: child_compassion
+#: code:addons/child_compassion/models/household.py:272
 #: code:addons/child_compassion/wizards/child_description.py:311
 #, python-format
 msgid "mother"

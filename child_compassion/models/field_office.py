@@ -36,7 +36,7 @@ class FieldOffice(models.Model):
     zip_code = fields.Char()
     currency = fields.Char()
     learning_image_url = fields.Char()
-    learning_summary = fields.Text()
+    learning_summary = fields.Text(translate=True)
     learning_ids = fields.One2many(
         'field.office.learning', 'field_office_id', string='What I learn'
     )
