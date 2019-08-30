@@ -28,13 +28,45 @@ class CallWizard(models.TransientModel):
 
     @api.multi
     def log_fail(self):
-        communication = self.env['partner.communication.job'].browse(
-            self.env.context.get('communication_id'))
-        communication.message_post(
-            subject=_('Phone attempt'),
-            body=self.comments or _('Partner did not answer')
-        )
-        return True
+        # communication = self.env['partner.communication.job'].browse(
+        #     self.env.context.get('communication_id'))
+        # communication.message_post(
+        #     subject=_('Phone attempt'),
+        #     body=self.comments or _('Partner did not answer')
+        # )
+        # return True
+        """ Prepare crm.phonecall creation when pending. """
+        action_ctx = self.env.context.copy()
+        action_ctx.update({
+            'default_state': 'done',
+            'default_description': self.comments,
+            'default_name': self.env.context.get('call_name'),
+        })
+        partner_id = self.env.context.get('click2dial_id')
+        action_ctx['default_partner_id'] = partner_id
+        domain = [('partner_id', '=', partner_id)]
+        try:
+            parsed_num = phonenumbers.parse(
+                self.env.context.get('phone_number'))
+            number_type = phonenumbers.number_type(parsed_num)
+            if number_type == 1:
+                action_ctx['default_partner_mobile'] = \
+                    self.env.context.get('phone_number')
+            else:
+                action_ctx['default_partner_phone'] = \
+                    self.env.context.get('phone_number')
+        except TypeError:
+            _logger.info("Partner has no phone number")
+        return {
+            'name': _('Phone Call'),
+            'domain': domain,
+            'res_model': 'crm.phonecall',
+            'view_mode': 'form,tree,calendar',
+            'type': 'ir.actions.act_window',
+            'nodestroy': False,  # close the pop-up wizard after action
+            'target': 'new',
+            'context': action_ctx,
+        }
 
     @api.multi
     def call_success(self):
