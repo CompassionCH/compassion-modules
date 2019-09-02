@@ -349,17 +349,18 @@ if not testing:
                 # partner is not sponsoring a child (but answered yes (form))
                 if not partner or len(partner) > 1:
                     # TODO AP-102 :Ask child ref to try to get a match
-                    link_text = 'Click here to send the template ' \
-                                'email request.'
-                    to = 'info@compassion.ch'
-                    subject = 'Account Setup: User Not Found'
-                    body = 'Please set my mobile app account with the ' \
-                           'following email address: %22' + str(
-                            extra_values['partner_email']) + '%22'
+                    email_template = self.env.ref(
+                        'mobile_app_connector.email_template_user_not_found')
+                    link_text = _("Click here to send the template email "
+                                  "request.")
+                    to = email_template.email_to
+                    subject = email_template.subject
+                    body = email_template.body_html.replace(
+                        '%(email_address)', extra_values['partner_email'])
+                    href_link = self._add_mailto(link_text, to, subject, body)
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
-                        "us for setting up your account. " +
-                        self._add_mailto(link_text, to, subject, body)))
+                        "us for setting up your account.") + " " + href_link)
 
                 # Push the email for user creation
                 values['email'] = extra_values['partner_email']
@@ -373,6 +374,7 @@ if not testing:
 
         def _add_mailto(self, link_text, to, subject, body):
             subject_mail = subject.replace(' ', '%20')
-            body_mail = body.replace(' ', '%20')
+            body_mail = body.replace(' ', '%20').replace('\"', '%22').replace(
+                '\\n', '%0D%0A')
             return '<a href="mailto:' + to + '?subject=' + subject_mail + \
-                   '&body=' + body_mail + '">' + link_text + '</a>'
+                   '&amp;body=' + body_mail + '">' + link_text + '</a>'
