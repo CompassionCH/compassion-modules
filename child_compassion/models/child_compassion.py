@@ -157,10 +157,13 @@ class CompassionChild(models.Model):
     university_year = fields.Integer(readonly=True)
     major_course_study = fields.Selection([
         ('Accounting', 'Accounting'),
+        ('Accounting / Finance', 'Accounting'),
         ('Agriculture', 'Agriculture'),
+        ('Architecture', 'Architecture'),
         ('Art / Design', 'Art / Design'),
         ('Biology / Medicine', 'Biology / Medicine'),
         ('Business / Management / Commerce', 'Business management'),
+        ('Communication Studies', 'Communication Studies'),
         ('Community Development', 'Community development'),
         ('Computer Science / Information Technology', 'Computer science'),
         ('Criminology / Law Enforcement', 'Criminology'),
@@ -200,7 +203,8 @@ class CompassionChild(models.Model):
         ('Management', 'Management'),
         ('Commerce', 'Commerce'),
         ('Medicine', 'Medicine'),
-        ('Other', 'Other')
+        ('Other', 'Other'),
+        ('Undecided', 'Undecided')
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
