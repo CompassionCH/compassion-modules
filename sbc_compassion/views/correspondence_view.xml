@@ -63,7 +63,7 @@
                             <field name="file_name" invisible="1"/>
                             <field name="letter_image" filename="file_name"/>
                             <field name="template_id" attrs="{'invisible': [('direction','=','Beneficiary To Supporter')]}"/>
-                            <field name="b2s_layout_id" attrs="{'invisible': [('direction','=','Supporter To Beneficiary')]}"/>
+                            <field name="layout_id" attrs="{'invisible': [('direction','=','Supporter To Beneficiary')]}"/>
                             <field name="direction"/>
                             <field name="communication_type_ids" widget="many2many_checkboxes"/>
                         </group>

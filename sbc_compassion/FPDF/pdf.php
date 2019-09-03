@@ -1,0 +1,15 @@
+<?php
+require('src/myfpdf.php');
+require('src/pdfcreator.php');
+
+/**
+* Equivalent of a main in most programming languages. Will be launched directly
+* from Python or manually from terminal. It expects a JSON description of the
+* PDF to generate. Find more information about that in the README.
+*/
+
+$parameters = json_decode($argv[1], true);
+echo var_export($parameters) . "\n";
+$pdfCreator = new PDFCreator($parameters);
+$pdfCreator->createPDF();
+?>

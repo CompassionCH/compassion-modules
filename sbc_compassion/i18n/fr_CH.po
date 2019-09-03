@@ -77,7 +77,7 @@ msgid "Add a file"
 msgstr "Ajouter un fichier"
 
 #. module: sbc_compassion
-#: field:correspondence.b2s.layout,additional_page_box_id:0
+#: field:correspondence.layout,additional_page_box_id:0
 msgid "Additional page box id"
 msgstr ""
 
@@ -117,7 +117,7 @@ msgid "Available keywords:"
 msgstr "Mots-clés disponibles :"
 
 #. module: sbc_compassion
-#: field:correspondence,b2s_layout_id:0
+#: field:correspondence,layout_id:0
 msgid "B2S layout"
 msgstr ""
 
@@ -191,7 +191,7 @@ msgid "Child Layouts"
 msgstr "Modèles B2S"
 
 #. module: sbc_compassion
-#: model:ir.model,name:sbc_compassion.model_correspondence_b2s_layout
+#: model:ir.model,name:sbc_compassion.model_correspondence_layout
 msgid "Child letter layout"
 msgstr "Modèle B2S"
 
@@ -211,7 +211,7 @@ msgid "Close"
 msgstr "Fermer"
 
 #. module: sbc_compassion
-#: field:correspondence.b2s.layout,code:0
+#: field:correspondence.layout,code:0
 msgid "Code"
 msgstr ""
 
@@ -315,7 +315,7 @@ msgstr "Total"
 
 #. module: sbc_compassion
 #: field:correspondence,create_uid:0
-#: field:correspondence.b2s.layout,create_uid:0
+#: field:correspondence.layout,create_uid:0
 #: field:correspondence.download.wizard,create_uid:0
 #: field:correspondence.lang.checkbox,create_uid:0
 #: field:correspondence.page,create_uid:0
@@ -335,7 +335,7 @@ msgstr "Créé par"
 
 #. module: sbc_compassion
 #: field:correspondence,create_date:0
-#: field:correspondence.b2s.layout,create_date:0
+#: field:correspondence.layout,create_date:0
 #: field:correspondence.download.wizard,create_date:0
 #: field:correspondence.lang.checkbox,create_date:0
 #: field:correspondence.page,create_date:0
@@ -397,7 +397,7 @@ msgstr "Direction"
 
 #. module: sbc_compassion
 #: field:correspondence,display_name:0
-#: field:correspondence.b2s.layout,display_name:0
+#: field:correspondence.layout,display_name:0
 #: field:correspondence.download.wizard,display_name:0
 #: field:correspondence.lang.checkbox,display_name:0
 #: field:correspondence.metadata,display_name:0
@@ -647,7 +647,7 @@ msgstr ""
 "directly in html format in order to be inserted in kanban views."
 
 #. module: sbc_compassion
-#: field:correspondence,id:0 field:correspondence.b2s.layout,id:0
+#: field:correspondence,id:0 field:correspondence.layout,id:0
 #: field:correspondence.download.wizard,id:0
 #: field:correspondence.lang.checkbox,id:0 field:correspondence.metadata,id:0
 #: field:correspondence.page,id:0 field:correspondence.s2b.generator,id:0
@@ -827,7 +827,7 @@ msgstr "Last Message Date"
 
 #. module: sbc_compassion
 #: field:correspondence,__last_update:0
-#: field:correspondence.b2s.layout,__last_update:0
+#: field:correspondence.layout,__last_update:0
 #: field:correspondence.download.wizard,__last_update:0
 #: field:correspondence.lang.checkbox,__last_update:0
 #: field:correspondence.metadata,__last_update:0
@@ -849,7 +849,7 @@ msgstr ""
 
 #. module: sbc_compassion
 #: field:correspondence,write_uid:0
-#: field:correspondence.b2s.layout,write_uid:0
+#: field:correspondence.layout,write_uid:0
 #: field:correspondence.download.wizard,write_uid:0
 #: field:correspondence.lang.checkbox,write_uid:0
 #: field:correspondence.page,write_uid:0
@@ -867,7 +867,7 @@ msgstr "Modifié par"
 
 #. module: sbc_compassion
 #: field:correspondence,write_date:0
-#: field:correspondence.b2s.layout,write_date:0
+#: field:correspondence.layout,write_date:0
 #: field:correspondence.download.wizard,write_date:0
 #: field:correspondence.lang.checkbox,write_date:0
 #: field:correspondence.page,write_date:0
@@ -1145,7 +1145,7 @@ msgid "Missing configuration"
 msgstr ""
 
 #. module: sbc_compassion
-#: field:correspondence,name:0 field:correspondence.b2s.layout,name:0
+#: field:correspondence,name:0 field:correspondence.layout,name:0
 #: field:correspondence.s2b.generator,name:0
 #: field:correspondence.template,name:0
 #: field:correspondence.translation.box,name:0
@@ -1271,12 +1271,12 @@ msgid "PUT"
 msgstr ""
 
 #. module: sbc_compassion
-#: field:correspondence.b2s.layout,page_1_box_ids:0
+#: field:correspondence.layout,page_1_box_ids:0
 msgid "Page 1 box ids"
 msgstr ""
 
 #. module: sbc_compassion
-#: field:correspondence.b2s.layout,page_2_box_ids:0
+#: field:correspondence.layout,page_2_box_ids:0
 msgid "Page 2 box ids"
 msgstr ""
 
@@ -1332,6 +1332,21 @@ msgstr "Pattern center y"
 
 #. module: sbc_compassion
 #: field:correspondence.template,pattern_image:0
+msgid "Pattern image"
+msgstr "Pattern image"
+
+#. module: sbc_compassion
+#: field:correspondence.template,pattern_image2:0
+msgid "Pattern image"
+msgstr "Pattern image"
+
+#. module: sbc_compassion
+#: field:correspondence.template,pattern_image3:0
+msgid "Pattern image"
+msgstr "Pattern image"
+
+#. module: sbc_compassion
+#: field:correspondence.template,pattern_image4:0
 msgid "Pattern image"
 msgstr "Pattern image"
 

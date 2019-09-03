@@ -23,6 +23,12 @@ _logger = logging.getLogger(__name__)
 
 class RestController(http.Controller):
 
+    @http.route(['/generatePDF', '/generatePDF/<string:pdf_name>'],
+                type='http', auth='public', methods=['GET'])
+    def handler_generate_pdf(self, pdf_name='test'):
+        pdf_name = request.env['test.generate.pdf'].generate_pdf_test(pdf_name)
+        return 'New PDF created: ' + pdf_name
+
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
     def handler_b2s_image(self, id=None):
         """ Handler for `/b2s_image` url for json data.

@@ -122,7 +122,7 @@ class Correspondence(models.Model):
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
         string='Number of pages', compute='_compute_nbr_pages')
-    b2s_layout_id = fields.Many2one('correspondence.b2s.layout', 'B2S layout')
+    layout_id = fields.Many2one('correspondence.layout', 'Layout')
 
     # 4. Additional information
     ###########################
@@ -522,7 +522,7 @@ class Correspondence(models.Model):
         :return: True if the composition succeeded, False otherwise
         """
         self.ensure_one()
-        layout = self.b2s_layout_id
+        layout = self.layout_id
         image_data = base64.b64decode(self.letter_image)
         text = self.translated_text or self.english_text
         if not text or not layout:

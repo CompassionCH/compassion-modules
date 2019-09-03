@@ -13,6 +13,12 @@
         <!-- Pattern-->
         <field name="pattern_image" type="base64"
                file="sbc_compassion/static/img/PatternPostman"/>
+        <field name="pattern_image2" type="base64"
+            file="sbc_compassion/static/img/PatternPostman"/>
+        <field name="pattern_image3" type="base64"
+            file="sbc_compassion/static/img/PatternPostman"/>
+        <field name="pattern_image4" type="base64"
+            file="sbc_compassion/static/img/PatternPostman"/>
 
         <field name="pattern_x_min">0</field>
         <field name="pattern_x_max">590</field>
@@ -79,6 +85,12 @@
         <!-- Pattern-->
         <field name="pattern_image" type="base64"
                file="sbc_compassion/static/img/DovePattern"/>
+        <field name="pattern_image2" type="base64"
+            file="sbc_compassion/static/img/DovePattern"/>
+        <field name="pattern_image3" type="base64"
+            file="sbc_compassion/static/img/DovePattern"/>
+        <field name="pattern_image4" type="base64"
+            file="sbc_compassion/static/img/DovePattern"/>
 
         <field name="pattern_x_min">1260</field>
         <field name="pattern_x_max">1815</field>

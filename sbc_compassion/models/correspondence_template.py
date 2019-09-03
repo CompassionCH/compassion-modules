@@ -12,6 +12,9 @@
 import base64
 import tempfile
 import logging
+import subprocess
+import json
+import os.path
 
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, UserError
@@ -59,6 +62,9 @@ class CorrespondenceTemplate(models.Model):
     layout = fields.Selection('get_gmc_layouts', required=True)
     pattern_image = fields.Binary(attachment=True)
     template_image = fields.Binary(attachment=True, help='Use 300 DPI images')
+    template_image2 = fields.Binary(attachment=True, help='Use 300 DPI images')
+    template_image3 = fields.Binary(attachment=True, help='Use 300 DPI images')
+    template_image4 = fields.Binary(attachment=True, help='Use 300 DPI images')
     page_width = fields.Integer(help='Width of the template in pixels')
     page_height = fields.Integer(help='Height of the template in pixels')
     qrcode_x_min = fields.Integer(
@@ -85,8 +91,8 @@ class CorrespondenceTemplate(models.Model):
     pattern_y_max = fields.Integer(
         help='Maximum Y position of the area in which to look for the '
              'pattern inside the template (given in pixels)')
-    checkbox_ids = fields.One2many(
-        'correspondence.lang.checkbox', 'template_id', copy=True)
+    # checkbox_ids = fields.One2many(
+    #     'correspondence.lang.checkbox', 'template_id', copy=True)
     nber_keypoints = fields.Integer("Number of key points")
     usage_count = fields.Integer(
         compute='_compute_usage_count'
@@ -97,10 +103,30 @@ class CorrespondenceTemplate(models.Model):
         domain=[('model', '=', 'correspondence.s2b.generator')],
         default=lambda s: s.env.ref('sbc_compassion.report_s2b_letter'),
     )
-    text_box_left_position = fields.Float(help='In millimeters')
-    text_box_top_position = fields.Float(help='In millimeters')
-    text_box_width = fields.Float(help='In millimeters')
-    text_box_height = fields.Float(help='In millimeters')
+    header_box = fields.Many2one('correspondence.text.box', string="Header")
+    header_box2 = fields.Many2one('correspondence.text.box', string="Header 2")
+    header_box3 = fields.Many2one('correspondence.text.box', string="Header 3")
+    header_box4 = fields.Many2one('correspondence.text.box', string="Header 4")
+    text_boxes = fields.Many2many('correspondence.text.box', 'text_boxes_rel',
+                                  string='Text boxes')
+    text_boxes2 = fields.Many2many('correspondence.text.box',
+                                   'text_boxes_rel2', string='Text boxes 2')
+    text_boxes3 = fields.Many2many('correspondence.text.box',
+                                   'text_boxes_rel3', string='Text boxes 3')
+    text_boxes4 = fields.Many2many('correspondence.text.box',
+                                   'text_boxes_rel4', string='Text boxes 4')
+    image_boxes = fields.Many2many('correspondence.positioned.object',
+                                   'image_boxes_rel', string='Image boxes')
+    image_boxes2 = fields.Many2many('correspondence.positioned.object',
+                                    'image_boxes_rel2', string='Image boxes 2')
+    image_boxes3 = fields.Many2many('correspondence.positioned.object',
+                                    'image_boxes_rel3', string='Image boxes 3')
+    image_boxes4 = fields.Many2many('correspondence.positioned.object',
+                                    'image_boxes_rel4', string='Image boxes 4')
+    # text_box_left_position = fields.Float(help='In millimeters')
+    # text_box_top_position = fields.Float(help='In millimeters')
+    # text_box_width = fields.Float(help='In millimeters')
+    # text_box_height = fields.Float(help='In millimeters')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -210,45 +236,6 @@ class CorrespondenceTemplate(models.Model):
         return template_cv_image
 
 
-class CorrespondenceLanguageCheckbox(models.Model):
-    """ This class represents a checkbox that can be present in a template
-    and can be ticked by the supporter to select the language in which the
-    letter is written. It gives the position of the checkbox inside a template
-    in order to find it and verify if it is ticked or not. """
-
-    _name = 'correspondence.lang.checkbox'
-
-    template_id = fields.Many2one(
-        'correspondence.template', required=True,
-        ondelete='cascade')
-    language_id = fields.Many2one('res.lang.compassion')
-    x_min = fields.Integer(
-        help='Minimum X position of the area in which to look for the '
-             'checkbox inside the template (given in pixels)')
-    x_max = fields.Integer(
-        help='Maximum X position of the area in which to look for the '
-             'checkbox inside the template (given in pixels)')
-    y_min = fields.Integer(
-        help='Minimum Y position of the area in which to look for the '
-             'checkbox inside the template (given in pixels)')
-    y_max = fields.Integer(
-        help='Maximum Y position of the area in which to look for the '
-             'checkbox inside the template (given in pixels)')
-
-    @api.constrains(
-        'x_min', 'x_max', 'y_min', 'y_max')
-    def verify_position(self):
-        for checkbox in self:
-            width = checkbox.template_id.page_width
-            height = checkbox.template_id.page_height
-            valid_coordinates = (
-                0 <= checkbox.x_min <= checkbox.x_max <= width and
-                0 <= checkbox.y_min <= checkbox.y_max <= height
-            )
-            if not valid_coordinates:
-                raise ValidationError(_("Please give valid coordinates."))
-
-
 def _verify_template(tpl):
     """
     Test each position if a CorrespondenceTemplate in order to
@@ -265,3 +252,143 @@ def _verify_template(tpl):
             0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
     return valid_coordinates
+
+
+#######################################################################
+#                              EXAMPLE                                #
+#######################################################################
+class TestGeneratePDF(models.Model):
+    """
+    Test class for generating a PDF
+    """
+    _name = 'test.generate.pdf'
+
+    def generate_pdf(self, pdf_name, model_id, header, text, image_list):
+        """
+        Generate a pdf file
+        This function is nearly as generic as it should be to be implemented
+        directly to generate PDF for any template, text and image
+        We save every text to a temp txt file to avoid having to escape all
+        characters that could potentially be problematic
+        :param pdf_name: path and name of the pdf file to write on
+        :param model_id: id of the template
+        :param header: dict of text for the headers to display {template page
+            number (between 1 and 4: text}
+        :param text: a dict of {type of text ('O' or 'T'): text}
+        :param image_list: a list of image to display
+        """
+        pdf_file = open(pdf_name, "w")
+
+        temp_img = []
+        temp_header = []
+        temp_text = []
+
+        model = self.env['correspondence.template'].search([
+            ('id', '=', model_id)])
+
+        t_images = [model['template_image'], model['template_image2'],
+                    model['template_image3'], model['template_image4']]
+        h_data = [model['header_box'], model['header_box2'],
+                  model['header_box3'], model['header_box4']]
+        t_data = [model.mapped('text_boxes'), model.mapped('text_boxes2'),
+                  model.mapped('text_boxes3'), model.mapped('text_boxes4')]
+        i_data = [model.mapped('image_boxes'), model.mapped('image_boxes2'),
+                  model.mapped('image_boxes3'), model.mapped('image_boxes4')]
+
+        template_list = []
+        for i in range(0, len(t_images)):
+            if t_images[i]:
+                temp_img.append(tempfile.NamedTemporaryFile(prefix='img_',
+                                                            suffix='.jpg'))
+                temp_img[-1].write(base64.b64decode(t_images[i]))
+                temp_img[-1].flush()
+                header_list = []
+                if h_data[i] and (i+1) in header:
+                    temp_header.append(tempfile.NamedTemporaryFile(
+                        prefix='header_', suffix='.txt'))
+                    temp_header[-1].write(header[i+1])
+                    temp_header[-1].flush()
+                    header_list = [temp_header[-1].name,
+                                   str(h_data[i]['x_min']),
+                                   str(h_data[i]['y_min']),
+                                   str(h_data[i]['x_max']),
+                                   str(h_data[i]['y_max']),
+                                   str(h_data[i]['text_line_height'])]
+                text_list = []
+                for b in t_data[i]:
+                    text_list.append([str(b['x_min']), str(b['y_min']),
+                                      str(b['x_max']), str(b['y_max']),
+                                      b['text_type'],
+                                      str(b['text_line_height'])])
+                image_list = []
+                for b in i_data[i]:
+                    image_list.append([str(b['x_min']), str(b['y_min']),
+                                       str(b['x_max']), str(b['y_max'])])
+                template_list.append([temp_img[-1].name, header_list,
+                                      text_list, image_list])
+            else:
+                break
+
+        text_list = []
+        for t_type, txt in text.iteritems():
+            temp_text.append(tempfile.NamedTemporaryFile(prefix=t_type + '_',
+                                                         suffix='.txt'))
+            temp_text[-1].write(txt)
+            temp_text[-1].flush()
+            text_list.append([temp_text[-1].name, t_type])
+
+        generated_json = \
+            {
+                'images': image_list,
+                'templates': template_list,
+                'texts': text_list
+            }
+
+        json_val = json.dumps(generated_json).replace(' ', '')
+
+        std_err_file = open(self.path_to('stderr.txt'), "w")
+
+        proc = subprocess.Popen(['php', self.path_to('pdf.php'), json_val],
+                                stdout=pdf_file, stderr=std_err_file)
+        proc.communicate()
+
+        for img in temp_img:
+            img.close()
+
+        for h in temp_header:
+            h.close()
+
+        for t in temp_text:
+            t.close()
+
+        std_err_file.close()
+
+        return pdf_file.name
+
+    def generate_pdf_test(self, pdf_name):
+        txt_original = open(self.path_to('20k_c1.txt', 'static'), "r")
+        txt_translated = open(self.path_to('20k_c2.txt', 'static'), "r")
+        model_id = self.env['correspondence.template'].search([
+            ('name', '=', 'Postman Test')])[0].id
+        image_list = [self.path_to('b.png', 'static'), self.path_to(
+            'c.png', 'static'), self.path_to('d.png', 'static')]
+        header = {1: "Just a test\nOn multiple lines\nEven three"}
+        text = {
+            'O': txt_original.read(),
+            'T': txt_translated.read()
+        }
+        txt_original.close()
+        txt_translated.close()
+        pdf_file = self.generate_pdf(self.path_to(pdf_name+'.pdf'), model_id,
+                                     header, text, image_list)
+        return pdf_file
+
+    # path of the FPDF folder
+    _absolute_path = os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), 'FPDF/')
+
+    # create path to the subfolder of FPDF
+    def path_to(self, filename, folder=''):
+        if folder == '':
+            return os.path.join(self._absolute_path, filename)
+        return os.path.join(self._absolute_path, folder + "/" + filename)

@@ -4,7 +4,6 @@
         <record id="default_template" model="correspondence.template">
             <field name="name">Default Template</field>
             <field name="layout">CH-A-6S11-1</field>
-            <field name="checkbox_ids" eval="False"/>
         </record>
 
         <record id="threshold_keypoints_template" model="ir.config_parameter">
@@ -41,6 +40,84 @@
         <record id="bluecorner_x_min" model="ir.config_parameter">
         <field name="key">bluecorner_x_min</field>
         <field name="value">0.9</field>
+        </record>
+
+        <!-- Templates Postman Example ************************************ -->
+        <record id="postman_checkbox_header" model="correspondence.text.box">
+            <field name="x_min">5</field>
+            <field name="x_max">70</field>
+            <field name="y_min">8</field>
+            <field name="y_max">30</field>
+            <field name="text_line_height">5</field>
+        </record>
+
+        <record id="postman_checkbox_original" model="correspondence.text.box">
+            <field name="x_min">0</field>
+            <field name="x_max">100.5</field>
+            <field name="y_min">70</field>
+            <field name="y_max">230</field>
+            <field name="text_line_height">5.32</field>
+            <field name="text_type">O</field>
+        </record>
+
+        <record id="postman_checkbox_translated" model="correspondence.text.box">
+            <field name="x_min">109</field>
+            <field name="x_max">197.5</field>
+            <field name="y_min">51.5</field>
+            <field name="y_max">215</field>
+            <field name="text_line_height">5.32</field>
+            <field name="text_type">T</field>
+        </record>
+
+        <record id="postman_checkbox_original2" model="correspondence.text.box">
+            <field name="x_min">0</field>
+            <field name="x_max">101</field>
+            <field name="y_min">21</field>
+            <field name="y_max">255</field>
+            <field name="text_line_height">7.2</field>
+            <field name="text_type">O</field>
+        </record>
+
+        <record id="postman_checkbox_translated2" model="correspondence.text.box">
+            <field name="x_min">109</field>
+            <field name="x_max">197.5</field>
+            <field name="y_min">13</field>
+            <field name="y_max">257</field>
+            <field name="text_line_height">7.2</field>
+            <field name="text_type">T</field>
+        </record>
+
+        <record id="template_postman" model="correspondence.template">
+            <field name="name">Postman Test</field>
+            <field name="layout">CH-A-1S11-1</field>
+
+            <!-- Template image-->
+            <field name="template_image" type="base64"
+                file="sbc_compassion/static/img/Postman"/>
+            <field name="template_image2" type="base64"
+                file="sbc_compassion/static/img/p2.jpg"/>
+
+            <field name="page_width">2480</field>
+            <field name="page_height">3508</field>
+
+            <!-- Pattern-->
+            <field name="pattern_image" type="base64"
+                file="sbc_compassion/static/img/PatternPostman"/>
+
+            <field name="pattern_x_min">0</field>
+            <field name="pattern_x_max">590</field>
+            <field name="pattern_y_min">3120</field>
+            <field name="pattern_y_max">3500</field>
+
+            <field name="qrcode_x_min">0</field>
+            <field name="qrcode_x_max">1041</field>
+            <field name="qrcode_y_min">0</field>
+            <field name="qrcode_y_max">1052</field>
+
+            <field name="header_box1" eval="ref('postman_checkbox_header')"/>
+
+            <field name="text_boxes" eval="[(4, ref('postman_checkbox_original')), (4, ref('postman_checkbox_translated'))]"/>
+            <field name="text_boxes2" eval="[(4, ref('postman_checkbox_original2')), (4, ref('postman_checkbox_translated2'))]"/>
         </record>
     </data>
 </odoo>
