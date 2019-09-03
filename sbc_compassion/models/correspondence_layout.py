@@ -12,7 +12,7 @@
 from odoo import fields, models
 
 
-class CorrespondenceB2SLayout(models.Model):
+class CorrespondenceLayout(models.Model):
     """ This class defines a template used for Supporter Letters and holds
     all information relative to position of metadata in the Template, like for
     instance where the QR Code is supposed to be, where the language
@@ -21,7 +21,7 @@ class CorrespondenceB2SLayout(models.Model):
     Template images should be in 300 DPI
     """
 
-    _name = 'correspondence.b2s.layout'
+    _name = 'correspondence.layout'
     _description = 'Child letter layout'
 
     ##########################################################################
@@ -29,8 +29,9 @@ class CorrespondenceB2SLayout(models.Model):
     ##########################################################################
     name = fields.Char(required=True)
     code = fields.Char(required=True)
+    type = fields.Selection([('s2b', 'S2B'), ('b2s', 'B2S')])
     page_1_box_ids = fields.Many2many(
-        'correspondence.translation.box', 'correspondence_b2s_page1_layouts')
+        'correspondence.layout.box', 'correspondence_page1_layouts')
     page_2_box_ids = fields.Many2many(
-        'correspondence.translation.box', 'correspondence_b2s_page2_layouts')
-    additional_page_box_id = fields.Many2one('correspondence.translation.box')
+        'correspondence.layout.box', 'correspondence_page2_layouts')
+    additional_page_box_id = fields.Many2one('correspondence.layout.box')

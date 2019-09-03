@@ -24,8 +24,8 @@
     </record>
 
     <record id="child_layout_config_form" model="ir.ui.view">
-        <field name="name">correspondence.b2s.layout.form</field>
-        <field name="model">correspondence.b2s.layout</field>
+        <field name="name">correspondence.layout.form</field>
+        <field name="model">correspondence.layout</field>
         <field name="arch" type="xml">
             <form>
                 <group>
@@ -41,8 +41,8 @@
 
     <!-- Tree definition -->
     <record id="child_layout_config_tree" model="ir.ui.view">
-        <field name="name">correspondence.b2s.layout.tree</field>
-        <field name="model">correspondence.b2s.layout</field>
+        <field name="name">correspondence.layout.tree</field>
+        <field name="model">correspondence.layout</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -52,8 +52,8 @@
     </record>
 
     <record id="translation_box_config_tree" model="ir.ui.view">
-        <field name="name">correspondence.translation.box.tree</field>
-        <field name="model">correspondence.translation.box</field>
+        <field name="name">correspondence.layout.box.tree</field>
+        <field name="model">correspondence.layout.box</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="left"/>
@@ -75,7 +75,7 @@
 
     <record id="child_layouts_config_action" model="ir.actions.act_window">
         <field name="name">Child Layouts</field>
-        <field name="res_model">correspondence.b2s.layout</field>
+        <field name="res_model">correspondence.layout</field>
         <field name="type">ir.actions.act_window</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>

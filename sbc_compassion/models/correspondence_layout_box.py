@@ -16,7 +16,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen.canvas import Canvas
 
 
-class CorrespondenceTranslationBox(models.Model):
+class CorrespondenceLayoutBox(models.Model):
     """ This class defines a translation box that is inside a layout.
     It is useful to know where to insert translation during composition
     process.
@@ -24,7 +24,7 @@ class CorrespondenceTranslationBox(models.Model):
     the composition.
     """
 
-    _name = 'correspondence.translation.box'
+    _name = 'correspondence.layout.box'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -36,6 +36,7 @@ class CorrespondenceTranslationBox(models.Model):
     nb_lines = fields.Integer(
         help='Maximum lines authorized in the box.'
     )
+    type = fields.Selection([('text', 'Text'), ('photo', 'Photo')])
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

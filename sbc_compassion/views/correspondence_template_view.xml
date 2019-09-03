@@ -25,9 +25,76 @@
                             <field name="pattern_image" widget="image" class="oe_avatar"/>
                             <field name="usage_count"/>
                             <separator colspan="2" string="Language checkboxes"/>
-                            <field name="checkbox_ids" context="{'default_template_id': active_id}">
+                            <field name="header_box"/>
+                            <field name="header_box2"/>
+                            <field name="header_box3"/>
+                            <field name="header_box4"/>
+                            <field name="text_boxes">
                                 <tree editable="bottom">
-                                    <field name="language_id"/>
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                    <field name="text_line_height"/>
+                                    <field name="text_type"/>
+                                </tree>
+                            </field>
+                            <field name="text_boxes2">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                    <field name="text_line_height"/>
+                                    <field name="text_type"/>
+                                </tree>
+                            </field>
+                            <field name="text_boxes3">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                    <field name="text_line_height"/>
+                                    <field name="text_type"/>
+                                </tree>
+                            </field>
+                            <field name="text_boxes4">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                    <field name="text_line_height"/>
+                                    <field name="text_type"/>
+                                </tree>
+                            </field>
+                            <field name="image_boxes">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                </tree>
+                            </field>
+                            <field name="image_boxes2">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                </tree>
+                            </field>
+                            <field name="image_boxes3">
+                                <tree editable="bottom">
+                                    <field name="x_min"/>
+                                    <field name="x_max"/>
+                                    <field name="y_min"/>
+                                    <field name="y_max"/>
+                                </tree>
+                            </field>
+                            <field name="image_boxes4">
+                                <tree editable="bottom">
                                     <field name="x_min"/>
                                     <field name="x_max"/>
                                     <field name="y_min"/>
@@ -50,13 +117,12 @@
                             <field name="nber_keypoints"/>
                             <separator string="S2B Generation" colspan="2"/>
                             <field name="report_id"/>
-                            <field name="text_box_left_position"/>
-                            <field name="text_box_top_position"/>
-                            <field name="text_box_width"/>
-                            <field name="text_box_height"/>
                         </group>
                         <group>
                             <field name="template_image" widget="image" required="1" width="210px" height="297px"/>
+                            <field name="template_image2" widget="image" required="1" width="210px" height="297px"/>
+                            <field name="template_image3" widget="image" required="1" width="210px" height="297px"/>
+                            <field name="template_image4" widget="image" required="1" width="210px" height="297px"/>
                         </group>
                     </group>
                 </sheet>
