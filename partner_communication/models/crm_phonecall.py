@@ -19,15 +19,16 @@ class Phonecall(models.Model):
     """ Add a communication when phonecall is logged. """
     _inherit = 'crm.phonecall'
 
+    communication_id = fields.Many2one(
+        'partner.communication.job', 'Communication')
+
     @api.model
     def create(self, vals):
         phonecall = super(Phonecall, self).create(vals)
-        communication_id = self.env.context.get('communication_id')
-        if communication_id:
+        if phonecall.communication_id:
             # Mark communication done when phonecall log created from
             # communication call wizard.
-            communication = self.env['partner.communication.job'].browse(
-                communication_id)
+            communication = phonecall.communication_id
             if communication.state == 'pending':
                 communication.write({
                     'state': 'done',
@@ -53,16 +54,17 @@ class Phonecall(models.Model):
             # Create a communication to log the call.
             config = self.env.ref(
                 'partner_communication.phonecall_communication')
-            self.env['partner.communication.job'].create({
-                'config_id': config.id,
-                'partner_id': phonecall.partner_id.id,
-                'user_id': self.env.uid,
-                'object_ids': phonecall.partner_id.ids,
-                'state': 'done',
-                'phonecall_id': phonecall.id,
-                'sent_date': vals.get('date', fields.Datetime.now()),
-                'body_html': phonecall.name,
-                'subject': phonecall.name,
-                'auto_send': False,
-            })
+            phonecall.communication_id = self.env['partner.communication.job']\
+                .create({
+                    'config_id': config.id,
+                    'partner_id': phonecall.partner_id.id,
+                    'user_id': self.env.uid,
+                    'object_ids': phonecall.partner_id.ids,
+                    'state': 'done',
+                    'phonecall_id': phonecall.id,
+                    'sent_date': vals.get('date', fields.Datetime.now()),
+                    'body_html': phonecall.name,
+                    'subject': phonecall.name,
+                    'auto_send': False,
+                })
         return phonecall
