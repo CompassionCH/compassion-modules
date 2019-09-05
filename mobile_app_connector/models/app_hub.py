@@ -227,7 +227,7 @@ class AppHub(models.AbstractModel):
 
         ViewOrder values assigned:
 
-        0    Login tile
+        0    Login tile + CH1 tile
         1000 Unread + recently read letters
 
         2000 Other promoted content
@@ -327,8 +327,9 @@ class AppHub(models.AbstractModel):
             rest_of_tiles_order += category_length // len(rest_group)
 
         for tile in to_order:
-            # login tile should be first
-            if tile['SubType'] == "MI1":
+            # login tile and CH1 tiles should be first
+            if tile['SubType'] == "MI1" or tile['SubType'] == 'CH1':
                 tile['SortOrder'] = login_order
+                login_order += 1
 
         messages.sort(key=lambda m: int(m["SortOrder"]))
