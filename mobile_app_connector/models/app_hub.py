@@ -227,7 +227,7 @@ class AppHub(models.AbstractModel):
 
         ViewOrder values assigned:
 
-        0    Login tile
+        0    Login tile + CH1 tile
         1000 Unread + recently read letters
 
         2000 Other promoted content
@@ -330,5 +330,12 @@ class AppHub(models.AbstractModel):
             # login tile should be first
             if tile['SubType'] == "MI1":
                 tile['SortOrder'] = login_order
+
+        # Force CH1 tiles to appear first
+        i = 1
+        for m in messages:
+            if m['SubType'] == 'CH1':
+                m['SortOrder'] = i
+                i += 1
 
         messages.sort(key=lambda m: int(m["SortOrder"]))
