@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-27 07:48+0000\n"
-"PO-Revision-Date: 2019-08-27 09:50+0200\n"
+"PO-Revision-Date: 2019-09-05 11:40+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -473,7 +473,8 @@ msgstr ""
 "Du veränderst ${child.get('sein')} Leben\n"
 "% else:\n"
 "Du veränderst das Leben von ${child.get_number()}\n"
-"% endif"
+"% endifn\n"
+"Danke schön!"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_co4
@@ -595,19 +596,19 @@ msgstr "Archiviert"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_26
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_26
 msgid "Ask God to give ${ctx['objects'].preferred_name} food security."
-msgstr ""
+msgstr "Bete um täglich genügend Nahrung für ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_6
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_6
 msgid "Ask God to give ${ctx['objects'].preferred_name} life to the full."
-msgstr ""
+msgstr "Bitte Gott, ${ctx['objects'].preferred_name} das Leben in Fülle zu schenken."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_7
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_7
 msgid "Ask God to give ${ctx['objects'].preferred_name} safe water."
-msgstr ""
+msgstr "Bitte Gott, dass ${ctx['objects'].preferred_name} Zugang zu sauberem Wasser hat."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_13
@@ -615,7 +616,7 @@ msgstr ""
 msgid ""
 "Ask God to guide ${ctx['objects'].preferred_name} to discover "
 "${ctx['objects'].get('his')} talents."
-msgstr ""
+msgstr "Bitte Gott, ${ctx['objects'].preferred_name} zu helfen, seine/ihre Talente zu entdecken."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_22
@@ -624,6 +625,7 @@ msgid ""
 "Ask that ${ctx['objects'].preferred_name} will have access to the healthcare "
 "${ctx['objects'].get('he')} needs."
 msgstr ""
+"Bete, dass ${ctx['objects'].preferred_name} gesund bleibt und sonst die nötige Behandlung bekommt."
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_model_id
@@ -763,7 +765,7 @@ msgstr "Contract for recurring invoicing"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_create_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_create_uid
 msgid "Created by"
-msgstr "erstellt von"
+msgstr "Erstellt von"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_create_date
@@ -774,7 +776,7 @@ msgstr "erstellt von"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_create_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_create_date
 msgid "Created on"
-msgstr "erstellt am"
+msgstr "Erstellt am"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_create_date
@@ -1010,6 +1012,8 @@ msgid ""
 "Give thanks that ${ctx['objects'].preferred_name} receives regular home "
 "visits from caring project staff."
 msgstr ""
+"Danke Gott, dass ${ctx['objects'].preferred_name} regelmässig Besuch von "
+"fürsorglichen Mitarbeitenden des Kinderzentrums bekommt."
 
 #. module: mobile_app_connector
 #: selection:mobile.app.feedback,star:0
@@ -1024,7 +1028,7 @@ msgstr "Great"
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
 msgid "Group By"
-msgstr "Gruppiert nach..."
+msgstr "Gruppiert nach "
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -1138,7 +1142,7 @@ msgstr "Zuletzt geändert am"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_write_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_write_uid
 msgid "Last Updated by"
-msgstr "zuletzt aktualisiert von"
+msgstr "Zuletzt aktualisiert von"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_write_date
@@ -1150,7 +1154,7 @@ msgstr "zuletzt aktualisiert von"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_write_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_write_date
 msgid "Last Updated on"
-msgstr "zuletzt aktualisiert am"
+msgstr "Zuletzt aktualisiert am"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_correspondence
@@ -1317,7 +1321,7 @@ msgstr "Keine E-Mailadresse eingetragen"
 #: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:184
 #, python-format
 msgid "No such account"
-msgstr "Dieses Konto existiert nicht "
+msgstr "Dieses Konto existiert nicht"
 
 #. module: mobile_app_connector
 #: selection:mobile.app.feedback,star:0
@@ -1415,13 +1419,13 @@ msgstr "Post type"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_11
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_11
 msgid "Praise God — He is using you to change lives."
-msgstr ""
+msgstr "Preise Gott - Er gebraucht dich, um Leben zu verändern!"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_21
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_21
 msgid "Pray against corruption."
-msgstr ""
+msgstr "Bete gegen Korruption."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_17
@@ -1430,12 +1434,13 @@ msgid ""
 "Pray as ${ctx['objects'].preferred_name} asks in ${ctx['objects']."
 "get('his')} letters."
 msgstr ""
+"Bete für die Dinge, die ${ctx['objects'].preferred_name} in den Briefen an dich erwähnt hat."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_15
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_15
 msgid "Pray for ${ctx['objects'].preferred_name} to have a good education."
-msgstr ""
+msgstr "Bete für eine gute Schulbildung und Ausbildung für ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_1
@@ -1447,25 +1452,27 @@ msgstr ""
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_3
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_3
 msgid "Pray for ${ctx['objects'].preferred_name}'s family and home."
-msgstr ""
+msgstr "Bete für ${ctx['objects'].preferred_name}s Famile und Zuhause."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_20
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_20
 msgid "Pray for ${ctx['objects'].preferred_name}'s parents/guardians. "
 msgstr ""
+"Bete für ${ctx['objects'].preferred_name}s Eltern oder die Personen, die sich um ${ctx['objects'].preferred_name} "
+"kümmern."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_25
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_25
 msgid "Pray for ${ctx['objects'].preferred_name}'s safety."
-msgstr ""
+msgstr "Bete für ${ctx['objects'].preferred_name}s Sicherheit."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_4
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_4
 msgid "Pray for ${ctx['objects'].preferred_name}'s siblings."
-msgstr ""
+msgstr "Bete für  ${ctx['objects'].preferred_name}s Geschwister."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_2
@@ -1478,7 +1485,7 @@ msgstr ""
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_8
 msgid ""
 "Pray for good sanitation in ${ctx['objects'].preferred_name}'s community."
-msgstr ""
+msgstr "Bete um gute sanitäre Einrichtungen, wo ${ctx['objects'].preferred_name} wohnt."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_16
@@ -1486,14 +1493,14 @@ msgstr ""
 msgid ""
 "Pray for peace when ${ctx['objects'].preferred_name} has to take tests and "
 "exams."
-msgstr ""
+msgstr "Bete um Gelingen und Ruhe, wenn ${ctx['objects'].preferred_name} Schulprüfungen absolviert."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_19
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_19
 msgid ""
 "Pray for the church that runs ${ctx['objects'].preferred_name}'s project."
-msgstr ""
+msgstr "Bete für die Gemeinde, die das Kinderzentrum von ${ctx['objects'].preferred_name} leitet."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_1
@@ -1531,26 +1538,28 @@ msgstr "Jetzt beten"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_24
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_24
 msgid "Pray that ${ctx['objects'].preferred_name} will be free from fear."
-msgstr ""
+msgstr "Bete, dass ${ctx['objects'].preferred_name} angstfrei leben kann."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_23
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_23
 msgid ""
 "Pray that ${ctx['objects'].preferred_name} will have a positive self image."
-msgstr ""
+msgstr "Bete um ein starkes Selbstwertgefühl für ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_5
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_5
 msgid "Pray that ${ctx['objects'].preferred_name} will have hope."
 msgstr ""
+"Bete, dass ${ctx['objects'].preferred_name} nie die Hoffnung verliert."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_14
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_14
 msgid "Pray that ${ctx['objects'].preferred_name} will pursue big dreams."
 msgstr ""
+"Bete, dass ${ctx['objects'].preferred_name} grosse Träume träumen und ihnen nacheifern kann."
 
 #. module: mobile_app_connector
 #: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
@@ -1748,19 +1757,19 @@ msgstr "Geschäftsbedingungen"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_18
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_18
 msgid "Thank God ${ctx['objects'].preferred_name} prays for you."
-msgstr ""
+msgstr "Danke Gott, dass ${ctx['objects'].preferred_name} auch für dich betet."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_9
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_9
 msgid "Thank God for the blessing of community."
-msgstr ""
+msgstr "Danke Gott für den Segen von Beziehungen für ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_10
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_10
 msgid "Thank God that you can sponsor."
-msgstr ""
+msgstr "Danke Gott, dass du ${ctx['objects'].preferred_name} unterstützen kannst."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht2
@@ -1993,7 +2002,7 @@ msgstr "What did you like"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_12
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_12
 msgid "What would you say to ${ctx['objects'].preferred_name} today?"
-msgstr ""
+msgstr "Was würdest du heute zu ${ctx['objects'].preferred_name} sagen?"
 
 #. module: mobile_app_connector
 #: model:ir.actions.act_window,name:mobile_app_connector.action_wp_post_category
@@ -2060,7 +2069,7 @@ msgstr "Ja"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi7
 msgid "You have not yet paid your sponsorship"
-msgstr "Du hast deine Patenschaft noch nicht bezahlt."
+msgstr "Du hast deine Patenschaft noch nicht bezahlt"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_le_t2
@@ -2095,7 +2104,7 @@ msgstr "Persönliche Angaben"
 #: code:addons/mobile_app_connector/models/request.py:65
 #, python-format
 msgid "Your question was well received"
-msgstr "Deine Frage wurde gut angenommen."
+msgstr "Deine Frage wurde gut angenommen"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/models/app_tile_type.py:76
