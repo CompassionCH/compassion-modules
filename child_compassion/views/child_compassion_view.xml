@@ -255,7 +255,8 @@
         <field name="name">compassion.child.tree</field>
         <field name="model">compassion.child</field>
         <field name="arch" type="xml">
-            <tree string="Children" colors="red:state == 'W'; blue:state == 'N'; black:state in ('P', 'I'); gray:state in ('F', 'R')">
+            <tree decoration-warning="state == 'W'"
+                  decoration-muted="state in ('F', 'R')">
                 <field name="name"/>
                 <field name="local_id"/>
                 <field name="date"/>
@@ -428,13 +429,22 @@
         <field name="state">code</field>
         <field name="code">object.update_child_pictures()</field>
     </record>
-
+<!--
     <record id="update_child_pictures" model="ir.values">
         <field eval="'client_action_multi'" name="key2"/>
         <field eval="'compassion.child'" name="model"/>
         <field name="name">Update pictures</field>
         <field eval="'ir.actions.server,%d'%update_child_picture"
                name="value"/>
+    </record>
+-->
+    <record id="update_child_pictures" model="ir.actions.server">
+        <field name="name">Update pictures</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_compassion_child" />
+        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="state">code</field>
+        <field name="code">model.update_child_pictures()</field>
     </record>
 
     <menuitem id="menu_sponsorship_children"

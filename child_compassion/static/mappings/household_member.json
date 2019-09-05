@@ -1,0 +1,15 @@
+{
+  "name": "Household Member",
+  "model": "compassion.household.member",
+  "mapping": {
+    "GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "LocalID": "beneficiary_local_id",
+    "HouseholdMemberRole": "role",
+    "HouseholdMember_Name": "name",
+    "IsCaregiver": "is_caregiver",
+    "IsPrimaryCaregiver": "is_primary_caregiver"
+  }
+}

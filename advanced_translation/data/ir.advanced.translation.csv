@@ -1,4 +1,0 @@
-id,src,lang,group,male_singular
-date_short_en,date_short,en_US,format,%d.%m.%Y
-date_month_en,date_month,en_US,Date format,%d %B
-date_full_en,date_full,en_US,Date format,%d %B %Y

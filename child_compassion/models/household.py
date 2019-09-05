@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -12,13 +11,11 @@
 
 from odoo import api, models, fields, _
 
-from ..mappings.household_mapping import HouseHoldMapping
-
 
 class Household(models.Model):
     _name = 'compassion.household'
     _description = 'Household'
-    _inherit = 'translatable.model'
+    _inherit = ['compassion.mapped.model', 'translatable.model']
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
@@ -198,17 +195,25 @@ class Household(models.Model):
     def process_commkit(self, commkit_data):
         """ Household Major Revision """
         household_ids = list()
-        household_mapping = HouseHoldMapping(self.env)
         for household_data in commkit_data.get('BeneficiaryHouseholdList',
                                                [commkit_data]):
             household = self.search([
                 ('household_id', '=', household_data.get('Household_ID'))])
             if household:
                 household_ids.append(household.id)
-                household_vals = household_mapping.get_vals_from_connect(
+                household_vals = self.json_to_data(
                     household_data)
                 household.write(household_vals)
         return household_ids
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        data = super().json_to_data(json, mapping_name)
+        household = self.search([
+            ('household_id', '=', data.get('household_id'))])
+        # Delete old household members
+        household.member_ids.unlink()
+        return data
 
     ##########################################################################
     #                             ORM METHODS                                #
@@ -223,18 +228,18 @@ class Household(models.Model):
         if res:
             res.write(vals)
         else:
-            res = super(Household, self).create(vals)
+            res = super().create(vals)
         return res
 
 
 class HouseholdMembers(models.Model):
     _name = 'compassion.household.member'
-    _inherit = 'translatable.model'
+    _inherit = ['translatable.model', 'compassion.mapped.model']
     _description = 'Household Member'
 
     beneficiary_local_id = fields.Char()
     child_id = fields.Many2one(
-        'compassion.child', 'Child'
+        'compassion.child', 'Child', ondelete='cascade'
     )
     household_id = fields.Many2one(
         'compassion.household', 'Household',

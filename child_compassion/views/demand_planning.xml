@@ -31,7 +31,8 @@
         <field name="name">demand.planning.tree</field>
         <field name="model">demand.planning</field>
         <field name="arch" type="xml">
-            <tree string="Demand Planning" colors="blue:state == 'draft';grey:state == 'sent';red:state == 'error'">
+            <tree decoration-primary="state=='draft'"
+                  decoration-danger="state=='error'">
                 <field name="date"/>
                 <field name="sent_date"/>
                 <field name="state"/>
@@ -84,5 +85,5 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="sales_team.menu_sales" action="open_view_demand_planning_form"/>
+    <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="menu_sponsorship_root" action="open_view_demand_planning_form"/>
 </odoo>

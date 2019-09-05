@@ -11,7 +11,9 @@
         <field name="model">gmc.message</field>
         <field name="priority">17</field>
         <field name="arch" type="xml">
-            <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
+            <tree decoration-danger="state == 'failure'"
+                  decoration-primary="state == 'new'"
+                  decoration-muted="state == 'success'">
                 <field name="action_id" />
                 <field name="res_name"/>
                 <field name="date" />
@@ -26,7 +28,9 @@
         <field name="model">gmc.message</field>
         <field name="priority">12</field>
         <field name="arch" type="xml">
-            <tree string="Message Pool" colors="blue:state == 'new';black:state == 'pending';gray:state == 'success';red:state == 'failure'" create="false">
+            <tree decoration-danger="state == 'failure'"
+                  decoration-primary="state == 'new'"
+                  decoration-muted="state == 'success'">
                 <field name="action_id" />
                 <field name="partner_id" />
                 <field name="res_name"/>
@@ -142,7 +146,7 @@
         <field name="name">gmc.message.filter</field>
         <field name="model">gmc.message</field>
         <field name="arch" type="xml">
-            <search string="Search Partner">
+            <search>
                 <field name="action_id"/>
                 <field name="partner_id"/>
                 <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
@@ -184,7 +188,20 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_incoming':1, 'search_default_pending':1, 'search_default_failure':1}</field>
-        <field name="domain">[('direction', '=', 'in')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No messages.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_gmc_message_outgoing_form" model="ir.actions.act_window">
+        <field name="name">Outgoing Messages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">gmc.message</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_outgoing':1, 'search_default_pending':1, 'search_default_failure':1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -213,7 +230,8 @@
     <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1" />
     <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form" sequence="1" />
     <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
-    <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="group_gmc_user"/>
+    <menuitem id="menu_message_outgoing_all" parent="menu_message_outgoing"  action="action_gmc_message_outgoing_form" sequence="2"/>
+    <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="group_gmc_manager"/>
     <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
     <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
 
@@ -222,7 +240,7 @@
         <field name="name">gmc.message.process.form</field>
         <field name="model">gmc.message.process</field>
         <field name="arch" type="xml">
-            <form string="Process Messages" version="7.0">
+            <form string="Process Messages">
                 <p class="oe_grey">
                     This will execute the action defined for each new message in the pool.
                 </p>

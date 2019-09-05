@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -11,21 +10,14 @@
 import logging
 
 from datetime import datetime, timedelta
+from functools import reduce
+from enum import Enum
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import config
 
-from ..mappings.child_reinstatement_mapping import ReinstatementMapping
-from ..mappings.childpool_create_hold_mapping import ReservationToHoldMapping
-
 logger = logging.getLogger(__name__)
-
-try:
-    from enum import Enum
-except ImportError:
-    logger.error("Please install Python Enum")
-
 test_mode = config.get('test_enable')
 
 
@@ -75,11 +67,11 @@ class AbstractHold(models.AbstractModel):
     yield_rate = fields.Integer()
     no_money_yield_rate = fields.Integer()
     channel = fields.Selection([
-        ('web', _('Website')),
-        ('event', _('Event')),
-        ('ambassador', _('Ambassador')),
-        ('sponsor_cancel', _('Sponsor Cancel')),
-        ('sub', _('SUB Sponsorship')),
+        ('web', 'Website'),
+        ('event', 'Event'),
+        ('ambassador', 'Ambassador'),
+        ('sponsor_cancel', 'Sponsor Cancel'),
+        ('sub', 'SUB Sponsorship'),
     ])
     source_code = fields.Char()
     comments = fields.Char()
@@ -137,7 +129,9 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
     _rec_name = 'hold_id'
-    _inherit = ['compassion.abstract.hold', 'mail.thread']
+    _inherit = ['compassion.abstract.hold', 'mail.thread',
+                'compassion.mapped.model']
+    _description = 'Compassion hold'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -181,11 +175,11 @@ class CompassionHold(models.Model):
             if hold:
                 hold.write(vals)
                 return hold
-        return super(CompassionHold, self).create(vals)
+        return super().create(vals)
 
     @api.multi
     def write(self, vals):
-        res = super(CompassionHold, self).write(vals)
+        res = super().write(vals)
         notify_vals = ['primary_owner', 'type', 'expiration_date']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
                         False)
@@ -206,7 +200,7 @@ class CompassionHold(models.Model):
         inactive_holds = self - active_holds
         inactive_children = inactive_holds.mapped('child_id').filtered(
             lambda c: not c.hold_id)
-        inactive_children.signal_workflow('release')
+        inactive_children.child_released()
         super(CompassionHold, inactive_holds).unlink()
         return True
 
@@ -251,18 +245,17 @@ class CompassionHold(models.Model):
             else:
                 # Release child if no hold_id received
                 hold.unlink()
-                child_to_update.signal_workflow('release')
+                child_to_update.child_released()
 
     @api.model
     def reinstatement_notification(self, commkit_data):
         """ Called when a child was Reinstated. """
-        reinstatement_mapping = ReinstatementMapping(self.env)
         # Reinstatement holds are available for 90 days (Connect default)
         in_90_days = datetime.now() + timedelta(days=90)
 
         hold_data = commkit_data.get(
             'ReinstatementHoldNotification', commkit_data)
-        vals = reinstatement_mapping.get_vals_from_connect(hold_data)
+        vals = self.json_to_data(hold_data, 'new_reinstatement_notification')
         child_id = vals.get('child_id')
         if not child_id:
             raise ValueError("No child found")
@@ -290,7 +283,6 @@ class CompassionHold(models.Model):
 
     def reservation_to_hold(self, commkit_data):
         """ Called when a reservation gots converted to a hold. """
-        mapping = ReservationToHoldMapping(self.env)
         hold_data = commkit_data.get(
             'ReservationConvertedToHoldNotification')
         child_global_id = hold_data and hold_data.get('Beneficiary_GlobalID')
@@ -298,7 +290,7 @@ class CompassionHold(models.Model):
             child = self.env['compassion.child'].create({
                 'global_id': child_global_id})
             hold = self.env['compassion.hold'].create(
-                mapping.get_vals_from_connect(hold_data))
+                self.json_to_data(hold_data, 'reservation_to_hold'))
             hold.write({
                 'state': 'active',
                 'ambassador': hold.reservation_id.ambassador.id,
@@ -320,8 +312,7 @@ class CompassionHold(models.Model):
             hold.message_post(
                 body=_("A new hold has been created because of an existing "
                        "reservation."),
-                subject=_("%s - Reservation converted to hold" %
-                          child.local_id),
+                subject=_(f"{child.local_id} - Reservation converted to hold"),
                 partner_ids=hold.primary_owner.partner_id.ids,
                 type='comment',
                 subtype='mail.mt_comment',
@@ -338,7 +329,7 @@ class CompassionHold(models.Model):
         Prevent releasing No Money Holds!
         """
         if self.filtered(lambda h: h.type == HoldType.NO_MONEY_HOLD.value):
-            raise Warning(_("You cannot release No Money Hold!"))
+            raise UserError(_("You cannot release No Money Hold!"))
         return self.release_hold()
 
     @api.multi
@@ -375,9 +366,9 @@ class CompassionHold(models.Model):
                 # Check if it was a depart and retrieve lifecycle event
                 child.get_lifecycle_event()
                 if child.sponsor_id:
-                    child.signal_workflow('release')
+                    child.child_released()
             else:
-                child.signal_workflow('release')
+                child.child_released()
         return True
 
     @api.model
@@ -487,3 +478,15 @@ class CompassionHold(models.Model):
             # Commit after hold is updated
             if not test_mode:
                 self.env.cr.commit()  # pylint:disable=invalid-commit
+
+    ##########################################################################
+    #                              Mapping METHOD                            #
+    ##########################################################################
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        odoo_data = super().data_to_json(mapping_name)
+        for key, val in odoo_data.copy().items():
+            if not val:
+                del odoo_data[key]
+        return odoo_data

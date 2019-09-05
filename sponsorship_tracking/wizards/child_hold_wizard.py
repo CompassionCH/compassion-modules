@@ -19,11 +19,8 @@ class ChildHoldWizard(models.TransientModel):
     """ Add return action for sub_sponsorship. """
     _inherit = 'child.hold.wizard'
 
-    @api.model
-    def get_action_selection(self):
-        selection = super(ChildHoldWizard, self).get_action_selection()
-        selection.append(('sub', _('Make SUB Sponsorship')))
-        return selection
+    return_action = fields.Selection(
+        selection_add=[('sub', 'Make SUB Sponsorship')])
 
     @api.multi
     def send(self):

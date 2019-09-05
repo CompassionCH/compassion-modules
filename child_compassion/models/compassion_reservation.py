@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -18,7 +17,8 @@ from odoo.exceptions import UserError
 class CompassionReservation(models.Model):
     _name = 'compassion.reservation'
     _description = 'Project Reservation'
-    _inherit = ['compassion.abstract.hold', 'mail.thread']
+    _inherit = ['compassion.abstract.hold', 'mail.thread',
+                "compassion.mapped.model"]
     _rec_name = 'reservation_id'
 
     ##########################################################################
@@ -91,7 +91,7 @@ class CompassionReservation(models.Model):
     ##########################################################################
     @api.multi
     def write(self, vals):
-        res = super(CompassionReservation, self).write(vals)
+        res = super().write(vals)
         sync_fields = [
             'reservation_expiration_date', 'expiration_date',
             'number_of_beneficiaries', 'primary_owner']

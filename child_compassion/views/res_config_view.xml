@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- Configuration Views  Inside the Sponsorship -> Configuration Menu -->
-        <menuitem id="menu_configuration" parent="menu_sponsorship_root" name="Configuration" sequence="15" groups="message_center_compassion.group_gmc"/>
+        <menuitem id="menu_configuration" parent="menu_sponsorship_root" name="Configuration" sequence="15" groups="message_center_compassion.group_gmc_manager"/>
         <menuitem id="child_config" name="Global Childpool" parent="menu_configuration" sequence="1"/>
         <menuitem id="menu_communication_config" name="Communication" parent="menu_configuration" sequence="2"/>
 

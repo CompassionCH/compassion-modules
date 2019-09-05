@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,6 @@ from odoo.exceptions import UserError
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
-from odoo.addons.message_center_compassion.mappings import base_mapping
 from odoo.addons.queue_job.job import job
 
 
@@ -29,6 +27,7 @@ class GlobalChildSearch(models.TransientModel):
     Class used for searching children in the global childpool.
     """
     _name = 'compassion.childpool.search'
+    _inherit = ['compassion.mapped.model']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -174,8 +173,7 @@ class GlobalChildSearch(models.TransientModel):
                 'BeneficiarySearchResponseList')
         else:
             self.compute_advanced_search()
-            self.with_context(
-                default_mapping_name='advanced_search')._call_search_service(
+            self._call_search_service(
                 'advanced_search', 'beneficiaries/availabilityquery',
                 'BeneficiarySearchResponseList', 'POST'
             )
@@ -192,8 +190,7 @@ class GlobalChildSearch(models.TransientModel):
                 'BeneficiarySearchResponseList')
         else:
             self.compute_advanced_search()
-            self.with_context(
-                default_mapping_name='advanced_search')._call_search_service(
+            self._call_search_service(
                 'advanced_search', 'beneficiaries/availabilityquery',
                 'BeneficiarySearchResponseList', 'POST'
             )
@@ -464,6 +461,16 @@ class GlobalChildSearch(models.TransientModel):
 
         return self.write({'search_filter_ids': new_filters})
 
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        json_result = super().data_to_json(mapping_name)
+        if mapping_name == 'profile_search':
+            # Remove 0 values
+            for key, val in json_result.copy().items():
+                if not val:
+                    del json_result[key]
+        return json_result
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
@@ -478,9 +485,7 @@ class GlobalChildSearch(models.TransientModel):
         :param method: Method URL (GET or POST)
         :return:
         """
-        mapping = base_mapping.new_onramp_mapping(
-            self._name, self.env, mapping_name)
-        params = mapping.get_connect_data(self)
+        params = self.data_to_json(mapping_name)
         onramp = OnrampConnector()
         if method == 'POST':
             result = onramp.send_message(service_name, method, params)
@@ -488,13 +493,13 @@ class GlobalChildSearch(models.TransientModel):
             result = onramp.send_message(service_name, method, None, params)
         if result['code'] == 200:
             self.nb_found = result['content'].get('NumberOfBeneficiaries', 0)
-            mapping = base_mapping.new_onramp_mapping(
-                'compassion.global.child', self.env)
+
             if not result['content'][result_name]:
                 raise UserError(_("No children found meeting criterias"))
             new_children = self.env['compassion.global.child']
             for child_data in result['content'][result_name]:
-                child_vals = mapping.get_vals_from_connect(child_data)
+                child_vals = new_children.json_to_data(
+                    child_data, 'Childpool Search Response')
                 child_vals['search_view_id'] = self.id
                 new_children += self.env['compassion.global.child'].create(
                     child_vals)

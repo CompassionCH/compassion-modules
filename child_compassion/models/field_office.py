@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -15,6 +14,8 @@ from odoo import api, models, fields
 
 class FieldOffice(models.Model):
     _name = 'compassion.field.office'
+    _inherit = 'compassion.mapped.model'
+    _description = 'Field Office'
 
     name = fields.Char('Name')
     field_office_id = fields.Char(required=True)
@@ -80,7 +81,6 @@ class FieldOffice(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-
     @api.multi
     def update_informations(self):
         """ Get the most recent informations for selected field offices and

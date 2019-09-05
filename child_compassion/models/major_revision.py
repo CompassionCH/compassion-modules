@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -16,35 +15,32 @@ from odoo import api, models, fields
 class MajorRevision(models.Model):
     _inherit = 'translatable.model'
     _name = 'compassion.major.revision'
+    _description = 'Compassion Major Revision'
 
-    name = fields.Selection('_get_revision_name', required=True)
+    name = fields.Selection([
+        # Child major revision
+        ('Birthdate', 'Birthdate'),
+        ('Physical Disabilities', 'Physical Disabilities'),
+        ('Chronic Illness', 'Chronic Illness'),
+        ('First Name', 'First Name'),
+        ('Formal Education Level', 'Formal Education Level'),
+        ('Gender', 'Gender'),
+        ('Last Name', 'Last Name'),
+        ('Planned Completion Date', 'Planned Completion Date'),
+        ('Preferred Name', 'Preferred Name'),
+        ('Local Grade Level', 'Local Grade Level'),
+        # Household major revision
+        ('Is Natural Father Alive?', 'Natural Father Alive'),
+        ('Is Natural Mother Alive?', 'Natural Mother Alive'),
+        ('Primary Caregiver', 'Primary Caregiver'),
+    ], required=True)
     old_value = fields.Char()
     child_id = fields.Many2one('compassion.child', ondelete='cascade')
     household_id = fields.Many2one('compassion.household', ondelete='cascade')
 
     @api.model
-    def _get_revision_name(self):
-        return [
-            # Child major revision
-            ('Birthdate', 'Birthdate'),
-            ('Physical Disabilities', 'Physical Disabilities'),
-            ('Chronic Illness', 'Chronic Illness'),
-            ('First Name', 'First Name'),
-            ('Formal Education Level', 'Formal Education Level'),
-            ('Gender', 'Gender'),
-            ('Last Name', 'Last Name'),
-            ('Planned Completion Date', 'Planned Completion Date'),
-            ('Preferred Name', 'Preferred Name'),
-            ('Local Grade Level', 'Local Grade Level'),
-            # Household major revision
-            ('Is Natural Father Alive?', 'Natural Father Alive'),
-            ('Is Natural Mother Alive?', 'Natural Mother Alive'),
-            ('Primary Caregiver', 'Primary Caregiver'),
-        ]
-
-    @api.model
     def create(self, vals):
-        major_field = super(MajorRevision, self).create(vals)
+        major_field = super().create(vals)
         major_field.old_value = major_field.get_field_value()
         return major_field
 
@@ -96,4 +92,4 @@ class MajorRevision(models.Model):
                     values.extend(household_res_object.mapped(
                         field_mapping[revision.name]))
 
-        return u', '.join(map(unicode, values))
+        return u', '.join(values)

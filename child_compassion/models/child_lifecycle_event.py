@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,8 +8,6 @@
 #
 ##############################################################################
 from odoo import models, fields, api
-from odoo.addons.message_center_compassion.mappings \
-    import base_mapping as mapping
 
 
 class ChildLifecycleEvent(models.Model):
@@ -19,13 +16,23 @@ class ChildLifecycleEvent(models.Model):
     _description = 'Child Lifecycle Event'
     _inherit = 'translatable.model'
     _order = 'date desc, id desc'
+    _inherit = ['compassion.mapped.model']
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
         readonly=True)
     global_id = fields.Char(readonly=True, required=True)
     date = fields.Date(readonly=True)
-    type = fields.Selection('_get_type', readonly=True)
+    type = fields.Selection([
+        ('Beneficiary Update', 'Beneficiary Update'),
+        ('Home Based Caregiver Death', 'Home Based Caregiver Death'),
+        ('Planned Exit', 'Planned Exit'),
+        ('Registration', 'Registration'),
+        ('Reinstatement', 'Reinstatement'),
+        ('Transfer', 'Transfer'),
+        ('Transition', 'Transition'),
+        ('Unplanned Exit', 'Unplanned Exit'),
+    ], readonly=True)
     gender = fields.Selection(related='child_id.gender')
 
     # All reasons for all request types
@@ -178,31 +185,7 @@ class ChildLifecycleEvent(models.Model):
     death_intervention_information = fields.Char(readonly=True)
 
     child_death_category = fields.Selection(
-        '_get_death_category', readonly=True)
-    child_death_subcategory = fields.Selection(
-        '_get_death_subcategory', readonly=True)
-
-    _sql_constraints = [
-        ('global_id', 'unique(global_id)',
-         'The lifecycle already exists in database.')
-    ]
-
-    @api.model
-    def _get_type(self):
-        return [
-            ('Beneficiary Update', 'Beneficiary Update'),
-            ('Home Based Caregiver Death', 'Home Based Caregiver Death'),
-            ('Planned Exit', 'Planned Exit'),
-            ('Registration', 'Registration'),
-            ('Reinstatement', 'Reinstatement'),
-            ('Transfer', 'Transfer'),
-            ('Transition', 'Transition'),
-            ('Unplanned Exit', 'Unplanned Exit'),
-        ]
-
-    @api.model
-    def _get_death_category(self):
-        return [
+        [
             ('Abuse', 'Abuse'),
             ('Fatal Accident or Suicide', 'Fatal Accident or Suicide'),
             ('Gastro-Intestinal', 'Gastro-Intestinal'),
@@ -214,75 +197,77 @@ class ChildLifecycleEvent(models.Model):
             ('Unknown Cause', 'Unknown Cause'),
             ('Vaccine-Preventable Diseases', 'Vaccine-Preventable Diseases'),
             ('Vector-Borne', 'Vector-Borne'),
-        ]
+        ], readonly=True)
+    child_death_subcategory = fields.Selection([
+        ('Abortion-related', 'Abortion-related'),
+        ('Anemia', 'Anemia'),
+        ('Asphyxia', 'Asphyxia'),
+        ('Birth Asphyxia', 'Birth Asphyxia'),
+        ('Bronchitis', 'Bronchitis'),
+        ('Burns', 'Burns'),
+        ('Cancer', 'Cancer'),
+        ('Cardiovascular', 'Cardiovascular'),
+        ('Chicken Pox', 'Chicken Pox'),
+        ('Chikungunya', 'Chikungunya'),
+        ('Cholera', 'Cholera'),
+        ('Congenital Abnormalities', 'Congenital Abnormalities'),
+        ('Dengue', 'Dengue'),
+        ('Diabetes', 'Diabetes'),
+        ('Diarrhea', 'Diarrhea'),
+        ('Diphtheria', 'Diphtheria'),
+        ('Drowning', 'Drowning'),
+        ('Electrocution', 'Electrocution'),
+        ('Epilepsy/Seizure Disorder', 'Epilepsy/Seizure Disorder'),
+        ('Falls', 'Falls'),
+        ('HIV/AIDS-related', 'HIV/AIDS-related'),
+        ('Hepatitis', 'Hepatitis'),
+        ('Influenza', 'Influenza'),
+        ('Intra-partum-related Complications',
+         'Intra-partum-related Complications'),
+        ('Japanese Encephalitis', 'Japanese Encephalitis'),
+        ('Leukemia', 'Leukemia'),
+        ('Malaria', 'Malaria'),
+        ('Measles', 'Measles'),
+        ('Meningitis', 'Meningitis'),
+        ('Mumps', 'Mumps'),
+        ('Natural Disaster', 'Natural Disaster'),
+        ('Obstructed Labor', 'Obstructed Labor'),
+        ('Other', 'Other'),
+        ('Parasites', 'Parasites'),
+        ('Pertussis', 'Pertussis'),
+        ('Physical', 'Physical'),
+        ('Pneumonia', 'Pneumonia'),
+        ('Poisoning', 'Poisoning'),
+        ('Polio', 'Polio'),
+        ('Postpartum Complications (Hemorrhage, infection etc.)',
+         'Postpartum Complications (Hemorrhage, infection etc.)'),
+        ('Pregnancy Complications (Preeclampsia, eclampsia, etc.)',
+         'Pregnancy Complications (Preeclampsia, eclampsia, etc.)'),
+        ('Prematurity/ Low Birth Weight', 'Prematurity/ Low Birth Weight'),
+        ('Renal Disease', 'Renal Disease'),
+        ('Respiratory Tract Infection', 'Respiratory Tract Infection'),
+        ('Rotavirus', 'Rotavirus'),
+        ('Rubella', 'Rubella'),
+        ('Sepsis/Infection', 'Sepsis/Infection'),
+        ('Septicemia', 'Septicemia'),
+        ('Skin', 'Skin'),
+        ('Substance', 'Substance'),
+        ('Sudden Infant Death', 'Sudden Infant Death'),
+        ('Suicide', 'Suicide'),
+        ('Tetanus', 'Tetanus'),
+        ('Transportation  Accident', 'Transportation  Accident'),
+        ('Tuberculosis', 'Tuberculosis'),
+        ('Typhoid', 'Typhoid'),
+        ('Typhus', 'Typhus'),
+        ('Violence', 'Violence'),
+        ('West Nile Virus', 'West Nile Virus'),
+        ('Yellow Fever', 'Yellow Fever'),
+    ], readonly=True)
 
-    @api.model
-    def _get_death_subcategory(self):
-        return [
-            ('Abortion-related', 'Abortion-related'),
-            ('Anemia', 'Anemia'),
-            ('Asphyxia', 'Asphyxia'),
-            ('Birth Asphyxia', 'Birth Asphyxia'),
-            ('Bronchitis', 'Bronchitis'),
-            ('Burns', 'Burns'),
-            ('Cancer', 'Cancer'),
-            ('Cardiovascular', 'Cardiovascular'),
-            ('Chicken Pox', 'Chicken Pox'),
-            ('Chikungunya', 'Chikungunya'),
-            ('Cholera', 'Cholera'),
-            ('Congenital Abnormalities', 'Congenital Abnormalities'),
-            ('Dengue', 'Dengue'),
-            ('Diabetes', 'Diabetes'),
-            ('Diarrhea', 'Diarrhea'),
-            ('Diphtheria', 'Diphtheria'),
-            ('Drowning', 'Drowning'),
-            ('Electrocution', 'Electrocution'),
-            ('Epilepsy/Seizure Disorder', 'Epilepsy/Seizure Disorder'),
-            ('Falls', 'Falls'),
-            ('HIV/AIDS-related', 'HIV/AIDS-related'),
-            ('Hepatitis', 'Hepatitis'),
-            ('Influenza', 'Influenza'),
-            ('Intra-partum-related Complications',
-             'Intra-partum-related Complications'),
-            ('Japanese Encephalitis', 'Japanese Encephalitis'),
-            ('Leukemia', 'Leukemia'),
-            ('Malaria', 'Malaria'),
-            ('Measles', 'Measles'),
-            ('Meningitis', 'Meningitis'),
-            ('Mumps', 'Mumps'),
-            ('Natural Disaster', 'Natural Disaster'),
-            ('Obstructed Labor', 'Obstructed Labor'),
-            ('Other', 'Other'),
-            ('Parasites', 'Parasites'),
-            ('Pertussis', 'Pertussis'),
-            ('Physical', 'Physical'),
-            ('Pneumonia', 'Pneumonia'),
-            ('Poisoning', 'Poisoning'),
-            ('Polio', 'Polio'),
-            ('Postpartum Complications (Hemorrhage, infection etc.)',
-             'Postpartum Complications (Hemorrhage, infection etc.)'),
-            ('Pregnancy Complications (Preeclampsia, eclampsia, etc.)',
-             'Pregnancy Complications (Preeclampsia, eclampsia, etc.)'),
-            ('Prematurity/ Low Birth Weight', 'Prematurity/ Low Birth Weight'),
-            ('Renal Disease', 'Renal Disease'),
-            ('Respiratory Tract Infection', 'Respiratory Tract Infection'),
-            ('Rotavirus', 'Rotavirus'),
-            ('Rubella', 'Rubella'),
-            ('Sepsis/Infection', 'Sepsis/Infection'),
-            ('Septicemia', 'Septicemia'),
-            ('Skin', 'Skin'),
-            ('Substance', 'Substance'),
-            ('Sudden Infant Death', 'Sudden Infant Death'),
-            ('Suicide', 'Suicide'),
-            ('Tetanus', 'Tetanus'),
-            ('Transportation  Accident', 'Transportation  Accident'),
-            ('Tuberculosis', 'Tuberculosis'),
-            ('Typhoid', 'Typhoid'),
-            ('Typhus', 'Typhus'),
-            ('Violence', 'Violence'),
-            ('West Nile Virus', 'West Nile Virus'),
-            ('Yellow Fever', 'Yellow Fever'),
-        ]
+    _sql_constraints = [
+        ('global_id', 'unique(global_id)',
+         'The lifecycle already exists in database.')
+    ]
 
     @api.model
     def create(self, vals):
@@ -292,7 +277,7 @@ class ChildLifecycleEvent(models.Model):
         if lifecycle:
             lifecycle.write(vals)
         else:
-            lifecycle = super(ChildLifecycleEvent, self).create(vals)
+            lifecycle = super().create(vals)
             child = lifecycle.child_id
             # Process lifecycle event
             if 'Exit' in lifecycle.type:
@@ -305,15 +290,11 @@ class ChildLifecycleEvent(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        lifecycle_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'new_child_lifecyle')
         lifecycle_ids = list()
 
         for single_data in commkit_data.get('BeneficiaryLifecycleEventList',
                                             [commkit_data]):
-            vals = lifecycle_mapping.get_vals_from_connect(single_data)
+            vals = self.json_to_data(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
 

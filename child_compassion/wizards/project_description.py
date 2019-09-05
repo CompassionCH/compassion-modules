@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -46,8 +45,8 @@ class ProjectDescription(models.TransientModel):
         """ This will automatically generate all descriptions and save them
         in the related child.
         """
-        generator = super(ProjectDescription, self).create(vals)
-        for lang, field in self._supported_languages().iteritems():
+        generator = super().create(vals)
+        for lang, field in self._supported_languages().items():
             desc = generator.with_context(lang=lang)._generate_translation()
             generator.project_id.write({field: desc})
 
@@ -74,8 +73,9 @@ class ProjectDescription(models.TransientModel):
         if project.country_id and project.country_id != \
                 project.field_office_id.country_id:
             desc('.project_country')[0].text = _(
-                "The project is located in %s, close to the border."
-            ) % project.country_id.name
+                f"The project is located in {project.country_id.name}, "
+                f"close to the border."
+            )
         else:
             desc('#project_country').remove()
 
@@ -180,7 +180,7 @@ class ProjectDescription(models.TransientModel):
         if the value is not set.
         """
         if value:
-            if not isinstance(value, basestring):
+            if not isinstance(value, str):
                 value = str(value)
             field.text = value
         else:

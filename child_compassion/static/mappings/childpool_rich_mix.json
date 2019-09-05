@@ -1,0 +1,7 @@
+{
+  "name": "rich_mix",
+  "model": "compassion.childpool.search",
+  "mapping": {
+    "numberOfBeneficiaries": "take"
+  }
+}

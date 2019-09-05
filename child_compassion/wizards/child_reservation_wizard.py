@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,7 @@ class ChildReservationWizard(models.TransientModel):
     ##########################################################################
     @api.multi
     def get_hold_values(self):
-        hold_vals = super(ChildReservationWizard, self).get_hold_values()
+        hold_vals = super().get_hold_values()
         if self.channel in ('ambassador', 'event'):
             hold_vals['secondary_owner'] = self.ambassador.name
         return hold_vals

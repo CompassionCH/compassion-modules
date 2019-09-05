@@ -1,0 +1,15 @@
+{
+  "name": "Child Note",
+  "model": "compassion.child.note",
+  "mapping": {
+    "GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "Body": "body",
+    "RecordType": "record_type",
+    "Type": "type",
+    "Visibility": "visibility",
+    "SourceKitName": "source_code"
+  }
+}

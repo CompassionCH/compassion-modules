@@ -1,0 +1,14 @@
+{
+  "name": "Release Hold",
+  "model": "compassion.hold",
+  "mapping": {
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "HoldID": "hold_id",
+    "GlobalPartner_ID": {
+      "to_json_conversion": "self.env.user.company_id.country_id.code"
+    }
+  }
+}

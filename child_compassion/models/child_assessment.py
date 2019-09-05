@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -12,14 +11,13 @@
 
 from odoo import models, fields, api
 
-from ..mappings.child_assessment_mapping import ChildAssessmentMapping
-
 
 class ChildAssessment(models.Model):
     """ A child CDPR (Child Development Progress Report) """
     _name = 'compassion.child.cdpr'
     _description = 'Child CDPR Assessment'
     _order = 'date desc'
+    _inherit = ['compassion.mapped.model']
 
     assesment_type = fields.Char()
     child_id = fields.Many2one(
@@ -36,11 +34,10 @@ class ChildAssessment(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        child_assessment_mapping = ChildAssessmentMapping(self.env)
         assessment_ids = list()
         for cdpr_data in commkit_data.get(
                 'BeneficiaryAssessmentResponseList', [commkit_data]):
-            vals = child_assessment_mapping.get_vals_from_connect(cdpr_data)
+            vals = self.json_to_data(cdpr_data)
             child_assessment = self.create(vals)
             assessment_ids.append(child_assessment.id)
         return assessment_ids

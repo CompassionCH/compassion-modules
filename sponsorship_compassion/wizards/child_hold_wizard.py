@@ -8,18 +8,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, _
+from odoo import api, models, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):
     """ Add return action for sponsoring selected child. """
     _inherit = 'child.hold.wizard'
 
-    @api.model
-    def get_action_selection(self):
-        selection = super(ChildHoldWizard, self).get_action_selection()
-        selection.append(('sponsor', _('Sponsor the child')))
-        return selection
+    return_action = fields.Selection(
+        selection_add=[('sponsor', 'Sponsor the child')])
 
     def _get_action(self, holds):
         action = super(ChildHoldWizard, self)._get_action(holds)

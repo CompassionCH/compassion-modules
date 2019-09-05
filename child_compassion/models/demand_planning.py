@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -15,6 +14,7 @@ from odoo import api, models, fields
 
 class DemandPlanning(models.Model):
     _name = 'demand.planning'
+    _inherit = 'compassion.mapped.model'
     _description = 'Demand Planning'
     _rec_name = 'date'
     _order = 'date desc'
@@ -134,3 +134,11 @@ class DemandPlanning(models.Model):
         return [
             ('week_start_date', '=', fields.Date.to_string(start_date)),
         ]
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        connect_data = super().json_to_data(json, mapping_name)
+        return {
+            "GlobalPartnerWeeklyDemandRequest": connect_data,
+            "GlobalPartner_ID": self.env.user.country_id.code
+        }

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -17,7 +16,7 @@ class FCPProperty(models.AbstractModel):
     """ An FCP property is a class linked to projects to describe
     the project hobbies/activities/etc... in several languages. """
     _name = 'fcp.property'
-    _inherit = 'connect.multipicklist'
+    _inherit = ['connect.multipicklist', 'compassion.mapped.model']
     res_model = 'compassion.project'
     value = fields.Char(translate=True)
 
