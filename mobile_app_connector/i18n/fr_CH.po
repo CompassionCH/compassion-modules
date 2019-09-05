@@ -638,7 +638,7 @@ msgid ""
 "Ask that ${ctx['objects'].preferred_name} will have access to the healthcare "
 "${ctx['objects'].get('he')} needs."
 msgstr ""
-"Priez pour que [childname] ait accès aux soins médicaux dont il/elle a "
+"Priez pour que ${ctx['objects'].preferred_name} ait accès aux soins médicaux dont il/elle a "
 "besoin."
 
 #. module: mobile_app_connector
@@ -1450,7 +1450,7 @@ msgid ""
 "Pray as ${ctx['objects'].preferred_name} asks in ${ctx['objects']."
 "get('his')} letters."
 msgstr ""
-"Priez pour les demandes de prière exprimées par [childname] dans ses lettres."
+"Priez pour les demandes de prière exprimées par ${ctx['objects'].preferred_name} dans ses lettres."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_15
