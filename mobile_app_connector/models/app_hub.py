@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import logging
+import random
 
 from ..mappings.wp_post_mapping import WPPostMapping
 from odoo import api, models
@@ -252,10 +253,10 @@ class AppHub(models.AbstractModel):
         to_order.sort(key=lambda m: m["OrderDate"], reverse=True)
 
         letters = {'tiles': [], 'max_number_tile': 1}
-        prayers = {'tiles': [], 'max_number_tile': 1}
+        prayers = {'tiles': [], 'max_number_tile': 0}
         community = {'tiles': [], 'max_number_tile': 0}
         stories = {'tiles': [], 'max_number_tile': 0}
-        giving = {'tiles': [], 'max_number_tile': 1}
+        giving = {'tiles': [], 'max_number_tile': 0}
         pictures = {'tiles': [], 'max_number_tile': 1}
         child_fact = {'tiles': [], 'max_number_tile': 0}
         # tiles that will be in first group of displayed tiles
@@ -292,6 +293,10 @@ class AppHub(models.AbstractModel):
         fixed_group_tiles = ["CH1", "CO1", "CO2", "CO3", "CO4"]
         rest_group = []
 
+        # Group of tile to spread across the whole hub
+        spread_group_tiles = ['PR1', 'GI1', 'GI3', 'GI5']
+        spread_group = []
+
         for tile in to_order:
             recent_group = recent_content[tile['SubType']]
             if recent_group['max_number_tile'] > len(recent_group['tiles']) \
@@ -300,6 +305,8 @@ class AppHub(models.AbstractModel):
                 recent_group['tiles'].append(tile)
             elif tile['SubType'] in fixed_group_tiles:
                 fixed_group.append(tile)
+            elif tile['SubType'] in spread_group_tiles:
+                spread_group.append(tile)
             else:
                 rest_group.append(tile)
 
@@ -322,6 +329,7 @@ class AppHub(models.AbstractModel):
 
         rest_group.sort(key=lambda x: (x.get('UnReadRecently', False),
                                        x['OrderDate']), reverse=True)
+
         for tile in rest_group:
             tile['SortOrder'] = rest_of_tiles_order
             rest_of_tiles_order += category_length // len(rest_group)
@@ -330,5 +338,91 @@ class AppHub(models.AbstractModel):
             # login tile should be first
             if tile['SubType'] == "MI1":
                 tile['SortOrder'] = login_order
+
+        messages.sort(key=lambda m: int(m["SortOrder"]))
+
+        # Spread tiles across the hub:
+        group_by = 'SubType'
+        possible_subtype = {}
+        tile_grouped = {}
+        number_spread_tile = 0
+        number_tile = len([m for m in messages if m['SortOrder'] >= 2000 and
+                           not m['SubType'] in spread_group_tiles])
+
+        # First we classify the tile by subtype for easier use afterwards
+        for tile in spread_group:
+            if tile[group_by] in possible_subtype:
+                possible_subtype[tile[group_by]] += 1
+                tile_grouped[tile[group_by]].append(tile)
+            else:
+                possible_subtype[tile[group_by]] = 1
+                tile_grouped[tile[group_by]] = [tile]
+            number_spread_tile += 1
+
+        # We shuffle the tile to not have the same order of display every time
+        for sub_group in tile_grouped.values():
+            random.shuffle(sub_group)
+
+        # For weighted random, we create a list of every possible tile subtype
+        # to select at random (a subtype with n tiles appears n times)
+        random_list = []
+        for k, v in possible_subtype.iteritems():
+            random_list += [k] * v
+        random.shuffle(random_list)
+
+        # For every tile currently displayed on the hub we try to add one or
+        # more (as defined above) new tile in between from the spread group
+        bias_factor = 0
+        for c, n in zip(messages, messages[1:]+[messages[0]]):
+            diff = n['SortOrder'] - c['SortOrder'] - 1
+            if (c['SortOrder'] >= 2000 and
+                    not c['SubType'] in spread_group_tiles and
+                    not n['SubType'] in spread_group_tiles and
+                    diff > 0):
+                percent_to_add = len(spread_group) / (number_tile - 1) + (
+                                 bias_factor * 0.01)
+                # We add tiles between two others if we have enough tile to
+                # spread or at random (weighted by the number of tiles and
+                # the probability augmenting of not choosing to add
+                # it at a previous step)
+                if (len(spread_group) > (number_tile - 1) or
+                        random.random() < percent_to_add):
+                    number_jump = min(diff, max(1, number_spread_tile //
+                                                number_tile))
+                    jump = max(1, diff // (number_jump + 1))
+                    for i in range(1, number_jump + 1):
+                        key = random_list.pop()
+                        if (key in possible_subtype and
+                                possible_subtype[key] != 0):
+                            final_tile = tile_grouped[key].pop()
+                            final_tile['SortOrder'] = c['SortOrder'] + (
+                                    jump * i)
+                            possible_subtype[key] -= 1
+                            if possible_subtype[key] == 0:
+                                del possible_subtype[key]
+                            number_spread_tile -= 1
+                else:
+                    bias_factor += 1
+
+        # Once there is no more place between tiles we add them to the end of
+        # the hub:
+        # First we determine how many of the same subtype we should display
+        # back to back
+        number_tile_type = {}
+        for k, v in possible_subtype.iteritems():
+            number_tile_type[k] = max(1, v // number_tile)
+
+        # We add the remaining tiles to the end of the hub
+        while number_spread_tile > 0:
+            key = random_list.pop()
+            for i in range(number_tile_type[key]):
+                if key in possible_subtype and possible_subtype[key] != 0:
+                    final_tile = tile_grouped[key].pop()
+                    final_tile['SortOrder'] = rest_of_tiles_order
+                    rest_of_tiles_order += 10
+                    possible_subtype[key] -= 1
+                    if possible_subtype[key] == 0:
+                        del possible_subtype[key]
+                    number_spread_tile -= 1
 
         messages.sort(key=lambda m: int(m["SortOrder"]))
