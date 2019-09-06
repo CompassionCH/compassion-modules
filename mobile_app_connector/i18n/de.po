@@ -472,9 +472,9 @@ msgstr ""
 "% if len(child) == 1:\n"
 "Du veränderst ${child.get('sein')} Leben\n"
 "% else:\n"
-"Du veränderst das Leben von ${child.get_number()}\n"
-"% endifn\n"
-"Danke schön!"
+"Du veränderst das Leben von ${child.get_number()}${'' if len(child) == 1 "
+"else 'n'}\n"
+"% endif"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_co4
@@ -1267,7 +1267,7 @@ msgstr "Modell"
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_co3
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_co4
 msgid "My Community"
-msgstr "Meine Zuhause"
+msgstr "Mein Zuhause"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form

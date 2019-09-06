@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Setup account manually by email: template -->
+        <record id="email_template_user_not_found" model="mail.template">
+            <field name="name">Template user not found - Send by Email</field>
+            <field name="email_to">info@compassion.ch</field>
+            <field name="subject">Account Setup: User Not Found</field>
+            <field name="body_html">Hello,\n\nPlease set my mobile app account with the following email address: "%(email_address)"\n\nYours sincerely</field>
+        </record>
+    </data>
+</odoo>
