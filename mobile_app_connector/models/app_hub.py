@@ -57,6 +57,7 @@ class AppHub(models.AbstractModel):
             (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
         sponsorship_amounts = sponsorships.mapped('total_amount')
+        sponsorship_types = sponsorships.mapped('type')
         unpaid_children = unpaid.mapped('child_id')
         unpaid_amounts = unpaid.mapped('total_amount')
 
@@ -96,6 +97,7 @@ class AppHub(models.AbstractModel):
             partner_id, messages, children, **pagination)
 
         # Amount for monthly sponsorship
+        res.update({'SponsorshipTypes': sponsorship_types})
         res.update({'SponsorshipAmounts': sponsorship_amounts})
 
         # Handle children with awaiting payment
