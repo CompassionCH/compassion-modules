@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -17,6 +16,7 @@ class GetLetterImageWizard(models.Model):
     """ Send any message to any ONRAMP.
     """
     _name = 'onramp.simulator'
+    _description = 'Get Letter & Image Wizard'
 
     name = fields.Char()
     action_id = fields.Many2one('gmc.action.connect', 'Message Type')
