@@ -1336,21 +1336,6 @@ msgid "Pattern image"
 msgstr "Pattern image"
 
 #. module: sbc_compassion
-#: field:correspondence.template,pattern_image2:0
-msgid "Pattern image"
-msgstr "Pattern image"
-
-#. module: sbc_compassion
-#: field:correspondence.template,pattern_image3:0
-msgid "Pattern image"
-msgstr "Pattern image"
-
-#. module: sbc_compassion
-#: field:correspondence.template,pattern_image4:0
-msgid "Pattern image"
-msgstr "Pattern image"
-
-#. module: sbc_compassion
 #: code:addons/sbc_compassion/models/correspondence_template.py:257
 #, python-format
 msgid "Pattern not found"
