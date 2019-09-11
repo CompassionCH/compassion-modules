@@ -1,5 +1,5 @@
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Translation Boxes -->
         <record id="l1_box_1" model="correspondence.layout.box">
             <field name="name">L1-1-1</field>
