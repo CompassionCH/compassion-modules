@@ -171,6 +171,9 @@ if not testing:
             else:  # form not submitted (previous)
                 return 0, 0
 
+        def _sanitize_email(self, email):
+            return email.strip().lower()
+
     class RegistrationBaseForm(models.AbstractModel):
         """
         Registration form base
@@ -278,7 +281,8 @@ if not testing:
                         _("This email is already linked to an account."))
 
                 # Push the email for user creation
-                values['email'] = extra_values['partner_email']
+                values['email'] = self._sanitize_email(extra_values[
+                                                           'partner_email'])
 
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
@@ -335,9 +339,11 @@ if not testing:
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
             if self.form_next_url() == '/':  # form submitted
+                partner_email = self._sanitize_email(extra_values[
+                                                         'partner_email'])
                 # Find sponsor given the e-mail
                 partner = self.env['res.partner'].sudo().search([
-                    ('email', 'ilike', extra_values['partner_email']),
+                    ('email', 'ilike', partner_email),
                     ('has_sponsorships', '=', True)
                 ])
 
@@ -356,14 +362,14 @@ if not testing:
                     to = email_template.email_to
                     subject = email_template.subject
                     body = email_template.body_html.replace(
-                        '%(email_address)', extra_values['partner_email'])
+                        '%(email_address)', partner_email)
                     href_link = self._add_mailto(link_text, to, subject, body)
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
                         "us for setting up your account.") + " " + href_link)
 
                 # Push the email for user creation
-                values['email'] = extra_values['partner_email']
+                values['email'] = partner_email
                 values['partner_id'] = partner.id
 
         def _form_create(self, values):
