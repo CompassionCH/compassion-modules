@@ -4,6 +4,14 @@
               name="Mobile App"
               parent="sales_team.menu_base_partner"
               sequence="2"/>
+    <menuitem id="menu_mobile_app_hub"
+              name="Hub"
+              parent="menu_mobile_app"
+              sequence="1"/>
+    <menuitem id="menu_mobile_app_wp"
+              name="Wordpress News"
+              parent="menu_mobile_app"
+              sequence="2"/>
 
     <!-- WP Post views -->
     <record model="ir.ui.view" id="wp_post_form">
@@ -83,7 +91,7 @@
     <!-- Add menu for WP Posts -->
     <menuitem id="menu_wp_post"
               name="Wordpress Posts"
-              parent="menu_mobile_app"
+              parent="menu_mobile_app_wp"
               action="action_wp_post"
               groups="sales_team.group_sale_manager"
     />

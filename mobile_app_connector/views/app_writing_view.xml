@@ -64,8 +64,10 @@
 
     <!-- Add menu for app writing -->
     <menuitem id="menu_mobile_app_writing"
-              name="Writings"
-              parent="menu_mobile_app"
-              action="action_mobile_app_writing"/>
+              name="Writing categories"
+              parent="menu_mobile_app_settings"
+              action="action_mobile_app_writing"
+              sequence="3"
+    />
 
 </odoo>
