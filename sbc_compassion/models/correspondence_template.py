@@ -265,3 +265,13 @@ def _verify_template(tpl):
             0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width and
             0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height)
     return valid_coordinates
+
+
+class CorrespondenceDefaultTemplate(models.Model):
+
+    _name = 'correspondence.default.template'
+
+    name = fields.Char(required=True)
+
+    default_template_id = fields.Many2one(
+        'correspondence.template', 'S2B Template', required=True)

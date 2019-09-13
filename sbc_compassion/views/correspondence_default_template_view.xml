@@ -1,0 +1,37 @@
+<odoo>
+    <record id="view_correspondence_default_template_origin_tree" model="ir.ui.view">
+        <field name="name">correspondence.default.template.tree</field>
+        <field name="model">correspondence.default.template</field>
+        <field name="arch" type="xml">
+            <tree string="Correspondence Default Templates">
+                <field name="name"/>
+                <field name="default_template_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_correspondence_default_template_origin_form" model="ir.ui.view">
+        <field name="name">correspondence.default.template.form</field>
+        <field name="model">correspondence.default.template</field>
+        <field name="arch" type="xml">
+            <form string="Template">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="default_template_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_compassion_correspondence_default_template_form" model="ir.actions.act_window">
+        <field name="name">Correspondence Default Templates</field>
+        <field name="res_model">correspondence.default.template</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_correspondence_default_template" parent="correspondence_config" action="action_compassion_correspondence_default_template_form"
+        name="Correspondence Default Templates" sequence="1"/>
+</odoo>

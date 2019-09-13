@@ -50,6 +50,7 @@
         'views/correspondence_view.xml',
         'views/import_letters_history_view.xml',
         'views/correspondence_template_view.xml',
+        'views/correspondence_default_template_view.xml',
         'views/correspondence_template_crosscheck_view.xml',
         'views/import_review_view.xml',
         'views/download_letters_view.xml',

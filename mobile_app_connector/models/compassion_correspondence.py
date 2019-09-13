@@ -144,12 +144,14 @@ class CompassionCorrespondence(models.Model):
             self._get_required_param('selected-letter-id', other_params)
         if template_id == '0':
             # write a card -> default template
-            template_id = '2'
+            template_id = str(self.env['correspondence.default.template'].
+                              search([('name', '=', 'Default mobile template')
+                                      ]).mapped('default_template_id').id)
         file = other_params.get('file_upl')
         file_extension = other_params.get('path_info_extension')
         gen = self.env['correspondence.s2b.generator'].sudo().create({
             'name': 'app',
-            'selection_domain': "[('child_id', '=', " + child_id + ")]",
+            'selection_domain': "[('child_id', '=', '" + child_id + "')]",
             'body_html': body_html,
             's2b_template_id': template_id,
         })
@@ -199,7 +201,9 @@ class CompassionCorrespondence(models.Model):
         # iOS and Android do not return the same format
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = '2'
+            template_id = str(self.env['correspondence.default.template'].
+                              search([('name', '=', 'Default mobile template')
+                                      ]).mapped('default_template_id').id)
         child_id = self._get_required_param('Need', params)
         if isinstance(child_id, list):
             child_id = child_id[0]

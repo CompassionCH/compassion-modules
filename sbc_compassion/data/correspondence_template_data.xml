@@ -1,5 +1,10 @@
 <odoo>
     <data>
+        <record id="default_template_id" model="correspondence.default.template">
+            <field name="name">Default mobile template</field>
+            <field name="default_template_id" eval="ref('b2s_l2')"/>
+        </record>
+
     <!-- Templates -->
         <record id="default_template" model="correspondence.template">
             <field name="name">Default Template</field>
