@@ -281,8 +281,8 @@ if not testing:
                         _("This email is already linked to an account."))
 
                 # Push the email for user creation
-                values['email'] = self._sanitize_email(extra_values[
-                                                           'partner_email'])
+                values['email'] = self._sanitize_email(
+                    extra_values['partner_email'])
 
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
@@ -339,8 +339,8 @@ if not testing:
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
             if self.form_next_url() == '/':  # form submitted
-                partner_email = self._sanitize_email(extra_values[
-                                                         'partner_email'])
+                partner_email = self._sanitize_email(
+                    extra_values['partner_email'])
                 # Find sponsor given the e-mail
                 partner = self.env['res.partner'].sudo().search([
                     ('email', 'ilike', partner_email),
