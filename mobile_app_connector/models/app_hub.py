@@ -380,7 +380,7 @@ class AppHub(models.AbstractModel):
                     not n['SubType'] in spread_group_tiles and
                     diff > 0):
                 percent_to_add = len(spread_group) / (number_tile - 1) + (
-                        bias_factor * 0.01)
+                    bias_factor * 0.01)
                 # We add tiles between two others if we have enough tile to
                 # spread or at random (weighted by the number of tiles and
                 # the probability augmenting of not choosing to add
