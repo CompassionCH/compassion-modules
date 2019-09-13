@@ -51,7 +51,7 @@
     <!-- Add menu for WP Posts -->
     <menuitem id="menu_wp_post_category"
               name="Wordpress Post Categories"
-              parent="menu_mobile_app"
+              parent="menu_mobile_app_wp"
               action="action_wp_post_category"
               groups="sales_team.group_sale_manager"
     />
