@@ -34,10 +34,5 @@ class TemplatePreview(models.TransientModel):
         specific_domain = {
             'res.partner': []
         }
-        domain = specific_domain.get(model) or [('partner_id', '!=', False)]
+        domain = specific_domain.get(model, [('partner_id', '!=', False)])
         return model + ',' + str(self.env[model].search(domain, limit=1).id)
-
-    @api.onchange('res_id')
-    @api.multi
-    def on_change_res_id(self):
-        return super(TemplatePreview, self).on_change_res_id()
