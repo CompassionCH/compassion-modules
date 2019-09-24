@@ -9,6 +9,7 @@
 ##############################################################################
 import logging
 import random
+from collections import defaultdict
 
 from ..mappings.wp_post_mapping import WPPostMapping
 from odoo import api, models
@@ -212,12 +213,14 @@ class AppHub(models.AbstractModel):
 
         We divide the tiles in three group: promoted, fixed and the rest.
 
-        The promoted group will appear first and is constitued of new letters
+        The promoted group will appear first and is constituted of new letters
         and a few other tiles. This can be tweaked in the recent_content dict.
 
         The fixed group has all the children tiles that we always what to be
         displayed not too far down. We take all the tiles of a type listed in
         fixed group tiles.
+
+        The spread group is evenly spread across all messages.
 
         The rest group has all the tile remaining.
 
@@ -344,21 +347,16 @@ class AppHub(models.AbstractModel):
 
         # Spread tiles across the hub:
         group_by = 'SubType'
-        possible_subtype = {}
-        tile_grouped = {}
-        number_spread_tile = 0
+        possible_subtype = defaultdict(int)
+        tile_grouped = defaultdict(list)
+        number_spread_tile = len(spread_group)
         number_tile = len([m for m in messages if m['SortOrder'] >= 2000 and
                            not m['SubType'] in spread_group_tiles])
 
         # First we classify the tile by subtype for easier use afterwards
         for tile in spread_group:
-            if tile[group_by] in possible_subtype:
-                possible_subtype[tile[group_by]] += 1
-                tile_grouped[tile[group_by]].append(tile)
-            else:
-                possible_subtype[tile[group_by]] = 1
-                tile_grouped[tile[group_by]] = [tile]
-            number_spread_tile += 1
+            possible_subtype[tile[group_by]] += 1
+            tile_grouped[tile[group_by]].append(tile)
 
         # We shuffle the tile to not have the same order of display every time
         for sub_group in tile_grouped.values():
@@ -411,7 +409,7 @@ class AppHub(models.AbstractModel):
         # back to back
         number_tile_type = {}
         for k, v in possible_subtype.iteritems():
-            number_tile_type[k] = max(1, v // number_tile)
+            number_tile_type[k] = max(1, v // (number_tile or 1))
 
         # We add the remaining tiles to the end of the hub
         while number_spread_tile > 0:
