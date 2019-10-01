@@ -410,7 +410,9 @@ class CompassionChild(models.Model):
         :return: True
         """
         self.ensure_one()
-        if self.us_grade_level and not self.education_level:
+        if self.us_grade_level and \
+                (not self.education_level
+                 or self.education_level == 'Not Enrolled'):
             grade_mapping = {
                 'P': 'Preschool',
                 'K': 'Preschool',
