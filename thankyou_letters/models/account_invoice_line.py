@@ -9,7 +9,10 @@
 #
 ##############################################################################
 
+import logging
 from odoo import models, api
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountInvoiceLine(models.Model):
@@ -58,18 +61,27 @@ class AccountInvoiceLine(models.Model):
         if existing_comm:
             invoice_lines = existing_comm.get_objects() | invoice_lines
 
-        config = invoice_lines.mapped('product_id.thankyou_config')\
-            or invoice_lines.get_thankyou_config()
+        communication_configs = invoice_lines.mapped('product_id.partner_communication_config')
+        if len(communication_configs) == 1:
+            communication_config = communication_configs[0]
+        else:
+            _logger.warning("%s thank you config found, falling back to the default", len(communication_configs))
+            communication_config = invoice_lines.get_default_thankyou_config()
+
+        total_donation_amount = sum(invoice_lines.mapped('price_subtotal'))
+        thankyou_config = self.env['thankyou.config'].search([]).for_donation_amount(total_donation_amount)
+
+        send_mode, auto_mode = thankyou_config.build_inform_mode(partner)
         comm_vals = {
             'partner_id': partner.id,
-            'config_id': config.id,
+            'config_id': communication_config.id,
             'object_ids': invoice_lines.ids,
-            'need_call': config.need_call,
+            'need_call': communication_config.need_call,
             'print_subject': False,
+            'user_id': thankyou_config.thanker_user.id,
+            'send_mode': send_mode,
+            'auto_send': auto_mode,
         }
-        send_mode = config.get_inform_mode(partner)
-        comm_vals['send_mode'] = send_mode[0]
-        comm_vals['auto_send'] = send_mode[1]
         success_stories = invoice_lines.mapped('product_id.success_story_id')
         if success_stories:
             existing_comm = existing_comm.with_context(
@@ -85,28 +97,9 @@ class AccountInvoiceLine(models.Model):
         })
 
     @api.multi
-    def get_thankyou_config(self):
+    def get_default_thankyou_config(self):
         """
-        Get how we should thank the selected invoice lines
-
-            - small: < 100 CHF (or put setting thankyou_letters.small)
-            - standard: 100 - 999 CHF (or put setting
-                                       thankyou_letters.standard)
-            - large: > 1000 CHF (or put setting thankyou_letters.large)
+        Returns the default communication configuration regardless of the donation amount.
         :return: partner.communication.config record
         """
-        small = self.env.ref('thankyou_letters.config_thankyou_small')
-        standard = self.env.ref('thankyou_letters.config_thankyou_standard')
-        large = self.env.ref('thankyou_letters.config_thankyou_large')
-
-        total_amount = sum(self.mapped('price_subtotal'))
-        settings = self.env['ir.config_parameter']
-        if total_amount < int(settings.get_param('thankyou_letters.small',
-                                                 100)):
-            config = small
-        elif total_amount < int(settings.get_param('thankyou_letters.small',
-                                                   1000)):
-            config = standard
-        else:
-            config = large
-        return config
+        return self.env.ref('thankyou_letters.config_thankyou_standard')

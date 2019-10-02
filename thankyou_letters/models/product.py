@@ -14,7 +14,7 @@ from odoo import models, fields
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    thankyou_config = fields.Many2one(
+    partner_communication_config = fields.Many2one(
         'partner.communication.config', 'Thank you config')
 
     thanks_name = fields.Char(translate=True)

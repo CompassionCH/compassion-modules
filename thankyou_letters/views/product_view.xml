@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <record id="    " model="ir.ui.view">
+        <record id="product_view" model="ir.ui.view">
             <field name="name">product.compassion.form</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
@@ -11,7 +11,7 @@
                     <field name="requires_thankyou"/>
                     <field name="thanks_name"/>
                     <field name="success_story_id"/>
-                    <field name="thankyou_config"/>
+                    <field name="partner_communication_config"/>
                 </field>
             </field>
         </record>

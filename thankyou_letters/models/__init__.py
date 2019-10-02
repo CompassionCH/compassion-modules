@@ -15,3 +15,4 @@ from . import res_partner
 from . import partner_communication
 from . import product
 from . import success_story
+from . import thank_you_config
