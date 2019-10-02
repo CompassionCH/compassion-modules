@@ -360,7 +360,8 @@ if not testing:
                 # partner is not sponsoring a child (but answered yes (form))
                 if not partner or len(partner) > 1:
                     email_template = self.env.ref(
-                        'mobile_app_connector.email_template_user_not_found')
+                        'mobile_app_connector.email_template_user_not_found')\
+                        .sudo()
                     link_text = _("Click here to send the template email "
                                   "request.")
                     to = email_template.email_to
