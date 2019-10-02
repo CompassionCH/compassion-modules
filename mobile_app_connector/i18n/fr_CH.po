@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-01 11:37+0000\n"
-"PO-Revision-Date: 2019-10-01 14:58+0200\n"
+"POT-Creation-Date: 2019-10-02 10:05+0000\n"
+"PO-Revision-Date: 2019-10-02 12:09+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -950,7 +950,7 @@ msgid "Choose private if the sponsor must be logged in to see the tile"
 msgstr "Choose private if the sponsor must be logged in to see the tile"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:359
+#: code:addons/mobile_app_connector/forms/registration_form.py:364
 #, python-format
 msgid "Click here to send the template email request."
 msgstr "Cliquez ici pour envoyer une demande de création de compte."
@@ -1037,7 +1037,6 @@ msgstr "Decrease order weight to display tiles above others"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_default_s2b_template_id
-#| msgid "Default title"
 msgid "Default S2B template"
 msgstr "Modèle S2B par défaut"
 
@@ -1196,7 +1195,6 @@ msgstr "Find help"
 
 #. module: mobile_app_connector
 #: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_firebase_registration
-#| msgid "Mobile app account registration"
 msgid "Firebase registrations"
 msgstr "Firebase registrations"
 
@@ -2087,8 +2085,8 @@ msgstr "This defines how to process related data"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:99
-#: code:addons/mobile_app_connector/forms/registration_form.py:281
-#: code:addons/mobile_app_connector/forms/registration_form.py:354
+#: code:addons/mobile_app_connector/forms/registration_form.py:285
+#: code:addons/mobile_app_connector/forms/registration_form.py:359
 #, python-format
 msgid "This email is already linked to an account."
 msgstr "Cet e-mail est déjà utilisé."
@@ -2242,7 +2240,7 @@ msgid "Warning"
 msgstr "Avertissement"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:366
+#: code:addons/mobile_app_connector/forms/registration_form.py:371
 #, python-format
 msgid ""
 "We couldn't find your sponsorships. Please contact us for setting up your "
@@ -2293,7 +2291,6 @@ msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_wp
-#| msgid "Wordpress post"
 msgid "Wordpress News"
 msgstr "Wordpress News"
 
@@ -2363,6 +2360,21 @@ msgid "Yes"
 msgstr "Oui"
 
 #. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_registration_success
+msgid ""
+"You have been given access to the Compassion Mobile App.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            You must now setup your password. Please verify "
+"your e-mail address to finalize your registration."
+msgstr ""
+"Votre compte a bien été créé.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            Vous devez à présent définir votre mot de passe. "
+"Merci de vérifier vos e-mails afin de pouvoir finaliser votre inscription."
+
+#. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi7
 msgid "You have not yet paid your sponsorship"
@@ -2381,7 +2393,7 @@ msgid "You're changing ${ctx['objects'].get('his')} life"
 msgstr "Vous changez ${ctx['objects'].get('sa')} vie"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:160
+#: code:addons/mobile_app_connector/forms/registration_form.py:162
 #, python-format
 msgid ""
 "Your account has been successfully created, you will now receive an email to "
@@ -2391,8 +2403,8 @@ msgstr ""
 "finaliser votre inscription."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:243
-#: code:addons/mobile_app_connector/forms/registration_form.py:314
+#: code:addons/mobile_app_connector/forms/registration_form.py:246
+#: code:addons/mobile_app_connector/forms/registration_form.py:318
 #, python-format
 msgid "Your personal data"
 msgstr "Vos données personnelles"
@@ -2462,7 +2474,6 @@ msgstr "mobile.app.hub"
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_settings
-#| msgid "mobile.app.hub"
 msgid "mobile.app.settings"
 msgstr "mobile.app.settings"
 

@@ -56,7 +56,7 @@ if not testing:
                 step = self.wiz_prev_step()
             if not step:
                 # validate form
-                return '/'
+                return '/registration/confirm'
             return self._wiz_url_for_step(step, main_object=main_object)
 
         def _wiz_base_url(self):
@@ -145,7 +145,8 @@ if not testing:
             """
             super(UserRegistrationForm, self).form_after_create_or_update(
                 values, extra_values)
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id')).exists()
                 partner.set_privacy_statement(origin='mobile_app')
@@ -156,7 +157,8 @@ if not testing:
 
         @property
         def form_msg_success_created(self):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 return _(
                     "Your account has been successfully created, you will now "
                     "receive an email to finalize your registration."
@@ -165,7 +167,8 @@ if not testing:
                 return None
 
         def form_validate(self, request_values=None):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 return super(UserRegistrationForm, self).form_validate(
                     request_values)
             else:  # form not submitted (previous)
@@ -264,7 +267,8 @@ if not testing:
         #                     FORM SUBMISSION METHODS                         #
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
@@ -287,7 +291,7 @@ if not testing:
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
-            if self.form_next_url() == '/':
+            if self.form_next_url() == '/registration/confirm':
                 super(RegistrationNotSupporter, self)._form_create(values)
 
     class RegistrationSupporterForm(models.AbstractModel):
@@ -326,7 +330,7 @@ if not testing:
         def form_next_url(self, main_object=None):
             direction = self.request.form.get('wiz_submit', 'next')
             if direction == 'next':
-                return '/'
+                return '/registration/confirm'
             else:
                 step = self.wiz_prev_step()
             if not step:
@@ -338,7 +342,8 @@ if not testing:
         #                     FORM SUBMISSION METHODS                         #
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 partner_email = self._sanitize_email(
                     extra_values['partner_email'])
                 # Find sponsor given the e-mail
@@ -374,7 +379,7 @@ if not testing:
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
-            if self.form_next_url() == '/':
+            if self.form_next_url() == '/registration/confirm':
                 super(RegistrationSupporterForm, self)._form_create(values)
 
         def _add_mailto(self, link_text, to, subject, body):

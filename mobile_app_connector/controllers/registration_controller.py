@@ -9,7 +9,7 @@
 ##############################################################################
 
 from odoo import http
-from odoo.http import Controller
+from odoo.http import Controller, request
 
 from odoo.addons.cms_form.controllers.main import WizardFormControllerMixin
 
@@ -25,3 +25,9 @@ class RegistrationController(Controller, WizardFormControllerMixin):
         """
         return self.make_response(
             "cms.form.res.users", model_id=model_id, **kw)
+
+    @http.route('/registration/confirm', type='http', auth='public',
+                website=True)
+    def registration_confirm(self, **kw):
+        return request.render(
+            'mobile_app_connector.mobile_registration_success', {})
