@@ -354,7 +354,6 @@ if not testing:
                         _("This email is already linked to an account."))
                 # partner is not sponsoring a child (but answered yes (form))
                 if not partner or len(partner) > 1:
-                    # TODO AP-102 :Ask child ref to try to get a match
                     email_template = self.env.ref(
                         'mobile_app_connector.email_template_user_not_found')
                     link_text = _("Click here to send the template email "
@@ -381,6 +380,6 @@ if not testing:
         def _add_mailto(self, link_text, to, subject, body):
             subject_mail = subject.replace(' ', '%20')
             body_mail = body.replace(' ', '%20').replace('\"', '%22').replace(
-                '\\n', '%0D%0A')
+                '<br/>', '%0D%0A')
             return '<a href="mailto:' + to + '?subject=' + subject_mail + \
                    '&amp;body=' + body_mail + '">' + link_text + '</a>'
