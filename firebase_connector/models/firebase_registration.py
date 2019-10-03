@@ -28,6 +28,7 @@ try:
     firebase_app = firebase_admin.initialize_app(
         credential=firebase_credentials)
 except (KeyError, ValueError):
+    firebase_app = None
     if not config.get("test_enable"):
         logging.error("google_application_credentials is not correctly"
                       " configured in odoo.conf")
@@ -80,7 +81,7 @@ class FirebaseRegistration(models.Model):
             logging.error("google_application_credentials is not correctly"
                           "configured in odoo.conf or invalid. Skipping "
                           "sending notifications")
-            return
+            return False
 
         notif = messaging.Notification(title=message_title, body=message_body)
 
@@ -99,3 +100,4 @@ class FirebaseRegistration(models.Model):
                     firebase_id.unlink()
                 else:
                     raise e
+        return True

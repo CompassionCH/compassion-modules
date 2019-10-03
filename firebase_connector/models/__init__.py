@@ -10,3 +10,4 @@
 ##############################################################################
 
 from . import firebase_registration
+from . import firebase_notification
