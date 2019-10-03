@@ -14,7 +14,7 @@ from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.queue_job.job import job, related_action
-from .product import GIFT_REF
+from .product_names import GIFT_REF
 
 logger = logging.getLogger(__name__)
 
@@ -118,3 +118,6 @@ class ContractGroup(models.Model):
             'amount': contract.birthday_invoice})
         gift_wizard.with_context(
             active_ids=contract.id).generate_invoice()
+
+    def _get_gen_states(self):
+        return ['active', 'waiting']

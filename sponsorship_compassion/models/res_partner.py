@@ -209,7 +209,7 @@ class ResPartner(models.Model):
         try:
             ir_model_data = self.env['ir.model.data']
             view_id = ir_model_data.get_object_reference(
-                'sponsorship_compassion',
+                'recurring.contract',
                 'view_invoice_line_partner_tree')[1]
         except ValueError:
             view_id = False

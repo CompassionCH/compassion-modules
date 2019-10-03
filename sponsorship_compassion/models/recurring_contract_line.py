@@ -12,7 +12,7 @@ from odoo import api, fields, models, _
 from lxml import etree
 import os
 
-from .product import SPONSORSHIP_CATEGORY, FUND_CATEGORY
+from .product_names import SPONSORSHIP_CATEGORY, FUND_CATEGORY
 import logging
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)

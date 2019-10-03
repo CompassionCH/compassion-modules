@@ -26,7 +26,7 @@
             <field name="direction">out</field>
             <field name="name">UpsertSponsorship</field>
             <field name="mapping_name">CreateSponsorship</field>
-            <field name="model">recurring.contract</field>
+            <field name="model">sponsorship.compassion</field>
             <field name="description">This will send a Sponsorship to GMC.</field>
             <field name="connect_service">supporters/sponsorships</field>
             <field name="connect_outgoing_wrapper">BeneficiaryCommitmentList</field>
@@ -40,7 +40,7 @@
             <field name="direction">out</field>
             <field name="name">UpdateSponsorship</field>
             <field name="mapping_name">CreateSponsorship</field>
-            <field name="model">recurring.contract</field>
+            <field name="model">sponsorship.compassion</field>
             <field name="description">This will change the supporter of a Sponsorship to GMC. The supporter accounts will be merged.</field>
             <field name="connect_service">supporters/${object.correspondent_id.global_id}/sponsorships/${object.global_id}</field>
             <field name="connect_outgoing_wrapper">CommitmentUpdates</field>
@@ -53,7 +53,7 @@
             <field name="direction">out</field>
             <field name="name">CancelSponsorship</field>
             <field name="mapping_name">CancelSponsorship</field>
-            <field name="model">recurring.contract</field>
+            <field name="model">sponsorship.compassion</field>
             <field name="description">This will cancel a Sponsorship to GMC.</field>
             <field name="connect_service">supporters/sponsorships/cancel</field>
             <field name="connect_outgoing_wrapper">BeneficiaryCommitmentCancellationList</field>
