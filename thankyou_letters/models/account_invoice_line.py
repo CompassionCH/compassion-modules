@@ -61,15 +61,19 @@ class AccountInvoiceLine(models.Model):
         if existing_comm:
             invoice_lines = existing_comm.get_objects() | invoice_lines
 
-        communication_configs = invoice_lines.mapped('product_id.partner_communication_config')
+        communication_configs = invoice_lines.mapped(
+            'product_id.partner_communication_config')
         if len(communication_configs) == 1:
             communication_config = communication_configs[0]
         else:
-            _logger.warning("%s thank you config found, falling back to the default", len(communication_configs))
+            _logger.warning(
+                "%s thank you config found, falling back to the default",
+                len(communication_configs))
             communication_config = invoice_lines.get_default_thankyou_config()
 
         total_donation_amount = sum(invoice_lines.mapped('price_subtotal'))
-        thankyou_config = self.env['thankyou.config'].search([]).for_donation_amount(total_donation_amount)
+        thankyou_config = self.env['thankyou.config'].search(
+            []).for_donation_amount(total_donation_amount)
 
         send_mode, auto_mode = thankyou_config.build_inform_mode(partner)
         comm_vals = {

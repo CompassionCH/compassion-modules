@@ -15,7 +15,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     partner_communication_config = fields.Many2one(
-        'partner.communication.config', 'Thank you config')
+        'partner.communication.config', 'Thank you config', required=False)
 
     thanks_name = fields.Char(translate=True)
     requires_thankyou = fields.Boolean(
