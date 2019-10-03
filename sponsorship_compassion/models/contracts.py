@@ -313,7 +313,7 @@ class SponsorshipContract(models.Model):
             else:
                 recurring_value = contract.group_id.recurring_value
                 recurring_unit = contract.group_id.recurring_unit
-            frequency = "{0} {1}".format(recurring_value, recurring_unit)
+            frequency = f"{recurring_value} {recurring_unit}"
             if frequency in frequencies:
                 frequency = frequencies[frequency]
             else:
@@ -325,23 +325,22 @@ class SponsorshipContract(models.Model):
         """This is a query returning the number of months paid for a
         sponsorship."""
         self._cr.execute(
-            "SELECT c.id as contract_id, "
-            "12 * (EXTRACT(year FROM next_invoice_date) - "
-            "      EXTRACT(year FROM current_date))"
-            " + EXTRACT(month FROM c.next_invoice_date) - 1"
-            " - COALESCE(due.total, 0) as paidmonth "
-            "FROM recurring_contract c left join ("
+            f"SELECT c.id as contract_id, "
+            f"12 * (EXTRACT(year FROM next_invoice_date) - "
+            f"      EXTRACT(year FROM current_date))"
+            f" + EXTRACT(month FROM c.next_invoice_date) - 1"
+            f" - COALESCE(due.total, 0) as paidmonth "
+            f"FROM recurring_contract c left join ("
             # Open invoices to find how many months are due
-            "   select contract_id, count(distinct invoice_id) as total "
-            "   from account_invoice_line l join product_product p on "
-            "       l.product_id = p.id "
-            "   where state='open' and "
+            f"   select contract_id, count(distinct invoice_id) as total "
+            f"   from account_invoice_line l join product_product p on "
+            f"       l.product_id = p.id "
+            f"   where state='open' and "
             # Exclude gifts from count
-            "   categ_name != 'Sponsor gifts'"
-            "   group by contract_id"
-            ") due on due.contract_id = c.id "
-            "WHERE c.id = ANY (%s)",
-            (self.ids,)
+            f"   categ_name != 'Sponsor gifts'"
+            f"   group by contract_id"
+            f") due on due.contract_id = c.id "
+            f"WHERE c.id = ANY ({self.ids})"
         )
         res = self._cr.dictfetchall()
         dict_contract_id_paidmonth = {
@@ -506,7 +505,7 @@ class SponsorshipContract(models.Model):
                 child_sponsor_id = contract.child_id.sponsor_id and \
                     contract.child_id.sponsor_id.id
                 if child_sponsor_id == contract.correspondent_id.id:
-                    contract.child_id.signal_workflow('release')
+                    contract.child_id.child_released()
         return super().unlink()
 
     ##########################################################################
@@ -778,13 +777,13 @@ class SponsorshipContract(models.Model):
     def invoice_paid(self, invoice):
         """ Activate contract if it is waiting for payment. """
         activate_contracts = self.filtered(lambda c: c.state == 'waiting')
-        activate_contracts.signal_workflow('contract_active')
+        activate_contracts.contract_active()
 
     @api.multi
     def force_activation(self):
         """ Used to transition sponsorships in active state. """
-        self.signal_workflow('contract_validated')
-        self.signal_workflow('contract_active')
+        self.contract_validated()
+        self.contract_active()
         logger.info("Contracts " + str(self.ids) + " activated.")
         return True
 
@@ -987,12 +986,25 @@ class SponsorshipContract(models.Model):
             query = update_sql
             if contract.child_id and not contract.child_id.is_available:
                 query += ', child_id = NULL'
-            query += " WHERE id = %s"
-            self.env.cr.execute(query, [contract.id])
-            contract.delete_workflow()
-            contract.create_workflow()
-            self.env.invalidate_all()
+            query += f" WHERE id = {contract.id}"
+            self.env.cr.execute(query)
+            self.env.clear()
         return True
+
+    def contract_validated(self):
+        for contract in self:
+
+            type = contract.type
+
+            if contract.state == 'draft':
+                if type == 'SC':
+                    contract.write({
+                        'state': 'active'
+                    })
+                else:
+                    contract.write({
+                        'state': 'waiting'
+                    })
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -1162,7 +1174,7 @@ class SponsorshipContract(models.Model):
             if 'S' in contract.type and contract.child_id and \
                     contract.child_id.id != child_id:
                 # Free the previously selected child
-                contract.child_id.signal_workflow('release')
+                contract.child_id.child_released()
             if 'S' in contract.type:
                 # Mark the selected child as sponsored
                 self.env['compassion.child'].browse(child_id).write(
@@ -1339,7 +1351,7 @@ class SponsorshipContract(models.Model):
             else:
                 invoice.action_invoice_cancel()
                 invoice.action_invoice_draft()
-                invoice.env.invalidate_all()
+                invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_invoice_open()
 
@@ -1368,7 +1380,7 @@ class SponsorshipContract(models.Model):
                 if cancel_invoices:
                     inv_update_ids.update(cancel_invoices.ids)
                     cancel_invoices.action_invoice_draft()
-                    cancel_invoices.env.invalidate_all()
+                    cancel_invoices.env.clear()
                     contract._update_invoice_lines(cancel_invoices)
                 # If no invoices are left in cancel state, we rewind
                 # the next_invoice_date for the contract to generate again

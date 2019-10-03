@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
@@ -23,8 +22,7 @@ class BaseContractCompassionTest(BaseContractTest):
             'type': 'O'
         }
         default_values.update(vals)
-        return super(BaseContractCompassionTest,
-                     self).create_contract(default_values, line_vals)
+        return super().create_contract(default_values, line_vals)
 
     def _pay_invoice(self, invoice):
         bank_journal = self.env['account.journal'].search(
@@ -72,7 +70,7 @@ class TestContractCompassion(BaseContractCompassionTest):
         self.assertEqual(contract.state, 'draft')
 
         # Switching to "waiting for payment" state
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         self.assertEqual(contract.state, 'waiting')
 
         invoices = contract.button_generate_invoices().invoice_ids.sorted(
@@ -95,7 +93,7 @@ class TestContractCompassion(BaseContractCompassionTest):
         # self.assertEqual(invoices[4].state, 'cancel')
         # self.assertEqual(invoices[5].state, 'cancel')
         self.assertEqual(contract.state, 'active')
-        contract.signal_workflow('contract_terminated')
+        contract.contract_terminated()
         self.assertEqual(contract.state, 'terminated')
 
     def test_contract_compassion_second_scenario(self):
@@ -112,14 +110,14 @@ class TestContractCompassion(BaseContractCompassionTest):
             [{'amount': 200, 'quantity': 3}])
 
         # Switch to "waiting for payment" state
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         invoices = contract.button_generate_invoices().invoice_ids
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, 'open')
         self.assertEqual(invoices[1].state, 'open')
 
         # Cancelling of the contract
-        contract.signal_workflow('contract_terminated')
+        contract.contract_terminated()
         # Force cleaning invoices immediately
         contract._clean_invoices()
         self.assertEqual(contract.state, 'cancelled')
@@ -144,7 +142,7 @@ class TestContractCompassion(BaseContractCompassionTest):
                 'group_id': contract_group.id,
             },
             [{'amount': 60.0, 'quantity': 2}])
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         invoices = contract.button_generate_invoices().invoice_ids
         self.assertEqual(len(invoices), 2)
         self._pay_invoice(invoices[1])
@@ -193,7 +191,7 @@ class TestContractCompassion(BaseContractCompassionTest):
         contract_group2.write({'payment_mode_id': payment_mode_2.id})
         contract_group2.on_change_payment_mode()
         self.assertTrue(contract_group2.bvr_reference)
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         contract.write({'group_id': contract_group2.id})
         contract.on_change_group_id()
         self.assertEqual(

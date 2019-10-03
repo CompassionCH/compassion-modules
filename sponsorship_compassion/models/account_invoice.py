@@ -91,7 +91,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_paid(self):
         """ Call invoice_paid method on related contracts. """
-        res = super(AccountInvoice, self).action_invoice_paid()
+        res = super().action_invoice_paid()
         for invoice in self:
             contracts = invoice.mapped('invoice_line_ids.contract_id')
             contracts.invoice_paid(invoice)
@@ -100,7 +100,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_re_open(self):
         """ Call invoice_unpaid method on related contract. """
-        res = super(AccountInvoice, self).action_invoice_re_open()
+        res = super().action_invoice_re_open()
         for invoice in self:
             contracts = invoice.mapped('invoice_line_ids.contract_id')
             contracts.invoice_unpaid(invoice)
