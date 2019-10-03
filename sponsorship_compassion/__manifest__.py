@@ -34,8 +34,10 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion',              # contract_compassion
+    'depends': ['recurring_contract',               # recurring_contract
+                'utm',
                 'crm',                              # source/addons
+                'child_compassion',                 # child_compassion
                 'account_cancel',                   # source/addons
                 'web_m2x_options',                  # oca_addons/web
                 'account_invoice_split_invoice',    # account_invoice_split_invoice
@@ -57,11 +59,21 @@
         'views/end_contract_wizard_view.xml',
         'views/download_child_pictures_view.xml',
         'views/project_view.xml',
+        'views/activate_contract_view.xml',
+        'views/contract_group_view.xml',
+        'views/contract_origin_view.xml',
+        'views/contract_view.xml',
+        'views/project_view.xml',
+        'views/utm_medium_view.xml',
         'workflow/contract_workflow.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',
         'data/end_reasons.xml',
         'data/partner_category_data.xml',
+        'data/friday_invoicer_cron.xml',
+        'data/product.xml',
+        'data/sponsorship_product.xml',
+        'data/utm_data.xml',
         'security/ir.model.access.csv'
     ],
     'demo': [

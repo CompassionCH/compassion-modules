@@ -2,7 +2,7 @@
 <odoo>
     <record id="view_sponsorship_contract_form_compassion" model="ir.ui.view">
         <field name="name">sponsorship.contract.compassion.form</field>
-        <field name="model">recurring.contract</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="inherit_id" ref="contract_compassion.view_recurring_contract_form_compassion"/>
         <field name="arch" type="xml">
             <!-- Add correspondant field for sponsorships -->
@@ -82,7 +82,7 @@
 
     <record id="view_compassion_sponsorship_pivot" model="ir.ui.view">
         <field name="name">compassion.sponsorship.line.pivot</field>
-        <field name="model">recurring.contract</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="arch" type="xml">
             <pivot>
                 <field name="start_date" interval="week" type="col"/>
@@ -93,7 +93,7 @@
 
     <record id="view_compassion_sponsorship_graph" model="ir.ui.view">
         <field name="name">compassion.sponsorship.line.graph</field>
-        <field name="model">recurring.contract</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="arch" type="xml">
             <graph>
                 <field name="start_date" interval="week" type="col"/>
@@ -103,8 +103,8 @@
     </record>
 
     <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
-        <field name="name">recurring.contract.graph.select</field>
-        <field name="model">recurring.contract</field>
+        <field name="name">sponsorship.compassion.graph.select</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
         <field name="arch" type="xml">
             <filter name="finished" position="after">
@@ -119,7 +119,7 @@
     <record model="ir.ui.view"
             id="view_compassion_sponsorship_kanban">
         <field name="name">compassion.sponsorship.kanban</field>
-        <field name="model">recurring.contract</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="type">kanban</field>
         <field name="arch"
                type="xml">
@@ -165,7 +165,7 @@
     <record id="action_sponsorship_contract" model="ir.actions.act_window">
         <field name="name">Sponsorships</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">recurring.contract</field>
+        <field name="res_model">sponsorship.compassion</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
@@ -196,7 +196,7 @@
     <!-- Add timelineview use with the partner link  -->
     <record id="view_partner_sponsorship_timeline_view" model="ir.ui.view">
         <field name="name">Timeline</field>
-        <field name="model">recurring.contract</field>
+        <field name="model">sponsorship.compassion</field>
         <field name="type">timeline</field>
         <field name="arch" type="xml">
             <timeline date_start="activation_date"

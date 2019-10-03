@@ -24,7 +24,7 @@
     <!-- Generate Gift -->
     <act_window id="action_generate_gift"
             key2="client_action_multi" name="Generate Gift"
-            res_model="generate.gift.wizard" src_model="recurring.contract"
+            res_model="generate.gift.wizard" src_model="sponsorship.compassion"
             view_mode="form" target="new" view_type="form"
             />
 </odoo>
