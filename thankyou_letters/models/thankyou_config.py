@@ -17,8 +17,8 @@ class ThankYouConfig(models.Model):
     _order = "min_donation_amount"
 
     min_donation_amount = fields.Integer("Minimum Donation Amount",
-                                         help="Amount in the local currency to "
-                                              "apply the configuration")
+                                         help="Amount in the local currency "
+                                              "to apply the configuration")
     send_mode = fields.Selection('get_send_modes', required=True)
     thanker_user = fields.Many2one('res.users', string='Thanker')
 
@@ -26,8 +26,8 @@ class ThankYouConfig(models.Model):
     def for_donation_amount(self, total_amount):
         assert (len(
             self) > 0), 'There should be at least one Thank you configuration.'
-        # Cover the case where the total_amount is smaller that all min_donation
-        # amount.
+        # Cover the case where the total_amount is smaller that all min_
+        # donation amount.
         config = self[0]
         for thankyou_config in self:
             if total_amount >= thankyou_config.min_donation_amount:

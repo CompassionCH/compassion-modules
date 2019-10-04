@@ -183,10 +183,13 @@ class CommunicationConfig(models.Model):
 
     def get_inform_mode(self, partner):
         self.ensure_one()
-        return self.build_inform_mode(partner, self.send_mode, self.print_if_not_email, self.send_mode_pref_field)
+        return self.build_inform_mode(partner, self.send_mode,
+                                      self.print_if_not_email,
+                                      self.send_mode_pref_field)
 
     @api.model
-    def build_inform_mode(self, partner, communication_send_mode, print_if_not_email, send_mode_pref_field):
+    def build_inform_mode(self, partner, communication_send_mode,
+                          print_if_not_email, send_mode_pref_field):
         """ Returns how the partner should be informed for the given
         communication (digital, physical or False).
         It makes the product of the communication preference and the partner
@@ -259,9 +262,12 @@ class CommunicationConfig(models.Model):
                 digital_only = 'digital_only' in partner_mode
             else:
                 auto_mode = (
-                    'auto' in partner_mode and 'auto' in communication_send_mode or
-                    'auto' in partner_mode and communication_send_mode == 'both' or
-                    'auto' in communication_send_mode and partner_mode == 'both'
+                    'auto' in partner_mode
+                    and 'auto' in communication_send_mode
+                    or 'auto' in partner_mode
+                    and communication_send_mode == 'both'
+                    or 'auto' in communication_send_mode
+                    and partner_mode == 'both'
                 )
                 comm_mode = communication_send_mode.replace('auto_', '')
                 partner_mode = partner_mode.replace('auto_', '')

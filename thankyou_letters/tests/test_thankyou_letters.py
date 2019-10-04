@@ -7,9 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from odoo.tests import SavepointCase
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 

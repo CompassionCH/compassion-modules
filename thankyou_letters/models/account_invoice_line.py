@@ -103,7 +103,8 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def get_default_thankyou_config(self):
         """
-        Returns the default communication configuration regardless of the donation amount.
+        Returns the default communication configuration regardless of
+        the donation amount.
         :return: partner.communication.config record
         """
         return self.env.ref('thankyou_letters.config_thankyou_standard')
