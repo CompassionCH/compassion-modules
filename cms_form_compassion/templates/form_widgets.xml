@@ -70,6 +70,18 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         </div>
     </template>
 
+    <template id="field_widget_image_simple_required" name="CMS form required image simple for modal">
+        <div class="image-widget-wrapper">
+            <input
+                    type="file" accept="image/*"
+                    t-att-id="widget.w_fname"
+                    t-att-name="widget.w_fname"
+                    class="form-control"
+                    t-att-required="1"
+            />
+        </div>
+    </template>
+
     <template id="field_widget_document" name="CMS form document">
         <div class="image-widget-wrapper">
             <input
