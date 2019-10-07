@@ -52,8 +52,10 @@ class GetPartnerMessage(models.Model):
                 'firebaseId': firebase_id,
             })
         else:
-            reg.receive_child_notification = json_data.get('appchild') == '1'
-            reg.receive_general_notification = json_data.get('appinfo') == '1'
+            n_child = json_data.get('appchild')
+            n_info = json_data.get('appinfo')
+            reg.receive_child_notification = n_child == '1' or (isinstance(n_child, bool) and n_child)
+            reg.receive_general_notification = n_info == '1' or (isinstance(n_info, bool) and n_info)
 
         return {
             "UpdateRecordingContactResult":
