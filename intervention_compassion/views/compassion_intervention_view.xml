@@ -68,6 +68,7 @@
                         <group>
                             <field name="funding_status"/>
                             <field name="intervention_status"/>
+                            <field name='company_id'/>
                             <field name="funding_global_partners"/>
                             <field name="service_level"/>
                             <field name="cancel_reason"/>

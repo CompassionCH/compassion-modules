@@ -39,16 +39,44 @@ class WordpressPost(models.Model):
         ('agendas', 'Agenda'),
         ('download', 'Download')
     ])
-    category_id = fields.Many2one('wp.post.category', 'Category')
+    category_ids = fields.Many2many('wp.post.category', string='Categories')
+
     lang = fields.Selection('select_lang', 'Language', required=True)
     display_on_hub = fields.Boolean(
         default=True, help='Deactivate in order to hide tiles in App.')
     view_order = fields.Integer('View order', required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
+    tile_type = fields.Selection([
+        ('Prayer', 'Prayer'),
+        ('Story', 'Story')
+    ], compute='_compute_tile_type', inverse='_inverse_tile_type', store=True)
+    tile_subtype = fields.Selection([
+        ('PR2', 'PR2'),
+        ('ST_T1', 'ST_T1'),
+    ], compute='_compute_tile_subtype')
 
     _sql_constraints = [
         ('wp_unique', 'unique(wp_id)', 'This post already exists')
     ]
+
+    @api.multi
+    @api.depends('category_ids', 'category_ids.default_tile_type')
+    def _compute_tile_type(self):
+        for post in self:
+            default_types = post.category_ids.mapped('default_tile_type')
+            if default_types and not post.tile_type:
+                post.tile_type = default_types[0]
+
+    @api.multi
+    def _compute_tile_subtype(self):
+        for post in self:
+            post.tile_subtype = 'PR2' if post.tile_type == 'Prayer' \
+                else 'ST_T1'
+
+    @api.multi
+    def _inverse_tile_type(self):
+        # Simply allows to write in field
+        return True
 
     @api.model
     def select_lang(self):
@@ -134,24 +162,28 @@ class WordpressPost(models.Model):
                             _logger.warning('WP Post ID %s has no image',
                                             str(post_id))
                         # Fetch post category
+                        categories_id = []
                         try:
                             category_data = [
                                 d for d in post_data['_links']['wp:term']
                                 if d['taxonomy'] == 'category'
                             ][0]
                             category_json_url = category_data['href']
-                            category_name = requests.get(
-                                category_json_url).json()[0]['name']
-                            category = category_obj.search([
-                                ('name', '=', category_name)])
-                            if not category:
-                                category = category_obj.create({
-                                    'name': category_name
-                                })
+
+                            categories_request = requests.get(
+                                category_json_url).json()
+                            for c in categories_request:
+                                category = category_obj.search([
+                                    ('name', '=', c['name'])])
+                                if not category:
+                                    category = category_obj.create({
+                                        'name': c['name']
+                                    })
+                                categories_id.append(category.id)
+
                         except (IndexError, KeyError):
                             _logger.info('WP Post ID %s has no category.',
                                          str(post_id))
-                            category = category_obj
                         # Cache new post in database
                         self.create({
                             'name': h.unescape(post_data['title']['rendered']),
@@ -160,7 +192,7 @@ class WordpressPost(models.Model):
                             'url': post_data['link'],
                             'image_url': image_url,
                             'post_type': post_type,
-                            'category_id': category.id,
+                            'category_ids': [(6, 0, categories_id)],
                             'lang': lang.code,
                             'display_on_hub': not content_empty
                         })

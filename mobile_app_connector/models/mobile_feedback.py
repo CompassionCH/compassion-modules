@@ -30,8 +30,9 @@ class MobileFeedback(models.Model):
     improve_app = fields.Char(readonly=True)
     source = fields.Selection([
         ('Android', 'Android'),
-        ('IOS', 'IOS')], readonly=True)
+        ('iOS', 'iOS')], readonly=True)
     star = fields.Selection([
+        ('0.0', 'None'),
         ('1.0', 'Disappointing'),
         ('2.0', 'Well'),
         ('3.0', 'Very well'),

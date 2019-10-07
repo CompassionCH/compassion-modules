@@ -28,7 +28,7 @@ class FAQ(models.AbstractModel):
     _name = 'frequently.asked.questions'
     _description = 'Mobile App FAQ'
 
-    def mobile_get_faq_json(self, language, **params):
+    def mobile_get_faq(self, language, **params):
         """
         Method that takes care of retrieving the FAQ from the website and
         returns it in a JSON format. The method should be called directly
@@ -40,9 +40,9 @@ class FAQ(models.AbstractModel):
         :return: a JSON formatted dictionary containing all the questions and
         answers of the FAQ.
         """
-        if language == 'fr_CH':
+        if language == 'fr':
             faq_link = 'https://compassion.ch/questions-frequentes/'
-        elif language == 'it_IT':
+        elif language == 'it':
             faq_link = 'https://compassion.ch/it/domande-frequenti/'
         else:
             faq_link = 'https://compassion.ch/de/haeufig-gestellte-fragen/'

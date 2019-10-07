@@ -141,7 +141,7 @@ class OnrampMapping(object):
             value = odoo_object
             for field in field_name.split('.'):
                 # Field One2Many
-                if field_name.endswith('ids'):
+                if field_name.endswith('_ids'):
                     value = list()
                     if len(field_mapping) == 2:
                         sub_mapping = new_onramp_mapping(

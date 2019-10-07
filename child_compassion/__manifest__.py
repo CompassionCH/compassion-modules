@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Children',
-    'version': '10.0.1.3.0',
+    'version': '10.0.1.4.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -56,6 +56,7 @@
         'security/ir.model.access.csv',
         'views/child_compassion_view.xml',
         'views/field_office_view.xml',
+        'views/field_office_learning_view.xml',
         'views/child_holds_view.xml',
         'views/global_childpool_view.xml',
         'views/project_compassion_view.xml',
@@ -79,6 +80,7 @@
         'data/connect.month.csv',
         'data/gmc_action.xml',
         'data/compassion.field.office.csv',
+        'data/field.office.learning.csv',
         'data/global_partner.xml',
         'data/lang_data.xml',
         'data/fcp.involvement.csv',

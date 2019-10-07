@@ -90,3 +90,5 @@ access_demand_planning,Full access on demand_planning,model_demand_planning,sale
 read_access_demand_planning,Read only access on demand_planning,model_demand_planning,group_sponsorship,1,0,0,0
 access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_weekly_demand,sales_team.group_sale_manager,1,1,1,1
 read_access_demand_weekly_demand,Read only access on demand_weekly_demand,model_demand_weekly_demand,group_sponsorship,1,0,0,0
+access_learning_info,access_user_learning_info,model_field_office_learning,group_sponsorship,1,0,0,0
+access_admin_learning_info,access_admin_learning_info,model_field_office_learning,message_center_compassion.group_gmc,1,1,1,1
