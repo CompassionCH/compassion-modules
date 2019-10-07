@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import api, models, fields
+from functools import reduce
 
 
 class Email(models.Model):

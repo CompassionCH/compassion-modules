@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,16 +29,15 @@
 # pylint: disable=C8101
 {
     'name': 'Partner Communication',
-    'version': '10.0.1.1.0',
+    'version': '11.0.2.1.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
-                'compassion_dashboard', 'queue_job', 'utm', 'web_ckeditor4',
-                'report'],
+                'queue_job', 'utm', 'partner_firstname'],
     'external_dependencies': {
-        'python': ['phonenumbers', 'pyPdf']
+        'python': ['phonenumbers', 'PyPDF2']
     },
     'data': [
         'security/ir.model.access.csv',
@@ -59,6 +57,6 @@
     ],
     'qweb': ["static/src/xml/communication_dashboard.xml"],
     'demo': ["demo/demo_data.xml"],
-    'installable': False,
+    'installable': True,
     'auto_install': False
 }

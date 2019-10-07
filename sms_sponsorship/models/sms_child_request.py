@@ -29,7 +29,7 @@ test_mode = config.get('test_enable')
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
-    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -57,7 +57,7 @@ class CommunicationDefaults(models.AbstractModel):
              "an e-mail address"
     )
     report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
+        'ir.actions.report', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
 
