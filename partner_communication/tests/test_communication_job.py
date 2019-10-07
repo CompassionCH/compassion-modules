@@ -57,9 +57,9 @@ class TestCommunicationJob(TransactionCase):
 
         call_answer = comm.call()
         self.assertEqual(call_answer['context']['phone_number'],
-                         '+32\xa010\xa058\xa085\xa058')
+                         u'+32\xa010\xa058\xa085\xa058')
         self.assertEqual(call_answer['context']['call_name'],
-                         'Default communication')
+                         u'Default communication')
         self.assertEqual(call_answer['context']['click2dial_id'], 8)
 
     def test_config(self):
