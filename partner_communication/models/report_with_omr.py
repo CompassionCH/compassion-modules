@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # © 2014-2016 Camptocamp SA
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-import StringIO
+from io import StringIO
 import logging
 
 from odoo import models, api
@@ -16,7 +15,7 @@ except ImportError:
 
 class OmrAwareReport(models.Model):
 
-    _inherit = 'report'
+    _inherit = 'ir.actions.report'
 
     @api.model
     def get_pdf(self, docids, report_name, html=None, data=None):
@@ -37,12 +36,12 @@ class OmrAwareReport(models.Model):
                         )
                         job_data = job.add_omr_marks(job_data,
                                                      is_latest_document)
-                    pdf_buffer = StringIO.StringIO()
+                    pdf_buffer = StringIO()
                     pdf_buffer.write(job_data)
                     job_pdf = PdfFileReader(pdf_buffer)
                     for i in range(0, job_pdf.getNumPages()):
                         output.addPage(job_pdf.getPage(i))
-                out_buffer = StringIO.StringIO()
+                out_buffer = StringIO()
                 output.write(out_buffer)
                 res = out_buffer.getvalue()
                 return res

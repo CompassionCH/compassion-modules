@@ -153,30 +153,18 @@
     <record id="send_action" model="ir.actions.server">
         <field name="name">Send communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
         <field name="code">records.send()</field>
-    </record>
-
-    <record id="send_action_menu" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'partner.communication.job'" name="model"/>
-        <field name="name">Send communication</field>
-        <field eval="'ir.actions.server,%d'%send_action" name="value"/>
     </record>
 
     <!-- Refresh communication actions -->
     <record id="refresh_action" model="ir.actions.server">
         <field name="name">Refresh communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
         <field name="code">records.refresh_text(refresh_uid=True)</field>
-    </record>
-
-    <record id="refresh_action_menu" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'partner.communication.job'" name="model"/>
-        <field name="name">Refresh communication</field>
-        <field eval="'ir.actions.server,%d'%refresh_action" name="value"/>
     </record>
 
     <menuitem name="Partner Communication" id="menu_communication" parent="contacts.menu_contacts" sequence="1"/>
