@@ -78,7 +78,7 @@
     <!-- Add menu for app banners -->
     <menuitem id="menu_mobile_app_banner"
               name="Banners"
-              parent="menu_mobile_app"
+              parent="menu_mobile_app_hub"
               action="action_mobile_app_banner"/>
 
 </odoo>

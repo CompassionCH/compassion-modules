@@ -59,6 +59,7 @@ class TestCommunicationJob(TransactionCase):
         self.assertEqual(self.partner.communication_count, num_job - 1)
 
         call_answer = comm.call()
+
         self.assertUTF8Equal(call_answer['context']['phone_number'],
                              u'+32\xa010\xa058\xa085\xa058')
         self.assertUTF8Equal(call_answer['context']['call_name'],

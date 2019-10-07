@@ -129,7 +129,7 @@ class CompassionCorrespondence(models.Model):
         :param _:  not used by the controller
         :param other_params: A dictionary containing at least:
                              - 'letter-copy': the HTML text
-                             - 'selected_child': the child ID
+                             - 'selected_child': the child local id
                              - 'selected-letter-id': the template ID, 0 if we
                                                      take the default one.
                              - 'file_upl': the image
@@ -139,19 +139,32 @@ class CompassionCorrespondence(models.Model):
         body = self._get_required_param('letter-copy', other_params)
         body_html = '<div id="first_box">' + plaintext2html(body)
         # supporter_id = self._get_required_param('sup-id', other_params)
-        child_id = self._get_required_param('selected-child', other_params)
-        template_id = \
-            self._get_required_param('selected-letter-id', other_params)
-        if template_id == '0':
+        selected_child = self._get_required_param(
+            'selected-child', other_params)
+        # iOS sends the childID, while Android sends the local_id!
+        # We try to convert the integer in case the request is from iOS
+        # (which should be much less probable, who has iOS these days?)
+        try:
+            child_id = int(selected_child)
+            child = self.env['compassion.child'].browse(child_id)
+            child_local_id = child.local_id
+        except ValueError:
+            child_local_id = selected_child
+        template_id = self._get_required_param(
+            'selected-letter-id', other_params)
+        # Another difference between iOS/Android (string or integer)
+        if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = '2'
+            template_id = self.env['mobile.app.settings'].get_param(
+                'default_s2b_template_id')
         file = other_params.get('file_upl')
         file_extension = other_params.get('path_info_extension')
         gen = self.env['correspondence.s2b.generator'].sudo().create({
-            'name': 'app',
-            'selection_domain': "[('child_id', '=', " + child_id + ")]",
+            'name': 'app-' + child_local_id,
+            'selection_domain':
+            "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body_html': body_html,
-            's2b_template_id': template_id,
+            's2b_template_id': int(template_id),
         })
         if file:
             body_html += "<br><div id='included-img' style='width: 100%;'>" \
@@ -199,20 +212,24 @@ class CompassionCorrespondence(models.Model):
         # iOS and Android do not return the same format
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = '2'
+            template_id = self.env['mobile.app.settings'].get_param(
+                'default_s2b_template_id')
         child_id = self._get_required_param('Need', params)
         if isinstance(child_id, list):
             child_id = child_id[0]
         child = \
             self.env['compassion.child'].browse(int(child_id))
         gen = self.env['correspondence.s2b.generator'].sudo().search([
-            ('name', '=', 'app'),
-            ('selection_domain', '=',
-             "[('child_id', '=', '" + child.local_id + "')]"),
+            ('name', '=', 'app-' + child.local_id),
+            ('sponsorship_ids.child_id', '=', child.id),
             ('s2b_template_id', '=', int(template_id)),
             ('state', '=', 'preview')
         ], limit=1, order='create_date DESC')
         gen.generate_letters_job()
+        gen.write({
+            'state': 'done',
+            'date': fields.Date.today(),
+        })
         return {
             'DbId': gen.letter_ids.mapped('id'),
         }
