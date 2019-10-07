@@ -541,7 +541,7 @@ class CommunicationJob(models.Model):
             # only print omr marks on pair pages (recto)
             if page_number % 2 == 0:
                 is_latest_page = is_latest_document and \
-                    page_number == latest_omr_page
+                                 page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
                 omr_layer = self._build_omr_layer(marks)
                 page.mergePage(omr_layer)
