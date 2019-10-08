@@ -7,6 +7,7 @@
 #
 ##############################################################################
 from openupgradelib import openupgrade
+from sponsorship_compassion.tools import load_mappings
 
 
 @openupgrade.migrate(use_env=True)
@@ -14,4 +15,9 @@ def migrate(env, version):
     if not version:
         return
 
-    env['import.json.mapping'].python_install_mapping()
+    path = 'sponsorship_compassion/static/mappings/'
+    files = ['anonymize_partner_mapping.json',
+             'sponsorship_base_mapping.json',
+             'upsert_mapping.json']
+
+    load_mappings.load_mapping_files(env.cr, path, files)
