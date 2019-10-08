@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
@@ -32,8 +31,8 @@ class AccountInvoice(models.Model):
         for invoice in self:
             children = invoice.mapped('invoice_line_ids.contract_id.child_id')
             if len(children) > 1:
-                invoice.children = _("{0} children".format(str(len(
-                    children))))
+                num_children = len(children)
+                invoice.children = f"{num_children} children"
             elif children:
                 invoice.children = children.local_id
             else:

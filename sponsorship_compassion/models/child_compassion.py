@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -46,8 +45,8 @@ class ChildCompassion(models.Model):
                 'end_reason_id': depart.id,
                 'end_date': fields.Date.today(),
             })
-            sponsorship.signal_workflow('contract_terminated')
-        super(ChildCompassion, self).depart()
+            sponsorship.contract_terminated()
+        super().depart()
 
     @api.multi
     def child_released(self):
@@ -65,5 +64,5 @@ class ChildCompassion(models.Model):
             'end_reason_id': never_paid.id,
             'end_date': fields.Date.today(),
         })
-        waiting_sponsorships.signal_workflow('contract_terminated')
+        waiting_sponsorships.contract_terminated()
         return res

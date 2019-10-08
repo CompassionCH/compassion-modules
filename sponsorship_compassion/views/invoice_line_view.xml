@@ -36,7 +36,7 @@
         <field name="model">account.invoice.line</field>
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
-            <tree string="Invoice lines" colors="blue:state == 'draft';black:state in ('proforma','proforma2','open');gray:state == 'cancel'">
+            <tree string="Invoice lines" decoration-info="state == 'draft'" decoration-bf="state in ('proforma','proforma2','open')" decoration-muted="state == 'cancel'">
                 <field name="partner_id" />
                 <field name="product_id" />
                 <field name="contract_id" />

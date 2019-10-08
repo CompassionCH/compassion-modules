@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -34,7 +33,7 @@ class CreateSponsorship(BaseSponsorshipMapping):
     }
 
     def __init__(self, env):
-        super(CreateSponsorship, self).__init__(env)
+        super().__init__(env)
         self.CONNECT_MAPPING['HoldID'] = ('child_id.hold_id.hold_id',
                                           'compassion.child')
 

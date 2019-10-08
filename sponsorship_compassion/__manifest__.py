@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,15 +29,20 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
-    'version': '10.0.1.1.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'crm', 'account_cancel',
-                'web_m2x_options', 'account_invoice_split_invoice',
-                'partner_firstname', 'account_analytic_attribution',
-                'account_analytic_default', 'web_timeline', 'wordpress_configuration'],
+    'depends': ['contract_compassion',              # contract_compassion
+                'crm',                              # source/addons
+                'account_cancel',                   # source/addons
+                'web_m2x_options',                  # oca_addons/web
+                'account_invoice_split_invoice',    # account_invoice_split_invoice
+                'partner_firstname',                # oca_addons/partner-contact
+                'account_analytic_attribution',     # account_analytic_attribution
+                'account_analytic_default',         # source/addons/account_analytic_default
+                'web_timeline', 'wordpress_configuration'],                    # oca_addons/web
     'data': [
         'views/sponsorship_contract_view.xml',
         'views/sponsorship_contract_group_view.xml',

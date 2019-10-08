@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 from odoo.addons.child_compassion.models.compassion_hold import \
     HoldType
@@ -19,7 +18,11 @@ class EndContractWizard(models.TransientModel):
     _inherit = 'end.contract.wizard'
 
     child_id = fields.Many2one(related='contract_id.child_id')
-    contract_type = fields.Selection(related='contract_id.type')
+    contract_type = fields.Selection([
+        ('G', _('Child Gift')),
+        ('S', _('Sponsorship')),
+        ('SC', _('Correspondence'))
+    ], related='contract_id.type')
     keep_child_on_hold = fields.Boolean()
     hold_expiration_date = fields.Datetime(
         default=lambda s: s.env[
@@ -30,7 +33,7 @@ class EndContractWizard(models.TransientModel):
     @api.multi
     def end_contract(self):
         self.ensure_one()
-        super(EndContractWizard, self).end_contract()
+        super().end_contract()
         child = self.child_id
 
         if self.keep_child_on_hold:
