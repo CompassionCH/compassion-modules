@@ -210,6 +210,52 @@
         </field>
     </record>
 
+    <!--pylint:disable=dangerous-view-replace-wo-priority-->
+    <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.select</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
+        <field name="arch" type="xml">
+            <field name="reference" position="attributes">
+                <attribute name="filter_domain">
+                    ['|', '|', '|', '|', '|', '|',
+                    ('reference','ilike',self),
+                    ('partner_id','child_of',self),
+                    ('payment_mode_id', 'ilike', self),
+                    ('partner_codega', 'ilike', self),
+                    ('child_code', 'ilike', self),
+                    ('child_name', 'ilike', self),
+                    ('origin_id', 'ilike', self),
+                    ]
+                </attribute>
+            </field>
+            <field name="payment_mode_id" position="after">
+                <field name="origin_id"/>
+            </field>
+            <xpath expr="//filter[@name='state']" position="after">
+                <separator />
+                <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Put Invoicing section in Accounting/Customers Menu -->
+    <menuitem id="menu_recurring_contract_form"
+              parent="account.menu_finance_receivables"
+              name="Contracts"
+              sequence="11"
+              action="action_contract"/>
+    <menuitem id="menu_invoice_automatic_generation"
+              name="Launch invoices generation"
+              parent="account.menu_finance_receivables"
+              sequence="12"
+              action="recurring_contract.action_invoice_automatic_generation"/>
+    <menuitem id="menu_recurring_invoicer_form"
+              name="Generated invoices"
+              parent="account.menu_finance_receivables"
+              sequence="13"
+              action="recurring_contract.action_recurring_invoicer_form"/>
+
     <!-- Move the Sponsorships Menu to the Sponsorship Section -->
     <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
               name="Sponsorships" sequence="2" action="action_sponsorship_contract"/>
