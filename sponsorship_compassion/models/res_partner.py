@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -182,7 +181,7 @@ class ResPartner(models.Model):
     @api.model
     def create(self, vals):
         # Put a preferred name
-        partner = super(ResPartner, self).create(vals)
+        partner = super().create(vals)
         if not partner.preferred_name:
             partner.preferred_name = \
                 partner.firstname or partner.lastname or partner.name
@@ -192,7 +191,7 @@ class ResPartner(models.Model):
     def write(self, vals):
         if 'firstname' in vals and 'preferred_name' not in vals:
             vals['preferred_name'] = vals['firstname']
-        res = super(ResPartner, self).write(vals)
+        res = super().write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
                        'mandatory_review', 'send_original', 'title']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,

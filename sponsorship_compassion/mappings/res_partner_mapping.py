@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -63,7 +62,7 @@ class ResPartnerMapping(OnrampMapping):
         """
         if connect_name == 'GPID':
             value = value[3:]
-        return super(ResPartnerMapping, self)._convert_connect_data(
+        return super()._convert_connect_data(
             connect_name, value_mapping, value, relation_search)
 
 

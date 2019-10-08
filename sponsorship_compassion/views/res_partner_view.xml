@@ -37,7 +37,7 @@
                     <div attrs="{'invisible' : [('contracts_paid','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships as payer only</h3>
                         <field name="contracts_paid" context="{'default_type': 'S'}">
-                            <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
@@ -57,7 +57,7 @@
                     <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships as correspondent only</h3>
                         <field name="contracts_correspondant" context="{'default_type': 'S'}">
-                            <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
@@ -77,7 +77,7 @@
                     <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Sponsorships fully managed</h3>
                         <field name="contracts_fully_managed" context="{'default_type': 'S'}">
-                            <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
                                 <field name="child_id" />
                                 <field name="child_name" />
                                 <field name="preferred_name" />
@@ -97,7 +97,7 @@
                     <div attrs="{'invisible' : [('other_contract_ids','=', [])]}" groups="child_compassion.group_sponsorship">
                         <h3>Other contracts</h3>
                         <field name="other_contract_ids" context="{'default_type': 'O'}">
-                            <tree colors="blue:state == 'draft';black:state == 'active';green: state == 'waiting';gray:state in ('terminated','cancelled')">
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
                                 <field name="name" />
                                 <field name="create_date" />
                                 <field name="start_date" />

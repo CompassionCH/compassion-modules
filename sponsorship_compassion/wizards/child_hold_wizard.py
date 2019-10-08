@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -19,7 +18,7 @@ class ChildHoldWizard(models.TransientModel):
         selection_add=[('sponsor', 'Sponsor the child')])
 
     def _get_action(self, holds):
-        action = super(ChildHoldWizard, self)._get_action(holds)
+        action = super()._get_action(holds)
         if self.return_action == 'sponsor':
             child = holds[0].child_id
             action.update({
