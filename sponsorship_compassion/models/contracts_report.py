@@ -221,7 +221,7 @@ class PartnerSponsorshipReport(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'context': self.with_context(
-                form_view_ref='sponsorship.compassion.sponsorship_report_form'
+                form_view_ref='recurring.contract.sponsorship_report_form'
             ).env.context,
             'res_id': self.id
         }

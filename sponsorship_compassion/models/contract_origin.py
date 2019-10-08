@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -105,12 +104,12 @@ class ContractOrigin(models.Model):
     def create(self, vals):
         """Try to find existing origin instead of raising an error."""
         try:
-            res = super(ContractOrigin, self).create(vals)
+            res = super().create(vals)
         except IntegrityError as error:
             # Find the origin
             logger.error(error.message)
             self.env.cr.rollback()
-            self.env.invalidate_all()
+            self.env.clear()
             origin = self._find_same_origin(vals)
             if origin:
                 res = origin

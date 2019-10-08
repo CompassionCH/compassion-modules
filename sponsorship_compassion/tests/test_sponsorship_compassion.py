@@ -122,7 +122,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         :return: mock object on update hold method
         """
         update_hold.return_value = True
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         return update_hold
 
     def pay_sponsorship(self, sponsorship):
