@@ -1,0 +1,9 @@
+{
+  "name": "Cancel Sponsorship Mapping",
+  "model": "recurring.contract",
+  "mapping": {
+    "HoldID": {
+      "field": "child_id.hold_id"
+    }
+  }
+}

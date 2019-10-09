@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -18,7 +17,8 @@ from odoo.exceptions import UserError
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = ['res.partner', 'compassion.mapped.model']
+    _name = 'res.partner'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -182,7 +182,7 @@ class ResPartner(models.Model):
     @api.model
     def create(self, vals):
         # Put a preferred name
-        partner = super(ResPartner, self).create(vals)
+        partner = super().create(vals)
         if not partner.preferred_name:
             partner.preferred_name = \
                 partner.firstname or partner.lastname or partner.name
@@ -192,7 +192,7 @@ class ResPartner(models.Model):
     def write(self, vals):
         if 'firstname' in vals and 'preferred_name' not in vals:
             vals['preferred_name'] = vals['firstname']
-        res = super(ResPartner, self).write(vals)
+        res = super().write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
                        'mandatory_review', 'send_original', 'title']
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
@@ -210,7 +210,7 @@ class ResPartner(models.Model):
         try:
             ir_model_data = self.env['ir.model.data']
             view_id = ir_model_data.get_object_reference(
-                'sponsorship_compassion',
+                'recurring.contract',
                 'view_invoice_line_partner_tree')[1]
         except ValueError:
             view_id = False
@@ -408,3 +408,16 @@ class ResPartner(models.Model):
             ('state', 'not in', ['cancelled', 'terminated']),
             ('child_id', '!=', False)
         ]
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+
+        if 'GPID' in json:
+            json['GPID'] = json['GPID'][3:]
+
+        connect_data = super().json_to_data(json, mapping_name)
+
+        if not connect_data.get('GlobalID') and 'GlobalID' in connect_data:
+            del connect_data['GlobalID']
+
+        return connect_data

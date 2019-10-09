@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,7 +8,8 @@
 #
 ##############################################################################
 import base64
-import urllib2
+import urllib.request
+import urllib.error
 from io import BytesIO
 from odoo import models, api, fields
 from zipfile import ZipFile
@@ -78,8 +78,8 @@ class DownloadChildPictures(models.TransientModel):
                                            width=self.width)
                 try:
                     data = base64.encodestring(
-                        urllib2.urlopen(url).read())
-                except urllib2.URLError:
+                        urllib.request.urlopen(url).read())
+                except urllib.error.URLError:
                     # Not good, the url doesn't lead to an image
                     logger.error('Image cannot be fetched: ' + str(
                         url))
@@ -130,7 +130,7 @@ class DownloadChildPictures(models.TransientModel):
     def _height_onchange(self):
         if self._height_change == 0:
             if self.type == 'fullshot':
-                self.width = round(self.height * 800 / 1200)
+                self.width = round(self.height * 800 // 1200)
                 self._width_change += 1
             self._compute_preview()
         else:
@@ -141,7 +141,7 @@ class DownloadChildPictures(models.TransientModel):
     def _width_onchange(self):
         if self._width_change == 0:
             if self.type == 'fullshot':
-                self.height = round(self.width * 1200 / 800)
+                self.height = round(self.width * 1200 // 800)
                 self._height_change += 1
             self._compute_preview()
         else:
@@ -157,7 +157,7 @@ class DownloadChildPictures(models.TransientModel):
                 url = self.get_picture_url(url, self.type, self.width,
                                            self.height)
                 self.preview = base64.encodestring(
-                    urllib2.urlopen(url[0]).read())
+                    urllib.request.urlopen(url[0]).read())
                 break
             except:
                 logger.error('Image cannot be fetched : ' + url)
@@ -185,8 +185,8 @@ class DownloadChildPictures(models.TransientModel):
                 pic_type='fullshot', height=1, width=1
                 )
             try:
-                urllib2.urlopen(url)
-            except urllib2.URLError:
+                urllib.request.urlopen(url)
+            except urllib.error.URLError:
                 # Not good, the url doesn't lead to an image
                 children_with_invalid_url += [child.local_id]
         if children_with_invalid_url:

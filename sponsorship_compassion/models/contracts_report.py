@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -130,7 +129,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_time_scp(self):
         def get_time_in_scp(sponsorship):
-            nb_weeks = sponsorship.contract_duration / 7.
+            nb_weeks = sponsorship.contract_duration // 7.
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_hours_week
 
@@ -142,7 +141,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_meal(self):
         def get_nb_meal(sponsorship):
-            nb_weeks = sponsorship.contract_duration / 7.
+            nb_weeks = sponsorship.contract_duration // 7.
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_meal_week
 
@@ -155,7 +154,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_medic_check(self):
         def get_nb_check(sponsorship):
-            nb_year = sponsorship.contract_duration / 365
+            nb_year = sponsorship.contract_duration // 365
             country = sponsorship.child_id.field_office_id
             return nb_year * country.fcp_medical_check
 
@@ -222,7 +221,7 @@ class PartnerSponsorshipReport(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'context': self.with_context(
-                form_view_ref='sponsorship_compassion.sponsorship_report_form'
+                form_view_ref='recurring.contract.sponsorship_report_form'
             ).env.context,
             'res_id': self.id
         }

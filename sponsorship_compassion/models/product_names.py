@@ -8,12 +8,15 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+# Name of gifts products
+GIFT_NAMES = ["Birthday Gift", "General Gift", "Family Gift", "Project Gift",
+              "Graduation Gift"]
 
+# Name of gift category
+GIFT_CATEGORY = "Sponsor gifts"
 
-class Product(models.Model):
-    _inherit = 'product.product'
+# Name of sponsorship category
+SPONSORSHIP_CATEGORY = "Sponsorship"
 
-    categ_name = fields.Char(
-        'Product category', related='product_tmpl_id.categ_id.name',
-        store=True)
+# Name of fund category
+FUND_CATEGORY = "Fund"

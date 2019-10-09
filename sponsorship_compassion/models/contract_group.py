@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -15,7 +14,7 @@ from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.queue_job.job import job, related_action
-from .product import GIFT_NAMES
+from .product_names import GIFT_NAMES
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ class ContractGroup(models.Model):
     def _generate_invoices(self, invoicer=None):
         """ Add birthday gifts generation. """
         invoicer = self._generate_birthday_gifts(invoicer)
-        invoicer = super(ContractGroup, self)._generate_invoices(invoicer)
+        invoicer = super()._generate_invoices(invoicer)
         return invoicer
 
     @api.multi
@@ -90,7 +89,7 @@ class ContractGroup(models.Model):
         if contracts:
             total = str(len(contracts))
             count = 1
-            logger.info("Found {0} Birthday Gifts to generate.".format(total))
+            logger.info(f"Found {total} Birthday Gifts to generate.")
 
             gift_wizard = self.env['generate.gift.wizard'].with_context(
                 recurring_invoicer_id=invoicer.id).create({
@@ -102,8 +101,7 @@ class ContractGroup(models.Model):
 
             # Generate invoices
             for contract in contracts:
-                logger.info("Birthday Gift Generation: {0}/{1} ".format(
-                    str(count), total))
+                logger.info(f"Birthday Gift Generation: {count}/{total} ")
                 try:
                     self._generate_birthday_gift(gift_wizard, contract)
                 except:
@@ -121,3 +119,6 @@ class ContractGroup(models.Model):
             'amount': contract.birthday_invoice})
         gift_wizard.with_context(
             active_ids=contract.id).generate_invoice()
+
+    def _get_gen_states(self):
+        return ['active', 'waiting']

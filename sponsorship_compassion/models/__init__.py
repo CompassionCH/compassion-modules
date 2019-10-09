@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -17,6 +16,10 @@ from . import res_partner
 from . import privacy_statement
 from . import project_compassion
 from . import child_compassion
-from . import product
+from . import product_names
 from . import account_invoice
 from . import move_line
+from . import contract_origin
+from . import product
+from . import recurring_contract_line
+from . import utm

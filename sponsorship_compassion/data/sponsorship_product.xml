@@ -41,7 +41,7 @@
         <record id="product_template_fund_gen" model="product.template">
             <field name="name">General Fund</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="contract_compassion.product_category_fund" />
+            <field name="categ_id" ref="sponsorship_compassion.product_category_fund" />
             <field name="list_price">8</field>
             <field name="description">Thanks to your donation to the General Fund, through your help we can offer
                 a concrete help and a new future to many children on the field and restore hope in their lives.</field>

@@ -5,18 +5,46 @@
     The licence is in the file __manifest__.py
 -->
 <odoo>
+    <data>
+        <record id="action_end_contract" model="ir.actions.act_window">
+            <field name="name">End contract</field>
+            <field name="res_model">end.contract.wizard</field>
+            <field name="src_model">recurring.contract</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="recurring_contract.end_contract_view"/>
+            <field name="context">{
+                'active_id': active_id,
+                'default_end_date': context_today
+                }
+            </field>
+            <field name="target">new</field>
+        </record>
+    </data>
+
     <record id="end_sponsorship_view" model="ir.ui.view">
         <field name="name">end.sponsorship.wizard.view</field>
         <field name="model">end.contract.wizard</field>
-        <field name="inherit_id" ref="contract_compassion.end_contract_view"/>
         <field name="arch" type="xml">
-            <!-- End sponsorship form -->
-            <field name="end_reason_id" position="after">
-                <field name="contract_type" invisible="1"/>
-                <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
-                <field name="hold_expiration_date"
-                       attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
-            </field>
+            <form string="End of contract" version="7.0">
+                    <!-- End sponsorship form -->
+                    <group name="settings">
+                            <field name="contract_id" readonly="1"/>
+                            <field name="end_reason"/>
+                            <field name="contract_type" invisible="1"/>
+                            <field name="keep_child_on_hold" attrs="{'invisible': [('contract_type', 'not in', ['S','SC'])]}"/>
+                            <field name="hold_expiration_date"
+                                   attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
+                    </group>
+
+                    <!-- Action buttons in footer -->
+                    <footer>
+                        <button name="end_contract" string="End contract"
+                                type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
         </field>
     </record>
 </odoo>

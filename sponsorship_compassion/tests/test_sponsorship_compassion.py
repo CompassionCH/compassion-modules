@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -33,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class BaseSponsorshipTest(BaseContractCompassionTest):
     def setUp(self):
-        super(BaseSponsorshipTest, self).setUp()
+        super().setUp()
         # Creation of an origin
         self.origin_id = self.env['recurring.contract.origin'].create(
             {'type': 'event'}).id
@@ -78,8 +77,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             'origin_id': self.origin_id,
         }
         default_values.update(vals)
-        return super(BaseSponsorshipTest,
-                     self).create_contract(default_values, line_vals)
+        return super().create_contract(default_values, line_vals)
 
     def create_contract_line(self, vals):
         default_values = {
@@ -120,7 +118,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         :return: mock object on update hold method
         """
         update_hold.return_value = True
-        contract.signal_workflow('contract_validated')
+        contract.contract_validated()
         return update_hold
 
     def pay_sponsorship(self, sponsorship):
@@ -234,7 +232,7 @@ class TestSponsorship(BaseSponsorshipTest):
         else:
             self.assertEqual(invoice.state, 'open')
         self.assertEqual(invoice1.state, 'open')
-        sponsorship.signal_workflow('contract_terminated')
+        sponsorship.contract_terminated()
         # Force cleaning invoices immediatley
         sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, 'terminated')
@@ -275,7 +273,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertFalse(update_hold.called)
 
         # Termination of correspondence
-        sponsorship.signal_workflow('contract_terminated')
+        sponsorship.contract_terminated()
         self.assertTrue(sponsorship.state, 'terminated')
 
         # Create regular sponsorship
@@ -294,7 +292,7 @@ class TestSponsorship(BaseSponsorshipTest):
         hold = child.hold_id
         self.assertEqual(hold.type, 'No Money Hold')
 
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         self.assertEqual(sponsorship2.state, 'cancelled')
 
     def test_sponsorship_compassion_third_scenario(self):
@@ -348,7 +346,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(contract1.state, 'waiting')
         self.pay_sponsorship(contract1)
         self.assertEqual(contract1.state, 'active')
-        contract1.signal_workflow('contract_terminated')
+        contract1.contract_terminated()
         self.assertEqual(contract1.state, 'cancelled')
         self.assertTrue(contract2.unlink())
 
@@ -451,9 +449,9 @@ class TestSponsorship(BaseSponsorshipTest):
             self.assertEqual(sponsorship.state, 'waiting')
             self.pay_sponsorship(sponsorship)
         sponsorship1.global_id = 12349123
-        sponsorship1.signal_workflow('contract_terminated')
+        sponsorship1.contract_terminated()
         self.assertEqual(sponsorship1.state, 'terminated')
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         self.assertEqual(sponsorship2.state, 'cancelled')
 
     def test_number_sponsorships(self):
@@ -502,9 +500,9 @@ class TestSponsorship(BaseSponsorshipTest):
         self.validate_sponsorship(sponsorship2)
         self.pay_sponsorship(sponsorship2)
         valid(2, True)
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         valid(1, True)
-        sponsorship1.signal_workflow('contract_terminated')
+        sponsorship1.contract_terminated()
         valid(0, False)
 
     def test_change_partner(self):

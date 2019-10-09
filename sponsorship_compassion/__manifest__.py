@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,15 +29,22 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
-    'version': '10.0.1.0.8',
+    'version': '11.0.2.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'crm', 'account_cancel',
-                'web_m2x_options', 'account_invoice_split_invoice',
-                'partner_firstname', 'account_analytic_attribution',
-                'account_analytic_default', 'web_timeline'],
+    'depends': ['recurring_contract',               # recurring_contract
+                'utm',
+                'crm',                              # source/addons
+                'child_compassion',                 # child_compassion
+                'account_cancel',                   # source/addons
+                'web_m2x_options',                  # oca_addons/web
+                'account_invoice_split_invoice',    # account_invoice_split_invoice
+                'partner_firstname',                # oca_addons/partner-contact
+                'account_analytic_attribution',     # account_analytic_attribution
+                'account_analytic_default',         # source/addons/account_analytic_default
+                'web_timeline'],                    # oca_addons/web
     'data': [
         'views/sponsorship_contract_view.xml',
         'views/sponsorship_contract_group_view.xml',
@@ -53,17 +59,26 @@
         'views/end_contract_wizard_view.xml',
         'views/download_child_pictures_view.xml',
         'views/project_view.xml',
-        'workflow/contract_workflow.xml',
+        'views/activate_contract_view.xml',
+        'views/contract_group_view.xml',
+        'views/contract_origin_view.xml',
+        'views/project_view.xml',
+        'views/utm_medium_view.xml',
+        'data/compassion_mapping.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',
         'data/end_reasons.xml',
         'data/partner_category_data.xml',
+        'data/friday_invoicer_cron.xml',
+        'data/sponsorship_product.xml',
+        'data/utm_data.xml',
         'security/ir.model.access.csv'
     ],
     'demo': [
         'demo/demo_data.yml',
         'data/demo_data.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings",
 }

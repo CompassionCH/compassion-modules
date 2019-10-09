@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -33,7 +32,7 @@ class CancelSponsorship(BaseSponsorshipMapping):
     }
 
     def __init__(self, env):
-        super(CancelSponsorship, self).__init__(env)
+        super().__init__(env)
         self.CONNECT_MAPPING['HoldID'] = 'hold_id'
 
     def _process_connect_data(self, connect_data):
