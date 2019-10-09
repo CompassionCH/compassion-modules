@@ -25,7 +25,8 @@ THIS_DIR = os.path.dirname(__file__)
 
 
 class SponsorshipContract(models.Model):
-    _inherit = 'recurring.contract'
+    _inherit = ['recurring.contract', 'compassion.mapped.model']
+    _name = 'recurring.contract'
 
     ##########################################################################
     #                                 FIELDS                                 #

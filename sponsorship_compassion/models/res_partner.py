@@ -17,7 +17,8 @@ from odoo.exceptions import UserError
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = ['res.partner', 'compassion.mapped.model']
+    _name = 'res.partner'
 
     ##########################################################################
     #                                 FIELDS                                 #

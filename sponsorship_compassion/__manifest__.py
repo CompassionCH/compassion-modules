@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
-    'version': '11.0.1.0.0',
+    'version': '11.0.2.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -64,6 +64,7 @@
         'views/contract_origin_view.xml',
         'views/project_view.xml',
         'views/utm_medium_view.xml',
+        'data/compassion_mapping.xml',
         'data/sponsorship_product.xml',
         'data/gmc_action.xml',
         'data/end_reasons.xml',
@@ -71,7 +72,6 @@
         'data/friday_invoicer_cron.xml',
         'data/sponsorship_product.xml',
         'data/utm_data.xml',
-        'data/compassion_mapping.xml',
         'security/ir.model.access.csv'
     ],
     'demo': [

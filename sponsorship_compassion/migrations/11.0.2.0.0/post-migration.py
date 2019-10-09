@@ -20,6 +20,6 @@ def migrate(env, version):
              'upsert_mapping.json',
              'sponsorship_base_mapping.json',
              'create_sponsorship_mapping.json',
-             'cancel_sponsorship_base_mapping.json']
+             'cancel_sponsorship_mapping.json']
 
     load_mappings.load_mapping_files(env.cr, path, files)
