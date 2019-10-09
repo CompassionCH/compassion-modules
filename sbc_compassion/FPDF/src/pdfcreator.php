@@ -9,14 +9,31 @@ require('text.php');
 * Author:  Théo Nikles	                                                       *
 *******************************************************************************/
 
+const SEE_ATTACHMENT = array(
+    "fr_CH" => "Voir la traduction ci-jointe",
+    "de_DE" => "Siehe beiliegende Uebersetzung",
+    "it_IT" => "Vedi traduzione allegata",
+    "en_US" => "See attached translation"
+);
+const Translation = array(
+    "fr_CH" => "Traduction",
+    "de_DE" => "Uebersetzung",
+    "it_IT" => "Traduzione",
+    "en_US" => "Translation"
+);
+
 class PDFCreator
 {
-  protected $templates;           // Array of templates                       => array[Template]
 	protected $images;              // Array of images                          => array[Image]
 	protected $texts;               // Array of the text zones                  => array[Text]
 	protected $utils;               // Utilities that provides useful functions => TemplateUtils
+    protected $originalSize;        // Indicates the original number of pages PDF => Int
+    protected $lang;                // The lang of the output => string
 
 	protected $headerOnLastPage;
+
+	protected $preventOverflow;     // Will be set to true if we have an overflow page, and we don't allow boxes to overflow.
+	protected $overflowPage;        // Will be set when overflow occurs. Holds the overflown texts from the current page.  => array[Text]
 
 
     /**
@@ -24,7 +41,7 @@ class PDFCreator
     */
     function __construct($params)
     {
-        $this->templates = $this->ComputeArray($params, 'templates', function($template)
+        $templates = $this->ComputeArray($params, 'templates', function($template)
             {
                 return new Template(...$template);
             }
@@ -42,25 +59,35 @@ class PDFCreator
             }
         );
 
+        $this->lang = $params['lang'];
+        $overflowTemplate = false;
+        if (!empty($params['overflow_template'])) {
+            $overflowTemplate = new Template(...$params['overflow_template']);
+            $this->preventOverflow = true;
+        }
+        $this->originalSize = $params['original_size'];
+
 
         // We don't accept PDFs with no template.
-        if(count($this->templates) == 0)
+        if(count($templates) == 0)
         {
             throw new Exception("No templates provided, cannot generate PDF");
         }
-        $this->utils = new TemplateUtils($this->templates);
+        $this->utils = new TemplateUtils($templates, $params['original_size'], $overflowTemplate);
         $headerOnLastPage = false;
+        $this->overflowPage = [];
     }
 
 
     /**
     *
     */
-    function createPDF()
+    function createPDF($pdf_name)
     {
         // SET UP
-        $pdf = new MyFPDF($this->templates, $this->utils);
-        $pdf->SetFont('Arial', '', 12);
+        $pdf = new MyFPDF($this->utils);
+        $pdf->AddFont('Montserrat','R','montserrat.php');
+        $pdf->SetFont('Montserrat', 'R', 14);
 
         $consecutiveEmptyPages = 0;
         // CREATE NEW PAGE AND FILL IT WITH CONTENT
@@ -69,7 +96,11 @@ class PDFCreator
 	        $headerOnLastPage = $pdf->MyAddPage();
             $template = $this->utils->GetTemplateForPageNo($pdf->PageNo());
 
-	        $emptyPage = $this->InsertText($pdf, $template);
+	        $emptyPage = $this->InsertText($pdf, $template, $this->preventOverflow);
+
+	        if (!empty($this->overflowPage)) {
+	            $this->InsertOverflowPages($pdf);
+            }
 
 	        $this->InsertImages($pdf, $template);
 
@@ -77,7 +108,7 @@ class PDFCreator
         }
 
         // COMPLETE THE END OF THE PDF AND WRITE IT
-        $this->CompleteAndWritePDF($pdf);
+        $this->CompleteAndWritePDF($pdf, $pdf_name);
     }
 
 
@@ -107,26 +138,58 @@ class PDFCreator
     /**
     *
     */
-    private function InsertText($pdf, $template)
+    private function InsertText($pdf, $template, $preventOverflow)
     {
         $emptyPage = true;
-        foreach (range(count($this->texts), 1) as $i)
-        {
-            $text = $this->texts[$i - 1];
-            foreach ($template->GetTextBoxes() as $textBox)
-            {
-                if($text->HasType($textBox->GetType()))
-                {
+        $toRemove = [];
+        for ($i = 0; $i < count($this->texts); $i++) {
+            // Find the first box matching the text type.
+            $text = $this->texts[$i];
+            foreach ($template->GetTextBoxes() as $textBox) {
+                if($text->HasType($textBox->GetType()) && $textBox->Available()) {
                     $emptyPage = false;
-                    $text->SetText($pdf->MyMultiCell($textBox->GetMinX(), $textBox->GetMinY(), $textBox->GetMaxX(), $textBox->GetMaxY(), $text->GetText(), $height=$textBox->GetHeight()));
-                    if($text->GetText() == "")
-                    {
-                        array_splice($this->texts, $i - 1, 1);
+                    $textBox->Use();
+                    $remainingText = $pdf->MyMultiCell($textBox->GetMinX(), $textBox->GetMinY(), $textBox->GetMaxX(), $textBox->GetMaxY(), $text->GetText(), $height=$textBox->GetHeight(), $preventOverflow);
+                    if($remainingText != "") {
+                        // An overflow occurred
+                        if ($preventOverflow) {
+                            array_push($this->overflowPage, $text->GetText());
+                            array_push($toRemove, $i);
+                            $pdf->MyMultiCell($textBox->GetMinX(), $textBox->GetMinY(), $textBox->GetMaxX(), $textBox->GetMaxY(), (SEE_ATTACHMENT[$this->lang] ?? SEE_ATTACHMENT["en_US"]) . " #" . count($this->overflowPage), $height=$textBox->GetHeight());
+                        } else {
+                            // The text was still printing in the box, we put the remaining text in the following boxes
+                            $text->SetText($remainingText);
+                        }
+                    } else {
+                        array_push($toRemove, $i);
                     }
+                    break;
                 }
             }
         }
+        // Remove empty texts from the list of texts that must be handled
+        foreach (array_reverse($toRemove) as $i) {
+            array_splice($this->texts, $i, 1);
+        }
         return $emptyPage;
+    }
+
+    private function InsertOverflowPages($pdf) {
+        $template = $this->utils->overflowTemplate;
+        $text = "";
+        for ($i=1; $i <= count($this->overflowPage); $i++) {
+            $text = $text . (Translation[$this->lang] ?? Translation["en_US"]) . " #" .$i . ": \n\n" . $this->overflowPage[$i-1] . "\n\n";
+        }
+        while ($text != "") {
+            // Add an extra page with overflow template
+            $this->utils->addExtraPage($pdf->PageNo());
+            $pdf->MyAddPage();
+            // Fill all text boxes
+            foreach ($template->GetTextBoxes() as $textBox) {
+                $text = $pdf->MyMultiCell($textBox->GetMinX(), $textBox->GetMinY(), $textBox->GetMaxX(), $textBox->GetMaxY(), $text, $height = $textBox->GetHeight());
+            }
+        }
+        $this->overflowPage = [];
     }
 
 
@@ -150,12 +213,13 @@ class PDFCreator
     /**
     *
     */
-    private function CompleteAndWritePDF($pdf)
+    private function CompleteAndWritePDF($pdf, $pdf_name)
     {
         // ADD MISSING TEMPLATES
-        while($pdf->PageNo() < count($this->templates))
+        while($pdf->PageNo() < count($this->utils->templates))
         {
             $headerOnLastPage = $pdf->MyAddPage();
+            $this->InsertImages($pdf, $this->utils->GetTemplateForPageNo($pdf->PageNo()));
         }
 
         // ADD REMAINING IMAGES
@@ -166,14 +230,27 @@ class PDFCreator
             // We add one image for each half page
             $width = $pdf->GetWidth();
             $height = $pdf->GetHeight();
-            $this->images[0]->InsertIntoPDF($pdf, 0, 0, $width, (int)($height / 2));
-            if(isset($this->images[1]))
-            {
-                $this->images[1]->InsertIntoPDF($pdf, 0, (int)($height / 2), $width, $height);
+            $yMin = 10;
+
+            // If the height permits it, we put two pictures on the same page. Otherwise we put them in separate pages
+            $fullPage = true;
+            $image = $this->images[0];
+            if ($image->height <= $height/2) {
+                $height = (int)($height / 2);
+                $fullPage = false;
+            }
+            $this->images[0]->InsertIntoPDF($pdf, 10, $yMin, $width-10, $height-10);
+            if(isset($this->images[1])) {
+                if ($fullPage) {
+                    $pdf->MyAddPage($showTemplate=false);
+                } else {
+                    $yMin = $height;
+                }
+                $this->images[1]->InsertIntoPDF($pdf, 10, $yMin, $width-10, $pdf->GetHeight()-10);
             }
             array_splice($this->images, 0, 2);
         }
-        $pdf->Output();
+        $pdf->Output("F", $pdf_name);
     }
 
 

@@ -13,7 +13,7 @@ class Text
 
     function __construct($filename, $type)
     {
-        $this->text = file_get_contents($filename);
+        $this->text = utf8_decode(file_get_contents($filename));
         $this->type = $type;
     }
 

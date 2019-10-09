@@ -9,8 +9,8 @@
 class Image
 {
     protected $filename;        // Filename of the image to display
-    protected $width;           // Width of the image
-    protected $height;          // Height of the image
+    public $width;           // Width of the image
+    public $height;          // Height of the image
 
 	function __construct($filename)
 	{
@@ -44,7 +44,7 @@ class Image
 	    $newMinY = $minY + ($maxHeight - $height) / 2;
 	    $newMaxX = $maxX - ($maxWidth - $width) / 2;
 	    $newMaxY = $maxY - ($maxHeight - $height) / 2;
-	    
+
 		$pdf->MyImage($newMinX, $newMinY, $newMaxX, $newMaxY, $this->filename);
 	}
 }

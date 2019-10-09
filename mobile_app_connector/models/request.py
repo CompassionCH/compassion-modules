@@ -58,7 +58,7 @@ class CrmClaim(models.Model):
             'partner_id': contact_id,
         })
         claim.message_post(body=question,
-                           subject="Original request from %s %s " %
+                           subject=_("Original request from %s %s ") %
                            (firstname, lastname))
 
         return {

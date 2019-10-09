@@ -8,8 +8,9 @@ require('src/pdfcreator.php');
 * PDF to generate. Find more information about that in the README.
 */
 
-$parameters = json_decode($argv[1], true);
+$pdf_name = $argv[1];
+$parameters = json_decode($argv[2], true);
 echo var_export($parameters) . "\n";
 $pdfCreator = new PDFCreator($parameters);
-$pdfCreator->createPDF();
+$pdfCreator->createPDF($pdf_name);
 ?>

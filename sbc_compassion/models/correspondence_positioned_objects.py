@@ -9,8 +9,7 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError
+from odoo import fields, models
 
 
 class CorrespondencePositionedObject(models.Model):
@@ -18,19 +17,54 @@ class CorrespondencePositionedObject(models.Model):
     positioned object is anything that is located with its left-highest and
     right-lowest point. """
     _name = 'correspondence.positioned.object'
+    _description = 'Correspondence positioned object'
 
-    x_min = fields.Float(help='Minimum X position of the object')
-    x_max = fields.Float(help='Maximum X position of the object')
-    y_min = fields.Float(help='Minimum Y position of the object')
-    y_max = fields.Float(help='Maximum Y position of the object')
+    name = fields.Char()
+    x_min = fields.Float(
+        help='Minimum X position of the object in millimeters', required=True)
+    x_max = fields.Float(
+        help='Maximum X position of the object in millimeters', required=True)
+    y_min = fields.Float(
+        help='Minimum Y position of the object in millimeters', required=True)
+    y_max = fields.Float(
+        help='Maximum Y position of the object in millimeters', required=True)
+
+    def get_json_repr(self):
+        """
+        Utility to get the JSON representation of the text box which will
+        be used by FPDF library to render the text box in a PDF.
+        :return: list of values
+        """
+        self.ensure_one()
+        return map(str, [
+            self.x_min, self.y_min, self.x_max, self.y_max
+        ])
 
 
 class CorrespondenceTextBox(models.Model):
     _name = 'correspondence.text.box'
     _inherit = 'correspondence.positioned.object'
+    _description = 'Correspondence Text Box'
 
-    text_line_height = fields.Float()
-    text_type = fields.Char(string='Type')
+    text_line_height = fields.Float(
+        help='Line height in millimeters', required=True)
+    text_type = fields.Selection([
+        ('Original', 'Original'),
+        ('Translation', 'Translation'),
+    ])
+
+    def get_json_repr(self):
+        """
+        Utility to get the JSON representation of the text box which will
+        be used by FPDF library to render the text box in a PDF.
+        :return: list of values
+        """
+        self.ensure_one()
+        res = super(CorrespondenceTextBox, self).get_json_repr()
+        if self.text_type:
+            res.append(self.text_type)
+        res.append(str(self.text_line_height))
+        return res
 
 
 class CorrespondenceLanguageCheckbox(models.Model):
@@ -42,19 +76,6 @@ class CorrespondenceLanguageCheckbox(models.Model):
 
     _name = 'correspondence.lang.checkbox'
     _inherit = 'correspondence.positioned.object'
+    _description = 'Correspondence Lang Checkbox'
 
-    template_id = fields.Many2one(
-        'correspondence.template', required=True,
-        ondelete='cascade')
     language_id = fields.Many2one('res.lang.compassion')
-
-    @api.constrains('x_min', 'x_max', 'y_min', 'y_max')
-    def verify_position(self):
-        for checkbox in self:
-            width = checkbox.template_id.page_width
-            height = checkbox.template_id.page_height
-            valid_coordinates = (
-                0 <= checkbox.x_min <= checkbox.x_max <= width and
-                0 <= checkbox.y_min <= checkbox.y_max <= height)
-            if not valid_coordinates:
-                raise ValidationError(_("Please give valid coordinates."))

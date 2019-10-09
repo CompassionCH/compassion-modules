@@ -62,8 +62,7 @@
                                     'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
                             <field name="file_name" invisible="1"/>
                             <field name="letter_image" filename="file_name"/>
-                            <field name="template_id" attrs="{'invisible': [('direction','=','Beneficiary To Supporter')]}"/>
-                            <field name="layout_id" attrs="{'invisible': [('direction','=','Supporter To Beneficiary')]}"/>
+                            <field name="template_id"/>
                             <field name="direction"/>
                             <field name="communication_type_ids" widget="many2many_checkboxes"/>
                         </group>
@@ -107,7 +106,7 @@
                     <field name="page_ids" context="{'default_correspondence_id': context.active_id}">
                         <tree>
                             <field name="original_text"/>
-                            <field name="english_translated_text"/>
+                            <field name="english_text"/>
                             <field name="translated_text"/>
                         </tree>
                     </field>
@@ -139,7 +138,7 @@
                         <field name="original_text"/>
                     </group>
                     <group>
-                        <field name="english_translated_text"/>
+                        <field name="english_text"/>
                     </group>
                     <group>
                         <field name="translated_text"/>

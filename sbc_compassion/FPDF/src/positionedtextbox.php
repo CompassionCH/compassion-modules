@@ -11,6 +11,7 @@ class PositionedTextBox extends PositionedObject
 {
     protected $height;      // Height of the text cells
     protected $type;        // Type of the text cells (either "O" for original or "T" for translation)
+	protected $used;		// Stores if the box is filled with text or not
 
 	function __construct($minX, $minY, $maxX, $maxY, $type, $height=6)
 	{
@@ -28,6 +29,16 @@ class PositionedTextBox extends PositionedObject
 	function GetType()
 	{
 		return $this->type;
+	}
+
+	function Use()
+	{
+		$this->used = true;
+	}
+
+	function Available()
+	{
+		return !$this->used;
 	}
 }
 ?>

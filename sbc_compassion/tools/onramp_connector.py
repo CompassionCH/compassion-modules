@@ -73,13 +73,13 @@ class SBCConnector(OnrampConnector):
                 _('[%s] %s') % (r.status_code, r.text))
         return letter_url
 
-    def get_letter_image(self, letter_url, type='jpeg', pages=0, dpi=96):
+    def get_letter_image(self, letter_url, img_type='jpeg', pages=0, dpi=96):
         """ Calls Letter Image Service from Onramp U.S. and get the data
         http://developer.compassion.com/docs/read/compassion_connect2/
         service_catalog/Image_Retrieval
         """
         params = {
-            'format': type,
+            'format': img_type,
             'pg': pages,
             'dpi': dpi}
         OnrampConnector.log_message('GET', letter_url)
