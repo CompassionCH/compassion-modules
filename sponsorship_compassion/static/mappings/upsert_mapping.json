@@ -1,0 +1,39 @@
+{
+  "name": "Upsert Partner Mapping",
+  "model": "res.partner",
+  "mapping": {
+    "GlobalID": {
+      "field": "global_id"
+    },
+    "GPID": {
+      "field": "ref",
+      "to_json_conversion": "lambda ref: '65-' + ref"
+    },
+    "Gender": {
+      "field": "title",
+      "search_relational_record": true
+    },
+    "MandatoryReviewRequired": {
+      "field": "mandatory_review"
+    },
+    "PreferredName": {
+      "field": "preferred_name"
+    },
+    "CorrespondenceDeliveryPreference": {
+      "field": "send_original",
+      "to_json_conversion": "lambda original: 'Physical' if original else 'Digital'"
+    },
+    "FirstName": {
+      "field": "firstname"
+    },
+    "LastName": {
+      "field": "lastname"
+    },
+    "GlobalPartner": {
+      "to_json_conversion": "return 'Compassion Switzerland'"
+    },
+    "Status": {
+      "to_json_conversion": "return 'Active'"
+    }
+  }
+}

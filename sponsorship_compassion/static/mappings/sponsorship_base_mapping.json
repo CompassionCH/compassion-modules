@@ -1,0 +1,86 @@
+{
+  "name": "Base Sponsorship Mapping",
+  "model": "recurring.contract",
+  "mapping": {
+    "Commitment_ID": {
+      "field": "global_id"
+    },
+    "CommitmentID": {
+      "field": "global_id"
+    },
+    "CompassNeedKey": {
+      "field": "child_id.local_id",
+      "search_relational_record": true
+    },
+    "CorrespondenceEndDate": {
+      "field": "end_date"
+    },
+    "CorrespondentCorrespondenceLanguage": {
+      "field": null
+    },
+    "CorrespondentSupporterGlobalID": {
+      "field": null
+    },
+    "FinalCommitmentOfLine": {
+      "to_json_conversion": "return ''"
+    },
+    "HoldID": {
+      "to_json_conversion": "return HoldType.SPONSOR_CANCEL_HOLD.value"
+    },
+    "HoldType": {
+      "field": null
+    },
+    "PrimaryHoldOwner": {
+      "field": "write_uid.name",
+      "search_relational_record": true
+    },
+    "SecondaryHoldOwner": {
+      "field": "create_uid.name",
+      "search_relational_record": true
+    },
+    "SponsorCorrespondenceLanguage": {
+      "field": "reading_language.name",
+      "search_relational_record": true
+    },
+    "SponsorSupporterGlobalID": {
+      "field": "correspondent_id.global_id",
+      "search_relational_record": true
+    },
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "HoldExpirationDate": {
+      "field": "hold_expiration_date"
+    },
+    "Channel_Name": {
+      "field": null
+    },
+    "LinkType": {
+      "field": null
+    },
+    "DelinkType": {
+      "field": "return 'Sponsor-requested Cancellation'"
+    },
+    "ParentCommitmentID": {
+      "field": "parent_id.global_id",
+      "to_json_conversion": "lambda parent: parent or None"
+    },
+    "CommitmentEndDate": {
+      "field": "end_date",
+      "search_relational_record": true
+    },
+    "CorrespondentGlobalPartnerID": {
+      "to_json_conversion": "return 'CH'"
+    },
+    "IsSponsorCorrespondent": {
+      "to_json_conversion": "return True"
+    },
+    "SponsorGlobalPartnerID": {
+      "to_json_conversion": "return 'CH'"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "return 'CH'"
+    }
+  }
+}

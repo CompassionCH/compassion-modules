@@ -828,6 +828,23 @@ class SponsorshipContract(models.Model):
         return move_lines.mapped('invoice_id.invoice_line_ids').filtered(
             lambda l: l.contract_id not in self).mapped('invoice_id')
 
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        connect_data = super().json_to_data(json, mapping_name)
+
+        if mapping_name == "Create Sponsorship Mapping":
+            if not connect_data.get('GlobalId') and 'GlobalId' in connect_data:
+                del connect_data['GlobalId']
+
+        if mapping_name == "Cancel Sponsorship Mapping":
+            end_date_str = connect_data.get(
+                'HoldExpirationDate') or fields.Datetime.now()
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S")
+            connect_data['HoldExpirationDate'] = end_date.strftime(
+                "%Y-%m-%dT%H:%M:%SZ")
+
+        return connect_data
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
