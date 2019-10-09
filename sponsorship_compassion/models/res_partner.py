@@ -407,3 +407,16 @@ class ResPartner(models.Model):
             ('state', 'not in', ['cancelled', 'terminated']),
             ('child_id', '!=', False)
         ]
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+
+        if 'GPID' in json:
+            json['GPID'] = json['GPID'][3:]
+
+        connect_data = super().json_to_data(json, mapping_name)
+
+        if not connect_data.get('GlobalID') and 'GlobalID' in connect_data:
+            del connect_data['GlobalID']
+
+        return connect_data

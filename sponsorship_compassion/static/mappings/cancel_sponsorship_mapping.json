@@ -1,0 +1,9 @@
+{
+  "name": "Cancel Sponsorship Mapping",
+  "model": "res.partner",
+  "mapping": {
+    "HoldID": {
+      "field": "hold_id"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+<odoo>
+    <record id="mapping_upsert_partner" model="compassion.mapping">
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="name">Upsert Partner Mapping</field>
+    </record>
+    <record id="mapping_anonymize_partner" model="compassion.mapping">
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="name">Anonymize Partner Mapping</field>
+    </record>
+    <record id="mapping_base_sponsorship" model="compassion.mapping">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="name">Base Sponsorship Mapping</field>
+    </record>
+    <record id="mapping_create_sponsorship" model="compassion.mapping">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="name">Create Sponsorship Mapping</field>
+    </record>
+    <record id="mapping_cancel_sponsorship" model="compassion.mapping">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="name">Cancel Sponsorship Mapping</field>
+    </record>
+</odoo>

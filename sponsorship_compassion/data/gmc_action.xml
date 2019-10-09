@@ -3,7 +3,7 @@
         <record id="upsert_partner" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpsertPartner</field>
-            <field name="mapping_name">UpsertPartner</field>
+            <field name="mapping_id" ref="mapping_upsert_partner"/>
             <field name="model">res.partner</field>
             <field name="description">This will send or update a Partner to GMC.</field>
             <field name="connect_service">supporters</field>
@@ -14,7 +14,7 @@
         <record id="anonymize_partner" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">AnonymizePartner</field>
-            <field name="mapping_name">AnonymizePartner</field>
+            <field name="mapping_id" ref="mapping_anonymize_partner"/>
             <field name="model">res.partner</field>
             <field name="description">This will send a request to anonymize all partner data at GMC.</field>
             <field name="connect_service">supporters/${object.global_id}/dataprotection</field>
@@ -25,7 +25,7 @@
         <record id="create_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpsertSponsorship</field>
-            <field name="mapping_name">CreateSponsorship</field>
+            <field name="mapping_id" ref="mapping_create_sponsorship"/>
             <field name="model">sponsorship.compassion</field>
             <field name="description">This will send a Sponsorship to GMC.</field>
             <field name="connect_service">supporters/sponsorships</field>
@@ -39,7 +39,7 @@
         <record id="update_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpdateSponsorship</field>
-            <field name="mapping_name">CreateSponsorship</field>
+            <field name="mapping_id" ref="mapping_anonymize_partner"/>
             <field name="model">sponsorship.compassion</field>
             <field name="description">This will change the supporter of a Sponsorship to GMC. The supporter accounts will be merged.</field>
             <field name="connect_service">supporters/${object.correspondent_id.global_id}/sponsorships/${object.global_id}</field>
@@ -52,7 +52,7 @@
         <record id="cancel_sponsorship" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CancelSponsorship</field>
-            <field name="mapping_name">CancelSponsorship</field>
+            <field name="mapping_id" ref="mapping_cancel_sponsorship"/>
             <field name="model">sponsorship.compassion</field>
             <field name="description">This will cancel a Sponsorship to GMC.</field>
             <field name="connect_service">supporters/sponsorships/cancel</field>
