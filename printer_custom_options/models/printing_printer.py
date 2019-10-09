@@ -25,9 +25,10 @@ except ImportError:
 class PrintingPrinter(models.Model):
     _inherit = 'printing.printer'
 
-    printer_option_ids = fields.One2many(comodel_name='printer.option',
-                                         inverse_name='printer_id',
-                                         string='Output Bins')
+    printer_option_choices = fields.One2many(
+        comodel_name='printer.option.choice',
+        inverse_name='printer_id',
+        string='Output Bins')
 
     def _get_values_for_option(self, cups_connection, cups_printer,
                                option_key):
@@ -54,7 +55,8 @@ class PrintingPrinter(models.Model):
         vals = super(PrintingPrinter, self)._prepare_update_from_cups(
             cups_connection, cups_printer)
 
-        current_option_keys = self.printer_option_ids.mapped('composite_key')
+        current_option_keys = self.printer_option_choices.mapped(
+            'composite_key')
 
         new_option_values = []
         # TODO: We could make this list dynamic.
@@ -64,7 +66,7 @@ class PrintingPrinter(models.Model):
                                                         current_option_keys,
                                                         option_key)
             new_option_values.extend(new_options)
-        vals['printer_option_ids'] = new_option_values
+        vals['printer_option_choices'] = new_option_values
         return vals
 
     def discover_printer_options(self, cups_connection, cups_printer,
@@ -79,7 +81,7 @@ class PrintingPrinter(models.Model):
             return []
 
         printer_option_values = {entry['choice'] for entry in option.choices}
-        option_model = self.env['printer.option']
+        option_model = self.env['printer.option.choice']
 
         # Insertion tuples
         return [

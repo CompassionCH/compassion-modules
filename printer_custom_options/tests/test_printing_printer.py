@@ -29,7 +29,7 @@ class TestPrintingPrinter(TransactionCase):
             'location': 'Location',
             'uri': 'URI',
         })
-        self.bin_option = self.env['printer.option'].create({
+        self.bin_option = self.env['printer.option.choice'].create({
             'option_key': 'OutputBin',
             'option_value': 'bin1',
             'printer_id': self.printer.id,
@@ -62,13 +62,13 @@ class TestPrintingPrinter(TransactionCase):
         vals = self.printer._prepare_update_from_cups({}, cups_printer)
 
         # OutputBin:bin1 was already inserted
-        self.assertEqual(len(vals['printer_option_ids']), 5)
+        self.assertEqual(len(vals['printer_option_choices']), 5)
         self.assertIn((0, 0,
                        {'option_key': 'OutputBin', 'option_value': 'bin2'}),
-                      vals['printer_option_ids'])
+                      vals['printer_option_choices'])
         self.assertNotIn((0, 0,
                           {'option_key': 'OutputBin', 'option_value': 'bin1'}),
-                         vals['printer_option_ids'])
+                         vals['printer_option_choices'])
 
     def _mock_cups_options(self, printer,
                            choices):

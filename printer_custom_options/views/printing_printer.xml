@@ -8,7 +8,7 @@
       <field name="arch" type="xml">
         <xpath expr="//sheet/group[3]" position="after">
           <group string="Printer Options">
-            <field name="printer_option_ids" nolabel="1">
+            <field name="printer_option_choices" nolabel="1">
               <tree>
                   <field name="option_key"/>
                   <field name="option_value"/>

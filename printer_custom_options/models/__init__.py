@@ -10,5 +10,5 @@
 ##############################################################################
 
 from . import printing_printer
-from . import printer_option
+from . import printer_option_choice
 from . import report_xml

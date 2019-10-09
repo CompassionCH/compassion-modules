@@ -14,5 +14,5 @@ from odoo import fields, models
 class IrActionsReportXml(models.Model):
     _inherit = 'ir.actions.report.xml'
 
-    printer_options = fields.Many2many('printer.option',
+    printer_options = fields.Many2many('printer.option.choice',
                                        string='Printer Options')

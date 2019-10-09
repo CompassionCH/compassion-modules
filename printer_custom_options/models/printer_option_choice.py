@@ -11,9 +11,9 @@
 from odoo import api, fields, models
 
 
-class PrinterOption(models.Model):
-    _name = 'printer.option'
-    _description = 'Printer Option'
+class PrinterOptionChoice(models.Model):
+    _name = 'printer.option.choice'
+    _description = 'Printer Option Choice'
     _rec_name = 'composite_key'
 
     option_key = fields.Char(required=True, readonly=True)
