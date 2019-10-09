@@ -33,7 +33,8 @@ class PrinterOption(models.Model):
         """ Composite key for a printing option key-value pair."""
         for option in self:
             option.composite_key = self.build_composite_key(option.option_key,
-                                                            option.option_value)
+                                                            option.option_value
+                                                            )
 
     @api.model
     def build_composite_key(self, option_key, option_value):

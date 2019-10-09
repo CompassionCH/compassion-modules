@@ -86,8 +86,8 @@ class PrintingPrinter(models.Model):
             (0, 0,
              {'option_value': option_value, 'option_key': option_key})
             for option_value in printer_option_values
-            if option_model.build_composite_key(option_key,
-                                                option_value) not in current_option_keys
+            if option_model.build_composite_key(option_key, option_value)
+            not in current_option_keys
         ]
 
     @api.multi
