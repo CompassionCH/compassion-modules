@@ -25,9 +25,9 @@ except ImportError:
 class PrintingPrinter(models.Model):
     _inherit = 'printing.printer'
 
-    bin_ids = fields.One2many(comodel_name='printing.bin',
-                              inverse_name='printer_id',
-                              string='Output Bins')
+    printer_option_ids = fields.One2many(comodel_name='printer.option',
+                                         inverse_name='printer_id',
+                                         string='Output Bins')
 
     def _get_values_for_option(self, cups_connection, cups_printer,
                                option_key):
@@ -54,34 +54,41 @@ class PrintingPrinter(models.Model):
         vals = super(PrintingPrinter, self)._prepare_update_from_cups(
             cups_connection, cups_printer)
 
-        option = self._get_values_for_option(
-            cups_connection, cups_printer, 'OutputBin'
-        )
+        current_option_keys = self.printer_option_ids.mapped('composite_key')
 
-        if not option:
-            return vals
-
-        vals['bin_ids'] = []
-        cups_bins = {
-            entry['choice']: entry['text']
-            for entry in option.choices
-        }
-
-        # Add new bins
-        vals['bin_ids'].extend([
-            (0, 0, {'name': text, 'system_name': choice})
-            for choice, text in cups_bins.items()
-            if choice not in self.bin_ids.mapped('system_name')
-        ])
-
-        # Remove deleted bins
-        vals['bin_ids'].extend([
-            (2, bin.id)
-            for bin in self.bin_ids.filtered(
-                lambda record: record.system_name not in cups_bins.keys())
-        ])
-
+        new_option_values = []
+        # TODO: We could make this list dynamic.
+        for option_key in ['OutputBin', 'Fold', 'MediaType']:
+            new_options = self.discover_printer_options(cups_connection,
+                                                        cups_printer,
+                                                        current_option_keys,
+                                                        option_key)
+            new_option_values.extend(new_options)
+        vals['printer_option_ids'] = new_option_values
         return vals
+
+    def discover_printer_options(self, cups_connection, cups_printer,
+                                 current_option_keys, option_key):
+        """ Returns all new values for one printer option category. Most
+        probably it will insert all option values the first time we sync with
+        CUPS and then return an empty list."""
+        option = self._get_values_for_option(
+            cups_connection, cups_printer, option_key
+        )
+        if not option:
+            return []
+
+        printer_option_values = {entry['choice'] for entry in option.choices}
+        option_model = self.env['printer.option']
+
+        # Insertion tuples
+        return [
+            (0, 0,
+             {'option_value': option_value, 'option_key': option_key})
+            for option_value in printer_option_values
+            if option_model.build_composite_key(option_key,
+                                                option_value) not in current_option_keys
+        ]
 
     @api.multi
     def print_options(self, report=None, format=None, copies=1):
@@ -89,8 +96,7 @@ class PrintingPrinter(models.Model):
         options = super(PrintingPrinter, self).print_options(report, format)
 
         if report is not None:
-            print_lang = self.env.lang
-            valid_bin_names = (bin.system_name for bin in self.bin_ids
-                               if bin.forward_lang(print_lang))
-            options['OutputBin'] = next(valid_bin_names, 'Default')
+            for printer_option in report.printer_options:
+                options[
+                    printer_option.option_key] = printer_option.option_value
         return options

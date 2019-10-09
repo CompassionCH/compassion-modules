@@ -40,6 +40,7 @@
     ],
     'data': [
         'views/printing_printer.xml',
+        'views/ir_actions_reports_xml_view.xml',
         'security/ir.model.access.csv'
     ],
     'external_dependencies': {

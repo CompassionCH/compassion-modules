@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import mock
 import types
 from odoo.tests.common import TransactionCase
 
@@ -28,44 +29,57 @@ class TestPrintingPrinter(TransactionCase):
             'location': 'Location',
             'uri': 'URI',
         })
-        bin = self.env['printing.bin'].create({
-            'name': 'Bin1',
-            'system_name': 'bin1',
+        self.bin_option = self.env['printer.option'].create({
+            'option_key': 'OutputBin',
+            'option_value': 'bin1',
             'printer_id': self.printer.id,
         })
-        bin.lang_forwarded_ids += self.env['res.lang'] \
-            .search([('code', '=', 'en_US')])
 
-    def test_print_options__with_unknown_lang(self):
-        options = self.printer \
-            .with_context(lang='de') \
-            .print_options(report={})
-        self.assertEqual(options['OutputBin'], 'Default')
+    def test_print_options__copies_options_from_report(self):
+        mock_report = mock.Mock()
+        mock_report.printer_options = [self.bin_option]
 
-    def test_print_options__with_language_matching_a_bin(self):
         options = self.printer \
-            .with_context(lang='en_US') \
-            .print_options(report={})
+            .print_options(report=mock_report)
+
         self.assertEqual(options['OutputBin'], 'bin1')
 
+    def test_print_options__without_option(self):
+        mock_report = mock.Mock()
+        mock_report.printer_options = []
+
+        options = self.printer \
+            .print_options(report=mock_report)
+
+        self.assertEqual(options, {})
+
     def test_prepare_update_from_cups(self):
-        self._mock_cups_options_to_always_return_an_empty_list(self.printer)
+        self._mock_cups_options(self.printer,
+                                [{'choice': 'bin1'},
+                                 {'choice': 'bin2'}])
         cups_printer = {'printer-info': ''}
 
         vals = self.printer._prepare_update_from_cups({}, cups_printer)
 
-        # The only bin should be listed for deletion
-        self.assertEqual(len(vals['bin_ids']), 1)
-        [(operation, _)] = vals['bin_ids']
-        self.assertEqual(operation, 2)
+        # OutputBin:bin1 was already inserted
+        self.assertEqual(len(vals['printer_option_ids']), 5)
+        self.assertIn((0, 0,
+                       {'option_key': 'OutputBin', 'option_value': 'bin2'}),
+                      vals['printer_option_ids'])
+        self.assertNotIn((0, 0,
+                          {'option_key': 'OutputBin', 'option_value': 'bin1'}),
+                         vals['printer_option_ids'])
 
-    def _mock_cups_options_to_always_return_an_empty_list(self, printer):
+    def _mock_cups_options(self, printer,
+                           choices):
         def mock_get_values_for_option(*args):
             class DictWrapper(dict):
                 __getattr__ = dict.__getitem__
                 __setattr__ = dict.__setitem__
+
             return DictWrapper({
-                'choices': []
+                'choices': choices
             })
+
         printer._get_values_for_option = \
             types.MethodType(mock_get_values_for_option, self.printer)
