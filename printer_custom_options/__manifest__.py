@@ -29,7 +29,7 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Report to printer - Paper bin selection',
+    'name': 'Report to printer - Custom Printer Options',
     'version': '10.0.1.0.0',
     'category': 'Printer',
     'author': 'Compassion CH',
@@ -40,6 +40,7 @@
     ],
     'data': [
         'views/printing_printer.xml',
+        'views/ir_actions_reports_xml_view.xml',
         'security/ir.model.access.csv'
     ],
     'external_dependencies': {
