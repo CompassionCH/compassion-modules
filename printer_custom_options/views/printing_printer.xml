@@ -7,15 +7,12 @@
       <field name="inherit_id" ref="base_report_to_printer.printing_printer_view_form"/>
       <field name="arch" type="xml">
         <xpath expr="//sheet/group[3]" position="after">
-          <group string="Bins">
-            <field name="bin_ids" nolabel="1">
-              <form>
-                <group>
-                  <field name="name"/>
-                  <field name="system_name"/>
-                  <field name="lang_forwarded_ids"/>
-                </group>
-              </form>
+          <group string="Printer Options">
+            <field name="printer_option_choices" nolabel="1">
+              <tree>
+                  <field name="option_key"/>
+                  <field name="option_value"/>
+              </tree>
             </field>
           </group>
         </xpath>
