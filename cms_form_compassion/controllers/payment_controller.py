@@ -18,7 +18,7 @@ from odoo.addons.cms_form.controllers.main import FormControllerMixin
 class PaymentFormController(website_account, FormControllerMixin):
 
     @route(['/compassion/payment/<int:transaction_id>'],
-           auth="public", website=True)
+           auth="public", website=True, csrf=False)
     def payment(self, transaction_id, **kwargs):
         """ Controller for redirecting to the payment submission, using
         an existing transaction.
@@ -30,7 +30,8 @@ class PaymentFormController(website_account, FormControllerMixin):
         values = {
             'payment_form': transaction.acquirer_id.with_context(
                 submit_class='btn btn-primary',
-                submit_txt=_('Next')).sudo().render(
+                submit_txt=_('Next')
+            ).sudo().render(
                 transaction.reference,
                 transaction.amount,
                 transaction.currency_id.id,
@@ -39,7 +40,8 @@ class PaymentFormController(website_account, FormControllerMixin):
                     'partner_id': transaction.partner_id.id,
                     'billing_partner_id': transaction.partner_id.id,
                 }
-            )
+            ),
+            'acquirer_id': transaction.acquirer_id.id,
         }
         template = 'cms_form_compassion.modal_payment_submit' if \
             kwargs['display_type'] == 'modal' else \

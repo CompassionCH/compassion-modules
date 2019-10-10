@@ -132,11 +132,12 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         <div class="text-center">
             <p>Thank you for your submission. You will be redirected to the payment website.
                 Please don't quit or refresh this page. If the redirection doesn't work, please click here.</p>
-            <div id="payment_compassion">
+            <div id="payment_compassion" t-att-data-id="acquirer_id" class="oe_sale_acquirer_button">
                 <t t-raw="payment_form"/>
             </div>
         </div>
     </template>
+
     <template id="payment_submit_full" name="Payment redirection page">
         <t t-call="website.layout">
             <div id="wrap">
