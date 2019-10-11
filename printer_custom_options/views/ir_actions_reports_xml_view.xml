@@ -6,7 +6,8 @@
     <field name="inherit_id" ref="base.act_report_xml_view" />
     <field name="arch" type="xml">
       <xpath expr="//field[@name='printing_printer_id']" position="after" >
-          <field name="printer_options" widget="many2many_tags" options="{'no_create': True}"/>
+          <field name="printer_options" widget="many2many_tags"
+                 options="{'no_create': True}"/>
       </xpath>
     </field>
   </record>

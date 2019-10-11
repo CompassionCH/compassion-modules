@@ -25,22 +25,27 @@ except ImportError:
 class PrintingPrinter(models.Model):
     _inherit = 'printing.printer'
 
+    printer_options = fields.One2many(
+        comodel_name='printer.option',
+        inverse_name='printer_id')
+    printer_option_selected = fields.Many2many(
+        comodel_name='printer.option',
+        string='Printer Options')
     printer_option_choices = fields.One2many(
         comodel_name='printer.option.choice',
         inverse_name='printer_id',
-        string='Output Bins')
+        string='Option Choices')
 
-    def _get_values_for_option(self, cups_connection, cups_printer,
-                               option_key):
+    def _get_cups_ppd(self, cups_connection, cups_printer):
         printer_uri = cups_printer['printer-uri-supported']
         printer_system_name = printer_uri[printer_uri.rfind('/') + 1:]
         ppd_info = cups_connection.getPPD3(printer_system_name)
         ppd_path = ppd_info[2]
         if not ppd_path:
-            return False
+            return False, False
+        return ppd_path, cups.PPD(ppd_path)
 
-        ppd = cups.PPD(ppd_path)
-        option = ppd.findOption(option_key)
+    def _cleanup_ppd(self, ppd_path):
         try:
             os.unlink(ppd_path)
         except OSError as err:
@@ -48,7 +53,6 @@ class PrintingPrinter(models.Model):
             # The file has already been deleted, we can continue the update
             if err.errno != errno.ENOENT:
                 raise
-        return option
 
     @api.multi
     def _prepare_update_from_cups(self, cups_connection, cups_printer):
@@ -57,26 +61,36 @@ class PrintingPrinter(models.Model):
 
         current_option_keys = self.printer_option_choices.mapped(
             'composite_key')
+        ppd_path, ppd = self._get_cups_ppd(cups_connection, cups_printer)
+        self._load_printer_option_list(ppd)
 
         new_option_values = []
-        # TODO: We could make this list dynamic.
-        for option_key in ['OutputBin', 'Fold', 'MediaType']:
-            new_options = self.discover_printer_options(cups_connection,
-                                                        cups_printer,
-                                                        current_option_keys,
-                                                        option_key)
+        for selected_option in self.printer_option_selected:
+            option_key = selected_option.option_key
+            new_options = self.discover_values_of_option(ppd,
+                                                         current_option_keys,
+                                                         option_key)
             new_option_values.extend(new_options)
         vals['printer_option_choices'] = new_option_values
+
+        self._cleanup_ppd(ppd_path)
         return vals
 
-    def discover_printer_options(self, cups_connection, cups_printer,
-                                 current_option_keys, option_key):
+    def _load_printer_option_list(self, ppd):
+        if len(self.printer_options) > 0:
+            # Only fetch options the first time.
+            return
+        option_inserts = []
+        for option_group in ppd.optionGroups:
+            for option in option_group.options:
+                option_inserts.append((0, 0, {'option_key': option.keyword}))
+        self.printer_options = option_inserts
+
+    def discover_values_of_option(self, ppd, current_option_keys, option_key):
         """ Returns all new values for one printer option category. Most
         probably it will insert all option values the first time we sync with
         CUPS and then return an empty list."""
-        option = self._get_values_for_option(
-            cups_connection, cups_printer, option_key
-        )
+        option = ppd.findOption(option_key)
         if not option:
             return []
 
