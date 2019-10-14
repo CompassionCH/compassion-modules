@@ -103,9 +103,6 @@
                         <page string="Internal Notes">
                             <field name="description"/>
                         </page>
-                        <page string="Leads">
-                            <field name="lead_ids"/>
-                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
