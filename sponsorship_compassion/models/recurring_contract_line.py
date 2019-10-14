@@ -65,4 +65,3 @@ class SponsorshipLine(models.Model):
                 'product_id': [('categ_name', '!=', SPONSORSHIP_CATEGORY)]
             }
         return res
-

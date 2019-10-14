@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields, _
+from odoo import models, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):

@@ -88,16 +88,16 @@ class SponsorshipContract(models.Model):
         oldname='num_pol_ga'
     )
     end_reason = fields.Selection([
-            ('2', _("Mistake from our staff")),
-            ('3', _("Death of partner")),
-            ('4', _("Moved to foreign country")),
-            ('5', _("Not satisfied")),
-            ('6', _("Doesn't pay")),
-            ('8', _("Personal reasons")),
-            ('9', _("Never paid")),
-            ('12', _("Financial reasons")),
-            ('25', _("Not given")),
-        ], copy=False)
+        ('2', _("Mistake from our staff")),
+        ('3', _("Death of partner")),
+        ('4', _("Moved to foreign country")),
+        ('5', _("Not satisfied")),
+        ('6', _("Doesn't pay")),
+        ('8', _("Personal reasons")),
+        ('9', _("Never paid")),
+        ('12', _("Financial reasons")),
+        ('25', _("Not given")),
+    ], copy=False)
     months_paid = fields.Integer(compute='_compute_months_paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
@@ -293,8 +293,9 @@ class SponsorshipContract(models.Model):
     @api.depends('activation_date', 'state')
     def _compute_active(self):
         for contract in self:
-            contract.is_active = bool(contract.activation_date) and \
-                                 contract.state not in ('terminated', 'cancelled')
+            contract.is_active = \
+                bool(contract.activation_date) and \
+                contract.state not in ('terminated', 'cancelled')
 
     @api.multi
     def _compute_frequency(self):
@@ -359,8 +360,8 @@ class SponsorshipContract(models.Model):
                     contract.activation_date)
                 end_date = fields.Date.from_string(
                     contract.end_date) if contract.end_date else date.today()
-                contract.contract_duration = (
-                        end_date - contract_start_date).days
+                contract.contract_duration = \
+                    (end_date - contract_start_date).days
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -539,17 +540,19 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.fcp_id
             contract.message_post(
-                f"The project {project_code} was suspended and funds are retained."
+                f"The project {project_code} was suspended "
+                "and funds are retained."
                 "<br/>Invoices due in the suspension period "
                 "are automatically cancelled.",
-                f"Project Suspended",
-                f"comment")
+                "Project Suspended",
+                "comment")
             contract.partner_id.message_post(
-                f"The project {project_code} was suspended and funds are retained for child {contract.child_code}. <b>"
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically cancelled.",
-                f"Project Suspended",
-                f"comment")
+                f"The project {project_code} was suspended "
+                f"and funds are retained for child {contract.child_code}. <b>"
+                "<br/>Invoices due in the suspension period "
+                "are automatically cancelled.",
+                "Project Suspended",
+                "comment")
 
         # Change invoices if config tells to do so.
         if suspend_config:
@@ -730,9 +733,10 @@ class SponsorshipContract(models.Model):
                         invl_datas[i]['contract_id'] = sponsorship.id
                     else:
                         logger.error(
-                            f"No active sponsorship found for child {sponsorship.child_code}. "
-                            f"The gift contract with id {contract.id} is not valid."
-                            )
+                            f"No active sponsorship found for "
+                            f"child {sponsorship.child_code}. "
+                            f"The gift contract with "
+                            f"id {contract.id} is not valid.")
                         continue
 
             # Find the analytic account
@@ -998,7 +1002,7 @@ class SponsorshipContract(models.Model):
     def action_cancel_draft(self):
         """ Set back a cancelled contract to draft state. """
         update_sql = "UPDATE recurring_contract " \
-                     "SET state='draft', end_date=NULL, activation_date=NULL, " \
+                     "SET state='draft',end_date=NULL,activation_date=NULL, "\
                      "start_date=CURRENT_DATE, end_reason=NULL"
         for contract in self.filtered(lambda c: c.state == 'cancelled'):
             query = update_sql
@@ -1226,8 +1230,8 @@ class SponsorshipContract(models.Model):
                         invl.due_date < project.last_reviewed_date
                 if not payment_allowed:
                     raise UserError(
-                        f"The project {project.fcp_id} is fund-suspended. You cannot "
-                        f"reconcile invoice ({invoice.id}).")
+                        f"The project {project.fcp_id} is fund-suspended. "
+                        f"You cannot reconcile invoice ({invoice.id}).")
 
                 # Activate gift related contracts (if any)
                 if 'S' in contract.type:
@@ -1276,7 +1280,8 @@ class SponsorshipContract(models.Model):
                 next_date = contract._compute_next_invoice_date()
 
             self.env.cr.execute(
-                f"UPDATE recurring_contract SET next_invoice_date = {next_date}"
+                "UPDATE recurring_contract "
+                f"SET next_invoice_date = {next_date}"
                 f"WHERE id = {contract.id}")
         self.env.clear()
         groups._compute_next_invoice_date()

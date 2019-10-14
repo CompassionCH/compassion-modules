@@ -40,11 +40,11 @@
                 'child_compassion',                 # child_compassion
                 'account_cancel',                   # source/addons
                 'web_m2x_options',                  # oca_addons/web
-                'account_invoice_split_invoice',    # account_invoice_split_invoice
-                'partner_firstname',                # oca_addons/partner-contact
-                'account_analytic_attribution',     # account_analytic_attribution
-                'account_analytic_default',         # source/addons/account_analytic_default
-                'web_timeline'],                    # oca_addons/web
+                'account_invoice_split_invoice',
+                'partner_firstname',                # oca_addons
+                'account_analytic_attribution',
+                'account_analytic_default',         # source/addons
+                'web_timeline'],                    # oca_addons/
     'data': [
         'views/sponsorship_contract_view.xml',
         'views/sponsorship_contract_group_view.xml',
