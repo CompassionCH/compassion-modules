@@ -53,16 +53,29 @@ class TestPrintingPrinter(TransactionCase):
 
         self.assertEqual(options, {})
 
+    def test_prepare_update_from_cups__load_options(self):
+        self._mock_cups_options(self.printer, [])
+        cups_printer = {'printer-info': ''}
+
+        self.printer._prepare_update_from_cups({}, cups_printer)
+
+        self.assertEqual(len(self.printer.printer_options), 1)
+        self.assertEqual(self.printer.printer_options[0].option_key,
+                         'OutputBin')
+
     def test_prepare_update_from_cups(self):
         self._mock_cups_options(self.printer,
                                 [{'choice': 'bin1'},
                                  {'choice': 'bin2'}])
         cups_printer = {'printer-info': ''}
 
+        # The first call only loads the OutputBin option.
+        self.printer._prepare_update_from_cups({}, cups_printer)
+        self.printer.printer_option_selected += self.printer.printer_options
         vals = self.printer._prepare_update_from_cups({}, cups_printer)
 
         # OutputBin:bin1 was already inserted
-        self.assertEqual(len(vals['printer_option_choices']), 5)
+        self.assertEqual(len(vals['printer_option_choices']), 1)
         self.assertIn((0, 0,
                        {'option_key': 'OutputBin', 'option_value': 'bin2'}),
                       vals['printer_option_choices'])
@@ -72,14 +85,18 @@ class TestPrintingPrinter(TransactionCase):
 
     def _mock_cups_options(self, printer,
                            choices):
-        def mock_get_values_for_option(*args):
-            class DictWrapper(dict):
-                __getattr__ = dict.__getitem__
-                __setattr__ = dict.__setitem__
+        def mock__get_cups_ppd(*args):
+            mock_ppd = mock.Mock()
+            # Mock optionGroups
+            mock_option_group = mock.Mock()
+            mock_option = mock.Mock()
+            mock_option.keyword = 'OutputBin'
+            mock_option.choices = choices
+            mock_option_group.options = [mock_option]
+            mock_ppd.optionGroups = [mock_option_group]
+            # Mock findOption
+            mock_ppd.findOption = lambda x: mock_option
+            return 'pdd_path', mock_ppd
 
-            return DictWrapper({
-                'choices': choices
-            })
-
-        printer._get_values_for_option = \
-            types.MethodType(mock_get_values_for_option, self.printer)
+        printer._get_cups_ppd = \
+            types.MethodType(mock__get_cups_ppd, self.printer)
