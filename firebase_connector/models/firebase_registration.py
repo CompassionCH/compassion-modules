@@ -21,17 +21,14 @@ try:
 except ImportError as e:
     _logger.error("Please install the PIP package firebase_admin")
 
-
 try:
-    firebase_credentials = \
-        credentials.Certificate(config.get('google_application_credentials'))
-    firebase_app = firebase_admin.initialize_app(
-        credential=firebase_credentials)
-except (KeyError, ValueError):
+    firebase_credentials = credentials.Certificate(config.get('google_application_credentials'))
+    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
+except (KeyError, ValueError) as e:
     firebase_app = None
+    logging.error(e)
     if not config.get("test_enable"):
-        logging.error("google_application_credentials is not correctly"
-                      " configured in odoo.conf")
+        logging.error("google_application_credentials is not correctly configured in odoo.conf")
 
 
 class FirebaseRegistration(models.Model):
@@ -66,7 +63,7 @@ class FirebaseRegistration(models.Model):
                           self.env.context.get('message_body'))
 
     @api.multi
-    def send_message(self, message_title, message_body, data=None):
+    def send_message(self, message_title, message_body, data={}):
         """
         Send a notification to the device registered with this firebase id.
         If the firebase id is not in use anymore, we remove the registration
@@ -86,17 +83,22 @@ class FirebaseRegistration(models.Model):
         notif = messaging.Notification(title=message_title, body=message_body)
 
         for firebase_id in self:
+            data.update({
+                'title': message_title,
+                'body': message_body
+            })
             message = messaging.Message(notification=notif,
                                         data=data,
                                         token=firebase_id.registration_id)
             try:
                 messaging.send(message=message)
-            except messaging.ApiCallError as e:
-                logging.debug(
-                    "A device is not reachable from Firebase, unlinking."
-                    "Firebase ID: %s" % firebase_id)
-                if e.code == 'registration-token-not-registered':
-                    # app uninstalled or token renewed
+            except (messaging.QuotaExceededError, messaging.SenderIdMismatchError, messaging.ThirdPartyAuthError,
+                    messaging.UnregisteredError) as e:
+                logging.error(e)
+                if e.code == 'NOT_FOUND':
+                    logging.debug(
+                        "A device is not reachable from Firebase, unlinking."
+                        "Firebase ID: %s" % firebase_id)
                     firebase_id.unlink()
                 else:
                     raise e

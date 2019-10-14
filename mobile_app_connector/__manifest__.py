@@ -50,6 +50,7 @@
         'security/access_rules.xml',
         'data/tile_type_data.xml',
         'data/default_hub.xml',
+        'data/default_banner.xml',
         'data/prayer_tile.xml',
         'data/template_mail_user_not_found.xml',
         'data/ir_cron.xml',

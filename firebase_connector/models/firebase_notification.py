@@ -11,6 +11,7 @@
 from odoo import api, models, fields
 from odoo.tools import config
 from odoo.exceptions import UserError
+from datetime import datetime
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -21,17 +22,6 @@ try:
     from firebase_admin import messaging
 except ImportError as e:
     _logger.error("Please install the PIP package firebase_admin")
-
-
-try:
-    firebase_credentials = \
-        credentials.Certificate(config.get('google_application_credentials'))
-    firebase_app = firebase_admin.initialize_app(
-        credential=firebase_credentials)
-except (KeyError, ValueError):
-    if not config.get("test_enable"):
-        logging.error("google_application_credentials is not correctly"
-                      " configured in odoo.conf")
 
 
 class FirebaseNotification(models.Model):
@@ -46,7 +36,7 @@ class FirebaseNotification(models.Model):
 
     partner_ids = fields.Many2many('res.partner')
     title = fields.Char(required=True)
-    body = fields.Char()
+    body = fields.Char(required=True)
     send_date = fields.Datetime()
     sent = fields.Boolean(default=False, readonly=True)
     send_to_logged_out_devices = fields.Boolean(
@@ -57,8 +47,12 @@ class FirebaseNotification(models.Model):
 
     @api.multi
     def write(self, vals):
-        if 'send_date' in vals and vals['send_date'] < fields.datetime.today():
-            raise UserError("Send date should be in the future")
+        res = super(FirebaseNotification, self).write(vals)
+        if 'send_date' in vals:
+            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
+            if vals['send_date'] < dt:
+                raise UserError("Send date should be in the future")
+        return res
 
     @api.multi
     def send(self, data=None):
@@ -79,7 +73,14 @@ class FirebaseNotification(models.Model):
                 registration_ids += self.env['firebase.registration'].search(
                     [('partner_id', '=', 'None')]
                 )
-            notif.sent = registration_ids.send_message(notif.title, notif.body)
+
+            n_data = {
+                "notification_id": str(notif.id),
+                "destination": notif.destination or "",
+                "fund_type_id": str(notif.fundType.id)
+            }
+
+            notif.sent = registration_ids.send_message(notif.title, notif.body, n_data)
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
                 for partner in notif.partner_ids:
@@ -88,8 +89,8 @@ class FirebaseNotification(models.Model):
                             'partner_id': partner.id,
                             'notification_id': notif.id,
                         })
-        else:
-            raise UserError("We were not able to send the notification.")
+            else:
+                raise UserError("We were not able to send the notification.")
 
     @api.multi
     def duplicate_to_unread(self):
@@ -115,9 +116,11 @@ class FirebaseNotification(models.Model):
             }
 
     def notification_cron(self):
+        dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
+
         self.search([
-            ('sent', '=', 'False'),
-            ('send_date', '<', fields.datetime.today())
+            ('sent', '=', False),
+            ('send_date', '<', dt)
         ]).send()
 
 
@@ -129,6 +132,6 @@ class FirebaseNotificationPartnerRead(models.Model):
     _description = "Link between partner and notifications read status"
 
     partner_id = fields.Many2one('res.partner')
-    notification_id = fields.Many2one('firebase.notification', required=True)
+    notification_id = fields.Many2one('firebase.notification', required=True, ondelete="cascade")
     opened = fields.Boolean(default=False)
     read_date = fields.Datetime()

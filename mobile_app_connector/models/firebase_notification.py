@@ -10,6 +10,7 @@
 
 from odoo import api, fields, models
 from odoo.fields import Datetime
+from datetime import datetime
 
 
 class FirebaseNotification(models.Model):
@@ -49,14 +50,20 @@ class FirebaseNotification(models.Model):
         reg = self.env['firebase.registration']\
             .search([('registration_id', '=', firebase_id)])
         if reg.partner_id:
+            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
             notifications = self.search([
-                ('partner_ids', '=', reg.partner_id.id,),
-                ('send_date', '<', Datetime.now()),
+                ('partner_ids', '=', reg.partner_id.id),
+                ('send_date', '<', dt),
+                ('sent', '=', True)
             ])
         else:
             # Logged out users
+            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
             notifications = self.search([
-                ('send_to_logged_out_devices', '=', True)])
+                ('send_to_logged_out_devices', '=', True),
+                ('send_date', '<', dt),
+                ('sent', '=', True)
+            ])
         messages = []
         for notif in notifications:
             messages.append({
@@ -67,7 +74,7 @@ class FirebaseNotification(models.Model):
                 "DESTINATION": notif.destination,
                 "DISPLAY_ORDER": "",
                 "HERO": "",
-                "ID": notif.id,
+                "ID": str(notif.id),
                 "IS_DELETED": "",
                 "MESSAGE_BODY": notif.body,
                 "MESSAGE_TITLE": notif.title,
@@ -82,8 +89,8 @@ class FirebaseNotification(models.Model):
                 "UPDATED_BY": "",
                 "UPDATED_ON": "",
                 "USER_ID": "",
-                "IS_READ": "0" if reg.partner_id in notif.read_ids.mapped('partner_id') else "1",
-                "POST_TITLE": notif.fundType.id,
+                "IS_READ": "1" if notif.read_ids.filtered(lambda r: r.partner_id == reg.partner_id).opened else "0",
+                "POST_TITLE": str(notif.fundType.id),
             })
 
         return messages
@@ -97,8 +104,10 @@ class FirebaseNotificationPartnerRead(models.Model):
 
     def mobile_read_notification(self, *json, **params):
         notif_id = params.get('notification_id')
-        # TODO fix permissions
-        # notif = self.sudo().browse(int(notif_id))
-        # notif.opened = True
-        # notif.read_date = fields.Datetime.today()
+        notif = self.env['firebase.notification.partner.read'].search([
+            ('notification_id', '=', int( notif_id) ),
+            ('partner_id', '=', self.env.user.partner_id.id),
+        ])
+        notif.opened = True
+        notif.read_date = fields.Datetime.now()
         return 1

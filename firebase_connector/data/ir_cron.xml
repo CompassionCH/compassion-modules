@@ -3,8 +3,8 @@
     <data noupdate="1">
         <record id="send_notification" model="ir.cron">
             <field name="name">Send notification from the last hour</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">hours</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
             <field name="function">notification_cron</field>
