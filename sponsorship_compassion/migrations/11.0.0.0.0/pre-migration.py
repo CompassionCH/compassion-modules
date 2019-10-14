@@ -30,6 +30,3 @@ def migrate(env, version):
             ('res_partner_sector_id', 'res_partner_industry_id'),
         ],
     })
-
-
-

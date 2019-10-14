@@ -10,10 +10,10 @@
       "to_json_conversion": "lambda ref: '65-' + ref"
     },
     "GP_ID": {
-      "field": "return 'CH'"
+      "to_json_conversion": "return 'CH'"
     },
     "DataProtection_Type": {
-      "field": "return 'ForgetMe'"
+      "to_json_conversion": "return 'ForgetMe'"
     }
   }
 }

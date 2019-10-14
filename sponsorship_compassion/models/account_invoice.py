@@ -8,8 +8,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from datetime import date
+
 
 class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""

@@ -5,17 +5,33 @@
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
         <field name="arch" type="xml">
+
+            <!-- Hide reference -->
+            <field name="reference" position="replace">
+                <field name="name"/>
+            </field>
+
+            <field name="last_paid_invoice_date" position="before">
+                <field name="type"/>
+                <field name="group_freq"/>
+                <field name="months_paid"/>
+            </field>
+
             <!-- Add correspondant field for sponsorships -->
             <field name="partner_id" position="after">
                 <field name="correspondent_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
                 <field name="send_gifts_to"/>
             </field>
 
-            <!-- Make origin and medium mandatory for sponsorships -->
-            <field name="origin_id" position="attributes">
+            <field name="medium_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
-            <field name="medium_id" position="attributes">
+            <field name="medium_id" position="before">
+                <field name="child_id" domain="[('state', 'in', ('N', 'I'))]" options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
+                <field name="origin_id"/>
+            </field>
+            <!-- Make origin and medium mandatory for sponsorships -->
+            <field name="origin_id" position="attributes">
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
             </field>
 
@@ -39,10 +55,15 @@
             <field name="group_id" position="attributes">
                 <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
             </field>
+            <field name="group_id" position="after">
+                <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
+                                   context="{'default_type':'S'}"/>
+                <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
+            </field>
 
             <!-- Add global_id field -->
             <field name="type" position="after">
-                <field name="global_id" attrs="{'invisible': [('type', 'not like', 'S')]}"/>
+                <field name="global_id" attrs="{'invisible': [('type', '!=', 'S')]}"/>
             </field>
 
             <!-- Add transfer field -->
@@ -104,14 +125,48 @@
 
     <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
         <field name="name">sponsorship.compassion.graph.select</field>
-        <field name="model">sponsorship.compassion</field>
-        <field name="inherit_id" ref="contract_compassion.view_recurring_contract_compassion_filter" />
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
         <field name="arch" type="xml">
+
+            <field name="reference" position="attributes">
+                <attribute name="filter_domain">
+                    ['|', '|', '|', '|', '|', '|',
+                    ('reference','ilike',self),
+                    ('partner_id','child_of',self),
+                    ('payment_mode_id', 'ilike', self),
+                    ('partner_codega', 'ilike', self),
+                    ('child_code', 'ilike', self),
+                    ('child_name', 'ilike', self),
+                    ('origin_id', 'ilike', self),
+                    ]
+                </attribute>
+            </field>
+            <field name="payment_mode_id" position="after">
+                <field name="origin_id"/>
+            </field>
+            <xpath expr="//filter[@name='state']" position="after">
+                <separator />
+                <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
+            </xpath>
+
             <filter name="finished" position="after">
                 <filter string="Last 3 Months"  name="last_3_months"
                     domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
                              ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]" help="Last 3 months"/>
             </filter>
+        </field>
+    </record>
+
+    <record id="view_recurring_contract_tree_compassion" model="ir.ui.view">
+        <field name="name">sponsorship.compassion.tree</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="child_code" />
+            </field>
+            <field name="reference" position="replace" />
         </field>
     </record>
 
@@ -158,8 +213,14 @@
         </field>
     </record>
 
-    <record model="ir.actions.act_window" id="contract_compassion.action_contract">
+    <record model="ir.actions.act_window" id="action_contract">
+        <field name="name">Contracts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">recurring.contract</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
         <field name="domain">[('type','in',['O','G'])]</field>
+        <field name="context">{'default_type':'O'}</field>
     </record>
 
     <record id="action_sponsorship_contract" model="ir.actions.act_window">
@@ -186,10 +247,10 @@
         <field name="act_window_id" ref="action_sponsorship_contract"/>
     </record>
 
-    <record id="action_reccuring_contract_view_tree" model="ir.actions.act_window.view">
+    <record id="action_recurring_contract_view_tree" model="ir.actions.act_window.view">
         <field eval="5" name="sequence"/>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="contract_compassion.view_recurring_contract_tree_compassion"/>
+        <field name="view_id" ref="sponsorship_compassion.view_recurring_contract_tree_compassion"/>
         <field name="act_window_id" ref="action_sponsorship_contract"/>
     </record>
 
@@ -261,4 +322,9 @@
               name="Sponsorships" sequence="2" action="action_sponsorship_contract"/>
     <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
               name="Supporters" action="base.action_partner_customer_form" sequence="0"/>
+
+    <!-- Delete useless menu entries in the Accounting section -->
+    <record model="ir.ui.menu" id="recurring_contract.menu_contracts_section">
+        <field name="active" eval="False"/>
+    </record>
 </odoo>

@@ -60,7 +60,7 @@
       "field": null
     },
     "DelinkType": {
-      "field": "return 'Sponsor-requested Cancellation'"
+      "to_json_conversion": "return 'Sponsor-requested Cancellation'"
     },
     "ParentCommitmentID": {
       "field": "parent_id.global_id",

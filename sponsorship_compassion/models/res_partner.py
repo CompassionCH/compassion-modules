@@ -9,6 +9,7 @@
 ##############################################################################
 import random
 import string
+import functools
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -17,7 +18,8 @@ from odoo.exceptions import UserError
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = ['res.partner', 'compassion.mapped.model']
+    _name = 'res.partner'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -194,8 +196,8 @@ class ResPartner(models.Model):
         res = super().write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
                        'mandatory_review', 'send_original', 'title']
-        notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
-                        False)
+        notify = functools.reduce(
+            lambda prev, val: prev or val in vals, notify_vals, False)
         if notify and not self.env.context.get('no_upsert'):
             self.upsert_constituent()
 
@@ -331,7 +333,7 @@ class ResPartner(models.Model):
 
         def _random_str():
             return ''.join([
-                random.choice(string.ascii_letters) for n in xrange(8)])
+                random.choice(string.ascii_letters) for n in range(8)])
 
         # Anonymize and delete partner data
         self.with_context(no_upsert=True).write({

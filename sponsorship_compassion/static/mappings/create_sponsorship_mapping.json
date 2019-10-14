@@ -1,6 +1,6 @@
 {
   "name": "Create Sponsorship Mapping",
-  "model": "res.partner",
+  "model": "recurring.contract",
   "mapping": {
     "HoldID": {
       "field": "child_id.hold_id.hold_id",
