@@ -19,9 +19,13 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
     var PaymentForm = animation.Class.extend({
         selector: '#payment_compassion',
         start: function () {
-//            this.$el.find('form').submit();
               this.$el.find('#pay_stripe').unbind('click');
               this.$el.find('#pay_stripe').on('click', pay_stripe);
+              if (this.$el.find('#pay_stripe').length === 0){
+                 this.$el.find('form').submit();
+              } else {
+                 this.$el.find('#pay_stripe').click()
+              }
         }
     });
     animation.registry.payment_form = PaymentForm;
@@ -39,7 +43,7 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
         },
         token: function(token, args) {
             handler.isTokenGenerate = true;
-            ajax.jsonRpc("/payment/stripe/create_charge", 'call', {
+            ajax.jsonRpc("/compassion/payment/stripe/create_charge", 'call', {
                 tokenid: token.id,
                 email: token.email,
                 amount: $("input[name='amount']").val(),
@@ -67,8 +71,9 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
             $(this).attr('disabled','disabled');
 
         var $form = $(e.currentTarget).parents('form');
-        var acquirer_id = $(e.currentTarget).closest('div.oe_sale_acquirer_button,div.oe_quote_acquirer_button,div.o_website_payment_new_payment');
-        acquirer_id = acquirer_id.data('id') || acquirer_id.data('acquirer_id');
+        var div_datas = $(e.currentTarget).closest('div.oe_sale_acquirer_button,div.oe_quote_acquirer_button,div.o_website_payment_new_payment');
+        var invoice_id = div_datas.data('invoice') || undefined;
+        var acquirer_id = div_datas.data('id') || div_datas.data('acquirer_id');
         if (! acquirer_id) {
             return false;
         }
@@ -83,9 +88,6 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
         var currency = $("input[name='currency']").val();
         var amount = parseFloat($("input[name='amount']").val() || '0.0');
 
-        var $pay_stripe = $('#pay_stripe').detach();
-        // Restore 'Pay Now' button HTML since data might have changed it.
-        $form.find('#pay_stripe').replaceWith($pay_stripe);
         handler.open({
             name: $("input[name='merchant']").val(),
             email: $("input[name='email']").val(),
@@ -93,23 +95,5 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
             currency: currency,
             amount: _.contains(int_currencies, currency) ? amount : amount * 100,
         });
-/*
-        ajax.jsonRpc('/shop/payment/transaction/' + acquirer_id, 'call', {
-                so_id: so_id,
-                so_token: so_token
-            }, {'async': false}).then(function (data) {
-            var $pay_stripe = $('#pay_stripe').detach();
-            $form.html(data);
-            // Restore 'Pay Now' button HTML since data might have changed it.
-            $form.find('#pay_stripe').replaceWith($pay_stripe);
-            handler.open({
-                name: $("input[name='merchant']").val(),
-                email: $("input[name='email']").val(),
-                description: $("input[name='invoice_num']").val(),
-                currency: currency,
-                amount: _.contains(int_currencies, currency) ? amount : amount * 100,
-            });
-        });
-    */
     }
 });
