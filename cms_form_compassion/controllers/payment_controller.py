@@ -21,7 +21,7 @@ class PaymentFormController(website_account, FormControllerMixin):
 
     @route(['/compassion/payment/invoice/<int:invoice_id>'], type='http',
            website=True, methods=['GET', 'POST'],
-           auth='public', noindex=['header', 'meta', 'robots'], csrf=False)
+           auth='public', noindex=['header', 'meta', 'robots'])
     def payment_invoice(self, invoice_id, **kwargs):
         """ Controller for redirecting to the payment submission of an invoice.
 
@@ -90,7 +90,7 @@ class PaymentFormController(website_account, FormControllerMixin):
         return request.render(template, values)
 
     @route(['/compassion/payment/<int:transaction_id>'],
-           auth="public", website=True, csrf=False)
+           auth="public", website=True)
     def payment(self, transaction_id, **kwargs):
         """ Controller for redirecting to the payment submission, using
         an existing transaction.
@@ -122,7 +122,7 @@ class PaymentFormController(website_account, FormControllerMixin):
 
     @route('/compassion/payment/validate',
            type='http', auth='public', website=True,
-           noindex=['header', 'meta', 'robots'], csrf=False)
+           noindex=['header', 'meta', 'robots'])
     def payment_validate(self, transaction_id=None, **post):
         payment_ok = True
         if transaction_id is None:
@@ -148,7 +148,7 @@ class PaymentFormController(website_account, FormControllerMixin):
         )
 
     @route(['/compassion/payment/stripe/create_charge'], type='json',
-           auth='public', csrf=False)
+           auth='public')
     def stripe_create_charge(self, **post):
         """ Create a payment transaction for stripe
 
