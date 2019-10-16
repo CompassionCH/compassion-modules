@@ -24,6 +24,27 @@ class GetPartnerMessage(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.multi
+    def send_message(self, message_title, message_body, data={}):
+        """
+        Filters message by user preferences
+
+        :param message_title:
+        :param message_body:
+        :param data:
+        :return:
+        """
+        if "topic" in data:
+            if data['topic'] == "child_notification":
+                filtered = self.filtered(lambda reg: reg.receive_child_notification is True)
+                return super(GetPartnerMessage, filtered).send_message(message_title, message_body, data)
+
+            elif data['topic'] == "general_notification":
+                filtered = self.filtered(lambda reg: reg.receive_general_notification is True)
+                return super(GetPartnerMessage, filtered).send_message(message_title, message_body, data)
+
+        return super(GetPartnerMessage, self).send_message(message_title, message_body, data)
+
     @api.model
     def mobile_update_notification_preference(self, json_data, **params):
         """

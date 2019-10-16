@@ -85,8 +85,26 @@ class FirebaseRegistration(models.Model):
         for firebase_id in self:
             data.update({
                 'title': message_title,
-                'body': message_body
+                'body': message_body,
             })
+
+            """ iOS: The badge count is not automatically updated by the app if the app is killed
+                Both: Notifications are not localized
+                
+                => the following methods allows to set localized strings and badge count
+                
+                aps = messaging.Aps(messaging.ApsAlert(title=...), badge=...)
+                apns = messaging.APNSConfig(payload=messaging.APNSPayload(aps=aps))
+                
+                android = messaging.AndroidNotification(title=...)
+                android = messaging.AndroidConfig(notification=android)
+                
+                message = messaging.Message(
+                    android=android,
+                    apns=apns,
+                    token=firebase_id.registration_id)
+            """
+
             message = messaging.Message(notification=notif,
                                         data=data,
                                         token=firebase_id.registration_id)

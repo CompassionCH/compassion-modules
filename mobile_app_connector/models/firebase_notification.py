@@ -23,11 +23,41 @@ class FirebaseNotification(models.Model):
         ('Prayer', 'Prayer'),
     ], default="MyHub")
 
+    topic = fields.Selection([
+        ('general_notification', 'General channel'),
+        ('child_notification', 'Child channel'),
+        ('spam', "None (bypass user's preferences)")
+    ], default='general_notification', required=True)
+
     fundType = fields.Many2one('product.product')
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+
+    @api.multi
+    def send(self, data=None):
+        """
+        Filters notifications w.r.t. user's preference
+
+        :param data:
+        :return:
+        """
+        for notif in self:
+            data = {
+                'topic': notif.topic,
+                "destination": notif.destination or "",
+                "fund_type_id": str(notif.fundType.id)
+            }
+            super(FirebaseNotification, self).send(data)
+
+
+    def notification_cron(self):
+        """
+        Overriding so the automated notifications are filtered to
+        :return:
+        """
+        super(FirebaseNotification, self).notification_cron()
 
     def duplicate_to_unread(self):
         res = super(FirebaseNotification, self).duplicate_to_unread()

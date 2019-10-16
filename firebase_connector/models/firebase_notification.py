@@ -55,7 +55,7 @@ class FirebaseNotification(models.Model):
         return res
 
     @api.multi
-    def send(self, data=None):
+    def send(self, data={}):
         """
         This method take a notification object in Odoo and send it to the
         partners devices via Firebase Cloud Messaging. If the notification was
@@ -66,21 +66,19 @@ class FirebaseNotification(models.Model):
         :return:
         """
         for notif in self:
-            registration_ids = self.env['firebase.registration'].search(
-                [('partner_id', 'in', notif.partner_ids.mapped('id'))]
-            )
+            registration_ids = self.env['firebase.registration'].search([
+                ('partner_id', 'in', notif.partner_ids.mapped('id'))
+            ])
             if notif.send_to_logged_out_devices:
                 registration_ids += self.env['firebase.registration'].search(
-                    [('partner_id', '=', 'None')]
+                    [('partner_id', '=', False)]
                 )
 
-            n_data = {
+            data.update({
                 "notification_id": str(notif.id),
-                "destination": notif.destination or "",
-                "fund_type_id": str(notif.fundType.id)
-            }
+            })
 
-            notif.sent = registration_ids.send_message(notif.title, notif.body, n_data)
+            notif.sent = registration_ids.send_message(notif.title, notif.body, data)
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
                 for partner in notif.partner_ids:
