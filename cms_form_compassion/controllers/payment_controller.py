@@ -90,7 +90,7 @@ class PaymentFormController(website_account, FormControllerMixin):
         return request.render(template, values)
 
     @route(['/compassion/payment/<int:transaction_id>'],
-           auth="public", website=True)
+           auth="public", website=True, noindex=['robots', 'meta', 'header'])
     def payment(self, transaction_id, **kwargs):
         """ Controller for redirecting to the payment submission, using
         an existing transaction.
@@ -98,27 +98,10 @@ class PaymentFormController(website_account, FormControllerMixin):
         :param int transaction_id: id of a payment.transaction record.
         """
         transaction = self.get_transaction()
-
-        values = {
-            'payment_form': transaction.acquirer_id.with_context(
-                submit_class='btn btn-primary',
-                submit_txt=_('Next')
-            ).sudo().render(
-                transaction.reference,
-                transaction.amount,
-                transaction.currency_id.id,
-                values={
-                    'return_url': kwargs['redirect_url'],
-                    'partner_id': transaction.partner_id.id,
-                    'billing_partner_id': transaction.partner_id.id,
-                }
-            ),
-            'acquirer_id': transaction.acquirer_id.id,
-        }
-        template = 'cms_form_compassion.modal_payment_submit' if \
-            kwargs['display_type'] == 'modal' else \
-            'cms_form_compassion.payment_submit_full'
-        return request.render(template, values)
+        if transaction.invoice_id:
+            return self.payment_invoice(transaction.invoice_id.id, **kwargs)
+        else:
+            raise ValueError(_("Missing invoice"))
 
     @route('/compassion/payment/validate',
            type='http', auth='public', website=True,
