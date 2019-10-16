@@ -3,10 +3,6 @@
     <record id="template_postman" model="correspondence.template">
         <field name="name">Postman</field>
         <field name="layout">CH-A-1S11-1</field>
-
-        <!-- Template image-->
-        <field name="template_image" type="base64"
-               file="sbc_compassion/static/img/Postman"/>
         <field name="page_width">2480</field>
         <field name="page_height">3508</field>
 
@@ -25,54 +21,69 @@
         <field name="qrcode_y_max">1052</field>
     </record>
 
-    <record id="postman_checkbox_fr" model="correspondence.lang.checkbox">
+    <!-- Template pages -->
+    <record id="postman_template_page1" model="correspondence.template.page">
         <field name="template_id" ref="template_postman"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_french"/>
+        <field name="page_index">1</field>
+        <field name="background" type="base64"
+               file="sbc_compassion/static/img/Postman"/>
+        <field name="header_box_id" ref="s2b_header_box"/>
+        <field name="text_box_ids" eval="[(4, ref('s2b_l1_textbox_original'))]"/>
+    </record>
+    <record id="postman_template_page2" model="correspondence.template.page">
+        <field name="template_id" ref="template_postman"/>
+        <field name="page_index">2</field>
+        <field name="background" type="base64"
+               file="sbc_compassion/static/img/Postman_back.jpg"/>
+        <field name="text_box_ids" eval="[(4, ref('s2b_l1_textbox_original2'))]"/>
+    </record>
+    <record id="postman_template_page3" model="correspondence.template.page">
+        <field name="template_id" ref="template_postman"/>
+        <field name="page_index">3</field>
+        <field name="background" type="base64"
+               file="sbc_compassion/static/img/additional_page.jpg"/>
+        <field name="text_box_ids" eval="[(4, ref('s2b_l6_textbox_original'))]"/>
+    </record>
+    <record id="postman_template_page4" model="correspondence.template.page">
+        <field name="template_id" ref="template_postman"/>
+        <field name="page_index">4</field>
+        <field name="background" type="base64"
+               file="sbc_compassion/static/img/additional_page.jpg"/>
+    </record>
+
+    <!-- Template Dove *************************************************** -->
+    <record id="dove_checkbox_fr" model="correspondence.lang.checkbox">
+        <field name="language_id" ref="child_compassion.lang_compassion_french"/>
         <field name="x_min">920</field>
         <field name="x_max">1050</field>
         <field name="y_min">60</field>
         <field name="y_max">150</field>
     </record>
-
-    <record id="postman_checkbox_en" model="correspondence.lang.checkbox">
-        <field name="template_id" ref="template_postman"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_english"/>
+    <record id="dove_checkbox_en" model="correspondence.lang.checkbox">
+        <field name="language_id" ref="child_compassion.lang_compassion_english"/>
         <field name="x_min">1540</field>
         <field name="x_max">1680</field>
         <field name="y_min">60</field>
         <field name="y_max">150</field>
     </record>
-
-    <record id="postman_checkbox_es" model="correspondence.lang.checkbox">
-        <field name="template_id" ref="template_postman"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_spanish"/>
+    <record id="dove_checkbox_es" model="correspondence.lang.checkbox">
+        <field name="language_id" ref="child_compassion.lang_compassion_spanish"/>
         <field name="x_min">920</field>
         <field name="x_max">1050</field>
         <field name="y_min">190</field>
         <field name="y_max">300</field>
     </record>
-
-    <record id="postman_checkbox_po" model="correspondence.lang.checkbox">
-        <field name="template_id" ref="template_postman"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_portuguese"/>
+    <record id="dove_checkbox_po" model="correspondence.lang.checkbox">
+        <field name="language_id" ref="child_compassion.lang_compassion_portuguese"/>
         <field name="x_min">920</field>
         <field name="x_max">1050</field>
         <field name="y_min">310</field>
         <field name="y_max">420</field>
     </record>
 
-    <!-- Templates Dove *************************************************** -->
     <record id="template_dove" model="correspondence.template">
         <field name="name">Dove</field>
         <field name="layout">CH-A-1S11-1</field>
-
-        <!-- Template image-->
-        <field name="template_image" type="base64"
-               file="sbc_compassion/static/img/Dove"/>
         <field name="page_width">2480</field>
         <field name="page_height">3508</field>
 
@@ -89,45 +100,22 @@
         <field name="qrcode_x_max">1041</field>
         <field name="qrcode_y_min">0</field>
         <field name="qrcode_y_max">1052</field>
+
+        <field name="checkbox_ids" eval="[(4, ref('dove_checkbox_fr')), (4, ref('dove_checkbox_en')), (4, ref('dove_checkbox_es')), (4, ref('dove_checkbox_po'))]"/>
     </record>
 
-    <record id="dove_checkbox_fr" model="correspondence.lang.checkbox">
+    <!-- Template pages -->
+    <record id="dove_template_page1" model="correspondence.template.page">
         <field name="template_id" ref="template_dove"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_french"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">60</field>
-        <field name="y_max">150</field>
+        <field name="page_index">1</field>
+        <field name="background" type="base64"
+               file="sbc_compassion/static/img/Dove"/>
+        <field name="header_box_id" ref="s2b_header_box"/>
+        <field name="text_box_ids" eval="[(4, ref('s2b_l1_textbox_original'))]"/>
     </record>
-
-    <record id="dove_checkbox_en" model="correspondence.lang.checkbox">
+    <record id="dove_template_page2" model="correspondence.template.page">
         <field name="template_id" ref="template_dove"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_english"/>
-        <field name="x_min">1540</field>
-        <field name="x_max">1680</field>
-        <field name="y_min">60</field>
-        <field name="y_max">150</field>
-    </record>
-
-    <record id="dove_checkbox_es" model="correspondence.lang.checkbox">
-        <field name="template_id" ref="template_dove"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_spanish"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">190</field>
-        <field name="y_max">300</field>
-    </record>
-
-    <record id="dove_checkbox_po" model="correspondence.lang.checkbox">
-        <field name="template_id" ref="template_dove"/>
-        <field name="language_id"
-               ref="child_compassion.lang_compassion_portuguese"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">310</field>
-        <field name="y_max">420</field>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4, ref('s2b_l1_textbox_original2'))]"/>
     </record>
 </odoo>

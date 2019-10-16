@@ -24,7 +24,8 @@ _logger = logging.getLogger(__name__)
 class RestController(http.Controller):
 
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
-    def handler_b2s_image(self, id=None):
+    # We don't want to rename parameter id because it's used by our sponsors
+    def handler_b2s_image(self, id=None):  # pylint: disable=redefined-builtin
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.

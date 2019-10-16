@@ -9,7 +9,6 @@
 ##############################################################################
 
 from odoo import models, api, fields
-from odoo.tools import plaintext2html
 from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
 from werkzeug.exceptions import NotFound
@@ -120,9 +119,7 @@ class CompassionCorrespondence(models.Model):
         """
         This method is called by the app to retrieve a PDF preview of a letter.
         We get in the params the image and text and build a PDF from there via
-        the PDF generator. The image is appended at the end of the HTML text.
-        Both text and photo are enclosed in a <div> that will be handled in the
-        s2b_letter.xml where the JS handle the multipage layout.
+        the PDF generator.
         The app has two write function
             - card: where no template is set and the template id is 0.
             - letter: where we get a valid template id
@@ -133,12 +130,9 @@ class CompassionCorrespondence(models.Model):
                              - 'selected-letter-id': the template ID, 0 if we
                                                      take the default one.
                              - 'file_upl': the image
-                             - 'path_info_extension': the image extension
         :return: An URL pointing to the PDF preview of the generated letter
         """
         body = self._get_required_param('letter-copy', other_params)
-        body_html = '<div id="first_box">' + plaintext2html(body)
-        # supporter_id = self._get_required_param('sup-id', other_params)
         selected_child = self._get_required_param(
             'selected-child', other_params)
         # iOS sends the childID, while Android sends the local_id!
@@ -157,25 +151,24 @@ class CompassionCorrespondence(models.Model):
             # write a card -> default template
             template_id = self.env['mobile.app.settings'].get_param(
                 'default_s2b_template_id')
-        file = other_params.get('file_upl')
-        file_extension = other_params.get('path_info_extension')
+        attached_file = other_params.get('file_upl')
+        datas = False
+        if attached_file:
+            datas = [(0, 0, {
+                'datas': b64encode(attached_file.stream.read()),
+                'name': attached_file.filename,
+            })]
         gen = self.env['correspondence.s2b.generator'].sudo().create({
             'name': 'app-' + child_local_id,
             'selection_domain':
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
-            'body_html': body_html,
+            'body': body,
             's2b_template_id': int(template_id),
+            'image_ids': datas
         })
-        if file:
-            body_html += "<br><div id='included-img' style='width: 100%;'>" \
-                         "<img style='width:100%;"
-            body_html += "' src=\"data:image/" + file_extension[:] + \
-                         ";base64, " + b64encode(file.stream.read()) + \
-                         "\"/></div>"
-            gen.body_html = body_html
-        gen.body_html += "</div>"
         gen.onchange_domain()
-        self.env.cr.commit()
+        # We commit otherwise the generation fails
+        self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
         web_base_url = \
             self.env['ir.config_parameter'].get_param('web.external.url')
