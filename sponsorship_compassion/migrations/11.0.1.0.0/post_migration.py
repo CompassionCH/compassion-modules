@@ -7,6 +7,7 @@
 #
 ##############################################################################
 from openupgradelib import openupgrade
+from ... import load_mappings
 
 
 @openupgrade.migrate(use_env=True)
@@ -44,3 +45,5 @@ def migrate(env, version):
     env.cr.execute("""
         ALTER TABLE recurring_contract DROP COLUMN end_reason;
     """)
+
+    load_mappings(env.cr, env)

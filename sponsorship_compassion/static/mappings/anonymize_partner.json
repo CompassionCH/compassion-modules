@@ -7,13 +7,13 @@
     },
     "GP_SupporterID": {
       "field": "ref",
-      "to_json_conversion": "lambda ref: '65-' + ref"
+      "to_json_conversion": "'65-' + odoo_value"
     },
     "GP_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     },
     "DataProtection_Type": {
-      "to_json_conversion": "return 'ForgetMe'"
+      "to_json_conversion": "'ForgetMe'"
     }
   }
 }

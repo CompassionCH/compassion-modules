@@ -24,7 +24,7 @@ class ResPartner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    global_id = fields.Char(copy=False)
+    global_id = fields.Char(copy=False, readonly=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
@@ -182,6 +182,8 @@ class ResPartner(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        # Use a sequence for references
+        vals['ref'] = self.env['ir.sequence'].get('partner.ref')
         # Put a preferred name
         partner = super().create(vals)
         if not partner.preferred_name:
@@ -382,6 +384,8 @@ class ResPartner(models.Model):
         messages = message_obj
         action_id = self.env.ref('sponsorship_compassion.upsert_partner').id
         for partner in self:
+            if not partner.ref:
+                partner.ref = self.env['ir.sequence'].get('partner.ref')
             contract_count = self.env['recurring.contract'].search_count([
                 ('correspondent_id', '=', partner.id),
                 ('state', 'not in', ('terminated', 'cancelled'))])

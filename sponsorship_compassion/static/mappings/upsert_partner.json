@@ -7,10 +7,10 @@
     },
     "GPID": {
       "field": "ref",
-      "to_json_conversion": "lambda ref: '65-' + ref"
+      "to_json_conversion": "'65-' + odoo_value"
     },
     "Gender": {
-      "field": "title",
+      "field": "title.name",
       "search_relational_record": true
     },
     "MandatoryReviewRequired": {
@@ -21,7 +21,7 @@
     },
     "CorrespondenceDeliveryPreference": {
       "field": "send_original",
-      "to_json_conversion": "lambda original: 'Physical' if original else 'Digital'"
+      "to_json_conversion": "'Physical' if odoo_value else 'Digital'"
     },
     "FirstName": {
       "field": "firstname"
@@ -30,10 +30,10 @@
       "field": "lastname"
     },
     "GlobalPartner": {
-      "to_json_conversion": "return 'Compassion Switzerland'"
+      "to_json_conversion": "'Compassion Switzerland'"
     },
     "Status": {
-      "to_json_conversion": "return 'Active'"
+      "to_json_conversion": "'Active'"
     }
   }
 }

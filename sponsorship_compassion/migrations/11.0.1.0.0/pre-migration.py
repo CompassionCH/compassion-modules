@@ -1,4 +1,4 @@
-# @author Quentin Gigon <gigon.quentin@gmail.com>
+# author Quentin Gigon <gigon.quentin@gmail.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from openupgradelib import openupgrade
@@ -20,10 +20,6 @@ def migrate(env, version):
          ('recurring_contract.menu_contracts_section',
           'sponsorship_compassion.menu_contracts_section')
          ])
-
-    # openupgrade.rename_tables(
-    #     env.cr, [('recurring_contract',
-    #               'sponsorship_compassion')])
 
     openupgrade.rename_columns(env.cr, {
         'crm_lead_res_partner_industry_rel': [

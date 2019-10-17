@@ -1,11 +1,8 @@
 {
-  "name": "Base Sponsorship Mapping",
+  "name": "Cancel Sponsorship Mapping",
   "model": "recurring.contract",
   "mapping": {
     "Commitment_ID": {
-      "field": "global_id"
-    },
-    "CommitmentID": {
       "field": "global_id"
     },
     "CompassNeedKey": {
@@ -22,13 +19,14 @@
       "field": null
     },
     "FinalCommitmentOfLine": {
-      "to_json_conversion": "return ''"
+      "to_json_conversion": "''"
     },
     "HoldID": {
-      "to_json_conversion": "return HoldType.SPONSOR_CANCEL_HOLD.value"
+      "field": "hold_id.hold_id"
     },
     "HoldType": {
-      "field": null
+      "field": null,
+      "to_json_conversion": "'Sponsor Cancel Hold'"
     },
     "PrimaryHoldOwner": {
       "field": "write_uid.name",
@@ -51,7 +49,8 @@
       "search_relational_record": true
     },
     "HoldExpirationDate": {
-      "field": "hold_expiration_date"
+      "field": "hold_expiration_date",
+      "to_json_conversion": "odoo_value.replace(' ', 'T') + 'Z'"
     },
     "Channel_Name": {
       "field": null
@@ -60,27 +59,25 @@
       "field": null
     },
     "DelinkType": {
-      "to_json_conversion": "return 'Sponsor-requested Cancellation'"
+      "to_json_conversion": "'Sponsor-requested Cancellation'"
     },
     "ParentCommitmentID": {
-      "field": "parent_id.global_id",
-      "to_json_conversion": "lambda parent: parent or None"
+      "field": "parent_id.global_id"
     },
     "CommitmentEndDate": {
-      "field": "end_date",
-      "search_relational_record": true
+      "field": "end_date"
     },
     "CorrespondentGlobalPartnerID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     },
     "IsSponsorCorrespondent": {
-      "to_json_conversion": "return True"
+      "to_json_conversion": "True"
     },
     "SponsorGlobalPartnerID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

@@ -6,7 +6,7 @@ The licence is in the file __manifest__.py
 -->
 <odoo>
     <data noupdate="1">
-        <record id="sponsorship_compassion.recurring_invoicer_cron" model="ir.cron">
+        <record id="recurring_contract.recurring_invoicer_cron" model="ir.cron">
             <field name="name">Launch friday invoice generation</field>
             <field name="interval_number">7</field>
             <field name="interval_type">days</field>

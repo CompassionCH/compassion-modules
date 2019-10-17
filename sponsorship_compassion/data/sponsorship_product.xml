@@ -15,6 +15,11 @@
             <field name="name">Sponsor gifts</field>
         </record>
 
+        <record id="product_category_fund" model="product.category">
+            <field name="parent_id" ref="product.product_category_1"/>
+            <field name="name">Fund</field>
+        </record>
+
         <!--
             Resource: product.template
         -->

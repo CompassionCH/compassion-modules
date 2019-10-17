@@ -30,6 +30,7 @@ class ContractGroup(models.Model):
         string='Contains sponsorship', compute='_compute_contains_sponsorship',
         readonly=True, default=lambda self: 'S' in self.env.context.get(
             'default_type', 'O'))
+    change_method = fields.Selection(default='clean_invoices')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -118,6 +119,3 @@ class ContractGroup(models.Model):
             'amount': contract.birthday_invoice})
         gift_wizard.with_context(
             active_ids=contract.id).generate_invoice()
-
-    def _get_gen_states(self):
-        return ['active', 'waiting']

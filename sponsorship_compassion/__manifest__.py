@@ -29,22 +29,24 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships',
-    'version': '11.0.2.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['recurring_contract',               # recurring_contract
-                'utm',
-                'crm',                              # source/addons
-                'child_compassion',                 # child_compassion
-                'account_cancel',                   # source/addons
-                'web_m2x_options',                  # oca_addons/web
-                'account_invoice_split_invoice',
-                'partner_firstname',                # oca_addons
-                'account_analytic_attribution',
-                'account_analytic_default',         # source/addons
-                'web_timeline', 'wordpress_configuration'],                    # oca_addons/
+    'depends': [
+        'recurring_contract',               # compassion-accounting
+        'utm',
+        'crm',
+        'child_compassion',
+        'account_cancel',
+        'web_m2x_options',                  # oca/web
+        'account_invoice_split_invoice',    # compassion-accounting
+        'partner_firstname',                # oca/partner-contact
+        'account_analytic_attribution',     # compassion-accounting
+        'account_analytic_default',
+        'web_timeline',                     # oca_addons/web
+    ],
     'data': [
         'views/sponsorship_contract_view.xml',
         'views/sponsorship_contract_group_view.xml',
@@ -70,8 +72,8 @@
         'data/end_reasons.xml',
         'data/partner_category_data.xml',
         'data/friday_invoicer_cron.xml',
-        'data/sponsorship_product.xml',
         'data/utm_data.xml',
+        'data/res_partner_sequence.xml',
         'security/ir.model.access.csv',
         'security/record_rules.xml',
         'views/product_views.xml'
@@ -82,5 +84,6 @@
     ],
     'installable': True,
     'auto_install': False,
+    'development_status': 'Stable',
     'post_init_hook': "load_mappings",
 }

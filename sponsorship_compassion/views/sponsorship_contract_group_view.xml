@@ -9,7 +9,7 @@
     <record id="view_contract_group_form_sponsorship" model="ir.ui.view">
         <field name="name">contract.group.sponsorship.form</field>
         <field name="model">recurring.contract.group</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_contract_group_form_compassion"/>
+        <field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
         <field eval="10" name="priority"/>
         <field name="arch" type="xml">
             <group name="info" position="inside">
