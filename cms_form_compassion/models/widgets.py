@@ -48,6 +48,12 @@ class SimpleImage(models.AbstractModel):
     _w_template = 'cms_form_compassion.field_widget_image_simple'
 
 
+class SimpleImageRequired(models.AbstractModel):
+    _name = 'cms_form_compassion.form.widget.simple.image.required'
+    _inherit = 'cms.form.widget.image'
+    _w_template = 'cms_form_compassion.field_widget_image_simple_required'
+
+
 class Document(models.AbstractModel):
     _name = 'cms_form_compassion.form.widget.document'
     _inherit = 'cms.form.widget.binary.mixin'

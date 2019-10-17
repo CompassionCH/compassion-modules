@@ -20,7 +20,6 @@ from odoo.addons.queue_job.job import job, related_action
 _logger = logging.getLogger(__name__)
 
 try:
-    from bs4 import BeautifulSoup
     from pyPdf.pdf import PdfFileReader, PdfFileWriter
     from wand.image import Image
 except ImportError:
@@ -32,6 +31,7 @@ class CorrespondenceS2bGenerator(models.Model):
     """
     _name = 'correspondence.s2b.generator'
     _description = 'Correspondence Generator'
+    _order = 'date desc'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -42,13 +42,10 @@ class CorrespondenceS2bGenerator(models.Model):
         ('done', 'Done')
     ], default='draft')
     name = fields.Char(required=True)
-    date = fields.Date()
+    date = fields.Datetime(default=fields.Datetime.now)
+    image_ids = fields.Many2many('ir.attachment', string='Attached images')
     s2b_template_id = fields.Many2one(
         'correspondence.template', 'S2B Template', required=True)
-    report = fields.Many2one(
-        'ir.actions.report.xml',
-        related='s2b_template_id.report_id'
-    )
     background = fields.Binary(
         related='s2b_template_id.template_image'
     )
@@ -56,23 +53,20 @@ class CorrespondenceS2bGenerator(models.Model):
     sponsorship_ids = fields.Many2many(
         'recurring.contract', string='Sponsorships', required=True
     )
-    sponsorship_id = fields.Many2one(
-        'recurring.contract', help='Current sponsorship for letter generation'
-    )
     language_id = fields.Many2one(
         'res.lang.compassion', 'Language',
         default=lambda s: s.env.ref(
             'child_compassion.lang_compassion_english')
     )
-    body_html = fields.Html(
+    body = fields.Text(
         required=True,
         help='You can use the following tags to replace with values :\n\n'
         '* %child%: child name\n'
         '* %age%: child age (1, 2, 3, ...)\n'
         '* %firstname%: sponsor firstname\n'
-        '* %lastname%: sponsor lastname\n'
+        '* %lastname%: sponsor lastname\n',
+        oldname='body_html'
     )
-    body_backup = fields.Html()
     letter_ids = fields.One2many(
         'correspondence', 'generator_id', 'Letters'
     )
@@ -104,9 +98,9 @@ class CorrespondenceS2bGenerator(models.Model):
             domain = safe_eval(self.selection_domain)
             month_select = ('child_id.birthday_month', '=', self.month)
             index = 0
-            for filter in domain:
-                if filter[0] == 'child_id.birthday_month':
-                    index = domain.index(filter)
+            for search_filter in domain:
+                if search_filter[0] == 'child_id.birthday_month':
+                    index = domain.index(search_filter)
             if index:
                 domain[index] = month_select
             else:
@@ -117,7 +111,7 @@ class CorrespondenceS2bGenerator(models.Model):
     def preview(self):
         """ Generate a picture for preview.
         """
-        pdf = self._get_pdf(self.sponsorship_ids[0], preview=True)
+        pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
         if self.s2b_template_id.layout == 'CH-A-3S01-1':
             # Read page 2
             in_pdf = PdfFileReader(BytesIO(pdf))
@@ -154,7 +148,7 @@ class CorrespondenceS2bGenerator(models.Model):
         self.with_delay().generate_letters_job()
         return self.write({
             'state': 'done',
-            'date': fields.Date.today(),
+            'date': fields.Datetime.now(),
         })
 
     @api.multi
@@ -167,9 +161,7 @@ class CorrespondenceS2bGenerator(models.Model):
         """
         letters = self.env['correspondence']
         for sponsorship in self.sponsorship_ids:
-            pdf = self._get_pdf(sponsorship)
-            raw_text = BeautifulSoup(self.body_html).text.replace(
-                '\n', '\n' * 2)
+            pdf, text = self._get_pdf(sponsorship)
             letters += letters.create({
                 'sponsorship_id': sponsorship.id,
                 'letter_image': base64.b64encode(pdf),
@@ -177,9 +169,8 @@ class CorrespondenceS2bGenerator(models.Model):
                 'direction': 'Supporter To Beneficiary',
                 'source': 'compassion',
                 'original_language_id': self.language_id.id,
-                'original_text': raw_text,
+                'original_text': text,
             })
-            self.body_html = self.body_backup
         self.letter_ids = letters
         return True
 
@@ -197,8 +188,9 @@ class CorrespondenceS2bGenerator(models.Model):
             'target': 'current',
         }
 
-    def _get_pdf(self, sponsorship, preview=False):
+    def _get_pdf(self, sponsorship):
         """ Generates a PDF given a sponsorship. """
+        self.ensure_one()
         sponsor = sponsorship.correspondent_id
         child = sponsorship.child_id
         keywords = {
@@ -207,18 +199,24 @@ class CorrespondenceS2bGenerator(models.Model):
             '%firstname%': sponsor.firstname or sponsor.name,
             '%lastname%': sponsor.firstname and sponsor.lastname or '',
         }
-        html_text = self.body_html
+        text = self.body
         for keyword, replacement in keywords.iteritems():
-            html_text = html_text.replace(keyword, replacement)
+            text = text.replace(keyword, replacement)
 
-        self.write({
-            'body_html': html_text,
-            'body_backup': self.body_html,
-            'sponsorship_id': sponsorship.id
-        })
-        pdf = self.env['report'].with_context(
-            must_skip_send_to_printer=True
-        ).get_pdf(self.ids, self.report.report_name)
-        if preview:
-            self.body_html = self.body_backup
-        return pdf
+        header = u"{sponsor_id} - {sponsor_name} - \n" \
+            u"{child_id} - {child_name} -  {child_gender} - {child_age}" \
+            .format(**{
+                'sponsor_id': sponsor.global_id,
+                'sponsor_name': sponsor.name,
+                'child_id': child.local_id,
+                'child_name': child.lastname + ' ' + child.firstname,
+                'child_gender': 'Female' if child.gender == 'F' else 'Male',
+                'child_age': str(child.age)
+            })
+
+        return self.s2b_template_id.generate_pdf(
+            sponsorship.name,
+            (header, ''),  # Headers (front/back)
+            {'Original': [text]},  # Text
+            self.mapped('image_ids.datas')  # Images
+        ), text

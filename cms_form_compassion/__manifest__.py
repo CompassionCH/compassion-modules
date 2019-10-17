@@ -30,12 +30,12 @@
 # pylint: disable=C8101
 {
     'name': 'CMS Form additions for Compassion',
-    'version': '10.0.1.0.1',
+    'version': '10.0.1.1.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': ['cms_form', 'website_payment'],
+    'depends': ['cms_form', 'website_payment', 'website_no_index'],
     'data': [
         'data/transaction_server_actions.xml',
         'templates/assets.xml',
@@ -43,7 +43,7 @@
     ],
     'demo': [
     ],
-    'development_status': 'Beta',
+    'development_status': 'Stable',
     'installable': False,
     'auto_install': False,
 }

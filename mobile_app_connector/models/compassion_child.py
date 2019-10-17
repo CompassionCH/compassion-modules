@@ -118,9 +118,9 @@ class CompassionChild(models.Model):
 
         at = self.env['ir.advanced.translation'].sudo()
         childBio = {
-            'educationLevel': child.translate('education_level').lower(),
-            'academicPerformance': child.translate(
-                'academic_performance').lower(),
+            'educationLevel': self._lower(child.translate('education_level')),
+            'academicPerformance': self._lower(child.translate(
+                'academic_performance')),
             'maleGuardianJob': at.get(
                 household.translate('male_guardian_job')),
             'femaleGuardianJob': at.get(
@@ -131,13 +131,17 @@ class CompassionChild(models.Model):
                 'female_guardian_job_type'),
             'hobbies': child.translate('hobby_ids.value'),
             'guardians': guardians,
-            'notEnrolledReason': (child.not_enrolled_reason or '').lower()
+            'notEnrolledReason': self._lower((child.not_enrolled_reason or ''))
         }
 
         result = {
             'ChildBioServiceResult': childBio
         }
         return result
+
+    def _lower(self, value):
+        # Lowercase except for German that has Capital letters for words.
+        return value.lower() if self.env.lang != 'de_DE' else value
 
     def _get_required_param(self, key, params):
         if key not in params:

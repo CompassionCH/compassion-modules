@@ -12,7 +12,6 @@
 Define the class CheckboxReader that read a checkbox (the input image
 should contains more or less only the box).
 """
-import os
 import logging
 _logger = logging.getLogger(__name__)
 try:
@@ -166,10 +165,3 @@ class CheckboxReader:
         edge = and2(edge, localmax)
         edge.dtype = 'uint8'
         return edge * 255
-
-    def _write_image(self):
-        folder = '/home/openerp/dev/addons/compassion-modules' \
-                 '/sbc_compassion/tests/testdata/checkboxes'
-        n = str(len(os.listdir(folder)))
-        n = '0'*(3-len(n)) + n
-        cv2.imwrite(folder + '/box' + n + '.jpg', self.img)

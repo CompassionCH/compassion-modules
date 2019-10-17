@@ -23,44 +23,20 @@
         </field>
     </record>
 
-    <record id="child_layout_config_form" model="ir.ui.view">
-        <field name="name">correspondence.b2s.layout.form</field>
-        <field name="model">correspondence.b2s.layout</field>
+    <record id="view_sbc_settings_form" model="ir.ui.view">
+        <field name="name">sbc.settings.form</field>
+        <field name="model">sbc.settings</field>
         <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="name"/>
-                    <field name="code"/>
-                    <field name="page_1_box_ids"/>
-                    <field name="page_2_box_ids"/>
-                    <field name="additional_page_box_id"/>
+            <form class="oe_form_configuration">
+                <header>
+                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                </header>
+                <group string="B2S PDF Generation">
+                    <field name="additional_b2s_translation"/>
                 </group>
             </form>
-        </field>
-    </record>
-
-    <!-- Tree definition -->
-    <record id="child_layout_config_tree" model="ir.ui.view">
-        <field name="name">correspondence.b2s.layout.tree</field>
-        <field name="model">correspondence.b2s.layout</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="code"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="translation_box_config_tree" model="ir.ui.view">
-        <field name="name">correspondence.translation.box.tree</field>
-        <field name="model">correspondence.translation.box</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="left"/>
-                <field name="top"/>
-                <field name="width"/>
-                <field name="nb_lines"/>
-            </tree>
         </field>
     </record>
 
@@ -73,18 +49,18 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="child_layouts_config_action" model="ir.actions.act_window">
-        <field name="name">Child Layouts</field>
-        <field name="res_model">correspondence.b2s.layout</field>
-        <field name="type">ir.actions.act_window</field>
+    <record id="open_sbc_config" model="ir.actions.act_window">
+        <field name="name">General SBC settings</field>
+        <field name="res_model">sbc.settings</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
     </record>
 
     <!-- Menu Definition -->
     <menuitem id="correspondence_config" name="Correspondence" parent="child_compassion.menu_configuration" sequence="3"/>
+    <menuitem id="sbc_settings_menu" parent="correspondence_config"
+              name="General settings" action="open_sbc_config" sequence="1"/>
     <menuitem id="import_letter_config_menu" parent="correspondence_config"
               name="Letter Import" action="import_letter_config_action" sequence="3"/>
-    <menuitem id="child_layout_config_menu" parent="correspondence_config"
-              name="Child Layouts" action="child_layouts_config_action" sequence="2"/>
 </odoo>

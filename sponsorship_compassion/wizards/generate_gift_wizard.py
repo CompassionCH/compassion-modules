@@ -105,7 +105,8 @@ class GenerateGiftWizard(models.TransientModel):
     def _setup_invoice(self, contract, invoice_date):
         journal_id = self.env['account.journal'].search([
             ('type', '=', 'sale'),
-            ('company_id', '=', 1)], limit=1).id
+            ('company_id', '=', contract.company_id.id)
+        ], limit=1).id
         return {
             'type': 'out_invoice',
             'partner_id': contract.gift_partner_id.id,

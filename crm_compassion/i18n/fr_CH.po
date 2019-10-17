@@ -637,12 +637,6 @@ msgid "Lead/Opportunity"
 msgstr "Piste/Opportunité"
 
 #. module: crm_compassion
-#: view:crm.event.compassion:crm_compassion.view_events_form
-#: field:crm.event.compassion,lead_ids:0
-msgid "Leads"
-msgstr "Pistes"
-
-#. module: crm_compassion
 #: model:ir.model,name:crm_compassion.model_hr_holidays
 msgid "Leave"
 msgstr "Congé"

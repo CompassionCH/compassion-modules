@@ -446,7 +446,7 @@ class CommunicationJob(models.Model):
                 'phone_number': self.partner_phone or self.partner_mobile,
                 'call_name': self.config_id.name,
                 'timestamp': fields.Datetime.now(),
-                'communication_id': self.id,
+                'default_communication_id': self.id,
             }).env.context,
             'target': 'new',
         }
