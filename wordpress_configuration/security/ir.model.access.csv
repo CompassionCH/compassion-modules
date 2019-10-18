@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+wordpress_configuration_default,access.wordpress_configuration.all,model_wordpress_configuration,,0,0,0,0
+wordpress_configuration_access,access.wordpress_configuration.admin,model_wordpress_configuration,base.group_system,1,1,1,1

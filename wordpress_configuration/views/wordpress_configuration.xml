@@ -1,0 +1,27 @@
+<odoo>
+    <record model="ir.ui.view" id="wordpress_config_tree">
+        <field name="name">Wordpress configurations</field>
+        <field name="model">wordpress.configuration</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="host"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+
+    <!-- Action opening the tree view -->
+    <act_window id="open_view_wordpress_configuration"
+        name="Wordpress configuration"
+        res_model="wordpress.configuration"
+        view_mode="list,form"
+        limit="20" />
+
+    <!-- Add menu entry in Settings/Technical -->
+    <menuitem id="menu_technical_wp" name="Wordpress" parent="base.menu_custom" sequence="1"/>
+    <menuitem id="menu_wp_configuration" name="Wordpress configuration" parent="menu_technical_wp" sequence="1" action="open_view_wordpress_configuration"/>
+
+</odoo>
