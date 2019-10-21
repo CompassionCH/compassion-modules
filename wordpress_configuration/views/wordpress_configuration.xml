@@ -10,9 +10,6 @@
         </field>
     </record>
 
-
-
-
     <!-- Action opening the tree view -->
     <act_window id="open_view_wordpress_configuration"
         name="Wordpress configuration"

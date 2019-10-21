@@ -4,7 +4,7 @@
 Multi-company support for Wordpress configurations
 ==================================================
 
-The module allows to create different wordpress configurations for each company.
+The module allows to create different wordpress configurations, one for each company.
 
 Installation
 ============

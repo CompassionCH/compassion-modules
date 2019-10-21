@@ -6,7 +6,6 @@ class ProductTemplate(models.Model):
 
     inter_company_reference = fields.Char('Inter-Company Reference')
 
-
     @api.multi
     def name_get(self):
         """

@@ -10,7 +10,6 @@
         </field>
     </record>
 
-
     <record id="product_product_template_kanban_view" model="ir.ui.view">
         <field name="name">Product.template.product.kanban</field>
         <field name="model">product.template</field>
