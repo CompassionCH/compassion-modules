@@ -16,31 +16,45 @@ class WordpressConfiguration(models.Model):
 
     host = fields.Char(required=True)
     user = fields.Char(required=True)
-    password = fields.Char(required=True) # , invisible=true ?
+    password = fields.Char(required=True, groups="base.group_system")  # only admins can access this field
 
     @api.model
     def create(self, values):
+        self._check_values(values)
         self._remove_previous_config(values)
         return super(WordpressConfiguration, self).create(values)
 
     @api.multi
     def write(self, values):
+        self._check_values(values)
         self._remove_previous_config(values)
         return super(WordpressConfiguration, self).write(values)
 
+    def copy(self, values=None):
+        values = dict(values).update({"company_id": self.company_id.id})
+        self.company_id = False
+        return super(WordpressConfiguration, self).copy(values)
 
     @api.model
-    def _remove_previous_config(self, values):
+    def get(self):
         """
-            ensure a one-to-one relationship (companies have at most one config)
+        Returns the config for the current company
         """
-        company = values.get("company_id")
-        configs = self.search([('company_id', '=', company)])
-        for cfg in configs:
-            cfg.company_id = False
+        company = self.env.user.company
+        config = self.search([('company_id', '=', company.id)])
+        assert len(config) == 1, "Missing Wordpress configuration for current company"
+
+        return config
 
     @api.model
-    def default_configuration(self):
+    def get_host(self):
+        """
+        Returns the wordpress host for the current company
+        """
+        return self.get().host
+
+    @api.model
+    def create_default_configuration(self):
         """
         Tries to read wordpress configs from odoo's config file.
         If the configs exists, applies them for the current user's company
@@ -59,3 +73,21 @@ class WordpressConfiguration(models.Model):
             'password': pwd,
             'company_id': self.env.user.company_id.id
         })
+
+    @api.model
+    def _remove_previous_config(self, values):
+        """
+        ensure a one-to-one relationship (companies have at most one config)
+        """
+        if "company_id" in values and values["company_id"] is not False:
+            configs = self.search([('company_id', '=', values["company_id"])]) - self
+            for cfg in configs:
+                cfg.company_id = False
+
+    @api.model
+    def _check_values(self, values):
+        """
+        The dependent modules do not expect the http part
+        """
+        if "host" in values and values.get("host").lower().startswith("http"):
+            raise ValidationError("Hostname should not contain the protocol part 'http://'.")

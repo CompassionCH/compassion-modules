@@ -12,8 +12,8 @@ Installation
 Configuration
 =============
 
-In "Settings", the "wordpress configuration" menu item has been added to the technical menu.
-One record should be created for each company.
+One configuration record should be created for each company.
+(in Settings/Technical menu/Wordpress configuration)
 
 Upon installation, the module tries to create a default configuration for the current company by reading the following
 values in Odoo's config file:

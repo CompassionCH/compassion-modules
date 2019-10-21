@@ -17,8 +17,7 @@
     <act_window id="open_view_wordpress_configuration"
         name="Wordpress configuration"
         res_model="wordpress.configuration"
-        view_mode="list,form"
-        limit="20" />
+        view_mode="list,form" />
 
     <!-- Add menu entry in Settings/Technical -->
     <menuitem id="menu_technical_wp" name="Wordpress" parent="base.menu_custom" sequence="1"/>
