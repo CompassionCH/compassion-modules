@@ -11,6 +11,7 @@
                     <field name="requires_thankyou"/>
                     <field name="thanks_name"/>
                     <field name="success_story_id"/>
+                    <field name="partner_communication_config"/>
                 </field>
             </field>
         </record>
