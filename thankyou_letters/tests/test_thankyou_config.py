@@ -39,13 +39,23 @@ class TestThankYouLetters(SavepointCase):
         thankyou_configs = self.env['thankyou.config'].search([])
 
         # Amount smaller than the minimum.
-        self.assertEqual(thankyou_configs.for_donation_amount(20),
+        line = self.env['account.invoice.line'].search([
+            ('price_subtotal', '<=', 20)
+        ], limit=1)
+        self.assertEqual(thankyou_configs.for_donation(line),
                          self.config50)
 
-        self.assertEqual(thankyou_configs.for_donation_amount(200),
+        line = self.env['account.invoice.line'].search([
+            ('price_subtotal', '>=', 100),
+            ('price_subtotal', '<', 500),
+        ], limit=1)
+        self.assertEqual(thankyou_configs.for_donation(line),
                          self.config100)
 
-        self.assertEqual(thankyou_configs.for_donation_amount(2000),
+        line = self.env['account.invoice.line'].search([
+            ('price_subtotal', '>=', 500),
+        ], limit=1)
+        self.assertEqual(thankyou_configs.for_donation(line),
                          self.config500)
 
     def test_build_inform_mode(self):

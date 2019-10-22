@@ -4,16 +4,17 @@
         <field name="name">thankyou.config.tree</field>
         <field name="model">thankyou.config</field>
         <field name="arch" type="xml">
-            <tree string="Thankyou Configs" editable="bottom">
+            <tree editable="bottom">
                 <field name="min_donation_amount"/>
-                <field name="thanker_user"/>
+                <field name="user_id"/>
                 <field name="send_mode"/>
+                <field name="need_call"/>
             </tree>
         </field>
     </record>
 
     <record id="action_thank_you_config" model="ir.actions.act_window">
-        <field name="name">Thank You</field>
+        <field name="name">Thankyou Config</field>
         <field name="res_model">thankyou.config</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
@@ -21,6 +22,6 @@
     </record>
 
     <!-- Add an entry in Sponsorship \ Configuration \ Correspondence -->
-    <menuitem name="Thank you" id="thank_you_config_item" parent="menu_donation_sales"
-              action="action_thank_you_config" sequence="3"/>
+    <menuitem name="Settings" id="thank_you_config_item" parent="menu_donation_sales"
+              action="action_thank_you_config" sequence="10"/>
 </odoo>
