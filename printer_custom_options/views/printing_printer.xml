@@ -8,7 +8,7 @@
       <field name="arch" type="xml">
         <xpath expr="//sheet/group[3]" position="after">
           <group string="Printer Options Selected">
-            <field name="printer_option_selected" widget="many2many_tags"
+            <field name="printer_options" widget="many2many_tags"
                    domain="[('printer_id', '=', active_id)]"/>
             <field name="printer_option_choices"/>
           </group>

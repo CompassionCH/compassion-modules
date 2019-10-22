@@ -27,16 +27,17 @@ class PrintingPrinter(models.Model):
 
     printer_options = fields.One2many(
         comodel_name='printer.option',
-        inverse_name='printer_id')
-    printer_option_selected = fields.Many2many(
-        comodel_name='printer.option',
-        string='Printer Options')
+        inverse_name='printer_id',
+        readonly=True)
     printer_option_choices = fields.One2many(
         comodel_name='printer.option.choice',
         inverse_name='printer_id',
-        string='Option Choices')
+        string='Option Choices',
+        readonly=True)
 
     def _get_cups_ppd(self, cups_connection, cups_printer):
+        """ Returns a PostScript Printer Description (PDD) file for the
+        printer. """
         printer_uri = cups_printer['printer-uri-supported']
         printer_system_name = printer_uri[printer_uri.rfind('/') + 1:]
         ppd_info = cups_connection.getPPD3(printer_system_name)
@@ -65,8 +66,8 @@ class PrintingPrinter(models.Model):
         self._load_printer_option_list(ppd)
 
         new_option_values = []
-        for selected_option in self.printer_option_selected:
-            option_key = selected_option.option_key
+        for printer_option in self.printer_options:
+            option_key = printer_option.option_key
             new_options = self.discover_values_of_option(ppd,
                                                          current_option_keys,
                                                          option_key)

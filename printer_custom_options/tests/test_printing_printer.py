@@ -69,9 +69,6 @@ class TestPrintingPrinter(TransactionCase):
                                  {'choice': 'bin2'}])
         cups_printer = {'printer-info': ''}
 
-        # The first call only loads the OutputBin option.
-        self.printer._prepare_update_from_cups({}, cups_printer)
-        self.printer.printer_option_selected += self.printer.printer_options
         vals = self.printer._prepare_update_from_cups({}, cups_printer)
 
         # OutputBin:bin1 was already inserted
