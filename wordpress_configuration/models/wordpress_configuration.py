@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from odoo import api, fields, models
 from odoo.tools import config
 
@@ -30,10 +32,11 @@ class WordpressConfiguration(models.Model):
         self._remove_previous_config(values)
         return super(WordpressConfiguration, self).write(values)
 
+    @api.multi
     def copy(self, values=None):
-        values = dict(values).update({"company_id": self.company_id.id})
-        self.company_id = False
-        return super(WordpressConfiguration, self).copy(values)
+        res = super(WordpressConfiguration, self).copy(values)
+        res.company_id = False
+        return res
 
     @api.model
     def get(self):
@@ -90,4 +93,4 @@ class WordpressConfiguration(models.Model):
         The dependent modules do not expect the http part
         """
         if "host" in values and values.get("host").lower().startswith("http"):
-            raise ValidationError("Hostname should not contain the protocol part 'http://'.")
+            raise ValidationError(_("Hostname should not contain the protocol part 'http://'."))
