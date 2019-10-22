@@ -116,6 +116,14 @@ class CompassionChild(models.Model):
         guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
             .translate('role')
 
+        hobbies = child.translate('hobby_ids.value')
+
+        if isinstance(hobbies, unicode):
+            hobbies = [hobbies]
+
+        if isinstance(guardians, unicode):
+            guardians = [guardians]
+
         at = self.env['ir.advanced.translation'].sudo()
         childBio = {
             'educationLevel': self._lower(child.translate('education_level')),
@@ -129,7 +137,7 @@ class CompassionChild(models.Model):
                 'male_guardian_job_type'),
             'femaleGuardianJobType': household.translate(
                 'female_guardian_job_type'),
-            'hobbies': child.translate('hobby_ids.value'),
+            'hobbies': hobbies,
             'guardians': guardians,
             'notEnrolledReason': self._lower((child.not_enrolled_reason or ''))
         }
