@@ -12,13 +12,16 @@ class ProductTemplate(models.Model):
     def name_get(self):
         """
         We have multiple product template with the same name, one for each company.
-        Cross-company users (e.g. admins) may want to differentiates the homonyms so we append the company name
+        Cross-company users (e.g. admins) may want to differentiates the homonyms so we
+        prepend the company name
 
-        returns => [(template_id, "template_name [company]")]
+        returns => [(template_id, "[company] template_name")]
         """
         names = super(ProductTemplate, self).name_get()
         if self.env.user.companies_count < 2:
             return names
 
         names = dict(names)
-        return [(tpl.id, "[%s] %s" % (tpl.company_id.name, names[tpl.id])) for tpl in self]
+
+        # for each template_product, reformat the name with the company name
+        return [(t.id, "[%s] %s" % (t.company_id.name, names[t.id])) for t in self]

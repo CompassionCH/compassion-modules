@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.tools import config
 
 import logging
@@ -18,7 +18,9 @@ class WordpressConfiguration(models.Model):
 
     host = fields.Char(required=True)
     user = fields.Char(required=True)
-    password = fields.Char(required=True, groups="base.group_system")  # only admins can access this field
+
+    # only admins can access this field
+    password = fields.Char(required=True, groups="base.group_system")
 
     @api.model
     def create(self, values):
@@ -93,4 +95,5 @@ class WordpressConfiguration(models.Model):
         The dependent modules do not expect the http part
         """
         if "host" in values and values.get("host").lower().startswith("http"):
-            raise ValidationError(_("Hostname should not contain the protocol part 'http://'."))
+            raise ValidationError(_("Hostname should not contain the protocol part"
+                                    "('http://')."))
