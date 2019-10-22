@@ -9,8 +9,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
-#    @author: Cyril Sester, Emanuel Cino
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,41 +29,20 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Compassion Sponsorships',
-    'version': '10.0.1.0.8',
+    'name': 'Wordpress configuration for multi-company',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['contract_compassion', 'crm', 'account_cancel',
-                'web_m2x_options', 'account_invoice_split_invoice',
-                'partner_firstname', 'account_analytic_attribution',
-                'account_analytic_default', 'web_timeline', 'wordpress_configuration'],
+    'depends': [],
+    'external_dependencies': {},
     'data': [
-        'views/sponsorship_contract_view.xml',
-        'views/sponsorship_contract_group_view.xml',
-        'views/invoice_line_view.xml',
-        'views/res_partner_view.xml',
-        'views/privacy_statement.xml',
-        'views/generate_gift_view.xml',
-        'views/account_invoice_split_wizard_view.xml',
-        'views/child_view.xml',
-        'views/contracts_report_view.xml',
-        'views/gmc_message_view.xml',
-        'views/end_contract_wizard_view.xml',
-        'views/download_child_pictures_view.xml',
-        'views/project_view.xml',
-        'workflow/contract_workflow.xml',
-        'data/sponsorship_product.xml',
-        'data/gmc_action.xml',
-        'data/partner_category_data.xml',
         'security/ir.model.access.csv',
-        'views/product_views.xml'
+        'views/wordpress_configuration.xml',
+        'data/default.xml',
     ],
-    'demo': [
-        'demo/demo_data.yml',
-        'data/demo_data.xml'
-    ],
+    'demo': [],
     'installable': True,
     'auto_install': False,
 }
