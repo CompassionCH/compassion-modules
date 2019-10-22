@@ -49,8 +49,7 @@ class CommunicationDefaults(models.AbstractModel):
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     need_call = fields.Selection(
-        [('before_sending', 'Before the communication is sent'),
-         ('after_sending', 'After the communication is sent')],
+        'get_need_call',
         help='Indicates we should have a personal contact with the partner'
     )
     print_if_not_email = fields.Boolean(
@@ -61,6 +60,13 @@ class CommunicationDefaults(models.AbstractModel):
         'ir.actions.report.xml', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
+
+    @api.model
+    def get_need_call(self):
+        return [
+            ('before_sending', _('Before the communication is sent')),
+            ('after_sending', _('After the communication is sent'))
+        ]
 
 
 class CommunicationOmrConfig(models.Model):

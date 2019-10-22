@@ -46,21 +46,6 @@ class AccountInvoiceLine(models.Model):
             # Avoid generating thank you if no valid invoice lines are present
             return
 
-        small = self.env.ref('thankyou_letters.config_thankyou_small')
-        standard = self.env.ref('thankyou_letters.config_thankyou_standard')
-        large = self.env.ref('thankyou_letters.config_thankyou_large')
-
-        partner = self.mapped('partner_id')
-        partner.ensure_one()
-
-        existing_comm = self.env['partner.communication.job'].search([
-            ('partner_id', '=', partner.id),
-            ('state', 'in', ('call', 'pending')),
-            ('config_id', 'in', (small + standard + large).ids),
-        ])
-        if existing_comm:
-            invoice_lines = existing_comm.get_objects() | invoice_lines
-
         communication_configs = invoice_lines.mapped(
             'product_id.partner_communication_config')
         if len(communication_configs) == 1:
@@ -71,18 +56,29 @@ class AccountInvoiceLine(models.Model):
                 len(communication_configs))
             communication_config = invoice_lines.get_default_thankyou_config()
 
-        total_donation_amount = sum(invoice_lines.mapped('price_subtotal'))
-        thankyou_config = self.env['thankyou.config'].search(
-            []).for_donation_amount(total_donation_amount)
+        partner = self.mapped('partner_id')
+        partner.ensure_one()
 
+        existing_comm = self.env['partner.communication.job'].search([
+            ('partner_id', '=', partner.id),
+            ('state', 'in', ('call', 'pending')),
+            ('config_id', '=', communication_config.id),
+        ] + self.env.context.get('same_job_search', []))
+        if existing_comm:
+            invoice_lines = existing_comm.get_objects() | invoice_lines
+
+        thankyou_config = self.env['thankyou.config'].search(
+            []).for_donation(invoice_lines)
         send_mode, auto_mode = thankyou_config.build_inform_mode(partner)
         comm_vals = {
             'partner_id': partner.id,
             'config_id': communication_config.id,
             'object_ids': invoice_lines.ids,
-            'need_call': communication_config.need_call,
+            'need_call': thankyou_config.need_call or
+            communication_config.need_call,
             'print_subject': False,
-            'user_id': thankyou_config.thanker_user.id,
+            'user_id': self.env.context.get('default_user_id') or
+            thankyou_config.user_id.id,
             'send_mode': send_mode,
             'auto_send': auto_mode,
         }

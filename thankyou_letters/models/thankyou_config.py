@@ -16,19 +16,29 @@ class ThankYouConfig(models.Model):
     _description = 'Thank You Configuration'
     _order = "min_donation_amount"
 
-    min_donation_amount = fields.Integer("Minimum Donation Amount",
-                                         help="Amount in the local currency "
-                                              "to apply the configuration")
+    min_donation_amount = fields.Integer(
+        "Minimum Donation Amount",
+        help="Amount in the local currency to apply the configuration")
     send_mode = fields.Selection('get_send_modes', required=True)
-    thanker_user = fields.Many2one('res.users', string='Thanker')
+    need_call = fields.Selection(
+        'get_need_call',
+        help='Indicates we should have a personal contact with the partner'
+    )
+    user_id = fields.Many2one('res.users', string='Thanker')
 
     @api.multi
-    def for_donation_amount(self, total_amount):
+    def for_donation(self, invoice_lines):
+        """
+        Returns the thankyou.config to use given the invoice lines.
+        :param invoice_lines: account.invoice.line recordset
+        :return: thankyou.config record
+        """
         assert (len(
             self) > 0), 'There should be at least one Thank you configuration.'
         # Cover the case where the total_amount is smaller that all min_
         # donation amount.
         config = self[0]
+        total_amount = sum(invoice_lines.mapped('price_subtotal'))
         for thankyou_config in self:
             if total_amount >= thankyou_config.min_donation_amount:
                 config = thankyou_config
@@ -36,6 +46,9 @@ class ThankYouConfig(models.Model):
 
     def get_send_modes(self):
         return self.env['partner.communication.config'].get_send_mode()
+
+    def get_need_call(self):
+        return self.env['partner.communication.config'].get_need_call()
 
     def build_inform_mode(self, partner):
         """ Returns how the partner should be informed for the given
