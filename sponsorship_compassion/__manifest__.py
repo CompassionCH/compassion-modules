@@ -58,6 +58,7 @@
         'data/gmc_action.xml',
         'data/partner_category_data.xml',
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
         'views/product_views.xml'
     ],
     'demo': [
