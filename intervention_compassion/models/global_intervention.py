@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -23,6 +22,7 @@ class GenericIntervention(models.AbstractModel):
                                            pool
     """
     _name = 'compassion.generic.intervention'
+    _description = "Generic information of interventions"
 
     # General Information
     #####################
@@ -40,7 +40,15 @@ class GenericIntervention(models.AbstractModel):
     subcategory_id = fields.Many2one(
         'compassion.intervention.subcategory', 'Subcategory', readonly=True
     )
-    funding_status = fields.Selection('get_funding_statuses', readonly=True)
+    funding_status = fields.Selection([
+            ("Available", _("Available")),
+            ("Partially Held", _("Partially held")),
+            ("Fully Held", _("Fully held")),
+            ("Partially Committed", _("Partially committed")),
+            ("Fully Committed", _("Fully committed")),
+            ("Inactive", _("Inactive")),
+            ("Ineligible", _("Ineligible")),
+        ], readonly=True)
 
     # Schedule Information
     ######################
@@ -59,18 +67,6 @@ class GenericIntervention(models.AbstractModel):
     total_cost = fields.Float(readonly=True)
     requested_additional_funding = fields.Float(readonly=True)
     estimated_impacted_beneficiaries = fields.Integer(readonly=True)
-
-    @api.model
-    def get_funding_statuses(self):
-        return [
-            ("Available", _("Available")),
-            ("Partially Held", _("Partially held")),
-            ("Fully Held", _("Fully held")),
-            ("Partially Committed", _("Partially committed")),
-            ("Fully Committed", _("Fully committed")),
-            ("Inactive", _("Inactive")),
-            ("Ineligible", _("Ineligible")),
-        ]
 
     @api.model
     def get_fields(self):

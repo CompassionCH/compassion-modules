@@ -183,7 +183,7 @@
         <field name="name">compassion.intervention.tree</field>
         <field name="model">compassion.intervention</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state == 'on_hold';grey:state in ('close','cancel');green:state == 'committed';red:state == 'sla'">
+            <tree decoration-info="state=='on_hold'" decoration-muted="state in ('close','cancel')" decoration-success="state=='committed'" decoration-danger="state == 'sla'">
                 <field name="name"/>
                 <field name="category_id"/>
                 <field name="intervention_id"/>

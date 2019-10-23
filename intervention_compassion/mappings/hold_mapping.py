@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -51,7 +50,7 @@ class HoldUpdateMapping(OnrampMapping):
     MAPPING_NAME = 'update_hold'
 
     def __init__(self, env):
-        super(HoldUpdateMapping, self).__init__(env)
+        super().__init__(env)
         self.CONNECT_MAPPING = HoldCreateMapping.CONNECT_MAPPING.copy()
         self.FIELDS_TO_SUBMIT = HoldCreateMapping.FIELDS_TO_SUBMIT.copy()
         self.CONSTANTS = HoldCreateMapping.CONSTANTS.copy()

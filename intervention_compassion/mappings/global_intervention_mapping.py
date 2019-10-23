@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -94,6 +93,6 @@ class GlobalInterventionMapping(OnrampMapping):
         """ Split FCP ids"""
         if connect_name == 'ICP':
             value = value.split("; ")
-        return super(GlobalInterventionMapping, self)._convert_connect_data(
+        return super()._convert_connect_data(
             connect_name, value_mapping, value, relation_search
         )
