@@ -4,7 +4,7 @@ from odoo import api, fields, models, _
 from odoo.tools import config
 
 import logging
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -41,22 +41,24 @@ class WordpressConfiguration(models.Model):
         return res
 
     @api.model
-    def get(self):
+    def get_config(self, company_id=None):
         """
-        Returns the config for the current company
+        Returns the config for the given or current company
         """
-        company = self.env.user.company
-        config = self.search([('company_id', '=', company.id)])
-        assert len(config) == 1, "Missing Wordpress configuration for current company"
-
-        return config
+        wp_config = self.search([
+            ('company_id', '=', company_id or self.env.user.company_id.id)
+        ], limit=1)
+        if not wp_config:
+            raise UserError(_(
+                "Missing Wordpress configuration for current company"))
+        return wp_config
 
     @api.model
-    def get_host(self):
+    def get_host(self, company_id=None):
         """
         Returns the wordpress host for the current company
         """
-        return self.get().host
+        return self.get_config(company_id).host
 
     @api.model
     def create_default_configuration(self):
@@ -70,7 +72,8 @@ class WordpressConfiguration(models.Model):
         if not (host and user and pwd):
             return
 
-        _logger.info("Wordpress.configuration: using configs found in odoo.conf")
+        _logger.info(
+            "Wordpress.configuration: using configs found in odoo.conf")
 
         self.create({
             'host': host,
@@ -95,5 +98,5 @@ class WordpressConfiguration(models.Model):
         The dependent modules do not expect the http part
         """
         if "host" in values and values.get("host").lower().startswith("http"):
-            raise ValidationError(_("Hostname should not contain the protocol part"
-                                    "('http://')."))
+            raise ValidationError(_(
+                "Hostname should not contain the protocol part ('http://')."))
