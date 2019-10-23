@@ -23,6 +23,7 @@
                 'mail',
                 'partner_contact_in_several_companies',
                 'advanced_translation',
+                'cms_form_compassion'
                 ],
 
     # always loaded

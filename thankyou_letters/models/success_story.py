@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class SuccessStory(models.Model):
     _name = 'success.story'
-    _description = 'Success Story'
+    _description = 'Success Story: story in a blue layout added in letters.'
     _order = 'state asc, print_count asc, date_start asc'
 
     ##########################################################################

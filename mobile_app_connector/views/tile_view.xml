@@ -142,7 +142,7 @@
     <!-- Add menu for Tile -->
     <menuitem id="menu_mobile_app_tile_list"
               name="Tiles"
-              parent="menu_mobile_app"
+              parent="menu_mobile_app_hub"
               action="action_mobile_app_tile"
               groups="sales_team.group_sale_manager"
               sequence="40"

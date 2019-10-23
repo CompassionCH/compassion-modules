@@ -106,7 +106,7 @@
         </record>
 
         <!-- MileStonesMessage -->
-        <record id="intervention_reporting_milestone" model = "gmc.action">
+        <record id="intervention_reporting_milestone" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionReportingMilestoneRequestList</field>
             <field name="model">compassion.intervention</field>
@@ -116,12 +116,13 @@
         </record>
 
         <!-- Intervention Amendment Commitment Notification -->
-        <record id="intervention_amendment_commitment_notification" model = "gmc.action">
+        <record id="intervention_amendment_commitment_notification" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionAmendmentCommitmentNotification</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_amendement_commitment</field>
-            <field name="description">Notification send to follower of an intervention when a modification is made, and update this intervention
+            <field name="description">Notification send to follower of an intervention when a modification is made, and
+                update this intervention
             </field>
             <field name="auto_process">1</field>
         </record>
@@ -146,36 +147,50 @@
             <field name="name">InterventionCommittedPercentChangeNotification</field>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">commited_percent_change</field>
-            <field name="description">Notification sent to GP when the commited funding percentage has changed for an intervention.</field>
+            <field name="description">Notification sent to GP when the commited funding percentage has changed for an
+                intervention.
+            </field>
             <field name="auto_process">1</field>
         </record>
 
         <record id="intervention_hold_removal_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionHoldRemovalNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionHoldRemovalNotification
+            </field>
             <field name="action_id" ref="intervention_hold_removal_notification"/>
         </record>
 
         <record id="intervention_create_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/GPInitiatedInterventionHoldNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/interventions/2016/04/GPInitiatedInterventionHoldNotification
+            </field>
             <field name="action_id" ref="create_intervention_details"/>
         </record>
         <record id="intervention_create_connect_2" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messages/availability/2016/04/GPInitiatedInterventionHoldNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/availability/2016/04/GPInitiatedInterventionHoldNotification
+            </field>
             <field name="action_id" ref="create_intervention_details"/>
         </record>
 
         <record id="intervention_create_opt_in_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionOptInHoldNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionOptInHoldNotification
+            </field>
             <field name="action_id" ref="create_intervention_opt_in"/>
         </record>
 
         <record id="intervention_reporting_milestone_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/ReportingMilestonesKit</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/interventions/2016/04/ReportingMilestonesKit
+            </field>
             <field name="action_id" ref="intervention_reporting_milestone"/>
         </record>
 
         <record id="intervention_amendment_commitment_notification_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionAmendmentCommitmentNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionAmendmentCommitmentNotification
+            </field>
             <field name="action_id" ref="intervention_amendment_commitment_notification"/>
         </record>
 
@@ -184,8 +199,15 @@
             <field name="action_id" ref="update_intervention_details"/>
         </record>
 
+        <record id="intervention_amend" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/AmendmentKit</field>
+            <field name="action_id" ref="update_intervention_details"/>
+        </record>
+
         <record id="intervention_commited_percent_connect" model="gmc.action.connect">
-            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionCommittedPercentChangeNotification</field>
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionCommittedPercentChangeNotification
+            </field>
             <field name="action_id" ref="commitment_percent_change_notification"/>
         </record>
     </data>

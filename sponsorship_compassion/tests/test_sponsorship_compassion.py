@@ -38,8 +38,12 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         self.origin_id = self.env['recurring.contract.origin'].create(
             {'type': 'event'}).id
         self.product = self.env['product.product'].search([
-            ('name', '=', 'Sponsorship')
+            ('default_code', '=', 'sponsorship')
         ], limit=1)
+        self.env['thankyou.config'].create({
+            'min_donation_amount': 50.0,
+            'send_mode': 'auto_digital_only',
+        })
 
     @mock.patch(mock_update_hold)
     @mock.patch(mock_get_infos)

@@ -14,3 +14,4 @@ from . import mappings
 from . import tools
 from . import controllers
 from . import forms
+from . import wizards

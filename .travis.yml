@@ -16,6 +16,7 @@ addons:
       - python-serial
       - python-yaml
       - python-cups
+      - python-pdfminer  # pip does install a bad version not working with python 2
       - wkhtmltopdf
       # OpenCV requirements packages
       - zbar-tools

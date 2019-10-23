@@ -24,8 +24,8 @@
 
     <!-- Add menu for Firebase Registration -->
     <menuitem id="menu_mobile_app_firebase_registration"
-              name="Notifications"
-              parent="menu_mobile_app"
+              name="Firebase registrations"
+              parent="menu_mobile_app_settings"
               action="firebase_connector.action_firebase_registration"
               groups="sales_team.group_sale_manager"
               sequence="50"
