@@ -15,98 +15,10 @@ from odoo import models, fields, api, _
 logger = logging.getLogger(__name__)
 
 
-class GenericIntervention(models.AbstractModel):
-    """ Generic information of interventions shared by subclasses:
-        - compassion.intervention : funded interventions
-        - compassion.global.intervention : available interventions in global
-                                           pool
-    """
-    _name = 'compassion.generic.intervention'
-    _description = "Generic information of interventions"
-
-    # General Information
-    #####################
-    name = fields.Char(readonly=True)
-    intervention_id = fields.Char(required=True, readonly=True)
-    field_office_id = fields.Many2one('compassion.field.office',
-                                      'Field Office', readonly=True)
-    description = fields.Text(readonly=True)
-    additional_marketing_information = fields.Text(readonly=True)
-    category_id = fields.Many2one(
-        'compassion.intervention.category', 'Category', readonly=True
-    )
-
-    type = fields.Selection(related='category_id.type')
-    subcategory_id = fields.Many2one(
-        'compassion.intervention.subcategory', 'Subcategory', readonly=True
-    )
-    funding_status = fields.Selection([
-            ("Available", _("Available")),
-            ("Partially Held", _("Partially held")),
-            ("Fully Held", _("Fully held")),
-            ("Partially Committed", _("Partially committed")),
-            ("Fully Committed", _("Fully committed")),
-            ("Inactive", _("Inactive")),
-            ("Ineligible", _("Ineligible")),
-        ], readonly=True)
-
-    # Schedule Information
-    ######################
-    is_fo_priority = fields.Boolean('Is Field Office priority', readonly=True)
-    proposed_start_date = fields.Date(readonly=True)
-    start_no_later_than = fields.Date(readonly=True)
-    expected_duration = fields.Integer(
-        readonly=True, help='Expected duration in months')
-
-    # Budget Information (all monetary fields are in US dollars)
-    ####################
-    currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
-    estimated_costs = fields.Float(readonly=True)
-    remaining_amount_to_raise = fields.Float(readonly=True)
-    pdc_costs = fields.Float(help='Program development costs', readonly=True)
-    total_cost = fields.Float(readonly=True)
-    requested_additional_funding = fields.Float(readonly=True)
-    estimated_impacted_beneficiaries = fields.Integer(readonly=True)
-
-    @api.model
-    def get_fields(self):
-        return [
-            'name', 'intervention_id', 'field_office_id', 'fcp_ids',
-            'description', 'additional_marketing_information', 'category_id',
-            'subcategory_id', 'funding_status', 'is_fo_priority',
-            'proposed_start_date', 'start_no_later_than', 'estimated_costs',
-            'estimated_impacted_beneficiaries', 'remaining_amount_to_raise',
-            'pdc_costs', 'total_cost'
-        ]
-
-    def get_vals(self):
-        """ Get the required field values of one record for other record
-            creation.
-            :return: Dictionary of values for the fields
-        """
-        self.ensure_one()
-        vals = self.read(self.get_fields())[0]
-        rel_fields = ['field_office_id', 'category_id', 'subcategory_id']
-        for field in rel_fields:
-            if vals.get(field):
-                vals[field] = vals[field][0]
-
-        fcp_ids = vals.get('fcp_ids')
-        if fcp_ids:
-            vals['fcp_ids'] = [(6, 0, fcp_ids)]
-
-        del vals['id']
-        return vals
-
-    def _compute_usd(self):
-        for intervention in self:
-            intervention.currency_usd = self.env.ref('base.USD')
-
-
 class GlobalIntervention(models.TransientModel):
     """ Available child in the global childpool
     """
-    _inherit = 'compassion.generic.intervention'
+    _inherit = ['compassion.generic.intervention', 'compassion.mapped.model']
     _name = 'compassion.global.intervention'
     _description = 'Global Intervention'
 
@@ -148,3 +60,27 @@ class GlobalIntervention(models.TransientModel):
             }).env.context,
             'target': 'new',
         }
+
+    ##########################################################################
+    #                              Mapping METHOD                            #
+    ##########################################################################
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        odoo_data = super().data_to_json(mapping_name)
+        if 'category_id' in odoo_data and 'type' in odoo_data:
+            category_obj = self.env['compassion.intervention.category']
+            selected_category = category_obj.browse(odoo_data['category_id'])
+            category = category_obj.search([
+                ('name', '=', selected_category.name),
+                ('type', '=', odoo_data['type'])
+            ])
+            odoo_data['category_id'] = category.id
+            del odoo_data['type']
+        return odoo_data
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        if 'ICP' in json:
+            json['ICP'] = json['ICP'].split("; ")
+        return super().json_to_data(json, mapping_name)
