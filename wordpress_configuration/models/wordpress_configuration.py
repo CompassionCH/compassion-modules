@@ -41,14 +41,14 @@ class WordpressConfiguration(models.Model):
         return res
 
     @api.model
-    def get_config(self, company_id=None):
+    def get_config(self, company_id=None, raise_error=True):
         """
         Returns the config for the given or current company
         """
         wp_config = self.search([
             ('company_id', '=', company_id or self.env.user.company_id.id)
         ], limit=1)
-        if not wp_config:
+        if not wp_config and raise_error:
             raise UserError(_(
                 "Missing Wordpress configuration for current company"))
         return wp_config
