@@ -15,6 +15,7 @@ test_mode = config.get('test_enable')
 
 
 class HoldWizard(models.TransientModel):
+    _inherit = 'compassion.mapped.model'
     _name = 'compassion.intervention.commitment.wizard'
     _description = 'Intervention Commitment Wizard'
 

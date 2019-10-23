@@ -1,6 +1,6 @@
 {
   "name": "Intervention Compassion",
-  "model": "intervention.compassion",
+  "model": "compassion.intervention",
   "mapping": {
     "FieldOffice_Name": {
       "field": "field_office_id.name",

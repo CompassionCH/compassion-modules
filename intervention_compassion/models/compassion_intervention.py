@@ -13,8 +13,6 @@ import time
 
 from odoo import models, fields, _, api
 from odoo.exceptions import UserError
-from odoo.addons.message_center_compassion.mappings import base_mapping \
-    as mapping
 
 logger = logging.getLogger(__name__)
 
