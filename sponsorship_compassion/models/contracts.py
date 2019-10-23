@@ -136,23 +136,23 @@ class SponsorshipContract(models.Model):
         """ Select Sponsorship and General Fund by default """
         res = []
         sponsorship_product = self.env["product.template"].search([
-            ('inter_company_reference', '=', 'sponsorship'),
+            ('default_code', '=', 'sponsorship'),
             ('company_id', '=', self.env.user.company_id.id)
         ])
         gen_product = self.env["product.template"].search([
-            ('inter_company_reference', '=', 'fund_gen'),
+            ('default_code', '=', 'fund_gen'),
             ('company_id', '=', self.env.user.company_id.id)
         ])
 
         if not len(sponsorship_product) == 1:
             raise ValidationError(_("The sponsorship product does not exist for the "
                                     "current company yet. Please create a product with "
-                                    "inter_company_reference 'sponsorship' first."))
+                                    "default_code 'sponsorship' first."))
 
         if not len(gen_product) == 1:
             raise ValidationError(_("The donation product does not exist for the "
                                     "current company yet. Please create a product with "
-                                    "inter_company_reference 'fund_gen' first."))
+                                    "default_code 'fund_gen' first."))
 
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id

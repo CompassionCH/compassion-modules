@@ -6,8 +6,6 @@ from odoo import api, fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    inter_company_reference = fields.Char('Inter-Company Reference')
-
     @api.multi
     def name_get(self):
         """

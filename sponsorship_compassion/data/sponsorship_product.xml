@@ -28,7 +28,7 @@
             <field name="description">Standard Sponsorship of type CDSP.</field>
             <field name="property_account_income_id" search="[('code','=','6000')]"/>
             <field name="property_account_expense_id" search="[('code','=','5000')]"/>
-            <field name="inter_company_reference">sponsorship</field>
+            <field name="default_code">sponsorship</field>
         </record>
         <record id="product_template_sponsorship_ldp" model="product.template">
             <field name="name">LDP Sponsorship</field>
@@ -38,7 +38,7 @@
             <field name="description">Sponsorship for LDP Students.</field>
             <field name="property_account_income_id" search="[('code','=','6013')]"/>
             <field name="property_account_expense_id" search="[('code','=','5000')]"/>
-            <field name="inter_company_reference">sponsorship_ldp</field>
+            <field name="default_code">sponsorship_ldp</field>
         </record>
         <record id="product_template_fund_gen" model="product.template">
             <field name="name">General Fund</field>
@@ -49,7 +49,7 @@
                 a concrete help and a new future to many children on the field and restore hope in their lives.</field>
             <field name="property_account_income_id" search="[('code','=','6004')]"/>
             <field name="property_account_expense_id" search="[('code','=','5000')]"/>
-            <field name="inter_company_reference">fund_gen</field>
+            <field name="default_code">fund_gen</field>
         </record>
 
         <!-- Sponsorship Gifts Templates -->
@@ -59,7 +59,7 @@
             <field name="categ_id" ref="product_category_gift" />
             <field name="property_account_income_id" search="[('code','=','6003')]" />
             <field name="property_account_expense_id" search="[('code','=','5000')]" />
-            <field name="inter_company_reference">gift_birthday</field>
+            <field name="default_code">gift_birthday</field>
         </record>
         <record id="product_template_gift_gen" model="product.template">
             <field name="name">General Gift</field>
@@ -67,7 +67,7 @@
             <field name="categ_id" ref="product_category_gift" />
             <field name="property_account_income_id" search="[('code','=','6003')]" />
             <field name="property_account_expense_id" search="[('code','=','5000')]" />
-            <field name="inter_company_reference">gift_gen</field>
+            <field name="default_code">gift_gen</field>
         </record>
         <record id="product_template_gift_family" model="product.template">
             <field name="name">Family Gift</field>
@@ -75,7 +75,7 @@
             <field name="categ_id" ref="product_category_gift" />
             <field name="property_account_income_id" search="[('code','=','6003')]" />
             <field name="property_account_expense_id" search="[('code','=','5000')]" />
-            <field name="inter_company_reference">gift_family</field>
+            <field name="default_code">gift_family</field>
         </record>
         <record id="product_template_gift_project" model="product.template">
             <field name="name">Project Gift</field>
@@ -83,7 +83,7 @@
             <field name="categ_id" ref="product_category_gift" />
             <field name="property_account_income_id" search="[('code','=','6003')]" />
             <field name="property_account_expense_id" search="[('code','=','5000')]" />
-            <field name="inter_company_reference">gift_project</field>
+            <field name="default_code">gift_project</field>
         </record>
         <record id="product_template_gift_graduation" model="product.template">
             <field name="name">Graduation Gift</field>
@@ -91,7 +91,7 @@
             <field name="categ_id" ref="product_category_gift" />
             <field name="property_account_income_id" search="[('code','=','6003')]" />
             <field name="property_account_expense_id" search="[('code','=','5000')]" />
-            <field name="inter_company_reference">gift_graduation</field>
+            <field name="default_code">gift_graduation</field>
         </record>
     </data>
 </odoo>
