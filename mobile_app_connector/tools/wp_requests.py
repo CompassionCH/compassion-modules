@@ -21,7 +21,7 @@ class Session(requests.Session):
         :param wp_config: wordpress.configuration record
         """
         self.wp_config = wp_config
-        return super(Session, self).__init__()
+        super(Session, self).__init__()
 
     def __enter__(self):
         """Authenticate and set the JSON Web Token for the session"""
