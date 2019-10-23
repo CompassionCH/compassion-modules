@@ -150,5 +150,5 @@ class ResUsers(models.Model):
                 signature = employee.name + '<br/>'
                 if employee.department_id:
                     signature += employee.department_id.name + '<br/>'
-            signature += user.company_id.name
+            signature += user.sudo().company_id.name
             user.signature_letter = signature
