@@ -98,7 +98,8 @@ class PDFCreator
 
 	        $emptyPage = $this->InsertText($pdf, $template, $this->preventOverflow);
 
-	        if (!empty($this->overflowPage)) {
+	        // Insert additional page only on front pages
+	        if (!empty($this->overflowPage) && $pdf->PageNo() % 2 == 0) {
 	            $this->InsertOverflowPages($pdf);
             }
 
@@ -215,6 +216,11 @@ class PDFCreator
     */
     private function CompleteAndWritePDF($pdf, $pdf_name)
     {
+        // ADD Missing overflows
+        while (!empty($this->overflowPage)) {
+            $this->InsertOverflowPages($pdf);
+        }
+
         // ADD MISSING TEMPLATES
         while($pdf->PageNo() < count($this->utils->templates))
         {

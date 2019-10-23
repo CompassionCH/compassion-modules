@@ -40,15 +40,7 @@ class GenericIntervention(models.AbstractModel):
     subcategory_id = fields.Many2one(
         'compassion.intervention.subcategory', 'Subcategory', readonly=True
     )
-    funding_status = fields.Selection([
-            ("Available", _("Available")),
-            ("Partially Held", _("Partially held")),
-            ("Fully Held", _("Fully held")),
-            ("Partially Committed", _("Partially committed")),
-            ("Fully Committed", _("Fully committed")),
-            ("Inactive", _("Inactive")),
-            ("Ineligible", _("Ineligible")),
-        ], readonly=True)
+    funding_status = fields.Selection('get_funding_statuses', readonly=True)
 
     # Schedule Information
     ######################
@@ -77,6 +69,17 @@ class GenericIntervention(models.AbstractModel):
             'proposed_start_date', 'start_no_later_than', 'estimated_costs',
             'estimated_impacted_beneficiaries', 'remaining_amount_to_raise',
             'pdc_costs', 'total_cost'
+        ]
+
+    def get_funding_statuses(self):
+        return [
+            ("Available", _("Available")),
+            ("Partially Held", _("Partially held")),
+            ("Fully Held", _("Fully held")),
+            ("Partially Committed", _("Partially committed")),
+            ("Fully Committed", _("Fully committed")),
+            ("Inactive", _("Inactive")),
+            ("Ineligible", _("Ineligible")),
         ]
 
     def get_vals(self):

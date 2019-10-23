@@ -12,11 +12,11 @@
         <field name="name">Global Intervention Search</field>
     </record>
     <record id="mapping_intervention" model="compassion.mapping">
-        <field name="model_id" ref="model_intervention_compassion"/>
+        <field name="model_id" ref="model_compassion_intervention"/>
         <field name="name">Intervention Compassion</field>
     </record>
     <record id="mapping_intervention_search" model="compassion.mapping">
-        <field name="model_id" ref="model_intervention_compassion_search"/>
+        <field name="model_id" ref="model_compassion_intervention_search"/>
         <field name="name">Intervention Compassion Search</field>
     </record>
     <record id="mapping_hold_create" model="compassion.mapping">

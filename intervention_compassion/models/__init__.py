@@ -8,9 +8,10 @@
 #
 ##############################################################################
 
-from . import global_intervention
-from . import compassion_intervention
 from . import intervention_category
 from . import intervention_sub_category
+from . import generic_intervention
+from . import global_intervention
+from . import compassion_intervention
 from . import product_template
 from . import project

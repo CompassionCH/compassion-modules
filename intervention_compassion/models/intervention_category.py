@@ -16,14 +16,7 @@ class InterventionCategory(models.Model):
     _description = 'Intervention Category'
 
     name = fields.Char(required=True, translate=False)
-    type = fields.Selection([
-            ("Ongoing CIV", _("Ongoing CIV")),
-            ("Ongoing CIV FY Details", _("Ongoing CIV FY Details")),
-            ("Individual CIV", _("Individual CIV")),
-            ("Survival", _("Survival (CSP)")),
-            ("Survival FY Details", _("Survival FY Details")),
-            ("Sponsorship Launch", _("Sponsorship Launch")),
-        ], required=True)
+    type = fields.Selection('get_types', required=True)
     subcategory_ids = fields.Many2many(
         'compassion.intervention.subcategory',
         'compassion_intervention_cat_subcat_rel',
@@ -35,3 +28,13 @@ class InterventionCategory(models.Model):
         ('unique_name_type', 'unique(name, type)',
          'Category name and type must be unique!')
     ]
+
+    def get_types(self):
+        return [
+            ("Ongoing CIV", _("Ongoing CIV")),
+            ("Ongoing CIV FY Details", _("Ongoing CIV FY Details")),
+            ("Individual CIV", _("Individual CIV")),
+            ("Survival", _("Survival (CSP)")),
+            ("Survival FY Details", _("Survival FY Details")),
+            ("Sponsorship Launch", _("Sponsorship Launch")),
+        ]

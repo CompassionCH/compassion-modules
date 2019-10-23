@@ -8,6 +8,6 @@
 #
 ##############################################################################
 
+from message_center_compassion import load_mappings
 from . import models
-from . import mappings
 from . import wizards

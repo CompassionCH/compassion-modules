@@ -78,5 +78,13 @@ class Template
             $imageBox->SetHasBeenUsed(false);
         }
     }
+
+    function ResetTextBoxes()
+    {
+        foreach ($this->textBoxes as $textBox)
+        {
+            $textBox->Reset();
+        }
+    }
 }
 ?>

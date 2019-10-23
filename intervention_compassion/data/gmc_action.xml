@@ -17,6 +17,7 @@
         <record id="update_intervention_details" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">UpdateInterventionDetailsRequest</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">update_intervention_details_request</field>
             <field name="description">Update Intervention Kit</field>
@@ -27,6 +28,7 @@
         <record id="create_intervention_details" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">GPInitiatedInterventionHoldNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">create_intervention</field>
             <field name="description">Create Intervention Kit</field>
@@ -35,6 +37,7 @@
         <record id="create_intervention_opt_in" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionOptInHoldNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">create_intervention</field>
             <field name="description">Create Intervention Because Opt-In was set</field>
@@ -73,7 +76,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldUpdate</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_id" ref="mapping_hold_update"/>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="description">This will update a hold for Interventions.</field>
             <field name="connect_service">interventions/${object.intervention_id}/holds/${object.hold_id}</field>
             <field name="connect_outgoing_wrapper">InterventionHoldList</field>
@@ -88,7 +91,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldCancel</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_id" ref="mapping_hold_cancel"/>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="description">This will cancel a hold for Interventions.</field>
             <field name="connect_service">interventions/holds/release</field>
             <field name="connect_outgoing_wrapper">InterventionHoldCancellationList</field>
@@ -101,6 +104,7 @@
         <record id="intervention_hold_removal_notification" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionHoldRemovalNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_hold_removal_notification</field>
             <field name="description">Notification sent to GP when a intervention hold is cancelled</field>
@@ -111,6 +115,7 @@
         <record id="intervention_reporting_milestone" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionReportingMilestoneRequestList</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_reporting_milestone</field>
             <field name="description">Notification send to follower of an intervention when it has an update</field>
@@ -121,6 +126,7 @@
         <record id="intervention_amendment_commitment_notification" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionAmendmentCommitmentNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">intervention_amendement_commitment</field>
             <field name="description">Notification send to follower of an intervention when a modification is made, and
@@ -148,6 +154,7 @@
         <record id="commitment_percent_change_notification" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">InterventionCommittedPercentChangeNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="incoming_method">commited_percent_change</field>
             <field name="description">Notification sent to GP when the commited funding percentage has changed for an

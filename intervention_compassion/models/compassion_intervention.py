@@ -13,8 +13,6 @@ import time
 
 from odoo import models, fields, _, api
 from odoo.exceptions import UserError
-from odoo.addons.message_center_compassion.mappings import base_mapping \
-    as mapping
 
 logger = logging.getLogger(__name__)
 
@@ -400,9 +398,9 @@ class CompassionIntervention(models.Model):
             'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        intervention_request = commkit_data[
-            'InterventionDetailsRequest'] \
-            or commkit_data['InterventionAmendmentKitRequest']
+        intervention_request = commkit_data.get(
+            'InterventionDetailsRequest',
+            commkit_data.get('InterventionAmendmentKitRequest')) or []
         intervention_local_ids = []
         # For each dictionary, we update the corresponding record
         for idr in intervention_request:

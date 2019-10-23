@@ -15,13 +15,14 @@ class HoldWizard(models.TransientModel):
     """
     Class used for searching interventions in the Mi3 Portal.
     """
+    _inherit = 'compassion.mapped.model'
     _name = 'compassion.intervention.hold.wizard'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
     intervention_id = fields.Many2one(
-        'compassion.global.intervention', 'Intervention'
+        'compassion.intervention', 'Intervention'
     )
     created_intervention_id = fields.Many2one('compassion.intervention')
     hold_amount = fields.Float(required=True)
