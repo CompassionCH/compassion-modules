@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,14 +8,7 @@
 #
 ##############################################################################
 
-import logging
-import csv
-import os
-from odoo import api, models, fields, _
-
-logger = logging.getLogger(__name__)
-
-IMPORT_DIR = os.path.join(os.path.dirname(__file__)) + '/../data/'
+from odoo import models, fields, _
 
 
 class InterventionCategory(models.Model):
@@ -24,7 +16,14 @@ class InterventionCategory(models.Model):
     _description = 'Intervention Category'
 
     name = fields.Char(required=True, translate=False)
-    type = fields.Selection('get_types', required=True)
+    type = fields.Selection([
+            ("Ongoing CIV", _("Ongoing CIV")),
+            ("Ongoing CIV FY Details", _("Ongoing CIV FY Details")),
+            ("Individual CIV", _("Individual CIV")),
+            ("Survival", _("Survival (CSP)")),
+            ("Survival FY Details", _("Survival FY Details")),
+            ("Sponsorship Launch", _("Sponsorship Launch")),
+        ], required=True)
     subcategory_ids = fields.Many2many(
         'compassion.intervention.subcategory',
         'compassion_intervention_cat_subcat_rel',
@@ -36,47 +35,3 @@ class InterventionCategory(models.Model):
         ('unique_name_type', 'unique(name, type)',
          'Category name and type must be unique!')
     ]
-
-    def get_types(self):
-        return [
-            ("Ongoing CIV", _("Ongoing CIV")),
-            ("Ongoing CIV FY Details", _("Ongoing CIV FY Details")),
-            ("Individual CIV", _("Individual CIV")),
-            ("Survival", _("Survival (CSP)")),
-            ("Survival FY Details", _("Survival FY Details")),
-            ("Sponsorship Launch", _("Sponsorship Launch")),
-        ]
-
-
-class InterventionSubCategory(models.Model):
-    _name = 'compassion.intervention.subcategory'
-    _description = 'Intervention Subcategory'
-
-    name = fields.Char(required=True, translate=False)
-    category_ids = fields.Many2many(
-        'compassion.intervention.category',
-        'compassion_intervention_cat_subcat_rel',
-        'subcategory_id', 'category_id', 'Categories',
-    )
-
-    _sql_constraints = [
-        ('unique_name', 'unique(name)', 'Category name must be unique!')
-    ]
-
-    @api.model
-    def install_cat_rel(self):
-        logger.info("Intervention Installation : Loading Category Relations")
-        with open(IMPORT_DIR + 'compassion.intervention.cat.subcat.rel.csv',
-                  'rb') as csvfile:
-            csvreader = csv.reader(csvfile)
-            # Skip header
-            csvreader.next()
-            for row in csvreader:
-                cat_id = self.env.ref('intervention_compassion.' + row[1]).id
-                subcategory = self.env.ref('intervention_compassion.' + row[2])
-                if cat_id not in subcategory.category_ids.ids:
-                    self.env.cr.execute("""
-                        INSERT INTO compassion_intervention_cat_subcat_rel
-                        ("category_id", "subcategory_id")
-                        VALUES (%s, %s)
-                        """, (cat_id, subcategory.id))

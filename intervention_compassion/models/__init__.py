@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -12,5 +11,6 @@
 from . import global_intervention
 from . import compassion_intervention
 from . import intervention_category
+from . import intervention_sub_category
 from . import product_template
 from . import project

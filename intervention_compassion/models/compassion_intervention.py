@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -281,10 +280,10 @@ class CompassionIntervention(models.Model):
                   record.product_template_id.property_account_income_id.id)
                  ])
 
-            record.total_income = '{0} CHF'.format(sum(
-                mv_line_income.mapped('credit')))
-            record.total_expense = ("{0} CHF".format(sum(
-                mv_line_expense.mapped('debit'))))
+            total_inc = sum(mv_line_income.mapped('credit'))
+            total_exp = sum(mv_line_expense.mapped('debit'))
+            record.total_income = f'{total_inc} CHF'
+            record.total_expense = f"{total_exp} CHF"
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -294,7 +293,7 @@ class CompassionIntervention(models.Model):
         if vals.get('service_level') != 'Level 1':
             vals['state'] = 'sla'
         vals['commited_percentage'] = 0
-        intervention = super(CompassionIntervention, self).create(vals)
+        intervention = super().create(vals)
         intervention.get_infos()
         intervention.fcp_ids.get_lifecycle_event()
         return intervention
@@ -317,7 +316,7 @@ class CompassionIntervention(models.Model):
                 update_hold = self.env.context.get('hold_update', True)
                 break
 
-        res = super(CompassionIntervention, self).write(vals)
+        res = super().write(vals)
 
         if update_hold:
             self.update_hold()
@@ -326,7 +325,7 @@ class CompassionIntervention(models.Model):
         intervention_status = vals.get('intervention_status')
         if intervention_status in ('Cancelled', 'Closed'):
             state = 'close' if intervention_status == 'Closed' else 'cancel'
-            super(CompassionIntervention, self).write({'state': state})
+            super().write({'state': state})
 
         return res
 
@@ -335,7 +334,7 @@ class CompassionIntervention(models.Model):
         """ Only allow to delete cancelled Interventions. """
         if self.filtered(lambda i: i.state != 'cancel'):
             raise UserError(_("You can only delete cancelled Interventions."))
-        return super(CompassionIntervention, self).unlink()
+        return super().unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -449,9 +448,7 @@ class CompassionIntervention(models.Model):
             'state': 'cancel',
         })
         self.message_post(
-            body=_("The hold of {} ({}) was just cancelled.").format(
-                self.name, self.intervention_id
-            ),
+            body=_(f"The hold of {self.name} ({self.intervention_id}) was just cancelled."),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             type='comment',
@@ -701,8 +698,7 @@ class CompassionIntervention(models.Model):
                 body = "A new milestone is available"
                 if milestone_id:
                     milestone_url = INTERVENTION_PORTAL_URL + milestone_id
-                    body += ' at <a href="{}" target="_blank">{}</a>.'.format(
-                            milestone_url, milestone_url)
+                    body += f' at <a href="{milestone_url}" target="_blank">{milestone_url}</a>.'
                 intervention.message_post(
                     body,
                     subject=(_(intervention.name + ': New milestone '
@@ -747,12 +743,10 @@ class CompassionIntervention(models.Model):
             intervention.get_infos()
             intervention_local_ids.append(intervention.id)
             body = _("This intervention has been modified by amendment.")
-            body += "<br/><ul><li>Amendment ID: {}</li>".format(
-                interventionamendment['InterventionAmendment_ID'])
-            body += "<li>Amendment Amount: {}</li>".format(
-                amendment_amount)
-            body += "<li>Hold ID: {}</li></ul>".format(
-                interventionamendment['HoldID'])
+            body += f"<br/><ul><li>Amendment ID: " \
+                    f"{interventionamendment['InterventionAmendment_ID']}</li>"
+            body += f"<li>Amendment Amount: {amendment_amount}</li>"
+            body += f"<li>Hold ID: {interventionamendment['HoldID']}</li></ul>"
             intervention.message_post(
                 body,
                 subject=_(intervention.name + ": Amendment received"),

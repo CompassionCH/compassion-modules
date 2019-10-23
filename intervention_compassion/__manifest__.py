@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,12 +29,12 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Interventions',
-    'version': '10.0.1.3.1',
+    'version': '11.0.0.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['child_compassion'],
+    'depends': ['child_compassion'],  # modules/child_compassion
     'external_dependencies': {},
     'data': [
         'data/compassion.intervention.category.csv',
@@ -53,6 +52,6 @@
         'views/project_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
