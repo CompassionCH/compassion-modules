@@ -490,8 +490,8 @@ class SponsorshipContract(models.Model):
         suspend_config = config_obj.get_param(
             'sponsorship_compassion.suspend_product_id')
         invl_obj = self.env['account.invoice.line']
-        sponsorship_product = self.env['product.product'].with_context(
-            lang='en_US').search([('name', '=', 'Sponsorship')])
+        sponsorship_product = self.env['product.product'].search([
+            ('default_code', '=', 'sponsorship')])
         if suspend_config:
             # Revert future invoices with sponsorship product
             susp_product_id = int(suspend_config)
