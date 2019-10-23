@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,20 +29,22 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Interventions',
-    'version': '10.0.1.3.1',
+    'version': '11.0.0.0.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['child_compassion'],
+    'depends': ['child_compassion',  # modules/child_compassion
+                'base_automation'],  # source/addons
     'external_dependencies': {},
     'data': [
         'data/compassion.intervention.category.csv',
-        'data/compassion.intervention.subcategory.csv',
+        'data/compassion.inter.subcat.csv',
         'data/compassion.intervention.deliverable.csv',
         'data/install_category_rel.xml',
         'data/intervention_server_actions.xml',
         'data/intervention_action_rules.xml',
+        'data/compassion_mapping.xml',
         'data/gmc_action.xml',
         'security/intervention_groups.xml',
         'security/ir.model.access.csv',
@@ -53,6 +54,7 @@
         'views/project_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings",
 }

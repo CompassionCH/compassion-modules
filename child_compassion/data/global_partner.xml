@@ -60,4 +60,12 @@
         <field name="name">USA</field>
         <field name="country_id" search="[('code', '=', 'US')]"/>
     </record>
+     <record id="gp_cuba" model="compassion.global.partner">
+        <field name="name">CUBA</field>
+        <field name="country_id" search="[('code', '=', 'CU')]"/>
+    </record>
+    <record id="gp_seychelles" model="compassion.global.partner">
+        <field name="name">Seychelles</field>
+        <field name="country_id" search="[('code', '=', 'SC')]"/>
+    </record>
 </odoo>

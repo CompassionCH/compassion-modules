@@ -7,10 +7,12 @@ subcat_camps_retreats,Camps/retreats
 subcat_caregiver_income,Caregiver income generation
 subcat_child_development,Child development
 subcat_computer_lab,Computer lab
-subcat_dental_health,Dental health promotion
+subcat_dental_health,Dental
+subcat_health_promotion,Health promotion
 subcat_disaster_mitigation,Disaster mitigation
 subcat_disaster_recovery,Disaster recovery
 subcat_disaster_relief,Disaster relief
+subcat_disaster_rehabilitation,Disaster rehabilitation
 subcat_environmental,Environmental
 subcat_food_security,Food security
 subcat_group_nutrition,Group nutrition
@@ -37,7 +39,7 @@ subcat_parenting_skills,Parenting skills
 subcat_playgrounds_recreation_areas,Playgrounds & recreation areas
 subcat_pre_university,Pre-university preparation courses
 subcat_professional_post_secondary,Professional post-secondary
-subcat_sanitation_latrines,Sanitation (latrines toiletssinks)
+subcat_sanitation_latrines,Sanitation (Latrines Toilets Sinks)
 subcat_school_fees,School fees
 subcat_shoes,Shoes
 subcat_small_business_skills,Small business skills
