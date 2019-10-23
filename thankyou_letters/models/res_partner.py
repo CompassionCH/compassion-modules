@@ -144,7 +144,7 @@ class ResUsers(models.Model):
     @api.multi
     def _compute_signature_letter(self):
         for user in self:
-            employee = user.employee_ids
+            employee = user.employee_ids.sudo()
             signature = ''
             if len(employee) == 1:
                 signature = employee.name + '<br/>'
