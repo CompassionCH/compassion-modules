@@ -4,7 +4,7 @@
         <record id="intervention_details_request" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">InterventionDetailsRequest</field>
-            <field name="mapping_name">intervention_mapping</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
             <field name="model">compassion.intervention</field>
             <field name="description">GET Intervention Kit</field>
             <field name="connect_service">interventions/${object.intervention_id}/kits/InterventionKit</field>
@@ -46,6 +46,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionSearch</field>
             <field name="model">compassion.intervention.search</field>
+            <field name="mapping_id" ref="mapping_intervention_search"/>
             <field name="description">This will send a search query for Interventions.</field>
             <field name="connect_service">interventions/availabilityquery</field>
             <field name="request_type">POST</field>
@@ -57,6 +58,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldCreate</field>
             <field name="model">compassion.intervention.hold.wizard</field>
+            <field name="mapping_id" ref="mapping_hold_create"/>
             <field name="description">This will create a hold for Interventions.</field>
             <field name="connect_service">interventions/holds</field>
             <field name="connect_outgoing_wrapper">InterventionHoldList</field>
@@ -71,7 +73,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldUpdate</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_name">update_hold</field>
+            <field name="mapping_id" ref="mapping_hold_update"/>
             <field name="description">This will update a hold for Interventions.</field>
             <field name="connect_service">interventions/${object.intervention_id}/holds/${object.hold_id}</field>
             <field name="connect_outgoing_wrapper">InterventionHoldList</field>
@@ -86,7 +88,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldCancel</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_name">cancel_hold</field>
+            <field name="mapping_id" ref="mapping_hold_cancel"/>
             <field name="description">This will cancel a hold for Interventions.</field>
             <field name="connect_service">interventions/holds/release</field>
             <field name="connect_outgoing_wrapper">InterventionHoldCancellationList</field>
@@ -132,6 +134,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionCreateCommitment</field>
             <field name="model">compassion.intervention.commitment.wizard</field>
+            <field name="mapping_id" ref="mapping_create_commitment"/>
             <field name="description">This will create a commitment for an Intervention</field>
             <field name="connect_service">interventions/commitments</field>
             <field name="connect_outgoing_wrapper">InterventionCommitmentList</field>

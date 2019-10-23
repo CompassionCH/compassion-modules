@@ -24,7 +24,8 @@ INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
 class CompassionIntervention(models.Model):
     """ All interventions on hold or sponsored.
     """
-    _inherit = ['compassion.generic.intervention', 'mail.thread']
+    _inherit = ['compassion.generic.intervention', 'mail.thread',
+                'compassion.mapped.model']
     _name = 'compassion.intervention'
     _description = 'Intervention'
 
@@ -754,6 +755,12 @@ class CompassionIntervention(models.Model):
                 message_type='email', subtype='mail.mt_comment')
 
         return intervention_local_ids
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        if 'ICP' in json:
+            json['ICP'] = json['ICP'].split("; ")
+        return super().json_to_data(json, mapping_name)
 
 
 class InterventionDeliverable(models.Model):

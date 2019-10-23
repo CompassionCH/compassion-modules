@@ -43,6 +43,7 @@
         'data/install_category_rel.xml',
         'data/intervention_server_actions.xml',
         'data/intervention_action_rules.xml',
+        'data/compassion_mapping.xml',
         'data/gmc_action.xml',
         'security/intervention_groups.xml',
         'security/ir.model.access.csv',
@@ -54,4 +55,5 @@
     'demo': [],
     'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings",
 }

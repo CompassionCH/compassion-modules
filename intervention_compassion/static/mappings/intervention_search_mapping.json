@@ -1,0 +1,14 @@
+{
+  "name": "Intervention Compassion Search",
+  "model": "compassion.intervention.search",
+  "mapping": {
+    "InterventionFilter": {
+      "field": "search_filter_ids",
+      "search_relational_record": true
+    },
+    "InterventionQueryResponseList": {
+      "field": "intervention_ids",
+      "search_relational_record": true
+    }
+  }
+}
