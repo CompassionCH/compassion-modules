@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 class TestCommunicationJob(TransactionCase):
 
+    def assertUTF8Equal(self, actual, expected):
+        self.assertEqual(actual.encode('UTF-8'), expected.encode('UTF-8'))
+
     def _set_email_false(self):
         self.partner.email = False
 
@@ -56,10 +59,11 @@ class TestCommunicationJob(TransactionCase):
         self.assertEqual(self.partner.communication_count, num_job - 1)
 
         call_answer = comm.call()
-        self.assertEqual(call_answer['context']['phone_number'],
-                         '+32\xa010\xa058\xa085\xa058')
-        self.assertEqual(call_answer['context']['call_name'],
-                         'Default communication')
+
+        self.assertUTF8Equal(call_answer['context']['phone_number'],
+                             u'+32\xa010\xa058\xa085\xa058')
+        self.assertUTF8Equal(call_answer['context']['call_name'],
+                             u'Default communication')
         self.assertEqual(call_answer['context']['click2dial_id'], 8)
 
     def test_config(self):

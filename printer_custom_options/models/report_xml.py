@@ -18,8 +18,7 @@ class IrActionsReportXml(models.Model):
                                        string='Printer Options')
 
     @api.multi
-    def write(self, vals):
-        if 'printing_printer_id' in vals:
-            # The options are printer-dependent and must be cleared.
-            vals['printer_options'] = [(5, 0, 0)]
-        return super(IrActionsReportXml, self).write(vals)
+    @api.onchange('printing_printer_id')
+    def on_change_printer(self):
+        for report in self:
+            report.printer_options = False

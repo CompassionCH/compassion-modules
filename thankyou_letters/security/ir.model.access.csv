@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_success_story_salesman,Full access on success stories,model_success_story,sales_team.group_sale_manager,1,1,1,1
 access_success_story,Access on success stories,model_success_story,base.group_user,1,1,0,0
+thanyou_config_salesman,Full access on thanyou_config,model_thankyou_config,sales_team.group_sale_manager,1,1,1,1
+thanyou_config,Access on thanyou_config,model_thankyou_config,base.group_user,1,1,0,0

@@ -55,7 +55,7 @@ class AccountInvoice(models.Model):
                     # Refresh donation receipt
                     config = self.env['account.invoice.line'].browse(
                         [int(i) for i in object_ids.split(',')]
-                    ).get_thankyou_config()
+                    ).get_default_thankyou_config()
                     send_mode = config.get_inform_mode(comm.partner_id)
                     comm.write({
                         'config_id': config.id,

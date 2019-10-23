@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -26,36 +26,23 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+
 # pylint: disable=C8101
 {
-    'name': 'Thank You Letters',
-    'version': '10.0.2.0.0',
+    'name': 'Wordpress configuration for multi-company',
+    'version': '10.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': [
-        'partner_communication',
-        'advanced_translation',
-        'web_widget_digitized_signature',
-    ],
+    'depends': [],
+    'external_dependencies': {},
     'data': [
         'security/ir.model.access.csv',
-        'report/donation_report.xml',
-        'data/email_template.xml',
-        'data/communication_config.xml',
-        'data/ir_cron.xml',
-        'views/success_story_view.xml',
-        'views/communication_job_view.xml',
-        'views/account_invoice_view.xml',
-        'views/product_view.xml',
-        'views/res_partner_view.xml',
-        'views/thankyou_config_view.xml',
-        'views/generate_communication_wizard_view.xml',
+        'views/wordpress_configuration.xml',
+        'data/default.xml',
     ],
-    'demo': [
-        'demo/success_story.xml'
-    ],
-    'installable': False,
+    'demo': [],
+    'installable': True,
     'auto_install': False,
 }

@@ -25,6 +25,7 @@
             <field name="parent_id" position="after">
                 <field name="smart"/>
                 <field name="condition_id" attrs="{'invisible': [('smart', '=', False)],}" context="{'default_model_id':'res.partner'}"/>
+                <field name="partner_field" attrs="{'invisible': [('condition_id', '=', False)],}"/>
             </field>
         </field>
     </record>

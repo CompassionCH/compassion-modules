@@ -13,8 +13,6 @@ from ..tools import wp_requests
 
 
 from odoo import api, models, fields, _
-from odoo.exceptions import UserError
-from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
@@ -111,18 +109,17 @@ class WordpressPost(models.Model):
         :return: True
         """
         _logger.info("Fetch Wordpress %s started!", post_type)
-        wp_host = config.get('wordpress_host')
-        if not wp_host:
-            raise UserError(_("Please add wp_host in your configuration"))
+        wp_config = self.env['wordpress.configuration'].get_config()
         # This is standard Wordpress REST API URL
-        wp_api_url = 'https://' + wp_host + '/wp-json/wp/v2/' + post_type
+        wp_api_url = 'https://' + wp_config.host + '/wp-json/wp/v2/' \
+            + post_type
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
         category_obj = self.env['wp.post.category']
         found_ids = []
         try:
             h = HTMLParser()
-            with wp_requests.Session() as requests:
+            with wp_requests.Session(wp_config) as requests:
                 for lang in self._supported_langs():
                     params['lang'] = lang.code[:2]
                     wp_posts = requests.get(wp_api_url, params=params).json()
