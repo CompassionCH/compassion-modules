@@ -5,7 +5,7 @@
             <field name="name" >Contract Origins multi-company</field>
             <field name="model_id" ref='contract_compassion.model_recurring_contract_origin'/>
             <field name="global" eval="True"/>
-            <field name="domain_force">['|',('analytic_id.company_id','=',False),('analytic_id.company_id','child_of',[user.company_id.id])]</field>
+            <field name="domain_force">['|','|', ('analytic_id','=',False), ('analytic_id.company_id','=',False),('analytic_id.company_id','child_of',[user.company_id.id])]</field>
         </record>
     </data>
 </odoo>
