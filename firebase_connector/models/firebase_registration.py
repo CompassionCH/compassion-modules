@@ -22,13 +22,16 @@ except ImportError as e:
     _logger.error("Please install the PIP package firebase_admin")
 
 try:
-    firebase_credentials = credentials.Certificate(config.get('google_application_credentials'))
+    firebase_credentials = \
+        credentials.Certificate(config.get('google_application_credentials'))
     firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
 except (KeyError, ValueError) as e:
     firebase_app = None
     logging.error(e)
     if not config.get("test_enable"):
-        logging.error("google_application_credentials is not correctly configured in odoo.conf")
+        logging.error(
+            "google_application_credentials is not correctly configured in odoo.conf"
+        )
 
 
 class FirebaseRegistration(models.Model):

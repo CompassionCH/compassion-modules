@@ -11,3 +11,4 @@
 
 from . import firebase_registration
 from . import firebase_notification
+from . import res_partner
