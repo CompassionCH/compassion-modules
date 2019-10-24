@@ -51,7 +51,7 @@ class FirebaseNotification(models.Model):
         if 'send_date' in vals:
             dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
             if vals['send_date'] < dt:
-                raise UserError("Send date should be in the future")
+                raise UserError(_("Send date should be in the future"))
         return res
 
     @api.multi
@@ -88,7 +88,7 @@ class FirebaseNotification(models.Model):
                             'notification_id': notif.id,
                         })
             else:
-                raise UserError("We were not able to send the notification.")
+                raise UserError(_("We were not able to send the notification."))
 
     @api.multi
     def duplicate_to_unread(self):

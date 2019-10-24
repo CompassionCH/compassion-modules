@@ -96,6 +96,10 @@ class FirebaseNotification(models.Model):
             ])
         messages = []
         for notif in notifications:
+            is_read = "1" if notif.read_ids.filtered(
+                lambda r: r.partner_id == reg.partner_id
+            ).opened else "0"
+
             messages.append({
                 "CHILD_IMAGE": "",
                 "CHILD_NAME": "",
@@ -119,7 +123,7 @@ class FirebaseNotification(models.Model):
                 "UPDATED_BY": "",
                 "UPDATED_ON": "",
                 "USER_ID": "",
-                "IS_READ": "1" if notif.read_ids.filtered(lambda r: r.partner_id == reg.partner_id).opened else "0",
+                "IS_READ": is_read,
                 "POST_TITLE": str(notif.fundType.id),
             })
 
@@ -135,7 +139,7 @@ class FirebaseNotificationPartnerRead(models.Model):
     def mobile_read_notification(self, *json, **params):
         notif_id = params.get('notification_id')
         notif = self.env['firebase.notification.partner.read'].search([
-            ('notification_id', '=', int( notif_id) ),
+            ('notification_id', '=', int(notif_id)),
             ('partner_id', '=', self.env.user.partner_id.id),
         ])
         notif.opened = True
