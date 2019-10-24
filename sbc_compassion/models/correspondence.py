@@ -548,7 +548,7 @@ class Correspondence(models.Model):
             # Skip pages that should not contain anything
             page_layout = self.template_id.page_ids.filtered(
                 lambda p: p.page_index == index + 1)
-            if not text and not page_layout.text_box_ids:
+            if not text.strip() and not page_layout.text_box_ids:
                 continue
             text_boxes.extend([
                 t.strip() for t in text.split(BOX_SEPARATOR)])
