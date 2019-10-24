@@ -34,6 +34,8 @@ class TemplateUtils
         }
         // If an overflow template is given, we use it systematically for the additional pages.
         if (isset($this->overflowTemplate) and $this->overflowTemplate != false) {
+            // Overflow template will always have an available textBox, because we repeat it many times needed.
+            $this->overflowTemplate->ResetTextBoxes();
             return $this->overflowTemplate;
         }
         // If we still have template pages to render, use them

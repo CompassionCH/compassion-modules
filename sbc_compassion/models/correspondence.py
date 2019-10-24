@@ -544,7 +544,12 @@ class Correspondence(models.Model):
         # Get the text boxes separately
         text_pages = pages.mapped(source)
         text_boxes = []
-        for text in text_pages:
+        for index, text in enumerate(text_pages):
+            # Skip pages that should not contain anything
+            page_layout = self.template_id.page_ids.filtered(
+                lambda p: p.page_index == index + 1)
+            if not text.strip() and not page_layout.text_box_ids:
+                continue
             text_boxes.extend([
                 t.strip() for t in text.split(BOX_SEPARATOR)])
 
