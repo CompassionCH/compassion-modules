@@ -93,7 +93,7 @@
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
             <search>
-                <filter string="My Communications" name="user_id" domain="[('user_id', '=', uid)]"/>
+                <filter string="My Communications" name="my_communications" domain="[('user_id', '=', uid)]"/>
                 <separator/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
@@ -137,7 +137,7 @@
         <field name="res_model">partner.communication.job</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_pending': True, 'search_default_config': True, 'default_user_id': uid}</field>
+        <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'search_default_config': True, 'default_user_id': uid}</field>
     </record>
 
     <record id="action_communication_job_partner" model="ir.actions.act_window">

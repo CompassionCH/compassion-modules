@@ -28,20 +28,26 @@ class CallWizard(models.TransientModel):
 
     @api.multi
     def log_fail(self):
+        state = 'cancel'
         communication = self.env['partner.communication.job'].browse(
-            self.env.context.get('communication_id'))
+            self.env.context.get('default_communication_id'))
         communication.message_post(
             subject=_('Phone attempt'),
             body=self.comments or _('Partner did not answer')
         )
-        return True
+        return self.call_log(state)
 
     @api.multi
     def call_success(self):
+        state = 'done'
+        return self.call_log(state)
+
+    @api.multi
+    def call_log(self, state):
         """ Prepare crm.phonecall creation. """
         action_ctx = self.env.context.copy()
         action_ctx.update({
-            'default_state': 'done',
+            'default_state': state,
             'default_description': self.comments,
             'default_name': self.env.context.get('call_name'),
         })

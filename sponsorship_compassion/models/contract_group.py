@@ -14,7 +14,7 @@ from datetime import datetime
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.addons.queue_job.job import job, related_action
-from .product_names import GIFT_NAMES
+from .product import GIFT_REF
 
 logger = logging.getLogger(__name__)
 
@@ -74,9 +74,8 @@ class ContractGroup(models.Model):
 
         # Exclude sponsorship if a gift is already open
         invl_obj = self.env['account.invoice.line']
-        product_id = self.env['product.product'].with_context(
-            lang='en_US').search(
-            [('name', '=', GIFT_NAMES[0])])[0].id
+        product_id = self.env['product.product'].search([
+            ('default_code', '=', GIFT_REF[0])], limit=1).id
 
         for contract in contracts:
             invl_ids = invl_obj.search([

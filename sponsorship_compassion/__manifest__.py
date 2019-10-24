@@ -72,7 +72,9 @@
         'data/friday_invoicer_cron.xml',
         'data/sponsorship_product.xml',
         'data/utm_data.xml',
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'security/record_rules.xml',
+        'views/product_views.xml'
     ],
     'demo': [
         'demo/demo_data.yml',

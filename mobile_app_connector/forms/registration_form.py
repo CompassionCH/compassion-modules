@@ -56,7 +56,7 @@ if not testing:
                 step = self.wiz_prev_step()
             if not step:
                 # validate form
-                return '/'
+                return '/registration/confirm'
             return self._wiz_url_for_step(step, main_object=main_object)
 
         def _wiz_base_url(self):
@@ -145,7 +145,8 @@ if not testing:
             """
             super(UserRegistrationForm, self).form_after_create_or_update(
                 values, extra_values)
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id')).exists()
                 partner.set_privacy_statement(origin='mobile_app')
@@ -156,7 +157,8 @@ if not testing:
 
         @property
         def form_msg_success_created(self):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 return _(
                     "Your account has been successfully created, you will now "
                     "receive an email to finalize your registration."
@@ -165,11 +167,15 @@ if not testing:
                 return None
 
         def form_validate(self, request_values=None):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 return super(UserRegistrationForm, self).form_validate(
                     request_values)
             else:  # form not submitted (previous)
                 return 0, 0
+
+        def _sanitize_email(self, email):
+            return email.strip().lower()
 
     class RegistrationBaseForm(models.AbstractModel):
         """
@@ -261,7 +267,8 @@ if not testing:
         #                     FORM SUBMISSION METHODS                         #
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
@@ -278,12 +285,13 @@ if not testing:
                         _("This email is already linked to an account."))
 
                 # Push the email for user creation
-                values['email'] = extra_values['partner_email']
+                values['email'] = self._sanitize_email(
+                    extra_values['partner_email'])
 
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
-            if self.form_next_url() == '/':
+            if self.form_next_url() == '/registration/confirm':
                 super(RegistrationNotSupporter, self)._form_create(values)
 
     class RegistrationSupporterForm(models.AbstractModel):
@@ -322,7 +330,7 @@ if not testing:
         def form_next_url(self, main_object=None):
             direction = self.request.form.get('wiz_submit', 'next')
             if direction == 'next':
-                return '/'
+                return '/registration/confirm'
             else:
                 step = self.wiz_prev_step()
             if not step:
@@ -334,10 +342,13 @@ if not testing:
         #                     FORM SUBMISSION METHODS                         #
         #######################################################################
         def form_before_create_or_update(self, values, extra_values):
-            if self.form_next_url() == '/':  # form submitted
+            if self.form_next_url() == '/registration/confirm':
+                # form submitted
+                partner_email = self._sanitize_email(
+                    extra_values['partner_email'])
                 # Find sponsor given the e-mail
                 partner = self.env['res.partner'].sudo().search([
-                    ('email', 'ilike', extra_values['partner_email']),
+                    ('email', 'ilike', partner_email),
                     ('has_sponsorships', '=', True)
                 ])
 
@@ -348,17 +359,33 @@ if not testing:
                         _("This email is already linked to an account."))
                 # partner is not sponsoring a child (but answered yes (form))
                 if not partner or len(partner) > 1:
-                    # TODO AP-102 :Ask child ref to try to get a match
+                    email_template = self.env.ref(
+                        'mobile_app_connector.email_template_user_not_found')\
+                        .sudo()
+                    link_text = _("Click here to send the template email "
+                                  "request.")
+                    to = email_template.email_to
+                    subject = email_template.subject
+                    body = email_template.body_html.replace(
+                        '%(email_address)', partner_email)
+                    href_link = self._add_mailto(link_text, to, subject, body)
                     raise ValidationError(_(
                         "We couldn't find your sponsorships. Please contact "
-                        "us for setting up your account."))
+                        "us for setting up your account.") + " " + href_link)
 
                 # Push the email for user creation
-                values['email'] = extra_values['partner_email']
+                values['email'] = partner_email
                 values['partner_id'] = partner.id
 
         def _form_create(self, values):
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
-            if self.form_next_url() == '/':
+            if self.form_next_url() == '/registration/confirm':
                 super(RegistrationSupporterForm, self)._form_create(values)
+
+        def _add_mailto(self, link_text, to, subject, body):
+            subject_mail = subject.replace(' ', '%20')
+            body_mail = body.replace(' ', '%20').replace('\"', '%22').replace(
+                '<br/>', '%0D%0A')
+            return '<a href="mailto:' + to + '?subject=' + subject_mail + \
+                   '&amp;body=' + body_mail + '">' + link_text + '</a>'

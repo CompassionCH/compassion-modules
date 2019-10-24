@@ -103,6 +103,7 @@ if not testing:
             tx_values['reference'] = transaction_obj.get_next_reference(
                 tx_values['reference'])
             self.transaction_id = transaction_obj.create(tx_values).id
+            self.request.session['compassion_transaction_id'] = self.transaction_id
 
         def get_all_vals(self, values, extra_values):
             """

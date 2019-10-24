@@ -25,17 +25,21 @@ class TemplatePreview(models.TransientModel):
         )
         domain = [('model', '=', template.model)]
         models = self.env['ir.model'].search(domain)
-        return [(model.model, model.name) for model in models]
+        result = [(model.model, model.name) for model in models]
+        return result
 
     @api.model
     def _default_model(self):
         recs = self._reference_models()
         model = recs[0][0]
-        specific_domain = {
-            'res.partner': []
-        }
-        domain = specific_domain.get(model) or [('partner_id', '!=', False)]
-        return model + ',' + str(self.env[model].search(domain, limit=1).id)
+        model_obj = self.env[model]
+        has_partner_field = hasattr(model_obj, 'partner_id')
+        if has_partner_field:
+            domain = [('partner_id', '!=', False)]
+        else:
+            domain = []
+        result = model + ',' + str(model_obj.search(domain, limit=1).id)
+        return result
 
     @api.onchange('res_id')
     @api.multi

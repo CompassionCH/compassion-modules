@@ -1,191 +1,236 @@
 <odoo>
-    <data noupdate="1">
-        <!-- Translation Boxes -->
-        <record id="l1_box_1" model="correspondence.translation.box">
-            <field name="name">L1-1-1</field>
-            <field name="nb_lines">13</field>
-            <field name="left">4.6</field>
-            <field name="top">7.75</field>
-            <field name="width">3.1</field>
-        </record>
-        <record id="l1_box_2" model="correspondence.translation.box">
-            <field name="name">L1-2-1</field>
-            <field name="nb_lines">9</field>
-            <field name="left">0.6</field>
-            <field name="top">8.6</field>
-            <field name="width">7.2</field>
-        </record>
+    <!-- Translation Boxes in Child Letter Layouts -->
+    <record id="b2s_l1_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L1-1-1</field>
+        <field name="x_min">118</field>
+        <field name="y_min">190</field>
+        <field name="x_max">192</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">4</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_l1_box_2" model="correspondence.text.box">
+        <field name="name">B2S-L1-2-1</field>
+        <field name="x_min">20</field>
+        <field name="y_min">215</field>
+        <field name="x_max">195</field>
+        <field name="y_max">260</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l2_box_1" model="correspondence.translation.box">
-            <field name="name">L2-1-1</field>
-            <field name="nb_lines">43</field>
-            <field name="left">5.4</field>
-            <field name="top">2.2</field>
-            <field name="width">2.2</field>
-        </record>
-        <record id="l2_box_2" model="correspondence.translation.box">
-            <field name="name">L2-2-1</field>
-            <field name="nb_lines">26</field>
-            <field name="left">4.4</field>
-            <field name="top">5.6</field>
-            <field name="width">3.2</field>
-        </record>
+    <record id="b2s_l2_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L2-1-1</field>
+        <field name="x_min">135</field>
+        <field name="y_min">55</field>
+        <field name="x_max">190</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_l2_box_2" model="correspondence.text.box">
+        <field name="name">B2S-L2-2-1</field>
+        <field name="x_min">115</field>
+        <field name="y_min">140</field>
+        <field name="x_max">190</field>
+        <field name="y_max">170</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l3_box_1" model="correspondence.translation.box">
-            <field name="name">L3-1-1</field>
-            <field name="nb_lines">40</field>
-            <field name="left">4.4</field>
-            <field name="top">2.2</field>
-            <field name="width">3</field>
-        </record>
-        <record id="l3_box_2" model="correspondence.translation.box">
-            <field name="name">L3-2-1</field>
-            <field name="nb_lines">44</field>
-            <field name="left">4.4</field>
-            <field name="top">0.8</field>
-            <field name="width">3</field>
-        </record>
+    <record id="b2s_l3_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L3-1-1</field>
+        <field name="x_min">110</field>
+        <field name="y_min">55</field>
+        <field name="x_max">190</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_l3_box_2" model="correspondence.text.box">
+        <field name="name">B2S-L3-2-1</field>
+        <field name="x_min">110</field>
+        <field name="y_min">18</field>
+        <field name="x_max">192</field>
+        <field name="y_max">255</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l4_box_1" model="correspondence.translation.box">
-            <field name="name">L4-2-1</field>
-            <field name="nb_lines">21</field>
-            <field name="left">0.65</field>
-            <field name="top">0.8</field>
-            <field name="width">6.95</field>
-        </record>
+    <record id="b2s_l4_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L4-2-1</field>
+        <field name="x_min">15</field>
+        <field name="y_min">15</field>
+        <field name="x_max">190</field>
+        <field name="y_max">132</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l5_box_1" model="correspondence.translation.box">
-            <field name="name">L5-1-1</field>
-            <field name="nb_lines">17</field>
-            <field name="left">3</field>
-            <field name="top">7</field>
-            <field name="width">4.7</field>
-        </record>
-        <record id="l5_box_2" model="correspondence.translation.box">
-            <field name="name">L5-2-1</field>
-            <field name="nb_lines">9</field>
-            <field name="left">3</field>
-            <field name="top">3.3</field>
-            <field name="width">4.7</field>
-        </record>
-        <record id="l5_box_3" model="correspondence.translation.box">
-            <field name="name">L5-2-2</field>
-            <field name="nb_lines">9</field>
-            <field name="left">3</field>
-            <field name="top">9.2</field>
-            <field name="width">4.7</field>
-        </record>
+    <record id="b2s_l5_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L5-1-1</field>
+        <field name="x_min">75</field>
+        <field name="y_min">175</field>
+        <field name="x_max">190</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_l5_box_2" model="correspondence.text.box">
+        <field name="name">B2S-L5-2-1</field>
+        <field name="x_min">75</field>
+        <field name="y_min">80</field>
+        <field name="x_max">190</field>
+        <field name="y_max">138</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_l5_box_3" model="correspondence.text.box">
+        <field name="name">B2S-L5-2-2</field>
+        <field name="x_min">75</field>
+        <field name="y_min">230</field>
+        <field name="x_max">190</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l6_box_1" model="correspondence.translation.box">
-            <field name="name">L6-2-1</field>
-            <field name="nb_lines">53</field>
-            <field name="left">0.5</field>
-            <field name="top">0.5</field>
-            <field name="width">7</field>
-        </record>
+    <record id="b2s_l6_box_1" model="correspondence.text.box">
+        <field name="name">B2S-L6-2-1</field>
+        <field name="x_min">25</field>
+        <field name="y_min">30</field>
+        <field name="x_max">180</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
 
-        <record id="l7_box_1" model="correspondence.translation.box">
-            <field name="name">L7-1-1</field>
-            <field name="nb_lines">14</field>
-            <field name="left">4.6</field>
-            <field name="top">7.7</field>
-            <field name="width">2.90</field>
-        </record>
-        <record id="l7_box_2" model="correspondence.translation.box">
-            <field name="name">L7-2-1</field>
-            <field name="nb_lines">10</field>
-            <field name="left">0.59</field>
-            <field name="top">8.52</field>
-            <field name="width">7.25</field>
-        </record>
+    <!-- Child letter layouts -->
+    <record id="b2s_l1" model="correspondence.template">
+        <field name="name">B2S - L1</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-1S11-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l1_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l1"/>
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_1'))]"/>
+    </record>
+    <record id="b2s_l1_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l1"/>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_2'))]"/>
+    </record>
 
-        <record id="l8_box_1" model="correspondence.translation.box">
-            <field name="name">L8-1-1</field>
-            <field name="nb_lines">38</field>
-            <field name="left">4.3</field>
-            <field name="top">2.18</field>
-            <field name="width">3.20</field>
-        </record>
-        <record id="l8_box_2" model="correspondence.translation.box">
-            <field name="name">L8-2-1</field>
-            <field name="nb_lines">46</field>
-            <field name="left">4.32</field>
-            <field name="top">0.78</field>
-            <field name="width">3.50</field>
-        </record>
-        <record id="l9_box_1" model="correspondence.translation.box">
-            <field name="name">L9-1-1</field>
-            <field name="nb_lines">51</field>
-            <field name="left">0.64</field>
-            <field name="top">0.75</field>
-            <field name="width">6.98</field>
-        </record>
+    <record id="b2s_l2" model="correspondence.template">
+        <field name="name">B2S - L2</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-2S01-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l2_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l2"/>
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_1'))]"/>
+    </record>
+    <record id="b2s_l2_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l2"/>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_2'))]"/>
+    </record>
 
+    <record id="b2s_l3" model="correspondence.template">
+        <field name="name">B2S - L3</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-3S01-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l3_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l3"/>
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_1'))]"/>
+    </record>
+    <record id="b2s_l3_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l3"/>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_2'))]"/>
+    </record>
 
-        <!-- Child letter layouts -->
-        <record id="b2s_l1" model="correspondence.b2s.layout">
-            <field name="name">L1</field>
-            <field name="code">1S11</field>
-            <field name="page_1_box_ids" eval="[(4,l1_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l1_box_2)]"/>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
+    <record id="b2s_l4" model="correspondence.template">
+        <field name="name">B2S - L4</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-4S01-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l4_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l4"/>
+        <field name="page_index">1</field>
+    </record>
+    <record id="b2s_l4_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l4"/>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l4_box_1'))]"/>
+    </record>
 
-        <record id="b2s_l2" model="correspondence.b2s.layout">
-            <field name="name">L2</field>
-            <field name="code">2S11</field>
-            <field name="page_1_box_ids" eval="[(4,l2_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l2_box_2)]"/>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
+    <record id="b2s_l5" model="correspondence.template">
+        <field name="name">B2S - L5</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-5S01-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l5_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l5"/>
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_l5_box_1'))]"/>
+    </record>
+    <record id="b2s_l5_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l5"/>
+        <field name="page_index">2</field>
+        <field name="text_box_ids" eval="[(4,ref('b2s_l5_box_2')),(4,ref('b2s_l5_box_3'))]"/>
+    </record>
 
-        <record id="b2s_l3" model="correspondence.b2s.layout">
-            <field name="name">L3</field>
-            <field name="code">3S11</field>
-            <field name="page_1_box_ids" eval="[(4,l3_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l3_box_2)]"/>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
+    <record id="b2s_l6" model="correspondence.template">
+        <field name="name">B2S - L6</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-6S11-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_l6_p1" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l6"/>
+        <field name="page_index">1</field>
+    </record>
+    <record id="b2s_l6_p2" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_l6"/>
+        <field name="page_index">2</field>
+    </record>
 
-        <record id="b2s_l4" model="correspondence.b2s.layout">
-            <field name="name">L4</field>
-            <field name="code">4S01</field>
-            <field name="page_2_box_ids" eval="[(4,l4_box_1)]"/>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
-
-        <record id="b2s_l5" model="correspondence.b2s.layout">
-            <field name="name">L5</field>
-            <field name="code">5S12</field>
-            <field name="page_1_box_ids" eval="[(4,l5_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l5_box_2),(4,l5_box_3)]"/>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
-
-        <record id="b2s_l6" model="correspondence.b2s.layout">
-            <field name="name">L6</field>
-            <field name="code">6S11</field>
-            <field name="additional_page_box_id" ref="l6_box_1"/>
-        </record>
-
-        <record id="b2s_l7" model="correspondence.b2s.layout">
-            <field name="name">L7 Intro 9-11</field>
-            <field name="code">7S11</field>
-            <field name="page_1_box_ids" eval="[(4,l7_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l7_box_2)]"/>
-        </record>
-
-        <record id="b2s_l8" model="correspondence.b2s.layout">
-            <field name="name">L8 Intro 12+</field>
-            <field name="code">8S11</field>
-            <field name="page_1_box_ids" eval="[(4,l8_box_1)]"/>
-            <field name="page_2_box_ids" eval="[(4,l8_box_2)]"/>
-        </record>
-
-        <record id="b2s_l9" model="correspondence.b2s.layout">
-            <field name="name">L9 Final Letter</field>
-            <field name="code">9S11</field>
-            <field name="page_2_box_ids" eval="[(4,l9_box_1)]"/>
-        </record>
-    </data>
+     <!--  Specific configuration for B2S additional pages  -->
+    <record id="b2s_additional_page_template" model="correspondence.template">
+        <field name="name">B2S Additional translation page</field>
+        <field name="type">b2s</field>
+        <field name="layout">CH-A-6S11-1</field>
+        <field name="page_width">2480</field>
+        <field name="page_height">3508</field>
+    </record>
+    <record id="b2s_additional_page_box_1" model="correspondence.text.box">
+        <field name="name">B2S-additional-page</field>
+        <field name="x_min">25</field>
+        <field name="y_min">30</field>
+        <field name="x_max">180</field>
+        <field name="y_max">270</field>
+        <field name="text_line_height">5</field>
+        <field name="text_type">Translation</field>
+    </record>
+    <record id="b2s_additional_page" model="correspondence.template.page">
+        <field name="template_id" ref="b2s_additional_page_template"/>
+        <field name="page_index">1</field>
+        <field name="text_box_ids" eval="[(4, ref('b2s_additional_page_box_1'))]"/>
+    </record>
 </odoo>
