@@ -19,5 +19,5 @@ def migrate(cr, version):
         cr.execute("""
             DROP VIEW IF EXISTS interaction_resume;
         """)
-    except:
+    except Exception:
         cr.rollback()

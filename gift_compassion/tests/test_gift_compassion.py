@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 
 class TestGifts(BaseSponsorshipTest):
 
-    def setUp(cls):
-        super(TestGifts, cls).setUp()
-        child = cls.create_child('AB124456789')
-        sp_group = cls.create_group({'partner_id': cls.thomas.id})
+    def setUp(self):
+        super(TestGifts, self).setUp()
+        child = self.create_child('AB124456789')
+        sp_group = self.create_group({'partner_id': self.thomas.id})
 
-        cls.sponsorship = cls.create_contract(
+        self.sponsorship = self.create_contract(
             {
-                'partner_id': cls.thomas.id,
+                'partner_id': self.thomas.id,
                 'group_id': sp_group.id,
                 'child_id': child.id,
                 'correspondent_id': sp_group.partner_id.id

@@ -172,8 +172,9 @@ class GlobalChild(models.TransientModel):
                 try:
                     child.portrait = base64.encodestring(
                         urllib2.urlopen(url).read())
-                except:
-                    logger.error('Image cannot be fetched : ' + str(url))
+                except Exception:
+                    logger.error('Image cannot be fetched : ' + str(url),
+                                 exc_info=True)
 
     @api.multi
     def _compute_image_portrait(self):

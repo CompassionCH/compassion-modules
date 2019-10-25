@@ -11,6 +11,7 @@
 import locale
 import re
 import threading
+import logging
 
 from contextlib import contextmanager
 from datetime import datetime
@@ -18,6 +19,7 @@ from datetime import datetime
 from odoo import api, models, fields, _
 
 LOCALE_LOCK = threading.Lock()
+_logger = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -26,7 +28,9 @@ def setlocale(name):
         saved = locale.setlocale(locale.LC_ALL)
         try:
             yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
-        except:
+        except Exception:
+            _logger.warning("Falling back to locale without UTF8",
+                            exc_info=True)
             yield locale.setlocale(locale.LC_ALL, name)
         finally:
             locale.setlocale(locale.LC_ALL, saved)

@@ -79,7 +79,7 @@ class ChildHoldWizard(models.TransientModel):
                 messages.process_messages()
                 if not testing:
                     self.env.cr.commit()  # pylint: disable=invalid-commit
-            except:
+            except Exception:
                 _logger.error("Hold chunk failed", exc_info=True)
                 self.env.cr.rollback()
 

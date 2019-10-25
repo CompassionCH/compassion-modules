@@ -86,7 +86,8 @@ class WordpressConfiguration(models.Model):
         ensure a one-to-one relationship (companies have at most one config)
         """
         if "company_id" in values and values["company_id"] is not False:
-            configs = self.search([('company_id', '=', values["company_id"])]) - self
+            configs = self.search(
+                [('company_id', '=', values["company_id"])]) - self
             for cfg in configs:
                 cfg.company_id = False
 

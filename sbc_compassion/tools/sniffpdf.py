@@ -135,7 +135,7 @@ def get_layout(url, pages=None):
     return layouts
 
 
-def contains_a_single_image(LTObject):
+def contains_a_single_image(lto_objects):
     """
     Return True only if these 2 conditions are True:
         1) The layout tree contains a single leaf
@@ -143,14 +143,14 @@ def contains_a_single_image(LTObject):
     It means that the tree can be made of several nodes, but each
     node has a single child which is either another node or an image. This
     function will recursively walk trough the tree.
-    :param LTObject: The current node
+    :param lto_objects: The current node
     :return:
     """
 
-    if hasattr(LTObject, '_objs'):
-        if len(LTObject._objs) != 1:
+    if hasattr(lto_objects, '_objs'):
+        if len(lto_objects._objs) != 1:
             return False
         else:
-            return contains_a_single_image(LTObject._objs[0])
+            return contains_a_single_image(lto_objects._objs[0])
     else:
-        return isinstance(LTObject, LTImage)
+        return isinstance(lto_objects, LTImage)

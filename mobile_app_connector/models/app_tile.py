@@ -181,7 +181,7 @@ class AppTile(models.Model):
         if records and self.records_filter:
             try:
                 records = records.filtered(safe_eval(self.records_filter))
-            except:
+            except Exception:
                 _logger.error(
                     'Cannot filter recordset given the function',
                     exc_info=True
@@ -219,7 +219,7 @@ class AppTile(models.Model):
 
             if hasattr(records, 'get_app_json'):
                 res.update(records.get_app_json(multi=len(records) > 1))
-        except:
+        except Exception:
             _logger.error("Error rendering tile %s", self.name, exc_info=True)
             res = {}
         return res

@@ -83,7 +83,7 @@ class CorrespondenceCrosscheck(models.TransientModel):
                     # Find the pattern inside the template image
                     img2 = cv2.imread(template_file.name)
 
-                res = pr.patternRecognition(img, img2, full_result=True)
+                res = pr.pattern_recognition(img, img2, full_result=True)
                 if res is None:
                     kp1, kp2, good = None, None, None
                 else:

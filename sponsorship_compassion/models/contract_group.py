@@ -105,8 +105,8 @@ class ContractGroup(models.Model):
                     str(count), total))
                 try:
                     self._generate_birthday_gift(gift_wizard, contract)
-                except:
-                    logger.error("Gift generation failed")
+                except Exception:
+                    logger.error("Gift generation failed", exc_info=True)
                 finally:
                     count += 1
 

@@ -264,7 +264,7 @@ class SmsChildRequest(models.Model):
                 _logger.error("SMS child couldn't be put on hold from global "
                               "pool")
                 return False
-        except:
+        except Exception:
             _logger.error("Error during SMS child reservation", exc_info=True)
             self.env.cr.rollback()
             self.env.invalidate_all()

@@ -24,7 +24,7 @@ except ImportError:
 
 
 def _format_text(text):
-        return text and text.split('\n' + BOX_SEPARATOR + '\n') or ['']
+    return text and text.split('\n' + BOX_SEPARATOR + '\n') or ['']
 
 
 class PageMapping(OnrampMapping):

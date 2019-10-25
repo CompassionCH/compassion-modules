@@ -185,7 +185,7 @@ if not testing:
         _name = 'registration.base.form'
         _inherit = 'cms.form.res.users'
 
-        _nextPage = 1
+        _next_page = 1
 
         has_sponsorship = fields.Selection(
             [('yes', 'Yes'), ('no', 'No')],
@@ -209,16 +209,16 @@ if not testing:
             return 1
 
         def wiz_next_step(self):
-            return self._nextPage
+            return self._next_page
 
         def wiz_prev_step(self):
             return None
 
         def form_before_create_or_update(self, values, extra_values):
             if values['has_sponsorship'] == 'yes':
-                self._nextPage = 2
+                self._next_page = 2
             else:
-                self._nextPage = 3
+                self._next_page = 3
 
         def _form_create(self, values):
             pass

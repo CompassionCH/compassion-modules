@@ -72,7 +72,7 @@ Sample Unsuccessful Response
             datetime.now(), '%Y-%m-%dT%H:%M:%S')
         try:
             super(RESTJsonRequest, self).__init__(*args)
-        except:
+        except Exception:
             # We pass the error at this step to avoid sending back HTML result
             # the error will be catched later by JsonRequest and return a
             # json content error message
@@ -156,19 +156,19 @@ Sample Unsuccessful Response
             })
             _logger.error(exception.message, exc_info=True)
         except AuthenticationError:
-                error.update({
-                    'ErrorCode': 401,
-                    'ErrorCategory': 'AuthenticationError',
-                    'ErrorMessage': 'Session Invalid',
-                })
-                _logger.error('Session Invalid', exc_info=True)
+            error.update({
+                'ErrorCode': 401,
+                'ErrorCategory': 'AuthenticationError',
+                'ErrorMessage': 'Session Invalid',
+            })
+            _logger.error('Session Invalid', exc_info=True)
         except SessionExpiredException:
-                error.update({
-                    'ErrorCode': 401,
-                    'ErrorCategory': 'AuthenticationError',
-                    'ErrorMessage': 'Session Expired',
-                })
-                _logger.error('Session Expired', exc_info=True)
+            error.update({
+                'ErrorCode': 401,
+                'ErrorCategory': 'AuthenticationError',
+                'ErrorMessage': 'Session Expired',
+            })
+            _logger.error('Session Expired', exc_info=True)
         except Exception:
             # Any other cases, lookup what exception type was raised.
             if not isinstance(exception, (exceptions.UserError)):

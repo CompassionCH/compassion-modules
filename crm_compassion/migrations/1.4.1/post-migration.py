@@ -24,7 +24,7 @@ def migrate(cr, version):
                 WHERE id = a.parent_id))),
         name = regexp_replace(name, '20(\d){2}', '')
         WHERE type = 'event'
-        """)
+        """)  # noqa
 
     # Remove years from events
     # Set events to use takss (they all have a project before migration)
@@ -37,4 +37,4 @@ def migrate(cr, version):
         parent_id = (
             SELECT parent_id from account_analytic_account
             WHERE id = e.analytic_id)
-        """)
+        """)  # noqa

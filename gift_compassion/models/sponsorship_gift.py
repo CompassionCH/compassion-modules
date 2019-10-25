@@ -350,14 +350,14 @@ class SponsorshipGift(models.Model):
                 next_year = fields.Date.to_string(
                     (date.today() + timedelta(days=365)).replace(month=1,
                                                                  day=1))
-                firstJanuaryOfThisYear = fields.Date.today()[0:4] + '-01-01'
+                first_jan_of_this_year = fields.Date.today()[0:4] + '-01-01'
 
                 other_gifts = self.search([
                     ('sponsorship_id', '=', sponsorship.id),
                     ('gift_type', '=', self.gift_type),
                     ('attribution', '=', self.attribution),
                     ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
-                    ('gift_date', '>=', firstJanuaryOfThisYear),
+                    ('gift_date', '>=', first_jan_of_this_year),
                     ('gift_date', '<', next_year),
                 ])
 

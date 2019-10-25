@@ -36,8 +36,8 @@ except ImportError:
 ##########################################################################
 #                           GENERAL METHODS                              #
 ##########################################################################
-def patternRecognition(image, pattern, crop_area=None,
-                       threshold=2, full_result=False, algo='ORB'):
+def pattern_recognition(image, pattern, crop_area=None, threshold=2,
+                        full_result=False, algo='ORB'):
     """
     Try to find a pattern in the subset (given by crop_area) of the image.
 
@@ -78,7 +78,7 @@ def patternRecognition(image, pattern, crop_area=None,
             _("The pattern image is broken"))
 
     # cut the part useful for the recognition
-    (xmin, ymin), img1 = subsetImage(img1, crop_area)
+    (xmin, ymin), img1 = subset_image(img1, crop_area)
 
     if algo == 'SIFT':
         # compute the keypoints and descriptors using SIFT
@@ -98,15 +98,15 @@ def patternRecognition(image, pattern, crop_area=None,
         return None
 
     # Find feature in img1 matching with features of img2
-    matches12 = findMatches(des1, des2, algo)
-    matches12 = removeBadMatches(matches12, kp1, kp2)
+    matches12 = find_matches(des1, des2, algo)
+    matches12 = remove_bad_matches(matches12, kp1, kp2)
 
     # Find feature in img2 matching with features of img1
-    matches21 = findMatches(des2, des1, algo)
-    matches21 = removeBadMatches(matches21, kp2, kp1)
+    matches21 = find_matches(des2, des1, algo)
+    matches21 = remove_bad_matches(matches21, kp2, kp1)
 
     # We keep only matches contained matches12 AND matches21
-    good_matches = keepReciproqueMatches(matches12, matches21)
+    good_matches = keep_reciprocal_matches(matches12, matches21)
 
     if full_result:
         return kp1, kp2, good_matches
@@ -126,7 +126,7 @@ def patternRecognition(image, pattern, crop_area=None,
         return None
 
 
-def subsetImage(img, crop_area):
+def subset_image(img, crop_area):
     """
     Cut a part of the image given by crop_area.
     Box is a tuple (of 2) containg a list of two elements.
@@ -148,12 +148,12 @@ def subsetImage(img, crop_area):
     return (xmin, ymin), img[ymin:ymax, xmin:xmax]
 
 
-def findMatches(desA, desB, algo='SIFT', test=0.8):
+def find_matches(image_descriptor, template_descriptor, algo='SIFT', test=0.8):
     """
     Look through the descriptor in order to find some matches.
 
-    :param list[] desA: Descriptor of the image
-    :param list[] desB: Descriptor of the template
+    :param list[] image_descriptor: Descriptor of the image
+    :param list[] template_descriptor: Descriptor of the template
     :param string algo: must be 'SIFT' or 'ORB'. It will help to select the
     distance measurement to be used
     :returns: Matches found in the descriptors
@@ -164,7 +164,7 @@ def findMatches(desA, desB, algo='SIFT', test=0.8):
     norm = cv2.NORM_HAMMING if algo == 'ORB' else cv2.NORM_L2
     bf = cv2.BFMatcher(normType=norm)
 
-    matches = bf.knnMatch(desA, desB, k=2)
+    matches = bf.knnMatch(image_descriptor, template_descriptor, k=2)
     # Apply ratio test
     good = []
     for m, n in matches:
@@ -174,7 +174,7 @@ def findMatches(desA, desB, algo='SIFT', test=0.8):
     return good
 
 
-def removeBadMatches(matchesAB, kpA, kpB, max_angle=45):
+def remove_bad_matches(matches_ab, keypoints_a, keypoints_b, max_angle=45):
     """
     SIFT and ORB are rotation invariant. which means that they detect
     matches regardless of the rotation. But in our case, we know that our
@@ -182,59 +182,58 @@ def removeBadMatches(matchesAB, kpA, kpB, max_angle=45):
     matches where the difference of angle between kpA and kpB is
     bigger than max_angle.
 
-    :param matchesAB: Contains the matching indices of kpA to kpB
-    :param kpA: Keypoints of image A
-    :param kpB: Keypoints of image B
+    :param matches_ab: Contains the matching indices of kpA to kpB
+    :param keypoints_a: Keypoints of image A
+    :param keypoints_b: Keypoints of image B
     :param max_angle: Maximum angle difference allowed for a match
-    :return: filtered_matchesAB: The new set of match which is not rotation
+    :return: filtered_matches_ab: The new set of match which is not rotation
     invariant anymore
     """
 
-    filtered_matchesAB = []
-    for match in matchesAB:
-        angleA = kpA[match[0].queryIdx].angle
-        angleB = kpB[match[0].trainIdx].angle
-        dAngle = math.fabs(angleA-angleB)
-        dAngle = dAngle if dAngle < 180 else 360-dAngle
-        if dAngle < max_angle:
-            filtered_matchesAB.append(match)
-    return filtered_matchesAB
+    filtered_matches_ab = []
+    for match in matches_ab:
+        angle_a = keypoints_a[match[0].queryIdx].angle
+        angle_b = keypoints_b[match[0].trainIdx].angle
+        angle_diff = math.fabs(angle_a - angle_b)
+        angle_diff = angle_diff if angle_diff < 180 else 360-angle_diff
+        if angle_diff < max_angle:
+            filtered_matches_ab.append(match)
+    return filtered_matches_ab
 
 
-def keepReciproqueMatches(betterAB, betterBA):
-    bestAB = []
-    for matchAB in betterAB:
-        idA = matchAB[0].queryIdx
-        idB = matchAB[0].trainIdx
-        for matchBA in betterBA:
-            if idA == matchBA[0].trainIdx and idB == matchBA[0].queryIdx:
-                bestAB.append(matchAB)
-    return bestAB
+def keep_reciprocal_matches(matches_ab, matches_ba):
+    best_ab = []
+    for match_ab in matches_ab:
+        id_a = match_ab[0].queryIdx
+        id_b = match_ab[0].trainIdx
+        for match_ba in matches_ba:
+            if id_a == match_ba[0].trainIdx and id_b == match_ba[0].queryIdx:
+                best_ab.append(match_ab)
+    return best_ab
 
 
-def measure_disorder(posA, posB):
+def measure_disorder(pos_a, pos_b):
     """
     Naive function to check if the matching point clouds looks the same
-
-    :param posA:
-    :param posB:
+    :param pos_a:
+    :param pos_b:
     :return:
     """
 
     # centering positions around their mean
-    posA = posA - posA.mean(axis=0)
-    posB = posB - posB.mean(axis=0)
+    pos_a = pos_a - pos_a.mean(axis=0)
+    pos_b = pos_b - pos_b.mean(axis=0)
 
     # if the the two patterns are similar, with no deformation and with same
     # scale and orientations, then the sum of absolute differences should
     # be close to zero
-    SAD = (np.absolute(posA-posB)).sum()
+    sum_absolute_difference = (np.absolute(pos_a - pos_b)).sum()
     # we return the mean of the Sum of Absolute Difference
-    disorder_pt = SAD / len(posA)
+    disorder_pt = sum_absolute_difference / len(pos_a)
     return disorder_pt
 
 
-def scaled_rigid_transform(A, B):
+def scaled_rigid_transform(points_a, points_b):
     """
     NOTICE: This function could be used within a RANSAC algorithm to
     detect outliers in the matching. However, the RANSAC part haven't been
@@ -249,51 +248,53 @@ def scaled_rigid_transform(A, B):
     not a rigid transform anymore, but it still should find a nearly optimal
     transformation made of scaling, rotation and translation.
 
-    :param np.array A: List of position (x,y) of the keypoints A
-    :param np.array B: List of position (x,y) of the keypoints B matching
-    with keypoints B
-    :return: tuple (scaleAB, R, t):
-        scaleAB: scale factor of A to B. If A and B are similar, it should
+    :param np.array points_a: List of position (x,y) of the keypoints A
+    :param np.array points_b: List of position (x,y) of the keypoints B
+    matching with keypoints B
+    :return: tuple (scale_ab, R, translation_vec):
+        scale_ab: scale factor of A to B. If A and B are similar, it should
         be close to 1.0
-        R: Rotation matrix. should be close to [[1, 0], [0, 1]]
-        t: translation vector, can be anything
+        rotation_mat: Rotation matrix. should be close to [[1, 0], [0, 1]]
+        translation_vec: translation vector, can be anything
     """
-    assert len(A) == len(B)
+    assert len(points_a) == len(points_b)
 
-    centroid_A = np.mean(A, axis=0)
-    centroid_B = np.mean(B, axis=0)
+    centroid_a = np.mean(points_a, axis=0)
+    centroid_b = np.mean(points_b, axis=0)
 
     # centre the points
-    AA = A - centroid_A
-    BB = B - centroid_B
+    points_a_centered = points_a - centroid_a
+    points_b_centered = points_b - centroid_b
 
-    # compute the scale factor from AA to BB. To do so, we compute the sum
-    # of magnitude A and B. (sum of pythagor)
-    magnitude_A = np.sum(np.sqrt(np.sum((np.square(AA)), axis=1)))
-    magnitude_B = np.sum(np.sqrt(np.sum((np.square(BB)), axis=1)))
+    # compute the scale factor from points_a_centered to points_b_centered. To
+    # do so, we compute the sum of magnitude A and B. (sum of pythagor).
+    magnitude_a = np.sum(
+        np.sqrt(np.sum((np.square(points_a_centered)), axis=1)))
+    magnitude_b = np.sum(
+        np.sqrt(np.sum((np.square(points_b_centered)), axis=1)))
 
-    scaleAB = magnitude_B/magnitude_A
-    AA *= scaleAB
+    scale_ab = magnitude_b/magnitude_a
+    points_a_centered *= scale_ab
 
     # dot is matrix multiplication for array
-    H = np.transpose(AA) * BB
+    h = np.transpose(points_a_centered) * points_b_centered
 
     # compute the singular value decomposition transformation.
-    U, S, Vt = np.linalg.svd(H)
+    u, s, v_t = np.linalg.svd(h)
 
-    R = Vt.T * U.T
+    rotation_mat = v_t.T * u.T
 
     # special reflection case
-    if np.linalg.det(R) < 0:
-        Vt[1, :] *= -1
-        R = Vt.T * U.T
+    if np.linalg.det(rotation_mat) < 0:
+        v_t[1, :] *= -1
+        rotation_mat = v_t.T * u.T
 
-    t = -scaleAB*R * centroid_A.T + centroid_B.T
+    translation_vec = -scale_ab*rotation_mat * centroid_a.T + centroid_b.T
 
-    return scaleAB, R, t
+    return scale_ab, rotation_mat, translation_vec
 
 
-def keyPointCenter(keypoints):
+def keypoint_center(keypoints):
     """
     Compute the Center of the keypoints by using a weight computed
     with the distance (therefore a point far away from the main group
@@ -301,7 +302,7 @@ def keyPointCenter(keypoints):
     a small weight)
 
     :param np.array() keypoints: Keypoints computed by \
-    :func:`patternRecognition` for either the image or the template
+    :func:`pattern_recognition` for either the image or the template
     :returns: Coordinates of the center
     :rtype: list[float]
     """
@@ -312,7 +313,7 @@ def keyPointCenter(keypoints):
         return keypoints
     else:
         # normalization of the weights
-        N = 0
+        normalization = 0
         # return value
         center = np.array([0.0, 0.0])
         for i in keypoints:
@@ -325,9 +326,9 @@ def keyPointCenter(keypoints):
             if omega == 0:
                 omega = 1e-8
             omega = 1.0 / np.sqrt(omega)
-            N += omega
+            normalization += omega
             center += omega * np.array(i)
-        return center / N
+        return center / normalization
 
 
 def find_template(img, templates, resize_ratio=1.0):
@@ -357,7 +358,7 @@ def find_template(img, templates, resize_ratio=1.0):
         i = i + 1
         # Crop the image to speedup detection and avoid false positives
         crop_area = template.get_pattern_area()
-        (xmin, ymin), img1 = subsetImage(img, crop_area)
+        (xmin, ymin), img1 = subset_image(img, crop_area)
 
         # resizing the pattern, assuming it had been saved at 300dpi
         with tempfile.NamedTemporaryFile() as temp:
@@ -370,7 +371,7 @@ def find_template(img, templates, resize_ratio=1.0):
                                 interpolation=cv2.INTER_CUBIC)
 
         # try to recognize the pattern
-        res = patternRecognition(img1, temp_image)
+        res = pattern_recognition(img1, temp_image)
         if res is None:
             continue
 
@@ -395,4 +396,4 @@ def find_template(img, templates, resize_ratio=1.0):
                          nb_keypoints, tic))
     else:
         _logger.info("\t\t\tNo template found.")
-    return matching_template, keyPointCenter(key_img)
+    return matching_template, keypoint_center(key_img)

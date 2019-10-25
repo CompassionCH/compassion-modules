@@ -8,6 +8,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def migrate(cr, version):
@@ -28,5 +31,7 @@ def migrate(cr, version):
                                     AND subtype_id = 43
                                 )
                 """)
-    except:
+    except Exception:
+        _logger.error("Cannot remove the paper message in message thread",
+                      exc_info=True)
         cr.rollback()

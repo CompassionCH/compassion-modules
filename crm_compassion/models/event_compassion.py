@@ -431,9 +431,9 @@ class EventCompassion(models.Model):
         days_after = self.env['demand.planning.settings'].get_param(
             'days_hold_after_event')
         for event in self.filtered('end_date'):
-                hold_end_date = fields.Datetime.from_string(
-                    event.end_date) + timedelta(days=days_after)
-                event.hold_end_date = fields.Date.to_string(hold_end_date)
+            hold_end_date = fields.Datetime.from_string(
+                event.end_date) + timedelta(days=days_after)
+            event.hold_end_date = fields.Date.to_string(hold_end_date)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

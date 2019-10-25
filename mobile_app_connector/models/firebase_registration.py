@@ -101,7 +101,7 @@ class GetPartnerMessage(models.Model):
                 partner_id=partner_id
             )
         else:
-            raise NotImplemented('Operation %s is not supported by Odoo' %
-                                 operation)
+            raise NotImplementedError('Operation %s is not supported by Odoo' %
+                                      operation)
 
         return reg_id

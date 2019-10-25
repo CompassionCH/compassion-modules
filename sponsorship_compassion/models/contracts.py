@@ -145,14 +145,16 @@ class SponsorshipContract(models.Model):
         ])
 
         if not len(sponsorship_product) == 1:
-            raise ValidationError(_("The sponsorship product does not exist for the "
-                                    "current company yet. Please create a product with "
-                                    "default_code 'sponsorship' first."))
+            raise ValidationError(
+                _("The sponsorship product does not exist for the "
+                  "current company yet. Please create a product with "
+                  "default_code 'sponsorship' first."))
 
         if not len(gen_product) == 1:
-            raise ValidationError(_("The donation product does not exist for the "
-                                    "current company yet. Please create a product with "
-                                    "default_code 'fund_gen' first."))
+            raise ValidationError(
+                _("The donation product does not exist for the "
+                  "current company yet. Please create a product with "
+                  "default_code 'fund_gen' first."))
 
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
@@ -353,7 +355,7 @@ class SponsorshipContract(models.Model):
             with self.env.cr.savepoint():
                 if updated_correspondents:
                     updated_correspondents._on_correspondant_changed()
-        except:
+        except Exception:
             logger.error(
                 "Error while changing correspondant at GMC. "
                 "The sponsorship is no longer active at GMC side. "
@@ -793,7 +795,7 @@ class SponsorshipContract(models.Model):
                         failure = message.failure_reason
                         sponsorship.message_post(
                             failure, _("Language update failed."))
-            except:
+            except Exception:
                 logger.error(
                     "Error when updating sponsorship language. "
                     "You may be out of sync with GMC - please try again.",

@@ -159,8 +159,8 @@ class DownloadChildPictures(models.TransientModel):
                 self.preview = base64.encodestring(
                     urllib2.urlopen(url[0]).read())
                 break
-            except:
-                logger.error('Image cannot be fetched : ' + url)
+            except Exception:
+                logger.error('Image cannot be fetched : ' + url, exc_info=True)
 
     @api.multi
     def _check_picture_availability(self):

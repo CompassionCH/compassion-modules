@@ -36,7 +36,7 @@ class ChildAssessmentMapping(OnrampMapping):
     def _process_connect_data(self, connect_data):
         # Set end date to correct format for Connect
         if 'CompletionDate' in connect_data:
-            endDateStr = connect_data.get('CompletionDate')
-            endDate = datetime.strptime(endDateStr, "%Y-%m-%d %H:%M:%S")
-            connect_data['CompletionDate'] = endDate.strftime(
+            end_date_str = connect_data.get('CompletionDate')
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S")
+            connect_data['CompletionDate'] = end_date.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")

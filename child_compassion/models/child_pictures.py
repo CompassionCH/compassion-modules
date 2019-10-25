@@ -147,10 +147,11 @@ class ChildPictures(models.Model):
                     self.headshot = data
                 elif type.lower() == 'fullshot':
                     self.fullshot = data
-            except:
+            except Exception:
                 self._error_msg = 'Image cannot be fetched, invalid image ' \
                     'url : ' + picture.image_url
-                logger.error('Image cannot be fetched : ' + picture.image_url)
+                logger.error('Image cannot be fetched : ' + picture.image_url,
+                             exc_info=True)
                 continue
 
         return _image_date

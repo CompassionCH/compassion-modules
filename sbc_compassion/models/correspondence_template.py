@@ -359,7 +359,7 @@ class CorrespondenceTemplate(models.Model):
                 float(config_obj.get_param('qrcode_y_max'))
             if template.pattern_image:
                 # pattern detection
-                res = pr.patternRecognition(
+                res = pr.pattern_recognition(
                     template_cv_image, template.pattern_image,
                     template.get_pattern_area())
                 if res is None:

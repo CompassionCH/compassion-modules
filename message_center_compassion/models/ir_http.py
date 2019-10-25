@@ -32,7 +32,7 @@ class IrHTTP(models.AbstractModel):
     @classmethod
     def _auth_method_oauth2_legacy(cls):
         # TODO Remove this OAuth method when no more used
-        VALID_ISSUERS = [
+        valid_issuers = [
             'https://esther.ci.org',
             'http://services.compassionuk.org/',
             'globalaccess-stage.ci.org',
@@ -61,7 +61,7 @@ class IrHTTP(models.AbstractModel):
         }
         jwt_decoded = jwt.decode(access_token, options=options)
         # Manual validation of issuer
-        if jwt_decoded.get('iss') not in VALID_ISSUERS:
+        if jwt_decoded.get('iss') not in valid_issuers:
             raise Unauthorized()
         # is scope read or write in scopes ?
         scope = jwt_decoded.get('scope')

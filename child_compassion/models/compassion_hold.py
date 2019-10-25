@@ -361,8 +361,8 @@ class CompassionHold(models.Model):
                     logger.error("\n".join(fail))
                     # Force hold removal
                     self.hold_released()
-        except:
-            logger.error("Some holds couldn't be released.")
+        except Exception:
+            logger.error("Some holds couldn't be released.", exc_info=True)
         return True
 
     @api.multi

@@ -125,7 +125,7 @@ class CompassionChild(models.Model):
             guardians = [guardians]
 
         at = self.env['ir.advanced.translation'].sudo()
-        childBio = {
+        child_bio = {
             'educationLevel': self._lower(child.translate('education_level')),
             'academicPerformance': self._lower(child.translate(
                 'academic_performance')),
@@ -143,7 +143,7 @@ class CompassionChild(models.Model):
         }
 
         result = {
-            'ChildBioServiceResult': childBio
+            'ChildBioServiceResult': child_bio
         }
         return result
 

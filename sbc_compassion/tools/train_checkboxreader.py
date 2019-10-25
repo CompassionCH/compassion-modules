@@ -48,26 +48,26 @@ def plot(img):
     plt.pause(1)
 
 
-def compute_threshold(D1, D2, display=False):
-    D12 = np.concatenate((D1, D2))
+def compute_threshold(d1, d2, display=False):
+    d12 = np.concatenate((d1, d2))
 
-    N1 = len(D1)
-    N2 = len(D2)
+    n1 = len(d1)
+    n2 = len(d2)
 
-    bins = range(0, int(max(D12)), int(max(D12)/50.0))
+    bins = range(0, int(max(d12)), int(max(d12)/50.0))
 
-    # We define P1 to be the probability of the box to be checked, and P2 the
-    # probability of being empty with P1 + P2 = 1
-    P1 = 1.0/6.0
-    P2 = 5.0/6.0
+    # We define p1 to be the probability of the box to be checked, and p2 the
+    # probability of being empty with p1 + p2 = 1
+    p1 = 1.0/6.0
+    p2 = 5.0/6.0
 
     # The probability distribution function can be computed as an histogram
-    pdf1, bins1 = np.histogram(D1, bins)
-    pdf2, bins2 = np.histogram(D2, bins)
+    pdf1, bins1 = np.histogram(d1, bins)
+    pdf2, bins2 = np.histogram(d2, bins)
 
     # We normalized them in order that their integral is equal to 1
-    pdf1 = pdf1 / (1.0*N1)
-    pdf2 = pdf2 / (1.0*N2)
+    pdf1 = pdf1 / (1.0*n1)
+    pdf2 = pdf2 / (1.0*n2)
 
     # Know we want to find the threshold 't' minimizing the following error
     # probability:   PErr(t) = P(D1<t) + P(D2>=t)
@@ -77,10 +77,10 @@ def compute_threshold(D1, D2, display=False):
 
     # cdf1[-1] and cdf2[-1] are supposed to be equal to 1 and
     # P(Error) can be computed like this
-    PErr = P1*cdf1 + P2*(1-cdf2)
+    p_err = p1*cdf1 + p2*(1-cdf2)
 
     # We finally find the minimum Error:
-    mini, index = findmin(PErr)
+    mini, index = findmin(p_err)
     threshold = (bins[index[0]]+bins[index[-1]])/2.0
 
     if display:
@@ -89,8 +89,8 @@ def compute_threshold(D1, D2, display=False):
 
         # plot pdfs
         hist = fig.add_subplot(121)
-        hist.plot(bins1[1:], P1*pdf1, 'r-', linewidth=2)
-        hist.plot(bins2[1:], P2*pdf2, 'b-', linewidth=2)
+        hist.plot(bins1[1:], p1*pdf1, 'r-', linewidth=2)
+        hist.plot(bins2[1:], p2*pdf2, 'b-', linewidth=2)
         hist.set_xlabel('Score distribution')
         hist.set_ylabel('Probability')
         hist.grid(True)
@@ -108,7 +108,7 @@ def compute_threshold(D1, D2, display=False):
 
 
 def train(folder, indices=None):
-    D = []
+    scores = []
     files = os.listdir(folder)
     files.sort()
     if not indices:
@@ -118,13 +118,12 @@ def train(folder, indices=None):
         img = cv2.imread(folder + '/' + img_name)
         cbr_img = cbr.CheckboxReader(img)
         score = cbr_img.compute_boxscore(boxsize=17)
-        D.append(score)
-    D = np.array(D)
-    return D
+        scores.append(score)
+    return np.array(scores)
 
 
 def test(thresh, folder, indices=None):
-    PR = 0
+    pr = 0
     files = os.listdir(folder)
     files.sort()
     if not indices:
@@ -135,9 +134,9 @@ def test(thresh, folder, indices=None):
         cbr_img = cbr.CheckboxReader(img)
         score = cbr_img.compute_boxscore(boxsize=17)
         if thresh < score:
-            PR += 1.0
-    PR /= (len(indices)*1.0)
-    return PR
+            pr += 1.0
+    pr /= (len(indices)*1.0)
+    return pr
 
 # ----------------------------------------------------------------------------
 # ------------------------------- MAIN ---------------------------------------

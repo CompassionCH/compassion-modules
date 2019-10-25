@@ -9,9 +9,10 @@ class ProductTemplate(models.Model):
     @api.multi
     def name_get(self):
         """
-        We have multiple product template with the same name, one for each company.
-        Cross-company users (e.g. admins) may want to differentiates the homonyms so we
-        prepend the company name
+        We have multiple product template with the same name, one for each
+        company.
+        Cross-company users (e.g. admins) may want to differentiates the
+        homonyms so we prepend the company name.
 
         returns => [(template_id, "[company] template_name")]
         """
@@ -22,4 +23,5 @@ class ProductTemplate(models.Model):
         names = dict(names)
 
         # for each template_product, reformat the name with the company name
-        return [(t.id, "[%s] %s" % (t.company_id.name, names[t.id])) for t in self]
+        return [(t.id, "[%s] %s" % (t.company_id.name, names[t.id])) for t in
+                self]

@@ -62,10 +62,10 @@ class ReservationCreateMapping(OnrampMapping):
     def _process_connect_data(self, connect_data):
         # Set expiration date to correct format for Connect
         if 'HoldExpirationDate' in connect_data:
-            expirationDateStr = connect_data.get('HoldExpirationDate')
-            expirationDate = datetime.strptime(expirationDateStr,
-                                               "%Y-%m-%d %H:%M:%S")
-            connect_data['HoldExpirationDate'] = expirationDate.strftime(
+            expiration_date_str = connect_data.get('HoldExpirationDate')
+            expiration_date = datetime.strptime(expiration_date_str,
+                                                "%Y-%m-%d %H:%M:%S")
+            connect_data['HoldExpirationDate'] = expiration_date.strftime(
                 "%Y-%m-%dT%H:%M:%SZ")
         for key, val in connect_data.copy().iteritems():
             if not val:
