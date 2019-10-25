@@ -317,7 +317,7 @@ class CompassionHold(models.Model):
             })
 
             # Notify reservation owner
-            hold.message_post(
+            hold.sudo().message_post(
                 body=_("A new hold has been created because of an existing "
                        "reservation."),
                 subject=_("%s - Reservation converted to hold" %
