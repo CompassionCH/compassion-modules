@@ -309,7 +309,7 @@ class CompassionHold(models.Model):
             })
 
             # Notify reservation owner
-            hold.message_post(
+            hold.sudo().message_post(
                 body=_("A new hold has been created because of an existing "
                        "reservation."),
                 subject=_(f"{child.local_id} - Reservation converted to hold"),
@@ -485,8 +485,16 @@ class CompassionHold(models.Model):
 
     @api.multi
     def data_to_json(self, mapping_name=None):
-        odoo_data = super().data_to_json(mapping_name)
-        for key, val in odoo_data.copy().items():
+        json_data = super().data_to_json(mapping_name)
+        for key, val in json_data.copy().items():
             if not val:
-                del odoo_data[key]
-        return odoo_data
+                del json_data[key]
+        # Read manually Primary Owner, to avoid security restrictions on
+        # companies in case the owner is in another company.
+        if len(self) == 1:
+            json_data['PrimaryHoldOwner'] = self.primary_owner.sudo().name
+        elif self:
+            for i, hold in enumerate(self):
+                json_data[i][
+                    'PrimaryHoldOwner'] = hold.primary_owner.sudo().name
+        return json_data

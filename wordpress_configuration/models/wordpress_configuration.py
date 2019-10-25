@@ -18,9 +18,7 @@ class WordpressConfiguration(models.Model):
 
     host = fields.Char(required=True)
     user = fields.Char(required=True)
-
-    # only admins can access this field
-    password = fields.Char(required=True, groups="base.group_system")
+    password = fields.Char(required=True)
 
     @api.model
     def create(self, values):

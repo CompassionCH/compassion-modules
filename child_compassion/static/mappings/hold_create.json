@@ -14,10 +14,6 @@
     },
     "HoldID": "hold_id",
     "HoldYieldRate": "yield_rate",
-    "PrimaryHoldOwner": {
-      "field": "primary_owner.name",
-      "search_relational_record": true
-    },
     "SecondaryHoldOwner": "secondary_owner",
     "SourceCode": {
       "field": "source_code",

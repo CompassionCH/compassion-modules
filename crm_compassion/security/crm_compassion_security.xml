@@ -7,12 +7,6 @@
          <field name="global" eval="True"/>
          <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
        </record>
-       <record id="compassion_hold_rule" model="ir.rule">
-         <field name="name" >Compassion Hold multi-company</field>
-         <field name="model_id" ref='model_compassion_hold'/>
-         <field name="global" eval="True" />
-         <field name="domain_force">['|', '|', ('event_id.company_id','=',False),('event_id.company_id','child_of',[user.company_id.id]), ('child_id.company_id.id', 'child_of', [user.company_id.id])]</field>
-       </record>
        <record id="crm_lead_rule" model="ir.rule">
          <field name="name" >Crm Lead multi-company</field>
          <field name="model_id" ref='model_crm_lead'/>

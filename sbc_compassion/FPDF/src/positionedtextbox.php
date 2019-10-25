@@ -40,5 +40,10 @@ class PositionedTextBox extends PositionedObject
 	{
 		return !$this->used;
 	}
+
+	function Reset()
+	{
+		$this->used = false;
+	}
 }
 ?>
