@@ -92,6 +92,7 @@ class ChilpoolCreateHoldMapping(OnrampMapping):
         res = super(ChilpoolCreateHoldMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         res['PrimaryHoldOwner'] = odoo_object.sudo().primary_owner.name
+        return res
 
 
 class ChilpoolReleaseHoldMapping(ChilpoolCreateHoldMapping):
@@ -153,3 +154,4 @@ class ReservationToHoldMapping(OnrampMapping):
         res = super(ReservationToHoldMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         res['PrimaryOwner'] = odoo_object.sudo().primary_owner.name
+        return res

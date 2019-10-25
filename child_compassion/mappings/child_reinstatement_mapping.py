@@ -60,3 +60,4 @@ class ReinstatementMapping(OnrampMapping):
         res = super(ReinstatementMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         res['PrimaryHoldOwner'] = odoo_object.sudo().primary_owner.name
+        return res

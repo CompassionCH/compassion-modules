@@ -99,6 +99,7 @@ class ReservationCreateMapping(OnrampMapping):
         res = super(ReservationCreateMapping, self).get_connect_data(
             odoo_object, fields_to_submit)
         res['PrimaryOwner'] = odoo_object.sudo().primary_owner.name
+        return res
 
 
 class ProjetReservationCancelMapping(ReservationCreateMapping):
