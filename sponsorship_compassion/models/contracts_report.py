@@ -30,10 +30,6 @@ class PartnerSponsorshipReport(models.Model):
                                     help='Count only the sponsorships who '
                                          'are fully managed or those who are '
                                          'paid (not the correspondent).')
-    sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
-                                      compute='_compute_b2s_letter')
-    sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
-                                      compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer('Number of boys', compute='_compute_boy')
     sr_nb_girl = fields.Integer('Number of girls', compute='_compute_girl')
     sr_time_fcp = fields.Integer('Total hour spent at the FCP',
@@ -80,38 +76,6 @@ class PartnerSponsorshipReport(models.Model):
     def _compute_sr_sponsorship(self):
         for partner in self:
             partner.sr_sponsorship = len(partner.related_active_sponsorships)
-
-    @api.multi
-    def _compute_b2s_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Beneficiary To Supporter'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_b2s_letter = nb_letter
-
-    @api.multi
-    def _compute_s2b_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Supporter To Beneficiary'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_s2b_letter = nb_letter
 
     @api.multi
     def _compute_boy(self):
@@ -221,7 +185,7 @@ class PartnerSponsorshipReport(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'context': self.with_context(
-                form_view_ref='recurring.contract.sponsorship_report_form'
+                form_view_ref='sponsorship_compassion.sponsorship_report_form'
             ).env.context,
             'res_id': self.id
         }

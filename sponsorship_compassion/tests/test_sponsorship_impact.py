@@ -15,10 +15,6 @@ from .test_sponsorship_compassion import BaseSponsorshipTest
 class TestSponsorshipImpact(BaseSponsorshipTest):
 
     def test_sponsorship_impact_first_scenario(self):
-        self.env['thankyou.config'].create({
-            'min_donation_amount': 50.0,
-            'send_mode': 'auto_digital_only',
-        })
         # Create 3 children and get the project associated
         child1 = self.create_child('PI012304561')
         child2 = self.create_child('PJ012304562')
@@ -82,9 +78,6 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
 
         self.assertEqual(sponsorship_ids[0].state, 'active')
         self.assertEqual(partner.sr_sponsorship, 3)
-
-        # Check duration : 8*7-2 = 52 days per sponsorship
-        # self.assertEqual(partner.sr_time_fcp, 53 * 3)
 
         self.assertEqual(partner.sr_nb_girl, 1)
         self.assertEqual(partner.sr_nb_boy, 2)

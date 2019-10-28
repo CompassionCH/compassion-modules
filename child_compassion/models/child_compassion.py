@@ -259,6 +259,7 @@ class CompassionChild(models.Model):
         'child.disaster.impact', 'child_id', 'Child Disaster Impact',
         readonly=True
     )
+    is_special_needs = fields.Boolean()
 
     # Descriptions
     ##############
@@ -274,7 +275,6 @@ class CompassionChild(models.Model):
          'The child already exists in database.')
     ]
 
-    is_special_needs = fields.Boolean()
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -332,11 +332,12 @@ class CompassionChild(models.Model):
             'R': no_hold,
             'S': consignment_holds
         }
-        if self.hold_type not in valid_states[self.state]:
-            raise ValidationError(_(
-                f"Child {self.local_id} has invalid state {self.state} "
-                f"for hold type {self.hold_type}"
-            ))
+        for child in self:
+            if child.hold_type not in valid_states[child.state]:
+                raise ValidationError(_(
+                    f"Child {child.local_id} has invalid state {child.state} "
+                    f"for hold type {child.hold_type}"
+                ))
 
     ##########################################################################
     #                              ORM METHODS                               #

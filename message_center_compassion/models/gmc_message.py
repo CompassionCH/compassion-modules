@@ -142,7 +142,6 @@ class GmcMessage(models.Model):
     @api.multi
     def reset_message(self):
         self.write({
-            'request_id': False,
             'state': 'new',
             'process_date': False,
             'failure_reason': False
@@ -340,13 +339,14 @@ class GmcMessage(models.Model):
                     # Individual message was successfully processed
                     # Commit state before processing the success
                     self[i].write({
-                    'content': json.dumps(
-                        content_sent[i], indent=4, sort_keys=True
-                    ) if isinstance(content_sent, list) else json.dumps(
-                        content_sent, indent=4, sort_keys=True),
-                    'request_id': onramp_answer.get('request_id', False),
-                    'answer': json.dumps(result, indent=4, sort_keys=True)
-                })
+                        'content': json.dumps(content_sent[i], indent=4,
+                                              sort_keys=True)
+                        if isinstance(content_sent, list) else json.dumps(
+                            content_sent, indent=4, sort_keys=True),
+                        'request_id': onramp_answer.get('request_id',
+                                                        str(self[i].id)),
+                        'answer': json.dumps(result, indent=4, sort_keys=True)
+                    })
                     self.env.cr.commit()  # pylint:disable=invalid-commit
                     self[i]._process_single_answer(data_objects[i], result)
                 elif isinstance(result, dict):

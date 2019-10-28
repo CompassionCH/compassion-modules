@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 
 from odoo.addons.child_compassion.models.compassion_hold import \
     HoldType

@@ -23,5 +23,4 @@ from . import product_template
 from . import contract_origin
 from . import product
 from . import recurring_contract_line
-from . import utm
 from . import res_partner_title

@@ -8,23 +8,19 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from lxml import etree
-import os
 
 from .product_names import SPONSORSHIP_CATEGORY, FUND_CATEGORY
-import logging
-logger = logging.getLogger(__name__)
-THIS_DIR = os.path.dirname(__file__)
 
 
 class SponsorshipLine(models.Model):
     _inherit = 'recurring.contract.line'
 
     contract_type = fields.Selection([
-        ('G', _('Child Gift')),
-        ('S', _('Sponsorship')),
-        ('SC', _('Correspondence'))
+        ('G', 'Child Gift'),
+        ('S', 'Sponsorship'),
+        ('SC', 'Correspondence')
     ], related='contract_id.type', readonly=True)
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', ondelete='cascade'

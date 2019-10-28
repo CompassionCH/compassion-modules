@@ -33,6 +33,7 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     correspondent_id = fields.Many2one(
         'res.partner', string='Correspondent', track_visibility='onchange',
+        index=True
     )
     partner_codega = fields.Char(
         'Partner ref', related='correspondent_id.ref', readonly=True)
@@ -44,7 +45,7 @@ class SponsorshipContract(models.Model):
         "for a birthday gift. The invoice is set two months before "
         "child's birthday.", track_visibility='onchange')
     reading_language = fields.Many2one(
-        'res.lang.compassion', 'Preferred language', required=False,
+        'res.lang.compassion', 'Preferred language',
         track_visiblity='onchange')
     transfer_partner_id = fields.Many2one(
         'compassion.global.partner', 'Transferred to')
@@ -69,14 +70,13 @@ class SponsorshipContract(models.Model):
         states={'draft': [('readonly', False)],
                 'waiting': [('readonly', False)],
                 'mandate': [('readonly', False)]}, ondelete='restrict',
-        track_visibility='onchange')
+        track_visibility='onchange', index=True)
     project_id = fields.Many2one('compassion.project', 'Project',
                                  related='child_id.project_id')
     child_name = fields.Char(
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(
         'Sponsored child code', related='child_id.local_id', readonly=True)
-    activation_date = fields.Date(readonly=True, copy=False)
     is_active = fields.Boolean(
         'Contract Active', compute='_compute_active', store=True,
         help="It indicates that the first invoice has been paid and the "
@@ -84,20 +84,18 @@ class SponsorshipContract(models.Model):
     # Field used for identifying gifts from sponsor
     commitment_number = fields.Integer(
         'Partner Contract Number', required=True, copy=False,
-        oldname='num_pol_ga'
     )
     months_paid = fields.Integer(compute='_compute_months_paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
-        track_visibility='onchange')
-
+        track_visibility='onchange', index=True)
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
         track_visibility='onchange', index=True, copy=False)
-
     sub_sponsorship_id = fields.Many2one(
-        'recurring.contract', 'sub sponsorship', readonly=True, copy=False)
-
+        'recurring.contract', 'sub sponsorship', readonly=True, copy=False,
+        index=True
+    )
     name = fields.Char(compute='_compute_name', store=True)
     partner_id = fields.Many2one(
         'res.partner', 'Partner', required=True,
@@ -120,19 +118,16 @@ class SponsorshipContract(models.Model):
                                        help='Contract duration in days')
     hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id')
 
-    _sql_constraints = [('parent_id_unique',
-                         'UNIQUE(parent_id)',
-                         'Unfortunately this sponsorship is already used,'
-                         'please choose a unique one'),
-                        ('sub_sponsorship_id_unique',
-                         'UNIQUE(sub_sponsorship_id)',
-                         'Unfortunately this sponsorship is already'
-                         'used, please choose a unique one'),
-                        ('unique_global_id',
-                         'unique(global_id)',
-                         'You cannot have same global ids for contracts')
-                        ]
-    #
+    _sql_constraints = [
+        ('parent_id_unique', 'UNIQUE(parent_id)',
+         'Unfortunately this sponsorship is already used, '
+         'please choose a unique one'),
+        ('sub_sponsorship_id_unique', 'UNIQUE(sub_sponsorship_id)',
+         'Unfortunately this sponsorship is already used, '
+         'please choose a unique one'),
+        ('unique_global_id', 'unique(global_id)',
+         'You cannot have same global ids for contracts')
+    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -265,14 +260,6 @@ class SponsorshipContract(models.Model):
                 ]).mapped('price_subtotal') or [0])
             amount += contract.partner_id.debit
             contract.suspended_amount = amount
-
-    @api.model
-    def _get_states(self):
-        """ Add a waiting and a cancelled state """
-        states = super()._get_states()
-        states.insert(1, ('waiting', 'Waiting Payment'))
-        states.insert(len(states), ('cancelled', 'Cancelled'))
-        return states
 
     @api.multi
     @api.depends('partner_id', 'partner_id.ref', 'child_id',
@@ -535,19 +522,18 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.fcp_id
             contract.message_post(
-                f"The project {project_code} was suspended "
-                "and funds are retained."
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.",
-                "Project Suspended",
-                "comment")
+                _(f"The project {project_code} was suspended "
+                  f"and funds are retained."
+                  f"<br/>Invoices due in the suspension period "
+                  f"are automatically cancelled."),
+                _("Project Suspended"), message_type="comment")
             contract.partner_id.message_post(
-                f"The project {project_code} was suspended "
-                f"and funds are retained for child {contract.child_code}. <b>"
-                "<br/>Invoices due in the suspension period "
-                "are automatically cancelled.",
-                "Project Suspended",
-                "comment")
+                _(f"The project {project_code} was suspended and"
+                  f" funds are retained for child {contract.child_code}. <b>"
+                  f"<br/>Invoices due in the suspension period "
+                  f"are automatically cancelled."),
+                _("Project Suspended"),
+                message_type="comment")
 
         # Change invoices if config tells to do so.
         if suspend_config:
@@ -769,23 +755,6 @@ class SponsorshipContract(models.Model):
             'type': HoldType.NO_MONEY_HOLD.value,
         })
 
-    @api.model
-    def json_to_data(self, json, mapping_name=None):
-        connect_data = super().json_to_data(json, mapping_name)
-
-        if mapping_name == "Create Sponsorship Mapping":
-            if not connect_data.get('GlobalId') and 'GlobalId' in connect_data:
-                del connect_data['GlobalId']
-
-        if mapping_name == "Cancel Sponsorship Mapping":
-            end_date_str = connect_data.get(
-                'HoldExpirationDate') or fields.Datetime.now()
-            end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S")
-            connect_data['HoldExpirationDate'] = end_date.strftime(
-                "%Y-%m-%dT%H:%M:%SZ")
-
-        return connect_data
-
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
@@ -868,7 +837,7 @@ class SponsorshipContract(models.Model):
             message_obj.create(message_vals)
 
         self.filtered(lambda c: not c.is_active).write({
-            'activation_date': fields.Date.today()
+            'activation_date': fields.Datetime.now()
         })
         self.write({'state': 'active'})
         last_line_id = self.search(
@@ -1104,6 +1073,7 @@ class SponsorshipContract(models.Model):
                     ('state', 'in', ['new', 'failure']),
                     ('object_id', '=', sponsorship.id),
                 ]).unlink()
+                sponsorship.state = 'cancelled'
         partners = self.mapped('partner_id') | self.mapped('correspondent_id')
         partners.update_number_sponsorships()
 

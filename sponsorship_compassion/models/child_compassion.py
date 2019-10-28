@@ -57,6 +57,7 @@ class ChildCompassion(models.Model):
                 'sponsorship_compassion.end_reason_release')
             waiting_sponsorships = self.mapped('sponsorship_ids').filtered(
                 lambda s: s.state in ('draft', 'waiting', 'waiting_payment'))
-            waiting_sponsorships.end_reason_id = hold_released
-            waiting_sponsorships.contract_terminated()
+            if waiting_sponsorships:
+                waiting_sponsorships.end_reason_id = hold_released
+                waiting_sponsorships.contract_terminated()
         return res
