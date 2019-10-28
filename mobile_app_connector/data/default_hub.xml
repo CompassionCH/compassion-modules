@@ -38,7 +38,7 @@
             <field name="name">Fund donation</field>
             <field name="subtype_id" ref="tile_subtype_gi1"/>
             <field name="mode">many</field>
-            <field name="visibility">private</field>
+            <field name="visibility">both</field>
             <!-- the correct action_destination will be set when the init method will be called -->
             <field name="action_destination">Compass</field>
         </record>
