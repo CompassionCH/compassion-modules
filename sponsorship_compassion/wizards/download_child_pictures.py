@@ -85,9 +85,9 @@ class DownloadChildPictures(models.TransientModel):
                         url))
                     continue
 
-                format = url.split('.')[-1]
+                _format = url.split('.')[-1]
                 sponsor_ref = child.sponsor_ref
-                fname = sponsor_ref + '_' + child_code + '.' + format
+                fname = sponsor_ref + '_' + child_code + '.' + _format
 
                 zip_data.writestr(fname, base64.b64decode(data))
                 found += 1

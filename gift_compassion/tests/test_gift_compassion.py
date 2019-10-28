@@ -45,7 +45,8 @@ class TestGifts(BaseSponsorshipTest):
 
         # tests for gift types changes
         product = self.env['product.product'].create({
-            'name': 'Birthday Gift'
+            'name': 'Birthday Gift',
+            'default_code': 'gift_birthday'
         })
         self.assertEqual(gift.get_gift_types(product), {
             'gift_type': 'Beneficiary Gift',
@@ -53,14 +54,20 @@ class TestGifts(BaseSponsorshipTest):
             'sponsorship_gift_type': 'Birthday',
         })
 
-        product.write({'name': 'General Gift'})
+        product.write({
+            'name': 'General Gift',
+            'default_code': 'gift_gen'
+        })
         self.assertEquals(gift.get_gift_types(product), {
             'gift_type': 'Beneficiary Gift',
             'attribution': 'Sponsorship',
             'sponsorship_gift_type': 'General',
         })
 
-        product.write({'name': 'Family Gift'})
+        product.write({
+            'name': 'Family Gift',
+            'default_code': 'gift_family'
+        })
         self.assertEquals(gift.get_gift_types(product), {
             'gift_type': 'Family Gift',
             'attribution': 'Sponsored Child Family',
@@ -75,7 +82,8 @@ class TestGifts(BaseSponsorshipTest):
         ''' Data creation '''
         product = self.env['product.product'].create({
             'name': 'Birthday Gift',
-            'categ_name': 'Sponsor gifts'
+            'categ_name': 'Sponsor gifts',
+            'default_code': 'gift_birthday'
         })
 
         sponsorship = self.sponsorship

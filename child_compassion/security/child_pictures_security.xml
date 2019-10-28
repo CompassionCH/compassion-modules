@@ -21,48 +21,6 @@
             <field name="perm_unlink" eval="0"/>
             <field name="perm_create" eval="0"/>
         </record>
-         <record id="child_comp_rule" model="ir.rule">
-         <field name="name" >Child Compassion multi-company</field>
-         <field name="model_id" ref='model_compassion_child'/>
-         <field name="global" eval="True"/>
-         <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
-       </record>
-        <record id="child_lifecycle_rule" model="ir.rule">
-         <field name="name" >Child Lifecycle multi-company</field>
-         <field name="model_id" ref='model_compassion_child_ble'/>
-         <field name="global" eval="True"/>
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
-        <record id="child_assessment_rule" model="ir.rule">
-         <field name="name" >Child Assessment multi-company</field>
-         <field name="model_id" ref='model_compassion_child_cdpr' />
-         <field name="global" eval="True" />
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
-       <record id="child_majorrevision_rule" model="ir.rule">
-         <field name="name" >Child MajorRevision multi-company</field>
-         <field name="model_id" ref='model_compassion_major_revision'/>
-         <field name="global" eval="True" />
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
-       <record id="child_note_rule" model="ir.rule">
-         <field name="name" >Child Note multi-company</field>
-         <field name="model_id" ref='model_compassion_child_note'/>
-         <field name="global" eval="True" />
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
-       <record id="child_pictures_rule" model="ir.rule">
-         <field name="name" >Child Pictures multi-company</field>
-         <field name="model_id" ref='model_compassion_child_pictures'/>
-         <field name="global" eval="True" />
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
-       <record id="child_ChildDisaster_rule" model="ir.rule">
-         <field name="name" >Child Disaster multi-company</field>
-         <field name="model_id" ref='model_child_disaster_impact'/>
-         <field name="global" eval="True" />
-         <field name="domain_force">['|',('child_id.company_id','=',False),('child_id.company_id','child_of',[user.company_id.id])]</field>
-       </record>
     </data>
 </odoo>
 

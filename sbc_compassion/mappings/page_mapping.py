@@ -41,7 +41,7 @@ class PageMapping(OnrampMapping):
         'OriginalPageURL': 'original_page_url',
         'FinalPageURL': 'final_page_url',
         'OriginalText': 'original_text',
-        'EnglishTranslatedText': 'english_translated_text',
+        'EnglishTranslatedText': 'english_text',
         'TranslatedText': 'translated_text'
     }
 
@@ -55,7 +55,7 @@ class PageMapping(OnrampMapping):
         # Concatenation of all boxes in one text
         html_parser = HTMLParser()
         fields = (
-            'original_text', 'english_translated_text', 'translated_text')
+            'original_text', 'english_text', 'translated_text')
         for field in fields:
             if field in odoo_data:
                 odoo_data[field] = html_parser.unescape(BOX_SEPARATOR.join(

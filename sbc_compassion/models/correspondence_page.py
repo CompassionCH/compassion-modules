@@ -29,7 +29,7 @@ class CorrespondencePage(models.Model):
     original_page_url = fields.Char()
     final_page_url = fields.Char()
     original_text = fields.Text(default='')
-    english_translated_text = fields.Text(default='')
+    english_text = fields.Text(default='', oldname='english_translated_text')
     translated_text = fields.Text(default='')
 
     ##########################################################################

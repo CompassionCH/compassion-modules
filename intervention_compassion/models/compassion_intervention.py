@@ -400,11 +400,12 @@ class CompassionIntervention(models.Model):
             'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        interventionDetailsRequest = commkit_data[
-            'InterventionDetailsRequest']
+        intervention_request = commkit_data.get(
+            'InterventionDetailsRequest',
+            commkit_data.get('InterventionAmendmentKitRequest')) or []
         intervention_local_ids = []
         # For each dictionary, we update the corresponding record
-        for idr in interventionDetailsRequest:
+        for idr in intervention_request:
             vals = intervention_mapping.get_vals_from_connect(idr)
             intervention_id = vals['intervention_id']
 

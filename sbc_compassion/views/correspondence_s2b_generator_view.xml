@@ -41,7 +41,8 @@
                             </ul>
                         </div>
                         <group>
-                            <field name="body_html" states="draft,done" attrs="{'readonly': [('state', '!=', 'draft')]}" widget="text_ckeditor4"/>
+                            <field name="image_ids" states="draft,done" attrs="{'readonly': [('state', '!=', 'draft')]}" widget="many2many_binary"/>
+                            <field name="body" states="draft,done" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="preview_image" states="preview" widget="image"/>
                         </group>
                     </sheet>

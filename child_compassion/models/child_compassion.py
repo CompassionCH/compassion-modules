@@ -270,15 +270,6 @@ class CompassionChild(models.Model):
     ]
 
     is_special_needs = fields.Boolean()
-
-    # Multicompany
-    company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        required=True,
-        index=True,
-        default=lambda self: self.env.user.company_id.id
-    )
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -410,7 +401,9 @@ class CompassionChild(models.Model):
         :return: True
         """
         self.ensure_one()
-        if self.us_grade_level and not self.education_level:
+        if self.us_grade_level and \
+                (not self.education_level
+                 or self.education_level == 'Not Enrolled'):
             grade_mapping = {
                 'P': 'Preschool',
                 'K': 'Preschool',

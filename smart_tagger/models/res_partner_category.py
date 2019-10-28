@@ -18,6 +18,10 @@ class ResPartnerCategory(models.Model):
 
     condition_id = fields.Many2one('ir.filters', string="Condition")
     smart = fields.Boolean()
+    partner_field = fields.Char(
+        default='partner_id',
+        help='Relational field used on the filter object to find the partners.'
+    )
     partner_ids = fields.Many2many("res.partner",
                                    relation='res_partner_res_partner_'
                                             'category_rel',
@@ -45,7 +49,8 @@ class ResPartnerCategory(models.Model):
                 if model == 'res.partner':
                     partner_ids = matching_records.ids
                 else:
-                    partner_ids = matching_records.mapped('partner_id').ids
+                    partner_ids = matching_records.mapped(
+                        tagger.partner_field).ids
                 tagger.write({'partner_ids': [(6, 0, partner_ids)]})
         return True
 

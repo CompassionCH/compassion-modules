@@ -135,12 +135,28 @@ class SponsorshipContract(models.Model):
     def _get_sponsorship_standard_lines(self, correspondence):
         """ Select Sponsorship and General Fund by default """
         res = []
-        sponsorship_product = self.env.ref(
-            'sponsorship_compassion.'
-            'product_template_sponsorship').product_variant_id
-        gen_product = self.env.ref(
-            'sponsorship_compassion.'
-            'product_template_fund_gen').product_variant_id
+        sponsorship_product = self.env["product.template"].search([
+            ('default_code', '=', 'sponsorship'),
+            ('company_id', '=', self.env.user.company_id.id)
+        ])
+        gen_product = self.env["product.template"].search([
+            ('default_code', '=', 'fund_gen'),
+            ('company_id', '=', self.env.user.company_id.id)
+        ])
+
+        if not len(sponsorship_product) == 1:
+            raise ValidationError(_("The sponsorship product does not exist for the "
+                                    "current company yet. Please create a product with "
+                                    "default_code 'sponsorship' first."))
+
+        if not len(gen_product) == 1:
+            raise ValidationError(_("The donation product does not exist for the "
+                                    "current company yet. Please create a product with "
+                                    "default_code 'fund_gen' first."))
+
+        sponsorship_product = sponsorship_product.product_variant_id
+        gen_product = gen_product.product_variant_id
+
         sponsorship_vals = {
             'product_id': sponsorship_product.id,
             'quantity': 0 if correspondence else 1,
@@ -474,8 +490,8 @@ class SponsorshipContract(models.Model):
         suspend_config = config_obj.get_param(
             'sponsorship_compassion.suspend_product_id')
         invl_obj = self.env['account.invoice.line']
-        sponsorship_product = self.env['product.product'].with_context(
-            lang='en_US').search([('name', '=', 'Sponsorship')])
+        sponsorship_product = self.env['product.product'].search([
+            ('default_code', '=', 'sponsorship')])
         if suspend_config:
             # Revert future invoices with sponsorship product
             susp_product_id = int(suspend_config)
@@ -949,7 +965,8 @@ class SponsorshipContract(models.Model):
                 project = contract.project_id
                 if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = not project.hold_cdsp_funds or \
-                        invl.due_date < project.last_reviewed_date
+                        invl.due_date < project.lifecycle_ids[:1].\
+                        suspension_start_date
                 if not payment_allowed:
                     raise UserError(
                         _("The project %s is fund-suspended. You cannot "

@@ -9,3 +9,4 @@
 ##############################################################################
 
 from . import test_thankyou_letters
+from . import test_thankyou_config

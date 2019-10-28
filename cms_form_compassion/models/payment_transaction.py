@@ -77,7 +77,9 @@ class PaymentTransaction(models.Model):
     def _get_payment_journal_id(self):
         # Can be overridden
         return self.env['account.journal'].search([
-            ('name', '=', 'Web')]).id
+            ('name', '=', 'Web'),
+            ('company_id', '=', self.invoice_id.company_id.id)
+        ]).id
 
     def _get_payment_method_id(self):
         # Can be overridden
