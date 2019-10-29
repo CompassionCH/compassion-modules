@@ -278,6 +278,7 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
     def _compute_available(self):
         for child in self:
             child.is_available = child.state in self._available_states()

@@ -104,4 +104,3 @@ class GenericIntervention(models.AbstractModel):
     def _compute_usd(self):
         for intervention in self:
             intervention.currency_usd = self.env.ref('base.USD')
-

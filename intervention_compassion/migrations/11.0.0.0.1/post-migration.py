@@ -9,6 +9,7 @@
 from openupgradelib import openupgrade
 from message_center_compassion.tools import load_mappings
 
+
 @openupgrade.migrate(use_env=True)
 def migrate(env, version):
     if not version:

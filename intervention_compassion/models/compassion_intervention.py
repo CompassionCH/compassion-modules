@@ -340,21 +340,15 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     @api.model
     def create_intervention(self, commkit_data):
-        intervention_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'intervention_mapping')
 
         # Two messages can call this method. Try to find which one.
         intervention_details_request = commkit_data.get(
             'GPInitiatedInterventionHoldNotification',
             commkit_data.get('InterventionOptInHoldNotification')
         )
-
         intervention = self
         if intervention_details_request:
-            vals = intervention_mapping.get_vals_from_connect(
-                intervention_details_request)
+            vals = self.json_to_data(commkit_data)
 
             vals['total_cost'] = vals['hold_amount'] = float(
                 vals['hold_amount'].replace("'", "").replace(",", ""))
@@ -392,10 +386,6 @@ class CompassionIntervention(models.Model):
         message (json)
         :return list of intervention ids which are concerned by the
         message """
-        intervention_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         intervention_request = commkit_data.get(
@@ -404,7 +394,7 @@ class CompassionIntervention(models.Model):
         intervention_local_ids = []
         # For each dictionary, we update the corresponding record
         for idr in intervention_request:
-            vals = intervention_mapping.get_vals_from_connect(idr)
+            vals = self.json_to_data(commkit_data)
             intervention_id = vals['intervention_id']
 
             intervention = self.search([
@@ -448,7 +438,8 @@ class CompassionIntervention(models.Model):
             'state': 'cancel',
         })
         self.message_post(
-            body=_(f"The hold of {self.name} ({self.intervention_id}) was just cancelled."),
+            body=_(f"The hold of {self.name} ({self.intervention_id}) "
+                   f"was just cancelled."),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             type='comment',
@@ -641,11 +632,6 @@ class CompassionIntervention(models.Model):
         :param commkit_data contains the data of the message (json)
         :return list of intervention ids which are concerned by the message
         """
-        intervention_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'intervention_mapping')
-
         # Apparently this message contains a single dictionary, and not a
         # list of dictionaries,
         ihrn = commkit_data['InterventionHoldRemovalNotification']
@@ -653,7 +639,7 @@ class CompassionIntervention(models.Model):
         # erroneous data
         del ihrn['InterventionType_Name']
 
-        vals = intervention_mapping.get_vals_from_connect(ihrn)
+        vals = self.json_to_data(commkit_data)
         intervention_id = vals['intervention_id']
 
         intervention = self.env['compassion.intervention'].search([
@@ -675,10 +661,6 @@ class CompassionIntervention(models.Model):
                 message (json)
                 :return list of intervention ids which are concerned by the
                 message """
-        intervention_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         milestones_data = commkit_data[
@@ -686,8 +668,7 @@ class CompassionIntervention(models.Model):
         intervention_local_ids = []
 
         for milestone in milestones_data:
-            intervention_vals = intervention_mapping.get_vals_from_connect(
-                milestone)
+            intervention_vals = self.json_to_data(commkit_data)
             milestone_id = milestone.get('InterventionReportingMilestone_ID')
             intervention_id = intervention_vals.get('intervention_id')
             intervention = self.search([
@@ -698,7 +679,8 @@ class CompassionIntervention(models.Model):
                 body = "A new milestone is available"
                 if milestone_id:
                     milestone_url = INTERVENTION_PORTAL_URL + milestone_id
-                    body += f' at <a href="{milestone_url}" target="_blank">{milestone_url}</a>.'
+                    body += f' at <a href="{milestone_url}" ' \
+                            f'target="_blank">{milestone_url}</a>.'
                 intervention.message_post(
                     body,
                     subject=(_(intervention.name + ': New milestone '
@@ -720,17 +702,12 @@ class CompassionIntervention(models.Model):
                 by the message """
         # sleep to prevent a concurence error
         time.sleep(60)
-        intervention_mapping = mapping.new_onramp_mapping(
-            self._name,
-            self.env,
-            'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         interventionamendment = commkit_data[
             'InterventionAmendmentCommitmentNotification']
         intervention_local_ids = []
-
-        v = intervention_mapping.get_vals_from_connect(interventionamendment)
+        v = self.json_to_data(commkit_data)
         intervention_id = v['intervention_id']
         amendment_amount = interventionamendment[
             'AdditionalAmountRequestedUSD']
