@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -49,7 +48,7 @@ class ProjectCompassion(models.Model):
         during the period of suspension.
         We also remove the children on internet.
         """
-        res = super(ProjectCompassion, self).suspend_funds()
+        res = super().suspend_funds()
         contracts = self.env['recurring.contract']
         for project in self:
             contracts |= self.env['recurring.contract'].search([
@@ -65,7 +64,7 @@ class ProjectCompassion(models.Model):
         or we change open invoices if fund is set to replace sponsorship
         product. We also change attribution of invoices paid in advance.
         """
-        res = super(ProjectCompassion, self).reactivate_project()
+        res = super().reactivate_project()
         contracts = self.env['recurring.contract']
         for project in self:
             contracts |= self.env['recurring.contract'].search([

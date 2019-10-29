@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -9,15 +8,12 @@
 #
 ##############################################################################
 
-# Name of gifts products
-GIFT_REF = ["gift_birthday", "gift_gen", "gift_family", "gift_project",
-            "gift_graduation"]
+from odoo import models, fields
 
-# Name of gift category
-GIFT_CATEGORY = "Sponsor gifts"
 
-# Name of sponsorship category
-SPONSORSHIP_CATEGORY = "Sponsorship"
+class Product(models.Model):
+    _inherit = 'product.product'
 
-# Name of fund category
-FUND_CATEGORY = "Fund"
+    categ_name = fields.Char(
+        'Product category', related='product_tmpl_id.categ_id.name',
+        store=True)

@@ -17,7 +17,7 @@ from datetime import datetime, date
 
 from .compassion_hold import HoldType
 
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.message_center_compassion.tools.onramp_connector import \
     OnrampConnector
@@ -53,7 +53,7 @@ class CompassionChild(models.Model):
     last_photo_date = fields.Date()
     type = fields.Selection([('CDSP', 'CDSP'), ('LDP', 'LDP')],
                             required=True, default='CDSP')
-    date = fields.Date('Allocation date')
+    date = fields.Datetime('Allocation date')
     completion_date = fields.Date(readonly=True)
     completion_date_change_reason = fields.Char(readonly=True)
     state = fields.Selection(
@@ -259,6 +259,7 @@ class CompassionChild(models.Model):
         'child.disaster.impact', 'child_id', 'Child Disaster Impact',
         readonly=True
     )
+    is_special_needs = fields.Boolean()
 
     # Descriptions
     ##############
@@ -274,7 +275,6 @@ class CompassionChild(models.Model):
          'The child already exists in database.')
     ]
 
-    is_special_needs = fields.Boolean()
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -303,6 +303,41 @@ class CompassionChild(models.Model):
         for child in self.filtered('birthdate'):
             child.birthday_month = child.get_date('birthdate', '%B')
             child.birthday_dm = child.get_date('birthdate', '%m-%d')
+
+    @api.constrains('state', 'hold_type')
+    def check_state(self):
+        # child state vs hold type validity mapping
+        consignment_holds = [
+            HoldType.CONSIGNMENT_HOLD.value,
+            HoldType.E_COMMERCE_HOLD.value,
+        ]
+        no_hold = [False]
+        valid_states = {
+            'W': no_hold,
+            'N': consignment_holds + [
+                HoldType.CHANGE_COMMITMENT_HOLD.value,
+                HoldType.DELINQUENT_HOLD.value,
+                HoldType.REINSTATEMENT_HOLD.value,
+                HoldType.RESERVATION_HOLD.value,
+                HoldType.SPONSOR_CANCEL_HOLD.value,
+                HoldType.SUB_CHILD_HOLD.value,
+                HoldType.NO_MONEY_HOLD.value,
+            ],
+            'I': consignment_holds,
+            'P': no_hold + [
+                HoldType.NO_MONEY_HOLD.value,
+                HoldType.SUB_CHILD_HOLD.value,
+            ],
+            'F': no_hold,
+            'R': no_hold,
+            'S': consignment_holds
+        }
+        for child in self:
+            if child.hold_type not in valid_states[child.state]:
+                raise ValidationError(_(
+                    f"Child {child.local_id} has invalid state {child.state} "
+                    f"for hold type {child.hold_type}"
+                ))
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -338,28 +373,6 @@ class CompassionChild(models.Model):
     def unlink_job(self):
         """ Small wrapper to unlink only released children. """
         return self.filtered(lambda c: c.state == 'R').unlink()
-
-    @api.multi
-    def write(self, vals):
-        result = super().write(vals)
-
-        if self.state == 'W' and self.hold_id and self.hold_id.hold_id:
-            self.child_consigned()
-        elif self.state == 'N' and self.sponsor_id:
-            self.child_sponsored()
-        elif self.state == 'P' and self.hold_id:
-            self.child_waiting_hold()
-        elif self.state == 'P' and not self.hold_id and (
-            not self.lifecycle_ids or 'Exit' not in self.lifecycle_ids[0].type
-        ):
-            self.child_released()
-            self.child_departed()
-        elif self.state == 'R' and self.hold_id:
-            self.child_waiting_hold()
-        elif self.state == 'R' and self.lifecycle_ids and 'Exit' in \
-                self.lifecycle_ids[0].type:
-            self.child_departed()
-        return result
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -503,17 +516,6 @@ class CompassionChild(models.Model):
     # Lifecycle methods
     ###################
     @api.multi
-    def depart(self):
-        self.child_released()
-
-    @api.multi
-    def reinstatement(self):
-        """ Called by Lifecycle Event. Hold and state of Child is
-        handled by the Reinstatement Hold Notification. """
-        self.delete_workflow()
-        self.create_workflow()
-
-    @api.multi
     def new_photo(self):
         """
         Hook for doing something when a new photo is attached to the child.
@@ -539,17 +541,23 @@ class CompassionChild(models.Model):
     @api.multi
     def child_waiting_hold(self):
         """ Called on child creation. """
-        self.write({'state': 'W', 'sponsor_id': False})
-        # If hold was already set, put it back in ConsignmentHold type
-        self.mapped('hold_id').write({
-            'type': HoldType.CONSIGNMENT_HOLD.value
-        })
+        if self.mapped('hold_id'):
+            local_ids = self.filtered('hold_id').mapped('local_id')
+            raise UserError(_(
+                f"Children {local_ids} have a hold that should not "
+                f"be removed."))
+        self.write({
+            'state': 'W', 'sponsor_id': False})
         return True
 
     @api.multi
-    def child_consigned(self):
+    def child_consigned(self, hold_id):
         """Called on child allocation."""
-        self.write({'state': 'N'})
+        self.write({
+            'state': 'N',
+            'hold_id': hold_id,
+            'date': fields.Datetime.now()
+        })
         # Cancel planned deletion
         jobs = self.env['queue.job'].sudo().search([
             ('name', '=', 'Job for deleting released children.'),
@@ -562,40 +570,62 @@ class CompassionChild(models.Model):
         return True
 
     @api.multi
-    def child_sponsored(self):
-        for child in self:
-            self.env['compassion.child.pictures'].create({
-                'child_id': child.id,
-                'image_url': child.image_url
+    def child_sponsored(self, sponsor_id):
+        self.ensure_one()
+        if self.state in ('W', 'F', 'R'):
+            raise UserError(_(
+                f"[{self.local_id}] This child has not a valid hold and "
+                f"cannot be sponsored."
+            ))
+        hold = self.hold_id
+        if hold.type != HoldType.SUB_CHILD_HOLD.value:
+            hold.write({
+                'type': HoldType.NO_MONEY_HOLD.value,
+                'expiration_date': hold.get_default_hold_expiration(
+                    HoldType.NO_MONEY_HOLD)
             })
-            hold = child.hold_id
-            if hold.type != HoldType.SUB_CHILD_HOLD.value:
-                hold.write({
-                    'type': HoldType.NO_MONEY_HOLD.value,
-                    'expiration_date': hold.get_default_hold_expiration(
-                        HoldType.NO_MONEY_HOLD)
-                })
         return self.write({
             'state': 'P',
-            'has_been_sponsored': True
+            'has_been_sponsored': True,
+            'sponsor_id': sponsor_id
         })
 
     @api.multi
-    def child_released(self):
+    def child_unsponsored(self):
+        for child in self:
+            values = {'sponsor_id': False}
+            update_hold = False
+            if child.sponsor_id:
+                if child.hold_id.type == HoldType.NO_MONEY_HOLD.value:
+                    update_hold = True
+                    values['state'] = 'N'
+                else:
+                    values['state'] = 'N' if child.hold_id else 'R'
+            child.write(values)
+            if update_hold:
+                child.hold_id.write({
+                    'type': HoldType.CONSIGNMENT_HOLD.value,
+                    'expiration_date':
+                        child.hold_id.get_default_hold_expiration(
+                            HoldType.CONSIGNMENT_HOLD)
+                })
+        return True
+
+    @api.multi
+    def child_released(self, state='R'):
         """ Is called when a child is released to the global childpool. """
         self.write({
             'sponsor_id': False,
-            'state': 'R'
+            'state': state,
+            'hold_id': False
         })
-
-        sponsored_children = self.filtered('has_been_sponsored')
-        other_children = self - sponsored_children
-        other_children.get_lifecycle_event()
+        # Check if it was a depart and retrieve lifecycle event
+        self.get_lifecycle_event()
 
         # the children will be deleted when we reach their expiration date
         postpone = 60 * 60 * 24 * 7  # One week by default
         today = datetime.today()
-        for child in other_children:
+        for child in self.filtered(lambda c: not c.has_been_sponsored):
             if child.hold_expiration:
                 expire = fields.Datetime.from_string(child.hold_expiration)
                 postpone = (expire - today).total_seconds() + 60
@@ -607,12 +637,7 @@ class CompassionChild(models.Model):
     @api.multi
     def child_departed(self):
         """ Is called when a child is departed. """
-        sponsored_children = self.filtered('has_been_sponsored')
-        sponsored_children.write({
-            'sponsor_id': False,
-            'state': 'F'
-        })
-        return True
+        return self.child_released(state='F')
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

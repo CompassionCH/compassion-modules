@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -31,10 +30,6 @@ class PartnerSponsorshipReport(models.Model):
                                     help='Count only the sponsorships who '
                                          'are fully managed or those who are '
                                          'paid (not the correspondent).')
-    sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
-                                      compute='_compute_b2s_letter')
-    sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
-                                      compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer('Number of boys', compute='_compute_boy')
     sr_nb_girl = fields.Integer('Number of girls', compute='_compute_girl')
     sr_time_fcp = fields.Integer('Total hour spent at the FCP',
@@ -83,38 +78,6 @@ class PartnerSponsorshipReport(models.Model):
             partner.sr_sponsorship = len(partner.related_active_sponsorships)
 
     @api.multi
-    def _compute_b2s_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Beneficiary To Supporter'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_b2s_letter = nb_letter
-
-    @api.multi
-    def _compute_s2b_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Supporter To Beneficiary'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_s2b_letter = nb_letter
-
-    @api.multi
     def _compute_boy(self):
         for partner in self:
             partner.sr_nb_boy = len(partner.related_active_sponsorships.mapped(
@@ -130,7 +93,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_time_scp(self):
         def get_time_in_scp(sponsorship):
-            nb_weeks = sponsorship.contract_duration / 7.
+            nb_weeks = sponsorship.contract_duration // 7.
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_hours_week
 
@@ -142,7 +105,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_meal(self):
         def get_nb_meal(sponsorship):
-            nb_weeks = sponsorship.contract_duration / 7.
+            nb_weeks = sponsorship.contract_duration // 7.
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_meal_week
 
@@ -155,7 +118,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_medic_check(self):
         def get_nb_check(sponsorship):
-            nb_year = sponsorship.contract_duration / 365
+            nb_year = sponsorship.contract_duration // 365
             country = sponsorship.child_id.field_office_id
             return nb_year * country.fcp_medical_check
 
