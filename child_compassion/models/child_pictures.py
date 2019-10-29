@@ -115,13 +115,13 @@ class ChildPictures(models.Model):
         return same_pics
 
     @api.multi
-    def _get_picture(self, type='Headshot', width=300, height=400):
+    def _get_picture(self, pic_type='Headshot', width=300, height=400):
         """ Gets a picture from Compassion webservice """
         self.ensure_one()
-        if type.lower() == 'headshot':
+        if pic_type.lower() == 'headshot':
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(
                 width) + ",z_1.2"
-        elif type.lower() == 'fullshot':
+        elif pic_type.lower() == 'fullshot':
             cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
 
         _image_date = False
@@ -137,9 +137,9 @@ class ChildPictures(models.Model):
                 data = base64.encodebytes(urlopen(url).read())
                 _image_date = picture.child_id.last_photo_date or \
                     fields.Date.today()
-                if type.lower() == 'headshot':
+                if pic_type.lower() == 'headshot':
                     self.headshot = data
-                elif type.lower() == 'fullshot':
+                elif pic_type.lower() == 'fullshot':
                     self.fullshot = data
             except:
                 self._error_msg = 'Image cannot be fetched, invalid image ' \

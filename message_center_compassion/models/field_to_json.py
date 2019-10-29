@@ -162,6 +162,12 @@ class FieldToJson(models.Model):
                              if isinstance(vals, dict)])
             return orm_vals
 
+        if not self.search_relational_record and not \
+                self.allow_relational_creation:
+            # In that case we don't want to search or create, we simply
+            # return the raw value
+            return value
+
         # No records found given the values, we raise the error
         # to let user verify integrity of the data.
         raise UserError(_(

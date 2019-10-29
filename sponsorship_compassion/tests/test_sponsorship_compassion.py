@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -15,8 +14,7 @@ import mock
 from datetime import date
 
 from odoo import fields
-from odoo.addons.contract_compassion.tests.test_contract_compassion \
-    import BaseContractCompassionTest
+from .test_contract_compassion import BaseContractCompassionTest
 
 
 mock_update_hold = ('odoo.addons.child_compassion.models.compassion_hold'
@@ -25,6 +23,8 @@ mock_release_hold = ('odoo.addons.child_compassion.models.compassion_hold'
                      '.CompassionHold.release_hold')
 mock_get_infos = ('odoo.addons.child_compassion.models.child_compassion'
                   '.CompassionChild.get_infos')
+mock_get_lifecycle = ('odoo.addons.child_compassion.models.child_compassion'
+                      '.CompassionChild.get_lifecycle_event')
 mock_project_infos = ('odoo.addons.child_compassion.models.project_compassion'
                       '.CompassionProject.update_informations')
 
@@ -33,17 +33,13 @@ logger = logging.getLogger(__name__)
 
 class BaseSponsorshipTest(BaseContractCompassionTest):
     def setUp(self):
-        super(BaseSponsorshipTest, self).setUp()
+        super().setUp()
         # Creation of an origin
         self.origin_id = self.env['recurring.contract.origin'].create(
             {'type': 'event'}).id
         self.product = self.env['product.product'].search([
             ('default_code', '=', 'sponsorship')
         ], limit=1)
-        self.env['thankyou.config'].create({
-            'min_donation_amount': 50.0,
-            'send_mode': 'auto_digital_only',
-        })
 
     @mock.patch(mock_update_hold)
     @mock.patch(mock_get_infos)
@@ -82,8 +78,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
             'origin_id': self.origin_id,
         }
         default_values.update(vals)
-        return super(BaseSponsorshipTest,
-                     self).create_contract(default_values, line_vals)
+        return super().create_contract(default_values, line_vals)
 
     def create_contract_line(self, vals):
         default_values = {
@@ -124,7 +119,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         :return: mock object on update hold method
         """
         update_hold.return_value = True
-        contract.signal_workflow('contract_validated')
+        contract.contract_waiting()
         return update_hold
 
     def pay_sponsorship(self, sponsorship):
@@ -238,7 +233,7 @@ class TestSponsorship(BaseSponsorshipTest):
         else:
             self.assertEqual(invoice.state, 'open')
         self.assertEqual(invoice1.state, 'open')
-        sponsorship.signal_workflow('contract_terminated')
+        sponsorship.contract_terminated()
         # Force cleaning invoices immediatley
         sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, 'terminated')
@@ -279,7 +274,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertFalse(update_hold.called)
 
         # Termination of correspondence
-        sponsorship.signal_workflow('contract_terminated')
+        sponsorship.contract_terminated()
         self.assertTrue(sponsorship.state, 'terminated')
 
         # Create regular sponsorship
@@ -298,7 +293,7 @@ class TestSponsorship(BaseSponsorshipTest):
         hold = child.hold_id
         self.assertEqual(hold.type, 'No Money Hold')
 
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         self.assertEqual(sponsorship2.state, 'cancelled')
 
     def test_sponsorship_compassion_third_scenario(self):
@@ -352,11 +347,12 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(contract1.state, 'waiting')
         self.pay_sponsorship(contract1)
         self.assertEqual(contract1.state, 'active')
-        contract1.signal_workflow('contract_terminated')
+        contract1.contract_cancelled()
         self.assertEqual(contract1.state, 'cancelled')
         self.assertTrue(contract2.unlink())
 
-    def test_sponsorship_compassion_fourth_scenario(self):
+    @mock.patch(mock_get_lifecycle)
+    def test_sponsorship_compassion_fourth_scenario(self, lifecycle_mock):
         """
             In this final scenario we are testing the creation of 3 sponsorship
             contracts for the same partner with for each contract one child to
@@ -366,6 +362,7 @@ class TestSponsorship(BaseSponsorshipTest):
             Check if the 3 contracts create one merged invoice for every month
             (2 months here) with the good values.
         """
+        lifecycle_mock.return_value = True
         child1 = self.create_child('UG72320010')
         child2 = self.create_child('S008320011')
         child3 = self.create_child('SA12311013')
@@ -455,12 +452,14 @@ class TestSponsorship(BaseSponsorshipTest):
             self.assertEqual(sponsorship.state, 'waiting')
             self.pay_sponsorship(sponsorship)
         sponsorship1.global_id = 12349123
-        sponsorship1.signal_workflow('contract_terminated')
+        sponsorship1.contract_terminated()
         self.assertEqual(sponsorship1.state, 'terminated')
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         self.assertEqual(sponsorship2.state, 'cancelled')
 
-    def test_number_sponsorships(self):
+    @mock.patch(mock_update_hold)
+    def test_number_sponsorships(self, mock_hold):
+        mock_hold.return_value = True
         partner = self.michel
 
         def valid(number_sponsorships, has_sponsorships):
@@ -506,9 +505,9 @@ class TestSponsorship(BaseSponsorshipTest):
         self.validate_sponsorship(sponsorship2)
         self.pay_sponsorship(sponsorship2)
         valid(2, True)
-        sponsorship2.signal_workflow('contract_terminated')
+        sponsorship2.contract_terminated()
         valid(1, True)
-        sponsorship1.signal_workflow('contract_terminated')
+        sponsorship1.contract_terminated()
         valid(0, False)
 
     def test_change_partner(self):

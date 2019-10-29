@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -44,7 +43,7 @@ class PrivacyStatement(models.Model):
 class PrivacyStatementAgreement(models.Model):
     _name = 'privacy.statement.agreement'
     _sql_constraints = [('unique_privacy_agreement',
-                         'unique(partner_id,privacy_statement_id',
+                         'unique(partner_id,privacy_statement_id)',
                          'This partner has already accepted this privacy '
                          'statement')]
 

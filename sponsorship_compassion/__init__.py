@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -11,3 +10,16 @@
 
 from . import models
 from . import wizards
+from odoo.addons.message_center_compassion.tools.load_mappings \
+    import load_mapping_files
+
+
+def load_mappings(cr, registry):
+    path = 'sponsorship_compassion/static/mappings/'
+    files = [
+        'anonymize_partner.json',
+        'cancel_sponsorship.json',
+        'create_sponsorship.json',
+        'upsert_partner.json',
+    ]
+    load_mapping_files(cr, path, files)

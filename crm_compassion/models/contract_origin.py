@@ -68,7 +68,7 @@ class Contracts(models.Model):
 
     @api.onchange('child_id')
     def onchange_child_id(self):
-        hold = self.child_id.hold_id
+        hold = self.hold_id
         origin = hold.origin_id
         if origin:
             self.origin_id = origin
@@ -80,7 +80,7 @@ class Contracts(models.Model):
         if hold.comments:
             return {
                 'warning': {'title': _('The child has some comments'),
-                            'message': self.child_id.hold_id.comments}
+                            'message': hold.comments}
             }
 
     def _get_user_from_origin(self, origin):
