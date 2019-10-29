@@ -43,6 +43,6 @@
         'views/onramp_simulator_view.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
