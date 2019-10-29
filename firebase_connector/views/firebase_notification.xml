@@ -25,6 +25,7 @@
             </form>
         </field>
     </record>
+
     <record model="ir.ui.view" id="firebase_notification_tree">
         <field name="name">firebase.notification.tree</field>
         <field name="model">firebase.notification</field>
@@ -73,9 +74,9 @@
         sequence="2"/>
 
     <menuitem id="menu_firebase_send"
-              name="Send"
-              parent="firebase_connector.menu_firebase_notification"
-              action="firebase_connector.action_firebase_notification"
-              groups="sales_team.group_sale_manager"/>
+        name="Send"
+        parent="firebase_connector.menu_firebase_notification"
+        action="firebase_connector.action_firebase_notification"
+        groups="sales_team.group_sale_manager"/>
 
 </odoo>

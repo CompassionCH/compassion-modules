@@ -17,7 +17,7 @@ class FirebaseNotification(models.Model):
     _inherit = "firebase.notification"
 
     destination = fields.Selection([
-        ('MyHub', 'MyHub'),
+        ('MyHub', 'My Hub'),
         ('Letter', 'Letter'),
         ('Donation', 'Donation'),
         ('Prayer', 'Prayer'),
@@ -51,7 +51,6 @@ class FirebaseNotification(models.Model):
             }
             super(FirebaseNotification, self).send(data)
 
-
     def notification_cron(self):
         """
         Overriding so the automated notifications are filtered to
@@ -77,7 +76,7 @@ class FirebaseNotification(models.Model):
         :return: a list of notifications as expected by the app
         """
         firebase_id = params.get('firebase_id')
-        reg = self.env['firebase.registration']\
+        reg = self.env['firebase.registration'] \
             .search([('registration_id', '=', firebase_id)])
         if reg.partner_id:
             dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")

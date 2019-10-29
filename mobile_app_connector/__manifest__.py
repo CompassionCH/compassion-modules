@@ -68,6 +68,8 @@
         'views/firebase_registration.xml',
         'templates/registration_form.xml',
         'views/firebase_notification.xml',
+        'views/communication_job.xml',
+        'views/communication_config.xml',
     ],
     'demo': [
     ],

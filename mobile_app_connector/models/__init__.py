@@ -32,3 +32,5 @@ from . import firebase_notification
 from . import privacy_statement
 from . import frequently_asked_questions
 from . import compassion_field_office
+from . import partner_communication
+from . import communication_config

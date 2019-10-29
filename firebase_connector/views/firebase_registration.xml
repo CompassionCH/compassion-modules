@@ -22,6 +22,7 @@
             </form>
         </field>
     </record>
+
     <record model="ir.ui.view" id="firebase_registration_tree">
         <field name="name">firebase.registration.tree</field>
         <field name="model">firebase.registration</field>
