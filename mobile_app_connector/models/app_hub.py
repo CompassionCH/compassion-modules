@@ -392,7 +392,10 @@ class AppHub(models.AbstractModel):
                                                 number_tile))
                     jump = max(1, diff // (number_jump + 1))
                     for i in range(1, number_jump + 1):
-                        key = random_list.pop()
+                        try:
+                            key = random_list.pop()
+                        except IndexError:
+                            break
                         if (key in possible_subtype and
                                 possible_subtype[key] != 0):
                             final_tile = tile_grouped[key].pop()
