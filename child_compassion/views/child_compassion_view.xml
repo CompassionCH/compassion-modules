@@ -113,7 +113,6 @@
                                     <field name="sponsor_id"/>
                                     <field name="beneficiary_state"/>
                                     <field name="hold_id"/>
-                                    <field name="company_id"/>
                                     <!--newly added-->
                                     <field name="correspondence_language_id"/>
                                     <field name="field_office_id"/>

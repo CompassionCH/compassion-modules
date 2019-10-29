@@ -214,3 +214,19 @@ class CompassionReservation(models.Model):
             'reservation_hold_duration')
         dt = timedelta(days=days_on_hold)
         self.expiration_date = fields.Date.to_string(expiration + dt)
+
+    ##########################################################################
+    #                              Mapping METHOD                            #
+    ##########################################################################
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        json_data = super().data_to_json(mapping_name)
+        # Read manually Primary Owner, to avoid security restrictions on
+        # companies in case the owner is in another company.
+        if len(self) == 1:
+            json_data['PrimaryOwner'] = self.primary_owner.sudo().name
+        elif self:
+            for i, reservation in enumerate(self):
+                json_data[i][
+                    'PrimaryOwner'] = reservation.primary_owner.sudo().name
+        return json_data

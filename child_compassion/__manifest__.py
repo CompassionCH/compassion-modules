@@ -50,7 +50,6 @@
     },
     'data': [
         'security/sponsorship_groups.xml',
-        'security/ir_rules.xml',
         'security/ir.model.access.csv',
         'views/child_compassion_view.xml',
         'views/field_office_view.xml',
