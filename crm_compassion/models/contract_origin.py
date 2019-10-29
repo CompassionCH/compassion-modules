@@ -64,7 +64,9 @@ class Contracts(models.Model):
     def on_change_origin(self):
         origin = self.origin_id
         if origin:
-            self.user_id = self._get_user_from_origin(origin)
+            ambassador = self._get_user_from_origin(origin)
+            if ambassador:
+                self.user_id = ambassador
 
     @api.onchange('child_id')
     def onchange_child_id(self):
