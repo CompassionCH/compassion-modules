@@ -50,6 +50,7 @@
         'views/account_invoice_view.xml',
         'views/product_view.xml',
         'views/res_partner_view.xml',
+        'views/thankyou_config_view.xml',
         'views/generate_communication_wizard_view.xml',
     ],
     'demo': [

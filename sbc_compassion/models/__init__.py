@@ -12,13 +12,13 @@ from . import partner_compassion
 from . import correspondence_metadata
 from . import correspondence
 from . import correspondence_page
+from . import correspondence_template_page
 from . import correspondence_template
 from . import import_config
 from . import import_letters_history
 from . import import_letter_line
 from . import contracts
-from . import correspondence_b2s_layout
-from . import correspondence_translation_box
+from . import correspondence_positioned_objects
 from . import project_compassion
 from . import correspondence_s2b_generator
 from . import queue_job

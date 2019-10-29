@@ -162,50 +162,57 @@ class CompassionChild(models.Model):
     university_year = fields.Integer(readonly=True)
     major_course_study = fields.Selection([
         ('Accounting', 'Accounting'),
+        ('Accounting / Finance', 'Accounting'),
         ('Agriculture', 'Agriculture'),
+        ('Architecture', 'Architecture'),
         ('Art / Design', 'Art / Design'),
+        ('Biology', 'Biology'),
         ('Biology / Medicine', 'Biology / Medicine'),
+        ('Business', 'Business'),
         ('Business / Management / Commerce', 'Business management'),
+        ('Commerce', 'Commerce'),
+        ('Communication Studies', 'Communication Studies'),
         ('Community Development', 'Community development'),
+        ('Computer Science ', 'Computer Science'),
         ('Computer Science / Information Technology', 'Computer science'),
+        ('Criminology', 'Criminology'),
         ('Criminology / Law Enforcement', 'Criminology'),
         ('Economics', 'Economics'),
         ('Education', 'Education'),
         ('Engineering', 'Engineering'),
         ('English', 'English'),
+        ('Fine Arts', 'Fine Arts'),
+        ('Government / Political Science', 'Government / Political Science'),
+        ('Graphic Arts', 'Graphic Arts'),
         ('Graphic Arts / Fine Arts', 'Graphic arts'),
         ('History', 'History'),
-        ('Hospitality / Hotel Management', 'Hospitality / Hotel '
-                                           'management'),
+        ('Hospitality', 'Hospitality'),
+        ('Hospitality / Hotel Management', 'Hotel management'),
+        ('Hospitality / Hotel Management / Culinary Arts', 'Hotel Management'),
+        ('Hotel Management', 'Hotel Management'),
+        ('Information Technology', 'Information Technology'),
+        ('Information / Technology', 'Information Technology'),
+        ('Language', 'Language'),
         ('Law', 'Law'),
+        ('Law Enforcement', 'Law Enforcement'),
+        ('Management', 'Management'),
         ('Mathematics', 'Mathematics'),
         ('Medical/ Health Services', 'Medical / Health services'),
         ('Medical / Health Services', 'Medical / Health services'),
+        ('Medicine', 'Medicine'),
         ('Nursing', 'Nursing'),
         ('Psychology', 'Psychology'),
         ('Sales and Marketing', 'Sales and marketing'),
         ('Science', 'Science'),
+        ('Social Science', 'Social Science'),
+        ('Sociology', 'Sociology'),
         ('Sociology / Social Science', 'Sociology'),
         ('Theology', 'Theology'),
         ('Theology / Christian Studies', 'Theology'),
         ('Tourism', 'Tourism'),
         ('Transportation', 'Transportation'),
-        ('Biology', 'Biology'),
-        ('Social Science', 'Social Science'),
-        ('Sociology', 'Sociology'),
-        ('Hotel Management', 'Hotel Management'),
-        ('Hospitality', 'Hospitality'),
-        ('Fine Arts', 'Fine Arts'),
-        ('Graphic Arts', 'Graphic Arts'),
-        ('Law Enforcement', 'Law Enforcement'),
-        ('Criminology', 'Criminology'),
-        ('Information Technology', 'Information Technology'),
-        ('Computer Science ', 'Computer Science'),
-        ('Business', 'Business'),
-        ('Management', 'Management'),
-        ('Commerce', 'Commerce'),
-        ('Medicine', 'Medicine'),
-        ('Other', 'Other')
+        ('Other', 'Other'),
+        ('Undecided', 'Undecided')
     ], readonly=True)
     not_enrolled_reason = fields.Char(readonly=True)
 
@@ -268,16 +275,6 @@ class CompassionChild(models.Model):
     ]
 
     is_special_needs = fields.Boolean()
-
-    # Multicompany
-    company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        required=True,
-        index=True,
-        default=lambda self: self.env.user.company_id.id
-    )
-
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -410,7 +407,9 @@ class CompassionChild(models.Model):
         :return: True
         """
         self.ensure_one()
-        if self.us_grade_level and not self.education_level:
+        if self.us_grade_level and \
+                (not self.education_level
+                 or self.education_level == 'Not Enrolled'):
             grade_mapping = {
                 'P': 'Preschool',
                 'K': 'Preschool',

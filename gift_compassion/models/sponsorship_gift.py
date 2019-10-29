@@ -14,7 +14,7 @@ from odoo.exceptions import UserError
 
 from ..mappings.gift_mapping import CreateGiftMapping
 from odoo.addons.sponsorship_compassion.models.product import \
-    GIFT_NAMES, GIFT_CATEGORY
+    GIFT_REF, GIFT_CATEGORY
 
 
 class SponsorshipGift(models.Model):
@@ -380,30 +380,29 @@ class SponsorshipGift(models.Model):
         :return: dictionary of sponsorship.gift values
         """
         gift_type_vals = dict()
-        product = product.with_context(lang='en_US')
-        if product.name == GIFT_NAMES[0]:
+        if product.default_code == GIFT_REF[0]:
             gift_type_vals.update({
                 'gift_type': 'Beneficiary Gift',
                 'attribution': 'Sponsorship',
                 'sponsorship_gift_type': 'Birthday',
             })
-        elif product.name == GIFT_NAMES[1]:
+        elif product.default_code == GIFT_REF[1]:
             gift_type_vals.update({
                 'gift_type': 'Beneficiary Gift',
                 'attribution': 'Sponsorship',
                 'sponsorship_gift_type': 'General',
             })
-        elif product.name == GIFT_NAMES[2]:
+        elif product.default_code == GIFT_REF[2]:
             gift_type_vals.update({
                 'gift_type': 'Family Gift',
                 'attribution': 'Sponsored Child Family',
             })
-        elif product.name == GIFT_NAMES[3]:
+        elif product.default_code == GIFT_REF[3]:
             gift_type_vals.update({
                 'gift_type': 'Project Gift',
                 'attribution': 'Center Based Programming',
             })
-        elif product.name == GIFT_NAMES[4]:
+        elif product.default_code == GIFT_REF[4]:
             gift_type_vals.update({
                 'gift_type': 'Beneficiary Gift',
                 'attribution': 'Sponsorship',

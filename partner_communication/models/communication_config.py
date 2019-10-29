@@ -49,8 +49,7 @@ class CommunicationDefaults(models.AbstractModel):
     user_id = fields.Many2one(
         'res.users', 'From', domain=[('share', '=', False)])
     need_call = fields.Selection(
-        [('before_sending', 'Before the communication is sent'),
-         ('after_sending', 'After the communication is sent')],
+        'get_need_call',
         help='Indicates we should have a personal contact with the partner'
     )
     print_if_not_email = fields.Boolean(
@@ -61,6 +60,13 @@ class CommunicationDefaults(models.AbstractModel):
         'ir.actions.report.xml', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
+
+    @api.model
+    def get_need_call(self):
+        return [
+            ('before_sending', _('Before the communication is sent')),
+            ('after_sending', _('After the communication is sent'))
+        ]
 
 
 class CommunicationOmrConfig(models.Model):
@@ -91,7 +97,7 @@ class CommunicationConfig(models.Model):
         'ir.model', 'Applies to', required=True,
         help="The kind of document with this communication can be used")
     model = fields.Char(related='model_id.model', store=True, readonly=True)
-    send_mode = fields.Selection('_get_send_mode', required=True)
+    send_mode = fields.Selection('get_send_mode', required=True)
     send_mode_pref_field = fields.Char(
         'Partner preference field',
         help='Name of the field in res.partner in which to find the '
@@ -157,16 +163,17 @@ class CommunicationConfig(models.Model):
                     config.attachments_function
                 )
 
-    def _get_send_mode(self):
+    ##########################################################################
+    #                             PUBLIC METHODS                             #
+    ##########################################################################
+    @api.model
+    def get_send_mode(self):
         send_modes = self.get_delivery_preferences()
         send_modes.append(
             ('partner_preference', _('Partner specific'))
         )
         return send_modes
 
-    ##########################################################################
-    #                             PUBLIC METHODS                             #
-    ##########################################################################
     @api.model
     def get_delivery_preferences(self):
         return [
@@ -181,6 +188,14 @@ class CommunicationConfig(models.Model):
         ]
 
     def get_inform_mode(self, partner):
+        self.ensure_one()
+        return self.build_inform_mode(partner, self.send_mode,
+                                      self.print_if_not_email,
+                                      self.send_mode_pref_field)
+
+    @api.model
+    def build_inform_mode(self, partner, communication_send_mode,
+                          print_if_not_email, send_mode_pref_field):
         """ Returns how the partner should be informed for the given
         communication (digital, physical or False).
         It makes the product of the communication preference and the partner
@@ -203,9 +218,11 @@ class CommunicationConfig(models.Model):
         manual          auto                manual
 
         :param partner: res.partner record
+        :param communication_send_mode: string
+        :param print_if_not_email: boolean
+        :param send_mode_pref_field string
         :returns: send_mode (physical/digital/False), auto_mode (True/False)
         """
-        self.ensure_one()
         # First key is the comm send_mode, second key is the partner send_mode
         # value is the send_mode that should be selected.
         send_priority = {
@@ -218,10 +235,10 @@ class CommunicationConfig(models.Model):
             },
             'digital': {
                 'none': 'none',
-                'physical': 'physical' if self.print_if_not_email else 'none',
+                'physical': 'physical' if print_if_not_email else 'none',
                 'digital': 'digital',
                 'digital_only': 'digital',
-                'both': 'both' if self.print_if_not_email else 'digital',
+                'both': 'both' if print_if_not_email else 'digital',
             },
             'digital_only': {
                 'none': 'none',
@@ -240,29 +257,32 @@ class CommunicationConfig(models.Model):
             }
         }
 
-        if self.send_mode != 'partner_preference':
+        if communication_send_mode != 'partner_preference':
             partner_mode = getattr(
-                partner, self.send_mode_pref_field or
+                partner, send_mode_pref_field or
                 'global_communication_delivery_preference',
                 partner.global_communication_delivery_preference)
-            if self.send_mode == partner_mode:
-                send_mode = self.send_mode
+            if communication_send_mode == partner_mode:
+                send_mode = communication_send_mode
                 auto_mode = 'auto' in send_mode or send_mode == 'both'
                 digital_only = 'digital_only' in partner_mode
             else:
                 auto_mode = (
-                    'auto' in partner_mode and 'auto' in self.send_mode or
-                    'auto' in partner_mode and self.send_mode == 'both' or
-                    'auto' in self.send_mode and partner_mode == 'both'
+                    'auto' in partner_mode
+                    and 'auto' in communication_send_mode
+                    or 'auto' in partner_mode
+                    and communication_send_mode == 'both'
+                    or 'auto' in communication_send_mode
+                    and partner_mode == 'both'
                 )
-                comm_mode = self.send_mode.replace('auto_', '')
+                comm_mode = communication_send_mode.replace('auto_', '')
                 partner_mode = partner_mode.replace('auto_', '')
                 send_mode = send_priority[comm_mode][partner_mode]
                 digital_only = 'digital_only' in partner_mode or \
                     'digital_only' in comm_mode
         else:
             send_mode = getattr(
-                partner, self.send_mode_pref_field,  'none')
+                partner, send_mode_pref_field,  'none')
             auto_mode = 'auto' in send_mode or send_mode == 'both'
             digital_only = 'digital_only' in send_mode
 
@@ -275,7 +295,7 @@ class CommunicationConfig(models.Model):
         removed_digital = False
         if send_mode in ['digital', 'both'] and not partner.email:
             removed_digital = True
-            if (self.print_if_not_email or send_mode == 'both') \
+            if (print_if_not_email or send_mode == 'both') \
                     and not digital_only:
                 send_mode = 'physical'
                 auto_mode = False

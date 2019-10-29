@@ -251,22 +251,22 @@ class GlobalChildSearch(models.TransientModel):
         """
         country_codes = self.env['compassion.field.office'].search([]).mapped(
             'field_office_id')
-        children = {code: self.env['compassion.global.child'] for code in
-                    country_codes}
+        children_by_country = {code: self.env['compassion.global.child']
+                               for code in country_codes}
         max_per_country = ceil(float(self.take) / len(country_codes))
         found_children = self.env['compassion.global.child']
-        all_children = self.env['compassion.global.child']
+        children_already_seen = self.env['compassion.global.child']
         nb_found = 0
         tries = 0
         while nb_found < self.take:
-            all_children += self.global_child_ids
+            children_already_seen += self.global_child_ids
             self.take_more()
-            for child in self.global_child_ids - all_children:
+            for child in self.global_child_ids - children_already_seen:
                 child_country = child.local_id[0:2]
-                country_pool = children.get(child_country)
+                country_pool = children_by_country.get(child_country)
                 if country_pool is not None and len(country_pool) < \
                         max_per_country:
-                    children[child_country] = country_pool + child
+                    children_by_country[child_country] = country_pool + child
                     found_children += child
                     nb_found += 1
                 if nb_found == self.take:
@@ -275,7 +275,7 @@ class GlobalChildSearch(models.TransientModel):
             tries += 1
             if tries > 5:
                 raise UserError(
-                    _("Cannot find enough availalbe children in all "
+                    _("Cannot find enough available children in all "
                       "countries. Try with less"))
 
         # Delete leftover children

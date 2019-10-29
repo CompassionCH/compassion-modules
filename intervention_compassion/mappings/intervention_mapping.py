@@ -79,7 +79,6 @@ class InterventionMapping(OnrampMapping):
         "TotalActualCosts": 'total_actual_cost_local',
         "TotalEstimatedCost": 'total_estimated_cost_local',
         "ProgramActivitiesFirstDayDate": 'start_date',
-
         # Additional field used by InterventionHoldRemovalNotification
         "InterventionType_Name": 'type',
         "ExpirationDate": 'expiration_date',
@@ -88,6 +87,11 @@ class InterventionMapping(OnrampMapping):
         "PrimaryOwner": ('user_id.name', 'res.users'),
         "SecondaryOwner": 'secondary_owner',
         "InterventionHold_ID": 'hold_id',
+
+        # Additional field used by InterventionAmendmentKitRequest
+        "RevisedFirstDayOfProgramActivities": 'start_date',
+        "TotalEstimatedCosts": 'estimated_costs',
+        "RevisedPlannedEndDate": 'end_date',
 
         # Survival fields
         "AllocatedSurvivalSlots": 'survival_slots',
