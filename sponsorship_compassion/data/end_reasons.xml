@@ -1,41 +1,44 @@
 <odoo>
     <record id="end_reason_depart" model="recurring.contract.end.reason">
-        <field name="Depart of child"/>
+        <field name="name">Depart of child</field>
+    </record>
+    <record id="end_reason_release" model="recurring.contract.end.reason">
+        <field name="name">Child hold expired</field>
     </record>
     <record id="end_reason_mistake" model="recurring.contract.end.reason">
-        <field name="Mistake from our staff"/>
+        <field name="name">Mistake from our staff</field>
     </record>
     <record id="end_reason_death" model="recurring.contract.end.reason">
-        <field name="Death of partner"/>
+        <field name="name">Death of partner</field>
     </record>
     <record id="end_reason_moved" model="recurring.contract.end.reason">
-        <field name="Moved to foreign country"/>
+        <field name="name">Moved to foreign country</field>
     </record>
     <record id="end_reason_not_satisfied" model="recurring.contract.end.reason">
-        <field name="Not satisfied"/>
+        <field name="name">Not satisfied</field>
     </record>
     <record id="end_reason_dont_pay" model="recurring.contract.end.reason">
-        <field name="Doesn't pay"/>
+        <field name="name">Doesn't pay</field>
     </record>
     <record id="end_reason_personal" model="recurring.contract.end.reason">
-        <field name="Personal reasons"/>
+        <field name="name">Personal reasons</field>
     </record>
     <record id="end_reason_never_paid" model="recurring.contract.end.reason">
-        <field name="Never paid"/>
+        <field name="name">Never paid</field>
     </record>
     <record id="end_reason_subreject" model="recurring.contract.end.reason">
-        <field name="Subreject"/>
+        <field name="name">Subreject</field>
     </record>
     <record id="end_reason_sponsor_exchange" model="recurring.contract.end.reason">
-        <field name="Exchange of sponsor"/>
+        <field name="name">Exchange of sponsor</field>
     </record>
     <record id="end_reason_child_exchange" model="recurring.contract.end.reason">
-        <field name="Exchange of beneficiary"/>
+        <field name="name">Exchange of beneficiary</field>
     </record>
     <record id="end_reason_financial" model="recurring.contract.end.reason">
-        <field name="Financial reasons"/>
+        <field name="name">Financial reasons</field>
     </record>
     <record id="end_reason_not_given" model="recurring.contract.end.reason">
-        <field name="Not given"/>
+        <field name="name">Not given</field>
     </record>
 </odoo>

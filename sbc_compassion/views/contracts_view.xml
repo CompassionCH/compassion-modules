@@ -29,4 +29,17 @@
             </xpath>
         </field>
     </record>
+
+    <!--   Add correspondence to sponsorship reports -->
+    <record model="ir.ui.view" id="sponsorship_report_form">
+        <field name="name">Sponsorship Report Correspondence</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="sponsorship_compassion.sponsorship_report_form"/>
+        <field name="arch" type="xml">
+            <field name="sr_total_donation" position="before">
+                <field name="sr_nb_b2s_letter"/>
+                <field name="sr_nb_s2b_letter"/>
+            </field>
+        </field>
+    </record>
 </odoo>

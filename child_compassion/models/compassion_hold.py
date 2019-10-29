@@ -235,10 +235,8 @@ class CompassionHold(models.Model):
             child_to_update = hold.child_id
             if hold.hold_id:
                 hold.state = 'active'
-                child_to_update.write({
-                    'hold_id': hold.id,
-                    'date': fields.Date.today(),
-                })
+                if not child_to_update.hold_id:
+                    child_to_update.child_consigned(hold.id)
                 # Always commit after receiving a hold to avoid losing it
                 if not test_mode:
                     self.env.cr.commit()    # pylint: disable=invalid-commit
@@ -269,7 +267,7 @@ class CompassionHold(models.Model):
                         'previous sponsor.'
         })
         hold = self.create(vals)
-        child.hold_id = hold
+        child.child_consigned(hold.id)
 
         # Update hold duration to what is configured
         hold.write({
@@ -296,7 +294,7 @@ class CompassionHold(models.Model):
                 'ambassador': hold.reservation_id.ambassador.id,
                 'channel': hold.reservation_id.channel
             })
-            child.hold_id = hold
+            child.child_consigned(hold.id)
             reservation = hold.reservation_id
             reservation_state = 'active'
             number_reserved = reservation.number_reserved + 1
@@ -360,15 +358,7 @@ class CompassionHold(models.Model):
     def hold_released(self, vals=None):
         """ Called when release message was successfully sent to GMC. """
         self.write({'state': 'expired'})
-        for child in self.mapped('child_id'):
-            child.hold_id = False
-            if child.sponsor_id:
-                # Check if it was a depart and retrieve lifecycle event
-                child.get_lifecycle_event()
-                if child.sponsor_id:
-                    child.child_released()
-            else:
-                child.child_released()
+        self.mapped('child_id').child_released()
         return True
 
     @api.model
