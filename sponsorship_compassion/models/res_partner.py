@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -10,6 +9,7 @@
 ##############################################################################
 import random
 import string
+import functools
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -18,12 +18,13 @@ from odoo.exceptions import UserError
 # For more flexibility we have split "res.partner" by functionality
 # pylint: disable=R7980
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = ['res.partner', 'compassion.mapped.model']
+    _name = 'res.partner'
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    global_id = fields.Char(copy=False)
+    global_id = fields.Char(copy=False, readonly=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract", compute='_compute_related_contracts',
         string='Fully managed sponsorships',
@@ -181,8 +182,10 @@ class ResPartner(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
+        # Use a sequence for references
+        vals['ref'] = self.env['ir.sequence'].get('partner.ref')
         # Put a preferred name
-        partner = super(ResPartner, self).create(vals)
+        partner = super().create(vals)
         if not partner.preferred_name:
             partner.preferred_name = \
                 partner.firstname or partner.lastname or partner.name
@@ -192,11 +195,11 @@ class ResPartner(models.Model):
     def write(self, vals):
         if 'firstname' in vals and 'preferred_name' not in vals:
             vals['preferred_name'] = vals['firstname']
-        res = super(ResPartner, self).write(vals)
+        res = super().write(vals)
         notify_vals = ['firstname', 'lastname', 'name', 'preferred_name',
                        'mandatory_review', 'send_original', 'title']
-        notify = reduce(lambda prev, val: prev or val in vals, notify_vals,
-                        False)
+        notify = functools.reduce(
+            lambda prev, val: prev or val in vals, notify_vals, False)
         if notify and not self.env.context.get('no_upsert'):
             self.upsert_constituent()
 
@@ -210,7 +213,7 @@ class ResPartner(models.Model):
         try:
             ir_model_data = self.env['ir.model.data']
             view_id = ir_model_data.get_object_reference(
-                'sponsorship_compassion',
+                'recurring.contract',
                 'view_invoice_line_partner_tree')[1]
         except ValueError:
             view_id = False
@@ -332,7 +335,7 @@ class ResPartner(models.Model):
 
         def _random_str():
             return ''.join([
-                random.choice(string.ascii_letters) for n in xrange(8)])
+                random.choice(string.ascii_letters) for n in range(8)])
 
         # Anonymize and delete partner data
         self.with_context(no_upsert=True).write({
@@ -381,6 +384,8 @@ class ResPartner(models.Model):
         messages = message_obj
         action_id = self.env.ref('sponsorship_compassion.upsert_partner').id
         for partner in self:
+            if not partner.ref:
+                partner.ref = self.env['ir.sequence'].get('partner.ref')
             contract_count = self.env['recurring.contract'].search_count([
                 ('correspondent_id', '=', partner.id),
                 ('state', 'not in', ('terminated', 'cancelled'))])
@@ -408,3 +413,16 @@ class ResPartner(models.Model):
             ('state', 'not in', ['cancelled', 'terminated']),
             ('child_id', '!=', False)
         ]
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+
+        if 'GPID' in json:
+            json['GPID'] = json['GPID'][3:]
+
+        connect_data = super().json_to_data(json, mapping_name)
+
+        if not connect_data.get('GlobalID') and 'GlobalID' in connect_data:
+            del connect_data['GlobalID']
+
+        return connect_data

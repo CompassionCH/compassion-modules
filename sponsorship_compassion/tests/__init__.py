@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -11,3 +10,4 @@
 
 from . import test_sponsorship_compassion
 from . import test_sponsorship_impact
+from . import test_contract_compassion

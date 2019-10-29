@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Cyril Sester <cyril.sester@outlook.com>
+    The licence is in the file __manifest__.py
+-->
+
+<odoo>
+    <record id="view_contract_group_form_compassion" model="ir.ui.view">
+        <field name="name">contract.group.compassion.form</field>
+        <field name="model">recurring.contract.group</field>
+        <field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <group name="partner_info" position="replace">
+                <group name="partner_info">
+                    <field name="partner_id" domain="[('customer', '=', True)]" readonly="1"/>
+                    <field name="payment_mode_id"/>
+                </group>
+            </group>
+            <!-- Remove change_method (we always use clean_invoices) -->
+            <field name="change_method" position="replace"/>
+        </field>
+    </record>
+</odoo>

@@ -131,7 +131,7 @@ class TestTracking(BaseSponsorshipTest):
             self.assertEqual(subsponsorship.sds_state, 'active')
 
         list_childs = self.list_sponsorships.mapped('child_id')
-        list_childs.depart()
+        list_childs.child_departed()
 
         for subsponsorship in self.list_sponsorships:
             self.assertEqual(subsponsorship.sds_state, 'sub_waiting')

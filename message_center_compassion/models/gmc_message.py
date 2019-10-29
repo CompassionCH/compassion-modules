@@ -142,7 +142,6 @@ class GmcMessage(models.Model):
     @api.multi
     def reset_message(self):
         self.write({
-            'request_id': False,
             'state': 'new',
             'process_date': False,
             'failure_reason': False
@@ -252,7 +251,18 @@ class GmcMessage(models.Model):
         action = self.mapped('action_id')
         data_objects = self.env[action.model].with_context(
             lang='en_US').browse(self.mapped('object_id'))
+
+        # Replay answer if message was already sent and received success
+        to_send = self
+        for i, message in enumerate(self):
+            if message.request_id:
+                answer_data = json.loads(message.answer)
+                message._process_single_answer(data_objects[i], answer_data)
+                to_send -= message
+
         # Notify objects sent to connect for special handling if needed.
+        data_objects = self.env[action.model].with_context(
+            lang='en_US').browse(to_send.mapped('object_id'))
         if hasattr(data_objects, 'on_send_to_connect'):
             data_objects.on_send_to_connect()
 
@@ -271,7 +281,7 @@ class GmcMessage(models.Model):
                         message_data[action.connect_outgoing_wrapper].append(
                             data_object.data_to_json(action.mapping_id.name)
                         )
-                    self[i:i+split]._send_message(message_data)
+                    to_send[i:i+split]._send_message(message_data)
             else:
                 # Send individual message for each object
                 message_data = dict()
@@ -279,14 +289,14 @@ class GmcMessage(models.Model):
                     message_data[action.connect_outgoing_wrapper] = [
                         data_objects[i].data_to_json(action.mapping_id.name)
                     ]
-                    self[i]._send_message(message_data)
+                    to_send[i]._send_message(message_data)
 
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
                 message_data = data_objects[i].data_to_json(
                     action.mapping_id.name)
-                self[i]._send_message(message_data)
+                to_send[i]._send_message(message_data)
 
     def _send_message(self, message_data):
         """Sends the prepared message and gets the answer from GMC."""
@@ -324,59 +334,66 @@ class GmcMessage(models.Model):
                 result = results[i]
                 content_sent = message_data.get(
                     action.connect_outgoing_wrapper, message_data)
-                mess_vals = {
-                    'content': json.dumps(
-                        content_sent[i], indent=4, sort_keys=True
-                    ) if isinstance(content_sent, list) else json.dumps(
-                        content_sent, indent=4, sort_keys=True),
-                    'request_id': onramp_answer.get('request_id', False)
-                }
                 if isinstance(result, dict) and result.get('Code',
                                                            2000) == 2000:
                     # Individual message was successfully processed
-                    answer_vals = [data_objects[i].json_to_data(
-                        result, action.mapping_id.name)]
-                    try:
-                        # Commit state before processing the success
-                        self.env.cr.commit()  # pylint:disable=invalid-commit
-                        getattr(data_objects[i], action.success_method)(
-                            *answer_vals)
-                        mess_vals['state'] = 'success'
-                        mess_vals['answer'] = json.dumps(
-                            result, indent=4, sort_keys=True)
-                    except Exception as e:
-                        self.env.cr.rollback()
-                        if action.failure_method:
-                            getattr(data_objects[i], action.failure_method)(
-                                result)
-                        mess_vals.update({
-                            'state': 'failure',
-                            'failure_reason': e,
-                            'answer': json.dumps(
-                                result, indent=4, sort_keys=True)
-                        })
+                    # Commit state before processing the success
+                    self[i].write({
+                        'content': json.dumps(content_sent[i], indent=4,
+                                              sort_keys=True)
+                        if isinstance(content_sent, list) else json.dumps(
+                            content_sent, indent=4, sort_keys=True),
+                        'request_id': onramp_answer.get('request_id',
+                                                        str(self[i].id)),
+                        'answer': json.dumps(result, indent=4, sort_keys=True)
+                    })
+                    self.env.cr.commit()  # pylint:disable=invalid-commit
+                    self[i]._process_single_answer(data_objects[i], result)
                 elif isinstance(result, dict):
                     if action.failure_method:
                         getattr(data_objects[i], action.failure_method)(result)
-                    mess_vals.update({
+                    self[i].write({
                         'state': 'failure',
                         'failure_reason': result['Message'],
-                        'answer': json.dumps(
-                            result, indent=4, sort_keys=True)
+                        'answer': json.dumps(result, indent=4, sort_keys=True)
                     })
                 else:
                     # We got a simple string as result, nothing more to do
-                    mess_vals.update({
+                    self[i].write({
                         'state': 'success',
                         'answer': str(result)
                     })
-                self[i].write(mess_vals)
         else:
             for i in range(0, len(results)):
                 result = results[i]
                 if action.failure_method:
                     getattr(data_objects[i], action.failure_method)(result)
                 self[i]._answer_failure(onramp_answer, result)
+
+    def _process_single_answer(self, data_object, answer_data):
+        """
+        When processing outgoing messages, here we treat a single
+        response for a message and execute the appropriate callback.
+        :param data_object: the related object of the message
+        :param answer_data: the json returned by GMC
+        :return: None
+        """
+        self.ensure_one()
+        action = self.action_id
+        try:
+            answer_data = data_object.json_to_data(
+                answer_data, action.mapping_id.name)
+            getattr(data_object, action.success_method)(answer_data)
+            self.state = 'success'
+        except Exception as e:
+            self.env.cr.rollback()
+            self.env.clear()
+            if action.failure_method:
+                getattr(data_object, action.failure_method)(answer_data)
+            self.write({
+                'state': 'failure',
+                'failure_reason': str(e),
+            })
 
     def _answer_failure(self, onramp_answer, results=None):
         """ Write error message when onramp answer is not a success.
