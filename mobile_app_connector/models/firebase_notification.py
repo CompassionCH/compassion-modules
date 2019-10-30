@@ -9,7 +9,6 @@
 ##############################################################################
 
 from odoo import api, fields, models
-from odoo.fields import Datetime
 from datetime import datetime
 
 
@@ -49,15 +48,7 @@ class FirebaseNotification(models.Model):
                 "destination": notif.destination or "",
                 "fund_type_id": str(notif.fundType.id)
             }
-            super(FirebaseNotification, self).send(data)
-
-
-    def notification_cron(self):
-        """
-        Overriding so the automated notifications are filtered to
-        :return:
-        """
-        super(FirebaseNotification, self).notification_cron()
+            super(FirebaseNotification, notif).send(data)
 
     def duplicate_to_unread(self):
         res = super(FirebaseNotification, self).duplicate_to_unread()
@@ -79,8 +70,9 @@ class FirebaseNotification(models.Model):
         firebase_id = params.get('firebase_id')
         reg = self.env['firebase.registration']\
             .search([('registration_id', '=', firebase_id)])
+
+        dt = fields.Datetime.now()
         if reg.partner_id:
-            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
             notifications = self.search([
                 ('partner_ids', '=', reg.partner_id.id),
                 ('send_date', '<', dt),
@@ -88,7 +80,6 @@ class FirebaseNotification(models.Model):
             ])
         else:
             # Logged out users
-            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
             notifications = self.search([
                 ('send_to_logged_out_devices', '=', True),
                 ('send_date', '<', dt),
