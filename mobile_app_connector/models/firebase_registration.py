@@ -25,7 +25,7 @@ class GetPartnerMessage(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
-    def send_message(self, message_title, message_body, data={}):
+    def send_message(self, message_title, message_body, data=None):
         """
         Filters message by user preferences
 
@@ -34,6 +34,9 @@ class GetPartnerMessage(models.Model):
         :param data:
         :return:
         """
+        if data is None:
+            data = {}
+
         recipient = self
         if "topic" in data:
             if data['topic'] == "child_notification":
