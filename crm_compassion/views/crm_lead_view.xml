@@ -63,18 +63,6 @@
         </field>
     </record>
 
-    <!-- CRM Lead Form View -->
-    <record model="ir.ui.view" id="crm_case_form_event">
-        <field name="name">crm.lead.event</field>
-        <field name="model">crm.lead</field>
-        <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
-        <field name="arch" type="xml">
-            <field name="user_id" position="after">
-                <field name="event_id"/>
-            </field>
-        </field>
-    </record>
-
     <!-- CRM Lead Kanban View  -->
     <record model="ir.ui.view" id="crm_case_kanban_view_leads_spons1">
         <field name="name">CRM - Leads Kanban</field>

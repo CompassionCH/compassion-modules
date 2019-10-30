@@ -7,17 +7,14 @@ CMS Form additions for Compassion
    !! changes will be overwritten.                   !!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-.. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
-    :target: https://odoo-community.org/page/development-status
-    :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
+.. |badge1| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-CompassionCH%2Fcompassion--modules-lightgray.png?logo=github
+.. |badge2| image:: https://img.shields.io/badge/github-CompassionCH%2Fcompassion--modules-lightgray.png?logo=github
     :target: https://github.com/CompassionCH/compassion-modules/tree/10.0/cms_form_compassion
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| 
 
 This module adds some generic forms and form widgets to the module cms_form. It adds:
 
@@ -32,10 +29,34 @@ This module adds some generic forms and form widgets to the module cms_form. It 
 .. contents::
    :local:
 
+Configuration
+=============
+
+The payment routes should work with several payment acquirers, however it was only tested with
+Stripe and Postfinance. Others acquirers may not work or require adaptations.
+
+To make sure the payment routes are working, at least one payment acquirer should be activated
+in the Accounting settings.
+
 Usage
 =====
 
-This module cannot be used as it is. It is meant to be inherited in order to use and implement the forms.
+The payment adds several routes for redirecting to payment providers after a form submission.
+
+One route is /compassion/payment/<invoice_id> that can contain
+following GET parameters:
+
+* accept_url: the redirection url after successful payment
+* decline_url: the redirection url after declined payment
+
+The redirection page is /compassion/payment/validate
+
+If no accept_url and decline_url were passed, it will render the default confirmation page,
+otherwise it will redirect the user accordingly.
+
+The second route is /compassion/payment/<transaction_id> and is similar to the first one,
+except that one can use a transaction id instead of an invoice. The transaction should however
+be connected to an invoice otherwise it will display an error.
 
 Bug Tracker
 ===========
@@ -59,6 +80,7 @@ Contributors
 ~~~~~~~~~~~~
 
 * Emanuel Cino <ecino@compassion.ch>
+* Benoît Schopfer <bschopfer@compassion.ch>
 
 Maintainers
 ~~~~~~~~~~~

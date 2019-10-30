@@ -1,0 +1,36 @@
+<odoo>
+    <record id="view_correspondence_template_page_tree" model="ir.ui.view">
+        <field name="name">correspondence.template.page.tree</field>
+        <field name="model">correspondence.template.page</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="page_index" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_correspondence_template_page_form" model="ir.ui.view">
+        <field name="name">correspondence.template.page.form</field>
+        <field name="model">correspondence.template.page</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="template_id"/>
+                            <field name="page_index"/>
+                            <field name="background"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="header_box_id"/>
+                        <field name="text_box_ids"/>
+                        <field name="image_box_ids"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

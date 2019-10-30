@@ -14,7 +14,7 @@ from odoo.tools import config
 
 from dateutil.relativedelta import relativedelta
 
-from ..models.product import GIFT_NAMES
+from ..models.product import GIFT_REF
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,6 @@ class GenerateGiftWizard(models.TransientModel):
     def generate_invoice(self):
         # Read data in english
         self.ensure_one()
-        self = self.with_context(lang='en_US')
         if not self.description:
             self.description = self.product_id.display_name
         invoice_ids = list()
@@ -49,7 +48,7 @@ class GenerateGiftWizard(models.TransientModel):
                 self.env.context.get('active_ids', list())).filtered(
             lambda c: 'S' in c.type and c.state in gen_states
         ):
-                    if self.product_id.name == GIFT_NAMES[0]:
+                    if self.product_id.default_code == GIFT_REF[0]:
                         # Birthday Gift
                         if not contract.child_id.birthdate:
                             logger.error(
@@ -105,7 +104,8 @@ class GenerateGiftWizard(models.TransientModel):
     def _setup_invoice(self, contract, invoice_date):
         journal_id = self.env['account.journal'].search([
             ('type', '=', 'sale'),
-            ('company_id', '=', 1)], limit=1).id
+            ('company_id', '=', contract.company_id.id)
+        ], limit=1).id
         return {
             'type': 'out_invoice',
             'partner_id': contract.gift_partner_id.id,

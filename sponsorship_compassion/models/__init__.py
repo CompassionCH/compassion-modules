@@ -20,3 +20,4 @@ from . import child_compassion
 from . import product
 from . import account_invoice
 from . import move_line
+from . import product_template
