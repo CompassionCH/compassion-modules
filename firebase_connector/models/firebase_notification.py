@@ -34,15 +34,15 @@ class FirebaseNotification(models.Model):
         'firebase.notification.partner.read', 'notification_id',
         string='Partner read status of the notification', readonly=True)
 
-    @api.one
     @api.constrains('send_date')
     def _check_date(self):
-        if self.send_date is False:
-            return
+        for notif in self:
+            if notif.send_date is False:
+                continue
 
-        dt = fields.Datetime.now()
-        if self.send_date < dt:
-            raise UserError(_("Send date should be in the future"))
+            dt = fields.Datetime.now()
+            if notif.send_date < dt:
+                raise UserError(_("Send date should be in the future"))
 
     @api.multi
     def send(self, data=None):

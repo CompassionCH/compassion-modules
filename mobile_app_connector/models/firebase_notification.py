@@ -9,7 +9,6 @@
 ##############################################################################
 
 from odoo import api, fields, models
-from datetime import datetime
 
 
 class FirebaseNotification(models.Model):
