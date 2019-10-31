@@ -14,6 +14,8 @@ from odoo.addons.firebase_connector.controllers.firebase_controller \
 
 import logging
 
+_logger = logging.getLogger(__name__)
+
 
 class GetPartnerMessage(models.Model):
     _inherit = "firebase.registration"
@@ -68,14 +70,14 @@ class GetPartnerMessage(models.Model):
             ('registration_id', '=', firebase_id)])
 
         if firebase_id is None:
-            logging.error(
+            _logger.error(
                 "Received an empty firebase id while updating notification "
                 "preferences from the mobile app")
             return
 
         if len(reg) == 0:
             # id is not yet registered in Odoo
-            logging.warning("Received a notification preference for a device "
+            _logger.warning("Received a notification preference for a device "
                             "not yet registered in Odoo. It should not happen "
                             "in the normal registration flow.")
             self.mobile_register(json_data, **{
@@ -120,7 +122,7 @@ class GetPartnerMessage(models.Model):
         partner_id = params.get('supId', None)
         if partner_id == "":
             partner_id = None
-        logging.debug(
+        _logger.debug(
             operation + "ing a Firebase ID from partner id: " +
             str(partner_id) + " with value: " + firebase_id)
 
