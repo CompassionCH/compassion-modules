@@ -16,10 +16,6 @@ from .test_sponsorship_compassion import BaseSponsorshipTest
 class TestSponsorshipImpact(BaseSponsorshipTest):
 
     def test_sponsorship_impact_first_scenario(self):
-        self.env['thankyou.config'].create({
-            'min_donation_amount': 50.0,
-            'send_mode': 'auto_digital_only',
-        })
         # Create 3 children and get the project associated
         child1 = self.create_child('PI012304561')
         child2 = self.create_child('PJ012304562')

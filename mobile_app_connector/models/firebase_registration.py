@@ -14,6 +14,8 @@ from odoo.addons.firebase_connector.controllers.firebase_controller \
 
 import logging
 
+_logger = logging.getLogger(__name__)
+
 
 class GetPartnerMessage(models.Model):
     _inherit = "firebase.registration"
@@ -25,7 +27,7 @@ class GetPartnerMessage(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
-    def send_message(self, message_title, message_body, data={}):
+    def send_message(self, message_title, message_body, data=None):
         """
         Filters message by user preferences
 
@@ -34,21 +36,26 @@ class GetPartnerMessage(models.Model):
         :param data:
         :return:
         """
+        if data is None:
+            data = {}
+
+        recipient = self
         if "topic" in data:
             if data['topic'] == "child_notification":
-                filtered = self.filtered(lambda reg: reg.receive_child_notification is True)
-                return super(GetPartnerMessage, filtered).send_message(message_title, message_body, data)
+                recipient = self.filtered(lambda reg: reg.receive_child_notification)
 
             elif data['topic'] == "general_notification":
-                filtered = self.filtered(lambda reg: reg.receive_general_notification is True)
-                return super(GetPartnerMessage, filtered).send_message(message_title, message_body, data)
+                recipient = self.filtered(lambda reg: reg.receive_general_notification)
 
-        return super(GetPartnerMessage, self).send_message(message_title, message_body, data)
+        return super(GetPartnerMessage, recipient).send_message(message_title,
+                                                                message_body,
+                                                                data)
 
     @api.model
     def mobile_update_notification_preference(self, json_data, **params):
         """
         This is called when the user updates his notification preferences.
+        :param json_data:
         :param params: {
             "firebaseId": the firebase id of the device where the request
                           originated
@@ -63,12 +70,14 @@ class GetPartnerMessage(models.Model):
             ('registration_id', '=', firebase_id)])
 
         if firebase_id is None:
-            logging.error("Received an empty firebase id while updating notification preferences from mobile app")
+            _logger.error(
+                "Received an empty firebase id while updating notification "
+                "preferences from the mobile app")
             return
 
         if len(reg) == 0:
             # id is not yet registered in Odoo
-            logging.warning("Received a notification preference for a device "
+            _logger.warning("Received a notification preference for a device "
                             "not yet registered in Odoo. It should not happen "
                             "in the normal registration flow.")
             self.mobile_register(json_data, **{
@@ -113,7 +122,7 @@ class GetPartnerMessage(models.Model):
         partner_id = params.get('supId', None)
         if partner_id == "":
             partner_id = None
-        logging.debug(
+        _logger.debug(
             operation + "ing a Firebase ID from partner id: " +
             str(partner_id) + " with value: " + firebase_id)
 

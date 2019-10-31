@@ -54,7 +54,7 @@
         'views/generate_communication_wizard_view.xml',
     ],
     'demo': [
-        'demo/success_story.xml'
+        'demo/demo_data.xml'
     ],
     'installable': True,
     'auto_install': False,

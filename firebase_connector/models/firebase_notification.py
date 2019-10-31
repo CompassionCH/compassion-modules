@@ -8,54 +8,44 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
-from odoo.tools import config
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-from datetime import datetime
 import logging
 
 _logger = logging.getLogger(__name__)
 
-try:
-    import firebase_admin
-    from firebase_admin import credentials
-    from firebase_admin import messaging
-except ImportError as e:
-    _logger.error("Please install the PIP package firebase_admin")
-
 
 class FirebaseNotification(models.Model):
     """
-    The represent a device that we can send push notification to. It is
-    characterized by the Firebase token and an optional partner.
-    It provides function to send messages to the device.
+    Represent a mobile notification which can be sent to a set of partners.
     """
 
     _name = 'firebase.notification'
     _description = 'Notification to send to Firebase Cloud Messaging'
 
-    partner_ids = fields.Many2many('res.partner')
+    partner_ids = fields.Many2many('res.partner', string="Partners")
     title = fields.Char(required=True)
     body = fields.Char(required=True)
     send_date = fields.Datetime()
-    sent = fields.Boolean(default=False, readonly=True)
+    sent = fields.Boolean(readonly=True)
     send_to_logged_out_devices = fields.Boolean(
         default=False, string="Send to devices without logged users.")
     read_ids = fields.One2many(
         'firebase.notification.partner.read', 'notification_id',
         string='Partner read status of the notification', readonly=True)
 
-    @api.multi
-    def write(self, vals):
-        res = super(FirebaseNotification, self).write(vals)
-        if 'send_date' in vals:
-            dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
-            if vals['send_date'] < dt:
+    @api.constrains('send_date')
+    def _check_date(self):
+        for notif in self:
+            if notif.send_date is False:
+                continue
+
+            dt = fields.Datetime.now()
+            if notif.send_date < dt:
                 raise UserError(_("Send date should be in the future"))
-        return res
 
     @api.multi
-    def send(self, data={}):
+    def send(self, data=None):
         """
         This method take a notification object in Odoo and send it to the
         partners devices via Firebase Cloud Messaging. If the notification was
@@ -65,9 +55,12 @@ class FirebaseNotification(models.Model):
         :param data:
         :return:
         """
+        if data is None:
+            data = {}
+
         for notif in self:
             registration_ids = self.env['firebase.registration'].search([
-                ('partner_id', 'in', notif.partner_ids.mapped('id'))
+                ('partner_id', 'in', notif.partner_ids.ids)
             ])
             if notif.send_to_logged_out_devices:
                 registration_ids += self.env['firebase.registration'].search(
@@ -82,45 +75,45 @@ class FirebaseNotification(models.Model):
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
                 for partner in notif.partner_ids:
-                    notif.read_ids += \
-                        self.env['firebase.notification.partner.read'].create({
-                            'partner_id': partner.id,
-                            'notification_id': notif.id,
-                        })
+                    self.env['firebase.notification.partner.read'].create({
+                        'partner_id': partner.id,
+                        'notification_id': notif.id,
+                    })
             else:
                 raise UserError(_("We were not able to send the notification."))
 
     @api.multi
     def duplicate_to_unread(self):
-        for notif in self:
-            duplicate = self.create({
-                'title': notif.title,
-                'body': notif.body,
-                'send_to_logged_out_devices': notif.send_to_logged_out_devices,
-            })
-            # Doesn't work if put directly in the record creation
-            duplicate.partner_ids = [
-                p.id for p in notif.partner_ids
-                if p not in notif.read_ids.mapped('partner_id.id')
-            ],
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Notification',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'res_model': self._name,
-                'res_id': duplicate.id,
-                'target': 'current',
-            }
+        self.ensure_one()
+
+        unread_partner_ids = self.partner_ids - self.read_ids.filtered('opened')\
+            .mapped('partner_id')
+
+        duplicate = self.create({
+            'title': self.title,
+            'body': self.body,
+            'send_to_logged_out_devices': self.send_to_logged_out_devices,
+            'partner_ids': [(6, False, unread_partner_ids.ids)]
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Notification',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': self._name,
+            'res_id': duplicate.id,
+            'target': 'current',
+        }
 
     def notification_cron(self):
-        dt = datetime.strftime(datetime.today(), "%Y-%m-%d %H:%M:%S")
-
+        dt = fields.Datetime.now()
         self.search([
             ('sent', '=', False),
             ('send_date', '<', dt)
         ]).send()
-
+        
+        return True
 
 class FirebaseNotificationPartnerRead(models.Model):
     """
@@ -128,8 +121,15 @@ class FirebaseNotificationPartnerRead(models.Model):
     """
     _name = "firebase.notification.partner.read"
     _description = "Link between partner and notifications read status"
-
-    partner_id = fields.Many2one('res.partner')
-    notification_id = fields.Many2one('firebase.notification', required=True, ondelete="cascade")
+    
+    partner_id = fields.Many2one('res.partner',
+                                 'Partner',
+                                 ondelete='cascade',
+                                 index=True)
+    notification_id = fields.Many2one('firebase.notification',
+                                      'Notification',
+                                      required=True,
+                                      ondelete="cascade",
+                                      index=True)
     opened = fields.Boolean(default=False)
     read_date = fields.Datetime()

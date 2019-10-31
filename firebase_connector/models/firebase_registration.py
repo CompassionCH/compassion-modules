@@ -19,7 +19,7 @@ try:
     from firebase_admin import credentials
     from firebase_admin import messaging
 except ImportError as e:
-    _logger.error("Please install the PIP package firebase_admin")
+    _logger.warning("Please install the PIP package firebase_admin")
 
 try:
     firebase_credentials = \
@@ -27,11 +27,10 @@ try:
     firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
 except (KeyError, ValueError) as e:
     firebase_app = None
-    logging.error(e)
-    if not config.get("test_enable"):
-        logging.error(
-            "google_application_credentials is not correctly configured in odoo.conf"
-        )
+    _logger.warning(e)
+    _logger.warning(
+        "google_application_credentials is not correctly configured in odoo.conf"
+    )
 
 
 class FirebaseRegistration(models.Model):
@@ -76,9 +75,11 @@ class FirebaseRegistration(models.Model):
         :param data: Data segment of a Firebase message (see the docs)
         :return: None
         """
+        if data is None:
+            data = {}
 
         if not firebase_app:
-            logging.error("google_application_credentials is not correctly"
+            _logger.error("google_application_credentials is not correctly"
                           "configured in odoo.conf or invalid. Skipping "
                           "sending notifications")
             return False
@@ -98,9 +99,9 @@ class FirebaseRegistration(models.Model):
                 messaging.send(message=message)
             except (messaging.QuotaExceededError, messaging.SenderIdMismatchError,
                     messaging.ThirdPartyAuthError, messaging.UnregisteredError) as ex:
-                logging.error(ex)
+                _logger.error(ex)
                 if ex.code == 'NOT_FOUND':
-                    logging.debug(
+                    _logger.debug(
                         "A device is not reachable from Firebase, unlinking."
                         "Firebase ID: %s" % firebase_id)
                     firebase_id.unlink()
