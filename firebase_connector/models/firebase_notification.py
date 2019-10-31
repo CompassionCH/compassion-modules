@@ -86,16 +86,15 @@ class FirebaseNotification(models.Model):
     def duplicate_to_unread(self):
         self.ensure_one()
 
-        for notif in self:
-            unread_partner_ids = notif.partner_ids - notif.read_ids.filtered(
-                lambda read_id: read_id.opened
-            ).mapped('partner_id')
-            duplicate = self.create({
-                'title': notif.title,
-                'body': notif.body,
-                'send_to_logged_out_devices': notif.send_to_logged_out_devices,
-                'partner_ids': [(6, False, unread_partner_ids.ids)]
-            })
+        unread_partner_ids = self.partner_ids - self.read_ids.filtered('opened')\
+            .mapped('partner_id')
+
+        duplicate = self.create({
+            'title': self.title,
+            'body': self.body,
+            'send_to_logged_out_devices': self.send_to_logged_out_devices,
+            'partner_ids': [(6, False, unread_partner_ids.ids)]
+        })
 
         return {
             'type': 'ir.actions.act_window',
