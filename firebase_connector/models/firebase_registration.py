@@ -65,7 +65,7 @@ class FirebaseRegistration(models.Model):
                           self.env.context.get('message_body'))
 
     @api.multi
-    def send_message(self, message_title, message_body, data={}):
+    def send_message(self, message_title, message_body, data=None):
         """
         Send a notification to the device registered with this firebase id.
         If the firebase id is not in use anymore, we remove the registration

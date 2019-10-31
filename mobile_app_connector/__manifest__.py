@@ -41,6 +41,7 @@
         'base_geolocalize',
         'firebase_connector',
         'sms_sponsorship',
+        'partner_communication'
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
