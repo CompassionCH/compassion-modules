@@ -19,18 +19,18 @@ try:
     from firebase_admin import credentials
     from firebase_admin import messaging
 except ImportError as e:
-    _logger.error("Please install the PIP package firebase_admin")
-
+    _logger.warning("Please install the PIP package firebase_admin")
 
 try:
     firebase_credentials = \
         credentials.Certificate(config.get('google_application_credentials'))
-    firebase_app = firebase_admin.initialize_app(
-        credential=firebase_credentials)
-except (KeyError, ValueError):
-    if not config.get("test_enable"):
-        logging.error("google_application_credentials is not correctly"
-                      " configured in odoo.conf")
+    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
+except (KeyError, ValueError) as e:
+    firebase_app = None
+    _logger.warning(e)
+    _logger.warning(
+        "google_application_credentials is not correctly configured in odoo.conf"
+    )
 
 
 class FirebaseRegistration(models.Model):
@@ -75,27 +75,36 @@ class FirebaseRegistration(models.Model):
         :param data: Data segment of a Firebase message (see the docs)
         :return: None
         """
+        if data is None:
+            data = {}
 
         if not firebase_app:
-            logging.error("google_application_credentials is not correctly"
+            _logger.error("google_application_credentials is not correctly"
                           "configured in odoo.conf or invalid. Skipping "
                           "sending notifications")
-            return
+            return False
 
         notif = messaging.Notification(title=message_title, body=message_body)
 
         for firebase_id in self:
+            data.update({
+                'title': message_title,
+                'body': message_body,
+            })
+
             message = messaging.Message(notification=notif,
                                         data=data,
                                         token=firebase_id.registration_id)
             try:
                 messaging.send(message=message)
-            except messaging.ApiCallError as e:
-                logging.debug(
-                    "A device is not reachable from Firebase, unlinking."
-                    "Firebase ID: %s" % firebase_id)
-                if e.code == 'registration-token-not-registered':
-                    # app uninstalled or token renewed
+            except (messaging.QuotaExceededError, messaging.SenderIdMismatchError,
+                    messaging.ThirdPartyAuthError, messaging.UnregisteredError) as ex:
+                _logger.error(ex)
+                if ex.code == 'NOT_FOUND':
+                    _logger.debug(
+                        "A device is not reachable from Firebase, unlinking."
+                        "Firebase ID: %s" % firebase_id)
                     firebase_id.unlink()
                 else:
-                    raise e
+                    raise ex
+        return True

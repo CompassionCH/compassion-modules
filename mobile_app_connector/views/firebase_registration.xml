@@ -1,6 +1,6 @@
 <odoo>
-    <record model="ir.ui.view" id="mobile_app_firebase_notification_form">
-        <field name="name">mobile.app.firebase.notification.form</field>
+    <record model="ir.ui.view" id="mobile_app_firebase_registration_form">
+        <field name="name">mobile.app.firebase.registration.form</field>
         <field name="model">firebase.registration</field>
         <field name="inherit_id" ref="firebase_connector.firebase_registration_form"/>
         <field name="arch" type="xml">
@@ -10,8 +10,8 @@
              </field>
         </field>
     </record>
-    <record model="ir.ui.view" id="mobile_app_firebase_notification_tree">
-        <field name="name">mobile.app.firebase.notification.tree</field>
+    <record model="ir.ui.view" id="mobile_app_firebase_registration_tree">
+        <field name="name">mobile.app.firebase.registration.tree</field>
         <field name="model">firebase.registration</field>
         <field name="inherit_id" ref="firebase_connector.firebase_registration_tree"/>
         <field name="arch" type="xml">
@@ -22,12 +22,12 @@
         </field>
     </record>
 
-    <!-- Add menu for Firebase Registration -->
+     <!--Add menu for Firebase Registration-->
     <menuitem id="menu_mobile_app_firebase_registration"
               name="Firebase registrations"
               parent="menu_mobile_app_settings"
               action="firebase_connector.action_firebase_registration"
               groups="sales_team.group_sale_manager"
-              sequence="50"
+              sequence="53"
     />
 </odoo>
