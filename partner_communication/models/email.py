@@ -53,4 +53,4 @@ class Email(models.Model):
                         'subject': email.subject,
                         'ir_attachment_ids': [(6, 0, email.attachment_ids.ids)]
                     })
-        return super(Email, self).send(auto_commit, raise_exception)
+        return super().send(auto_commit, raise_exception)

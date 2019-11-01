@@ -88,7 +88,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def _default_domain(self):
         default_partners = self._default_partners()
         return "[]" if len(default_partners) == 0 \
-            else "[('id', 'in', {})]".format(default_partners)
+            else f"[('id', 'in', {default_partners})]"
 
     @api.model
     def _default_partners(self):
@@ -118,8 +118,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def onchange_domain(self):
         if self.force_language and not self.language_added_in_domain:
             domain = self.selection_domain or '[]'
-            domain = domain[:-1] + ", ('lang', '=', '{}')]".format(
-                self.force_language)
+            domain = domain[:-1] + f", ('lang', '=', '{self.force_language}')]"
             self.selection_domain = domain.replace('[, ', '[')
             self.language_added_in_domain = True
         if self.selection_domain:

@@ -1,5 +1,3 @@
-# © 2014-2016 Camptocamp SA
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from io import StringIO
 import logging
 
@@ -18,18 +16,16 @@ class OmrAwareReport(models.Model):
     _inherit = 'ir.actions.report'
 
     @api.model
-    def get_pdf(self, docids, report_name, html=None, data=None):
-        report = self._get_report_from_name(report_name)
+    def render_qweb_pdf(self, docids, data=None):
         communication_job_model = 'partner.communication.job'
-        if report.model == communication_job_model:
+        if self.model == communication_job_model:
             jobs = self.env[communication_job_model].browse(docids)
             if jobs.filtered('omr_enable_marks'):
                 # Add OMR marks on pages of the jobs :
                 # We must reconstruct the PDF job by job.
                 output = PdfFileWriter()
                 for job in jobs:
-                    job_data = super(OmrAwareReport, self) \
-                        .get_pdf(job.ids, report_name, html=html, data=data)
+                    job_data = super().render_qweb_pdf(job.ids, data=data)
                     if job.omr_enable_marks:
                         is_latest_document = not job.attachment_ids.filtered(
                             'attachment_id.enable_omr'
@@ -46,5 +42,4 @@ class OmrAwareReport(models.Model):
                 res = out_buffer.getvalue()
                 return res
 
-        return super(OmrAwareReport, self).get_pdf(docids, report_name,
-                                                   html=html, data=data)
+        return super().get_pdf(docids, data=data)

@@ -24,7 +24,7 @@ class Phonecall(models.Model):
 
     @api.model
     def create(self, vals):
-        phonecall = super(Phonecall, self).create(vals)
+        phonecall = super().create(vals)
         if phonecall.communication_id and phonecall.state == 'done':
             # Mark communication done when phonecall log created from
             # communication call wizard.

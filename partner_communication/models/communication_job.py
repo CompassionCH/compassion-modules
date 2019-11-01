@@ -215,7 +215,7 @@ class CommunicationJob(models.Model):
             return job
 
         self._get_default_vals(vals)
-        job = super(CommunicationJob, self).create(vals)
+        job = super().create(vals)
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
@@ -293,7 +293,7 @@ class CommunicationJob(models.Model):
         elif object_ids:
             vals['object_ids'] = str(object_ids)
 
-        super(CommunicationJob, self).write(vals)
+        super().write(vals)
 
         if vals.get('body_html') or vals.get('send_mode') == 'physical':
             self.count_pdf_page()
@@ -572,10 +572,11 @@ class CommunicationJob(models.Model):
         mark_width = 6.5 * mm
         marks_height = (len(marks) - 1) * mark_y_spacing
 
-        logger.info('Mailer DS-75i OMR Settings: 1={} 2={}'.format(
-            (297 * mm - top_mark_y) / mm,
-            (top_mark_x + mark_width / 2) / mm + 0.5
-        ))
+        logger.info(
+            'Mailer DS-75i OMR Settings: 1=%s 2=%s',
+            str((297 * mm - top_mark_y) / mm),
+            str((top_mark_x + mark_width / 2) / mm + 0.5)
+        )
 
         omr_buffer = BytesIO()
         omr_canvas = Canvas(omr_buffer)

@@ -24,7 +24,7 @@ class TestCommunicationJob(TransactionCase):
         self.partner.global_communication_delivery_preference = 'both'
 
     def setUp(self):
-        super(TestCommunicationJob, self).setUp()
+        super().setUp()
         self.partner = self.env['res.partner'].browse(
             self.ref('base.res_partner_2'))
         self.config = self.env['partner.communication.config'].browse(

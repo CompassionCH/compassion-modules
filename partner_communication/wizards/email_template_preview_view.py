@@ -44,4 +44,4 @@ class TemplatePreview(models.TransientModel):
     @api.onchange('res_id')
     @api.multi
     def on_change_res_id(self):
-        return super(TemplatePreview, self).on_change_res_id()
+        return super().on_change_res_id()

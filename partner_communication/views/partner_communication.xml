@@ -4,7 +4,6 @@
        <template id="assets_backend" name="partner_communication assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/partner_communication/static/src/js/phone_button_widget.js"></script>
-                <script type="text/javascript" src="/partner_communication/static/src/js/communication_dashboard.js"></script>
             </xpath>
         </template>
     </data>

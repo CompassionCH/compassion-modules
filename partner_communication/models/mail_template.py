@@ -24,4 +24,4 @@ class MailTemplate(models.Model):
         if isinstance(res_ids, models.BaseModel):
             res_ids = res_ids.id
 
-        return super(MailTemplate, self).generate_email(res_ids, fields)
+        return super().generate_email(res_ids, fields)

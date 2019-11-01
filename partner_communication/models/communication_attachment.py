@@ -56,7 +56,7 @@ class CommunicationAttachment(models.Model):
             })
             vals['attachment_id'] = attachment.id
 
-        res = super(CommunicationAttachment, self).create(vals)
+        res = super().create(vals)
         if new_record:
             res.attachment_id.res_id = res.communication_id.id
         return res
