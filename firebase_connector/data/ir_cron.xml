@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <record id="send_notification" model="ir.cron">
+            <field name="name">Send notification from the last hour</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="function">notification_cron</field>
+            <field name="model">firebase.notification</field>
+        </record>
+    </data>
+</odoo>

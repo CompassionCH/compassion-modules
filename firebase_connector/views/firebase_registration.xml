@@ -47,9 +47,10 @@
     </record>
 
     <record id="action_firebase_registration" model="ir.actions.act_window">
-        <field name="name">Firebase Notifications</field>
+        <field name="name">Firebase Registration</field>
         <field name="res_model">firebase.registration</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
+
 </odoo>

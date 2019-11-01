@@ -48,4 +48,18 @@
     <record id="product.product_product_10" model="product.product">
         <field name="requires_thankyou">False</field>
     </record>
+
+    <!--  Add a Thank you configuration  -->
+    <record id="thankyou_config_50" model="thankyou.config">
+        <field name="min_donation_amount">50</field>
+        <field name="send_mode">auto_digital_only</field>
+    </record>
+    <record id="thankyou_config_100" model="thankyou.config">
+        <field name="min_donation_amount">100</field>
+        <field name="send_mode">physical</field>
+    </record>
+    <record id="thankyou_config_500" model="thankyou.config">
+        <field name="min_donation_amount">500</field>
+        <field name="send_mode">physical</field>
+    </record>
 </odoo>
