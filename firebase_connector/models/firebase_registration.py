@@ -24,12 +24,13 @@ except ImportError as e:
 try:
     firebase_credentials = \
         credentials.Certificate(config.get('google_application_credentials'))
-    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
+    firebase_app = firebase_admin.initialize_app(
+        credential=firebase_credentials)
 except (KeyError, ValueError) as e:
     firebase_app = None
-    _logger.warning(e)
     _logger.warning(
-        "google_application_credentials is not correctly configured in odoo.conf"
+        "google_application_credentials is not correctly configured "
+        "in odoo.conf"
     )
 
 
@@ -97,8 +98,10 @@ class FirebaseRegistration(models.Model):
                                         token=firebase_id.registration_id)
             try:
                 messaging.send(message=message)
-            except (messaging.QuotaExceededError, messaging.SenderIdMismatchError,
-                    messaging.ThirdPartyAuthError, messaging.UnregisteredError) as ex:
+            except (messaging.QuotaExceededError,
+                    messaging.SenderIdMismatchError,
+                    messaging.ThirdPartyAuthError,
+                    messaging.UnregisteredError) as ex:
                 _logger.error(ex)
                 if ex.code == 'NOT_FOUND':
                     _logger.debug(
