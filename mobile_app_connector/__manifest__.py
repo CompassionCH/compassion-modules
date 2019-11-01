@@ -41,6 +41,7 @@
         'base_geolocalize',
         'firebase_connector',
         'sms_sponsorship',
+        'partner_communication'
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
@@ -68,6 +69,8 @@
         'views/firebase_registration.xml',
         'templates/registration_form.xml',
         'views/firebase_notification.xml',
+        'views/communication_job.xml',
+        'views/communication_config.xml',
     ],
     'demo': [
     ],

@@ -15,7 +15,7 @@ class FirebaseNotification(models.Model):
     _inherit = "firebase.notification"
 
     destination = fields.Selection([
-        ('MyHub', 'MyHub'),
+        ('MyHub', 'My Hub'),
         ('Letter', 'Letter'),
         ('Donation', 'Donation'),
         ('Prayer', 'Prayer'),
