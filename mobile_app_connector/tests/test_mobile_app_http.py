@@ -18,6 +18,9 @@ mock_oauth = ('odoo.addons.message_center_compassion.models.ir_http'
 
 class TestMobileAppHttp(HttpCase):
 
+    admin_username = "admin"
+    admin_password = "admin"
+
     def setUp(self):
         super(TestMobileAppHttp, self).setUp()
         self.root_url = '/mobile-app-api/'
@@ -35,7 +38,7 @@ class TestMobileAppHttp(HttpCase):
         json_data = simplejson.loads(response.read())
         self.assertEqual(json_data['error'], 'Wrong user or password')
         # Good username and password
-        response = self.url_open(url.format('admin', 'admin'))
+        response = self.url_open(url.format(self.admin_username, self.admin_password))
         self.assertEqual(response.code, 200)
         json_data = simplejson.loads(response.read())
         self.assertEqual(json_data['userid'], '1')
@@ -59,7 +62,7 @@ class TestMobileAppHttp(HttpCase):
             'base.partner_root').id))
         self.assertEqual(response.code, 401)
         # Private message while authenticated should work
-        self.authenticate('admin', 'admin')
+        self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url + str(self.env.ref(
             'base.partner_root').id))
         self.assertEqual(response.code, 200)
@@ -72,7 +75,7 @@ class TestMobileAppHttp(HttpCase):
         url = self.root_url + 'compassion.child/sponsor_children?userid=1818'
         response = self.url_open(url)
         self.assertEqual(response.code, 401)
-        self.authenticate('admin', 'admin')
+        self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url)
         self.assertEqual(response.code, 200)
 
@@ -85,6 +88,6 @@ class TestMobileAppHttp(HttpCase):
             'base.partner_root').id)
         response = self.url_open(url)
         self.assertEqual(response.code, 401)
-        self.authenticate('admin', 'admin')
+        self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url)
         self.assertEqual(response.code, 200)

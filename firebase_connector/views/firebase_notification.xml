@@ -1,0 +1,81 @@
+<odoo>
+    <!-- Notification -->
+    <record model="ir.ui.view" id="firebase_notification_form">
+        <field name="name">firebase.notification.form</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="duplicate_to_unread" string="Resend to unread users" type="object" class="oe_stat_button" attrs="{'invisible': [('sent', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="title" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="body" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="send_date" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="send_to_logged_out_devices" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="sent"/>
+                    </group>
+                    <group>
+                        <button name="send" string="Send notification now" type="object" class="oe_stat_button" icon="fa-paper-plane" attrs="{'invisible': [('sent', '=', True)]}"/>
+                    </group>
+                    <field name="partner_ids" widget="many2many" attrs="{'invisible': [('sent', '=', True)]}" domain="[('firebase_registration_ids', '!=', False)]"/>
+                    <field name="read_ids" widget="one2many" attrs="{'invisible': [('sent', '=', False)]}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="firebase_notification_tree">
+        <field name="name">firebase.notification.tree</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <tree default_order="send_date">
+                <field name="send_date"/>
+                <field name="title"/>
+                <field name="body"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="firebase_notification_read_tree">
+        <field name="name">firebase.notification.partner.read.tree</field>
+        <field name="model">firebase.notification.partner.read</field>
+        <field name="arch" type="xml">
+            <tree default_order="read_date">
+                <field name="opened"/>
+                <field name="read_date"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="firebase_notification_search">
+        <field name="name">firebase.notification.search</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="title"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_firebase_notification" model="ir.actions.act_window">
+        <field name="name">Firebase Notifications</field>
+        <field name="res_model">firebase.notification</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_firebase_notification"
+        name="Notifications"
+        parent="sales_team.menu_base_partner"
+        groups="sales_team.group_sale_manager"
+        sequence="2"/>
+
+    <menuitem id="menu_firebase_send"
+              name="Send"
+              parent="firebase_connector.menu_firebase_notification"
+              action="firebase_connector.action_firebase_notification"
+              groups="sales_team.group_sale_manager"/>
+
+</odoo>

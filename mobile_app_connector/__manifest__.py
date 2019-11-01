@@ -41,6 +41,7 @@
         'base_geolocalize',
         'firebase_connector',
         'sms_sponsorship',
+        'partner_communication'
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
@@ -50,6 +51,7 @@
         'security/access_rules.xml',
         'data/tile_type_data.xml',
         'data/default_hub.xml',
+        'data/default_banner.xml',
         'data/prayer_tile.xml',
         'data/template_mail_user_not_found.xml',
         'data/ir_cron.xml',
@@ -66,6 +68,9 @@
         'views/app_feedback_view.xml',
         'views/firebase_registration.xml',
         'templates/registration_form.xml',
+        'views/firebase_notification.xml',
+        'views/communication_job.xml',
+        'views/communication_config.xml',
     ],
     'demo': [
     ],

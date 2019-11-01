@@ -18,18 +18,9 @@ class TestThankYouLetters(SavepointCase):
         super(TestThankYouLetters, cls).setUpClass()
         cls.asus = cls.env.ref('base.res_partner_1')
 
-        cls.config50 = cls.env['thankyou.config'].create({
-            'min_donation_amount': 50.0,
-            'send_mode': 'auto_digital_only',
-        })
-        cls.config100 = cls.env['thankyou.config'].create({
-            'min_donation_amount': 100.0,
-            'send_mode': 'physical',
-        })
-        cls.config500 = cls.env['thankyou.config'].create({
-            'min_donation_amount': 500.0,
-            'send_mode': 'physical',
-        })
+        cls.config50 = cls.env.ref('thankyou_letters.thankyou_config_50')
+        cls.config100 = cls.env.ref('thankyou_letters.thankyou_config_100')
+        cls.config500 = cls.env.ref('thankyou_letters.thankyou_config_500')
 
     def test_for_donation_amount(self):
         """

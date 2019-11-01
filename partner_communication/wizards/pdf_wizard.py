@@ -28,7 +28,7 @@ class PdfPreviewWizard(models.TransientModel):
     _name = 'partner.communication.pdf.wizard'
 
     communication_id = fields.Many2one(
-        'partner.communication.job', required=True)
+        'partner.communication.job', required=True, ondelete='cascade')
     preview = fields.Binary(compute='_compute_pdf')
     state = fields.Selection(related='communication_id.send_mode')
     send_state = fields.Selection(related='communication_id.state')
