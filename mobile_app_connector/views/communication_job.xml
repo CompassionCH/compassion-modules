@@ -11,15 +11,15 @@
                         <group>
                             <field name="mobile_notification_send" />
                         </group>
-                        <group attrs="{'invisible': ['|', ('mobile_notification_send','=', False), ('mobile_notification', '!=', False)]}">
+                        <group attrs="{'invisible': ['|', ('mobile_notification_send','=', False), ('mobile_notification_id', '!=', False)]}">
                             <field name="mobile_notification_auto_send" attrs="{'required': [('mobile_notification_send','=', True), ('firebase_registration_exists','!=', False)]}"/>
                             <field name="mobile_notification_title" attrs="{'required': [('mobile_notification_send','=', True), ('firebase_registration_exists','!=', False)]}"/>
                             <field name="mobile_notification_body" attrs="{'required': [('mobile_notification_send','=', True), ('firebase_registration_exists','!=', False)]}"/>
                             <field name="mobile_notification_destination" attrs="{'required': [('mobile_notification_send','=', True), ('firebase_registration_exists','!=', False)]}"/>
                             <field name="mobile_notification_topic" attrs="{'required': [('mobile_notification_send','=', True), ('firebase_registration_exists','!=', False)]}"/>
                         </group>
-                        <group attrs="{'invisible': ['|', ('mobile_notification_send','=', False), ('mobile_notification', '=', False)]}">
-                            <field name="mobile_notification" />
+                        <group attrs="{'invisible': ['|', ('mobile_notification_send','=', False), ('mobile_notification_id', '=', False)]}">
+                            <field name="mobile_notification_id" />
                         </group>
                     </page>
                 </notebook>

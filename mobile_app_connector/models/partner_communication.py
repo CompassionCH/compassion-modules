@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, _, api
+from odoo import models, fields, api
 
 
 class CommunicationJob(models.Model):
@@ -26,7 +26,7 @@ class CommunicationJob(models.Model):
         ('spam', "None (bypass user's preferences)")
     ], "Topic", default='general_notification')
 
-    mobile_notification = fields.Many2one("firebase.notification")
+    mobile_notification_id = fields.Many2one("firebase.notification")
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
@@ -44,28 +44,32 @@ class CommunicationJob(models.Model):
 
         return super(CommunicationJob, self)._get_default_vals(vals, default_vals)
 
-    @api.model
+    @api.multi
     def send(self):
         """ Create a mobile notification when requested """
+        jobs = self.filtered(lambda j: j.state == 'pending')\
+            .filtered('mobile_notification_send')\
+            .filtered('firebase_registration_exists')
+        res = super(CommunicationJob, self).send()
 
-        if self.mobile_notification_send:
-            mobile_notif = self.env["firebase.notification"].create({
-                'title': self.mobile_notification_title,
-                'body': self.mobile_notification_body,
-                'destination': self.mobile_notification_destination,
-                'topic': self.mobile_notification_topic,
+        for job in jobs:
+            mobile_notif = job.env["firebase.notification"].create({
+                'title': job.mobile_notification_title,
+                'body': job.mobile_notification_body,
+                'destination': job.mobile_notification_destination,
+                'topic': job.mobile_notification_topic,
+                'partner_ids': [(4, job.partner_id.id)]
             })
-            mobile_notif.partner_ids = self.partner_id
-            self.mobile_notification = mobile_notif
+            job.mobile_notification_id = mobile_notif
 
-            if self.mobile_notification_auto_send:
-                self.mobile_notification.send()
+            if job.mobile_notification_auto_send:
+                job.mobile_notification_id.send()
 
-        return super(CommunicationJob, self).send()
+        return res
 
     @api.multi
     def unlink(self):
-        self.mobile_notification.unlink()
+        self.mapped('mobile_notification_id').filtered(lambda n: not n.sent).unlink()
         return super(CommunicationJob, self).unlink()
 
     @api.multi
@@ -78,6 +82,3 @@ class CommunicationJob(models.Model):
         for job in self:
             job.firebase_registration_exists = \
                 job.partner_id and len(job.partner_id.firebase_registration_ids) > 0
-
-            if not job.firebase_registration_exists:
-                job.mobile_notification_send = False

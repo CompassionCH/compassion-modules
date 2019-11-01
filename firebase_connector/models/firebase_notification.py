@@ -112,8 +112,9 @@ class FirebaseNotification(models.Model):
             ('sent', '=', False),
             ('send_date', '<', dt)
         ]).send()
-        
+
         return True
+
 
 class FirebaseNotificationPartnerRead(models.Model):
     """
@@ -121,7 +122,7 @@ class FirebaseNotificationPartnerRead(models.Model):
     """
     _name = "firebase.notification.partner.read"
     _description = "Link between partner and notifications read status"
-    
+
     partner_id = fields.Many2one('res.partner',
                                  'Partner',
                                  ondelete='cascade',
