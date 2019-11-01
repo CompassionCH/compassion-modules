@@ -44,4 +44,4 @@ class ChildHoldWizard(models.TransientModel):
             return super(ChildHoldWizard,
                          self.with_context(async_mode=False)).send()
         else:
-            return super(ChildHoldWizard)
+            return super(ChildHoldWizard, self).send()
