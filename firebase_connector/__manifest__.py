@@ -35,7 +35,7 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': [],
+    'depends': ['sales_team'],
     'external_dependencies': {
         'python': ['firebase_admin'],
     },
