@@ -216,9 +216,11 @@ class PDFCreator
     */
     private function CompleteAndWritePDF($pdf, $pdf_name)
     {
-        // ADD Missing overflows
-        while (!empty($this->overflowPage)) {
-            $this->InsertOverflowPages($pdf);
+        // ADD Missing overflows (if we can insert a FRONT page)
+        if (!empty($this->overflowPage) && $pdf->PageNo() % 2 == 0) {
+            while (!empty($this->overflowPage)) {
+                $this->InsertOverflowPages($pdf);
+            }
         }
 
         // ADD MISSING TEMPLATES
@@ -226,6 +228,11 @@ class PDFCreator
         {
             $headerOnLastPage = $pdf->MyAddPage();
             $this->InsertImages($pdf, $this->utils->GetTemplateForPageNo($pdf->PageNo()));
+        }
+
+        // Add remaining overflow (in case we didn't have a FRONT page prior to remaining template pages)
+        while (!empty($this->overflowPage)) {
+            $this->InsertOverflowPages($pdf);
         }
 
         // ADD REMAINING IMAGES
