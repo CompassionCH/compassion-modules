@@ -13,7 +13,7 @@ class Header extends PositionedObject
 
     function __construct($filename, $minX, $minY, $maxX, $maxY, $height=TemplateUtils::DEFAULT_CELL_HEIGHT)
     {
-        $this->text = file_get_contents($filename);
+        $this->text = utf8_decode(file_get_contents($filename));
         $this->height = $height;
 
         parent::__construct($minX, $minY, $maxX, $maxY);

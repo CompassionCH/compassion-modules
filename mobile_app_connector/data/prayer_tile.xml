@@ -5,6 +5,7 @@
             <field name="name">Strong friendships</field>
             <field name="subtype_id" ref="tile_subtype_pr1"/>
             <field name="mode">many</field>
+            <field name="active" eval="False"/>
             <field name="visibility">private</field>
             <field name="body">Pray for ${ctx['objects'].preferred_name} to make strong friendships</field>
             <field name="prayer_title">Pray for ${ctx['objects'].preferred_name} to make strong friendships</field>
