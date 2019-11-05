@@ -33,7 +33,8 @@ class PartnerCommunication(models.Model):
         domain=[('type', '=', 'sentence')])
     success_sentence = fields.Text(related='success_sentence_id.body_text')
     add_success_story = fields.Boolean(related='config_id.add_success_story')
-    amount = fields.Float(string='Amount', compute='_compute_donation_amount')# store=True)
+    amount = fields.Float(string='Amount', compute='_compute_donation_amount',
+                          store=True)
 
     @api.multi
     def _compute_donation_amount(self):
@@ -59,8 +60,6 @@ class PartnerCommunication(models.Model):
             'print_subject', 'print_header', 'show_signature'])
         return super(PartnerCommunication, self)._get_default_vals(
             vals, default_vals)
-
-
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
