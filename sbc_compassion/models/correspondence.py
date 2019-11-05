@@ -563,7 +563,7 @@ class Correspondence(models.Model):
                 # If not, it is considered as a picture attachment.
                 if i.index > 1:
                     text = ''
-                    if len(self.page_ids) >= i.index:
+                    if len(self.page_ids) >= i.index + 1:
                         text = getattr(self.page_ids[i.index], source, '')
                     if len(text.strip()) < 5:
                         images.append(pages.pop(i.index - len(images)))
