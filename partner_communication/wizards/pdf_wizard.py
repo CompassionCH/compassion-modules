@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from wand.image import Image
 except ImportError:
-    _logger.error('Please install wand to use PDF Previews')
+    _logger.warning('Please install wand to use PDF Previews')
 
 
 class PdfPreviewWizard(models.TransientModel):

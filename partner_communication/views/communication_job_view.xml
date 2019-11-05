@@ -24,8 +24,8 @@
                             <field name="user_id"/>
                             <field name="partner_id"/>
                             <field name="email_to"/>
-                            <field name="partner_phone" widget="phone_communication"/>
-                            <field name="partner_mobile" widget="phone_communication"/>
+                            <field name="partner_phone" widget="phone"/>
+                            <field name="partner_mobile" widget="phone"/>
                         </group>
                         <group>
                             <field name="sent_date" readonly="1"/>
@@ -48,7 +48,7 @@
                     </group>
                     <group>
                         <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
-                        <field name="body_html" widget="text_ckeditor4"/>
+                        <field name="body_html"/>
                     </group>
                     <group>
                         <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />

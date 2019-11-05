@@ -12,7 +12,6 @@ import logging
 import threading
 from html.parser import HTMLParser
 
-from PyPDF2 import PdfFileWriter, PdfFileReader
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import white
@@ -22,6 +21,12 @@ from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 testing = tools.config.get('test_enable')
+
+try:
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+except ImportError:
+    logger.warning("Please install PyPDF2 for generating OMR codes in "
+                   "Printed partner communications")
 
 
 class MLStripper(HTMLParser):
@@ -440,9 +445,8 @@ class CommunicationJob(models.Model):
             'view_mode': 'form',
             'res_model': 'partner.communication.call.wizard',
             'context': self.with_context({
-                'click2dial_id': self.partner_id.id,
+                'click2dial_id': self.id,
                 'phone_number': self.partner_phone or self.partner_mobile,
-                'call_name': self.config_id.name,
                 'timestamp': fields.Datetime.now(),
                 'default_communication_id': self.id,
             }).env.context,
@@ -535,9 +539,9 @@ class CommunicationJob(models.Model):
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)
             # only print omr marks on pair pages (recto)
-            if page_number % 2 is 0:
+            if page_number % 2 == 0:
                 is_latest_page = is_latest_document and \
-                                 page_number == latest_omr_page
+                    page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
                 omr_layer = self._build_omr_layer(marks)
                 page.mergePage(omr_layer)

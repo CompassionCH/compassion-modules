@@ -44,13 +44,12 @@
         'partner_firstname'  # OCA/partner-contact
     ],
     'external_dependencies': {
-        'python': ['phonenumbers', 'PyPDF2']
+        'python': ['phonenumbers', 'PyPDF2', 'wand']
     },
     'data': [
         'security/ir.model.access.csv',
         'security/communication_job_security.xml',
         'report/a4_no_margin.xml',
-        'views/partner_communication.xml',
         'views/communication_job_view.xml',
         'views/communication_config_view.xml',
         'views/call_wizard_view.xml',

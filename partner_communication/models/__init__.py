@@ -18,3 +18,4 @@ from . import crm_phonecall
 from . import ir_attachment
 from . import mail_template
 from . import report_with_omr
+from . import phone_common

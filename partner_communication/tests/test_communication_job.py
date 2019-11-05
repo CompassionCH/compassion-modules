@@ -61,9 +61,7 @@ class TestCommunicationJob(TransactionCase):
         call_answer = comm.call()
         self.assertEqual(call_answer['context']['phone_number'],
                          '+32 10 588 558')
-        self.assertEqual(call_answer['context']['call_name'],
-                         'Default communication')
-        self.assertEqual(call_answer['context']['click2dial_id'], 9)
+        self.assertEqual(call_answer['context']['click2dial_id'], comm.id)
 
     def test_config(self):
         self.assertEqual(self.config.get_inform_mode(self.partner),

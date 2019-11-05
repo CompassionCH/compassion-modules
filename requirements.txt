@@ -5,3 +5,4 @@ timezonefinder
 Babel
 phonenumbers
 PyPDF2
+wand
