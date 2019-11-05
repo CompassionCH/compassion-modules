@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api, _
+from odoo import api, models, fields, _
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -40,4 +40,4 @@ class ChildHoldWizard(models.TransientModel):
             return super(ChildHoldWizard,
                          self.with_context(async_mode=False)).send()
         else:
-            return super(ChildHoldWizard, self).send()
+            return super().send()

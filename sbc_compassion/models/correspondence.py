@@ -50,7 +50,7 @@ class Correspondence(models.Model):
     """
     _name = 'correspondence'
     _inherit = [
-        'mail.thread', 'ir.needaction_mixin', 'correspondence.metadata',
+        'mail.thread', 'mail.activity.mixin', 'correspondence.metadata',
         'translatable.model'
     ]
     _description = 'Letter'
