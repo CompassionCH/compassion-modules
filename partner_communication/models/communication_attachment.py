@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -56,14 +56,13 @@ class CommunicationAttachment(models.Model):
             })
             vals['attachment_id'] = attachment.id
 
-        res = super(CommunicationAttachment, self).create(vals)
+        res = super().create(vals)
         if new_record:
             res.attachment_id.res_id = res.communication_id.id
         return res
 
     @api.multi
     def print_attachments(self):
-        report_obj = self.env['report']
         total_attachment_with_omr = len(self.filtered(
             'attachment_id.enable_omr'
         ))
@@ -82,7 +81,8 @@ class CommunicationAttachment(models.Model):
             else:
                 to_print = attachment.data
 
-            report = report_obj._get_report_from_name(attachment.report_name)
+            report = self.env['ir.actions.report']\
+                ._get_report_from_name(attachment.report_name)
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer']
             if behaviour['action'] != 'client' and printer:

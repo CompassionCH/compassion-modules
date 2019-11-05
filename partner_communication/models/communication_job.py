@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -8,14 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import StringIO
+from io import StringIO, BytesIO
 import logging
 import threading
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
-from odoo.addons.base_phone import fields as phone_fields
-
-from pyPdf import PdfFileReader, PdfFileWriter
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import white
@@ -26,11 +22,18 @@ from odoo.exceptions import UserError
 logger = logging.getLogger(__name__)
 testing = tools.config.get('test_enable')
 
+try:
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+except ImportError:
+    logger.warning("Please install PyPDF2 for generating OMR codes in "
+                   "Printed partner communications")
+
 
 class MLStripper(HTMLParser):
     """ Used to remove HTML tags. """
 
     def __init__(self):
+        super().__init__()
         self.reset()
         self.fed = []
 
@@ -61,8 +64,10 @@ class CommunicationJob(models.Model):
     _description = 'Communication Job'
     _rec_name = 'subject'
     _order = 'date desc,sent_date desc'
-    _inherit = ['partner.communication.defaults', 'ir.needaction_mixin',
-                'mail.thread', 'partner.communication.orm.config.abstract']
+    _inherit = ['partner.communication.defaults', 'mail.activity.mixin',
+                'mail.thread', 'partner.communication.orm.config.abstract',
+                'phone.validation.mixin']
+    _phone_name_fields = ['partner_phone', 'partner_mobile']
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -75,8 +80,8 @@ class CommunicationJob(models.Model):
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
         'res.partner', 'Send to', required=True, ondelete='cascade')
-    partner_phone = phone_fields.Phone(related='partner_id.phone')
-    partner_mobile = phone_fields.Phone(related='partner_id.mobile')
+    partner_phone = fields.Char(related='partner_id.phone')
+    partner_mobile = fields.Char(related='partner_id.mobile')
     country_id = fields.Many2one(related='partner_id.country_id')
     parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
@@ -133,12 +138,11 @@ class CommunicationJob(models.Model):
         if not skip_count:
             for record in self.filtered('report_id'):
                 if record.send_mode == 'physical':
-                    report_obj = record.env['report'].with_context(
+                    report = record.report_id.with_context(
                         lang=record.partner_id.lang,
                         must_skip_send_to_printer=True)
-                    pdf_str = report_obj.get_pdf(record.ids,
-                                                 record.report_id.report_name)
-                    pdf = PdfFileReader(StringIO.StringIO(pdf_str))
+                    pdf_str = report.render_qweb_pdf(record.ids)
+                    pdf = PdfFileReader(BytesIO(pdf_str[0]))
                     record.pdf_page_count = pdf.getNumPages()
 
     def _inverse_ir_attachments(self):
@@ -201,15 +205,14 @@ class CommunicationJob(models.Model):
         else:
             vals['object_ids'] = str(vals['partner_id'])
 
-        same_job_search = [
-            ('partner_id', '=', vals.get('partner_id')),
-            ('config_id', '=', vals.get('config_id')),
-            ('config_id', '!=',
-             self.env.ref(
-                          'partner_communication.default_communication'
-             ).id),
-            ('state', 'in', ('call', 'pending'))
-        ] + self.env.context.get('same_job_search', [])
+        same_job_search = [('partner_id', '=', vals.get('partner_id')),
+                           ('config_id', '=', vals.get('config_id')),
+                           ('config_id', '!=',
+                            self.env.ref(
+                                'partner_communication.default_communication'
+                            ).id),
+                           ('state', 'in', ('call', 'pending'))
+                           ] + self.env.context.get('same_job_search', [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + ',' + vals['object_ids']
@@ -217,7 +220,7 @@ class CommunicationJob(models.Model):
             return job
 
         self._get_default_vals(vals)
-        job = super(CommunicationJob, self).create(vals)
+        job = super().create(vals)
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
@@ -295,7 +298,7 @@ class CommunicationJob(models.Model):
         elif object_ids:
             vals['object_ids'] = str(object_ids)
 
-        super(CommunicationJob, self).write(vals)
+        super().write(vals)
 
         if vals.get('body_html') or vals.get('send_mode') == 'physical':
             self.count_pdf_page()
@@ -394,7 +397,7 @@ class CommunicationJob(models.Model):
             # set default fields
             default_vals = {'config_id': self.config_id.id}
             self._get_default_vals(default_vals)
-            for key, val in default_vals.iteritems():
+            for key, val in list(default_vals.items()):
                 if key.endswith('_id'):
                     val = getattr(self, key).browse(val)
                 setattr(self, key, val)
@@ -413,7 +416,7 @@ class CommunicationJob(models.Model):
 
     @api.multi
     def open_related(self):
-        object_ids = map(int, self.object_ids.split(','))
+        object_ids = list(map(int, self.object_ids.split(',')))
         action = {
             'name': _('Related objects'),
             'type': 'ir.actions.act_window',
@@ -442,9 +445,8 @@ class CommunicationJob(models.Model):
             'view_mode': 'form',
             'res_model': 'partner.communication.call.wizard',
             'context': self.with_context({
-                'click2dial_id': self.partner_id.id,
+                'click2dial_id': self.id,
                 'phone_number': self.partner_phone or self.partner_mobile,
-                'call_name': self.config_id.name,
                 'timestamp': fields.Datetime.now(),
                 'default_communication_id': self.id,
             }).env.context,
@@ -467,7 +469,7 @@ class CommunicationJob(models.Model):
         object_ids = list()
         object_id_strings = self.mapped('object_ids')
         for id_strings in object_id_strings:
-            object_ids += map(int, id_strings.split(','))
+            object_ids += list(map(int, id_strings.split(',')))
         return self.env[model[0]].browse(set(object_ids))
 
     @api.multi
@@ -481,8 +483,8 @@ class CommunicationJob(models.Model):
             if job.config_id.attachments_function:
                 binaries = getattr(
                     job.with_context(lang=job.partner_id.lang),
-                    job.config_id.attachments_function, lambda: dict())()
-                for name, data in binaries.iteritems():
+                    job.config_id.attachments_function, dict())()
+                for name, data in list(binaries.items()):
                     attachment_obj.create({
                         'name': name,
                         'communication_id': job.id,
@@ -518,7 +520,7 @@ class CommunicationJob(models.Model):
         #   pypdf-how-to-write-a-pdf-to-memory/
         self.ensure_one()
 
-        pdf_buffer = StringIO.StringIO()
+        pdf_buffer = StringIO()
         pdf_buffer.write(pdf_data)
 
         existing_pdf = PdfFileReader(pdf_buffer)
@@ -537,7 +539,7 @@ class CommunicationJob(models.Model):
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)
             # only print omr marks on pair pages (recto)
-            if page_number % 2 is 0:
+            if page_number % 2 == 0:
                 is_latest_page = is_latest_document and \
                     page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
@@ -545,7 +547,7 @@ class CommunicationJob(models.Model):
                 page.mergePage(omr_layer)
             output.addPage(page)
 
-        out_buffer = StringIO.StringIO()
+        out_buffer = StringIO()
         output.write(out_buffer)
 
         return out_buffer.getvalue()
@@ -574,12 +576,13 @@ class CommunicationJob(models.Model):
         mark_width = 6.5 * mm
         marks_height = (len(marks) - 1) * mark_y_spacing
 
-        logger.info('Mailer DS-75i OMR Settings: 1={} 2={}'.format(
-            (297 * mm - top_mark_y) / mm,
-            (top_mark_x + mark_width / 2) / mm + 0.5
-        ))
+        logger.info(
+            'Mailer DS-75i OMR Settings: 1=%s 2=%s',
+            str((297 * mm - top_mark_y) / mm),
+            str((top_mark_x + mark_width / 2) / mm + 0.5)
+        )
 
-        omr_buffer = StringIO.StringIO()
+        omr_buffer = BytesIO()
         omr_canvas = Canvas(omr_buffer)
         omr_canvas.setLineWidth(0.2 * mm)
 
@@ -660,26 +663,25 @@ class CommunicationJob(models.Model):
         return final_state
 
     def _print_report(self):
-        report_obj = self.env['report']
-
+        name = self.env.user.firstname or self.env.user.name
         for job in self:
-            # Get pdf should directly send it to the printer if report
-            # is correctly configured.
-            to_print = report_obj.with_context(
-                print_name=self.env.user.firstname[:3] + ' ' + (
-                    job.subject or ''),
+            report = job.report_id.with_context(
+                print_name=name[:3] + ' ' + (job.subject or ''),
                 must_skip_send_to_printer=True,
                 lang=job.partner_id.lang
-            ).get_pdf(job.ids, job.report_id.report_name)
+            )
+            # Get pdf should directly send it to the printer if report
+            # is correctly configured.
+            to_print = report.render_qweb_pdf(job.ids)
 
             # Print letter
             report = job.report_id
-            behaviour = report.behaviour()[report.id]
+            behaviour = report.behaviour()
             printer = behaviour['printer'] \
                 .with_context(lang=job.partner_id.lang)
             if behaviour['action'] != 'client' and printer:
                 printer.print_document(
-                    report.report_name, to_print, report.report_type)
+                    report.report_name, to_print[0], format=report.report_type)
 
             # Print attachments
             job.attachment_ids.print_attachments()
@@ -691,7 +693,7 @@ class CommunicationJob(models.Model):
             if not testing:
                 # Commit to avoid invalid state if process fails
                 self.env.cr.commit()  # pylint: disable=invalid-commit
-        return True
+                return True
 
     @api.model
     def _needaction_domain_get(self):

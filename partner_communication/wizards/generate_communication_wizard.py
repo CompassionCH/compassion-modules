@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
@@ -8,9 +8,19 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+import base64
+
 from odoo import models, api, fields, _
 from odoo.tools import safe_eval
 from odoo.addons.queue_job.job import job
+
+_logger = logging.getLogger(__name__)
+
+try:
+    from wand.image import Image
+except ImportError:
+    _logger.warning('Please install wand to use PDF Previews')
 
 
 class GenerateCommunicationWizard(models.TransientModel):
@@ -36,11 +46,13 @@ class GenerateCommunicationWizard(models.TransientModel):
     subject = fields.Char()
     body_html = fields.Html()
     report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
-        domain=[('model', '=', 'partner.communication.job')]
+        'ir.actions.report', 'Letter template',
+        domain=[('model', '=', 'partner.communication.job')],
+        default=lambda s: s._default_report()
     )
     language_added_in_domain = fields.Boolean()
-    preview = fields.Html(readonly=True)
+    preview_email = fields.Html(readonly=True)
+    preview_pdf = fields.Binary(readonly=True)
     communication_ids = fields.Many2many(
         'partner.communication.job', 'partner_communication_generation_rel',
         string='Communications')
@@ -50,8 +62,33 @@ class GenerateCommunicationWizard(models.TransientModel):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.model
+    def _compute_pdf_preview(self, res_preview):
+        report = self.report_id.with_context(
+            lang=self.partner_ids[0].lang, must_skip_send_to_printer=True)
+        data = report.render_qweb_pdf(res_preview.ids)
+        with Image(blob=data[0]) as pdf_image:
+            preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
+        return preview
+
+    @api.model
+    def _default_report(self):
+        return self.env['ir.actions.report'].search([])[0]
+
+    @api.model
+    def _compute_email_preview(
+            self, res_preview, email_template_id, comm_model):
+        partner = self.partner_ids[0]
+        template = email_template_id.with_context(lang=partner.lang)
+        model = template.model or comm_model
+        preview_email = template.render_template(
+            res_preview.body_html, model, res_preview.ids)[res_preview.id]
+        return preview_email
+
+    @api.model
     def _default_domain(self):
-        return "[('id', 'in', {})]".format(self._default_partners())
+        default_partners = self._default_partners()
+        return "[]" if len(default_partners) == 0 \
+            else f"[('id', 'in', {default_partners})]"
 
     @api.model
     def _default_partners(self):
@@ -81,8 +118,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def onchange_domain(self):
         if self.force_language and not self.language_added_in_domain:
             domain = self.selection_domain or '[]'
-            domain = domain[:-1] + ", ('lang', '=', '{}')]".format(
-                self.force_language)
+            domain = domain[:-1] + f", ('lang', '=', '{self.force_language}')]"
             self.selection_domain = domain.replace('[, ', '[')
             self.language_added_in_domain = True
         if self.selection_domain:
@@ -94,6 +130,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.onchange('model_id')
     def onchange_model_id(self):
         if self.model_id:
+            self.report_id = self.model_id.report_id
             self.body_html = self.model_id.email_template_id.body_html
             self.subject = self.model_id.email_template_id.subject
             send_mode = self.model_id.send_mode.replace('auto_', '')
@@ -106,15 +143,25 @@ class GenerateCommunicationWizard(models.TransientModel):
         config = self.model_id or self.env.ref(
             'partner_communication.default_communication')
         partner = self.partner_ids[0]
-        template = config.email_template_id.with_context(lang=partner.lang)
-        model = template.model or comm_model
         res_preview = self.env[comm_model].create({
             'partner_id': partner.id,
             'config_id': config.id,
             'object_ids': self.env.context.get('object_ids', partner.id),
+            'auto_send': False,
         })
-        self.preview = template.render_template(
-            template.body_html, model, res_preview.ids)[res_preview.id]
+        if self.customize_template:
+            res_preview.body_html = self.body_html
+
+        if self.send_mode == 'physical':
+            self.preview_pdf = self._compute_pdf_preview(res_preview)
+        elif self.send_mode == 'digital':
+            self.preview_email = self._compute_email_preview(
+                res_preview, config.email_template_id, comm_model)
+        elif self.send_mode == 'both':
+            self.preview_email = self._compute_email_preview(
+                res_preview, config.email_template_id, comm_model)
+            self.preview_pdf = self._compute_pdf_preview(res_preview)
+
         res_preview.unlink()
         self.state = 'preview'
         return self.reload()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,22 +29,27 @@
 # pylint: disable=C8101
 {
     'name': 'Partner Communication',
-    'version': '10.0.1.1.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_phone', 'base_report_to_printer', 'hr', 'contacts',
-                'compassion_dashboard', 'queue_job', 'utm', 'web_ckeditor4',
-                'report'],
+    'depends': [
+        'crm_phone',    # OCA/connector-telephony
+        'base_report_to_printer',  # OCA/report-print-send
+        'hr',
+        'contacts',
+        'queue_job',    # OCA/queue
+        'utm',
+        'partner_firstname'  # OCA/partner-contact
+    ],
     'external_dependencies': {
-        'python': ['phonenumbers', 'pyPdf']
+        'python': ['phonenumbers', 'PyPDF2', 'wand']
     },
     'data': [
         'security/ir.model.access.csv',
         'security/communication_job_security.xml',
         'report/a4_no_margin.xml',
-        'views/partner_communication.xml',
         'views/communication_job_view.xml',
         'views/communication_config_view.xml',
         'views/call_wizard_view.xml',
@@ -53,12 +57,11 @@
         'views/change_text_wizard_view.xml',
         'views/pdf_wizard_view.xml',
         'views/generate_communication_wizard_view.xml',
-        'views/communication_dashboard.xml',
         'views/crm_phone_view.xml',
         'data/default_communication.xml'
     ],
-    'qweb': ["static/src/xml/communication_dashboard.xml"],
+    'qweb': [],
     'demo': ["demo/demo_data.xml"],
-    'installable': False,
+    'installable': True,
     'auto_install': False
 }
