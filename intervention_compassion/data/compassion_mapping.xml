@@ -24,7 +24,7 @@
         <field name="name">Hold Creation</field>
     </record>
     <record id="mapping_hold_update" model="compassion.mapping">
-        <field name="model_id" ref="model_compassion_intervention_hold_wizard"/>
+        <field name="model_id" ref="model_compassion_intervention"/>
         <field name="name">Hold Update</field>
     </record>
     <record id="mapping_hold_cancel" model="compassion.mapping">

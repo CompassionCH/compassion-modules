@@ -76,7 +76,7 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldUpdate</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="mapping_id" ref="mapping_hold_update"/>
             <field name="description">This will update a hold for Interventions.</field>
             <field name="connect_service">interventions/${object.intervention_id}/holds/${object.hold_id}</field>
             <field name="connect_outgoing_wrapper">InterventionHoldList</field>

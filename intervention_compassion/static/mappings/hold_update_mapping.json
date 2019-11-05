@@ -1,6 +1,6 @@
 {
   "name": "Hold Update",
-  "model": "compassion.intervention.hold.wizard",
+  "model": "compassion.intervention",
   "mapping": {
     "Intervention_ID": {
       "field": "intervention_id"
