@@ -33,6 +33,20 @@ class PartnerCommunication(models.Model):
         domain=[('type', '=', 'sentence')])
     success_sentence = fields.Text(related='success_sentence_id.body_text')
     add_success_story = fields.Boolean(related='config_id.add_success_story')
+    amount = fields.Float(string='Amount', compute='_compute_donation_amount')# store=True)
+
+    @api.multi
+    def _compute_donation_amount(self):
+        for elem in self:
+            object_ids = map(int, elem.object_ids.split(','))
+            model = elem.config_id.model
+            amount_invoice = 0
+            for invoice_line_id in object_ids:
+                if model == 'account.invoice.line':
+                    invoice_line = self.env['account.invoice.line']\
+                        .search([('id', '=', invoice_line_id)])
+                    amount_invoice += invoice_line.price_subtotal
+            elem.amount = amount_invoice
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -45,6 +59,8 @@ class PartnerCommunication(models.Model):
             'print_subject', 'print_header', 'show_signature'])
         return super(PartnerCommunication, self)._get_default_vals(
             vals, default_vals)
+
+
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

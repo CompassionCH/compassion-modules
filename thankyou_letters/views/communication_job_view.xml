@@ -27,6 +27,31 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="communication_job_tree_thankyou_donation_amount">
+        <field name="name">communication.job.tree.thankyou.donation.amount</field>
+        <field name="model">partner.communication.job</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="config_id"/>
+                <field name="partner_id"/>
+                <field name="send_mode"/>
+                <field name="email_to"/>
+                <field name="subject"/>
+                <field name="success_story_id"/>
+                <field name="success_sentence_id"/>
+                <field name="amount"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <field name="sent_date"/>
+                <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
+                <button name="call" string="Call" type="object" icon="fa-phone" states='call,pending'/>
+                <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
+                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='call,pending'/>
+            </tree>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="communication_config_form_thankyou">
         <field name="name">communication.config.form.thankyou</field>
         <field name="model">partner.communication.config</field>
@@ -50,10 +75,17 @@
         <field name="res_model">partner.communication.job</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"/>
         <field name="domain">[('config_id.model', '=', 'account.invoice.line')]</field>
-        <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id': uid}</field>
+        <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id':
+            uid}
+        </field>
     </record>
 
     <!-- add Menu in Sales-->
-    <menuitem id="menu_donation_general" name="General Donations" parent="menu_donation_sales" action="action_thank_you"/>
+    <menuitem id="menu_donation_general"
+              name="General Donations"
+              parent="menu_donation_sales"
+              action="action_thank_you"/>
 </odoo>
