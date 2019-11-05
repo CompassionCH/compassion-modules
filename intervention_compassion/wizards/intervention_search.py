@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import sys
+import re
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -185,17 +186,24 @@ class InterventionSearch(models.TransientModel):
             'target': 'current',
         }
 
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        data = super().data_to_json(mapping_name)
+        return {'InterventionQuery': data}
+
     @api.model
     def json_to_data(self, json, mapping_name=None):
-        data = super().json_to_data(json, mapping_name)
-        data_copy = data.copy()
-        data.clear()
-        data['InterventionQuery'] = data_copy
-        return data
+        for json_data in json['InterventionQueryResponseList']:
+            if ',' in json_data["InterventionSubCategory_Name"]:
+                # Split only if a comma is outside of parenthesis (to handle the case of Sanitation subcategory)
+                if re.search(r",\s*(?![^()]*\))", json_data["InterventionSubCategory_Name"]) is not None:
+                    json_data["InterventionSubCategory_Name"] = \
+                        json_data['InterventionSubCategory_Name'].split(',')
+                else:
+                    json_data["InterventionSubCategory_Name"] = \
+                        json_data["InterventionSubCategory_Name"].replace(",", "")
 
-    @api.multi
-    def data_to_json(self, mapped_name=None):
-        odoo_data = super().data_to_json(mapped_name)
+        odoo_data = super().json_to_data(json, mapping_name)
         if 'intervention_ids' in odoo_data:
             intervention_obj = self.env['compassion.global.intervention']
             interventions = list()

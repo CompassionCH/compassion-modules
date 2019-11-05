@@ -9,7 +9,7 @@
       "field": "intervention_id.hold_id"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

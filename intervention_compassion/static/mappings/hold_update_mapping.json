@@ -28,7 +28,7 @@
       "field": "service_level"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

@@ -65,22 +65,30 @@ class GlobalIntervention(models.TransientModel):
     #                              Mapping METHOD                            #
     ##########################################################################
 
-    @api.multi
-    def data_to_json(self, mapping_name=None):
-        odoo_data = super().data_to_json(mapping_name)
-        if 'category_id' in odoo_data and 'type' in odoo_data:
-            category_obj = self.env['compassion.intervention.category']
-            selected_category = category_obj.browse(odoo_data['category_id'])
-            category = category_obj.search([
-                ('name', '=', selected_category.name),
-                ('type', '=', odoo_data['type'])
-            ])
-            odoo_data['category_id'] = category.id
-            del odoo_data['type']
-        return odoo_data
-
     @api.model
     def json_to_data(self, json, mapping_name=None):
-        if 'ICP' in json:
-            json['ICP'] = json['ICP'].split("; ")
-        return super().json_to_data(json, mapping_name)
+        country_codes = self.env['compassion.field.office'].search([]).mapped('country_code')
+        data_array = list()
+        for json_data in json:
+            if json_data['GlobalPartner_ID'] and json_data['GlobalPartner_ID'] not in country_codes:
+                del json_data['GlobalPartner_ID']
+            data = super().json_to_data(json_data, mapping_name)
+            data_array.append(data)
+        for data in data_array:
+            if 'category_id' in data and 'type' in data:
+                category_obj = self.env['compassion.intervention.category']
+                selected_category = category_obj.browse(data['category_id'])
+                category = category_obj.search([
+                    ('name', '=', selected_category.name),
+                    ('type', '=', data['type'])
+                ])
+                data['category_id'] = category.id
+                del data['type']
+        return data_array
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        data = super().data_to_json(mapping_name)
+        if 'ICP' in data:
+            data['ICP'] = data['ICP'].split("; ")
+        return data

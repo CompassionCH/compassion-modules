@@ -23,7 +23,7 @@
       "search_relational_record": true
     },
     "InterventionSubCategory_Name": {
-      "field": "subcategory_id.name",
+      "field": "subcategory_ids.name",
       "search_relational_record": true
     },
     "ActualDurationInMonthsNbr": {
@@ -347,7 +347,7 @@
       "field": null
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

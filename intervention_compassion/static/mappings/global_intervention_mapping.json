@@ -1,5 +1,5 @@
 {
-  "name": "global intervention",
+  "name": "Compassion Global Intervention",
   "model": "compassion.global.intervention",
   "mapping": {
     "AdditionalMarketingInformation": {
@@ -38,7 +38,7 @@
       "search_relational_record": true
     },
     "InterventionSubCategory_Name": {
-      "field": "subcategory_id.name",
+      "field": "subcategory_ids.name",
       "search_relational_record": true
     },
     "ProposedStartDate": {
@@ -46,6 +46,7 @@
     },
     "ICP_ID": {
       "field": "fcp_ids.fcp_id",
+      "allow_relational_creation": true,
       "search_relational_record": true
     },
     "FieldOffice_ID": {

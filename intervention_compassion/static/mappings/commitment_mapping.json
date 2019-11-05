@@ -16,7 +16,7 @@
       "field": "commit_to_additional_fund"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

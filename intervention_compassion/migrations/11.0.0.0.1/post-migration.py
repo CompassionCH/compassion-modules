@@ -15,4 +15,16 @@ def migrate(env, version):
     if not version:
         return
 
-    env['import.json.mapping'].python_install_mapping()
+    path = 'intervention_compassion/static/mappings/'
+    files = [
+        'commitment_mapping.json',
+        'global_intervention_mapping.json',
+        'global_intervention_search_mapping.json',
+        'hold_create_mapping.json',
+        'hold_cancel_mapping.json',
+        'hold_create_mapping.json',
+        'intervention_mapping.json',
+        'intervention_search_mapping.json']
+
+    load_mappings.load_mapping_files(env.cr, path, files)
+    # env['import.json.mapping'].python_install_mapping()

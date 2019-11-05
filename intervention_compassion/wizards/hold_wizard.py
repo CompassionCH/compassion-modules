@@ -22,7 +22,7 @@ class HoldWizard(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     intervention_id = fields.Many2one(
-        'compassion.intervention', 'Intervention'
+        'compassion.global.intervention', 'Intervention'
     )
     created_intervention_id = fields.Many2one('compassion.intervention')
     hold_amount = fields.Float(required=True)
@@ -43,8 +43,8 @@ class HoldWizard(models.TransientModel):
     @api.multi
     def hold_sent(self, hold_vals):
         """ Called when hold is created """
-        del hold_vals['intervention_id.intervention_id']
-        hold_vals['hold_id'] = hold_vals.pop('intervention_id.hold_id')
+        del hold_vals['intervention_id']
+        hold_vals['hold_id'] = hold_vals.pop('created_intervention_id')
         intervention_vals = self.intervention_id.get_vals()
         intervention_vals.update(hold_vals)
         intervention_vals.update({

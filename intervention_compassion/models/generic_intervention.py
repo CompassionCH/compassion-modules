@@ -37,8 +37,8 @@ class GenericIntervention(models.AbstractModel):
     )
 
     type = fields.Selection(related='category_id.type')
-    subcategory_id = fields.Many2one(
-        'compassion.intervention.subcategory', 'Subcategory', readonly=True
+    subcategory_ids = fields.Many2many(
+        'compassion.inter.subcat', string='Subcategory', readonly=True
     )
     funding_status = fields.Selection('get_funding_statuses', readonly=True)
 
@@ -65,7 +65,7 @@ class GenericIntervention(models.AbstractModel):
         return [
             'name', 'intervention_id', 'field_office_id', 'fcp_ids',
             'description', 'additional_marketing_information', 'category_id',
-            'subcategory_id', 'funding_status', 'is_fo_priority',
+            'subcategory_ids', 'funding_status', 'is_fo_priority',
             'proposed_start_date', 'start_no_later_than', 'estimated_costs',
             'estimated_impacted_beneficiaries', 'remaining_amount_to_raise',
             'pdc_costs', 'total_cost'
@@ -89,7 +89,7 @@ class GenericIntervention(models.AbstractModel):
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
-        rel_fields = ['field_office_id', 'category_id', 'subcategory_id']
+        rel_fields = ['field_office_id', 'category_id', 'subcategory_ids']
         for field in rel_fields:
             if vals.get(field):
                 vals[field] = vals[field][0]

@@ -6,7 +6,7 @@
       "field": "intervention_id.intervention_id"
     },
     "HoldID": {
-      "field": "intervention_id.hold_id"
+      "field": "created_intervention_id.hold_id"
     },
     "ExpirationDate": {
       "field": "expiration_date"
@@ -28,7 +28,7 @@
       "field": "service_level"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "return 'CH'"
+      "to_json_conversion": "'CH'"
     }
   }
 }

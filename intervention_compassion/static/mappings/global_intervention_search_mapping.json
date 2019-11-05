@@ -1,5 +1,5 @@
 {
-  "name": "global intervention search",
+  "name": "Compassion Global Intervention Search",
   "model": "compassion.global.intervention",
   "mapping": {
     "Category": {
@@ -45,7 +45,7 @@
       "field": "remaining_amount_to_raise"
     },
     "SubCategory": {
-      "field": "subcategory_id"
+      "field": "subcategory_ids"
     },
     "SupporterId": {
       "field": null
