@@ -30,7 +30,7 @@ class InterventionMapping(OnrampMapping):
         "InterventionCategory_Name":
             ('category_id.name', 'compassion.intervention.category'),
         "InterventionSubCategory_Name":
-            ('subcategory_id.name', 'compassion.intervention.subcategory'),
+            ('subcategory_id.name', 'compassion.inter.subcat'),
         "ActualDurationInMonthsNbr": 'actual_duration',
         "ActualEndDate": 'end_date',
         "AdditionalMarketingInformation":

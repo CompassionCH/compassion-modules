@@ -1,12 +1,12 @@
 {
   "name": "Hold Cancel",
-  "model": "compassion.intervention.hold.wizard",
+  "model": "compassion.intervention",
   "mapping": {
     "Intervention_ID": {
       "field": "intervention_id"
     },
     "Intervention_HoldID": {
-      "field": "intervention_id.hold_id"
+      "field": "hold_id"
     },
     "GlobalPartner_ID": {
       "to_json_conversion": "'CH'"

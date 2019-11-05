@@ -91,12 +91,13 @@
             <field name="direction">out</field>
             <field name="name">InterventionHoldCancel</field>
             <field name="model">compassion.intervention</field>
-            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="mapping_id" ref="mapping_hold_cancel"/>
             <field name="description">This will cancel a hold for Interventions.</field>
             <field name="connect_service">interventions/holds/release</field>
             <field name="connect_outgoing_wrapper">InterventionHoldCancellationList</field>
             <field name="connect_answer_wrapper">InterventionHoldCancellationResponseList</field>
             <field name="success_method">hold_cancelled</field>
+            <field name="auto_process">1</field>
             <field name="request_type">POST</field>
         </record>
 
