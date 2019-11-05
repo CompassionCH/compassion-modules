@@ -67,10 +67,12 @@ class GlobalIntervention(models.TransientModel):
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
-        country_codes = self.env['compassion.field.office'].search([]).mapped('country_code')
+        country_codes = \
+            self.env['compassion.field.office'].search([]).mapped('country_code')
         data_array = list()
         for json_data in json:
-            if json_data['GlobalPartner_ID'] and json_data['GlobalPartner_ID'] not in country_codes:
+            if json_data['GlobalPartner_ID'] and \
+                    json_data['GlobalPartner_ID'] not in country_codes:
                 del json_data['GlobalPartner_ID']
             data = super().json_to_data(json_data, mapping_name)
             data_array.append(data)

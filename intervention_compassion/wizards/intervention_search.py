@@ -195,8 +195,10 @@ class InterventionSearch(models.TransientModel):
     def json_to_data(self, json, mapping_name=None):
         for json_data in json['InterventionQueryResponseList']:
             if ',' in json_data["InterventionSubCategory_Name"]:
-                # Split only if a comma is outside of parenthesis (to handle the case of Sanitation subcategory)
-                if re.search(r",\s*(?![^()]*\))", json_data["InterventionSubCategory_Name"]) is not None:
+                # Split only if a comma is outside of parenthesis
+                # (to handle the case of Sanitation subcategory)
+                if re.search(r",\s*(?![^()]*\))",
+                             json_data["InterventionSubCategory_Name"]) is not None:
                     json_data["InterventionSubCategory_Name"] = \
                         json_data['InterventionSubCategory_Name'].split(',')
                 else:

@@ -99,5 +99,3 @@ class HoldWizard(models.TransientModel):
         for wizard in self.filtered('intervention_id.type'):
             if 'Ongoing' in wizard.intervention_id.type:
                 wizard.service_level = 'Level 1'
-
-# {"InterventionHoldCancellationList": [{"Intervention_HoldID": "26494", "Intervention_ID": "INT-0000014949", "GlobalPartner_ID": "CH"}]}
