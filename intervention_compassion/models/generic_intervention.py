@@ -89,7 +89,7 @@ class GenericIntervention(models.AbstractModel):
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
-        rel_fields = ['field_office_id', 'category_id', 'subcategory_ids']
+        rel_fields = ['field_office_id', 'category_id']
         for field in rel_fields:
             if vals.get(field):
                 vals[field] = vals[field][0]
@@ -97,6 +97,10 @@ class GenericIntervention(models.AbstractModel):
         fcp_ids = vals.get('fcp_ids')
         if fcp_ids:
             vals['fcp_ids'] = [(6, 0, fcp_ids)]
+
+        subcategory_ids = vals.get('subcategory_ids')
+        if subcategory_ids:
+            vals['subcategory_ids'] = [(6, 0, subcategory_ids)]
 
         del vals['id']
         return vals
