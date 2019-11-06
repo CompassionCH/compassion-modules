@@ -116,7 +116,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     than :py:attr:`file_` (except for the extension).
     If QR Code is in wrong orientation, this method will return the given
     file.
-    In case of test, the output dictonnary contains the image of the QR code
+    In case of test, the output dictionary contains the image of the QR code
     too.
 
     :param env env: Odoo variable env
@@ -276,6 +276,7 @@ def _find_template(env, img, line_vals, resize_ratio):
     """
     templates = env['correspondence.template'].search(
         [('pattern_image', '!=', False)])
+    templates = templates.filtered(lambda t: t.pattern_image != "")
     template, result_img = pr.find_template(
         img, templates, resize_ratio=resize_ratio)
 
