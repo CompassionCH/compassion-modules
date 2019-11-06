@@ -8,6 +8,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from docutils.nodes import comment
+
 from odoo import api, models, fields
 
 
@@ -42,9 +44,7 @@ class PartnerCommunication(models.Model):
         for communication in self:
             model = communication.config_id.model
             if model == 'account.invoice.line':
-                object_ids = map(int, communication.object_ids.split(','))
-                invoice_lines = self.env['account.invoice.line']\
-                    .browse(object_ids)
+                invoice_lines = communication.get_objects()
                 communication.amount = sum(invoice_lines
                                            .mapped('price_subtotal'))
 
