@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -14,7 +13,8 @@ import calendar
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
-from odoo.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
+from odoo.addons.sponsorship_compassion.models.product_names \
+    import GIFT_CATEGORY
 
 
 class SponsorshipContract(models.Model):

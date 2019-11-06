@@ -13,15 +13,15 @@
 #
 # To provide both the URL and a branch, use:
 # sale-workflow https://github.com/OCA/sale-workflow branchname
-queue
-bank-payment
-web
-connector-telephony
-report-print-send
-compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
-partner-contact
 account-financial-tools
+bank-payment
+compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
+connector-telephony
+partner-contact
+queue
+report-print-send
 server-ux
+web
 # Uncomment when needed
 # crm
 # hr

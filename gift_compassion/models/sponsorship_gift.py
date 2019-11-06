@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -12,14 +11,14 @@ from datetime import date, timedelta
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 
-from ..mappings.gift_mapping import CreateGiftMapping
-from odoo.addons.sponsorship_compassion.models.product import \
+# from ..mappings.gift_mapping import CreateGiftMapping
+from odoo.addons.sponsorship_compassion.models.product_names import \
     GIFT_REF, GIFT_CATEGORY
 
 
 class SponsorshipGift(models.Model):
     _name = 'sponsorship.gift'
-    _inherit = ['translatable.model', 'mail.thread']
+    _inherit = ['translatable.model', 'mail.thread', 'compassion.mapped.model']
     _description = 'Sponsorship Gift'
     _order = 'gift_date desc,id desc'
 
@@ -279,6 +278,25 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(
+            json, mapping_name
+        )
+        if 'id' in odoo_data:
+            odoo_data['id'] = int(odoo_data['id'])
+        return odoo_data
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        json_data = super().data_to_json(mapping_name)
+        if json_data.get('RecipientType') == 'Project Gift':
+            del json_data['Beneficiary_GlobalID']
+            json_data['RecipientId'] = json_data['RecipientID'][:6]
+            del json_data['RecipientID']
+        return json_data
+
     @api.model
     def create_from_invoice_line(self, invoice_line):
         """
@@ -629,11 +647,10 @@ class SponsorshipGift(models.Model):
         for gift in self:
             message_obj = self.env['gmc.message']
 
-            action_id = self.env.ref(
-                'gift_compassion.create_gift').id
+            action_id = self.env.ref('gift_compassion.create_gift')
 
             message_vals = {
-                'action_id': action_id,
+                'action_id': action_id.id,
                 'object_id': gift.id,
                 'partner_id': gift.partner_id.id,
                 'child_id': gift.child_id.id,
