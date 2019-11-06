@@ -29,9 +29,11 @@ This module adds the ability to send notifications from Odoo to devices that hav
 Configuration
 =============
 
-Make sure the following variables are defined in your odoo.conf file:
+Make sure the following variable is defined in your odoo.conf file:
 
-- `firebase_api_key`: Your Firebase API key
+- `google_application_credentials`: Path to your json file containing the Firebase adminsdk keys
+
+You can generate a new private key file in the Firebase console -> Settings -> Generate new Private Key
 
 Usage
 =====

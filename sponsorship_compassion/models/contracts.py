@@ -921,8 +921,7 @@ class SponsorshipContract(models.Model):
     @api.onchange('child_id')
     def _on_change_child_id(self):
         if self.child_id and self.child_id.hold_id:
-            campaign = self.child_id.hold_id.campaign_id
-            self.campaign_id = campaign
+            self.campaign_id = self.child_id.hold_id.campaign_id
 
     @api.multi
     def _link_unlink_child_to_sponsor(self, vals):
