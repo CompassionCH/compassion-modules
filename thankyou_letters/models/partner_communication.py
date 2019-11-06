@@ -8,8 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from docutils.nodes import comment
-
 from odoo import api, models, fields
 
 
