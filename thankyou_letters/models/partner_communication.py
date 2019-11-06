@@ -33,6 +33,18 @@ class PartnerCommunication(models.Model):
         domain=[('type', '=', 'sentence')])
     success_sentence = fields.Text(related='success_sentence_id.body_text')
     add_success_story = fields.Boolean(related='config_id.add_success_story')
+    amount = fields.Float(string='Amount', compute='_compute_donation_amount',
+                          store=True)
+
+    @api.multi
+    @api.depends('object_ids')
+    def _compute_donation_amount(self):
+        for communication in self:
+            model = communication.config_id.model
+            if model == 'account.invoice.line':
+                invoice_lines = communication.get_objects()
+                communication.amount = sum(invoice_lines
+                                           .mapped('price_subtotal'))
 
     ##########################################################################
     #                              ORM METHODS                               #
