@@ -25,7 +25,7 @@ server-ux
 # Uncomment when needed
 # crm
 # hr
-# geospatial
+geospatial
 # server-tools
 # website-cms
 # website
