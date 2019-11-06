@@ -31,7 +31,7 @@
         <field name="name">communication.job.tree.thankyou.donation.amount</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree default_order="amount, date desc">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
