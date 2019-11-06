@@ -37,17 +37,16 @@ class PartnerCommunication(models.Model):
                           store=True)
 
     @api.multi
+    @api.depends('object_ids')
     def _compute_donation_amount(self):
-        for elem in self:
-            object_ids = map(int, elem.object_ids.split(','))
-            model = elem.config_id.model
-            amount_invoice = 0
-            for invoice_line_id in object_ids:
-                if model == 'account.invoice.line':
-                    invoice_line = self.env['account.invoice.line']\
-                        .search([('id', '=', invoice_line_id)])
-                    amount_invoice += invoice_line.price_subtotal
-            elem.amount = amount_invoice
+        for communication in self:
+            model = communication.config_id.model
+            if model == 'account.invoice.line':
+                object_ids = map(int, communication.object_ids.split(','))
+                invoice_lines = self.env['account.invoice.line']\
+                    .browse(object_ids)
+                communication.amount = sum(invoice_lines
+                                           .mapped('price_subtotal'))
 
     ##########################################################################
     #                              ORM METHODS                               #
