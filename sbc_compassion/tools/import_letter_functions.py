@@ -276,6 +276,7 @@ def _find_template(env, img, line_vals, resize_ratio):
     """
     templates = env['correspondence.template'].search(
         [('pattern_image', '!=', False)])
+    templates = templates.filtered(lambda t: t.pattern_image != "")
     template, result_img = pr.find_template(
         img, templates, resize_ratio=resize_ratio)
 
