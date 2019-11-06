@@ -27,6 +27,6 @@ server-ux
 # geospatial
 # report-print-send
 # server-tools
-# website-cms
-# website
+website-cms
+website
 # social
