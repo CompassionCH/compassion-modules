@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
@@ -28,6 +27,8 @@ if not testing:
            be present on the related model.
         """
         _name = 'cms.form.match.partner'
+        _description = 'Form with partner matching'
+
         _inherit = ['cms.form', 'res.partner.match']
 
         partner_id = fields.Many2one('res.partner')
@@ -144,8 +145,7 @@ if not testing:
             """
             Find and returns a matching partner, or create one.
             """
-            super(PartnerMatchform, self).form_before_create_or_update(
-                values, extra_values)
+            super().form_before_create_or_update(values, extra_values)
 
             source_vals = self._get_partner_vals(values, extra_values)
 

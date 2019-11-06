@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
@@ -20,6 +19,7 @@ if not testing:
         """A form that includes payment after submission."""
 
         _name = 'cms.form.payment'
+        _description = 'Payment Form'
         _inherit = 'cms.form'
 
         _payment_accept_redirect = '/website_payment/confirm'
@@ -48,7 +48,7 @@ if not testing:
         @property
         def form_widgets(self):
             # Hide fields
-            res = super(PaymentForm, self).form_widgets
+            res = super().form_widgets
             res.update({
                 'currency_id': 'cms_form_compassion.form.widget.hidden',
                 'acquirer_ids': 'cms_form_compassion.form.widget.payment',
@@ -83,8 +83,7 @@ if not testing:
         def form_after_create_or_update(self, values, extra_values):
             """ Dismiss status message, as the client will be redirected
             to payment."""
-            super(PaymentForm, self).form_after_create_or_update(
-                values, extra_values)
+            super().form_after_create_or_update(values, extra_values)
             self.o_request.website.get_status_message()
             all_vals = self.get_all_vals(values, extra_values)
             partner = self.env['res.partner'].sudo().browse(
