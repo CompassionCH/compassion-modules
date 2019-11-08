@@ -1,0 +1,1 @@
+This module adds geolocation capability to the `compassion.project` model.

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -24,7 +24,7 @@ class TestCommunicationJob(TransactionCase):
         self.partner.global_communication_delivery_preference = 'both'
 
     def setUp(self):
-        super(TestCommunicationJob, self).setUp()
+        super().setUp()
         self.partner = self.env['res.partner'].browse(
             self.ref('base.res_partner_2'))
         self.config = self.env['partner.communication.config'].browse(
@@ -59,12 +59,9 @@ class TestCommunicationJob(TransactionCase):
         self.assertEqual(self.partner.communication_count, num_job - 1)
 
         call_answer = comm.call()
-
-        self.assertUTF8Equal(call_answer['context']['phone_number'],
-                             u'+32\xa010\xa058\xa085\xa058')
-        self.assertUTF8Equal(call_answer['context']['call_name'],
-                             u'Default communication')
-        self.assertEqual(call_answer['context']['click2dial_id'], 8)
+        self.assertEqual(call_answer['context']['phone_number'],
+                         '+32 10 588 558')
+        self.assertEqual(call_answer['context']['click2dial_id'], comm.id)
 
     def test_config(self):
         self.assertEqual(self.config.get_inform_mode(self.partner),

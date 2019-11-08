@@ -16,17 +16,17 @@
 queue
 bank-payment
 web
+connector-telephony
+report-print-send
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
 partner-contact
 account-financial-tools
 server-ux
 # Uncomment when needed
-# connector-telephony
 # crm
 # hr
-# geospatial
-# report-print-send
+geospatial
 # server-tools
 website-cms
-website
+website https://github.com/CompassionCH/website 11.0
 # social

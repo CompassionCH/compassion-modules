@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -16,6 +15,7 @@ test_mode = config.get('test_enable')
 
 
 class HoldWizard(models.TransientModel):
+    _inherit = 'compassion.mapped.model'
     _name = 'compassion.intervention.commitment.wizard'
     _description = 'Intervention Commitment Wizard'
 
@@ -43,7 +43,7 @@ class HoldWizard(models.TransientModel):
             'state': 'committed',
             'commitment_amount': self.commitment_amount,
             'commited_percentage': (
-                self.commitment_amount / self.intervention_id.total_cost
+                self.commitment_amount // self.intervention_id.total_cost
             ) * 100,
             'hold_id': False
         })

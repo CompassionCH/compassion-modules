@@ -91,8 +91,8 @@ class CompassionMappedModel(models.AbstractModel):
             data = {}
             for json_spec in all_fields:
                 json_value = single_json.get(json_spec.json_name)
-                if json_spec.sub_mapping_id:
-                    # Convert date using sub_mapping
+                if json_spec.sub_mapping_id and json_value:
+                    # Convert data using sub_mapping
                     sub_model = self.env[
                         json_spec.sub_mapping_id.model_id.model]
                     sub_data = sub_model.json_to_data(

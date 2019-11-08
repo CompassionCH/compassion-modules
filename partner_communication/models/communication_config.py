@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -57,7 +57,7 @@ class CommunicationDefaults(models.AbstractModel):
              "an e-mail address"
     )
     report_id = fields.Many2one(
-        'ir.actions.report.xml', 'Letter template',
+        'ir.actions.report', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')]
     )
 
@@ -72,6 +72,7 @@ class CommunicationDefaults(models.AbstractModel):
 class CommunicationOmrConfig(models.Model):
     _name = 'partner.communication.omr.config'
     _inherit = 'partner.communication.orm.config.abstract'
+    _description = 'Communication OMR config'
 
     config_id = fields.Many2one(
         'partner.communication.config', 'Communication type')
@@ -132,9 +133,9 @@ class CommunicationConfig(models.Model):
             valid = hasattr(self.env['res.partner'],
                             config.send_mode_pref_field)
             if not valid:
-                raise ValidationError(
-                    _("Following field does not exist in res.partner: %s.") %
-                    config.send_mode_pref_field
+                raise ValidationError(_(
+                    f"Following field does not exist in res.partner: "
+                    f"{config.send_mode_pref_field}.")
                 )
 
     @api.constrains('email_template_id', 'report_id')

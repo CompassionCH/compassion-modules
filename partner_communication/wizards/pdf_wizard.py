@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 try:
     from wand.image import Image
 except ImportError:
-    _logger.error('Please install wand to use PDF Previews')
+    _logger.warning('Please install wand to use PDF Previews')
 
 
 class PdfPreviewWizard(models.TransientModel):
@@ -39,10 +39,10 @@ class PdfPreviewWizard(models.TransientModel):
         if self.state != 'physical':
             return
         comm = self.communication_id
-        report_obj = self.env['report'].with_context(
+        report = comm.report_id.with_context(
             lang=comm.partner_id.lang, must_skip_send_to_printer=True)
-        data = report_obj.get_pdf(comm.ids, comm.report_id.report_name)
-        with Image(blob=data) as pdf_image:
+        data = report.render_qweb_pdf(comm.ids)
+        with Image(blob=data[0]) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
 
         self.preview = preview

@@ -61,7 +61,7 @@
                             <field name="field_office_id"/>
                             <field name="fcp_ids" widget="many2many_tags"/>
                             <field name="category_id"/>
-                            <field name="subcategory_id" domain="[('category_ids', '=', category_id)]"/>
+                            <field name="subcategory_ids" domain="[('category_ids', '=', category_id)]"/>
                             <field name="type"/>
                             <field name="parent_intervention_name"/>
                         </group>
@@ -183,7 +183,7 @@
         <field name="name">compassion.intervention.tree</field>
         <field name="model">compassion.intervention</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state == 'on_hold';grey:state in ('close','cancel');green:state == 'committed';red:state == 'sla'">
+            <tree decoration-info="state=='on_hold'" decoration-muted="state in ('close','cancel')" decoration-success="state=='committed'" decoration-danger="state == 'sla'">
                 <field name="name"/>
                 <field name="category_id"/>
                 <field name="intervention_id"/>
@@ -205,7 +205,7 @@
             <search>
                 <field name="name"/>
                 <field name="category_id"/>
-                <field name="subcategory_id"/>
+                <field name="subcategory_ids"/>
                 <field name="fcp_ids"/>
                 <field name="field_office_id"/>
                 <field name="funding_status"/>

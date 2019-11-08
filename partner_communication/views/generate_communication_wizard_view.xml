@@ -7,11 +7,11 @@
                 <field name="state" invisible="1"/>
                 <sheet>
                     <div class="oe_button_box" states="edit,preview">
-                        <button name="get_preview" string="Generate preview" type="object" class="oe_stat_button" icon="fa-search-plus" states="edit"/>
+                        <button name="get_preview" string="Generate preview" type="object" class="oe_stat_button" icon="fa-search-plus" attrs="{'invisible': ['|', ('send_mode', '=', False), ('state', '!=', 'edit')]}"/>
                         <button name="edit" string="Edit" type="object" class="oe_stat_button" icon="fa-edit" states="preview"/>
                     </div>
                     <group states="edit">
-                        <field name="selection_domain" string="Partners" widget="char_domain" options="{'model': 'res.partner'}"/>
+                        <field name="selection_domain" string="Partners" widget="domain" options="{'model': 'res.partner'}"/>
                         <field name="language_added_in_domain" invisible="1"/>
                         <field name="partner_ids" widget="many2many_tags" invisible="1"/>
                         <group>
@@ -21,13 +21,14 @@
                             <field name="force_language" attrs="{'required': [('body_html', '!=', False), '|', ('model_id', '=', False), ('customize_template', '=', True)]}"/>
                         </group>
                         <group>
-                            <field name="report_id" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
+                            <field name="report_id" attrs="{'invisible': ['|', ('send_mode', '=', 'digital'), ('send_mode', '=', False)]}"/>
                         </group>
                         <field name="subject" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
                         <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}" wiget="text_ckeditor4"/>
                     </group>
                     <group states="preview">
-                        <field name="preview"/>
+                        <field name="preview_email" attrs="{'invisible': [('send_mode', '=', 'physical')]}"/>
+                        <field name="preview_pdf" widget="image" width="500" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
                     </group>
                     <div states="generation">
                         <p>The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>

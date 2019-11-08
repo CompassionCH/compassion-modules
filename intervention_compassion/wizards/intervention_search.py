@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,6 +8,7 @@
 #
 ##############################################################################
 import sys
+import re
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -18,6 +18,7 @@ class InterventionSearch(models.TransientModel):
     """
     Class used for searching interventions in the Mi3 Portal.
     """
+    _inherit = 'compassion.mapped.model'
     _name = 'compassion.intervention.search'
 
     ##########################################################################
@@ -184,3 +185,39 @@ class InterventionSearch(models.TransientModel):
             'domain': [('id', 'in', self.intervention_ids.ids)],
             'target': 'current',
         }
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        data = super().data_to_json(mapping_name)
+        return {'InterventionQuery': data}
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        for json_data in json['InterventionQueryResponseList']:
+            if ',' in json_data["InterventionSubCategory_Name"]:
+                # Split only if a comma is outside of parenthesis
+                # (to handle the case of Sanitation subcategory)
+                if re.search(r",\s*(?![^()]*\))",
+                             json_data["InterventionSubCategory_Name"]) is not None:
+                    json_data["InterventionSubCategory_Name"] = \
+                        json_data['InterventionSubCategory_Name'].split(',')
+                else:
+                    json_data["InterventionSubCategory_Name"] = \
+                        json_data["InterventionSubCategory_Name"].replace(",", "")
+
+        odoo_data = super().json_to_data(json, mapping_name)
+        if 'intervention_ids' in odoo_data:
+            intervention_obj = self.env['compassion.global.intervention']
+            interventions = list()
+            for intervention_vals in odoo_data['intervention_ids']:
+                intervention_id = intervention_vals['intervention_id']
+                intervention = intervention_obj.search([
+                    ('intervention_id', '=', intervention_id)])
+                if intervention:
+                    intervention.write(intervention_vals)
+                else:
+                    intervention = intervention_obj.create(intervention_vals)
+                interventions.append((4, intervention.id))
+
+            odoo_data['intervention_ids'] = interventions or False
+        return odoo_data
