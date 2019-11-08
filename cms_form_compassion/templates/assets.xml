@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="assets_form_compassion" name="Assets for cms_form_compassion" inherit_id="website.assets_frontend">
         <xpath expr="//script[last()]" position="after">

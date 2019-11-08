@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -21,6 +20,7 @@ class MatchPartner(models.AbstractModel):
     case.
     """
     _name = 'res.partner.match'
+    _description = 'Match partner'
 
     @api.model
     def match_partner_to_infos(self, infos, options=None):
@@ -101,7 +101,7 @@ class MatchPartner(models.AbstractModel):
         """
         valid = self._match_get_valid_create_fields()
         create_infos = {}
-        for key, value in infos.iteritems():
+        for key, value in infos.items():
             if key in valid:
                 create_infos[key] = value
 
@@ -128,7 +128,7 @@ class MatchPartner(models.AbstractModel):
         """
         valid = self._match_get_valid_update_fields()
         update_infos = {}
-        for key, value in infos.iteritems():
+        for key, value in infos.items():
             if key in valid:
                 update_infos[key] = value
         return update_infos

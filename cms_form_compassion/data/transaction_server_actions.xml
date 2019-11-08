@@ -21,32 +21,32 @@
         <field name="code">records.confirm_transaction()</field>
     </record>
 
-    <record id="cancel_transaction_rule_time" model="base.action.rule">
+    <record id="cancel_transaction_rule_time" model="base.automation">
         <field name="name">Payment Transaction: Cancel after 10 minutes</field>
         <field name="model_id" ref="model_payment_transaction"/>
-        <field name="kind">on_time</field>
+        <field name="trigger">on_time</field>
         <field name="trg_date_id" ref="payment.field_payment_transaction_create_date"/>
         <field name="filter_domain">[('state', 'in', ['draft', 'pending', 'authorized'])]</field>
         <field name="trg_date_range">10</field>
         <field name="trg_date_range_type">minutes</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('cancel_transaction')])]"/>
+        <field name="action_server_id" ref="cancel_transaction"/>
     </record>
 
-    <record id="cancel_transaction_rule_update" model="base.action.rule">
+    <record id="cancel_transaction_rule_update" model="base.automation">
         <field name="name">Payment Transaction: Cancel upon error</field>
         <field name="model_id" ref="model_payment_transaction"/>
-        <field name="kind">on_write</field>
+        <field name="trigger">on_write</field>
         <field name="filter_pre_domain">[('state', 'not in', ['error', 'cancel'])]</field>
         <field name="filter_domain">[('state', 'in', ['error', 'cancel'])]</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('cancel_transaction_on_update')])]"/>
+        <field name="action_server_id" ref="cancel_transaction_on_update"/>
     </record>
 
-    <record id="confirm_transaction_rule" model="base.action.rule">
+    <record id="confirm_transaction_rule" model="base.automation">
         <field name="name">Payment Transaction: Confirm</field>
         <field name="model_id" ref="model_payment_transaction"/>
-        <field name="kind">on_write</field>
+        <field name="trigger">on_write</field>
         <field name="filter_pre_domain">[('invoice_id.state', '!=', 'paid')]</field>
         <field name="filter_domain">[('state', '=', 'done')]</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('confirm_transaction')])]"/>
+        <field name="action_server_id" ref="confirm_transaction"/>
     </record>
 </odoo>

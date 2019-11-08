@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Simone Orsi
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
@@ -20,7 +19,7 @@ class PaymentAcquirer(models.AbstractModel):
 
     def widget_init(self, form, fname, field, **kw):
         """ Form must have field amount and currency_id. """
-        widget = super(PaymentAcquirer, self).widget_init(
+        widget = super().widget_init(
             form, fname, field, **kw)
         widget.w_acquirers = self.env['payment.acquirer'].search(
             [('website_published', '=', True)]
@@ -78,7 +77,7 @@ class CHDateWidget(models.AbstractModel):
     _w_template = 'cms_form_compassion.field_widget_date_ch'
 
     def w_extract(self, **req_values):
-        value = super(CHDateWidget, self).w_extract(**req_values)
+        value = super().w_extract(**req_values)
         if value:
             # Convert the date to ORM format
             value = fields.Date.to_string(

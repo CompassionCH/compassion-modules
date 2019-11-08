@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
@@ -11,13 +10,13 @@ import json
 
 from odoo import _
 from odoo.http import request, route, Response
-from odoo.addons.website_portal.controllers.main import website_account
+from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.exceptions import MissingError
 from werkzeug.exceptions import NotFound
 
 
-class PaymentFormController(website_account, FormControllerMixin):
+class PaymentFormController(CustomerPortal, FormControllerMixin):
 
     @route(['/compassion/payment/invoice/<int:invoice_id>'], type='http',
            website=True, methods=['GET', 'POST'],

@@ -27,6 +27,6 @@ server-ux
 # hr
 geospatial
 # server-tools
-# website-cms
-# website
+website-cms
+website https://github.com/CompassionCH/website 11.0
 # social
