@@ -6,3 +6,9 @@ Babel
 phonenumbers
 PyPDF2
 wand
+geojson
+Shapely
+sphinx
+sphinx_bootstrap_theme
+sphinx-intl
+odoo-sphinx-autodoc
