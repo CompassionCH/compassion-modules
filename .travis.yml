@@ -20,7 +20,7 @@ addons:
       - wkhtmltopdf
       # OpenCV requirements packages
       - zbar-tools
-      - python-zbar
+      - libzbar0
 
 env:
   global:
