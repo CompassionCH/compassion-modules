@@ -1,5 +1,5 @@
 {
-  "name": "create_update_gifts",
+  "name": "CreateGift",
   "model": "sponsorship.gift",
   "mapping": {
     "FieldOfficeNoteFieldForGlobalPartner": "field_office_notes",
@@ -32,16 +32,25 @@
       "field": "partner_id.global_id",
       "search_relational_record": true
     },
-    "ExchangeRatePartnerToGMC": "exchange_rate",
-    "ThresholdViolatedType": "threshold_alert_type",
-    "IsThresholdViolated": "threshold_alert",
+    "ExchangeRatePartnerToGMC": {
+      "field": "exchange_rate",
+      "exclude_from_json": true
+    },
+    "ThresholdViolatedType": {
+      "field": "threshold_alert_type",
+      "exclude_from_json": true
+    },
+    "IsThresholdViolated": {
+      "field": "threshold_alert",
+      "exclude_from_json": true
+    },
     "GiftDeliveryStatus": "state",
     "ID": "gmc_gift_id",
     "Id": "gmc_gift_id",
     "StatusChangeDate": "status_change_date",
     "UndeliverableReason": "undeliverable_reason",
     "CurrencyCode": {
-      "to_json_conversion": "self.env.user.company_id.country_id.code"
+      "to_json_conversion": "self.env.user.currency_id.name"
     },
     "Supporter_GlobalPartnerSupporterID": {
       "to_json_conversion": "self.env.user.company_id.country_id.code"

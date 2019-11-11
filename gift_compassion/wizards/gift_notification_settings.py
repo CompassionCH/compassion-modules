@@ -39,5 +39,5 @@ class GiftNotificationSettings(models.TransientModel):
         partners = param_obj.get_param(
             'gift_compassion.gift_notify_ids', False)
         if partners:
-            res['gift_notify_ids'] = map(int, partners.split(','))
+            res['gift_notify_ids'] = list(map(int, partners.split(',')))
         return res

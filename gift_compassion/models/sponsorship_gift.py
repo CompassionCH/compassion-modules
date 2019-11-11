@@ -32,7 +32,7 @@ class SponsorshipGift(models.Model):
     )
     partner_id = fields.Many2one(
         'res.partner', 'Partner', related='sponsorship_id.correspondent_id',
-        store=True
+        store=True, readonly=True
     )
     project_id = fields.Many2one(
         'compassion.project', 'Project',
@@ -155,7 +155,7 @@ class SponsorshipGift(models.Model):
             amounts = invoice_lines.mapped('price_subtotal')
 
             gift.date_partner_paid = fields.Date.to_string(max(
-                map(lambda d: fields.Date.from_string(d), pay_dates)))
+                [fields.Date.from_string(d) for d in pay_dates]))
 
             if gift.sponsorship_gift_type == 'Birthday':
                 gift.gift_date = self.env['generate.gift.wizard'].\
@@ -163,7 +163,7 @@ class SponsorshipGift(models.Model):
                         gift.child_id.birthdate, inv_dates[0])
             else:
                 gift_date = max(
-                    map(lambda d: fields.Date.from_string(d), inv_dates))
+                    [fields.Date.from_string(d) for d in inv_dates])
                 gift.gift_date = gift_date and fields.Date.to_string(gift_date)
 
             gift.amount = sum(amounts)
@@ -258,7 +258,7 @@ class SponsorshipGift(models.Model):
             aggregated_amounts = self.amount + other_gift_vals['amount']
             self.write({'amount': aggregated_amounts})
         instructions = [self.instructions, other_gift_vals['instructions']]
-        self.instructions = '; '.join(filter(lambda x: x, instructions))
+        self.instructions = '; '.join([x for x in instructions if x])
         return self
 
     @api.multi
@@ -713,9 +713,9 @@ class SponsorshipGift(models.Model):
                     'reason': gift.undeliverable_reason
                 }
                 body = (
-                    u"{name} ({ref}) made a gift to {child_name}"
-                    u" ({child_code}) which is undeliverable because {reason}."
-                    u"\nPlease inform the sponsor about it."
+                    "{name} ({ref}) made a gift to {child_name}"
+                    " ({child_code}) which is undeliverable because {reason}."
+                    "\nPlease inform the sponsor about it."
                 ).format(**values)
                 gift.message_post(
                     body=body,

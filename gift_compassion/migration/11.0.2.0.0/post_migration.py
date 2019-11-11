@@ -17,10 +17,10 @@ def migrate(env, version):
     if not version:
         return
 
-    path = 'gift_compassion/static/mappings/'
-    files = [
-        'mapping.json',
-    ]
-    load_mapping_files(env.cr, path, files)
+    # path = 'gift_compassion/static/mappings/'
+    # files = [
+    #     'mapping.json',
+    # ]
+    # load_mapping_files(env.cr, path, files)
 
-    # env['import.json.mapping'].python_install_mapping()
+    env['import.json.mapping'].python_install_mapping()
