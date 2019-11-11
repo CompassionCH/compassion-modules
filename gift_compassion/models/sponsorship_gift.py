@@ -77,7 +77,7 @@ class SponsorshipGift(models.Model):
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', default=lambda s:
-                                  s.env.user.company_id.currency_id)
+    s.env.user.company_id.currency_id)
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
@@ -158,9 +158,9 @@ class SponsorshipGift(models.Model):
                 [fields.Date.from_string(d) for d in pay_dates]))
 
             if gift.sponsorship_gift_type == 'Birthday':
-                gift.gift_date = self.env['generate.gift.wizard'].\
+                gift.gift_date = self.env['generate.gift.wizard']. \
                     compute_date_birthday_invoice(
-                        gift.child_id.birthdate, inv_dates[0])
+                    gift.child_id.birthdate, inv_dates[0])
             else:
                 gift_date = max(
                     [fields.Date.from_string(d) for d in inv_dates])
@@ -383,7 +383,7 @@ class SponsorshipGift(models.Model):
                 if other_gifts:
                     total_amount += sum(other_gifts.mapped(
                         lambda gift: gift.amount_us_dollars or
-                        gift.amount * current_rate))
+                                     gift.amount * current_rate))
 
                 return total_amount < (maximum_amount *
                                        threshold_rule.gift_frequency)
@@ -523,27 +523,28 @@ class SponsorshipGift(models.Model):
         :param commkit_data contains the data of the message (json)
         :return list of gift ids which are concerned by the message
         """
-        gift_update_mapping = CreateGiftMapping(self.env)
-
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         gifts_data = commkit_data['GiftUpdatesRequest'][
             'GiftUpdateRequestList']
         gift_ids = []
         changed_gifts = self
+
         # For each dictionary, we update the corresponding record
         for gift_data in gifts_data:
-            vals = gift_update_mapping.get_vals_from_connect(gift_data)
+            vals = self.json_to_data(
+                gift_data, 'CreateGift'
+            )
             gift_id = vals['id']
             gift_ids.append(gift_id)
-            gift = self.env['sponsorship.gift'].browse([gift_id])
+            gift = self.env['sponsorship.gift'].browse([gift_id]).exists()
             if vals.get('state', gift.state) != gift.state:
                 changed_gifts += gift
             gift.write(vals)
 
-        changed_gifts.filtered(lambda g: g.state == 'Delivered').\
+        changed_gifts.filtered(lambda g: g.state == 'Delivered'). \
             _gift_delivered()
-        changed_gifts.filtered(lambda g: g.state == 'Undeliverable').\
+        changed_gifts.filtered(lambda g: g.state == 'Undeliverable'). \
             _gift_undeliverable()
 
         return gift_ids

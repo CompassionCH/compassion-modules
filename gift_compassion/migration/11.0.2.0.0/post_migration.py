@@ -8,8 +8,8 @@
 ##############################################################################
 from openupgradelib import openupgrade
 
-from odoo.addons.message_center_compassion.tools.load_mappings import \
-    load_mapping_files
+# from odoo.addons.message_center_compassion.tools.load_mappings import \
+#     load_mapping_files
 
 
 @openupgrade.migrate(use_env=True)

@@ -46,4 +46,4 @@ class StaffNotificationSettings(models.TransientModel):
     @api.model
     def get_param(self, param):
         """ Retrieve a single parameter. """
-        return self.sudo().get_default_values()[param]
+        return self.sudo().get_values()[param]

@@ -27,14 +27,14 @@ class GiftNotificationSettings(models.TransientModel):
     )
 
     @api.multi
-    def set_gift_notify_ids(self):
+    def set_values(self):
         self.env['ir.config_parameter'].set_param(
             'gift_compassion.gift_notify_ids',
             ','.join(map(str, self.gift_notify_ids.ids)))
 
     @api.model
-    def get_default_values(self, _fields):
-        res = super(GiftNotificationSettings, self).get_default_values(_fields)
+    def get_values(self):
+        res = super(GiftNotificationSettings, self).get_values()
         param_obj = self.env['ir.config_parameter']
         partners = param_obj.get_param(
             'gift_compassion.gift_notify_ids', False)
