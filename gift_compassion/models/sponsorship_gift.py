@@ -8,12 +8,12 @@
 #
 ##############################################################################
 from datetime import date, timedelta
-from odoo import fields, models, api, _
-from odoo.exceptions import UserError
 
+from odoo import fields, models, api, _
 # from ..mappings.gift_mapping import CreateGiftMapping
 from odoo.addons.sponsorship_compassion.models.product_names import \
     GIFT_REF, GIFT_CATEGORY
+from odoo.exceptions import UserError
 
 
 class SponsorshipGift(models.Model):
@@ -77,7 +77,7 @@ class SponsorshipGift(models.Model):
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', default=lambda s:
-    s.env.user.company_id.currency_id)
+                                  s.env.user.company_id.currency_id)
     currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
     exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
@@ -383,7 +383,7 @@ class SponsorshipGift(models.Model):
                 if other_gifts:
                     total_amount += sum(other_gifts.mapped(
                         lambda gift: gift.amount_us_dollars or
-                                     gift.amount * current_rate))
+                                        gift.amount * current_rate))
 
                 return total_amount < (maximum_amount *
                                        threshold_rule.gift_frequency)
