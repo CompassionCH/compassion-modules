@@ -1,6 +1,6 @@
 <odoo>
     <template id="one_label">
-        <link rel="stylesheet" href="/label/static/src/css/label.css"/>
+<!--        <link rel="stylesheet" href="/label/static/src/css/label.css"/>-->
         <!-- In order to keep the layout whatever the datas are, everything is inside a div that hide the overflow and occupy all the place -->
         <div class="o_label_table_cell" t-attf-style="padding-right: {{padding_right}}mm; padding-bottom: {{padding_bottom}}mm; padding-top: {{padding_top}}mm; padding-left: {{padding_left}}mm;">
             <table class="o_label_cell_table">

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
@@ -44,9 +43,9 @@ class LabelPrintWizard(models.TransientModel):
         for labels in self:
             if labels.config_id:
                 rows = int((297-self.config_id.left_margin -
-                            self.config_id.right_margin) /
+                            self.config_id.right_margin) //
                            (self.config_id.height or 1))
-                columns = (float(210) / float(self.config_id.width or 1))
+                columns = (float(210) // float(self.config_id.width or 1))
                 self.labels_per_page = columns * rows
 
     @api.multi
@@ -56,9 +55,9 @@ class LabelPrintWizard(models.TransientModel):
                                      not self.config_id):
             return False
 
-        column = (float(210) / float(self.config_id.width or 1))
+        column = (float(210) // float(self.config_id.width or 1))
         no_row_per_page = int((297-self.config_id.left_margin -
-                               self.config_id.right_margin) /
+                               self.config_id.right_margin) //
                               (self.config_id.height or 1))
 
         label_print_obj = self.env['label.print']
@@ -84,8 +83,7 @@ class LabelPrintWizard(models.TransientModel):
     @api.multi
     def print_report(self):
         data = self.get_report_data()
-        return self.env['report'].get_action(
-            self, 'label.report_label', data=data)
+        return self.env.ref('label.dynamic_label').report_action(self, data=data)
 
     @api.model
     def barcode(self, barcode_type, value, width, height):
@@ -95,14 +93,14 @@ class LabelPrintWizard(models.TransientModel):
         if barcode_type == 'UPCA' and len(value) in (11, 12, 13):
             barcode_type = 'EAN13'
             if len(value) in (11, 12):
-                value = '0%s' % value
+                value = f'0{value}'
         try:
-            width, height = int(DPI * width / ONE_INCH), int(
-                DPI * height / ONE_INCH)
+            width, height = int(DPI * width // ONE_INCH), int(
+                DPI * height // ONE_INCH)
             barcode = createBarcodeDrawing(
                 barcode_type, value=value, format='png', width=width,
                 height=height,
             )
-            return base64.encodestring(barcode.asString('png'))
+            return base64.encodebytes(barcode.asString('png'))
         except (ValueError, AttributeError):
             raise ValueError("Cannot convert into barcode.")

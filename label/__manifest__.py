@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,16 +29,16 @@
 # pylint: disable=C8101
 {
     "name": "Mass Label Reporting",
-    "version": "10.0.1.0.0",
+    "version": "11.0.0.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
     'license': 'AGPL-3',
-    'depends': ['report'],
+    'depends': ['base', 'web'],
     'data': [
         'views/label_config_view.xml',
         'views/label_print_view.xml',
-        'wizards/label_print_wizard_view.xml',
+        'views/label_print_wizard_view.xml',
         'security/ir.model.access.csv',
         'data/label.brand.csv',
         'data/label.config.csv',
@@ -47,6 +46,6 @@
         'reports/dynamic_label.xml',
         'reports/one_label.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
