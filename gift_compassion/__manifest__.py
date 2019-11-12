@@ -25,6 +25,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+# pylint: disable=C8101
 {
     'name': 'Compassion Sponsorship Gifts',
     'version': '11.0.1.0.0',
