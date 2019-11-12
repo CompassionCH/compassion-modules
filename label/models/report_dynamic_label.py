@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
@@ -14,11 +13,10 @@ from odoo.tools.safe_eval import safe_eval
 from copy import deepcopy
 from math import ceil
 
-ONE_INCH = 25.4
-
 
 class ReportDynamicLabel(models.TransientModel):
     _name = 'report.label.report_label'
+    _description = "Construct report from page"
 
     def get_data(self, row, columns, records, nber_labels):
         """
@@ -40,7 +38,7 @@ class ReportDynamicLabel(models.TransientModel):
             self.env.context.get('label_print'))
 
         tot = nber_labels * len(records)
-        tot_page = int(ceil(float(ceil(tot) / (columns*row))))
+        tot_page = int(ceil(float(ceil(tot) // (columns*row))))
         # return value
         result = []
         for i in range(tot_page):
@@ -81,7 +79,7 @@ class ReportDynamicLabel(models.TransientModel):
                     first = True
 
                 # style is for CSS in HTML
-                vals_dict = {'value':  value,
+                vals_dict = {'value': value,
                              'type': field.type,
                              'style': "font-size:" +
                              str(field.fontsize)+"px;"}
@@ -101,22 +99,21 @@ class ReportDynamicLabel(models.TransientModel):
         return result
 
     @api.multi
-    def render_html(self, docids, data=None):
-        """
-        Called from the LabelPrintWizard
-        Add the active model and active ids in the data to generate a correct
-        report.
-        :param data: data collected from the print wizard.
-        :return: html rendered report
-        """
+    def get_report_values(self, docids, data=None):
         if docids is None:
             docids = data['doc_ids']
         label_print_records = self.env['label.print.wizard'].browse(docids)
+        if data is None:
+            data = {}
         data.update({
+            'doc_ids': docids,
+            'doc_model': "label.print.wizard",
             'docs': label_print_records,
+            'env': self.env,
             'label_data': self.get_data(
                 data['rows'], data['columns'],
-                self.env[data['active_model']].browse(data['active_ids']),
+                self.env[self.env.context.get(
+                    'active_model')].browse(data['active_ids']),
                 data['number_labels'])
         })
-        return self.env['report'].render('label.report_label', data)
+        return data

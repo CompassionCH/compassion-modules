@@ -13,12 +13,12 @@
       <field name="margin_right">0</field>
       <field name="header_line" eval="False" />
       <field name="header_spacing">0</field>
-      <field name="dpi">144</field>
+      <field name="dpi">96</field>
     </record>
 
     <report id="dynamic_label" string="Qweb Label" model="label.report_label" name="label.report_label" report_type="qweb-pdf"/>
 
-    <record id="dynamic_label" model="ir.actions.report.xml">
+    <record id="dynamic_label" model="ir.actions.report">
       <field name="paperformat_id" ref="label.paperformat_label"/>
     </record>
 </odoo>
