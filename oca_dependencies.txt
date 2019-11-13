@@ -18,7 +18,11 @@ account-financial-tools
 bank-payment
 compassion-accounting https://github.com/CompassionCH/compassion-accounting 11.0
 connector-telephony
-# crm
+partner-contact
+account-financial-tools
+server-ux
+# Uncomment when needed
+crm
 geospatial
 # hr
 partner-contact

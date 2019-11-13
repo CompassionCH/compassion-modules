@@ -1,4 +1,3 @@
-# coding: utf-8
 from odoo import models, api
 
 
@@ -20,5 +19,5 @@ class MailMail(models.Model):
             # When we deactivate a partner, he is remove from the email.
             mail.write({'partner_ids': partner_ids})
 
-        s = super(MailMail, self)._postprocess_sent_message(mail_sent)
+        s = super()._postprocess_sent_message(mail_sent)
         return s

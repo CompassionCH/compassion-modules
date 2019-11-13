@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-45.00
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
@@ -16,7 +15,7 @@ class MailComposer(models.TransientModel):
     @api.multi
     def send_mail(self, auto_commit=False):
 
-        res = super(MailComposer, self).send_mail(auto_commit)
+        res = super().send_mail(auto_commit)
 
         # Put back selected partner into claim
         if self.env.context.get('claim_no_partner'):
@@ -36,7 +35,7 @@ class MailComposer(models.TransientModel):
         """
         Append the quote of previous e-mail to the body of the message.
         """
-        result = super(MailComposer, self).onchange_template_id(
+        result = super().onchange_template_id(
             template_id, composition_mode, model, res_id
         )
         reply_quote = self.env.context.get('reply_quote')
