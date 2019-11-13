@@ -14,8 +14,6 @@ from ..mappings.compassion_correspondence_mapping import \
 from werkzeug.exceptions import NotFound
 from base64 import b64encode
 
-from datetime import date, timedelta
-
 
 class CompassionCorrespondence(models.Model):
     _inherit = 'correspondence'
