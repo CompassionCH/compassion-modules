@@ -10,7 +10,6 @@
 from datetime import date, timedelta
 
 from odoo import fields, models, api, _
-# from ..mappings.gift_mapping import CreateGiftMapping
 from odoo.addons.sponsorship_compassion.models.product_names import \
     GIFT_REF, GIFT_CATEGORY
 from odoo.exceptions import UserError
