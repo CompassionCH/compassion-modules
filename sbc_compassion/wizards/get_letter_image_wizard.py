@@ -8,7 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from ..tools.onramp_connector import OnrampConnector
+from ..tools.onramp_connector import SBCConnector
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError, ValidationError
@@ -49,7 +49,7 @@ class GetLetterImageWizard(models.TransientModel):
     def get_image(self):
         letter = self.env['correspondence'].browse(
             self.env.context.get('active_id'))
-        onramp = OnrampConnector()
+        onramp = SBCConnector()
         image_data = None
         if self.image == 'original' and letter.original_letter_url:
             image_data = onramp.get_letter_image(
