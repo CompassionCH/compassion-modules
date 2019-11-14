@@ -5,8 +5,9 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="function">process_gifts_cron</field>
-            <field name="model">sponsorship.gift</field>
+            <field name="state">code</field>
+            <field name="code">model.process_gifts_cron()</field>
+            <field name="model_id" ref="model_sponsorship_gift"/>
             <field name="args" eval="()"/>
             <field name="active" eval="False"/>
         </record>

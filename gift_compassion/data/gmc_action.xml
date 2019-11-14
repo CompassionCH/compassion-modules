@@ -1,11 +1,11 @@
 <odoo>
-    <data noupdate="1">
+    <data>
+        <!-- <data noupdate="1"> -->
         <!-- Create Gift Message -->
         <record id="create_gift" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateGift</field>
-            <field name="mapping_name">create_update_gifts</field>
-            <field name="model">sponsorship.gift</field>
+            <field name="mapping_id" ref="mapping_create_update_gifts"/>
             <field name="success_method">on_gift_sent</field> <!-- par défaut : write-->
             <field name="description">This will trigger a Gift Creation at the Field.</field>
             <field name="connect_service">supporters/gifts</field>
@@ -18,8 +18,7 @@
         <record id="update_gift" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">UpdateGift</field>
-            <field name="mapping_name">create_update_gifts</field>
-            <field name="model">sponsorship.gift</field>
+            <field name="mapping_id" ref="mapping_create_update_gifts"/>
             <field name="description">This will trigger a Gift Update at the Field.</field>
             <field name="auto_process">1</field>
         </record>

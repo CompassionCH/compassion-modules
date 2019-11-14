@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -26,11 +25,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorship Gifts',
-    'version': '10.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -38,16 +36,20 @@
     'depends': ['sponsorship_compassion'],
     'data': [
         'security/ir.model.access.csv',
-        'data/gmc_action.xml',
         'data/gift_thresholds.xml',
         'data/process_gift_cron.xml',
         'views/collect_gifts_wizard_view.xml',
         'views/gift_view.xml',
         'views/settings_view.xml',
         'views/contracts_view.xml',
+        'data/gift_compassion_mapping.xml',
+        'data/gmc_action.xml',
     ],
     'demo': [
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings"
 }
+
+# pylint: disable=C8101

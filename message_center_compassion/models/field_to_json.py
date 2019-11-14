@@ -63,6 +63,11 @@ class FieldToJson(models.Model):
         help='Pyhton function that will convert the JSON value to its  '
              'correct value in Odoo. Use `json_value` as the value to be '
              'processed. You should return the final Odoo value.')
+    exclude_from_json = fields.Boolean(
+        help="Value won't be converted to JSON if checked (data_to_json)."
+             "The JSON value can still be converted into Odoo value "
+             "(json_to_data)."
+    )
 
     _sql_constraints = [
         ('unique', 'unique(mapping_id,json_name)',
