@@ -825,7 +825,7 @@ msgid ""
 "Ask God to guide ${ctx['objects'].preferred_name} to discover "
 "${ctx['objects'].get('his')} talents."
 msgstr ""
-"Demandez à Dieu de permettre à ${ctx['objects'].get('his')} de découvrir ses "
+"Demandez à Dieu de permettre à ${ctx['objects'].preferred_name} de découvrir ses "
 "talents."
 
 #. module: mobile_app_connector

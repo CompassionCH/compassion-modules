@@ -213,18 +213,18 @@ class AppHub(models.AbstractModel):
         tiles inside the mobile app. The algorithm for determining this
         order can be tweaked here.
 
-        We divide the tiles in three group: promoted, fixed and the rest.
+        We divide the tiles in four groups: promoted, fixed, spread and the rest.
 
         The promoted group will appear first and is constituted of new letters
         and a few other tiles. This can be tweaked in the recent_content dict.
 
-        The fixed group has all the children tiles that we always what to be
+        The fixed group has all the children tiles that we always want to be
         displayed not too far down. We take all the tiles of a type listed in
         fixed group tiles.
 
         The spread group is evenly spread across all messages.
 
-        The rest group has all the tile remaining.
+        The last group contains the rest of the tiles.
 
         We favor content which is marked as unread and otherwise sort on the
         OrderDate attribute. This attribute is set in the mapping file of each
@@ -249,10 +249,10 @@ class AppHub(models.AbstractModel):
         category_length = 500
         gap = 500
         login_order = 0
-        unread_letter_order = login_order + category_length + gap
-        promoted_content_order = unread_letter_order + category_length + gap
-        fixed_content_order = promoted_content_order + category_length + gap
-        rest_of_tiles_order = fixed_content_order + category_length + gap
+        unread_letter_order = login_order + category_length + gap  # = 1000
+        promoted_content_order = unread_letter_order + category_length + gap  # = 2000
+        fixed_content_order = promoted_content_order + category_length + gap  # = 3000
+        rest_of_tiles_order = fixed_content_order + category_length + gap  # = 4000
 
         to_order = [m for m in messages if m['IsAutomaticOrdering']]
         to_order.sort(key=lambda m: m["OrderDate"], reverse=True)
@@ -332,8 +332,7 @@ class AppHub(models.AbstractModel):
             tile['SortOrder'] = fixed_content_order
             fixed_content_order += category_length // len(fixed_group)
 
-        rest_group.sort(key=lambda x: (x.get('UnReadRecently', False),
-                                       x['OrderDate']), reverse=True)
+        rest_group.sort(key=lambda x: x['OrderDate'], reverse=True)
 
         for tile in rest_group:
             tile['SortOrder'] = rest_of_tiles_order
