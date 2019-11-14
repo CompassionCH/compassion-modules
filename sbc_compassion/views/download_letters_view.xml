@@ -13,8 +13,8 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="get_letters" special="cancel"
-                            string="Close" class="oe_highlight"/>
+                    <button name="get_letters" type="object"
+                            string="Get letters" class="oe_highlight"/>
                 </footer>
             </form>
         </field>

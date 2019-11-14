@@ -87,7 +87,7 @@ class PDFCreator
         // SET UP
         $pdf = new MyFPDF($this->utils);
         $pdf->AddFont('Montserrat','R','montserrat.php');
-        $pdf->SetFont('Montserrat', 'R', 14);
+        $pdf->SetFont('Montserrat', 'R', 12);
 
         $consecutiveEmptyPages = 0;
         // CREATE NEW PAGE AND FILL IT WITH CONTENT
