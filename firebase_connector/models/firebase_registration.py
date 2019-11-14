@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -90,7 +89,7 @@ class FirebaseRegistration(models.Model):
         for firebase_id in self:
             data.update({
                 'title': message_title,
-                'body': message_body,
+                'body': message_body
             })
 
             message = messaging.Message(notification=notif,

@@ -12,3 +12,4 @@ sphinx
 sphinx_bootstrap_theme
 sphinx-intl
 odoo-sphinx-autodoc
+firebase_admin

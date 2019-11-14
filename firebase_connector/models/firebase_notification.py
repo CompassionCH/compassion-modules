@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -45,7 +44,7 @@ class FirebaseNotification(models.Model):
                 raise UserError(_("Send date should be in the future"))
 
     @api.multi
-    def send(self, data=None):
+    def send(self, **kwargs):
         """
         This method take a notification object in Odoo and send it to the
         partners devices via Firebase Cloud Messaging. If the notification was
@@ -55,8 +54,7 @@ class FirebaseNotification(models.Model):
         :param data:
         :return:
         """
-        if data is None:
-            data = {}
+        data = kwargs.get('data', {})
 
         for notif in self:
             registration_ids = self.env['firebase.registration'].search([
@@ -71,7 +69,8 @@ class FirebaseNotification(models.Model):
                 "notification_id": str(notif.id),
             })
 
-            notif.sent = registration_ids.send_message(notif.title, notif.body, data)
+            notif.sent = registration_ids.send_message(notif.title, notif.body,
+                                                       data)
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
                 for partner in notif.partner_ids:
