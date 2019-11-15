@@ -114,6 +114,11 @@ class CorrespondenceTemplate(models.Model):
         'correspondence.template.page', 'template_id', 'Pages', required=True,
         copy=True
     )
+    additional_page_id = fields.Many2one(
+        'correspondence.template.page', 'Additional page',
+        help='Template used in case the S2B text is too long to fit on the '
+             'standard two-sided page.'
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -207,7 +212,7 @@ class CorrespondenceTemplate(models.Model):
             background_list = []
         overflow_template = False
 
-        pages = self.mapped('page_ids')
+        pages = self.mapped('page_ids') - self.additional_page_id
         template_list = []
         image_list = []
         page_count = 0
@@ -270,6 +275,20 @@ class CorrespondenceTemplate(models.Model):
             for text_box in additional_page.text_box_ids:
                 text_list.append(text_box.get_json_repr())
             overflow_template = [bf_name, [], text_list, image_boxes]
+        elif self.additional_page_id:
+            # We are generating a new PDF (S2B case). We provide
+            # an overflow template using the template
+            add_background = tempfile.NamedTemporaryFile(
+                prefix='img_', suffix='.jpg')
+            add_background.write(base64.b64decode(
+                self.additional_page_id.background))
+            add_background.flush()
+            temp_img.append(add_background)
+            text_list = []
+            for text_box in self.additional_page_id.text_box_ids:
+                text_list.append(text_box.get_json_repr())
+            overflow_template = [
+                add_background.name, header_data, text_list, []]
 
         text_list = []
         for t_type, t_boxes in text.iteritems():
@@ -295,7 +314,8 @@ class CorrespondenceTemplate(models.Model):
                 # The output should at least contain 2 pages
                 'original_size': max(2, len(background_list)),
                 'overflow_template': overflow_template,
-                'lang': self.env.lang
+                'lang': self.env.lang,
+                'prevent_overflow': self.type == 'b2s'
             }
 
         json_val = json.dumps(generated_json).replace(' ', '')

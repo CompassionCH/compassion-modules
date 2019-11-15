@@ -22,7 +22,8 @@ Structure of the json to generate a PDF
           - an image box is like this. [minX, minY, maxX, maxY]`
     * 'texts': a list of :code:`[text, type]` corresponding to the type defined in the templates with the text content
     * 'original_size': the page number of the original document
-    * 'overflow_template': one particular template which will be used when text is overflowing. If not provided, the last template pages will be repeated.
+    * 'overflow_template': one particular template which will be used when text is overflowing.
+    * 'prevent_overflow': If true, additional page will be inserted directly after overflow is detected (otherwise the overflow go at the end)
     * 'lang': The lang of generation
 
 The number of pages will be determined by the text length and the number of template if the text (number of pages) is smaller than the number of template

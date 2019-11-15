@@ -32,7 +32,9 @@ class PDFCreator
 
 	protected $headerOnLastPage;
 
-	protected $preventOverflow;     // Will be set to true if we have an overflow page, and we don't allow boxes to overflow.
+	protected $preventOverflow;     // If set to true, we don't allow boxes to overflow and insert directly a special
+                                    // template page holding overflown text. Otherwise, the text will naturally spread
+                                    // through the available boxes.
 	protected $overflowPage;        // Will be set when overflow occurs. Holds the overflown texts from the current page.  => array[Text]
 
 
@@ -63,7 +65,7 @@ class PDFCreator
         $overflowTemplate = false;
         if (!empty($params['overflow_template'])) {
             $overflowTemplate = new Template(...$params['overflow_template']);
-            $this->preventOverflow = true;
+            $this->preventOverflow = $params['prevent_overflow'];
         }
         $this->originalSize = $params['original_size'];
 
@@ -105,7 +107,7 @@ class PDFCreator
 
 	        $this->InsertImages($pdf, $template);
 
-	        $consecutiveEmptyPages = $this->PreventInfiniteLoop($emptyPage, $consecutiveEmptyPages);
+	        $consecutiveEmptyPages = $this->PreventInfiniteLoop($pdf, $emptyPage, $consecutiveEmptyPages);
         }
 
         // COMPLETE THE END OF THE PDF AND WRITE IT
@@ -197,13 +199,21 @@ class PDFCreator
     /**
     *
     */
-    private function PreventInfiniteLoop($emptyPage, $pagesWithoutText)
+    private function PreventInfiniteLoop($pdf, $emptyPage, $pagesWithoutText)
     {
         if($emptyPage)
         {
             $pagesWithoutText++;
-            if($pagesWithoutText >= 4)
-            {
+            if($pagesWithoutText >= 4) {
+                if ($this->overflowTemplate != false) {
+                    // Try to push remaining text on overflow page
+                    $this->InsertOverflowPages($pdf);
+                } else {
+                    throw new Exception("Could not generate PDF, something went wrong. There was an infinite loop, probably because the template is not properly set up.");
+                }
+            }
+            if($pagesWithoutText >= 6) {
+                // Force throwing exception if looping increase even after inserting overflow pages
                 throw new Exception("Could not generate PDF, something went wrong. There was an infinite loop, probably because the template is not properly set up.");
             }
             return $pagesWithoutText;

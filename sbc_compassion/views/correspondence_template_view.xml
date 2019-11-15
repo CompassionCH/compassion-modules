@@ -16,7 +16,7 @@
         <field name="name">correspondence.template.form</field>
         <field name="model">correspondence.template</field>
         <field name="arch" type="xml">
-            <form string="Template">
+            <form>
                 <sheet>
                     <group>
                         <group>
@@ -51,6 +51,7 @@
                             <field name="nber_keypoints"/>
                             <separator string="Pages layout" colspan="2"/>
                             <field name="page_ids" context="{'default_template_id': active_id}"/>
+                            <field name="additional_page_id" context="{'default_template_id': active_id}"/>
                         </group>
                         <group>
                             <field name="template_image" widget="image" width="210px" height="297px"/>
