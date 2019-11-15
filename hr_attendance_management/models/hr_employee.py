@@ -27,7 +27,7 @@ class HrEmployee(models.Model):
 
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
                                           "Attendance days")
-    balance = fields.Float('Balance', compute='compute_balance', store=True)
+    balance = fields.Float('Balance', compute='_compute_balance', store=True)
     initial_balance = fields.Float('Initial Balance')
 
     extra_hours_lost = fields.Float()
@@ -65,7 +65,8 @@ class HrEmployee(models.Model):
                 employee.period_ids.filtered(
                     lambda e: e.end_date <= fields.Date.today())
             if previous_periods:
-                previous_period = previous_periods.sorted(key=lambda e: e.end_date)[-1]
+                previous_period = previous_periods.sorted(
+                    key=lambda e: e.end_date)[-1]
                 employee.current_period_start_date = \
                     fields.Date.from_string(previous_period.end_date)
             else:
@@ -93,12 +94,13 @@ class HrEmployee(models.Model):
 
     @api.multi
     @api.depends('initial_balance', 'attendance_days_ids.paid_hours')
-    def compute_balance(self, store=False):
+    def _compute_balance(self, store=False):
         """
-        Method used to compute balance we needed. It uses the history of the employee to avoid
-        recalculating the whole balance each time.
-        This is also the method used to add a new history entry (by the CRON e.g.)
-        :param store: create a new period from the last one to current day and store it if True
+        Method used to compute balance we needed. It uses the history of the
+        employee to avoid recalculating the whole balance each time.
+        This is also the method used to add a new history entry (by the CRON)
+        :param store: create a new period from the last one to current day and
+        store it if True
         """
         for employee in self:
             config = self.env['base.config.settings'].create({})
@@ -114,7 +116,8 @@ class HrEmployee(models.Model):
                     employee.period_ids.sorted(key=lambda r: r.end_date)
                 start_date = \
                     fields.Date.from_string(employee_history_sorted[-1].end_date)
-                # If there is an history for this employee, take values of last period
+                # If there is an history for this employee, take values of last
+                # period
                 if start_date < fields.Date.from_string(end_date):
                     balance = employee_history_sorted[-1].final_balance
                 # If last period goes to today.
@@ -122,7 +125,8 @@ class HrEmployee(models.Model):
                     final_balance = employee_history_sorted[-1].final_balance
                 # If the period goes to today, recompute from 01.01.2018
                 else:
-                    start_date = config.get_beginning_date_for_balance_computation()
+                    start_date = config.\
+                        get_beginning_date_for_balance_computation()
 
             extra = None
             lost = None
@@ -131,7 +135,8 @@ class HrEmployee(models.Model):
                 employee.extra_hours_lost = 0
             # If final_balance is not None,
             # it means there is a period with end_date == today
-            # so we just assign the value. The cap is taken in consideration here.
+            # so we just assign the value. The cap is taken in consideration
+            # here.
             elif final_balance:
                 max_extra_hours = self.env['base.config.settings'].create({}) \
                     .get_max_extra_hours()
@@ -225,7 +230,8 @@ class HrEmployee(models.Model):
                 fields.Date.today().replace(month=1, day=1))
         if not end_date:
             end_date = \
-                fields.Date.to_string(fields.Date.today() + datetime.timedelta(days=1))
+                fields.Date.to_string(
+                    fields.Date.today() + datetime.timedelta(days=1))
 
         if not isinstance(start_date, basestring):
             start_date = fields.Date.to_string(start_date)
@@ -310,7 +316,7 @@ class HrEmployee(models.Model):
         """
         employees = self.search([])
         for employee in employees:
-            employee.compute_balance(store=True)
+            employee._compute_balance(store=True)
 
     @api.multi
     @api.depends('today_hour')
@@ -384,8 +390,8 @@ class HrEmployee(models.Model):
             if attendance.check_out:
                 worked_hours += attendance.worked_hours
             else:
-                delta = datetime.datetime.now() - \
-                        fields.Datetime.from_string(attendance.check_in)
+                delta = datetime.datetime.now() - fields.Datetime.from_string(
+                    attendance.check_in)
                 worked_hours += delta.total_seconds() / 3600.0
         return worked_hours
 

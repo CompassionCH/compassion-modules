@@ -2,7 +2,6 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
-import datetime
 import pytz
 
 from odoo import models, fields, api
@@ -447,7 +446,7 @@ class HrAttendanceDay(models.Model):
             ], limit=1)
             if period_of_day:
                 period_of_day.update_period()
-        self.employee_id.compute_balance()
+        self.employee_id._compute_balance()
 
     @api.multi
     def open_attendance_day(self):
