@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -39,7 +38,7 @@ class Project(models.Model):
             raise exceptions.UserError(
                 _("Please create an event. It will automatically create "
                   "an associated Project for the event."))
-        project = super(Project, self).create(vals)
+        project = super().create(vals)
         if type == 'marketing':
             # Create an origin for contracts
             self.env['recurring.contract.origin'].create({
@@ -51,7 +50,7 @@ class Project(models.Model):
     @api.multi
     def write(self, vals):
         """ Push the changes to linked events and to analytic account. """
-        super(Project, self).write(vals)
+        super().write(vals)
         if 'project_type' in vals and not self.env.context.get('from_event'):
             raise exceptions.UserError(
                 _("You cannot change the type of the project."))

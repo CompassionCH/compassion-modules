@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -27,8 +26,14 @@ class EventCompassion(models.Model):
     ##########################################################################
     name = fields.Char(size=128, required=True, track_visibility='onchange')
     full_name = fields.Char(compute='_compute_full_name')
-    type = fields.Selection(
-        'get_event_types', required=True, track_visibility='onchange')
+    type = fields.Selection([
+            ('stand', _("Stand")),
+            ('concert', _("Concert")),
+            ('presentation', _("Presentation")),
+            ('meeting', _("Meeting")),
+            ('sport', _("Sport event")),
+            ('tour', _("Sponsor tour")),
+        ], required=True, track_visibility='onchange')
     start_date = fields.Datetime(required=True)
     year = fields.Char(compute='_compute_year', store=True)
     end_date = fields.Datetime(required=True)
@@ -163,17 +168,6 @@ class EventCompassion(models.Model):
             event.full_name = event.type.title() + ' ' + event.name + ' ' +\
                 event.year
 
-    @api.model
-    def get_event_types(self):
-        return [
-            ('stand', _("Stand")),
-            ('concert', _("Concert")),
-            ('presentation', _("Presentation")),
-            ('meeting', _("Meeting")),
-            ('sport', _("Sport event")),
-            ('tour', _("Sponsor tour")),
-        ]
-
     @api.multi
     @api.depends('hold_ids')
     def _compute_allocate_children(self):
@@ -220,7 +214,7 @@ class EventCompassion(models.Model):
         elif event_name[-2:] == event_year[-2:]:
             vals['name'] = event_name[:-2]
 
-        event = super(EventCompassion, self).create(vals)
+        event = super().create(vals)
 
         # Create project for the tasks
         project_id = False
@@ -249,7 +243,7 @@ class EventCompassion(models.Model):
     @api.multi
     def write(self, vals):
         """ Push values to linked objects. """
-        super(EventCompassion, self).write(vals)
+        super().write(vals)
         if not self.env.context.get('no_sync'):
             for event in self:
                 if 'use_tasks' in vals and event.use_tasks:
@@ -283,7 +277,7 @@ class EventCompassion(models.Model):
             if default is None:
                 default = {}
             default['name'] = self.name + ' (copy)'
-        return super(EventCompassion, self).copy(default)
+        return super().copy(default)
 
     @api.multi
     def unlink(self):
@@ -301,7 +295,7 @@ class EventCompassion(models.Model):
                     event.analytic_id.unlink()
                 event.origin_id.unlink()
                 event.calendar_event_id.unlink()
-        return super(EventCompassion, self).unlink()
+        return super().unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -572,17 +566,16 @@ class EventCompassion(models.Model):
                     # user_id field(bypass ORM to avoid tracking field change)
                     self.env.cr.execute(
                         "UPDATE crm_event_compassion "
-                        "SET user_id = %s WHERE id = %s", [user.id, event.id]
+                        f"SET user_id = {user.id} WHERE id = {event.id}"
                     )
                     values = {'user_ids': user.id}
-                    super(EventCompassion, event).message_auto_subscribe(
+                    super(event).message_auto_subscribe(
                         updated_fields, values
                     )
                 # Restore ambassador
                 self.env.cr.execute(
                     "UPDATE crm_event_compassion "
-                    "SET user_id = %s WHERE id = %s", [ambassador.id or None,
-                                                       event.id]
+                    f"SET user_id = {ambassador.id or None} WHERE id = {event.id}"
                 )
         return True
 
@@ -593,5 +586,5 @@ class EventCompassion(models.Model):
         auto_follow_fields = ['user_ids']
         if 'staff_ids' in updated_fields:
             updated_fields.append('user_ids')
-        return super(EventCompassion, self)._message_get_auto_subscribe_fields(
+        return super()._message_get_auto_subscribe_fields(
             updated_fields, auto_follow_fields)

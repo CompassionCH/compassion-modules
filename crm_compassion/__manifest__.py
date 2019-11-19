@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,20 +29,19 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion CH - Events',
-    'version': '10.0.1.5.0',
+    'version': '11.0.0.0.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'base_location',
-        'sponsorship_compassion',
-        'partner_communication',
+        'base_location',            # oca_addons/partner_contact
+        'sponsorship_compassion',   # compassion-modules
+        'partner_communication',    # compassion-modules
         'project',
-        'crm_request',
+        'crm_request',              # compassion-modules
         'mail_tracking',
-        'web_kanban',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -72,6 +70,6 @@
         'static/src/xml/web_kanban_colorpicker.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

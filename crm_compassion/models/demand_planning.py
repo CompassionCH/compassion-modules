@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -24,7 +23,7 @@ class DemandPlanning(models.Model):
         """ Weekly CRON for Demand Planning.
         3. Create last week revision
         """
-        super(DemandPlanning, self).process_weekly_demand()
+        super().process_weekly_demand()
         today = datetime.today()
         last_week_demand = self.env['demand.weekly.demand'].search([
             ('week_end_date', '<', today),
@@ -64,6 +63,6 @@ class DemandPlanning(models.Model):
         Only look for period locked when submitting same values.
         All other weeks are computed each time.
         """
-        search_filter = super(DemandPlanning, self)._search_week(start_date)
+        search_filter = super()._search_week(start_date)
         search_filter.append(('period_locked', '=', True))
         return search_filter

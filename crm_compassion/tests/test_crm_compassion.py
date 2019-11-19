@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -8,8 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
-
 from datetime import datetime, timedelta
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
     import BaseSponsorshipTest
