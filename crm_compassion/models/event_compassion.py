@@ -573,9 +573,12 @@ class EventCompassion(models.Model):
                         updated_fields, values
                     )
                 # Restore ambassador
+                user_id = "NULL"
+                if ambassador.id:
+                    user_id = ambassador.id
                 self.env.cr.execute(
                     "UPDATE crm_event_compassion "
-                    f"SET user_id = {ambassador.id or None} WHERE id = {event.id}"
+                    f"SET user_id = {user_id} WHERE id = {event.id}"
                 )
         return True
 
