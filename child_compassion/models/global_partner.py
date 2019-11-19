@@ -14,6 +14,7 @@ from odoo import models, fields
 
 class GlobalPartner(models.Model):
     _name = 'compassion.global.partner'
+    _inherit = 'compassion.mapped.model'
     _description = 'Compassion Global Partner'
 
     name = fields.Char(required=True)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -19,6 +18,7 @@ class ImportReview(models.TransientModel):
     """
 
     _name = 'import.letters.review'
+    _description = 'Review imported letters'
 
     ##########################################################################
     #                                 FIELDS                                 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -29,7 +28,7 @@
 # pylint: disable=C8101
 {
     'name': "Sponsor to beneficiary communication",
-    'version': '10.0.1.5.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'summary': "SBC - Supporter to Beneficiary Communication",
     'sequence': 150,
@@ -39,7 +38,7 @@
     'depends': ['sponsorship_compassion', 'web_tree_image'],
     'external_dependencies': {
         'python': ['magic', 'wand', 'numpy', 'pyzbar', 'pdfminer',
-                   'matplotlib', 'pyPdf', 'bs4', 'HTMLParser']
+                   'matplotlib', 'PyPDF2', 'openupgradelib']
         },
     'data': [
         'security/ir.model.access.csv',
@@ -60,10 +59,12 @@
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
         'data/child_layouts.xml',
+        'data/correspondence_mappings.xml',
         'data/gmc_action.xml',
         ],
     'demo': ['demo/correspondence_template.xml',
              ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    "post_init_hook": "load_mappings",
     }

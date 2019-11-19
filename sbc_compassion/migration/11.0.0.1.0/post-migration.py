@@ -1,25 +1,24 @@
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Emmanuel Mathier <emmanuel.mathier@gmail.com>
+#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    @author: Benoît Schopfer <mails@benoitschopfer.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from openupgradelib import openupgrade
 from odoo.addons.message_center_compassion.tools.load_mappings import \
     load_mapping_files
 
-from . import tools
-from . import controllers
-from . import models
-from . import wizards
 
+@openupgrade.migrate(use_env=True)
+def migrate(env, version):
+    if not version:
+        return
 
-def load_mappings(cr, registry):
     path = 'sbc_compassion/static/mappings/'
     files = [
-        'page_mapping.json',
         'correspondence_mapping.json',
+        'page_mapping.json',
     ]
-    load_mapping_files(cr, path, files)
+    load_mapping_files(env.cr, path, files)

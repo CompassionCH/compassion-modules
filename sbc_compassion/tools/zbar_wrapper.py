@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -13,13 +12,13 @@
 ZBar is detected, it apply a few filter on the input image and try the
 scanning again. This technique reduces the number of false negative."""
 import logging
+from PIL import Image
 _logger = logging.getLogger(__name__)
 try:
     from pyzbar import pyzbar
     import cv2  # we use openCV to repair broken QRCodes.
-    from PIL import Image
 except ImportError:
-    _logger.warning("SBC module needs zbar, cv2 and PIL to work.")
+    _logger.warning("SBC module needs pyzbar and cv2 to work.")
 
 
 def scan_qrcode(filename):

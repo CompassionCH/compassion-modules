@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -19,6 +18,7 @@ class GetLetterImageWizard(models.TransientModel):
         (Remote storage of U.S. servers)
     """
     _name = 'letter.image.wizard'
+    _description = 'Wizard for image letter'
 
     image = fields.Selection([
         ('original', _('Original')),

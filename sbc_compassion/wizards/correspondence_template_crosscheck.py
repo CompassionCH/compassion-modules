@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -29,6 +28,7 @@ class CorrespondenceCrosscheck(models.TransientModel):
     """
 
     _name = 'correspondence.template.crosscheck'
+    _description = 'Crosscheck of correspondence template'
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -93,7 +93,7 @@ class CorrespondenceCrosscheck(models.TransientModel):
                                           kp2, good, None, flags=2)
                 name = t1.name + '-' + t2.name + '.png'
                 cv2.imwrite(name, img3)
-                with open(name, 'r') as f:
+                with open(name, 'rb') as f:
                     img3 = f.read()
                     remove(name)
                 image_id = self.env['crosscheck.image'].create({
@@ -109,6 +109,7 @@ class CrosscheckImage(models.TransientModel):
     Model for a line in the CorrespondenceCrosscheck class
     """
     _name = "crosscheck.image"
+    _description = 'Crosscheck image'
 
     ##########################################################################
     #                                 FIELDS                                 #

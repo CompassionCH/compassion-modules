@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -66,7 +65,7 @@ class ResPartner(models.Model):
             if base_language not in spoken_languages:
                 spoken_languages.append(base_language)
                 vals['spoken_lang_ids'] = spoken_languages
-        return super(ResPartner, self).create(vals)
+        return super().create(vals)
 
     @api.multi
     def open_letters(self):
@@ -94,7 +93,7 @@ class ResPartner(models.Model):
 
     @api.multi
     def forget_me(self):
-        super(ResPartner, self).forget_me()
+        super().forget_me()
         # Delete correspondence
         self.env['correspondence'].with_context(force_delete=True).search([
             ('partner_id', '=', self.id)]).unlink()
