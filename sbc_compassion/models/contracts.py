@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -44,10 +43,6 @@ class Contracts(models.Model):
              'sponsor has not written in this period.',
         compute='_compute_write_for_birthday_alert'
     )
-    sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
-                                      compute='_compute_b2s_letter')
-    sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
-                                      compute='_compute_s2b_letter')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -97,38 +92,6 @@ class Contracts(models.Model):
             contract.write_for_birthday_alert = days_until_birthday <= 90 and (
                 contract.last_letter == -1 or
                 contract.last_letter > 90 - days_until_birthday)
-
-    @api.multi
-    def _compute_b2s_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Beneficiary To Supporter'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_b2s_letter = nb_letter
-
-    @api.multi
-    def _compute_s2b_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Supporter To Beneficiary'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_s2b_letter = nb_letter
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -183,7 +146,7 @@ class Contracts(models.Model):
     @api.multi
     def contract_active(self):
         """ Send letters that were on hold. """
-        super(Contracts, self).contract_active()
+        super().contract_active()
         for contract in self.filtered(
                 lambda c: 'S' in c.type and not
                 c.project_id.hold_s2b_letters):

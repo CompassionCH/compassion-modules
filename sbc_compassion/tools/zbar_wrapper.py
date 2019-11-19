@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -15,7 +14,7 @@ scanning again. This technique reduces the number of false negative."""
 import logging
 _logger = logging.getLogger(__name__)
 try:
-    import zbar
+    from pyzbar import pyzbar
     import cv2  # we use openCV to repair broken QRCodes.
     from PIL import Image
 except ImportError:
@@ -30,7 +29,6 @@ def scan_qrcode(filename):
         qrdata = {}
         qrdata["data"] = result.data
         qrdata["format"] = result.type
-        qrdata["points"] = result.location
         qrdata["raw"] = result.data
     return qrdata
 
@@ -38,40 +36,22 @@ def scan_qrcode(filename):
 def _scan(img, scanner=None):
     # convert cv image to raw data
     pil = Image.fromarray(img)
-    width, height = pil.size
-    raw = pil.tobytes()
-    # wrap image data
-    image = zbar.Image(width, height, 'Y800', raw)
-
-    if not scanner:
-        # create a reader
-        scanner = zbar.ImageScanner()
-        # configure the reader
-        scanner.parse_config('enable')
-
-    # scan the image for barcodes
-    scanner.scan(image)
     # extract results
     qrcode = None
-    for symbol in image:
+    for symbol in pyzbar.decode(pil):
         qrcode = symbol
     return qrcode
 
 
 def _decode(filename):
-    # create a reader
-    scanner = zbar.ImageScanner()
-    # configure the reader
-    scanner.parse_config('enable')
-
     # obtain image data
     img = cv2.imread(filename, 0)
 
-    qrcode = _scan(img, scanner=scanner)
+    qrcode = _scan(img)
     if not qrcode:
         # No QR found, so we try to again after an opening operation
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         img = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
-        qrcode = _scan(img, scanner=scanner)
+        qrcode = _scan(img)
 
     return qrcode

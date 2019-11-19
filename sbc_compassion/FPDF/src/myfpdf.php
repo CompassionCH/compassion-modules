@@ -206,7 +206,7 @@ class MyFPDF extends FPDF
 	    {
             $this->SetFont('Arial', '', 10);
 	        $template->GetHeader()->InsertIntoPDF($this);
-            $this->SetFont('Montserrat', 'R', 14);
+            $this->SetFont('Montserrat', 'R', 12);
 	        return true;
 	    }
 		return false;

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -15,7 +14,7 @@
 
 import os
 import logging
-from cStringIO import StringIO
+from io import StringIO
 
 _logger = logging.getLogger(__name__)
 
@@ -59,7 +58,7 @@ def get_images(pdf_data, dst_folder, dst_name):
         jpg = pdf_data[istart:iend]
 
         # save image number N at required location
-        filname = "{}/{}{}.jpg".format(dst_folder, dst_name, njpg)
+        filname = f"{dst_folder}/{dst_name}{njpg}.jpg"
         with open(filname, "wb") as jpgfile:
             jpgfile.write(jpg)
 

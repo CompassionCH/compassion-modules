@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -57,7 +56,7 @@ class ImportLetterLine(models.Model):
                 vals['import_id'])
             create_vals = config.get_correspondence_metadata()
         create_vals.update(vals)
-        return super(ImportLetterLine, self).create(create_vals)
+        return super().create(create_vals)
 
     ##########################################################################
     #                             FIELDS METHODS                             #

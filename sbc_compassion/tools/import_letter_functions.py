@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
@@ -24,10 +23,10 @@ _logger = logging.getLogger(__name__)
 try:
     import numpy as np
     import cv2
-    from pyPdf import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileWriter, PdfFileReader
     from wand.image import Image as WandImage
 except ImportError:
-    _logger.warning('Please install numpy, cv2, pypdf and wand to use SBC '
+    _logger.warning('Please install numpy, cv2, PyPDF2 and wand to use SBC '
                     'module')
 
 ##########################################################################
@@ -57,12 +56,12 @@ def analyze_attachment(env, file_data, file_name, force_template):
 
     line_vals = list()
     letter_datas = list()
-    _logger.info("\tImport file : {}".format(file_name))
+    _logger.info(f"\tImport file : {file_name}")
 
     inputpdf = PdfFileReader(BytesIO(file_data))
     letter_indexes, imgs = _find_qrcodes(
         env, line_vals, inputpdf, new_dpi)
-    _logger.info("\t{} letters found!".format(len(letter_indexes)-1 or 1))
+    _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
 
     # Construct the data for each detected letter: store as PDF
     if len(letter_indexes) > 1:
@@ -70,7 +69,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
         for index in letter_indexes[1:]:
             output = PdfFileWriter()
             letter_data = BytesIO()
-            for i in xrange(last_index, index):
+            for i in range(last_index, index):
                 output.addPage(inputpdf.getPage(i))
             output.write(letter_data)
             letter_data.seek(0)
@@ -82,8 +81,8 @@ def analyze_attachment(env, file_data, file_name, force_template):
     # now try to find the layout for all splitted letters
     for i in range(len(letter_datas)):
         _logger.info(
-            "\tAnalyzing template and language of letter {}/{}".format(
-                i+1, len(letter_datas)))
+            "\tAnalyzing template and language of letter "
+            f"{i+1}/{len(letter_datas)}")
 
         letter_vals = line_vals[i]
         file_split = file_name.split('.')
@@ -100,8 +99,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
             tic = time()
             _find_languages(env, imgs[i], letter_vals, resize_ratio)
             _logger.info(
-                "\t\tLanguage analysis done in {:.3} sec.".format(time()-tic))
-
+                f"\t\tLanguage analysis done in {time()-tic:.3} sec.")
         else:
             _logger.info("\t\tAnalysis failed")
             letter_vals['letter_language_id'] = False
@@ -116,7 +114,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     than :py:attr:`file_` (except for the extension).
     If QR Code is in wrong orientation, this method will return the given
     file.
-    In case of test, the output dictonnary contains the image of the QR code
+    In case of test, the output dictionary contains the image of the QR code
     too.
 
     :param env env: Odoo variable env
@@ -130,9 +128,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     page_imgs = list()
 
     previous_qrcode = ''
-    _logger.info("\tThe imported PDF is made of {} pages.".format(
-        inputpdf.numPages))
-    for i in xrange(inputpdf.numPages):
+    _logger.info(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
+    for i in range(inputpdf.numPages):
         tic = time()
         output = PdfFileWriter()
         output.addPage(inputpdf.getPage(i))
@@ -161,13 +158,13 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 'letter_image_preview': preview_data
             }
             _logger.info(
-                "\t\tPage {}/{} opened and QRCode analyzed in {:.2} "
-                "sec".format(i + 1, inputpdf.numPages, time() - tic))
+                f"\t\tPage {i + 1}/{inputpdf.numPages} opened and QRCode "
+                f"analyzed in {time() - tic:.2} sec")
             line_vals.append(values)
         else:
             _logger.info(
-                "\t\tPage {}/{} opened, no QRCode on this page. {:.2} "
-                "sec".format(i + 1, inputpdf.numPages, time() - tic))
+                f"\t\tPage {i + 1}/{inputpdf.numPages} opened, "
+                f"no QRCode on this page. {time() - tic:.2} sec")
 
         os.remove(img_path)
     letter_indexes.append(i+1)
@@ -197,8 +194,7 @@ def _decode_page(env, page_data):
         img_url = sniffpdf.get_images(
             page_data, dst_folder=os.getcwd(), dst_name='page')
         img_url = img_url[0]
-        _logger.info("\t\tPDF opened with sniffpdf in {:.3} sec".format(
-            time() - tic))
+        _logger.info(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
         # its time to remove the temporary PDF file
         os.remove(tmp_url)
     else:
@@ -217,8 +213,7 @@ def _decode_page(env, page_data):
         img_url = os.getcwd() + '/page.jpg'
         cv2.imwrite(img_url, img)
 
-        _logger.info("\t\tPDF opened with wand.image in {:.3} sec".format(
-            time() - tic))
+        _logger.info(f"\t\tPDF opened with wand.image in { time() - tic:.3} sec")
 
     tic = time()
 
@@ -226,12 +221,10 @@ def _decode_page(env, page_data):
     if decoder_lib == 'zxing':
         qrdata = zxing_wrapper.scan_qrcode(img_url)
         _logger.debug(
-            "\t\tQRCode decoded using ZXing in {:.3} sec".format(time() -
-                                                                 tic))
+            f"\t\tQRCode decoded using ZXing in {time()-tic:.3} sec")
     elif decoder_lib == 'zbar':
         qrdata = zbar_wrapper.scan_qrcode(img_url)
-        _logger.debug("\t\tQRCode decoded using ZBar in {:.3} sec".format(
-            time()-tic))
+        _logger.debug(f"\t\tQRCode decoded using ZBar in {time()-tic:.3} sec")
 
     return qrdata, img_url
 
@@ -276,6 +269,7 @@ def _find_template(env, img, line_vals, resize_ratio):
     """
     templates = env['correspondence.template'].search(
         [('pattern_image', '!=', False)])
+    templates = templates.filtered(lambda t: t.pattern_image != "")
     template, result_img = pr.find_template(
         img, templates, resize_ratio=resize_ratio)
 
@@ -330,7 +324,7 @@ def _find_languages(env, img, line_vals, resize_ratio=1.0):
         checked.append(checkbox_image.decision_threshold < score)
 
     checked_ind = [i for i, val in enumerate(checked) if val]
-    lang = map(lambda ind: checkbox_list[ind], checked_ind)
+    lang = list(map(lambda ind: checkbox_list[ind], checked_ind))
     if len(lang) == 1:
         lang = lang[0].language_id
         line_vals['letter_language_id'] = lang.id

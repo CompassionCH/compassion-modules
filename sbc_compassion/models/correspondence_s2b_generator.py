@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
@@ -20,10 +19,10 @@ from odoo.addons.queue_job.job import job, related_action
 _logger = logging.getLogger(__name__)
 
 try:
-    from pyPdf.pdf import PdfFileReader, PdfFileWriter
+    from PyPDF2 import PdfFileReader, PdfFileWriter
     from wand.image import Image
 except ImportError:
-    _logger.error('Please install bs4, pypdf and wand to use SBC module')
+    _logger.error('Please install bs4, PyPDF2 and wand to use SBC module')
 
 
 class CorrespondenceS2bGenerator(models.Model):
@@ -203,16 +202,10 @@ class CorrespondenceS2bGenerator(models.Model):
         for keyword, replacement in keywords.iteritems():
             text = text.replace(keyword, replacement)
 
-        header = u"{sponsor_id} - {sponsor_name} - \n" \
-            u"{child_id} - {child_name} -  {child_gender} - {child_age}" \
-            .format(**{
-                'sponsor_id': sponsor.global_id,
-                'sponsor_name': sponsor.name,
-                'child_id': child.local_id,
-                'child_name': child.lastname + ' ' + child.firstname,
-                'child_gender': 'Female' if child.gender == 'F' else 'Male',
-                'child_age': str(child.age)
-            })
+        header = f"{sponsor.global_id} - {sponsor.name} - \n" \
+                 f"{child.local_id} - {child.lastname +' '+ child.firstname}"\
+                 f" - {'Female' if child.gender == 'F' else 'Male'}" \
+                 f" - {str(child.age)}"
 
         return self.s2b_template_id.generate_pdf(
             sponsorship.name,

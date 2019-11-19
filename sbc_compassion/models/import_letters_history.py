@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -137,7 +136,7 @@ class ImportLettersHistory(models.Model):
                 letter.nber_letters = tmp
             else:
                 raise UserError(
-                    _("State: '{}' not implemented".format(letter.state)))
+                    _(f"State: '{letter.state}' not implemented"))
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -154,7 +153,7 @@ class ImportLettersHistory(models.Model):
                       "already open. Please finish it before creating a new "
                       "one.")
                 )
-        return super(ImportLettersHistory, self).create(vals)
+        return super().create(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -241,14 +240,12 @@ class ImportLettersHistory(models.Model):
                     zip_ = zipfile.ZipFile(zip_file, 'r')
                     for f in zip_.namelist():
                         logger.info(
-                            "Analyzing file {}/{}".format(
-                                progress, self.nber_letters))
+                            f"Analyzing file {progress}/{self.nber_letters}")
                         self._analyze_attachment(zip_.read(f), f)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
-                    logger.info("Analyzing file {}/{}".format(
-                        progress, self.nber_letters))
+                    logger.info(f"Analyzing file {progress}/{self.nber_letters}")
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:

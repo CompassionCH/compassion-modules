@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
@@ -22,24 +21,22 @@ from io import BytesIO
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 from ..tools.onramp_connector import SBCConnector
 
-from odoo.addons.message_center_compassion.mappings import base_mapping as \
-    mapping
-
 _logger = logging.getLogger(__name__)
 test_mode = config.get('test_enable')
 
 try:
     import magic
-    from pyPdf import PdfFileReader
+    from PyPDF2 import PdfFileReader
     from wand.image import Image
 except ImportError:
     _logger.error(
-        'Please install magic, pypdf and wand in order to use SBC module')
+        'Please install magic, PyPDF2 and wand in order to use SBC module')
 
 
 class CorrespondenceType(models.Model):
     _name = 'correspondence.type'
-    _inherit = 'connect.multipicklist'
+    _description = 'Type of correspondence'
+    _inherit = ['connect.multipicklist', 'compassion.mapped.model']
     res_model = 'correspondence'
     res_field = 'communication_type_ids'
 
@@ -87,8 +84,41 @@ class Correspondence(models.Model):
     state = fields.Selection(
         'get_states', default='Received in the system',
         track_visibility='onchange')
-    s2b_state = fields.Selection('get_s2b_states', compute='_compute_states')
-    b2s_state = fields.Selection('get_b2s_states', compute='_compute_states')
+    s2b_state = fields.Selection([
+        ('Received in the system', _('Scanned in')),
+        ('Global Partner translation queue', _('To Translate')),
+        ('Global Partner translation process', _('Translating')),
+        ('Quality check queue', _('Quality Check Queue')),
+        ('Quality check process', _('Quality Check Process')),
+        ('Translation and quality check complete',
+         _('Quality Check Done')),
+        ('Field Office translation queue', _('SDL FO Translation Queue')),
+        ('Composition process', _('Composition Process')),
+        ('Printed and sent to ICP', _('Sent to FCP')),
+        ('Exception', _('Exception')),
+        ('Quality check unsuccessful', _('Quality check failed')),
+        ('Translation check unsuccessful', _('Translation check '
+                                             'unsuccessful')),
+    ], compute='_compute_states')
+    b2s_state = fields.Selection([
+        ('Ready to be printed', _('Ready to be printed')),  # *
+        ('Field Office transcribing translation and content check '
+         'process', _('FO content check')),  # *
+        ('Field Office translation queue', _('SDL FO Translation Queue')),
+        ('In Translation', _('SDL FO Translation')),    # *
+        ('Quality check queue', _('Quality Check Queue')),
+        ('Quality check process', _('Quality Check Process')),
+        ('Translation and quality check complete',
+         _('Quality Check Done')),  # *
+        ('Global Partner translation queue', _('To Translate')),
+        ('Global Partner translation process', _('Translating')),
+        ('Composition process', _('Composition Process')),
+        ('Published to Global Partner', _('Published')),
+        ('Quality check unsuccessful', _('Quality check unsuccessful')),
+        ('Translation check unsuccessful', _('Translation check '
+                                             'unsuccessful')),
+        ('Exception', _('Exception')),
+    ], compute='_compute_states')
     email_read = fields.Datetime()
 
     # 2. Attachments and scans
@@ -181,52 +211,7 @@ class Correspondence(models.Model):
     @api.model
     def get_states(self):
         """ Returns all the possible states. """
-        return list(set(self.get_s2b_states()) | set(self.get_b2s_states()))
-
-    @api.model
-    def get_s2b_states(self):
-        """ Supporter to Beneficiary states, in correct order. """
-        # * means state is to be clarified by GMC
-        return [
-            ('Received in the system', _('Scanned in')),
-            ('Global Partner translation queue', _('To Translate')),
-            ('Global Partner translation process', _('Translating')),
-            ('Quality check queue', _('Quality Check Queue')),
-            ('Quality check process', _('Quality Check Process')),
-            ('Translation and quality check complete',
-             _('Quality Check Done')),
-            ('Field Office translation queue', _('SDL FO Translation Queue')),
-            ('Composition process', _('Composition Process')),
-            ('Printed and sent to ICP', _('Sent to FCP')),
-            ('Exception', _('Exception')),
-            ('Quality check unsuccessful', _('Quality check failed')),
-            ('Translation check unsuccessful', _('Translation check '
-                                                 'unsuccessful')),
-        ]
-
-    @api.model
-    def get_b2s_states(self):
-        """ Beneficiary to Supporter states, in correct order. """
-        # * means state is to be clarified by GMC
-        return [
-            ('Ready to be printed', _('Ready to be printed')),  # *
-            ('Field Office transcribing translation and content check '
-             'process', _('FO content check')),  # *
-            ('Field Office translation queue', _('SDL FO Translation Queue')),
-            ('In Translation', _('SDL FO Translation')),    # *
-            ('Quality check queue', _('Quality Check Queue')),
-            ('Quality check process', _('Quality Check Process')),
-            ('Translation and quality check complete',
-             _('Quality Check Done')),  # *
-            ('Global Partner translation queue', _('To Translate')),
-            ('Global Partner translation process', _('Translating')),
-            ('Composition process', _('Composition Process')),
-            ('Published to Global Partner', _('Published')),
-            ('Quality check unsuccessful', _('Quality check unsuccessful')),
-            ('Translation check unsuccessful', _('Translation check '
-                                                 'unsuccessful')),
-            ('Exception', _('Exception')),
-        ]
+        return list(set(self.s2b_state) | set(self.b2s_state))
 
     @api.multi
     def _compute_states(self):
@@ -446,7 +431,7 @@ class Correspondence(models.Model):
             else:
                 raise UserError(
                     _('You can only attach tiff or pdf files'))
-        letter = super(Correspondence, self).create(vals)
+        letter = super().create(vals)
         letter.file_name = letter._get_file_name()
         if letter_data and type_ == '.pdf':
             # Set the correct number of pages
@@ -467,7 +452,7 @@ class Correspondence(models.Model):
             vals['status_date'] = fields.Datetime.now()
         if 'translator_id' in vals:
             vals['translate_date'] = fields.Datetime.now()
-        return super(Correspondence, self).write(vals)
+        return super().write(vals)
 
     @api.multi
     def unlink(self):
@@ -480,13 +465,13 @@ class Correspondence(models.Model):
                           "translation or already sent to GMC."))
         # Remove unsent messages
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message'].search([
+        gmc_messages = self.env['gmc.message.pool'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure', 'postponed'])
         ])
         gmc_messages.unlink()
-        return super(Correspondence, self).unlink()
+        return super().unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -495,7 +480,7 @@ class Correspondence(models.Model):
     def create_commkit(self):
         for letter in self:
             action_id = self.env.ref('sbc_compassion.create_letter').id
-            message = self.env['gmc.message'].create({
+            message = self.env['gmc.message.pool'].create({
                 'action_id': action_id,
                 'object_id': letter.id,
                 'child_id': letter.child_id.id,
@@ -530,7 +515,13 @@ class Correspondence(models.Model):
         pages = self.page_ids
         if self.translated_text:
             source = 'translated_text'
-            if self.translated_text != self.english_text and \
+            # In case the translated text is not the same as the english text
+            # we want to filter page translations that are equal as the
+            # english version, because the translator may have put all
+            # translation in the same box. We want to avoid composing
+            # English text when it's not expected
+            if "".join(self.translated_text.split()) != "".join(
+                    self.english_text.split()) and \
                     self.translation_language_id.code_iso != 'eng':
                 # Avoid capturing english text that hasn't been translated
                 pages = pages.filtered(source).filtered(
@@ -576,38 +567,33 @@ class Correspondence(models.Model):
     @api.model
     def process_commkit(self, commkit_data):
         """ Update or Create the letter with given values. """
-        self.process_lock.acquire()
-        try:
-            letter_mapping = mapping.new_onramp_mapping(self._name, self.env)
-            letter_ids = list()
-            process_letters = self
-            for commkit in commkit_data.get('Responses', [commkit_data]):
-                vals = letter_mapping.get_vals_from_connect(commkit)
-                published_state = 'Published to Global Partner'
-                is_published = vals.get('state') == published_state
+        letter_ids = list()
+        process_letters = self
+        for commkit in commkit_data.get('Responses', [commkit_data]):
+            vals = self.json_to_data(commkit)
+            published_state = 'Published to Global Partner'
+            is_published = vals.get('state') == published_state
 
-                # Write/update letter
-                kit_identifier = vals.get('kit_identifier')
-                letter = self.search([('kit_identifier', '=', kit_identifier)])
-                if letter:
-                    # Avoid to publish twice a same letter
-                    is_published = is_published and letter.state != \
-                        published_state
-                    if is_published or letter.state != published_state:
-                        letter.write(vals)
-                else:
-                    if 'id' in vals:
-                        del vals['id']
-                    letter = self.with_context(no_comm_kit=True).create(vals)
+            # Write/update letter
+            kit_identifier = vals.get('kit_identifier')
+            letter = self.search([('kit_identifier', '=', kit_identifier)])
+            if letter:
+                # Avoid to publish twice a same letter
+                is_published = is_published and letter.state != \
+                    published_state
+                if is_published or letter.state != published_state:
+                    letter.write(vals)
+            else:
+                if 'id' in vals:
+                    del vals['id']
+                letter = self.with_context(no_comm_kit=True).create(vals)
 
-                if is_published:
-                    process_letters += letter
+            if is_published:
+                process_letters += letter
 
-                letter_ids.append(letter.id)
+            letter_ids.append(letter.id)
 
-            process_letters.process_letter()
-        finally:
-            self.process_lock.release()
+        process_letters.process_letter()
         return letter_ids
 
     def on_send_to_connect(self):
@@ -640,7 +626,7 @@ class Correspondence(models.Model):
             if letter.original_language_id not in \
                     letter.supporter_languages_ids:
                 res = res and letter.compose_letter_image()
-            letter.read_url = '/b2s_image?id={}'.format(letter.uuid)
+            letter.read_url = f'/b2s_image?id={letter.uuid}'
         return res
 
     @api.multi
@@ -655,8 +641,8 @@ class Correspondence(models.Model):
                     letter_url, 'pdf', dpi=300)  # resolution
             if image_data is None:
                 raise UserError(
-                    _("Image of letter {} was not found remotely.").format(
-                        letter.kit_identifier))
+                    _(f"Image of letter {letter.kit_identifier} "
+                      f"was not found remotely."))
             letter.write({
                 'file_name': letter._get_file_name(),
                 'letter_image': image_data
@@ -682,7 +668,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('Letter was put on hold'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message'].search([
+        gmc_messages = self.env['gmc.message.pool'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure'])
@@ -698,7 +684,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('The letter can now be sent.'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message'].search([
+        gmc_messages = self.env['gmc.message.pool'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', '=', 'postponed')
@@ -719,8 +705,7 @@ class Correspondence(models.Model):
         total = len(letters)
         index = 1
         for letter in letters:
-            _logger.info("... moving attachment of letter {}/{}"
-                         .format(index, total))
+            _logger.info(f"... moving attachment of letter {index}/{total}")
             attachments = attachment_obj.search([
                 ('res_model', '=', 'correspondence'),
                 ('res_id', '=', letter.id)
@@ -748,3 +733,63 @@ class Correspondence(models.Model):
             name += ' ' + self.kit_identifier
         name += '.' + (self.letter_format or 'pdf')
         return name
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        json_data = super().data_to_json(mapping_name)
+        json_data['GlobalPartnerSBCId'] = str
+        return json_data
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+
+        for json_data in json:
+            if json_data['Template'] and not json_data['Template'].startswith('CH'):
+                template = self.env['correspondence.template'].search([
+                    ('name', 'like', 'L' + json_data['Template'][5]),
+                    ('name', 'like', 'B2S')
+                ], limit=1)
+                return {'template_id': template.id}
+
+        odoo_data = super().json_to_data(json, mapping_name)
+
+        # TODO implement this
+        # if connect_name == 'GlobalPartnerSBCId':
+        #     # Cast to int
+        #     result[value_mapping] = int(value)
+
+        if 'child_id' in odoo_data and 'partner_id' in odoo_data:
+            partner_id = odoo_data.pop('partner_id')
+            child_id = odoo_data.pop('child_id')
+            sponsorship = self.env['recurring.contract'].search([
+                ('correspondent_id', '=', partner_id),
+                ('child_id', '=', child_id)], limit=1)
+            if not sponsorship:
+                # We can have multiple partners with same global_id :(
+                partner = self.env['res.partner'].browse(partner_id)
+                sponsorship = self.env['recurring.contract'].search([
+                    ('correspondent_id.global_id', '=', partner.global_id),
+                    ('child_id', '=', child_id)], limit=1)
+            if sponsorship:
+                odoo_data['sponsorship_id'] = sponsorship.id
+        # Replace dict by a tuple for the ORM update/create
+        if 'page_ids' in odoo_data:
+            pages = list()
+            for page in odoo_data['page_ids']:
+                page_url = page.get('original_page_url')
+                if not page_url:
+                    # We don't need to save pages not accessible
+                    continue
+                page_id = self.env['correspondence.page'].search(
+                    [('original_page_url', '=', page_url)], limit=1).id
+                # if page_url already exist update it
+                if page_id:
+                    orm_tuple = (1, page_id, page)
+                # else create a new one
+                else:
+                    orm_tuple = (0, 0, page)
+                pages.append(orm_tuple)
+            odoo_data['page_ids'] = pages or False
+
+        return odoo_data
+

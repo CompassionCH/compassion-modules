@@ -31,7 +31,7 @@
                     <group>
                         <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
                         <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
-                            <tree colors="red:status != 'ok';green:status == 'ok'" create="false" editable="bottom">
+                            <tree decoration-danger="status != 'ok'" decoration-success="status == 'ok'" create="false" editable="bottom">
                                 <field name="file_name" invisible="1"/>
                                 <field name="letter_image" string="Original file" filename="file_name"/>
                                 <field name="status"/>
@@ -67,7 +67,7 @@
         <field name="model">import.letters.history</field>
         <field name="arch" type="xml">
             <tree string="Imports"
-                  colors="blue:state == 'draft';black:state in ('open','pending');green:state == 'ready';grey:state == 'done'">
+                  decoration-primary="state == 'draft'" decoration-info="state in ('open','pending')" decoration-success="state == 'ready'" decoration-default="state == 'done'">
                 <field name="create_date"/>
                 <field name="write_date"/>
                 <field name="nber_letters"/>

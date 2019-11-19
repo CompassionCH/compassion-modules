@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -230,7 +229,7 @@ def measure_disorder(posA, posB):
     # be close to zero
     SAD = (np.absolute(posA-posB)).sum()
     # we return the mean of the Sum of Absolute Difference
-    disorder_pt = SAD / len(posA)
+    disorder_pt = SAD // len(posA)
     return disorder_pt
 
 
@@ -391,8 +390,7 @@ def find_template(img, templates, resize_ratio=1.0):
     _logger.debug("\t\t\tTemplates scores:\t" + '\t'.join(score))
     if matching_template:
         _logger.info("\t\t\tTemplate '" + matching_template.name +
-                     "' matched with {} keypoints in {:.3} seconds".format(
-                         nb_keypoints, tic))
+                     f"' matched with {nb_keypoints} keypoints in {tic:.3} seconds")
     else:
         _logger.info("\t\t\tNo template found.")
     return matching_template, keyPointCenter(key_img)

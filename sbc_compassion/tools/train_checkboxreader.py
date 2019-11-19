@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -136,7 +135,7 @@ def test(thresh, folder, indices=None):
         score = cbr_img.compute_boxscore(boxsize=17)
         if thresh < score:
             PR += 1.0
-    PR /= (len(indices)*1.0)
+    PR //= (len(indices)*1.0)
     return PR
 
 # ----------------------------------------------------------------------------

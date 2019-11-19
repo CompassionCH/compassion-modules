@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
@@ -24,7 +23,7 @@ DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + '/data/'
 
 class TestSbcCompassion(BaseSponsorshipTest):
     def setUp(self):
-        super(TestSbcCompassion, self).setUp()
+        super().setUp()
 
         self.t_child = self.create_child('TT123456789')
         self.t_partner = self.env.ref('base.res_partner_address_31')

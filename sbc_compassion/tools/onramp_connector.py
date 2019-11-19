@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -57,7 +56,7 @@ class SBCConnector(OnrampConnector):
 
         Returns the uploaded image URL.
         """
-        headers = {'Content-type': 'image/{0}'.format(image_type)}
+        headers = {f'Content-type': 'image/{image_type}'}
         params = {'doctype': 's2bletter'}
         url = self._connect_url+'images/documents'
         OnrampConnector.log_message(
@@ -70,7 +69,7 @@ class SBCConnector(OnrampConnector):
             letter_url = r.text
         else:
             raise UserError(
-                _('[%s] %s') % (r.status_code, r.text))
+                _(f'[{r.status_code}] {r.text}'))
         return letter_url
 
     def get_letter_image(self, letter_url, img_type='jpeg', pages=0, dpi=96):

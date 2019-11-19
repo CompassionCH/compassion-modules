@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -36,9 +35,9 @@ class CorrespondencePositionedObject(models.Model):
         :return: list of values
         """
         self.ensure_one()
-        return map(str, [
+        return list(map(str, [
             self.x_min, self.y_min, self.x_max, self.y_max
-        ])
+        ]))
 
 
 class CorrespondenceTextBox(models.Model):
@@ -60,7 +59,7 @@ class CorrespondenceTextBox(models.Model):
         :return: list of values
         """
         self.ensure_one()
-        res = super(CorrespondenceTextBox, self).get_json_repr()
+        res = super().get_json_repr()
         if self.text_type:
             res.append(self.text_type)
         res.append(str(self.text_line_height))

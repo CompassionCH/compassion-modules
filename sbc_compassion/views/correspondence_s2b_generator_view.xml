@@ -55,7 +55,7 @@
             <field name="name">correspondence.s2b.generator.tree</field>
             <field name="model">correspondence.s2b.generator</field>
             <field name="arch" type="xml">
-                <tree colors="blue:state == 'draft'">
+                <tree decoration-primary="state == 'draft'">
                     <field name="date"/>
                     <field name="name"/>
                     <field name="s2b_template_id"/>
