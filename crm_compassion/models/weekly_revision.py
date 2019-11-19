@@ -24,12 +24,12 @@ class WeeklyRevision(models.Model):
     week_start_date = fields.Date(required=True)
     week_end_date = fields.Date(required=True)
     type = fields.Selection([
-            ('web', _('Web')),
-            ('ambassador', _('Ambassador')),
-            ('events', _('Events')),
-            ('sub', _('Sub')),
-            ('cancel', _('Cancellation')),
-        ], required=True)
+        ('web', _('Web')),
+        ('ambassador', _('Ambassador')),
+        ('events', _('Events')),
+        ('sub', _('Sub')),
+        ('cancel', _('Cancellation')),
+    ], required=True)
 
     demand = fields.Float('Demand prevision')
     resupply = fields.Float('Resupply prevision')

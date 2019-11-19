@@ -27,13 +27,13 @@ class EventCompassion(models.Model):
     name = fields.Char(size=128, required=True, track_visibility='onchange')
     full_name = fields.Char(compute='_compute_full_name')
     type = fields.Selection([
-            ('stand', _("Stand")),
-            ('concert', _("Concert")),
-            ('presentation', _("Presentation")),
-            ('meeting', _("Meeting")),
-            ('sport', _("Sport event")),
-            ('tour', _("Sponsor tour")),
-        ], required=True, track_visibility='onchange')
+        ('stand', _("Stand")),
+        ('concert', _("Concert")),
+        ('presentation', _("Presentation")),
+        ('meeting', _("Meeting")),
+        ('sport', _("Sport event")),
+        ('tour', _("Sponsor tour")),
+    ], required=True, track_visibility='onchange')
     start_date = fields.Datetime(required=True)
     year = fields.Char(compute='_compute_year', store=True)
     end_date = fields.Datetime(required=True)
