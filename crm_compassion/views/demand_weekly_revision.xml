@@ -80,5 +80,5 @@
         <field name="context">{'search_default_date': 1, 'search_default_type': 1}</field>
     </record>
 
-    <menuitem id="menu_demand_revision" name="Demand Weekly Revision" parent="sales_team.menu_sales" action="open_view_demand_revision"/>
+    <menuitem id="menu_demand_revision" name="Demand Weekly Revision" parent="menu_sales" action="open_view_demand_revision"/>
 </odoo>

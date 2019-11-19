@@ -163,6 +163,6 @@
         </field>
     </record>
 
-    <menuitem id="menu_events_compassion" name="Events" parent="sales_team.menu_sales" sequence="3" action="action_events_compassion"/>
-    <menuitem id="sales_team.menu_sales" name="Sales" parent="sales_team.menu_base_partner" sequence="0"/>
+    <menuitem id="menu_sales" name="Sales" parent="crm.crm_menu_root" sequence="0"/>
+    <menuitem id="menu_events_compassion" name="Events" parent="menu_sales" sequence="3" action="action_events_compassion"/>
 </odoo>
