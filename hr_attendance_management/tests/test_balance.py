@@ -94,7 +94,7 @@ class TestAnnualBalance(SavepointCase):
             self.create_att_day_for_date_with_supp_hours(self.wednesday, person, 1)
             self.create_att_day_for_date_with_supp_hours(self.thursday, person, 1)
             self.create_att_day_for_date_with_supp_hours(self.friday, person, 1)
-            person.compute_balance()
+            person._compute_balance()
 
         # Both jack and michael have worked 5 days with 1 hours extra hours
         # each day.
@@ -105,12 +105,12 @@ class TestAnnualBalance(SavepointCase):
         # Upon switching to continuous computation, michael should loose up to
         # limit of extra hours.
         self.michael.extra_hours_continuous_cap = True
-        self.michael.compute_balance()
+        self.michael._compute_balance()
         self.assertEqual(self.michael.balance, 2)
         self.assertEqual(self.michael.extra_hours_lost, 3)
         # Switching back should come back to 2.5 extra hours.
         self.michael.extra_hours_continuous_cap = False
-        self.michael.compute_balance()
+        self.michael._compute_balance()
         self.assertEqual(self.michael.balance, 5)
         self.assertEqual(self.michael.extra_hours_lost, 0)
 
@@ -124,7 +124,7 @@ class TestAnnualBalance(SavepointCase):
             ('employee_id', '=', self.michael.id)
         ]).unlink()
         # self.jack._cron_compute_annual_balance()
-        self.jack.compute_balance()
+        self.jack._compute_balance()
         # michael extra hours should be affected by the yearly cutoff
         self.assertEqual(self.jack.balance, 2)
         self.assertEqual(self.michael.balance, 5)
@@ -137,7 +137,7 @@ class TestAnnualBalance(SavepointCase):
                 fields.Datetime.from_string(
                     person.attendance_days_ids[-1].attendance_ids[0].check_out) + \
                 timedelta(hours=3)
-        self.michael.compute_balance()
-        self.jack.compute_balance()
+        self.michael._compute_balance()
+        self.jack._compute_balance()
         self.assertEqual(self.jack.balance, 2)
-        self.assertEqual(self.michael.balance, 8)
+        self.assertEqual(self.michael.balance, 7.75)

@@ -49,25 +49,25 @@ class TestAttendanceDays(SavepointCase):
             last_monday + timedelta(days=6),    # sunday
         ]
 
-        # Create rules
-        cls.env['hr.attendance.rules'].create({
-            'time_from': 0,
-            'time_to': 5,
-            'due_break': 0,
-            'due_break_total': 0
-        })
-        cls.env['hr.attendance.rules'].create({
-            'time_from': 7,
-            'time_to': 9,
-            'due_break': 0.25,
-            'due_break_total': 0.5
-        })
-        cls.env['hr.attendance.rules'].create({
-            'time_from': 9,
-            'time_to': 24,
-            'due_break': 0.75,
-            'due_break_total': 1
-        })
+        # # Create rules
+        # cls.env['hr.attendance.rules'].create({
+        #     'time_from': 0,
+        #     'time_to': 5,
+        #     'due_break': 0,
+        #     'due_break_total': 0
+        # })
+        # cls.env['hr.attendance.rules'].create({
+        #     'time_from': 7,
+        #     'time_to': 9,
+        #     'due_break': 0.25,
+        #     'due_break_total': 0.5
+        # })
+        # cls.env['hr.attendance.rules'].create({
+        #     'time_from': 9,
+        #     'time_to': 24,
+        #     'due_break': 0.75,
+        #     'due_break_total': 1
+        # })
 
     ##########################################################################
     #                           ATTENDANCE DAY                               #
@@ -152,6 +152,11 @@ class TestAttendanceDays(SavepointCase):
             # Amount: 8h20
             # Amount break 1h00
 
+            all_attendance = self.env['hr.attendance'].search([
+                ('employee_id', '=', employee_id.id)
+            ])
+            if all_attendance:
+                all_attendance.unlink()
             attendance_01 = self.env['hr.attendance'].create({
                 'check_in': start_01,
                 'check_out': stop_01,
@@ -339,7 +344,7 @@ class TestAttendanceDays(SavepointCase):
         self.michael.extra_hours_continuous_cap = True
         # unlink periods to avoid taking the period value for extra_continuous_cap
         self.michael.period_ids.unlink()
-        self.michael.compute_balance()
+        self.michael._compute_balance()
         self.assertEqual(self.michael.balance, 20)
         self.assertEqual(sum_extra_hours, extra_hours*5*weeks)
 
@@ -348,10 +353,15 @@ class TestAttendanceDays(SavepointCase):
     ##########################################################################
 
     def create_attendance_day(self, date, employee):
-        self.env['hr.attendance.day'].create({
-            'date': date,
-            'employee_id': employee,
-        })
+        att_day = self.env['hr.attendance.day'].search([
+            ('date', '=', date),
+            ('employee_id', '=', employee)
+        ])
+        if not att_day:
+            self.env['hr.attendance.day'].create({
+                'date': date,
+                'employee_id': employee,
+            })
 
     def test_attendance_days_on_leave_request(self):
         """

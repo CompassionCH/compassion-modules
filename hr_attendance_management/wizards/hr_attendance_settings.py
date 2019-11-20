@@ -5,7 +5,7 @@
 
 from datetime import timedelta, date
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
@@ -33,7 +33,7 @@ class HrAttendanceSettings(models.TransientModel):
     def set_free_break(self):
         self.ensure_one()
         if self.free_break < 0:
-            raise ValidationError("Free break should be positive")
+            raise ValidationError(_("Free break should be positive"))
         if self.free_break != self.get_free_break():
             self.env['ir.config_parameter'].set_param(
                 'hr_attendance_management.free_break', str(self.free_break))
@@ -41,7 +41,7 @@ class HrAttendanceSettings(models.TransientModel):
     @api.multi
     def set_max_extra_hours(self):
         if self.max_extra_hours < 0:
-            raise ValidationError("Max extra hours should be positive")
+            raise ValidationError(_("Max extra hours should be positive"))
         # rounding is needed as postgres use less decimal place than python
         if round(self.max_extra_hours, 10) != self.get_max_extra_hours():
             self.env['ir.config_parameter'].set_param(

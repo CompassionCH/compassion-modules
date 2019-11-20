@@ -3,7 +3,6 @@
     <record id="create_period_wizard_view" model="ir.ui.view">
         <field name="name">Create period wizard</field>
         <field name="model">hr.create.period.wizard</field>
-        <field name="domain">[('employee_id','in', active_ids)]</field>
         <field name="arch" type="xml">
             <form>
                 <group>

@@ -22,13 +22,13 @@ class TestPeriod(SavepointCase):
         cls.gilles.calendar_id = 1
         cls.gilles.initial_balance = 0
 
-        cls.start_date_1 = datetime.today().replace(year=2018, month=1, day=1)
+        cls.start_date_1 = datetime.today().replace(year=2018, month=2, day=1)
         cls.end_date_1 = datetime.today().replace(year=2018, month=5, day=31)
 
         cls.start_date_2 = datetime.today().replace(year=2018, month=6, day=1)
         cls.end_date_2 = datetime.today().replace(year=2018, month=12, day=31)
 
-        cls.start_date_3 = datetime.today().replace(year=2019, month=1, day=1)
+        cls.start_date_3 = datetime.today().replace(year=2019, month=2, day=1)
         cls.end_date_3 = datetime.today().replace(year=2019, month=6, day=1)
 
         cls.env['hr.employee.period'].search([
@@ -103,6 +103,11 @@ class TestPeriod(SavepointCase):
 
     def test_changing_att_day_balance(self):
         self.gilles.period_ids.unlink()
+        all_att_days = self.env['hr.attendance.day'].search([
+            ('employee_id', '=', self.gilles.id)
+        ])
+        if all_att_days:
+            all_att_days.unlink()
         # 01.01.2018
         self.create_att_day_for_date_with_supp_hours(
             self.start_date_1, self.gilles.id, 1)
@@ -114,18 +119,24 @@ class TestPeriod(SavepointCase):
             self.start_date_3, self.gilles.id, 1)
 
         # self.assertEquals(self.gilles.balance, 0)
-        self.gilles.compute_balance(store=True)
+        self.gilles._compute_balance(store=True)
         self.assertEquals(len(self.gilles.period_ids), 1)
         self.assertEquals(self.gilles.period_ids[0].final_balance, 3)
         self.assertEquals(self.gilles.balance, 3)
 
         self.add_hours_to_last_attendance_day(1, self.gilles.id)
-        self.gilles.compute_balance()
-        self.assertEquals(self.gilles.balance, 4)
-        self.assertEquals(self.gilles.period_ids[0].final_balance, 4)
+        self.gilles._compute_balance()
+        self.assertEquals(self.gilles.balance, 3.5)
+        self.assertEquals(self.gilles.period_ids[0].final_balance, 3.5)
 
     def test_period_balances(self):
         self.gilles.period_ids.unlink()
+        all_att_days = self.env['hr.attendance.day'].search([
+            ('employee_id', '=', self.gilles.id)
+        ])
+        if all_att_days:
+            all_att_days.unlink()
+
         # 01.01.2018
         self.create_att_day_for_date_with_supp_hours(
             self.start_date_1, self.gilles.id, 1)
@@ -142,7 +153,7 @@ class TestPeriod(SavepointCase):
         self.assertEquals(len(att_days), 3)
 
         # compute balance and store the period calculated
-        self.gilles.compute_balance(store=True)
+        self.gilles._compute_balance(store=True)
         self.assertEquals(len(self.gilles.period_ids), 1)
         self.assertEquals(self.gilles.period_ids[0].final_balance, 3)
         self.assertEquals(self.gilles.balance, 3)
@@ -196,9 +207,9 @@ class TestPeriod(SavepointCase):
         self.assertEquals(self.gilles.balance, 3)
 
         # existing periods should be modified to make place for the new one
-        new_period_4 = self.create_period(start_date.replace(
-            year=2018, month=7, day=1),
-            end_date.replace(year=2019, month=2, day=1),
+        new_period_4 = self.create_period(
+            start_date.replace(year=2018, month=7, day=1),
+            end_date.replace(year=2019, month=4, day=1),
             self.gilles.id,
             False,
             0,
@@ -336,7 +347,7 @@ class TestPeriod(SavepointCase):
     # The 2 overlapping periods should be modified
     def test_create_with_previous_and_next_overlapping(self):
         start_date = datetime.today().replace(year=2018, month=10, day=1)
-        end_date = datetime.today().replace(year=2019, month=2, day=1)
+        end_date = datetime.today().replace(year=2019, month=3, day=1)
 
         old_previous_overlapping = self.env['hr.employee.period'].search([
             ('employee_id', '=', self.jack.id),

@@ -67,7 +67,7 @@ def migrate(env, version):
                                          None,
                                          new_period_lost,
                                          employee_model.extra_hours_continuous_cap)
-            employee_model.compute_balance()
+            employee_model._compute_balance()
 
             cr.execute(
                 """

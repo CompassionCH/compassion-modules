@@ -43,10 +43,10 @@ To configure this module, go in **Attendances/Configuration/Attendance Settings*
    when you start using the module to count the hours.
    Just go in one employee, under the Hours tab, and set the value. The value will be updated each year to avoid
    computing over more than one year of attendances.
-#. In ** Attendances/Manage Attendances/Employee** you can setup a *continuous extra hours computation* for each employee.
+#. In **Attendances/Manage Attendances/Employee** you can setup a *continuous extra hours computation* for each employee.
    When unset, this allows the employee to get over the max_extra_hours limit. The max_extra_hours will however be enforced
-   at the annual hours computation. The date of this computation can be set in **Attendance/Configuration/Next Balance Cron
-   Execution.
+   at the annual hours computation. The date of this computation can be set in *Attendance/Configuration/Next Balance Cron
+   Execution*.
 #. In **Employee/Contracts/Working Schedule** configure the working schedule of each employee by going to the
    *resource.calendar* object
 #. In **Leaves/Configuration/Leave Types** configure if leave types should not deduce from the due hours of

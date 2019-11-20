@@ -6,7 +6,7 @@
 import datetime
 import logging
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -239,7 +239,7 @@ class HrEmployee(models.Model):
             end_date = fields.Date.to_string(end_date)
 
         if start_date > end_date:
-            raise ValidationError("Start date must be earlier than end date.")
+            raise ValidationError(_("Start date must be earlier than end date."))
 
         attendance_day_ids = self.attendance_days_ids.filtered(
             lambda r: start_date <= r.date < end_date)
