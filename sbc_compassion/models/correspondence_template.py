@@ -174,8 +174,8 @@ class CorrespondenceTemplate(models.Model):
         area = numpy.array([
             self.pattern_x_min, self.pattern_x_max, self.pattern_y_min,
             self.pattern_y_max], float)
-        area[:2] = area[:2]//float(self.page_width)
-        area[2:] = area[2:]//float(self.page_height)
+        area[:2] = area[:2]/float(self.page_width)
+        area[2:] = area[2:]/float(self.page_height)
         return area
 
     def get_template_size(self, resize_factor=1.0):
@@ -290,7 +290,7 @@ class CorrespondenceTemplate(models.Model):
                 add_background.name, header_data, text_list, []]
 
         text_list = []
-        for t_type, t_boxes in text.iteritems():
+        for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
                 temp_text.append(tempfile.NamedTemporaryFile(
                     prefix=t_type + '_', suffix='.txt'))
@@ -346,7 +346,7 @@ class CorrespondenceTemplate(models.Model):
         std_err_file.close()
 
         # Read and return output
-        pdf_file = open(pdf_name, "r")
+        pdf_file = open(pdf_name, "rb")
         res = pdf_file.read()
         pdf_file.close()
         os.remove(pdf_file.name)

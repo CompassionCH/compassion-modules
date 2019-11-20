@@ -53,7 +53,7 @@ def compute_threshold(D1, D2, display=False):
     N1 = len(D1)
     N2 = len(D2)
 
-    bins = range(0, int(max(D12)), int(max(D12)/50.0))
+    bins = list(range(0, int(max(D12)), int(max(D12)/50.0)))
 
     # We define P1 to be the probability of the box to be checked, and P2 the
     # probability of being empty with P1 + P2 = 1
@@ -111,7 +111,7 @@ def train(folder, indices=None):
     files = os.listdir(folder)
     files.sort()
     if not indices:
-        indices = range(len(files))
+        indices = list(range(len(files)))
     for index in indices:
         img_name = files[index]
         img = cv2.imread(folder + '/' + img_name)
@@ -127,7 +127,7 @@ def test(thresh, folder, indices=None):
     files = os.listdir(folder)
     files.sort()
     if not indices:
-        indices = range(len(files))
+        indices = list(range(len(files)))
     for index in indices:
         img_name = files[index]
         img = cv2.imread(folder + '/' + img_name)
@@ -159,7 +159,7 @@ DFalse = train(folder0 + '/False')
 # display to False if you haven't matplotlib installed
 thresh = compute_threshold(DTrue, DFalse, display=True)
 # pylint: disable=print-used
-print('A nice decision threshold would be ' + str(thresh))
+print(('A nice decision threshold would be ' + str(thresh)))
 
 # Test:
 # We finally test the threshold. It is better to test it on images that you
@@ -170,6 +170,6 @@ TruePR = test(thresh, folder0 + '/True')
 FalsePR = test(thresh, folder0 + '/False')
 
 # pylint: disable=print-used
-print('True Rositive Rate: ' + str(TruePR))
+print(('True Rositive Rate: ' + str(TruePR)))
 # pylint: disable=print-used
-print('False Positive Rate: ' + str(FalsePR))
+print(('False Positive Rate: ' + str(FalsePR)))

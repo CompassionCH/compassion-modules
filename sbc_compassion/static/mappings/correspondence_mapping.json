@@ -3,43 +3,30 @@
   "model": "correspondence",
   "mapping": {
     "Beneficiary": {
+      "field" : "child_id",
       "sub_mapping": {
-        "name": "Beneficiary mapping",
+        "name": "Compassion Child",
         "model": "compassion.child",
         "mapping": {
           "Age": {
             "field": null
           },
           "CompassId": {
-            "field": "child_id.compass_id",
-            "search_relational_record": true
+            "field": "compass_id"
           },
           "Gender": {
             "field": null
           },
           "GlobalId": {
-            "field": "child_id.global_id",
-            "search_relational_record": true
+            "field": "global_id"
           },
           "LocalId": {
-            "field": "child_id.local_id",
-            "search_relational_record": true
+            "field": "local_id"
           },
           "Name": {
             "field": null
           },
           "ObjectUrl": {
-            "field": null
-          }
-        }
-      }
-    },
-    "Field Office": {
-      "sub_mapping": {
-        "name": "Field Office mapping",
-        "model": "compassion.field.office",
-        "mapping": {
-          "Name": {
             "field": null
           }
         }
@@ -52,22 +39,26 @@
       "field": null
     },
     "GlobalPartner": {
+      "Id": "self.env.user.company_id.country_id.code",
+      "OptInForLanguageTranslation": null
+      },
+    "Pages": {
+      "field": "page_ids",
       "sub_mapping": {
-        "name": "Global Partner mapping",
-        "model": "compassion.global.partner",
+        "name": "Correspondence Page mapping",
+        "model": "correspondence.page",
         "mapping": {
-          "Id": {
-            "field": null
+          "OriginalPageURL": {
+            "field": false
           },
-          "OptInForLanguageTranslation": {
-            "field": null
+          "FinalPageURL": {
+            "field": false
+          },
+          "OriginalText": {
+            "field": "original_text"
           }
         }
       }
-    },
-    "Pages": {
-      "field": "page_ids",
-      "search_relational_record": true
     },
     "Direction": {
       "field": "direction"
@@ -95,7 +86,8 @@
       "field": "final_letter_url"
     },
     "GlobalPartnerSBCId": {
-      "field": "id"
+      "field": "id",
+      "to_json_conversion": "str(odoo_value)"
     },
     "IsFinalLetter": {
       "field": null
@@ -149,6 +141,7 @@
       "search_relational_record": true
     },
     "Supporter": {
+      "field": "partner_id",
       "sub_mapping": {
         "name": "Supporter mapping",
         "model": "res.partner",
@@ -157,8 +150,7 @@
             "field": null
           },
           "GlobalId": {
-            "field": "partner_id.global_id",
-            "search_relational_record": true
+            "field": "global_id"
           },
           "MandatoryReviewRequired": {
             "field": "mandatory_review"
@@ -167,8 +159,7 @@
             "field": null
           },
           "PreferredName": {
-            "field": "partner_id.preferred_name",
-            "search_relational_record": true
+            "field": "preferred_name"
           },
           "Gender": {
             "field": null
@@ -177,7 +168,7 @@
       }
     },
     "SourceSystem": {
-      "to_json_conversion": "Odoo"
+      "to_json_conversion": "'Odoo'"
     },
     "GlobalPartner.Id": {
       "to_json_conversion": "self.env.user.company_id.country_id.code"

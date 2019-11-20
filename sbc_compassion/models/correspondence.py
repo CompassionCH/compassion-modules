@@ -36,7 +36,7 @@ except ImportError:
 class CorrespondenceType(models.Model):
     _name = 'correspondence.type'
     _description = 'Type of correspondence'
-    _inherit = ['connect.multipicklist', 'compassion.mapped.model']
+    _inherit = 'connect.multipicklist'
     res_model = 'correspondence'
     res_field = 'communication_type_ids'
 
@@ -48,7 +48,7 @@ class Correspondence(models.Model):
     _name = 'correspondence'
     _inherit = [
         'mail.thread', 'mail.activity.mixin', 'correspondence.metadata',
-        'translatable.model'
+        'translatable.model', 'compassion.mapped.model'
     ]
     _description = 'Letter'
     _order = 'status_date desc'
@@ -81,9 +81,6 @@ class Correspondence(models.Model):
         'correspondence_id', 'type_id',
         'Communication type',
         readonly=True)
-    state = fields.Selection(
-        'get_states', default='Received in the system',
-        track_visibility='onchange')
     s2b_state = fields.Selection([
         ('Received in the system', _('Scanned in')),
         ('Global Partner translation queue', _('To Translate')),
@@ -119,6 +116,9 @@ class Correspondence(models.Model):
                                              'unsuccessful')),
         ('Exception', _('Exception')),
     ], compute='_compute_states')
+    state = fields.Selection(
+        'get_states', default='Received in the system',
+        track_visibility='onchange')
     email_read = fields.Datetime()
 
     # 2. Attachments and scans
@@ -211,7 +211,8 @@ class Correspondence(models.Model):
     @api.model
     def get_states(self):
         """ Returns all the possible states. """
-        return list(set(self.s2b_state) | set(self.b2s_state))
+        return list(set(self._fields['s2b_state'].selection)
+                    | set(self._fields['s2b_state'].selection))
 
     @api.multi
     def _compute_states(self):
@@ -465,7 +466,7 @@ class Correspondence(models.Model):
                           "translation or already sent to GMC."))
         # Remove unsent messages
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure', 'postponed'])
@@ -480,7 +481,7 @@ class Correspondence(models.Model):
     def create_commkit(self):
         for letter in self:
             action_id = self.env.ref('sbc_compassion.create_letter').id
-            message = self.env['gmc.message.pool'].create({
+            message = self.env['gmc.message'].create({
                 'action_id': action_id,
                 'object_id': letter.id,
                 'child_id': letter.child_id.id,
@@ -668,7 +669,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('Letter was put on hold'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', 'in', ['new', 'failure'])
@@ -684,7 +685,7 @@ class Correspondence(models.Model):
             letter.message_post(
                 _('The letter can now be sent.'), message)
         gmc_action = self.env.ref('sbc_compassion.create_letter')
-        gmc_messages = self.env['gmc.message.pool'].search([
+        gmc_messages = self.env['gmc.message'].search([
             ('action_id', '=', gmc_action.id),
             ('object_id', 'in', self.ids),
             ('state', '=', 'postponed')
@@ -737,26 +738,39 @@ class Correspondence(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
-        json_data['GlobalPartnerSBCId'] = str
+
+        if "Status" in list(json_data.keys()):
+            del json_data['Status']
+
+        if "SBCTypes" in list(json_data.keys()):
+            del json_data['SBCTypes']
+
+        if "MarkedForRework" in list(json_data.keys()):
+            del json_data['MarkedForRework']
+
+        if "TranslationLanguage" in list(json_data.keys()):
+            del json_data['TranslationLanguage']
+
+        if "GlobalPartnerSBCId" in list(json_data.keys()):
+            json_data['GlobalPartnerSBCId'] = int(json_data['GlobalPartnerSBCId'])
+
         return json_data
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
 
-        for json_data in json:
-            if json_data['Template'] and not json_data['Template'].startswith('CH'):
-                template = self.env['correspondence.template'].search([
-                    ('name', 'like', 'L' + json_data['Template'][5]),
-                    ('name', 'like', 'B2S')
-                ], limit=1)
-                return {'template_id': template.id}
+        if 'Template' in json and not json['Template'].startswith('CH'):
+            template = self.env['correspondence.template'].search([
+                ('name', 'like', 'L' + json['Template'][5]),
+                ('name', 'like', 'B2S')
+            ], limit=1)
+            return {'template_id': template.id}
 
         odoo_data = super().json_to_data(json, mapping_name)
 
-        # TODO implement this
-        # if connect_name == 'GlobalPartnerSBCId':
-        #     # Cast to int
-        #     result[value_mapping] = int(value)
+        if 'GlobalPartnerSBCId' in list(json.keys()):
+            # Cast to int
+            odoo_data['id'] = int(odoo_data['id'])
 
         if 'child_id' in odoo_data and 'partner_id' in odoo_data:
             partner_id = odoo_data.pop('partner_id')
@@ -792,4 +806,3 @@ class Correspondence(models.Model):
             odoo_data['page_ids'] = pages or False
 
         return odoo_data
-

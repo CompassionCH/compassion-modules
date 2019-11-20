@@ -56,7 +56,12 @@ class SBCConnector(OnrampConnector):
 
         Returns the uploaded image URL.
         """
-        headers = {f'Content-type': 'image/{image_type}'}
+        content_type = ""
+        if image_type == "pdf":
+            content_type = "application"
+        else:
+            content_type = "image"
+        headers = {f'Content-type': f'{content_type}/{image_type}'}
         params = {'doctype': 's2bletter'}
         url = self._connect_url+'images/documents'
         OnrampConnector.log_message(

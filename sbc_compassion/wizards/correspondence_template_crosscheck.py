@@ -93,7 +93,7 @@ class CorrespondenceCrosscheck(models.TransientModel):
                                           kp2, good, None, flags=2)
                 name = t1.name + '-' + t2.name + '.png'
                 cv2.imwrite(name, img3)
-                with open(name, 'r') as f:
+                with open(name, 'rb') as f:
                     img3 = f.read()
                     remove(name)
                 image_id = self.env['crosscheck.image'].create({

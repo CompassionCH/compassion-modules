@@ -209,7 +209,7 @@ class ImportLettersHistory(models.Model):
     def onchange_config(self):
         config = self.config_id
         if config:
-            for field, val in config.get_correspondence_metadata().iteritems():
+            for field, val in list(config.get_correspondence_metadata().items()):
                 setattr(self, field, val)
 
     ##########################################################################
@@ -229,6 +229,7 @@ class ImportLettersHistory(models.Model):
         file_name_history = []
         logger.info("Imported files analysis started...")
         progress = 1
+
         for attachment in self.data:
             if attachment.name not in file_name_history:
                 file_name_history.append(attachment.name)
@@ -262,6 +263,6 @@ class ImportLettersHistory(models.Model):
     def _analyze_attachment(self, file_data, file_name):
         line_vals = func.analyze_attachment(
             self.env, file_data, file_name, self.template_id)
-        for i in xrange(0, len(line_vals)):
+        for i in range(0, len(line_vals)):
             line_vals[i]['import_id'] = self.id
             self.env['import.letter.line'].create(line_vals[i])

@@ -20,3 +20,6 @@ python-magic
 pyzbar
 matplotlib
 openupgradelib
+opencv-python
+opencv-contrib-python
+pdfminer

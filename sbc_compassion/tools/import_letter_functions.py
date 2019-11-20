@@ -118,7 +118,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     too.
 
     :param env env: Odoo variable env
-    :param dict line_vals: Dictionary that will hold values for import line
+    :param list line_vals: Dictionary that will hold values for import line
     :param inputpdf: PDFReader of the original pdf file
     :returns: binary data of images, numpy arrays of pages to analyze further
     :rtype: list(str), list(np.array)
@@ -176,7 +176,7 @@ def _decode_page(env, page_data):
     """
     Read the image and try to find the QR codes.
 
-    :param string page_data: Data of the PDF single page
+    :param bytes page_data: Data of the PDF single page
     :returns: decoded qrcode, numpy array of page and test image data to show
               the detection
     :rtype: str, binary
@@ -240,8 +240,8 @@ def decode_barcode(env, barcode):
     """
     partner_id = None
     child_id = None
-    if barcode is not None and 'XX' in barcode['data']:
-        barcode_split = barcode['data'].split('XX')
+    if barcode is not None and b'XX' in barcode['data']:
+        barcode_split = barcode['data'].split(b'XX')
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
             child_ref_field = 'local_id'
@@ -324,7 +324,7 @@ def _find_languages(env, img, line_vals, resize_ratio=1.0):
         checked.append(checkbox_image.decision_threshold < score)
 
     checked_ind = [i for i, val in enumerate(checked) if val]
-    lang = list(map(lambda ind: checkbox_list[ind], checked_ind))
+    lang = list([checkbox_list[ind] for ind in checked_ind])
     if len(lang) == 1:
         lang = lang[0].language_id
         line_vals['letter_language_id'] = lang.id

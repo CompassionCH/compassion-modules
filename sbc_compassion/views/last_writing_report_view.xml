@@ -52,7 +52,9 @@
                 <field name="time_to_first_writing"/>
                 <field name="sponsorship_type"/>
                 <separator/>
-                <filter name="first_three_month" string="Didn't write in first 3 months" domain="[('time_to_first_writing', '&gt;', 91), ('activation_date', '&gt;', (context_today()-relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+                <filter name="first_three_month" string="Didn't write in first 3 months" domain="[('time_to_first_writing', '&gt;', 91),
+                                                                                                    ('activation_date', '&gt;',
+                                                                                                    (context_today()-relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
                 <filter name="six_month" string="Didn't write since 6 months" domain="[('last_write_date', '&lt;=', (context_today()-relativedelta(months=6)).strftime('%Y-%m-%d')), ('activation_date', '&lt;=', (context_today()-relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
                 <group expand="0" string="Group By"/>
             </search>

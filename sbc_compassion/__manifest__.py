@@ -59,11 +59,12 @@
         'data/correspondence_template_data.xml',
         'data/correspondence_type.xml',
         'data/child_layouts.xml',
+        'data/correspondence_mappings.xml',
         'data/gmc_action.xml',
         ],
     'demo': ['demo/correspondence_template.xml',
              ],
     'installable': True,
     'auto_install': False,
-    "post_init_hook": "post_init_hook",
+    "post_init_hook": "load_mappings",
     }

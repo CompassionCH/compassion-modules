@@ -67,7 +67,10 @@
         <field name="model">import.letters.history</field>
         <field name="arch" type="xml">
             <tree string="Imports"
-                  decoration-primary="state == 'draft'" decoration-info="state in ('open','pending')" decoration-success="state == 'ready'" decoration-default="state == 'done'">
+                  decoration-primary="state == 'draft'"
+                  decoration-info="state in ('open','pending')"
+                  decoration-success="state == 'ready'"
+                  decoration-muted="state == 'done'">
                 <field name="create_date"/>
                 <field name="write_date"/>
                 <field name="nber_letters"/>

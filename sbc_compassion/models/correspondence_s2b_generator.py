@@ -199,7 +199,7 @@ class CorrespondenceS2bGenerator(models.Model):
             '%lastname%': sponsor.firstname and sponsor.lastname or '',
         }
         text = self.body
-        for keyword, replacement in keywords.iteritems():
+        for keyword, replacement in list(keywords.items()):
             text = text.replace(keyword, replacement)
 
         header = f"{sponsor.global_id} - {sponsor.name} - \n" \

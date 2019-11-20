@@ -8,10 +8,10 @@
 #
 ##############################################################################
 import logging
+import html
 from odoo import models, fields, api, _
 _logger = logging.getLogger(__name__)
 
-import html.parser
 
 BOX_SEPARATOR = '#BOX#'
 PAGE_SEPARATOR = '#PAGE#'
@@ -54,16 +54,17 @@ class CorrespondencePage(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
-        json_data['OriginalText'] = lambda text: self.format_text(text)
+        for json in json_data:
+            if isinstance(json, dict) and 'OriginalText' in list(json.keys()):
+                json['OriginalText'] = self.format_text(json['OriginalText'])
         return json_data
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)
-        html_parser = html.parser.HTMLParser()
-        fields = ('original_text', 'english_text', 'translated_text')
-        for field in fields:
+        odoo_fields = ('original_text', 'english_text', 'translated_text')
+        for field in odoo_fields:
             if field in odoo_data:
-                odoo_data[field] = html_parser.unescape(BOX_SEPARATOR.join(
+                odoo_data[field] = html.unescape(BOX_SEPARATOR.join(
                     odoo_data[field]))
         return odoo_data
