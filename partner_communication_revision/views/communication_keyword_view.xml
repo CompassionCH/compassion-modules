@@ -26,14 +26,11 @@
         <field name="name">communication.revision.keyword.if.tree</field>
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
-            <tree create="false"
-                  colors="darkblue:color=='darkblue';darkred:color=='darkred';darkgreen:color=='darkgreen';darkslateblue:color=='darkslateblue';firebrick:color=='firebrick';mediumorchid:color=='mediumorchid';orangered:color=='orangered';saddlebrown:color=='saddlebrown';seagreen:color=='seagreen';tomato:color=='tomato';darkslategrey:color=='darkslategrey';blueviolet:color=='blueviolet';burlywood:color=='burlywood';cadetblue:color=='cadetblue';coral:color=='coral';darksalmon:color=='darksalmon';goldenrod:color=='goldenrod'">
-                <field name="color" invisible="1"/>
-                <button name="toggle_edit_value" widget="toggle_button" field_name="edit_value" type="object"
-                        options='{"active": "Set condition to false", "inactive": "Set condition to true"}'/>
-                <field name="short_code"/>
+            <tree create="false" colors="color_field: color">
+                <field name="color" invisible="1" />
+                <field name="edit_value" widget="toggle_button" options='{"active": "Set condition to false", "inactive": "Set condition to true"}'/>
+                <field name="short_code" />
                 <field name="name" string="Description"/>
-                <field name="edit_value" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -42,9 +39,8 @@
         <field name="name">communication.revision.keyword.tree</field>
         <field name="model">partner.communication.keyword</field>
         <field name="arch" type="xml">
-            <tree create="false"
-                  colors="darkblue:color=='darkblue';darkred:color=='darkred';darkgreen:color=='darkgreen';darkslateblue:color=='darkslateblue';firebrick:color=='firebrick';mediumorchid:color=='mediumorchid';orangered:color=='orangered';saddlebrown:color=='saddlebrown';seagreen:color=='seagreen';tomato:color=='tomato';darkslategrey:color=='darkslategrey';blueviolet:color=='blueviolet';burlywood:color=='burlywood';cadetblue:color=='cadetblue';coral:color=='coral';darksalmon:color=='darksalmon';goldenrod:color=='goldenrod'">
-                <field name="color" invisible="1"/>
+            <tree create="false" colors="color_field: color">
+                <field name="color" invisible="1" />
                 <field name="type"/>
                 <field name="short_code"/>
                 <field name="name" string="Description"/>

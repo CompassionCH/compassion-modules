@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import StringIO
+import io
 import base64
 
-from pyPdf import PdfFileReader
+from PyPDF2 import PdfFileReader
 
 from odoo import models, api, fields
 
@@ -65,7 +64,7 @@ class RevisionPreview(models.TransientModel):
     def unlink(self):
         """ Remove preview jobs. """
         self.mapped('preview_job_id').unlink()
-        return super(RevisionPreview, self).unlink()
+        return super().unlink()
 
     @api.multi
     def preview(self):
@@ -106,7 +105,7 @@ class RevisionPreview(models.TransientModel):
             pdf_data = self.env['report'].with_context(
                 must_skip_send_to_printer=True
             ).get_pdf(self.preview_job_id.ids, config.report_id.report_name)
-            pdf = PdfFileReader(StringIO.StringIO(pdf_data))
+            pdf = PdfFileReader(io.StringIO(pdf_data))
             self.write({
                 'pdf_data': base64.b64encode(pdf_data),
                 'pdf_page_count': pdf.getNumPages()

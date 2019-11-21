@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -33,14 +32,14 @@ class ValidateRevisionWizard(models.TransientModel):
     def submit(self):
         self.ensure_one()
         revision = self.revision_id
-        next_action_text = u'<b>Next action for {}: '
+        next_action_text = '<b>Next action for {}: '
         if self.state == 'pending':
-            subject_base = u'[{}] Revision text submitted'
-            next_action_text += u'Proofread and approve or correct.'
+            subject_base = '[{}] Revision text submitted'
+            next_action_text += 'Proofread and approve or correct.'
             next_action_text = next_action_text.format(
                 revision.correction_user_id.firstname)
-            body_base = u'A new text for was submitted for approval.' \
-                u'<br/><br/>{}'
+            body_base = 'A new text for was submitted for approval.' \
+                '<br/><br/>{}'
             revision.write({
                 'proposition_correction':
                 revision.proposition_correction or revision.proposition_text,
@@ -49,14 +48,14 @@ class ValidateRevisionWizard(models.TransientModel):
                 'state': 'submit',
             })
         else:
-            subject_base = u'[{}] Correction submitted'
-            next_action_text += u'Approve or submit new proposition.'
+            subject_base = '[{}] Correction submitted'
+            next_action_text += 'Approve or submit new proposition.'
             next_action_text = next_action_text.format(
                 revision.user_id.firstname)
-            body_base = u'Corrections were proposed.<br/><br/>{}'
+            body_base = 'Corrections were proposed.<br/><br/>{}'
             revision.write({'state': 'corrected'})
 
-        body = next_action_text + u'</b><br/><br/>' + body_base.format(
+        body = next_action_text + '</b><br/><br/>' + body_base.format(
             self.comments or '').strip()
         subject = subject_base.format(revision.display_name)
         revision.notify_proposition(subject, body)

@@ -6,9 +6,9 @@ from odoo import models, api
 _logger = logging.getLogger(__name__)
 
 try:
-    from pyPdf import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileWriter, PdfFileReader
 except ImportError:
-    _logger.warning("Please install library pyPdf")
+    _logger.warning("Please install library PyPDF2")
 
 
 class OmrAwareReport(models.Model):
