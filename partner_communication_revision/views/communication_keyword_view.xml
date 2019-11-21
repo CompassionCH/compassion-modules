@@ -28,7 +28,9 @@
         <field name="arch" type="xml">
             <tree create="false" colors="color_field: color">
                 <field name="color" invisible="1" />
-                <field name="edit_value" widget="toggle_button" options='{"active": "Set condition to false", "inactive": "Set condition to true"}'/>
+                <field name="edit_value" invisible="1"/>
+                <button name="toggle_edit_value" string="Toggle true" type="object" attrs="{'invisible':[('edit_value','=',True)]}"/>
+                <button name="toggle_edit_value" string="Toggle false" type="object" attrs="{'invisible':[('edit_value','=', False)]}"/>
                 <field name="short_code" />
                 <field name="name" string="Description"/>
             </tree>

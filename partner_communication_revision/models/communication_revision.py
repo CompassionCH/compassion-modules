@@ -284,16 +284,19 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def keyword_toggle_value(self, keyword):
+        """
+            Switch the text in the 'if' clause between 'true_text' and 'false_text'
+            Save the modified text for the correct clause
+        :param keyword:
+        :return:
+        """
         if keyword in self.keyword_ids:
             text = PyQuery(self.simplified_text)
             text_selector = text('#' + keyword.html_id)
             current_text = text_selector.html()
             if current_text is not None:
-                keyword.set_text(current_text, keyword.edit_value)
-            if keyword.edit_value:
-                text_selector.html(keyword.false_text)
-            else:
-                text_selector.html(keyword.true_text)
+                keyword.set_text(current_text, not keyword.edit_value)
+            text_selector.html(keyword.get_text())
             self.with_context(no_update=True).write({'simplified_text': text.html()})
 
     @api.multi
@@ -613,8 +616,7 @@ class CommunicationRevision(models.Model):
                 self.env.clear()
             keywords += keyword
             keyword_number += 1
-            simple_text = safe_replace(
-                simple_text, raw_code, keyword.replacement)
+            simple_text = safe_replace(simple_text, raw_code, keyword.replacement)
         return simple_text, keywords
 
     def _replace_if(self, text, nested_position, keyword_number=1):

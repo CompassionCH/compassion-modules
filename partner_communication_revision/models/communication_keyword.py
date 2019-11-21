@@ -183,7 +183,8 @@ class CommunicationKeyword(models.Model):
                 visible_text = keyword.get_text()
             else:
                 visible_text = filter_html.sub('', keyword.replacement)
-            keyword.is_visible = bool(visible_text)
+            keyword.is_visible = visible_text and visible_text in \
+                keyword.revision_id.simplified_text
 
     @api.model
     def create(self, vals):
@@ -216,9 +217,10 @@ class CommunicationKeyword(models.Model):
             keyword.index -= 1
         return res
 
-    @api.onchange('edit_value')
-    def onchange_edit_value(self):
-        self._origin.revision_id.keyword_toggle_value(self._origin)
+    @api.multi
+    def toggle_edit_value(self):
+        self.write({"edit_value": not self.edit_value})
+        self.revision_id.keyword_toggle_value(self)
 
     @api.multi
     def set_text(self, text, edit_value):
