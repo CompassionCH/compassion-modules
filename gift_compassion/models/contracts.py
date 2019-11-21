@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -14,7 +13,8 @@ import calendar
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
-from odoo.addons.sponsorship_compassion.models.product import GIFT_CATEGORY
+from odoo.addons.sponsorship_compassion.models.product_names \
+    import GIFT_CATEGORY
 
 
 class SponsorshipContract(models.Model):
@@ -44,8 +44,11 @@ class SponsorshipContract(models.Model):
         """ Prevent to reconcile invoices for fund-suspended projects
             or sponsorships older than 3 months. """
         for invl in invoice.invoice_line_ids:
+            existing_gift_for_invl = self.env['sponsorship.gift'].search([
+                ('invoice_line_ids', 'in', invl.id)
+            ])
             if invl.product_id.categ_name == GIFT_CATEGORY and \
-                    invl.contract_id.child_id:
+                    invl.contract_id.child_id and not existing_gift_for_invl:
                 # Create the Sponsorship Gift
                 gift = self.env['sponsorship.gift']\
                     .create_from_invoice_line(invl)
