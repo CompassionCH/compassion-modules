@@ -201,7 +201,7 @@
 
         <record id="intervention_amend" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/AmendmentKit</field>
-            <field name="action_id" ref="update_intervention_details"/>
+            <field name="action_id" ref="intervention_amendment_commitment_notification"/>
         </record>
 
         <record id="intervention_commited_percent_connect" model="gmc.action.connect">
