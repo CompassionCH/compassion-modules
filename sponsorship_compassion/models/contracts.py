@@ -343,9 +343,12 @@ class SponsorshipContract(models.Model):
             old_correspondents = self.mapped('correspondent_id')
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondent_id'])
+            if not updated_correspondents:
+                raise RuntimeError(_("The current commitment at GMC side could not be "
+                                     "cancelled."))
             self.mapped('child_id').write({
                 'sponsor_id': vals['correspondent_id']
-                })
+            })
 
         super(SponsorshipContract, self).write(vals)
 
@@ -851,10 +854,8 @@ class SponsorshipContract(models.Model):
         one.
         But in Odoo, we will not see the commitment has changed.
         """
-        message_obj = self.env['gmc.message.pool'].with_context(
-            async_mode=False)
-        create_action = self.env.ref(
-            'sponsorship_compassion.create_sponsorship')
+        message_obj = self.env['gmc.message.pool'].with_context(async_mode=False)
+        create_action = self.env.ref('sponsorship_compassion.create_sponsorship')
 
         # Upsert correspondents
         self.mapped('correspondent_id').upsert_constituent().process_messages()
@@ -871,7 +872,7 @@ class SponsorshipContract(models.Model):
             })
         messages.process_messages()
         for i in range(0, len(messages)):
-            if messages[i].state == 'failure':
+            if not messages[i].state == 'success':
                 self[i].message_post(
                     messages[i].failure_reason,
                     _("The sponsorship is no more active!")
