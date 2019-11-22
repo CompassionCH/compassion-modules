@@ -340,10 +340,13 @@ class SponsorshipContract(models.Model):
 
         updated_correspondents = self.env[self._name]
         if 'correspondent_id' in vals:
-            old_correspondents = self.mapped('correspondent_id')
-            updated_correspondents = self._on_change_correspondant(
+            sponsorships = self.filtered(
+                lambda s: s.correspondent_id.id != vals['correspondent_id']
+            )
+            old_correspondents = sponsorships.mapped('correspondent_id')
+            updated_correspondents = sponsorships._on_change_correspondant(
                 vals['correspondent_id'])
-            if not updated_correspondents:
+            if not updated_correspondents and sponsorships:
                 raise RuntimeError(_("The current commitment at GMC side could not be "
                                      "cancelled."))
             self.mapped('child_id').write({
