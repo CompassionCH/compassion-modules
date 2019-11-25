@@ -42,4 +42,4 @@ class OmrAwareReport(models.Model):
                 res = out_buffer.getvalue()
                 return res
 
-        return super().get_pdf(docids, data=data)
+        return super().render_qweb_pdf(docids, data=data)
