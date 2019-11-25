@@ -198,7 +198,7 @@ class CommunicationKeyword(models.Model):
             vals['color'] = COLOR_SEQUENCE[count % len(COLOR_SEQUENCE)]
         keyword = super().create(vals)
         # Define html_id once
-        keyword.html_id = str(count+1) + '-' + keyword.short_code
+        keyword.html_id = f'{count+1}-{keyword.type}-{keyword.short_code}'
         return keyword
 
     @api.multi
