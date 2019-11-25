@@ -49,7 +49,6 @@
                             "hover_true": "Hide unused keywords",
                             "hover_false": "Show all keywords"}}'/>
                     </button>
-                    <button name="refresh_text" type="object" string="Update text" class="sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                         <field name="edit_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree'}"/>
@@ -74,7 +73,6 @@
                         <field name="raw_subject"/>
                     </group>
                     <field name="simplified_text" widget="html" readonly="1"/>
-                    <button name="refresh_text" type="object" string="Update text" class="oe_highlight sht_refresh_button"/>
                     <group>
                         <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
                     </group>

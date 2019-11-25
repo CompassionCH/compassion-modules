@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -11,7 +10,6 @@
 import re
 
 from odoo import api, models, fields
-
 
 COLOR_SEQUENCE = [
     'darkblue',
@@ -98,10 +96,6 @@ class CommunicationKeyword(models.Model):
         help='Set this value to true or false to edit the corresponding '
              'part of the text on the template.'
     )
-    edit_changed = fields.Integer(
-        readonly=True,
-        help='Internally used to check if edit value has been changed.'
-    )
     color = fields.Char()
 
     _sql_constraints = [
@@ -143,21 +137,21 @@ class CommunicationKeyword(models.Model):
     def _compute_final_text(self):
         for keyword in self:
             if keyword.type == 'if':
-                final_text = u'\n' + keyword.raw_code + u'\n\t' + \
-                    keyword.true_text
+                final_text = f"\n{keyword.raw_code}\n\t{keyword.true_text}"
                 if keyword.false_text:
-                    final_text += u'\n\t% else:\n\t' + keyword.false_text
-                final_text += u'\n% endif \n'
+                    final_text += f"\n\t% else:\n\t{keyword.false_text}"
+                final_text += "\n% endif \n"
                 keyword.final_text = final_text
+
             elif 'for' in keyword.type:
-                final_text = u'\n' + keyword.raw_code + u'\n\t' + \
-                    keyword.true_text
-                final_text += u'\n% endfor \n'
+                final_text = f"\n{keyword.raw_code}\n\t{keyword.true_text}"
+                final_text += "\n% endfor \n"
                 if keyword.type == 'for_ul':
-                    final_text = u'<ul>{}</ul>'.format(final_text)
+                    final_text = f"<ul>{final_text}</ul>"
                 keyword.final_text = final_text
+
             elif keyword.type == 'var':
-                keyword.final_text = u'\n' + keyword.raw_code + u'\n'
+                keyword.final_text = f"\n{keyword.raw_code}\n"
             else:
                 keyword.final_text = keyword.raw_code
 
@@ -165,19 +159,18 @@ class CommunicationKeyword(models.Model):
     def _compute_replacement(self):
         for keyword in self:
             if keyword.type in ('if', 'for'):
-                s = u'<span id="{}" style="color: {};">{}</span>'
+                s = '<span id="{}" style="color: {};">{}</span>'
                 keyword.replacement = s.format(
                     keyword.html_id, keyword.color, keyword.get_text())
             elif keyword.type == 'for_ul':
-                s = u'<ul id="{}" style="color: {};">{}</ul>'
+                s = '<ul id="{}" style="color: {};">{}</ul>'
                 keyword.replacement = s.format(
                     keyword.html_id, keyword.color, keyword.get_text())
             elif keyword.type == 'var':
-                keyword.replacement = u'<span id="{}"></span>'.format(
-                    keyword.html_id)
+                keyword.replacement = f'<span id="{keyword.html_id}"></span>'
             elif keyword.type == 'code':
-                s = u'<span id="{}" style="color: white; background-color: ' \
-                    u'{};">[{}]</span>'
+                s = '<span id="{}" style="color: white; background-color: ' \
+                    '{};">[{}]</span>'
                 keyword.replacement = s.format(
                     keyword.html_id, keyword.color, keyword.short_code)
 
@@ -203,7 +196,7 @@ class CommunicationKeyword(models.Model):
         vals['index'] = count + 1
         if 'color' not in vals:
             vals['color'] = COLOR_SEQUENCE[count % len(COLOR_SEQUENCE)]
-        keyword = super(CommunicationKeyword, self).create(vals)
+        keyword = super().create(vals)
         # Define html_id once
         keyword.html_id = str(count+1) + '-' + keyword.short_code
         return keyword
@@ -219,27 +212,15 @@ class CommunicationKeyword(models.Model):
                 ('index', '>', keyword.index),
                 ('id', 'not in', self.ids)
             ])
-        res = super(CommunicationKeyword, self).unlink()
+        res = super().unlink()
         for keyword in other_kw.sorted('index'):
             keyword.index -= 1
         return res
 
     @api.multi
     def toggle_edit_value(self):
-        set_true = self.search([
-            ('id', 'in', self.ids),
-            ('type', '=', 'if'),
-            ('edit_value', '=', False)])
-        set_false = (self - set_true).filtered(lambda k: k.type == 'if')
-        vals = {'edit_value': True}
-        for keyword in set_true:
-            vals['edit_changed'] = keyword.edit_changed + 1
-            keyword.write(vals)
-        vals['edit_value'] = False
-        for keyword in set_false:
-            vals['edit_changed'] = keyword.edit_changed + 1
-            keyword.write(vals)
-        return True
+        self.write({"edit_value": not self.edit_value})
+        self.revision_id.keyword_toggle_value(self)
 
     @api.multi
     def set_text(self, text, edit_value):
@@ -250,7 +231,7 @@ class CommunicationKeyword(models.Model):
         :return: None
         """
         self.ensure_one()
-        if text == "[{}]".format(self.short_code):
+        if text == f"[{self.short_code}]":
             text = False
         field = 'true_text' if (edit_value or
                                 'for' in self.type) else 'false_text'
@@ -263,4 +244,4 @@ class CommunicationKeyword(models.Model):
         if self.edit_value or 'for' in self.type:
             return self.true_text
         else:
-            return self.false_text or "[{}]".format(self.short_code)
+            return self.false_text or f"[{self.short_code}]"
