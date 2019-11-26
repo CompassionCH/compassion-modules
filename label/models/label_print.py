@@ -9,8 +9,7 @@
 ##############################################################################
 
 from odoo import models, fields, api, _
-from odoo.tools import safe_eval
-import json
+
 
 class LabelPrint(models.Model):
     _name = "label.print"

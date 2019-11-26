@@ -112,7 +112,8 @@ class ReportDynamicLabel(models.TransientModel):
             'env': self.env,
             'label_data': self.get_data(
                 data['rows'], data['columns'],
-                self.env[self.env.context.get('active_model')].browse(data['active_ids']),
+                self.env[self.env.context.get(
+                    'active_model')].browse(data['active_ids']),
                 data['number_labels'])
         })
         return data
