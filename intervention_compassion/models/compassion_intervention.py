@@ -724,15 +724,17 @@ class CompassionIntervention(models.Model):
         :return list of intervention ids which are concerned
                 by the message """
         # sleep to prevent a concurence error
-        time.sleep(60)
+        time.sleep(10)
         intervention_mapping = mapping.new_onramp_mapping(
             self._name,
             self.env,
             'intervention_mapping')
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        interventionamendment = commkit_data[
-            'InterventionAmendmentCommitmentNotification']
+        interventionamendment = commkit_data.get(
+            'InterventionAmendmentCommitmentNotification',
+            commkit_data.get('InterventionAmendmentKitRequest', [{}])[0]
+        )
         intervention_local_ids = []
 
         v = intervention_mapping.get_vals_from_connect(interventionamendment)
@@ -744,16 +746,21 @@ class CompassionIntervention(models.Model):
         ])
 
         if intervention:
-            intervention.total_amendment += amendment_amount
+            if amendment_amount:
+                intervention.total_amendment += amendment_amount
             intervention.get_infos()
             intervention_local_ids.append(intervention.id)
             body = _("This intervention has been modified by amendment.")
             body += "<br/><ul><li>Amendment ID: {}</li>".format(
                 interventionamendment['InterventionAmendment_ID'])
+            body += "<li>Amendment Type: {}</li>".format(
+                ', '.join(interventionamendment.get('AmendmentType', [])))
+            body += "<li>Amendment Reason: {}</li>".format(
+                interventionamendment.get('ReasonsForAmendment', ''))
             body += "<li>Amendment Amount: {}</li>".format(
                 amendment_amount)
             body += "<li>Hold ID: {}</li></ul>".format(
-                interventionamendment['HoldID'])
+                interventionamendment.get('HoldID', ''))
             intervention.message_post(
                 body,
                 subject=_(intervention.name + ": Amendment received"),
