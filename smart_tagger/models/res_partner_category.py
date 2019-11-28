@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -29,6 +28,19 @@ class ResPartnerCategory(models.Model):
                                    column2='partner_id')
 
     number_tags = fields.Integer(compute='_compute_number_tags', stored=True)
+
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        record.update_partner_tags()
+        return record
+
+    @api.multi
+    def write(self, vals):
+        res = super().write(vals)
+        if 'condition_id' in vals or 'model' in vals:
+            self.update_partner_tags()
+        return res
 
     @api.constrains('condition_id')
     def check_condition(self):

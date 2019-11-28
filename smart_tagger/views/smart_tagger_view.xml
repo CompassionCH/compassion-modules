@@ -25,23 +25,18 @@
             <field name="parent_id" position="after">
                 <field name="smart"/>
                 <field name="condition_id" attrs="{'invisible': [('smart', '=', False)],}" context="{'default_model_id':'res.partner'}"/>
-                <field name="partner_field" attrs="{'invisible': [('condition_id', '=', False)],}"/>
+                <field name="partner_field" attrs="{'invisible': ['|', ('smart', '=', False), ('condition_id', '=', False)],}"/>
             </field>
         </field>
     </record>
 
     <record model="ir.actions.server" id="event_smart_tagger_update_action">
         <field name="name">Update Smart Tagger</field>
-        <field name="model_id" ref="model_res_partner_category"/>
+        <field name="binding_model_id" ref="model_res_partner_category"/>
+        <field name="model_id" ref="model_res_partner_category" />
+        <field name="state">code</field>
         <field name="code">
             records.update_partner_tags()
         </field>
-    </record>
-    <record id="event_smart_tagger_update_action_menu" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'res.partner.category'" name="model"/>
-        <field name="name">Update partner tags</field>
-        <field eval="'ir.actions.server,%d'%event_smart_tagger_update_action"
-               name="value"/>
     </record>
 </odoo>
