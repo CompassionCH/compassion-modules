@@ -70,7 +70,7 @@ class RecurringContract(models.Model):
         is_sub = self.filtered(lambda s: s.parent_id.sds_state == 'sub')
         is_sub.mapped('parent_id').action_sub_reject()
         # Unlink is already called in action_sub_reject
-        return super(self - is_sub).unlink()
+        return super(RecurringContract, self - is_sub).unlink()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -78,7 +78,7 @@ class RecurringContract(models.Model):
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         """ Find parent sponsorship if any is sub_waiting. """
-        super(self).on_change_partner_id()
+        super().on_change_partner_id()
 
         if 'S' in self.type:
             origin_id = self.env['recurring.contract.origin'].search(
@@ -93,7 +93,7 @@ class RecurringContract(models.Model):
     @api.onchange('child_id')
     def onchange_child_id(self):
         """ Put back in SUB state if needed. """
-        res = super(self).onchange_child_id()
+        res = super().onchange_child_id()
         self.parent_id._trigger_sub()
         return res
 
@@ -132,7 +132,7 @@ class RecurringContract(models.Model):
             )
             sub = contract.sub_sponsorship_id
             if sub and sub.state == 'draft':
-                super(sub).unlink()
+                super(RecurringContract, sub).unlink()
             elif sub:
                 sub.end_reason_id = sub_reject
                 self.env['end.contract.wizard'].create({
@@ -167,8 +167,8 @@ class RecurringContract(models.Model):
         with (value, name) tuples.
         """
         if groupby == 'sds_state':
-            state_dict = dict(self._get_sds_states())
-            state_order = [s[0] for s in self._get_sds_states()
+            state_dict = dict(self._fields['sds_state'].selection)
+            state_order = [s[0] for s in self._fields['sds_state'].selection
                            if 'sub' in s[0] or s[0] == 'active']
             filter_group_result = list(state_order)
             state_order = {s: state_order.index(s) for s in state_order}
@@ -182,7 +182,7 @@ class RecurringContract(models.Model):
                         result['__fold'] = True
             return [r for r in filter_group_result if isinstance(r, dict)]
 
-        return super(self)._read_group_fill_results(
+        return super()._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
             read_group_result, read_group_order

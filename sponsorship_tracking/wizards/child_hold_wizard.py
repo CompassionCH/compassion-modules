@@ -33,7 +33,7 @@ class ChildHoldWizard(models.TransientModel):
         context_copy['async_mode'] = async_mode
         if 'default_type' in context_copy:
             del context_copy['default_type']
-        return super(self.with_context(context_copy)).send()
+        return super(ChildHoldWizard, self.with_context(context_copy)).send()
 
     def _get_action(self, holds):
         action = super()._get_action(holds)
