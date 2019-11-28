@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,7 @@ class IrUiMenu(models.Model):
     def get_needaction_data(self):
         """ add manually the counter for only one menu an not for all
         menus of a model, doesn't use _needaction_count method """
-        res = super(IrUiMenu, self).get_needaction_data()
+        res = super().get_needaction_data()
 
         # add manually the counter for only
         # one menu an not for all menus of a model

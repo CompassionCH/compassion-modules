@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -29,21 +28,17 @@ class SubSponsorshipWizard(models.TransientModel):
     ])
     child_id = fields.Many2one(
         'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
-    no_sub_default_reasons = fields.Selection(
-        '_get_no_sub_reasons', 'No sub reason')
+    no_sub_default_reasons = fields.Selection([
+        ('other_sponsorship', _('Sponsors other children')),
+        ('financial', _('Financial reasons')),
+        ('old', _('Is too old to sponsor another child')),
+        ('other_support', _('Wants to support with fund donations')),
+        ('other_organization', _('Supports another organization')),
+        ('not_now', _("Doesn't want to take another child right now")),
+        ('not_given', _('Not given')),
+        ('other', _('Other...'))
+    ], 'No sub reason')
     no_sub_reason = fields.Char('No sub reason')
-
-    def _get_no_sub_reasons(self):
-        return [
-            ('other_sponsorship', _('Sponsors other children')),
-            ('financial', _('Financial reasons')),
-            ('old', _('Is too old to sponsor another child')),
-            ('other_support', _('Wants to support with fund donations')),
-            ('other_organization', _('Supports another organization')),
-            ('not_now', _("Doesn't want to take another child right now")),
-            ('not_given', _('Not given')),
-            ('other', _('Other...'))
-        ]
 
     @api.multi
     def create_subsponsorship(self):
@@ -126,7 +121,7 @@ class SubSponsorshipWizard(models.TransientModel):
             'color': 1
         })
         contract.partner_id.message_post(
-            subject=_('{} - No SUB'.format(contract.child_code)),
+            subject=_(f'{contract.child_code} - No SUB'),
             body=_("The sponsor doesn't want a new child.")
         )
         return True

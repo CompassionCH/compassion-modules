@@ -129,8 +129,9 @@
         <field name="model">recurring.contract</field>
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
-            <tree string="Follow contracts" create="false" edit="false"
-                  colors ="blue:sds_state == 'draft';red:sds_state == 'start';green:sds_state == 'waiting_welcome';black:sds_state == 'active';gray:state in ('cancelled')">
+            <tree decoration-info="sds_state == 'draft'" decoration-danger="sds_state == 'start'"
+                  decoration-success="sds_state == 'waiting_welcome'" decoration-primary="sds_state == 'active'"
+                  decoration-muted="sds_state in ('cancelled')" string="Follow contracts" create="false" edit="false">
                 <field name="partner_codega"/>
                 <field name="partner_id"/>
 
