@@ -127,17 +127,22 @@ class GetPartnerMessage(models.Model):
             str(partner_id) + " with value: " + firebase_id)
 
         if operation == 'Insert':
-            reg_id = Firebase().firebase_register(
+            response = Firebase().firebase_register(
                 registration_id=firebase_id,
                 partner_id=partner_id,
             )
         elif operation == 'Delete':
-            reg_id = Firebase().firebase_unregister(
+            response = Firebase().firebase_unregister(
                 registration_id=firebase_id,
                 partner_id=partner_id
             )
         else:
             raise NotImplemented('Operation %s is not supported by Odoo' %
                                  operation)
-
+        try:
+            reg_id = int(response.data)
+        except TypeError:
+            _logger.error("Invalid response for firebase registration: %s",
+                          response)
+            reg_id = 0
         return reg_id
