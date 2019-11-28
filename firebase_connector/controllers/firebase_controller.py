@@ -51,7 +51,7 @@ class RestController(http.Controller):
                 'partner_id': partner_id,
             })
 
-        return existing.id
+        return str(existing.id)
 
     @http.route('/firebase/unregister', type='http', methods=['PUT'],
                 auth='public', csrf=False)
@@ -65,11 +65,11 @@ class RestController(http.Controller):
             # we already have no partner assigned
             pass
         else:
-            if existing.partner_id == partner_id:
+            if existing.partner_id.id == partner_id:
                 logging.warning(
                     "Trying to erase a firebase registration of another user. "
                     "This should never happen as the id should follow the user"
                     " logged in."
                 )
             existing.partner_id = None
-        return 0
+        return "0"
