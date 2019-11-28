@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-27 07:48+0000\n"
-"PO-Revision-Date: 2019-08-27 09:50+0200\n"
+"POT-Creation-Date: 2019-11-28 07:50+0000\n"
+"PO-Revision-Date: 2019-11-28 11:34+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_ch3
@@ -118,6 +118,12 @@ msgid ""
 "${child.preferred_name} will be free from fear and anxiety.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    1 Giovanni 4:8 indica che \"L'amore perfetto scaccia la "
+"paura.\" Pregate che ${child.preferred_name} sia libero dalla paura e "
+"dall'ansia.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_5
@@ -133,6 +139,16 @@ msgid ""
 "get('his')} life and great hope for ${child.get('his')} future.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>\"... confidando in questo, che lui che ha iniziato "
+"un buon lavoro in te, lo porterà a fino al completamento fine al giorno di "
+"Cristo Gesù.\"</i> Filippesi 1: 6 NIV\n"
+"                </p>\n"
+"                <p>loda Dio per la Sua opera nella tua vita. Prega che "
+"${child.preferred_name} avrà fiducia nell'opera di Cristo nella sua vita e "
+"una grande speranza per il suo futuro.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_25
@@ -146,6 +162,15 @@ msgid ""
 "protection and feel safe in Him.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    <i>Il mio Dio è la mia roccia, nella quale mi rifugio, "
+"il mio scudo e il corno della mia salvezza. Egli è la mia roccaforte, il mio "
+"rifugio e il mio salvatore - da persone violente mi salvi.</i> 2 Samuele "
+"22:3</p>\n"
+"                <p>Pregate affinché ${child.preferred_name} conosca la "
+"protezione di Dio e si senta sicuro in Lui.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_21
@@ -161,6 +186,16 @@ msgid ""
 "country where ${child.preferred_name} lives.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    La corruzione è un problema serio nei paesi in via di "
+"sviluppo.  Giacomo 3,17 dice che \"la saggezza che viene dal cielo è prima "
+"di tutto pura\"; poi amante della pace, premurosa, sottomessa, piena di "
+"misericordia e di buoni frutti, imparziale e sincera.</p>\n"
+"                <p>Pregate che Dio innalzi uomini e donne integri a "
+"posizioni di leadership, influenza e autorità nella comunità e nel paese "
+"dove ${child.preferred_name} vive.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_4
@@ -176,6 +211,16 @@ msgid ""
 "for a time of adversity.\"</i> Proverbs 17:17</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Hai fratelli e sorelle? ${child.preferred_name} ne ha? "
+"Prenditi un momento per esaminare il suo profilo e pregare per gli altri "
+"bambini nella famiglia di ${child.preferred_name}. Prega che possano "
+"condividere la benedizione del sostegno e buone relazioni.\n"
+"                </p>\n"
+"                <p><i>\"Un amico ama in ogni momento e un fratello nasce per "
+"un periodo di avversità\"</i> Proverbi 17:17</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_3
@@ -188,6 +233,14 @@ msgid ""
 "provision for their needs and unity in their relationships.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Conosci la famiglia di ${child."
+"preferred_name} ? Prenditi un momento per esaminare il suo profilo e pregare "
+"per coloro che compongono la sua famiglia. Prega per la pace di Dio in casa, "
+"per le Sue disposizioni per i loro bisogni e l'unità nelle loro relazioni.</"
+"p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_16
@@ -200,6 +253,13 @@ msgid ""
 "${child.preferred_name}'s heart and mind in Christ Jesus.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                   Ricordate di aver fatto gli esami a scuola? Pregate che "
+"${child.preferred_name} conosca la pace di Dio e abbia chiarezza di mente "
+"mentre affronta le prove e gli esami a scuola. Che la pace di Dio custodisca "
+"il cuore e la mente di ${child.preferred_name} in Cristo Gesù.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_22
@@ -211,6 +271,12 @@ msgid ""
 "that ${child.get('he')} needs.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                   Che ne dici di andare dal dentista? Prega che ${child."
+"preferred_name} abbia accesso a tutte le prestazioni sanitarie di cui "
+"${child.get('lui')} ha bisogno.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_8
@@ -223,6 +289,14 @@ msgid ""
 "community, protection and health.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quanto siete lontani da una toilette con lo "
+"sciacquone? Lode a Dio per la fornitura di cui godiamo di buone condizioni "
+"igienico-sanitarie e di tutti i benefici per la salute che comporta. Pregate "
+"per lo sviluppo di infrastrutture nella comunità, la protezione e la salute "
+"di ${child.preferred_name}</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_7
@@ -234,6 +308,13 @@ msgid ""
 "safe water and protection from waterborne disease.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quanto sei lontano da un approvvigionamento idrico "
+"sicuro? Lode a Dio per la fornitura di cui godiamo. Pregate per l'accesso di "
+"${child.preferred_name} all'acqua pulita e sicura e per la protezione dalle "
+"malattie trasmesse dall'acqua.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_10
@@ -245,6 +326,12 @@ msgid ""
 "</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Come siete stati benedetti dal vostro sostegno? Rendi "
+"grazie a Dio per la gioia della connessione e l'opportunità di mostrare il "
+"Suo amore.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_12
@@ -261,6 +348,16 @@ msgid ""
 "${child.get('him')}?</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Se potessi incontrare ${child.preferred_name} oggi, cosa "
+"diresti a ${child.get('lui')}?</p>\n"
+"                <p>Pregate che ${child.get('lui')} conosca il vostro amore e "
+"il vostro incoraggiamento, sia rafforzato e consapevole dell'amore di Cristo "
+"nella sua vita.</p>\n"
+"                <p>Se avete tempo, perché non mandategli oggi un breve "
+"messaggio e fategli sapere come pregate per ${child.get('lui')}?</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_19
@@ -275,6 +372,15 @@ msgid ""
 "witness to the community.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Molte chiese che gestiscono progetti di Compassion "
+"trovano maggiori livelli di rispetto nella comunità quando servono i bambini "
+"e molte sperimentano una meravigliosa crescita ecclesiale.</p>\n"
+"                <p>Pregate per la guida della chiesa di ${child."
+"preferred_name} - per amore, saggezza e forza. Che possano essere veri "
+"leader divini e una grande testimonianza per la comunità.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_20
@@ -289,6 +395,15 @@ msgid ""
 "them.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Che coloro che si prendono cura di ${child."
+"preferred_name} siano saggi e affettuosi mentre lo nutrono. Il progetto "
+"gestisce attività per i genitori e le famiglie.</p>\n"
+"                <p>Pregate che la famiglia di ${child.preferred_name} "
+"partecipi. Pregate affinché imparino buone pratiche e sentano che Dio li ama."
+"</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_27
@@ -301,6 +416,12 @@ msgid ""
 "p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Lode a Dio che ${child.preferred_name} è regolarmente "
+"visitato a casa dall'incredibile staff del suo progetto Compassione. Pregate "
+"che queste visite benedicano e incoraggino tutta la famiglia.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_18
@@ -313,6 +434,14 @@ msgid ""
 "message and thank ${child.preferred_name} for praying for you.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Lode e grazie a Dio che Egli ascolta e risponde alle "
+"nostre preghiere. Ascolta e risponde alle preghiere che ${child."
+"preferred_name} offre per voi. Rendi grazie a Dio per la meraviglia della "
+"preghiera. Perché non inviare un messaggio e ringraziare ${child."
+"preferred_name} per aver pregato per voi.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_6
@@ -325,6 +454,14 @@ msgid ""
 "I have come that they may have life, and have it to the full.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pregate per ${child.preferred_name} alla luce di "
+"Giovanni 10:10 che le menzogne della povertà siano abbandonate e che ${child."
+"get('lui')} abbia una vita abbondante. Il ladro viene solo per rubare, "
+"uccidere e distruggere; io sono venuto perché abbiano la vita e l'abbiano in "
+"pienezza.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_23
@@ -337,6 +474,15 @@ msgid ""
 "the project about being confident and secure in Christ. </p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pregate per l'immagine di se stesso, l'autoestima, che "
+"ha ${child.preferred_name}. Pregate perché ${child.get('lui')} sia "
+"consapevole di suo valore agli occhi di Dio, che ${child.preferred_name} "
+"riceva questa sicurezza personale da Dio. Pregate per l'insegnamento che "
+"${child.preferred_name} riceve nel centro Compassion a proposito di trovare "
+"la sua sicurezza personale in Cristo.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_9
@@ -348,6 +494,12 @@ msgid ""
 "get('his')} community.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Pregate per l'unità nella chiesa di ${child."
+"preferred_name}. Pregate che conosca l'accoglienza, l'amore e l'appartenenza "
+"alla sua comunità.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_17
@@ -359,6 +511,12 @@ msgid ""
 "pray for? Lift those requests to God.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Dai un'occhiata alle ultime lettere che ${child."
+"preferred_name} ti ha scritte. Per cosa ti chiede di pregare? Solleva queste "
+"richieste a Dio.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_15
@@ -372,6 +530,14 @@ msgid ""
 "wisdom.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Prendetevi un momento per esaminare il profilo di "
+"${child.preferred_name} per vedere qual è il suo soggetto preferito.</p>\n"
+"                <p>Pregate per l'istruzione di ${child.preferred_name} - che "
+"${child.get('lui')} possa imparare bene, divertirsi a studiare cose nuove e "
+"crescere in saggezza.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_13
@@ -384,6 +550,13 @@ msgid ""
 "get('his')} goals.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Prendetevi un momento per esaminare il profilo di "
+"${child.preferred_name} per vedere quali attività gli piacciono.</p>\n"
+"                <p>Pregate per ${child.preferred_name} che scopra i suoi "
+"talenti e raggiungi i suoi obiettivi.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_26
@@ -395,6 +568,13 @@ msgid ""
 "to ${child.preferred_name}'s nation, community and family.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quando è stata l'ultima volta che avete mangiato "
+"qualcosa che avevate fare crescere? Pregate per grandi raccolti che portino "
+"provviste, salute e sicurezza alimentare alla nazione, alla comunità e alla "
+"famiglia di ${child.preferred_name}.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_14
@@ -407,6 +587,13 @@ msgid ""
 "pursue ${child.get('his')} dreams.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Quando avevi l'età del ${child.preferred_name}, cosa "
+"volevi fare per un lavoro? È questo che stai facendo oggi? Pregate per le "
+"aspirazioni di ${child.preferred_name} - che ${child.get('lui')} sognerà e "
+"perseguirà i suoi sogni.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_2
@@ -423,6 +610,18 @@ msgid ""
 "preferred_name} week in, week out.</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Chi è stato una figura paterna o materna per te? "
+"Ringrazia Dio per queste persone meravigliose.\n"
+"                </p>\n"
+"                <p> Prega per ${child.preferred_name} di conoscere lo stesso "
+"amore, il sostegno e l'incoraggiamento che hai ricevuto. Ringrazia le "
+"persone che prendono cura di ${child.preferred_name}  prega per loro "
+"affinché conoscano la bontà e la provvidenza di Dio oggi. Prega per il team "
+"del progetto Compassion che si prende cura di ${child.preferred_name} "
+"settimana dopo settimana.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_1
@@ -442,6 +641,22 @@ msgid ""
 "                </p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"% set partner = child.sponsor_id\n"
+"                <p>\n"
+"                    Chi è il tuo/la tua amica più caro/a? Prenditi un "
+"momento oggi per ringraziare Dio per lui/lei. Loda Dio, è Lui che ha creato "
+"la relazione.\n"
+"                </p><p>\n"
+"                    Prega per ${child.preferred_name} di avere buoni amici "
+"che ${child.get('lo')} incoraggeranno e sosterranno. Chiedi che ${child."
+"get('lui')} sviluppi effettivamente forti amicizie nel suo progetto di "
+"compassione.<br />\n"
+"                </p><p>\n"
+"                    Inoltre, ${child.preferred_name} conoscerà l'amicizia e "
+"l'amore del suo Padre celeste.\n"
+"                </p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,prayer_body:mobile_app_connector.tile_pr1_11
@@ -453,6 +668,12 @@ msgid ""
 "you to change ${child.preferred_name}'s life</p>\n"
 "            "
 msgstr ""
+"% set child = ctx['objects']\n"
+"                <p>\n"
+"                    Stai portando speranza a ${child.preferred_name}! Sei un "
+"eroe! Lodiamo e ringraziamo Dio per voi.  Rallegratevi oggi che Dio vi sta "
+"usando per cambiare la vita di ${child.preferred_name}.</p>\n"
+"            "
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_ch1
@@ -545,6 +766,11 @@ msgstr ""
 "get_date('status_date')}"
 
 #. module: mobile_app_connector
+#: model:mail.template,subject:mobile_app_connector.email_template_user_not_found
+msgid "Account Setup: User Not Found"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_action_destination
 msgid "Action destination"
 msgstr "Action destination"
@@ -585,6 +811,11 @@ msgid "Anniversary"
 msgstr "Compleanno"
 
 #. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.view_app_settings_form
+msgid "Apply"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_banner_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_search
 msgid "Archived"
@@ -595,18 +826,24 @@ msgstr "Archiviato"
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_26
 msgid "Ask God to give ${ctx['objects'].preferred_name} food security."
 msgstr ""
+"Chiedi a Dio di dare a ${ctx['objects'].preferred_name} abbastanza da "
+"mangiare."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_6
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_6
 msgid "Ask God to give ${ctx['objects'].preferred_name} life to the full."
 msgstr ""
+"Ringraziare che ${ctx['objects'].preferred_name} riceve regolarmente visite "
+"a domicilio dal personale del Centro."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_7
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_7
 msgid "Ask God to give ${ctx['objects'].preferred_name} safe water."
 msgstr ""
+"Chiedete a Dio di dare a ${ctx['objects'].preferred_name} acqua pulita, "
+"sicura."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_13
@@ -615,6 +852,8 @@ msgid ""
 "Ask God to guide ${ctx['objects'].preferred_name} to discover "
 "${ctx['objects'].get('his')} talents."
 msgstr ""
+"Chiedi a Dio di guidare ${ctx['objects'].preferred_name} per scoprire i suoi "
+"talenti."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_22
@@ -623,11 +862,19 @@ msgid ""
 "Ask that ${ctx['objects'].preferred_name} will have access to the healthcare "
 "${ctx['objects'].get('he')} needs."
 msgstr ""
+"Chiedete a Dio che ${ctx['objects'].preferred_name} possa avere accesso "
+"all'assistenza sanitaria di cui ha bisogno."
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_model_id
 msgid "Associated records"
 msgstr "Associated records"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_auto_send
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_auto_send
+msgid "Auto send"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_is_automatic_ordering
@@ -651,6 +898,8 @@ msgstr "Blog"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_body
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_body
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_body
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_body
 msgid "Body"
 msgstr "Testo"
 
@@ -663,6 +912,11 @@ msgstr "Both"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_button_text
 msgid "Button text"
 msgstr "Button text"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.view_app_settings_form
+msgid "Cancel"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_ids
@@ -680,9 +934,17 @@ msgid "Category title"
 msgstr "Category title"
 
 #. module: mobile_app_connector
-#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_notification_tree
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_registration_tree
 msgid "Child Notification"
 msgstr "Child Notification"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+#| msgid "Child page"
+msgid "Child channel"
+msgstr "Child channel"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/models/app_tile_type.py:80
@@ -731,6 +993,12 @@ msgid "Choose private if the sponsor must be logged in to see the tile"
 msgstr "Choose private if the sponsor must be logged in to see the tile"
 
 #. module: mobile_app_connector
+#: code:addons/mobile_app_connector/forms/registration_form.py:365
+#, python-format
+msgid "Click here to send the template email request."
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_title:mobile_app_connector.tile_subtype_le_co3
 msgid "Clock"
 msgstr "Orologio"
@@ -741,6 +1009,16 @@ msgstr "Orologio"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_code
 msgid "Code"
 msgstr "Codice"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_partner_communication_config
+msgid "Communication Configuration"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_partner_communication_job
+msgid "Communication Job"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -755,6 +1033,7 @@ msgstr "Contract for recurring invoicing"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_create_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_create_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_create_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_create_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_create_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_create_uid
@@ -766,6 +1045,7 @@ msgstr "Creato da"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_create_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_create_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_create_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_create_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_create_date
@@ -809,6 +1089,24 @@ msgid "Decrease order weight to display tiles above others"
 msgstr "Decrease order weight to display tiles above others"
 
 #. module: mobile_app_connector
+#: model:mobile.app.banner,name:mobile_app_connector.default-welcome-screen
+#| msgid "Default body"
+msgid "Default"
+msgstr "Default"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_default_s2b_template_id
+#| msgid "Default title"
+msgid "Default S2B template"
+msgstr "Default S2B template"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,button_text:mobile_app_connector.default-welcome-screen
+#| msgid "Default action text"
+msgid "Default action"
+msgstr "Default action"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_default_action_destination
 msgid "Default action destination"
 msgstr "Default action destination"
@@ -839,12 +1137,21 @@ msgid "Default title"
 msgstr "Default title"
 
 #. module: mobile_app_connector
+#: model:mobile.app.banner,body:mobile_app_connector.default-welcome-screen
+#| msgid "Default tile type"
+msgid "Default welcome message"
+msgstr "Default welcome message"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_name
 msgid "Description"
 msgstr "Descrizione"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_destination
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_destination
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_destination
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_search
 msgid "Destination"
 msgstr "Destinazione"
@@ -876,6 +1183,7 @@ msgstr "Disappointing"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub_display_name
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_display_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_display_name
@@ -905,7 +1213,10 @@ msgid "Donate"
 msgstr "Donare"
 
 #. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
 #: selection:mobile.app.banner,internal_action:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
 msgid "Donation"
 msgstr "Donazione"
 
@@ -961,6 +1272,17 @@ msgid "Find help"
 msgstr "Find help"
 
 #. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_firebase_registration_exists
+msgid "Firebase registration exists"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_firebase_registration
+#| msgid "Mobile app account registration"
+msgid "Firebase registrations"
+msgstr "Firebase registrations"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_icon
 msgid "FontAwesome icon name"
 msgstr "FontAwesome icon name"
@@ -977,9 +1299,30 @@ msgid "Fund donation"
 msgstr "Fund donation"
 
 #. module: mobile_app_connector
-#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_notification_tree
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_fundType
+#| msgid "Subtypes"
+msgid "Fundtype"
+msgstr "Fundtype"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_firebase_registration_tree
 msgid "General Notification"
 msgstr "General Notification"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+#| msgid "General Notification"
+msgid "General channel"
+msgstr "General channel"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_settings
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_general_settings
+#| msgid "General Notification"
+msgid "General settings"
+msgstr "General settings"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_gi5
@@ -1009,6 +1352,8 @@ msgid ""
 "Give thanks that ${ctx['objects'].preferred_name} receives regular home "
 "visits from caring project staff."
 msgstr ""
+"Ringraziare che ${ctx['objects'].preferred_name} riceve regolarmente visite "
+"a domicilio dal personale del Centro."
 
 #. module: mobile_app_connector
 #: selection:mobile.app.feedback,star:0
@@ -1026,6 +1371,16 @@ msgid "Group By"
 msgstr "Raggruppa per"
 
 #. module: mobile_app_connector
+#: model:mail.template,body_html:mobile_app_connector.email_template_user_not_found
+msgid ""
+"Hello,<br/><br/>Please set my mobile app account with the following email "
+"address: \"%(email_address)\"<br/><br/>Yours sincerely"
+msgstr ""
+"Buongiorno,<br/><br/>Per favor, imposta il mio mobile app account con il "
+"seguente indirizzo e-mail: \"%(email_address)\"<br/><br/><br/>Il vostro "
+"sinceramente"
+
+#. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
 msgid "Help"
 msgstr "Guida"
@@ -1036,11 +1391,17 @@ msgid "High"
 msgstr "High"
 
 #. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_hub
+msgid "Hub"
+msgstr ""
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_cms_form_res_users_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_frequently_asked_questions_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub_id
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_id
@@ -1115,6 +1476,7 @@ msgstr "Lingua"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_hub___last_update
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype___last_update
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type___last_update
@@ -1130,6 +1492,7 @@ msgstr "Ultima modifica il"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_write_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_write_uid
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_write_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_write_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_write_uid
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_write_uid
@@ -1142,6 +1505,7 @@ msgstr "Ultimo caricamento il"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_write_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_feedback_write_date
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_settings_write_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_write_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_write_date
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_write_date
@@ -1152,7 +1516,10 @@ msgid "Last Updated on"
 msgstr "Ultimo caricamento di"
 
 #. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
 #: model:ir.model,name:mobile_app_connector.model_correspondence
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
 msgid "Letter"
 msgstr "Letter"
 
@@ -1166,6 +1533,11 @@ msgstr "Letter writing"
 #, python-format
 msgid "Letters hub"
 msgstr "Letters hub"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_firebase_notification_partner_read
+msgid "Link between partner and notifications read status"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -1197,7 +1569,7 @@ msgid "Low"
 msgstr "Low"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:195
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:222
 #, python-format
 msgid "Mail delivery error"
 msgstr "Errore durante l'invio dell'e-mail"
@@ -1246,6 +1618,18 @@ msgid "Mobile app account registration"
 msgstr "Iscrizione"
 
 #. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_app_communication_job_form
+#| msgid "Child Notification"
+msgid "Mobile notification"
+msgstr "Mobile notification"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_id
+#| msgid "Child Notification"
+msgid "Mobile notification id"
+msgstr "Mobile notification id"
+
+#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_mode
 msgid "Mode"
 msgstr "Modalità"
@@ -1268,6 +1652,13 @@ msgstr "La mia comunità"
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
 msgid "My Community (opens the project page)"
 msgstr "My Community (opens the project page)"
+
+#. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
+msgid "My Hub"
+msgstr ""
 
 #. module: mobile_app_connector
 #: selection:mobile.app.banner,internal_action:0
@@ -1307,13 +1698,13 @@ msgid "No"
 msgstr "No"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:174
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:201
 #, python-format
 msgid "No email entered"
 msgstr "Indirizzo E-mail mancante"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:184
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:211
 #, python-format
 msgid "No such account"
 msgstr "Questo account non esiste"
@@ -1324,14 +1715,22 @@ msgid "None"
 msgstr "None"
 
 #. module: mobile_app_connector
+#: selection:firebase.notification,topic:0
+#: selection:partner.communication.config,mobile_notification_topic:0
+#: selection:partner.communication.job,mobile_notification_topic:0
+msgid "None (bypass user's preferences)"
+msgstr ""
+
+#. module: mobile_app_connector
 #: selection:mobile.app.tile,priority:0
 msgid "Normal"
 msgstr "Normal"
 
 #. module: mobile_app_connector
-#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_firebase_registration
-msgid "Notifications"
-msgstr "Notifiche"
+#: model:ir.model,name:mobile_app_connector.model_firebase_notification
+#| msgid "Device registered with Firebase Cloud Messaging"
+msgid "Notification to send to Firebase Cloud Messaging"
+msgstr "Notification to send to Firebase Cloud Messaging"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -1352,6 +1751,12 @@ msgstr "Open in web browser"
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_category_order_weight
 msgid "Order weight"
 msgstr "Order weight"
+
+#. module: mobile_app_connector
+#: code:addons/mobile_app_connector/models/request.py:61
+#, python-format
+msgid "Original request from %s %s "
+msgstr "Richiesta originale da %s %s "
 
 #. module: mobile_app_connector
 #: selection:wp.post,tile_subtype:0
@@ -1395,12 +1800,6 @@ msgid "Physical letters cannot be displayed."
 msgstr "Le lettere fisiche non possono essere visualizzate."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:116
-#, python-format
-msgid "Please add wp_host in your configuration"
-msgstr "Please add wp_host in your configuration"
-
-#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_writing_position
 msgid "Position"
 msgstr "Position"
@@ -1414,13 +1813,13 @@ msgstr "Post type"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_11
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_11
 msgid "Praise God — He is using you to change lives."
-msgstr ""
+msgstr "Pregate Dio - Lei vi sta utilizzando para cambiare delle vite."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_21
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_21
 msgid "Pray against corruption."
-msgstr ""
+msgstr "Pregate contra la corruzione."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_17
@@ -1429,48 +1828,58 @@ msgid ""
 "Pray as ${ctx['objects'].preferred_name} asks in ${ctx['objects']."
 "get('his')} letters."
 msgstr ""
+"Pregate per le domande di preghiera che ${ctx['objects'].preferred_name} "
+"chiede nelle sue lettere."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_15
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_15
 msgid "Pray for ${ctx['objects'].preferred_name} to have a good education."
 msgstr ""
+"Pregate che ${ctx['objects'].preferred_name} abbia una buona educazione, "
+"istruzione."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_1
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_1
 msgid "Pray for ${ctx['objects'].preferred_name} to make strong friendships"
 msgstr ""
+"Pregate per ${ctx['objects'].preferred_name} di stringere forti amicizie."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_3
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_3
 msgid "Pray for ${ctx['objects'].preferred_name}'s family and home."
-msgstr ""
+msgstr "Pregate per la familia e la casa di ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_20
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_20
 msgid "Pray for ${ctx['objects'].preferred_name}'s parents/guardians. "
 msgstr ""
+"Pregate per i genitori/adulti che si occupano di ${ctx['objects']."
+"preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_25
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_25
 msgid "Pray for ${ctx['objects'].preferred_name}'s safety."
-msgstr ""
+msgstr "Pregate per la sicurità di ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_4
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_4
 msgid "Pray for ${ctx['objects'].preferred_name}'s siblings."
 msgstr ""
+"Pregate per le sorelle e i fratelli di ${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_2
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_2
 msgid "Pray for good role models in ${ctx['objects'].preferred_name}'s life."
 msgstr ""
+"Pregate che ${ctx['objects'].preferred_name} abbia buoni modelli di ruolo "
+"nella sua vita."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_8
@@ -1478,6 +1887,8 @@ msgstr ""
 msgid ""
 "Pray for good sanitation in ${ctx['objects'].preferred_name}'s community."
 msgstr ""
+"Pregate per strutture igienico-sanitarie sicure nella communità di "
+"${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_16
@@ -1486,6 +1897,8 @@ msgid ""
 "Pray for peace when ${ctx['objects'].preferred_name} has to take tests and "
 "exams."
 msgstr ""
+"Pregate per la pace quando ${ctx['objects'].preferred_name} deve sostenere "
+"prove ed esami."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_19
@@ -1493,6 +1906,8 @@ msgstr ""
 msgid ""
 "Pray for the church that runs ${ctx['objects'].preferred_name}'s project."
 msgstr ""
+"Pregate per la Chiesa che si occupa del Centro Compassion di "
+"${ctx['objects'].preferred_name}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_1
@@ -1524,13 +1939,13 @@ msgstr ""
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_pr1_9
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_pr1
 msgid "Pray now"
-msgstr "Prega ora!"
+msgstr "Prega ora"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_24
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_24
 msgid "Pray that ${ctx['objects'].preferred_name} will be free from fear."
-msgstr ""
+msgstr "Pregate che ${ctx['objects'].preferred_name} sia libero della paura."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_23
@@ -1538,20 +1953,25 @@ msgstr ""
 msgid ""
 "Pray that ${ctx['objects'].preferred_name} will have a positive self image."
 msgstr ""
+"Pregate che ${ctx['objects'].preferred_name} abbia un'immagine di sé "
+"positiva."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_5
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_5
 msgid "Pray that ${ctx['objects'].preferred_name} will have hope."
-msgstr ""
+msgstr "Pregate che ${ctx['objects'].preferred_name} abbia speranza."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_14
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_14
 msgid "Pray that ${ctx['objects'].preferred_name} will pursue big dreams."
-msgstr ""
+msgstr "Pregate che ${ctx['objects'].preferred_name} perseguirà grandi sogni."
 
 #. module: mobile_app_connector
+#: selection:firebase.notification,destination:0
+#: selection:partner.communication.config,mobile_notification_destination:0
+#: selection:partner.communication.job,mobile_notification_destination:0
 #: selection:wp.post,tile_type:0 selection:wp.post.category,default_tile_type:0
 msgid "Prayer"
 msgstr "Prayer"
@@ -1619,7 +2039,7 @@ msgstr "Leggere di nuovo"
 #: model:mobile.app.tile,action_text:mobile_app_connector.tile_le_t1
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_le_t1
 msgid "Read now"
-msgstr "Leggere ora "
+msgstr "Leggere ora"
 
 #. module: mobile_app_connector
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_form
@@ -1648,6 +2068,12 @@ msgid "Request"
 msgstr "Request"
 
 #. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.view_app_settings_form
+#| msgid "Default title"
+msgid "S2B Default template"
+msgstr "S2B Default template"
+
+#. module: mobile_app_connector
 #: selection:wp.post,tile_subtype:0
 msgid "ST_T1"
 msgstr "ST_T1"
@@ -1668,6 +2094,19 @@ msgstr "Select related objects type"
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_gi3
 msgid "Send a gift to your sponsored child"
 msgstr "Un regalo per il tuo bambino"
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_send
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_send
+#| msgid "General Notification"
+msgid "Send mobile notification"
+msgstr "Send mobile notification"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_settings
+#| msgid "Writings"
+msgid "Settings"
+msgstr "Settings"
 
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_product_product_mobile_app
@@ -1747,19 +2186,22 @@ msgstr "Termini e Condizioni"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_18
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_18
 msgid "Thank God ${ctx['objects'].preferred_name} prays for you."
-msgstr ""
+msgstr "Grazie a Dio che ${ctx['objects'].preferred_name} prega per voi."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_9
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_9
 msgid "Thank God for the blessing of community."
-msgstr ""
+msgstr "Grazie Dio per la benedizione della Communità."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_10
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_10
 msgid "Thank God that you can sponsor."
 msgstr ""
+"% set partner = ctx['objects'].sponsor_id\n"
+"Grazie Dio di poter essere ${'sostenitore' if partner.gender == 'M' else "
+"'sostenitrice'}."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile.subtype,default_action_text:mobile_app_connector.tile_subtype_cht2
@@ -1791,8 +2233,8 @@ msgstr "This defines how to process related data"
 
 #. module: mobile_app_connector
 #: code:addons/mobile_app_connector/forms/registration_form.py:99
-#: code:addons/mobile_app_connector/forms/registration_form.py:278
-#: code:addons/mobile_app_connector/forms/registration_form.py:348
+#: code:addons/mobile_app_connector/forms/registration_form.py:285
+#: code:addons/mobile_app_connector/forms/registration_form.py:359
 #, python-format
 msgid "This email is already linked to an account."
 msgstr "This email is already linked to an account."
@@ -1803,7 +2245,7 @@ msgid "This post already exists"
 msgstr "This post already exists"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:97
+#: code:addons/mobile_app_connector/models/wordpress_post.py:95
 #, python-format
 msgid ""
 "This post was disabled probably because it doesn't have a content. Please "
@@ -1872,6 +2314,8 @@ msgstr "Ora e Tempo"
 #. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_banner_name
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_title
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_title
 #: model:ir.model.fields,field_description:mobile_app_connector.field_wp_post_name
 msgid "Title"
 msgstr "Qualifica"
@@ -1882,7 +2326,14 @@ msgid "Top of letters hub (opens the letter writing page)"
 msgstr "Top of letters hub (opens the letter writing page)"
 
 #. module: mobile_app_connector
-#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_21880
+#: model:ir.model.fields,field_description:mobile_app_connector.field_firebase_notification_topic
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_config_mobile_notification_topic
+#: model:ir.model.fields,field_description:mobile_app_connector.field_partner_communication_job_mobile_notification_topic
+msgid "Topic"
+msgstr ""
+
+#. module: mobile_app_connector
+#: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_subtype_id_22199
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.tile_subtype_search
 #: model:ir.ui.view,arch_db:mobile_app_connector.wp_post_search
@@ -1940,13 +2391,13 @@ msgid "Visibility"
 msgstr "Visibility"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/models/wordpress_post.py:96
+#: code:addons/mobile_app_connector/models/wordpress_post.py:94
 #, python-format
 msgid "Warning"
 msgstr "Warning"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:352
+#: code:addons/mobile_app_connector/forms/registration_form.py:372
 #, python-format
 msgid ""
 "We couldn't find your sponsorships. Please contact us for setting up your "
@@ -1956,16 +2407,16 @@ msgstr ""
 "contattarci per la creazione del tuo account."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:193
+#: code:addons/mobile_app_connector/controllers/mobile_app_controller.py:220
 #, python-format
 msgid "We sent you the reset instructions."
-msgstr "Istruzioni inviate per e-mail"
+msgstr "Istruzioni inviate per e-mail."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_mi2
 #: model:mobile.app.tile.subtype,default_body:mobile_app_connector.tile_subtype_MI2
 msgid "We'd love to hear what you think about our App"
-msgstr "Grazie di farci sapere cosa pensa della App!"
+msgstr "Grazie di farci sapere cosa pensa della App"
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_mi1
@@ -1992,7 +2443,13 @@ msgstr "What did you like"
 #: model:mobile.app.tile,body:mobile_app_connector.tile_pr1_12
 #: model:mobile.app.tile,prayer_title:mobile_app_connector.tile_pr1_12
 msgid "What would you say to ${ctx['objects'].preferred_name} today?"
-msgstr ""
+msgstr "Cosa desidera dire oggi a ${ctx['objects'].preferred_name}?"
+
+#. module: mobile_app_connector
+#: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_wp
+#| msgid "Wordpress post"
+msgid "Wordpress News"
+msgstr "Wordpress News"
 
 #. module: mobile_app_connector
 #: model:ir.actions.act_window,name:mobile_app_connector.action_wp_post_category
@@ -2012,7 +2469,7 @@ msgid "Wordpress Posts"
 msgstr "Wordpress Posts"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/tools/wp_requests.py:33
+#: code:addons/mobile_app_connector/tools/wp_requests.py:37
 #, python-format
 msgid "Wordpress authentication failed !"
 msgstr "Wordpress authentication failed !"
@@ -2039,8 +2496,13 @@ msgid "Write a letter"
 msgstr "Scrivere una lettera"
 
 #. module: mobile_app_connector
-#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_writing
 #: model:ir.ui.menu,name:mobile_app_connector.menu_mobile_app_writing
+#| msgid "Categories"
+msgid "Writing categories"
+msgstr "Writing categories"
+
+#. module: mobile_app_connector
+#: model:ir.actions.act_window,name:mobile_app_connector.action_mobile_app_writing
 msgid "Writings"
 msgstr "Writings"
 
@@ -2054,6 +2516,21 @@ msgstr "Nome Utente o password errata"
 #: selection:registration.base.form,has_sponsorship:0
 msgid "Yes"
 msgstr "Si"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.mobile_registration_success
+msgid ""
+"You have been given access to the Compassion Mobile App.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            You must now setup your password. Please verify "
+"your e-mail address to finalize your registration."
+msgstr ""
+"Ti è stato dato accesso all'applicazione mobile Compassion.\n"
+"                            <br/>\n"
+"                            <br/>\n"
+"                            Ora è necessario impostare la password. Verifica "
+"il tuo indirizzo e-mail per completare la registrazione."
 
 #. module: mobile_app_connector
 #: model:mobile.app.tile,body:mobile_app_connector.tile_gi7
@@ -2073,7 +2550,7 @@ msgid "You're changing ${ctx['objects'].get('his')} life"
 msgstr "Stai cambiando la sua vita"
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:160
+#: code:addons/mobile_app_connector/forms/registration_form.py:162
 #, python-format
 msgid ""
 "Your account has been successfully created, you will now receive an email to "
@@ -2083,8 +2560,8 @@ msgstr ""
 "finalizzare la tua registrazione."
 
 #. module: mobile_app_connector
-#: code:addons/mobile_app_connector/forms/registration_form.py:240
-#: code:addons/mobile_app_connector/forms/registration_form.py:310
+#: code:addons/mobile_app_connector/forms/registration_form.py:246
+#: code:addons/mobile_app_connector/forms/registration_form.py:318
 #, python-format
 msgid "Your personal data"
 msgstr "I tuoi dati personali"
@@ -2122,24 +2599,14 @@ msgid "compassion.field.office"
 msgstr "compassion.field.office"
 
 #. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_fake_wiz_base_form
-msgid "fake.wiz.base.form"
-msgstr "fake.wiz.base.form"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_fake_wiz_not_supporter
-msgid "fake.wiz.not.supporter"
-msgstr "fake.wiz.not.supporter"
-
-#. module: mobile_app_connector
-#: model:ir.model,name:mobile_app_connector.model_fake_wiz_supporter_form
-msgid "fake.wiz.supporter.form"
-msgstr "fake.wiz.supporter.form"
-
-#. module: mobile_app_connector
 #: model:ir.model.fields,field_description:mobile_app_connector.field_mobile_app_tile_type_param_1
 msgid "first parameter"
 msgstr "first parameter"
+
+#. module: mobile_app_connector
+#: model:mobile.app.banner,image_url:mobile_app_connector.default-welcome-screen
+msgid "https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:crm.claim.category,name:mobile_app_connector.claim_cat_ios
@@ -2151,6 +2618,17 @@ msgstr "iOS"
 #: model:ir.model,name:mobile_app_connector.model_mobile_app_hub
 msgid "mobile.app.hub"
 msgstr "mobile.app.hub"
+
+#. module: mobile_app_connector
+#: model:ir.model,name:mobile_app_connector.model_mobile_app_settings
+#| msgid "mobile.app.hub"
+msgid "mobile.app.settings"
+msgstr "mobile.app.settings"
+
+#. module: mobile_app_connector
+#: model:ir.ui.view,arch_db:mobile_app_connector.view_app_settings_form
+msgid "or"
+msgstr ""
 
 #. module: mobile_app_connector
 #: model:ir.model,name:mobile_app_connector.model_privacy_statement_agreement
@@ -2192,3 +2670,18 @@ msgstr "third parameter"
 #: model:ir.model.fields,help:mobile_app_connector.field_mobile_app_tile_subtype_default_records_filter
 msgid "will use the filtered function on the associated records"
 msgstr "will use the filtered function on the associated records"
+
+#~ msgid "Notifications"
+#~ msgstr "Notifiche"
+
+#~ msgid "Please add wp_host in your configuration"
+#~ msgstr "Please add wp_host in your configuration"
+
+#~ msgid "fake.wiz.base.form"
+#~ msgstr "fake.wiz.base.form"
+
+#~ msgid "fake.wiz.not.supporter"
+#~ msgstr "fake.wiz.not.supporter"
+
+#~ msgid "fake.wiz.supporter.form"
+#~ msgstr "fake.wiz.supporter.form"
