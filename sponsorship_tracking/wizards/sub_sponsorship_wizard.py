@@ -113,7 +113,7 @@ class SubSponsorshipWizard(models.TransientModel):
         if default_reason == 'other':
             reason = self.no_sub_reason
         else:
-            reason = dict(self._get_no_sub_reasons()).get(default_reason)
+            reason = dict(self._fields['no_sub_default_reasons'].selection).get(default_reason)
         contract.write({
             'no_sub_reason': reason,
             'sds_uid': self.env.uid,
