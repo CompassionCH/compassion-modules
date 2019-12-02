@@ -128,6 +128,7 @@ class CompassionChild(models.Model):
         ('Clothing Trades', 'Clothing trades'),
         ('Computer Technology', 'Computer technology'),
         ('Computer / Technology', 'Computer technology'),
+        ('Communication Studies', 'Communication Studies'),
         ('Construction/ Tradesman', 'Construction'),
         ('Construction / Tradesman', 'Construction'),
         ('Cooking / Food Service', 'Cooking and food service'),
