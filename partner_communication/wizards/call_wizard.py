@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -30,7 +30,7 @@ class CallWizard(models.TransientModel):
     def log_fail(self):
         state = 'cancel'
         communication = self.env['partner.communication.job'].browse(
-            self.env.context.get('default_communication_id'))
+            self.env.context.get('click2dial_id'))
         communication.message_post(
             subject=_('Phone attempt'),
             body=self.comments or _('Partner did not answer')
@@ -45,34 +45,26 @@ class CallWizard(models.TransientModel):
     @api.multi
     def call_log(self, state):
         """ Prepare crm.phonecall creation. """
-        action_ctx = self.env.context.copy()
-        action_ctx.update({
-            'default_state': state,
-            'default_description': self.comments,
-            'default_name': self.env.context.get('call_name'),
-        })
-        partner_id = self.env.context.get('click2dial_id')
-        action_ctx['default_partner_id'] = partner_id
-        domain = [('partner_id', '=', partner_id)]
+        communication_id = self.env.context.get('click2dial_id')
+        communication = self.env['partner.communication.job'].browse(
+            communication_id)
+        call_vals = {
+            'state': state,
+            'description': self.comments,
+            'name': communication.config_id.name,
+            'communication_id': communication_id,
+            'partner_id': communication.partner_id.id
+        }
         try:
             parsed_num = phonenumbers.parse(
                 self.env.context.get('phone_number'))
             number_type = phonenumbers.number_type(parsed_num)
             if number_type == 1:
-                action_ctx['default_partner_mobile'] = \
+                call_vals['partner_mobile'] = \
                     self.env.context.get('phone_number')
             else:
-                action_ctx['default_partner_phone'] = \
+                call_vals['partner_phone'] = \
                     self.env.context.get('phone_number')
         except TypeError:
             _logger.info("Partner has no phone number")
-        return {
-            'name': _('Phone Call'),
-            'domain': domain,
-            'res_model': 'crm.phonecall',
-            'view_mode': 'form,tree,calendar',
-            'type': 'ir.actions.act_window',
-            'nodestroy': False,  # close the pop-up wizard after action
-            'target': 'new',
-            'context': action_ctx,
-        }
+        return self.env['crm.phonecall'].create(call_vals)

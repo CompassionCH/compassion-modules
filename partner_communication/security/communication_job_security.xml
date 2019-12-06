@@ -5,7 +5,8 @@
          <field name="name" >Communication Job Rule </field>
          <field name="model_id" ref='model_partner_communication_job'/>
          <field name="global" eval="True" />
-         <field name="domain_force">['|',('partner_id.company_id','=',False),('partner_id.company_id','child_of',[user.company_id.id])]</field>
+         <field name="domain_force">['|',('partner_id.company_id','=',False),
+             ('partner_id.company_id','child_of',[user.company_id.id])]</field>
        </record>
     </data>
 </odoo>

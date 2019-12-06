@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,6 +9,7 @@
 #
 ##############################################################################
 from odoo import api, models, fields
+from functools import reduce
 
 
 class Email(models.Model):
@@ -52,4 +53,4 @@ class Email(models.Model):
                         'subject': email.subject,
                         'ir_attachment_ids': [(6, 0, email.attachment_ids.ids)]
                     })
-        return super(Email, self).send(auto_commit, raise_exception)
+        return super().send(auto_commit, raise_exception)

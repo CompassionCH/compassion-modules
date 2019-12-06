@@ -24,8 +24,8 @@
                             <field name="user_id"/>
                             <field name="partner_id"/>
                             <field name="email_to"/>
-                            <field name="partner_phone" widget="phone_communication"/>
-                            <field name="partner_mobile" widget="phone_communication"/>
+                            <field name="partner_phone" widget="phone"/>
+                            <field name="partner_mobile" widget="phone"/>
                         </group>
                         <group>
                             <field name="sent_date" readonly="1"/>
@@ -48,7 +48,7 @@
                     </group>
                     <group>
                         <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
-                        <field name="body_html" widget="text_ckeditor4"/>
+                        <field name="body_html"/>
                     </group>
                     <group>
                         <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />
@@ -70,7 +70,9 @@
         <field name="name">communication.job.tree</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state=='pending';grey:state in ('done','cancel');red:state=='call'">
+            <tree decoration-primary="state == 'pending'"
+                  decoration-muted="state in ('done', 'cancel')"
+                  decoration-danger="state == 'call'">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
@@ -153,30 +155,18 @@
     <record id="send_action" model="ir.actions.server">
         <field name="name">Send communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
         <field name="code">records.send()</field>
-    </record>
-
-    <record id="send_action_menu" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'partner.communication.job'" name="model"/>
-        <field name="name">Send communication</field>
-        <field eval="'ir.actions.server,%d'%send_action" name="value"/>
     </record>
 
     <!-- Refresh communication actions -->
     <record id="refresh_action" model="ir.actions.server">
         <field name="name">Refresh communication</field>
         <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
         <field name="code">records.refresh_text(refresh_uid=True)</field>
-    </record>
-
-    <record id="refresh_action_menu" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'partner.communication.job'" name="model"/>
-        <field name="name">Refresh communication</field>
-        <field eval="'ir.actions.server,%d'%refresh_action" name="value"/>
     </record>
 
     <menuitem name="Partner Communication" id="menu_communication" parent="contacts.menu_contacts" sequence="1"/>

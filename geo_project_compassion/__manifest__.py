@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -9,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Nathan Flückiger
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -29,16 +28,16 @@
 
 # pylint: disable=C8101
 {'name': 'Geospatial support for compassion projects',
- 'version': '10.0.1.0.0',
+ 'version': '11.0.1.0.0',
  'category': 'GeoBI',
  'author': "Fluckiger Nathan",
  'license': 'AGPL-3',
  'depends': [
-     'base_geoengine',
+     'base_geoengine',  # OCA/geospatial
      'child_compassion',
  ],
  'data': [
      'views/project_compassion_geoengine_view.xml'
  ],
- 'installable': False,
+ 'installable': True,
  }

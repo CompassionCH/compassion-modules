@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -16,6 +15,7 @@ class HoldWizard(models.TransientModel):
     """
     Class used for searching interventions in the Mi3 Portal.
     """
+    _inherit = 'compassion.mapped.model'
     _name = 'compassion.intervention.hold.wizard'
 
     ##########################################################################
@@ -43,8 +43,8 @@ class HoldWizard(models.TransientModel):
     @api.multi
     def hold_sent(self, hold_vals):
         """ Called when hold is created """
-        del hold_vals['intervention_id.intervention_id']
-        hold_vals['hold_id'] = hold_vals.pop('intervention_id.hold_id')
+        del hold_vals['intervention_id']
+        hold_vals['hold_id'] = hold_vals.pop('created_intervention_id')
         intervention_vals = self.intervention_id.get_vals()
         intervention_vals.update(hold_vals)
         intervention_vals.update({

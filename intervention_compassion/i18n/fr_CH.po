@@ -139,7 +139,7 @@ msgid "Cancelled"
 msgstr "Cancelled"
 
 #. module: intervention_compassion
-#: field:compassion.intervention.subcategory,category_ids:0
+#: field:compassion.inter.subcat,category_ids:0
 msgid "Categories"
 msgstr "Categories"
 
@@ -159,7 +159,7 @@ msgid "Category name and type must be unique!"
 msgstr "Category name and type must be unique!"
 
 #. module: intervention_compassion
-#: sql_constraint:compassion.intervention.subcategory:0
+#: sql_constraint:compassion.inter.subcat:0
 msgid "Category name must be unique!"
 msgstr "Category name must be unique!"
 
@@ -213,7 +213,7 @@ msgstr "Create Hold"
 #: field:compassion.intervention.deliverable,create_uid:0
 #: field:compassion.intervention.hold.wizard,create_uid:0
 #: field:compassion.intervention.search,create_uid:0
-#: field:compassion.intervention.subcategory,create_uid:0
+#: field:compassion.inter.subcat,create_uid:0
 msgid "Created by"
 msgstr "Created by"
 
@@ -230,7 +230,7 @@ msgstr "Created intervention id"
 #: field:compassion.intervention.deliverable,create_date:0
 #: field:compassion.intervention.hold.wizard,create_date:0
 #: field:compassion.intervention.search,create_date:0
-#: field:compassion.intervention.subcategory,create_date:0
+#: field:compassion.inter.subcat,create_date:0
 msgid "Created on"
 msgstr "Created on"
 
@@ -269,7 +269,7 @@ msgstr "Details"
 #: field:compassion.intervention.deliverable,display_name:0
 #: field:compassion.intervention.hold.wizard,display_name:0
 #: field:compassion.intervention.search,display_name:0
-#: field:compassion.intervention.subcategory,display_name:0
+#: field:compassion.inter.subcat,display_name:0
 msgid "Display Name"
 msgstr "Display Name"
 
@@ -480,7 +480,7 @@ msgstr "FCPs"
 #: field:compassion.intervention.deliverable,id:0
 #: field:compassion.intervention.hold.wizard,id:0
 #: field:compassion.intervention.search,id:0
-#: field:compassion.intervention.subcategory,id:0
+#: field:compassion.inter.subcat,id:0
 msgid "ID"
 msgstr "ID"
 
@@ -554,7 +554,7 @@ msgid "Intervention Hold Request"
 msgstr "Intervention Hold Request"
 
 #. module: intervention_compassion
-#: model:ir.model,name:intervention_compassion.model_compassion_intervention_subcategory
+#: model:ir.model,name:intervention_compassion.model_compassion_inter_subcat
 msgid "Intervention Subcategory"
 msgstr "Intervention Subcategory"
 
@@ -606,7 +606,7 @@ msgstr "Last Message Date"
 #: field:compassion.intervention.deliverable,__last_update:0
 #: field:compassion.intervention.hold.wizard,__last_update:0
 #: field:compassion.intervention.search,__last_update:0
-#: field:compassion.intervention.subcategory,__last_update:0
+#: field:compassion.inter.subcat,__last_update:0
 msgid "Last Modified on"
 msgstr "Last Modified on"
 
@@ -618,7 +618,7 @@ msgstr "Last Modified on"
 #: field:compassion.intervention.deliverable,write_uid:0
 #: field:compassion.intervention.hold.wizard,write_uid:0
 #: field:compassion.intervention.search,write_uid:0
-#: field:compassion.intervention.subcategory,write_uid:0
+#: field:compassion.inter.subcat,write_uid:0
 msgid "Last Updated by"
 msgstr "Last Updated by"
 
@@ -630,7 +630,7 @@ msgstr "Last Updated by"
 #: field:compassion.intervention.deliverable,write_date:0
 #: field:compassion.intervention.hold.wizard,write_date:0
 #: field:compassion.intervention.search,write_date:0
-#: field:compassion.intervention.subcategory,write_date:0
+#: field:compassion.inter.subcat,write_date:0
 msgid "Last Updated on"
 msgstr "Last Updated on"
 
@@ -712,7 +712,7 @@ msgstr "Messages and communication history"
 #: field:compassion.intervention,name:0
 #: field:compassion.intervention.category,name:0
 #: field:compassion.intervention.deliverable,name:0
-#: field:compassion.intervention.subcategory,name:0
+#: field:compassion.inter.subcat,name:0
 msgid "Name"
 msgstr "Name"
 
