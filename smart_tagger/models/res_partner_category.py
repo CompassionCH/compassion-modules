@@ -8,7 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+import datetime
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 
@@ -42,7 +42,9 @@ class ResPartnerCategory(models.Model):
     @api.multi
     def update_partner_tags(self):
         for tagger in self.filtered('smart'):
-            domain = safe_eval(tagger.condition_id.domain)
+            domain = safe_eval(tagger.condition_id.domain,
+                               locals_dict={'datetime': datetime},
+                               locals_builtins=True)
             model = tagger.condition_id.model_id
             matching_records = self.env[model].search(domain)
             if matching_records:
