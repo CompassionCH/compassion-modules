@@ -1,0 +1,59 @@
+{
+  "name": "CreateGift",
+  "model": "sponsorship.gift",
+  "mapping": {
+    "FieldOfficeNoteFieldForGlobalPartner": "field_office_notes",
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "to_json_conversion": "odoo_value or None",
+      "search_relational_record": true
+    },
+    "AmountInOriginatingCurrency": "amount",
+    "GiftSubType": {
+      "field": "sponsorship_gift_type",
+      "to_json_conversion": "odoo_value or None"
+    },
+    "GiftType": "attribution",
+    "GlobalPartnerNote": {
+      "field": "instructions",
+      "to_json_conversion": "re.sub(\"['\\\"´]\", u\" \", odoo_value) if odoo_value else None"
+    },
+    "PartnerGiftDate": "gift_date",
+    "PartnerGiftID": {
+      "field": "id",
+      "to_json_conversion": "str(odoo_value)"
+    },
+    "RecipientID": {
+      "field": "child_id.local_id",
+      "search_relational_record": true
+    },
+    "RecipientType": "gift_type",
+    "Supporter_GlobalID": {
+      "field": "partner_id.global_id",
+      "search_relational_record": true
+    },
+    "ExchangeRatePartnerToGMC": {
+      "field": "exchange_rate",
+      "exclude_from_json": true
+    },
+    "ThresholdViolatedType": {
+      "field": "threshold_alert_type",
+      "exclude_from_json": true
+    },
+    "IsThresholdViolated": {
+      "field": "threshold_alert",
+      "exclude_from_json": true
+    },
+    "GiftDeliveryStatus": "state",
+    "ID": "gmc_gift_id",
+    "Id": "gmc_gift_id",
+    "StatusChangeDate": "status_change_date",
+    "UndeliverableReason": "undeliverable_reason",
+    "CurrencyCode": {
+      "to_json_conversion": "self.env.user.currency_id.name"
+    },
+    "Supporter_GlobalPartnerSupporterID": {
+      "to_json_conversion": "self.env.user.company_id.country_id.code"
+    }
+  }
+}

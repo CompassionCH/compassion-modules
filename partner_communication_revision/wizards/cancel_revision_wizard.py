@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -72,16 +71,16 @@ class ValidateRevisionWizard(models.TransientModel):
             })
         self.revision_id.write(revision_vals)
         if self.user_id != self.env.user or self.comments:
-            next_action_text = u'<b>Next action for {}: ' \
-                u'Make corrections and resubmit.</b><br/><br/>'.format(
-                    self.user_id.firstname)
-            body = u"The text was set back in revision by {}{}{}".format(
-                self.env.user.firstname,
-                u" with following comments:<br/><br/>" if self.comments else
-                u".",
-                self.comments or u"").strip()
-            subject = "[{}] Approval cancelled:  text needs corrections"\
-                .format(self.revision_id.display_name)
+            next_action_text = f'<b>Next action for {self.user_id.firstname}: ' \
+                               'Make corrections and resubmit.</b><br/><br/>'
+            body = f"The text was set back in revision by {self.env.user.firstname}"
+            if self.comments:
+                body += f" with following comments:<br/><br/>{self.comments.strip()}"
+            else:
+                body += "."
+
+            subject = f"[{self.revision_id.display_name}] Approval cancelled: " \
+                      "text needs corrections"
             self.revision_id.notify_proposition(
                 subject, next_action_text + body)
 

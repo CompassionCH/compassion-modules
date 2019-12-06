@@ -19,7 +19,9 @@
                         <field name="revision_number"/>
                         <field name="revision_date"/>
                         <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
-                            <tree colors="blue:state in ('pending','submit','corrected');green:state=='approved'">
+                            <tree
+                                    decoration-primary="state in ('pending','submit','corrected')"
+                                    decoration-success="state=='approved'">
                                 <field name="config_id" invisible="1"/>
                                 <field name="lang"/>
                                 <field name="user_id"/>

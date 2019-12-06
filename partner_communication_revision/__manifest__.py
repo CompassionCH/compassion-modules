@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -9,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -30,14 +29,17 @@
 # pylint: disable=C8101
 {
     'name': 'Partner Communication Revisions',
-    'version': '10.0.1.1.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['partner_communication'],
+    'depends': [
+        'partner_communication',
+        'web_tree_dynamic_colored_field'  # OCA/web
+    ],
     'external_dependencies': {
-        'python': ['pyquery', 'regex', 'bs4']
+        'python': ['pyquery', 'regex', 'bs4', 'PyPDF2']
     },
     'data': [
         'security/ir.model.access.csv',
@@ -53,12 +55,11 @@
         'views/cancel_revision_wizard_view.xml',
         'views/submit_revision_wizard_view.xml',
         'data/install.xml'
-        # 'views/partner_communication_revision.xml',
     ],
     'qweb': [],
     'demo': [
         'data/demo.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False
 }

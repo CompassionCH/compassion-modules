@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -201,15 +200,15 @@ class CommunicationRevision(models.Model):
             self.message_subscribe_users([vals['correction_user_id']])
 
         if 'simplified_text' not in vals or self.env.context.get('no_update'):
-            return super(CommunicationRevision, self).write(vals)
+            return super().write(vals)
 
         for revision in self.filtered('simplified_text'):
             vals['update_user_id'] = self.env.uid
-            super(CommunicationRevision, revision).write(vals)
+            super().write(vals)
 
             # 2. Push back the template text
             # Set the conditionals texts
-            revision.with_context(save_mode=True).refresh_text()
+            revision.save_text()
             revision.config_id.email_template_id.with_context(
                 lang=revision.lang).body_html = revision._enhance_text()
         return True
@@ -269,29 +268,36 @@ class CommunicationRevision(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
-    def refresh_text(self):
+    def save_text(self):
         """
-        Save the current text in the if clause and refresh the selected
-        clauses.
+        Save the current text in the clauses
         """
         text = PyQuery(self.simplified_text)
         for key in self.keyword_ids.filtered(
                 lambda k: k.type in ('if', 'for', 'for_ul')):
             text_selector = text('#' + key.html_id)
             current_text = text_selector.html()
-            # Save the current text in the correct if clause
-            if key.edit_changed % 2 == 0:
-                edit_value = key.edit_value
-            else:
-                edit_value = not key.edit_value
             if current_text is not None:
-                key.set_text(current_text, edit_value)
-            if key.edit_changed and not self._context.get('save_mode'):
-                # Now we fetch the current clause text
-                text_selector.html(key.get_text())
-                key.write({'edit_changed': 0})
-        self.with_context(no_update=True).simplified_text = text.html()
+                key.set_text(current_text, key.edit_value)
+        self.with_context(no_update=True).write({'simplified_text': text.html()})
         return True
+
+    @api.multi
+    def keyword_toggle_value(self, keyword):
+        """
+            Switch the text in the 'if' clause between 'true_text' and 'false_text'
+            Save the modified text for the correct clause
+        :param keyword:
+        :return:
+        """
+        if keyword in self.keyword_ids:
+            text = PyQuery(self.simplified_text)
+            text_selector = text('#' + keyword.html_id)
+            current_text = text_selector.html()
+            if current_text is not None:
+                keyword.set_text(current_text, not keyword.edit_value)
+            text_selector.html(keyword.get_text())
+            self.with_context(no_update=True).write({'simplified_text': text.html()})
 
     @api.multi
     def open_preview(self):
@@ -333,8 +339,8 @@ class CommunicationRevision(models.Model):
 
     @api.multi
     def validate_proposition(self):
-        subject = '[{}] Revision approved'.format(self.display_name)
-        body = 'The text for {} was approved.'.format(self.display_name)
+        subject = f'[{self.display_name}] Revision approved'
+        body = f'The text for {self.display_name} was approved.'
         if not self.is_master_version:
             self.approve(subject, body)
         return self.with_context(body=body, subject=subject)._open_validation()
@@ -362,8 +368,8 @@ class CommunicationRevision(models.Model):
             'proposition_text': self.proposition_correction,
             'subject': self.subject_correction
         })
-        body = 'The text for {} was approved.'.format(self.display_name)
-        subject = '[{}] Corrections approved'.format(self.display_name)
+        body = f'The text for {self.display_name} was approved.'
+        subject = f'[{self.display_name}] Corrections approved'
         if not self.is_master_version:
             self.approve(subject, body)
 
@@ -607,11 +613,10 @@ class CommunicationRevision(models.Model):
                     vals['color'] = 'black'
                 keyword = keywords.create(vals)
                 # Recompute replacement html
-                keyword.env.invalidate_all()
+                self.env.clear()
             keywords += keyword
             keyword_number += 1
-            simple_text = safe_replace(
-                simple_text, raw_code, keyword.replacement)
+            simple_text = safe_replace(simple_text, raw_code, keyword.replacement)
         return simple_text, keywords
 
     def _replace_if(self, text, nested_position, keyword_number=1):
@@ -770,7 +775,7 @@ class CommunicationRevision(models.Model):
         # Replace user added keywords
         template_text = html_text.html()
         for keyword in keywords.filtered(lambda k: k.type == 'code'):
-            to_replace = u"[{}]".format(keyword.short_code)
+            to_replace = f"[{keyword.short_code}]"
             template_text = template_text.replace(to_replace, keyword.raw_code)
         final_text = PyQuery(BeautifulSoup(template_text).prettify())
         return final_text('body').html()

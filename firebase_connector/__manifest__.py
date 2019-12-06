@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,24 +29,24 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion EU Firebase Connector',
-    'version': '10.0.0.0.0',
+    'version': '11.0.0.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': ['sales_team'],
+    'depends': ['sale_management'],
     'external_dependencies': {
         'python': ['firebase_admin'],
     },
     'data': [
         'data/ir_cron.xml',
-        'views/firebase_registration.xml',
         'views/firebase_notification.xml',
+        'views/firebase_registration.xml',
         'security/ir.model.access.csv'
     ],
     'demo': [
     ],
     'development_status': 'Beta',
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

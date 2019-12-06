@@ -37,7 +37,8 @@ class CompassionMappedModel(models.AbstractModel):
         result = list()
         for record in self:
             json = {}
-            for json_spec in mapping.json_spec_ids:
+            for json_spec in mapping.json_spec_ids.filtered(
+                    lambda jspec: not jspec.exclude_from_json):
                 if json_spec.sub_mapping_id:
                     sub_record = record
                     if json_spec.field_name:

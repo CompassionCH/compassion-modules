@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Nicolas Badoux <n.badoux@hotmail.com>
 #    The licence is in the file __manifest__.py
@@ -17,7 +16,7 @@ logger = logging.getLogger(__name__)
 class TestPartnerCommunicationRevision(TransactionCase):
 
     def setUp(self):
-        super(TestPartnerCommunicationRevision, self).setUp()
+        super().setUp()
         self.env['res.lang'].load_lang('de_DE')
         self.test_communication = self.env['partner.communication.config'] \
             .browse(self.ref('partner_communication.test_communication'))
@@ -52,7 +51,8 @@ class TestPartnerCommunicationRevision(TransactionCase):
         self.assertEqual(keyword.short_code, 'max_per_day')
         self.assertEqual(keyword.color, 'darkblue')
         self.assertEqual(keyword.index, 1)
-        html = '<span id="1-max_per_day" style="color: darkblue;">False</span>'
+        html = '<span id="1-if-max_per_day" style="color: darkblue;">' \
+            'False</span>'
         self.assertEqual(keyword.replacement, html)
 
     def test_simplifying_revision(self):
@@ -63,11 +63,11 @@ class TestPartnerCommunicationRevision(TransactionCase):
 
         revision.reload_text()
 
-        expected = """<div><spanid="1-var-partner"></span></div><div>
-        <spanid="1-salutation"style="color:white;background-color:darkblue;">
-        [salutation]</span>,<br><br>WethankyouforthedonationofCHF
-        <spanid="1-email"style="color:darkblue;">youmadebyemail.</span>
-        Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
+        expected = """<div><spanid="1-var-var-partner"></span></div><div>
+    <spanid="1-code-salutation"style="color:white;background-color:darkblue;">
+    [salutation]</span>,<br><br>WethankyouforthedonationofCHF
+    <spanid="1-if-email"style="color:darkblue;">youmadebyemail.</span>
+    Weappreciateyourgenerosity.<br><br>Yourssincerely</div>"""
 
         obtained_normalized = re.sub(r'\s+', '', revision.simplified_text)
         expected_normalized = re.sub(r'\s+', '', expected)

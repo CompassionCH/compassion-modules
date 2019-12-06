@@ -34,13 +34,15 @@ class FirebaseNotification(models.Model):
     ##########################################################################
 
     @api.multi
-    def send(self, data=None):
+    def send(self, **kwargs):
         """
         Filters notifications w.r.t. user's preference
 
         :param data:
         :return:
         """
+        data = kwargs.get('data', {})
+
         for notif in self:
             data = {
                 'topic': notif.topic,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -9,17 +8,16 @@
 #
 ##############################################################################
 from datetime import date, timedelta
-from odoo import fields, models, api, _
-from odoo.exceptions import UserError
 
-from ..mappings.gift_mapping import CreateGiftMapping
-from odoo.addons.sponsorship_compassion.models.product import \
+from odoo import fields, models, api, _
+from odoo.addons.sponsorship_compassion.models.product_names import \
     GIFT_REF, GIFT_CATEGORY
+from odoo.exceptions import UserError
 
 
 class SponsorshipGift(models.Model):
     _name = 'sponsorship.gift'
-    _inherit = ['translatable.model', 'mail.thread']
+    _inherit = ['translatable.model', 'mail.thread', 'compassion.mapped.model']
     _description = 'Sponsorship Gift'
     _order = 'gift_date desc,id desc'
 
@@ -33,7 +31,7 @@ class SponsorshipGift(models.Model):
     )
     partner_id = fields.Many2one(
         'res.partner', 'Partner', related='sponsorship_id.correspondent_id',
-        store=True
+        store=True, readonly=True
     )
     project_id = fields.Many2one(
         'compassion.project', 'Project',
@@ -156,15 +154,15 @@ class SponsorshipGift(models.Model):
             amounts = invoice_lines.mapped('price_subtotal')
 
             gift.date_partner_paid = fields.Date.to_string(max(
-                map(lambda d: fields.Date.from_string(d), pay_dates)))
+                [fields.Date.from_string(d) for d in pay_dates]))
 
             if gift.sponsorship_gift_type == 'Birthday':
-                gift.gift_date = self.env['generate.gift.wizard'].\
+                gift.gift_date = self.env['generate.gift.wizard']. \
                     compute_date_birthday_invoice(
-                        gift.child_id.birthdate, inv_dates[0])
+                    gift.child_id.birthdate, inv_dates[0])
             else:
                 gift_date = max(
-                    map(lambda d: fields.Date.from_string(d), inv_dates))
+                    [fields.Date.from_string(d) for d in inv_dates])
                 gift.gift_date = gift_date and fields.Date.to_string(gift_date)
 
             gift.amount = sum(amounts)
@@ -259,7 +257,7 @@ class SponsorshipGift(models.Model):
             aggregated_amounts = self.amount + other_gift_vals['amount']
             self.write({'amount': aggregated_amounts})
         instructions = [self.instructions, other_gift_vals['instructions']]
-        self.instructions = '; '.join(filter(lambda x: x, instructions))
+        self.instructions = '; '.join([x for x in instructions if x])
         return self
 
     @api.multi
@@ -279,6 +277,25 @@ class SponsorshipGift(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+
+    @api.model
+    def json_to_data(self, json, mapping_name=None):
+        odoo_data = super().json_to_data(
+            json, mapping_name
+        )
+        if 'id' in odoo_data:
+            odoo_data['id'] = int(odoo_data['id'])
+        return odoo_data
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        json_data = super().data_to_json(mapping_name)
+        if json_data.get('RecipientType') == 'Project Gift':
+            del json_data['Beneficiary_GlobalID']
+            json_data['RecipientId'] = json_data['RecipientID'][:6]
+            del json_data['RecipientID']
+        return json_data
+
     @api.model
     def create_from_invoice_line(self, invoice_line):
         """
@@ -365,7 +382,7 @@ class SponsorshipGift(models.Model):
                 if other_gifts:
                     total_amount += sum(other_gifts.mapped(
                         lambda gift: gift.amount_us_dollars or
-                        gift.amount * current_rate))
+                                        gift.amount * current_rate))
 
                 return total_amount < (maximum_amount *
                                        threshold_rule.gift_frequency)
@@ -505,27 +522,28 @@ class SponsorshipGift(models.Model):
         :param commkit_data contains the data of the message (json)
         :return list of gift ids which are concerned by the message
         """
-        gift_update_mapping = CreateGiftMapping(self.env)
-
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         gifts_data = commkit_data['GiftUpdatesRequest'][
             'GiftUpdateRequestList']
         gift_ids = []
         changed_gifts = self
+
         # For each dictionary, we update the corresponding record
         for gift_data in gifts_data:
-            vals = gift_update_mapping.get_vals_from_connect(gift_data)
+            vals = self.json_to_data(
+                gift_data, 'CreateGift'
+            )
             gift_id = vals['id']
             gift_ids.append(gift_id)
-            gift = self.env['sponsorship.gift'].browse([gift_id])
+            gift = self.env['sponsorship.gift'].browse([gift_id]).exists()
             if vals.get('state', gift.state) != gift.state:
                 changed_gifts += gift
             gift.write(vals)
 
-        changed_gifts.filtered(lambda g: g.state == 'Delivered').\
+        changed_gifts.filtered(lambda g: g.state == 'Delivered'). \
             _gift_delivered()
-        changed_gifts.filtered(lambda g: g.state == 'Undeliverable').\
+        changed_gifts.filtered(lambda g: g.state == 'Undeliverable'). \
             _gift_undeliverable()
 
         return gift_ids
@@ -629,11 +647,10 @@ class SponsorshipGift(models.Model):
         for gift in self:
             message_obj = self.env['gmc.message']
 
-            action_id = self.env.ref(
-                'gift_compassion.create_gift').id
+            action_id = self.env.ref('gift_compassion.create_gift')
 
             message_vals = {
-                'action_id': action_id,
+                'action_id': action_id.id,
                 'object_id': gift.id,
                 'partner_id': gift.partner_id.id,
                 'child_id': gift.child_id.id,
@@ -682,7 +699,7 @@ class SponsorshipGift(models.Model):
             inverse_move.post()
             gift.inverse_payment_id = inverse_move
 
-        notify_ids = self.env['staff.notification.settings'].get_param(
+        notify_ids = self.env['res.config.settings'].get_param(
             'gift_notify_ids')
         if notify_ids:
             for gift in self:
@@ -696,9 +713,9 @@ class SponsorshipGift(models.Model):
                     'reason': gift.undeliverable_reason
                 }
                 body = (
-                    u"{name} ({ref}) made a gift to {child_name}"
-                    u" ({child_code}) which is undeliverable because {reason}."
-                    u"\nPlease inform the sponsor about it."
+                    "{name} ({ref}) made a gift to {child_name}"
+                    " ({child_code}) which is undeliverable because {reason}."
+                    "\nPlease inform the sponsor about it."
                 ).format(**values)
                 gift.message_post(
                     body=body,
