@@ -75,6 +75,7 @@ class CHDateWidget(models.AbstractModel):
     _name = 'cms.form.widget.date.ch'
     _inherit = 'cms.form.widget.date'
     _w_template = 'cms_form_compassion.field_widget_date_ch'
+    w_date_format = 'DD.MM.YYYY'
 
     def w_extract(self, **req_values):
         value = super().w_extract(**req_values)

@@ -1,7 +1,7 @@
 odoo.define('cms_form_compassion.gtc_form', function (require) {
     'use strict';
 
-    var animation = require('web_editor.snippets.animation');
+    var animation = require('website.content.snippets.animation');
 
     var gtc = animation.Class.extend({
         selector: '.gtc-link',
@@ -10,8 +10,11 @@ odoo.define('cms_form_compassion.gtc_form', function (require) {
          * Called when widget is started
          */
         start: function () {
-            // Show GTC text
-            this.$el.click(function () {
+            this.$el.click(function (event) {
+                // Do not scroll to the top of the page
+                event.preventDefault();
+
+                // Show GTC text
                 $('.gtc').toggle();
             });
         },
