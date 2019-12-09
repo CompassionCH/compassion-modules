@@ -76,6 +76,13 @@ class CorrespondenceS2bGenerator(models.Model):
     preview_pdf = fields.Binary(readonly=True)
     month = fields.Selection('_get_months')
 
+    source = fields.Selection(selection=[
+        ('letter', _('Letter')),
+        ('email', _('E-Mail')),
+        ('website', _('Compassion website')),
+        ('app', _('Mobile app')),
+        ('compassion', _('Written by Compassion'))], default='compassion')
+
     def _compute_nb_letters(self):
         for generator in self:
             generator.nb_letters = len(generator.letter_ids)
@@ -168,7 +175,7 @@ class CorrespondenceS2bGenerator(models.Model):
                 'letter_image': base64.b64encode(pdf),
                 'template_id': self.s2b_template_id.id,
                 'direction': 'Supporter To Beneficiary',
-                'source': 'compassion',
+                'source': self.source,
                 'original_language_id': self.language_id.id,
                 'original_text': text,
             })
