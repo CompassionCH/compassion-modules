@@ -343,9 +343,10 @@ class SponsorshipContract(models.Model):
             old_correspondents = self.mapped('correspondent_id')
             updated_correspondents = self._on_change_correspondant(
                 vals['correspondent_id'])
+
             self.mapped('child_id').write({
                 'sponsor_id': vals['correspondent_id']
-                })
+            })
 
         super(SponsorshipContract, self).write(vals)
 
@@ -358,7 +359,7 @@ class SponsorshipContract(models.Model):
                 "Error while changing correspondant at GMC. "
                 "The sponsorship is no longer active at GMC side. "
                 "Please activate it again manually.", exc_info=True
-                )
+            )
 
         if 'reading_language' in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -823,6 +824,7 @@ class SponsorshipContract(models.Model):
                 HoldType.SPONSOR_CANCEL_HOLD)
         })
         cancelled_sponsorships = self.env[self._name]
+        errors = self.env[self._name]
 
         # Cancel sponsorship at GMC
         messages = message_obj
@@ -839,6 +841,14 @@ class SponsorshipContract(models.Model):
                 cancelled_sponsorships += sponsorships[i]
             else:
                 messages[i].unlink()
+                errors += sponsorships[i]
+        if errors:
+            logger.error("Could not cancel contracts with following global_id(s):"
+                         ", ".join(errors.mapped('global_id')))
+
+            raise RuntimeError(_("The current commitment at GMC side could not be "
+                                 "cancelled."))
+
         cancelled_sponsorships.write({'global_id': False})
         return cancelled_sponsorships
 
@@ -851,10 +861,8 @@ class SponsorshipContract(models.Model):
         one.
         But in Odoo, we will not see the commitment has changed.
         """
-        message_obj = self.env['gmc.message.pool'].with_context(
-            async_mode=False)
-        create_action = self.env.ref(
-            'sponsorship_compassion.create_sponsorship')
+        message_obj = self.env['gmc.message.pool'].with_context(async_mode=False)
+        create_action = self.env.ref('sponsorship_compassion.create_sponsorship')
 
         # Upsert correspondents
         self.mapped('correspondent_id').upsert_constituent().process_messages()
@@ -871,7 +879,7 @@ class SponsorshipContract(models.Model):
             })
         messages.process_messages()
         for i in range(0, len(messages)):
-            if messages[i].state == 'failure':
+            if not messages[i].state == 'success':
                 self[i].message_post(
                     messages[i].failure_reason,
                     _("The sponsorship is no more active!")
