@@ -89,6 +89,8 @@ class CommunicationOmrConfig(models.Model):
     config_id = fields.Many2one(
         'partner.communication.config', 'Communication type')
     lang_id = fields.Many2one('res.lang', 'Language')
+    user_id = fields.Many2one(
+        'res.users', 'From', domain=[('share', '=', False)])
 
 
 class CommunicationConfig(models.Model):
@@ -179,6 +181,19 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model
+    def get_config_for_lang(self, lang):
+        specific_config_found = False
+        for config in self.omr_config_ids:
+            if config.lang_id:
+                if config.lang_id == lang:
+                    specific_config_found = True
+                    return config
+
+        if not specific_config_found:
+            return self.omr_config_ids.filtered(lambda c: not c.lang_id)
+        return None
+
     @api.model
     def get_send_mode(self):
         send_modes = self.get_delivery_preferences()
