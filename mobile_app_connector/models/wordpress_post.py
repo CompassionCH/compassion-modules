@@ -115,8 +115,13 @@ class WordpressPost(models.Model):
             + post_type
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
-        category_obj = self.env['wp.post.category']
         found_ids = []
+        # Posts already fetched
+        cached_posts = self.env['wp.post'].search([
+            ('lang', '=', self.env.lang),
+            ('display_on_hub', '=', True),
+            ('category_ids.display_on_hub', '=', True)
+        ])
         try:
             h = HTMLParser()
             with wp_requests.Session(wp_config) as requests:
@@ -131,6 +136,12 @@ class WordpressPost(models.Model):
                         post_id = post_data['id']
                         found_ids.append(post_id)
                         if self.search([('wp_id', '=', post_id)]):
+                            cached_post = cached_posts.search([
+                                ('wp_id', '=', post_id)
+                            ])
+                            if cached_post:
+                                self._update_cached_post_categories(
+                                    cached_post, post_data, requests)
                             # Skip post already fetched
                             continue
 
@@ -159,28 +170,8 @@ class WordpressPost(models.Model):
                             _logger.warning('WP Post ID %s has no image',
                                             str(post_id))
                         # Fetch post category
-                        categories_id = []
-                        try:
-                            category_data = [
-                                d for d in post_data['_links']['wp:term']
-                                if d['taxonomy'] == 'category'
-                            ][0]
-                            category_json_url = category_data['href']
+                        categories_id = self._fetch_categories_ids(post_data, requests)
 
-                            categories_request = requests.get(
-                                category_json_url).json()
-                            for c in categories_request:
-                                category = category_obj.search([
-                                    ('name', '=', c['name'])])
-                                if not category:
-                                    category = category_obj.create({
-                                        'name': c['name']
-                                    })
-                                categories_id.append(category.id)
-
-                        except (IndexError, KeyError):
-                            _logger.info('WP Post ID %s has no category.',
-                                         str(post_id))
                         # Cache new post in database
                         self.create({
                             'name': h.unescape(post_data['title']['rendered']),
@@ -200,6 +191,39 @@ class WordpressPost(models.Model):
         except ValueError:
             _logger.warning("Error fetching wordpress posts", exc_info=True)
         return True
+
+    def _update_cached_post_categories(self, cached_post, post_data, requests):
+        categories_id = self._fetch_categories_ids(post_data, requests)
+        # If there is a difference between categories
+        if sorted(cached_post.category_ids.ids) != sorted(categories_id):
+            cached_post.write({
+                'category_ids': [(6, _, categories_id)]
+            })
+
+    def _fetch_categories_ids(self, post_data, requests):
+        categories_id = []
+        category_obj = self.env['wp.post.category']
+        try:
+            category_data = [
+                d for d in post_data['_links']['wp:term']
+                if d['taxonomy'] == 'category'
+            ][0]
+            category_json_url = category_data['href']
+
+            categories_request = requests.get(
+                category_json_url).json()
+            for c in categories_request:
+                category = category_obj.search([
+                    ('name', '=', c['name'])])
+                if not category:
+                    category = category_obj.create({
+                        'name': c['name']
+                    })
+                categories_id.append(category.id)
+        except (IndexError, KeyError):
+            _logger.info('WP Post ID %s has no category.',
+                         str(post_data['id']))
+        return categories_id
 
     @api.model
     def _supported_langs(self):

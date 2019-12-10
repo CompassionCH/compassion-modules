@@ -13,7 +13,6 @@ from collections import defaultdict
 
 from ..mappings.wp_post_mapping import WPPostMapping
 from odoo import api, models
-from ..tools import wp_requests
 
 _logger = logging.getLogger(__name__)
 
@@ -160,46 +159,6 @@ class AppHub(models.AbstractModel):
             ('display_on_hub', '=', True),
             ('category_ids.display_on_hub', '=', True)
         ])
-        category_obj = self.env['wp.post.category']
-        wp_config = self.env['wordpress.configuration'].get_config()
-        try:
-            with wp_requests.Session(wp_config) as requests:
-                for i, post_data in enumerate(available_posts):
-                    post_id = post_data['id']
-                    post = self.env['wp.post'].browse(post_id)
-                    old_categories = post.category_ids
-
-                    # Fetch post category
-                    categories_id = []
-                    try:
-                        category_data = [
-                            d for d in post_data['_links']['wp:term']
-                            if d['taxonomy'] == 'category'
-                        ][0]
-                        category_json_url = category_data['href']
-
-                        categories_request = requests.get(
-                            category_json_url).json()
-                        for c in categories_request:
-                            category = category_obj.search([
-                                ('name', '=', c['name'])])
-                            if not category:
-                                category = category_obj.create({
-                                    'name': c['name']
-                                })
-                            categories_id.append(category.id)
-
-                        # update post categories only if there is something to update
-                        if old_categories.keys() - categories_id:
-                            post.write({
-                                "category_ids": [(1, post_id, categories_id)]
-                            })
-                    except (IndexError, KeyError):
-                        _logger.info('WP Post ID %s has no category.',
-                                     str(post_id))
-        except ValueError:
-            _logger.warning("Error fetching wordpress posts", exc_info=True)
-
         messages = []
         if available_posts:
             start = int(pagination.get('start', 0))
