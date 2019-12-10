@@ -39,6 +39,19 @@ class OmrConfig(models.AbstractModel):
         help='If set to True, the OMR mark for adding an '
              'attachment from tray 2 is added to the communication.'
     )
+    omr_top_mark_x = fields.Float(
+        default=7,
+        help='X position in millimeters of the first OMR mark in the page'
+    )
+    omr_top_mark_y = fields.Float(
+        default=190,
+        help='Y position in millimeters of the first OMR mark in the page, '
+             'computed from the bottom of the page.'
+    )
+    omr_single_sided = fields.Boolean(
+        help='Will put the OMR marks on every page if the document is printed '
+             'single-sided.'
+    )
 
 
 class CommunicationDefaults(models.AbstractModel):

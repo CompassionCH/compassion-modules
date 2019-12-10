@@ -530,12 +530,18 @@ class Correspondence(models.Model):
         pages = self.page_ids
         if self.translated_text:
             source = 'translated_text'
-            if self.translated_text != self.english_text and \
+            # In case the translated text is not the same as the english text
+            # we want to filter page translations that are equal as the
+            # english version, because the translator may have put all
+            # translation in the same box. We want to avoid composing
+            # English text when it's not expected
+            if "".join((self.translated_text or "").split()) != "".join(
+                    (self.english_text or "").split()) and \
                     self.translation_language_id.code_iso != 'eng':
                 # Avoid capturing english text that hasn't been translated
                 pages = pages.filtered(source).filtered(
-                    lambda p: "".join(p.translated_text.split()) !=
-                    "".join(p.english_text.split()))
+                    lambda p: "".join((p.translated_text or "").split()) !=
+                    "".join((p.english_text or "").split()))
         else:
             source = 'english_text'
         if not getattr(self, source) or not template or not image_data:

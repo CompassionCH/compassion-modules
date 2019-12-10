@@ -701,11 +701,13 @@ class CompassionIntervention(models.Model):
         :return list of intervention ids which are concerned
                 by the message """
         # sleep to prevent a concurence error
-        time.sleep(60)
+        time.sleep(10)
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
-        interventionamendment = commkit_data[
-            'InterventionAmendmentCommitmentNotification']
+        interventionamendment = commkit_data.get(
+            'InterventionAmendmentCommitmentNotification',
+            commkit_data.get('InterventionAmendmentKitRequest', [{}])[0]
+        )
         intervention_local_ids = []
         v = self.json_to_data(commkit_data)
         intervention_id = v['intervention_id']
@@ -716,12 +718,19 @@ class CompassionIntervention(models.Model):
         ])
 
         if intervention:
-            intervention.total_amendment += amendment_amount
+            if amendment_amount:
+                intervention.total_amendment += amendment_amount
             intervention.get_infos()
             intervention_local_ids.append(intervention.id)
+            amendment_type = ', '.join(interventionamendment.get(
+                'AmendmentType', []))
+            amendment_reason = interventionamendment.get(
+                'ReasonsForAmendment', '')
             body = _("This intervention has been modified by amendment.")
             body += f"<br/><ul><li>Amendment ID: " \
                     f"{interventionamendment['InterventionAmendment_ID']}</li>"
+            body += f"<li>Amendment Type: {amendment_type}</li>"
+            body += f"<li>Amendment Reason: {amendment_reason}</li>"
             body += f"<li>Amendment Amount: {amendment_amount}</li>"
             body += f"<li>Hold ID: {interventionamendment['HoldID']}</li></ul>"
             intervention.message_post(

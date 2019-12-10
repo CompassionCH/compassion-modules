@@ -14,8 +14,6 @@ from ..mappings.compassion_correspondence_mapping import \
 from werkzeug.exceptions import NotFound
 from base64 import b64encode
 
-from datetime import date, timedelta
-
 
 class CompassionCorrespondence(models.Model):
     _inherit = 'correspondence'
@@ -38,15 +36,16 @@ class CompassionCorrespondence(models.Model):
             data = []
             for letter in self:
                 data.append(mapping.get_connect_data(letter))
-        unread_recently = not(self.email_read and self.email_read <
-                              fields.Date.to_string(
-                                  date.today() + timedelta(days=3)))
+
+        order_date = self.sent_date or self.status_date
+        if self.direction == 'Supporter to beneficiary':
+            order_date = self.scanned_date
+
         return {
             'Child': child.get_app_json_no_wrap(),
             wrapper: data,
-            'OrderDate': self.sent_date or self.status_date,
-            'UnReadRecently': unread_recently,
-            }
+            'OrderDate': order_date
+        }
 
     @api.model
     def mobile_post_letter(self, json_data, **parameters):
