@@ -197,7 +197,8 @@ class WordpressPost(models.Model):
         # If there is a difference between categories
         if sorted(cached_post.category_ids.ids) != sorted(categories_id):
             cached_post.write({
-                'category_ids': [(6, _, categories_id)]
+                'category_ids': [(6, _, categories_id)],
+                'display_on_hub': self._update_display_on_hub(categories_id)
             })
 
     def _fetch_categories_ids(self, post_data, requests):
@@ -224,6 +225,15 @@ class WordpressPost(models.Model):
             _logger.info('WP Post ID %s has no category.',
                          str(post_data['id']))
         return categories_id
+
+    def _update_display_on_hub(self, categories_id):
+        for category_id in categories_id:
+            category = self.env['wp.post.category'].search([
+                ('id', '=', category_id)
+            ])
+            if category.display_on_hub:
+                return True
+        return False
 
     @api.model
     def _supported_langs(self):
