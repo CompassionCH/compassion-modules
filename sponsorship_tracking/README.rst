@@ -26,15 +26,17 @@ It adds a new kanban, tree and form view to track sponsorships after child depar
 Color conventions for SDS Tracking Kanban View :
 
 0 - Blank - Default color
-1 - Black - Sponsorships with NO SUB (cancelled, or no_sub)
-2 - Red - Sub_rejected sponsorships or sponsorships that are likely to become sub_reject.
+1 - Red - Sub_rejected sponsorships or sponsorships that are likely to become sub_reject.
+2 - Orange - not used
 3 - Yellow - Indicates a higher priority action is required on this sponsorship.
-4 - Light green - Indicates an action is required on this sponsorship, typically a mailing is to be sent to the sponsor. This is a low priority action.
-5 - Green - Sub_accepted sponsorships or sponsorships likely to become sub_accept.
-6 - Light blue - not used
-7 - Blue - Draft sponsorships
-8 - Violet - not used
+4 - Light blue - not used
+5 - Brown - not used
+6 - Peach - not used
+7 - Blue - not used
+8 - Black - Sponsorships with NO SUB (cancelled, or no_sub)
 9 - Pink - not used
+10 - Green - Sub_accepted sponsorships or sponsorships likely to become sub_accept.
+11 - Violet - not used
 
 **Table of contents**
 

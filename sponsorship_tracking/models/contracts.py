@@ -33,7 +33,8 @@ class RecurringContract(models.Model):
         ('no_sub', _('No sub')),
         ('cancelled', _('Cancelled'))
     ], 'SDS Status', track_visibility='onchange',
-        index=True, copy=False, readonly=True, default='draft')
+        index=True, copy=False, readonly=True, default='draft',
+        group_expand='_expand_sds_state')
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
     cancel_gifts_on_termination = fields.Boolean(
@@ -157,36 +158,26 @@ class RecurringContract(models.Model):
     # KANBAN GROUP METHODS
     ######################
     @api.model
-    def _read_group_fill_results(
-            self, domain, groupby, remaining_groupbys, aggregated_fields,
-            count_field, read_group_result, read_group_order=None):
-        """
-        The method seems to support grouping using m2o fields only,
-        while we want to group by a simple status field.
-        Hence the code below - it replaces simple status values
-        with (value, name) tuples.
-        """
-        if groupby == 'sds_state':
-            state_dict = dict(self._fields['sds_state'].selection)
-            state_order = [s[0] for s in self._fields['sds_state'].selection
-                           if 'sub' in s[0] or s[0] == 'active']
-            filter_group_result = list(state_order)
-            state_order = {s: state_order.index(s) for s in state_order}
-            for result in read_group_result:
-                state = result[groupby]
-                # Only display SUB Sponsorship states
-                if 'sub' in state or state == 'active':
-                    result[groupby] = (state, state_dict.get(state))
-                    filter_group_result[state_order[state]] = result
-                    if state == 'active':
-                        result['__fold'] = True
-            return [r for r in filter_group_result if isinstance(r, dict)]
+    def _expand_sds_state(self, *args):
+        # This returns the stages always present in Kanban view
+        return ['sub_waiting', 'sub', 'sub_accept', 'sub_reject',
+                'no_sub']
 
-        return super()._read_group_fill_results(
-            domain, groupby,
-            remaining_groupbys, aggregated_fields, count_field,
-            read_group_result, read_group_order
-        )
+    @api.model
+    def _read_group_fill_results(self, domain, groupby, remaining_groupbys,
+                                 aggregated_fields, count_field,
+                                 read_group_result, read_group_order=None):
+        result = super()._read_group_fill_results(
+            domain, groupby, remaining_groupbys, aggregated_fields,
+            count_field, read_group_result, read_group_order)
+        if groupby == 'sds_state':
+            # We fold sds states that have no sponsorships inside or are not
+            # present by default in kanban view
+            for group in result:
+                sponsorships = self.search_count(group['__domain'])
+                group['__fold'] = group['sds_state'] not in \
+                    self._expand_sds_state() or not sponsorships
+        return result
 
     ##########################################################################
     #                            WORKFLOW METHODS                            #
@@ -219,7 +210,7 @@ class RecurringContract(models.Model):
         """ Change color of parent Sponsorship. """
         res = super().contract_active()
         for sub in self.filtered(lambda s: s.parent_id.sds_state == 'sub'):
-            sub.parent_id.color_id = 5  # Green
+            sub.parent_id.color_id = 10  # Green
         return res
 
     @api.multi
@@ -249,7 +240,7 @@ class RecurringContract(models.Model):
                 if contract.parent_id.sds_state == 'sub':
                     contract.parent_id.write({
                         'sds_state': 'sub_accept',
-                        'color': 5
+                        'color': 10
                     })
                 vals = {
                     'sds_state': 'sub_waiting',
@@ -262,7 +253,7 @@ class RecurringContract(models.Model):
                     # This is as subreject
                     contract.parent_id.write({
                         'sds_state': 'sub_reject',
-                        'color': 2
+                        'color': 1
                     })
                 elif contract.parent_id.sds_state == 'sub' and \
                         contract.end_reason_id == child_exchange:
@@ -271,7 +262,7 @@ class RecurringContract(models.Model):
                         allow_removing_sub=True).parent_id = False
                 vals = {
                     'sds_state': 'cancelled',
-                    'color': 1
+                    'color': 8
                 }
             # Avoid updating contracts already marked as no sub
             if contract.sds_state != 'no_sub':
@@ -311,5 +302,5 @@ class RecurringContract(models.Model):
         )
         valid_sub.write({
             'sds_state': 'sub',
-            'color': 2  # Red until sub is active
+            'color': 1  # Red until sub is active
         })
