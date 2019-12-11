@@ -264,7 +264,10 @@ class CommunicationJob(models.Model):
         default_vals.extend(['report_id', 'need_call', 'omr_enable_marks',
                              'omr_should_close_envelope',
                              'omr_add_attachment_tray_1',
-                             'omr_add_attachment_tray_2'])
+                             'omr_add_attachment_tray_2',
+                             'omr_top_mark_x', 'omr_top_mark_y',
+                             'omr_single_sided',
+                             ])
 
         config = self.config_id.browse(vals['config_id'])
 
@@ -529,7 +532,7 @@ class CommunicationJob(models.Model):
 
         def lastpair(a):
             b = a - 1
-            if b % 2 == 0:
+            if self.omr_single_sided or b % 2 == 0:
                 return b
             return lastpair(b)
 
@@ -539,7 +542,7 @@ class CommunicationJob(models.Model):
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)
             # only print omr marks on pair pages (recto)
-            if page_number % 2 == 0:
+            if self.omr_single_sided or page_number % 2 == 0:
                 is_latest_page = is_latest_document and \
                     page_number == latest_omr_page
                 marks = self._compute_marks(is_latest_page)
@@ -565,12 +568,12 @@ class CommunicationJob(models.Model):
         marks.append(True)  # End mark (compulsory)
         return marks
 
-    @staticmethod
-    def _build_omr_layer(marks):
+    def _build_omr_layer(self, marks):
+        self.ensure_one()
         padding_x = 4.2 * mm
         padding_y = 8.5 * mm
-        top_mark_x = 7 * mm
-        top_mark_y = 220 * mm
+        top_mark_x = self.omr_top_mark_x * mm
+        top_mark_y = self.omr_top_mark_y * mm
         mark_y_spacing = 4 * mm
 
         mark_width = 6.5 * mm

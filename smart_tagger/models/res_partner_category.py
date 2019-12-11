@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -8,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+import datetime
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 
@@ -30,6 +29,19 @@ class ResPartnerCategory(models.Model):
 
     number_tags = fields.Integer(compute='_compute_number_tags', stored=True)
 
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        record.update_partner_tags()
+        return record
+
+    @api.multi
+    def write(self, vals):
+        res = super().write(vals)
+        if 'condition_id' in vals or 'model' in vals:
+            self.update_partner_tags()
+        return res
+
     @api.constrains('condition_id')
     def check_condition(self):
         for me in self:
@@ -42,7 +54,9 @@ class ResPartnerCategory(models.Model):
     @api.multi
     def update_partner_tags(self):
         for tagger in self.filtered('smart'):
-            domain = safe_eval(tagger.condition_id.domain)
+            domain = safe_eval(tagger.condition_id.domain,
+                               locals_dict={'datetime': datetime},
+                               locals_builtins=True)
             model = tagger.condition_id.model_id
             matching_records = self.env[model].search(domain)
             if matching_records:

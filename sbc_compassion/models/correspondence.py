@@ -526,8 +526,8 @@ class Correspondence(models.Model):
                     self.translation_language_id.code_iso != 'eng':
                 # Avoid capturing english text that hasn't been translated
                 pages = pages.filtered(source).filtered(
-                    lambda p: "".join(p.translated_text.split()) !=
-                    "".join(p.english_text.split()))
+                    lambda p: "".join((p.translated_text or "").split()) !=
+                    "".join((p.english_text or "").split()))
         else:
             source = 'english_text'
         if not getattr(self, source) or not template or not image_data:
