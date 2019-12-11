@@ -9,14 +9,14 @@
     -->
 
     <!-- Rule for checking SUB sponsorships -->
-     <record id="sub_check" model="base.action.rule">
+     <record id="sub_check" model="base.automation">
         <field name="name">Sponsorship: Check SUB Accept/Reject after 50 days</field>
         <field name="model_id" ref="model_recurring_contract"/>
-        <field name="kind">on_time</field>
+        <field name="trigger">on_time</field>
         <field name="trg_date_id" ref="sponsorship_tracking.field_recurring_contract_sds_state_date"/>
         <field name="filter_domain">[('sds_state', '=', 'sub')]</field>
         <field name="trg_date_range">50</field>
         <field name="trg_date_range_type">day</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('sub_check_action')])]"/>
+        <field name="action_server_id" ref="sub_check_action"/>
     </record>
 </odoo>

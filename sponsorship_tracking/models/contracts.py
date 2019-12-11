@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
@@ -24,8 +23,16 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    sds_state = fields.Selection(
-        '_get_sds_states', 'SDS Status', track_visibility='onchange',
+    sds_state = fields.Selection([
+        ('draft', _('Draft')),
+        ('active', _('Active')),
+        ('sub_waiting', _('Sub waiting')),
+        ('sub', _('Sub')),
+        ('sub_accept', _('Sub Accept')),
+        ('sub_reject', _('Sub Reject')),
+        ('no_sub', _('No sub')),
+        ('cancelled', _('Cancelled'))
+    ], 'SDS Status', track_visibility='onchange',
         index=True, copy=False, readonly=True, default='draft')
     sds_state_date = fields.Date(
         'SDS state date', readonly=True, copy=False)
@@ -39,27 +46,12 @@ class RecurringContract(models.Model):
     sub_notes = fields.Text('Notes for SUB Sponsorship')
 
     ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    def _get_sds_states(self):
-        return [
-            ('draft', _('Draft')),
-            ('active', _('Active')),
-            ('sub_waiting', _('Sub waiting')),
-            ('sub', _('Sub')),
-            ('sub_accept', _('Sub Accept')),
-            ('sub_reject', _('Sub Reject')),
-            ('no_sub', _('No sub')),
-            ('cancelled', _('Cancelled'))
-        ]
-
-    ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
         """ Push parent contract in SUB state. """
-        contract = super(RecurringContract, self).create(vals)
+        contract = super().create(vals)
         contract.parent_id._trigger_sub()
         return contract
 
@@ -70,7 +62,7 @@ class RecurringContract(models.Model):
         if 'parent_id' in vals:
             self._parent_id_changed(vals['parent_id'])
 
-        return super(RecurringContract, self).write(vals)
+        return super().write(vals)
 
     @api.multi
     def unlink(self):
@@ -86,7 +78,7 @@ class RecurringContract(models.Model):
     @api.onchange('partner_id')
     def on_change_partner_id(self):
         """ Find parent sponsorship if any is sub_waiting. """
-        super(RecurringContract, self).on_change_partner_id()
+        super().on_change_partner_id()
 
         if 'S' in self.type:
             origin_id = self.env['recurring.contract.origin'].search(
@@ -101,7 +93,7 @@ class RecurringContract(models.Model):
     @api.onchange('child_id')
     def onchange_child_id(self):
         """ Put back in SUB state if needed. """
-        res = super(RecurringContract, self).onchange_child_id()
+        res = super().onchange_child_id()
         self.parent_id._trigger_sub()
         return res
 
@@ -135,7 +127,7 @@ class RecurringContract(models.Model):
             'sponsorship_compassion.end_reason_subreject')
         for contract in self:
             contract.partner_id.message_post(
-                subject=_('{} - SUB Reject'.format(contract.child_code)),
+                subject=_(f'{contract.child_code} - SUB Reject'),
                 body=_("The sponsor doesn't want a new child.")
             )
             sub = contract.sub_sponsorship_id
@@ -175,8 +167,8 @@ class RecurringContract(models.Model):
         with (value, name) tuples.
         """
         if groupby == 'sds_state':
-            state_dict = dict(self._get_sds_states())
-            state_order = [s[0] for s in self._get_sds_states()
+            state_dict = dict(self._fields['sds_state'].selection)
+            state_order = [s[0] for s in self._fields['sds_state'].selection
                            if 'sub' in s[0] or s[0] == 'active']
             filter_group_result = list(state_order)
             state_order = {s: state_order.index(s) for s in state_order}
@@ -190,7 +182,7 @@ class RecurringContract(models.Model):
                         result['__fold'] = True
             return [r for r in filter_group_result if isinstance(r, dict)]
 
-        return super(RecurringContract, self)._read_group_fill_results(
+        return super()._read_group_fill_results(
             domain, groupby,
             remaining_groupbys, aggregated_fields, count_field,
             read_group_result, read_group_order
@@ -206,26 +198,26 @@ class RecurringContract(models.Model):
             'sds_state': 'active',
             'sds_state_date': fields.Date.today()
         })
-        return super(RecurringContract, self).contract_waiting()
+        return super().contract_waiting()
 
     @api.multi
     def contract_cancelled(self):
         """ Change SDS Follower """
-        res = super(RecurringContract, self).contract_cancelled()
+        res = super().contract_cancelled()
         self._check_need_sub()
         return res
 
     @api.multi
     def contract_terminated(self):
         """ Change SDS Follower """
-        res = super(RecurringContract, self).contract_terminated()
+        res = super().contract_terminated()
         self._check_need_sub()
         return res
 
     @api.multi
     def contract_active(self):
         """ Change color of parent Sponsorship. """
-        res = super(RecurringContract, self).contract_active()
+        res = super().contract_active()
         for sub in self.filtered(lambda s: s.parent_id.sds_state == 'sub'):
             sub.parent_id.color_id = 5  # Green
         return res

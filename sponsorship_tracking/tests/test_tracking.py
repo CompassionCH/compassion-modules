@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -33,7 +32,7 @@ class TestTracking(BaseSponsorshipTest):
     """
 
     def setUp(self):
-        super(TestTracking, self).setUp()
+        super().setUp()
 
         self.thomas = self.env.ref('base.res_partner_address_3')
         self.michel = self.env.ref('base.res_partner_address_4')
