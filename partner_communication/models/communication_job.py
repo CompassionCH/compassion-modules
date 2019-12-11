@@ -269,17 +269,19 @@ class CommunicationJob(models.Model):
         config = self.config_id.browse(vals['config_id'])
 
         # Determine user by default : take in config or employee
-        orm_config = config.omr_config_ids
+        omr_config = config.omr_config_ids
         if not vals.get('user_id'):
             partner = self.env['res.partner'].browse(vals.get('partner_id'))
             lang_of_partner = self.env['res.lang'].search([
                 ('code', 'like', partner.lang)
             ])
-            orm_config = config.get_config_for_lang(lang_of_partner)
+            omr_config = config.get_config_for_lang(lang_of_partner)
+            # responsible for the communication is current user or
+            # user specified in the omr_config
             user_id = self.env.uid
-            if orm_config:
-                if orm_config.user_id:
-                    user_id = orm_config.user_id.id
+            if omr_config:
+                if omr_config.user_id:
+                    user_id = omr_config.user_id.id
             vals['user_id'] = user_id
         user = self.env['res.users'].browse(vals['user_id'])
         if user:
@@ -291,7 +293,7 @@ class CommunicationJob(models.Model):
         for default_val in default_vals:
             if default_val not in vals:
                 if default_val.startswith('omr_'):
-                    value = getattr(orm_config, default_val, False)
+                    value = getattr(omr_config, default_val, False)
                 else:
                     value = getattr(config, default_val)
                     if default_val.endswith('_id'):
