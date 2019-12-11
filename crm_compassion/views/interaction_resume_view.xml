@@ -34,6 +34,9 @@
                     <field name="paper_id" attrs="{'invisible': [('paper_id','=',False)]}"/>
                     <field name="email_id" attrs="{'invisible': [('email_id','=',False)]}"/>
                     <field name="tracking_status" attrs="{'invisible': [('email_id','=',False)]}"/>
+                    <field name="tracking_error_type" attrs="{'invisible': ['|', ('email_id','=',False), ('tracking_error_type', '!=', False)]}"/>
+                    <field name="tracking_error_description" attrs="{'invisible': ['|', ('email_id','=',False), ('tracking_error_description', '!=', False)]}"/>
+                    <field name="tracking_error_details" attrs="{'invisible': ['|', ('email_id','=',False), ('tracking_error_details', '!=', False)]}"/>
                     <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}"/>
                 </group>
                 <group>
