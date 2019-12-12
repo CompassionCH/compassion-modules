@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -34,3 +33,17 @@ class LabelConfig(models.Model):
     right_margin = fields.Float("Right Margin (in mm)", default=0.0)
     label_main_id = fields.Many2one('label.brand', 'Label')
     cell_spacing = fields.Float("Cell Spacing (in mm)", default=0.0)
+
+
+class LabelPrintField(models.Model):
+    _name = "label.print.field"
+    _description = 'Label Print Field'
+
+    field_id = fields.Many2one('ir.model.fields', 'Fields', required=False)
+    report_id = fields.Many2one('label.print', 'Report')
+    type = fields.Selection([('normal', 'Normal'), ('barcode', 'Barcode')],
+                            'Type', required=True,
+                            default='normal')
+    python_expression = fields.Boolean('Python Expression')
+    python_field = fields.Text('Fields')
+    fontsize = fields.Float("Font Size", default=12)

@@ -72,5 +72,5 @@
 
     <menuitem id="menu_label_config_view"
               action="action_label_config_form"
-              parent="report.reporting_menuitem"/>
+              parent="base.reporting_menuitem"/>
 </odoo>
