@@ -9,7 +9,7 @@
         <field name="name">follow.contract.compassion.kanban</field>
         <field name="model">recurring.contract</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="sds_state" default_order="sds_state_date asc" create="false">
+            <kanban default_group_by="sds_state" default_order="sds_state_date asc" class="o_kanban_mobile">
                 <field name="name"/>
                 <field name="color"/>
                 <field name="sds_state"/>
@@ -18,6 +18,9 @@
                     <field name="sds_uid"/>
                     <field name="child_id"/>
                     <t t-name="kanban-box">
+<!--                        <xpath expr="span[@class='o_column_title']" position="replace">-->
+<!--                            <span class="o_column_title"><t t-esc="record.sds_state.raw_value"/></span>-->
+<!--                        </xpath>-->
                         <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
                             <div class="o_dropdown_kanban dropdown">
                                 <a class="dropdown-toggle btn" data-toggle="dropdown" href="#" >
@@ -40,7 +43,6 @@
                                     <img t-att-src="kanban_image('compassion.child', 'portrait', record.child_id.raw_value)" t-att-title="record.child_id.value" height="40" class="oe_kanban_avatar" t-if="record.child_id.value"/>
                                 </div>
                             </div>
-                            <div class="oe_clear"></div>
                         </div>
                     </t>
                 </templates>
@@ -129,8 +131,9 @@
         <field name="model">recurring.contract</field>
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
-            <tree string="Follow contracts" create="false" edit="false"
-                  colors ="blue:sds_state == 'draft';red:sds_state == 'start';green:sds_state == 'waiting_welcome';black:sds_state == 'active';gray:state in ('cancelled')">
+            <tree decoration-info="sds_state == 'draft'" decoration-danger="sds_state == 'start'"
+                  decoration-success="sds_state == 'waiting_welcome'" decoration-primary="sds_state == 'active'"
+                  decoration-muted="sds_state in ('cancelled')" string="Follow contracts" create="false" edit="false">
                 <field name="partner_codega"/>
                 <field name="partner_id"/>
 

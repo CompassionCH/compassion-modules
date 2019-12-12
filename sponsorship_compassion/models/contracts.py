@@ -119,12 +119,6 @@ class SponsorshipContract(models.Model):
     hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id')
 
     _sql_constraints = [
-        ('parent_id_unique', 'UNIQUE(parent_id)',
-         'Unfortunately this sponsorship is already used, '
-         'please choose a unique one'),
-        ('sub_sponsorship_id_unique', 'UNIQUE(sub_sponsorship_id)',
-         'Unfortunately this sponsorship is already used, '
-         'please choose a unique one'),
         ('unique_global_id', 'unique(global_id)',
          'You cannot have same global ids for contracts')
     ]
@@ -349,6 +343,20 @@ class SponsorshipContract(models.Model):
                     contract.end_date) if contract.end_date else date.today()
                 contract.contract_duration = \
                     (end_date - contract_start_date).days
+
+    @api.constrains('parent_id')
+    def check_unique_sub_sponsorship(self):
+        for sponsorship in self:
+            parent = sponsorship.parent_id
+            if parent:
+                same_parent = self.search_count([
+                    ('parent_id', '=', parent.id),
+                    ('state', 'not in', ['cancelled', 'terminated']),
+                ])
+                if same_parent > 1:
+                    raise ValidationError(_(
+                        'Unfortunately this sponsorship is already used, '
+                        'please choose a unique one'))
 
     ##########################################################################
     #                              ORM METHODS                               #

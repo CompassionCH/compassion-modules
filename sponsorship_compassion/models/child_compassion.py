@@ -43,7 +43,6 @@ class ChildCompassion(models.Model):
         the sponsor never paid and hold is expired.
         :return: True
         """
-        res = super().child_released(state)
         if state == 'F':
             # Departure
             depart = self.env.ref('sponsorship_compassion.end_reason_depart')
@@ -60,4 +59,4 @@ class ChildCompassion(models.Model):
             if waiting_sponsorships:
                 waiting_sponsorships.end_reason_id = hold_released
                 waiting_sponsorships.contract_terminated()
-        return res
+        return super().child_released(state)

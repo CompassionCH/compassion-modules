@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,12 +29,13 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Sponsorships Tracking',
-    'version': '10.0.2.0.1',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['sponsorship_compassion'],
+    'depends': ['sponsorship_compassion',
+                'base_automation'],
     'data': [
         'views/sub_sponsorship_wizard_view.xml',
         'views/contract_view.xml',
@@ -45,6 +45,6 @@
         'data/install.xml',
         ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

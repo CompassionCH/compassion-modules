@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -22,18 +21,18 @@ mock_invoicer = ('odoo.addons.recurring_contract.models.contract_group'
                  '.ContractGroup.generate_invoices')
 mock_cleaner = ('odoo.addons.recurring_contract.models.recurring_contract'
                 '.RecurringContract.clean_invoices')
+mock_lifecycle = ('odoo.addons.child_compassion.models.child_compassion'
+                  '.CompassionChild.get_lifecycle_event')
 
 
 class TestTracking(BaseSponsorshipTest):
     """
     Test whole lifecycle of contracts and see if sds tracking information
     is correct.
-    Warning : Please make sure module sponsorship_sync_gp is not installed
-              in order to be sure no information is sent to GP.
     """
 
     def setUp(self):
-        super(TestTracking, self).setUp()
+        super().setUp()
 
         self.thomas = self.env.ref('base.res_partner_address_3')
         self.michel = self.env.ref('base.res_partner_address_4')
@@ -99,13 +98,15 @@ class TestTracking(BaseSponsorshipTest):
         list_sponsorships += sponsorship4
         self.list_sponsorships = list_sponsorships
 
+    @mock.patch(mock_lifecycle)
     @mock.patch(mock_update_hold)
     @mock.patch(mock_get_infos)
     @mock.patch(mock_invoicer)
     @mock.patch(mock_cleaner)
     @mock.patch(mock_release_hold)
     def test_contract_tracking_until_sub_sponsorship_made(
-            self, release_mock, cleaner, invoicer, get_infos, hold_mock):
+            self, release_mock, cleaner, invoicer, get_infos, hold_mock,
+            lifecyle_mock):
         """
         Test scenario:
             1. Four new contracts waiting payment
@@ -124,17 +125,18 @@ class TestTracking(BaseSponsorshipTest):
         invoicer.return_value = True
         cleaner.return_value = True
         release_mock.return_value = True
+        lifecyle_mock.return_value = True
 
         # Activate the sponsorships contracts and make the depart of child
         self.list_sponsorships.with_context(async_mode=True).force_activation()
-        for subsponsorship in self.list_sponsorships:
-            self.assertEqual(subsponsorship.sds_state, 'active')
+        for sponsorship in self.list_sponsorships:
+            self.assertEqual(sponsorship.sds_state, 'active')
 
         list_childs = self.list_sponsorships.mapped('child_id')
         list_childs.child_departed()
 
-        for subsponsorship in self.list_sponsorships:
-            self.assertEqual(subsponsorship.sds_state, 'sub_waiting')
+        for sponsorship in self.list_sponsorships:
+            self.assertEqual(sponsorship.sds_state, 'sub_waiting')
 
         sub_child1 = self.create_child('PE47601334')
         sub_child2 = self.create_child('PE57601335')
@@ -174,7 +176,7 @@ class TestTracking(BaseSponsorshipTest):
         exchange = self.env.ref(
             'sponsorship_compassion.end_reason_child_exchange')
         self.env['end.contract.wizard'].with_context(default_type='S').create({
-            'contract_id': subsponsorship2.id,
+            'contract_ids': [(6, 0, subsponsorship2.ids)],
             'end_reason_id': exchange.id}).end_contract()
 
         self.assertEqual(self.list_sponsorships[1].sds_state, 'sub')
@@ -214,7 +216,7 @@ class TestTracking(BaseSponsorshipTest):
         # that we just created.
         subreject = self.env.ref('sponsorship_compassion.end_reason_subreject')
         self.env['end.contract.wizard'].with_context(default_type='S').create(
-            {'contract_id': subsponsorship3.id,
+            {'contract_ids': [(6, 0, subsponsorship3.ids)],
              'end_reason_id': subreject.id}).end_contract()
 
         self.assertEqual(self.list_sponsorships[2].sds_state, 'sub_reject')
