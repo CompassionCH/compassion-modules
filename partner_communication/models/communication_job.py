@@ -276,18 +276,16 @@ class CommunicationJob(models.Model):
                 ('code', 'like', partner.lang)
             ])
             omr_config = config.get_config_for_lang(lang_of_partner)
-            # responsible for the communication is current user or
-            # user specified in the omr_config
+            # responsible for the communication is user specified in the omr_config
+            # or user specified in the config itself
+            # or the current user
             user_id = self.env.uid
             if omr_config:
                 if omr_config.user_id:
                     user_id = omr_config.user_id.id
+            elif config.user_id:
+                user_id = config.user_id
             vals['user_id'] = user_id
-        user = self.env['res.users'].browse(vals['user_id'])
-        if user:
-            config.write({
-                'user_id': user.id
-            })
 
         # Check all default_vals fields
         for default_val in default_vals:
