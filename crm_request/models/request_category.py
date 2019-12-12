@@ -6,8 +6,8 @@
 from odoo import models, fields, api, _
 
 
-class RequestType(models.Model):
-    _inherit = 'crm.claim.type'
+class RequestCategory(models.Model):
+    _inherit = 'crm.claim.category'
 
     template_id = fields.Many2one('mail.template',
                                   'Template',

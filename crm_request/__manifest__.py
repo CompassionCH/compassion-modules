@@ -18,7 +18,6 @@
 
     # any module necessary for this one to work correctly
     'depends': ['crm_claim_code',                         # oca_addons/crm
-                'crm_claim_type',                         # oca_addons/crm
                 'mail',
                 'partner_contact_in_several_companies',   # oca_addons/partner-contact
                 'advanced_translation',
@@ -32,7 +31,7 @@
         'data/crm_request_data.xml',
         'data/holiday_closure_email_template.xml',
         'views/request.xml',
-        'views/request_type.xml',
+        'views/request_category.xml',
         'views/holiday_automated_response_view.xml',
         'views/request_stage.xml',
         'security/ir.model.access.csv',

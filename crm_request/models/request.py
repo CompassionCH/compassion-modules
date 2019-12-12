@@ -23,7 +23,7 @@ class CrmClaim(models.Model):
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
-    claim_type = fields.Many2one(string='Type')
+    claim_category = fields.Many2one(string='Category')
     user_id = fields.Many2one(string='Assign to')
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
@@ -60,7 +60,7 @@ class CrmClaim(models.Model):
             raise exceptions.UserError(_(
                 "You can only reply if you set the partner."
             ))
-        template_id = self.claim_type.template_id.id
+        template_id = self.claim_category.template_id.id
         ctx = {
             'default_model': 'crm.claim',
             'default_res_id': self.id,
@@ -143,18 +143,18 @@ class CrmClaim(models.Model):
 
         # Find the corresponding type
         subject = msg.get('subject')
-        type_ids = self.env['crm.claim.type'].search(
+        category_ids = self.env['crm.claim.category'].search(
             [('keywords', '!=', False)])
-        type_id = False
-        for record in type_ids:
+        category_id = False
+        for record in category_ids:
             if any(word in subject for word in record.get_keys()):
-                type_id = record.id
+                category_id = record.id
                 break
 
         defaults = {
             'date': msg.get('date'),  # Get the time of the sending of the mail
             'alias_id': alias.id,
-            'claim_type': type_id,
+            'claim_category': category_id,
             'subject': subject,
             'email_origin': msg.get('from'),
         }

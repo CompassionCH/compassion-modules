@@ -1,10 +1,25 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id="request_stage_claim_type_form" model="ir.ui.view">
+
+    <record id="crm_stage_claim_category_form" model="ir.ui.view">
+        <field name="name">crm.claim.stage.type.form</field>
+        <field name="model">crm.claim.stage</field>
+        <field name="inherit_id" ref="crm_claim.crm_claim_stage_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sequence']" position="after">
+                <newline/>
+                <field name="claim_common" />
+                <field name="claim_category"
+                     attrs="{'required':[('claim_common','=',False)],
+                     'invisible':[('claim_common','=',True)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="request_stage_claim_category_form" model="ir.ui.view">
         <field name="name">request.claim.stage.type.form</field>
         <field name="model">crm.claim.stage</field>
-        <field name="inherit_id"
-               ref="crm_claim_type.crm_stage_claim_type_form"/>
+        <field name="inherit_id" ref="crm_stage_claim_category_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[1]" position="before">
                 <div class="oe_button_box" name="button_box">

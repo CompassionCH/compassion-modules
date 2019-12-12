@@ -2,8 +2,8 @@
 <odoo>
     <record id="crm_request_type_form" model="ir.ui.view">
         <field name="name">crm.request.type.form</field>
-        <field name="model">crm.claim.type</field>
-        <field name="inherit_id" ref="crm_claim_type.crm_claim_type_form"/>
+        <field name="model">crm.claim.category</field>
+        <field name="inherit_id" ref="crm_claim_category.crm_claim_category_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form[1]" position="attributes">
                 <attribute name="string">Type</attribute>
