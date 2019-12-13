@@ -150,6 +150,19 @@
         </field>
     </record>
 
+    <!-- Remove buttons replaced by interaction resume -->
+    <record id="view_res_partner_crm_remove_claims" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.claims</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="crm_claim.view_claim_res_partner_info_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(crm_claim.crm_claim_category_claim0)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+
     <!-- Action -->
     <record model="ir.actions.act_window" id="request_action">
         <field name="name">Requests</field>
