@@ -272,20 +272,21 @@ class CommunicationJob(models.Model):
         omr_config = config.omr_config_ids
         if not vals.get('user_id'):
             partner = self.env['res.partner'].browse(vals.get('partner_id'))
-            lang_of_partner = self.env['res.lang'].search([
-                ('code', 'like', partner.lang)
-            ])
-            omr_config = config.get_config_for_lang(lang_of_partner)
-            # responsible for the communication is user specified in the omr_config
-            # or user specified in the config itself
-            # or the current user
-            user_id = self.env.uid
-            if omr_config:
-                if omr_config.user_id:
-                    user_id = omr_config.user_id.id
-            elif config.user_id:
-                user_id = config.user_id
-            vals['user_id'] = user_id
+            if partner:
+                lang_of_partner = self.env['res.lang'].search([
+                    ('code', 'like', partner.lang)
+                ])
+                omr_config = config.get_config_for_lang(lang_of_partner)
+                # responsible for the communication is user specified in the omr_config
+                # or user specified in the config itself
+                # or the current user
+                user_id = self.env.uid
+                if omr_config:
+                    if omr_config.user_id:
+                        user_id = omr_config.user_id.id
+                elif config.user_id:
+                    user_id = config.user_id
+                vals['user_id'] = user_id
 
         # Check all default_vals fields
         for default_val in default_vals:
@@ -405,8 +406,11 @@ class CommunicationJob(models.Model):
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
             # set default fields
+            partner_id = None
+            if self.partner_id:
+                partner_id = self.partner_id.id
             default_vals = {'config_id': self.config_id.id,
-                            'partner_id': self.partner_id.id}
+                            'partner_id': partner_id}
             self._get_default_vals(default_vals)
             for key, val in default_vals.iteritems():
                 if key.endswith('_id'):
