@@ -31,7 +31,8 @@
         <field name="name">communication.job.tree.thankyou.donation.amount</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state=='pending';grey:state in ('done','cancel');red:state=='call'" default_order="amount, date desc">
+            <tree decoration-info="state=='pending'" decoration-primary="state in ('done','cancel')"
+                  decoration-danger="state=='call'" default_order="amount, date desc">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>

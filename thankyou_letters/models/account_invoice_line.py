@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -27,7 +26,7 @@ class AccountInvoiceLine(models.Model):
         """
         res_name = False
         total = sum(self.mapped('price_subtotal'))
-        total_string = "{:,}".format(int(total)).replace(',', "'")
+        total_string = f"{int(total):,}".replace(',', "'")
 
         product_names = self.mapped('product_id.thanks_name')
         if len(product_names) == 1:
@@ -52,8 +51,8 @@ class AccountInvoiceLine(models.Model):
             communication_config = communication_configs[0]
         else:
             _logger.warning(
-                "%s thank you config found, falling back to the default",
-                len(communication_configs))
+                f"{len(communication_configs)} thank you config found, "
+                f"falling back to the default")
             communication_config = invoice_lines.get_default_thankyou_config()
 
         partner = self.mapped('partner_id')

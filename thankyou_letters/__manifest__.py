@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -29,15 +28,15 @@
 # pylint: disable=C8101
 {
     'name': 'Thank You Letters',
-    'version': '10.0.2.1.0',
+    'version': '11.0.0.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'partner_communication',
-        'advanced_translation',
-        'web_widget_digitized_signature',
+        'partner_communication',            # compassion-modules
+        'advanced_translation',             # compassion-modules
+        'web_widget_digitized_signature',   # oca_addons/web
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -56,6 +55,6 @@
     'demo': [
         'demo/demo_data.xml'
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

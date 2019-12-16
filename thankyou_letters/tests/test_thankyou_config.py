@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -15,7 +14,7 @@ class TestThankYouLetters(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestThankYouLetters, cls).setUpClass()
+        super().setUpClass()
         cls.asus = cls.env.ref('base.res_partner_1')
 
         cls.config50 = cls.env.ref('thankyou_letters.thankyou_config_50')

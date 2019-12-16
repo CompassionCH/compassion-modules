@@ -33,7 +33,8 @@
         <field name="name">success.story.tree</field>
         <field name="model">success.story</field>
         <field name="arch" type="xml">
-            <tree colors="blue:state=='new';grey:state=='used'">
+            <tree string="Success stories"
+                  decoration-info="state=='used'" decoration-primary="state=='new'">
                 <field name="name"/>
                 <field name="date_start"/>
                 <field name="date_stop"/>
@@ -72,7 +73,7 @@
 
     <menuitem id="menu_donation_sales"
               name="Communications"
-              parent="sales_team.menu_base_partner"
+              parent="crm.crm_menu_root"
               sequence="5"/>
 
     <!-- Add menu in Sales-->
