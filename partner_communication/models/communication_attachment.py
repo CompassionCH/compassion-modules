@@ -58,13 +58,10 @@ class CommunicationAttachment(models.Model):
             })
             vals['attachment_id'] = attachment.id
 
-        vals['report_id'] = self.env['report']._get_report_from_name(vals['report_name']).id
+        vals['report_id'] = \
+            self.env['report']._get_report_from_name(vals['report_name']).id
 
         res = super(CommunicationAttachment, self).create(vals)
-
-        # res.write({
-        #     'report_id': (6, 0, self.env['report']._get_report_from_name(vals['report_name']))
-        # })
 
         if new_record:
             res.attachment_id.res_id = res.communication_id.id
