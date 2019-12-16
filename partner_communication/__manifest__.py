@@ -55,6 +55,7 @@
         'views/generate_communication_wizard_view.xml',
         'views/communication_dashboard.xml',
         'views/crm_phone_view.xml',
+        'views/ir_attachment_view.xml',
         'data/default_communication.xml'
     ],
     'qweb': ["static/src/xml/communication_dashboard.xml"],

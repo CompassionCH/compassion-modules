@@ -28,6 +28,8 @@ class CommunicationAttachment(models.Model):
     communication_id = fields.Many2one(
         'partner.communication.job', 'Communication', required=True,
         ondelete='cascade')
+    report_id = fields.Many2one(
+        'ir.actions.report.xml', string='ID of report used by the attachment')
     report_name = fields.Char(
         required=True, help='Identifier of the report used to print')
     attachment_id = fields.Many2one(
@@ -56,7 +58,14 @@ class CommunicationAttachment(models.Model):
             })
             vals['attachment_id'] = attachment.id
 
+        vals['report_id'] = self.env['report']._get_report_from_name(vals['report_name']).id
+
         res = super(CommunicationAttachment, self).create(vals)
+
+        # res.write({
+        #     'report_id': (6, 0, self.env['report']._get_report_from_name(vals['report_name']))
+        # })
+
         if new_record:
             res.attachment_id.res_id = res.communication_id.id
         return res
