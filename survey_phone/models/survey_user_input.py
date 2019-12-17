@@ -43,7 +43,7 @@ class SurveyUserInput(models.Model):
             'active_model': self._name,
         }
         return {
-            'type': 'ir.actions.report.xml',
+            'type': 'ir.actions.report',
             'report_name': 'survey_phone.survey_user_input',
             'datas': datas,
             'nodestroy': True
