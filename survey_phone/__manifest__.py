@@ -35,8 +35,12 @@
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['survey',       # oca_addons/survey
-                'base_phone'],  # oca_addons/connector-telephony
+    'depends': ['survey',                       # oca_addons/survey
+                'base_phone',                   # oca_addons/connector-telephony
+                'survey',
+                'partner_contact_birthdate',    # oca_addons/partner_contact
+                'partner_contact_gender',    # oca_addons/partner_contact
+                ],
     'data': [
         'views/survey_user_input_view.xml',
         'views/survey_phone.xml',
