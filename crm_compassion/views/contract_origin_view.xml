@@ -74,15 +74,4 @@
             </field>
         </field>
     </record>
-
-<!--    <record id="view_contract_form_crm" model="ir.ui.view">-->
-<!--        <field name="name">recurring.contract.crm.form</field>-->
-<!--        <field name="model">recurring.contract</field>-->
-<!--        <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_form_compassion"/>-->
-<!--        <field eval="18" name="priority"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <field name="origin_id" position="after">-->
-<!--            </field>-->
-<!--        </field>-->
-<!--    </record>-->
 </odoo>

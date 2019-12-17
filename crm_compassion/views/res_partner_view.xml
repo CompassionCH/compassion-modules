@@ -62,31 +62,16 @@
         <field name="binding_type">report</field>
     </record>
 
-<!--    <record id="test_more_item" model="ir.default">-->
-<!--        <field eval="'client_action_multi'" name="key2"/>-->
-<!--        <field name="model">res.partner</field>-->
-<!--        <field name="name">Make Ambassador</field>-->
-<!--        <field eval="'ir.actions.server,%d'%partner_ambassador_action" name="value"/>-->
-<!--    </record>-->
-
     <record id="log_call_action" model="ir.actions.server">
         <field name="model_id" ref="model_res_partner"/>
         <field name="name">Log your call</field>
         <field name="code">
-if object:
-    action = object.log_call()
+                if object:
+                    action = object.log_call()
         </field>
         <field name="binding_model_id" ref="model_res_partner"/>
         <field name="binding_type">report</field>
     </record>
-<!--    <record id="log_call_item" model="ir.values">-->
-<!--        <field name="key">action</field>-->
-<!--        <field name="key2">client_action_multi</field>-->
-<!--        <field name="model">res.partner</field>-->
-<!--        <field name="name">Log your call</field>-->
-<!--        <field eval="'ir.actions.server,%d'%log_call_action" name="value"/>-->
-<!--    </record>-->
-
     <!-- Replace domain of communications button to display only pending communications -->
     <record id="partner_communication.action_communication_job_partner" model="ir.actions.act_window">
         <field name="domain">[('state', '!=', 'done')]</field>

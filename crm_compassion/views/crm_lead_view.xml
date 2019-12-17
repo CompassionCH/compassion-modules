@@ -16,20 +16,6 @@
         </field>
     </record>
 
-    <!-- Add tag to kanban view for lost opportunities -->
-<!--    <record id="lost_opportunities_tag" model="ir.ui.view">-->
-<!--        <field name="name">Lost opportunities kanban tag</field>-->
-<!--        <field name="model">crm.lead</field>-->
-<!--        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr=".//t[./@t-name = 'kanban-box']//div[./@class = 'oe_kanban_content']//div[./@class = 'o_kanban_footer']//div//a" position="before">-->
-<!--                <t t-if="!record.active.value">-->
-<!--                    <div class="label label-danger" style="position: relative; top: 2px; right: 3.5px;">Lost</div>-->
-<!--                </t>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
-
     <!-- Opportunities Form View -->
     <record model="ir.ui.view" id="crm_case_form_view_oppor_spons1">
         <field name="name">Opportunities</field>
