@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016-2018 Compassion CH (http://www.compassion.ch)
@@ -8,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, fields
+from odoo import models, fields
 
 
 class ChildHoldWizard(models.TransientModel):
@@ -18,7 +17,7 @@ class ChildHoldWizard(models.TransientModel):
         selection_add=[('event', 'Go back to event')])
 
     def _get_action(self, holds):
-        action = super(ChildHoldWizard, self)._get_action(holds)
+        action = super()._get_action(holds)
         if self.return_action == 'event':
             action.update({
                 'res_model': 'crm.event.compassion',

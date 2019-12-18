@@ -11,7 +11,7 @@
         <!-- Deactivate e-mails for calendar events -->
         <record id="calendar_no_email" model="ir.config_parameter">
             <field name="key">calendar.block_mail</field>
-            <field name="value">True></field>
+            <field name="value">True</field>
         </record>
     </data>
 </odoo>

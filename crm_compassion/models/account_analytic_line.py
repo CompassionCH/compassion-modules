@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -18,17 +17,7 @@ class AnalyticAccount(models.Model):
 
     year = fields.Char()
     event_id = fields.Many2one(
-        'crm.event.compassion', 'Event',
-        # Only used to set by default the event at migration
-        # TODO Remove compute when this in production
-        compute='_compute_event', store=True, readonly=True)
-
-    @api.multi
-    def _compute_event(self):
-        for account in self:
-            account.event_id = self.env['crm.event.compassion'].search([
-                ('analytic_id', '=', account.id)
-            ], limit=1)
+        'crm.event.compassion', 'Event', store=True, readonly=True)
 
     @api.multi
     def name_get(self):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -60,7 +59,7 @@ class CrmLead(models.Model):
             :return dict data: contains the merged values of
             the new opportunity
         """
-        data = super(CrmLead, self)._merge_data(fields)
+        data = super()._merge_data(fields)
 
         for field_name in fields:
             field = self._fields.get(field_name)
@@ -72,5 +71,5 @@ class CrmLead(models.Model):
     @api.multi
     def merge_opportunity(self, user_id=False, team_id=False):
         CRM_LEAD_FIELDS_TO_MERGE.extend(['phonecall_ids', 'meeting_ids'])
-        return super(CrmLead, self).merge_opportunity(
+        return super().merge_opportunity(
             user_id, team_id)

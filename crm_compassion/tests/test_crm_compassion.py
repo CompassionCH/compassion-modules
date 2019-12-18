@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -8,13 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
-
 from datetime import datetime, timedelta
-from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion\
+from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion \
     import BaseSponsorshipTest
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -23,8 +21,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
     def test_crm(self):
         """
             This scenario consists in the creation of an opportunity,
-            then comes the event. Check if the project which is created from
-            the event has coherent data with the event.
+            then comes the event.
             Check if we can find the origin from the event in a sponsorship
             contract.
         """
@@ -39,26 +36,9 @@ class TestCrmCompassion(BaseSponsorshipTest):
         self.assertTrue(event.id)
         event.write({'use_tasks': True, 'partner_id': self.david.id})
         event2.write({'use_tasks': True, 'partner_id': self.david.id})
-        self.assertTrue(event.project_id)
-
-        # Retrieve of the project from the event
-        project = self.env['project.project'].browse(event.project_id.id)
-
-        # Creation of a marketing project and check if an origin is created
-        self._create_project(
-            'Marketing Project', 'employees', 1, 'marketing', True)
-        mark_origin = self.env['recurring.contract.origin'].search(
-            [('type', '=', 'marketing')])
-        self.assertTrue(mark_origin)
-        self.assertEqual(project.date_start, event.start_date[:10])
-        self.assertEqual(project.analytic_account_id, event.analytic_id)
-        self.assertEqual(project.project_type, event.type)
-        self.assertEqual(project.user_id, event.user_id)
-        self.assertEqual(project.name, event.name)
-        # Create a child and get the project associated
-        child = self.create_child('AB123456789')
 
         # Creation of the sponsorship contract
+        child = self.create_child('AB123456789')
         sp_group = self.create_group({'partner_id': self.thomas.id})
         sponsorship = self.create_contract(
             {
@@ -71,6 +51,8 @@ class TestCrmCompassion(BaseSponsorshipTest):
             [{'amount': 50.0}]
         )
         sponsorship.write({'user_id': self.michel.id})
+        mark_origin = self.env['recurring.contract.origin'].search(
+            [('type', '=', 'marketing')])
         self.assertEqual(sponsorship.origin_id.name, event.full_name)
         self.assertEqual(sponsorship.state, 'draft')
         sponsorship.write({'origin_id': mark_origin.id})
@@ -105,25 +87,13 @@ class TestCrmCompassion(BaseSponsorshipTest):
         })
         self.assertEqual(event.calendar_event_id.duration, 3)
 
-    def _create_project(self, name, privacy_visibility, user_id, type, bool):
-        project_id = self.env['project.project'].create(
-            {
-                'name': name,
-                'privacy_visibility': privacy_visibility,
-                'user_id': user_id,
-                'project_type': type,
-                'use_tasks': bool,
-                'date_start': datetime.today().strftime(DF),
-            })
-        return project_id
-
-    def _create_event(self, lead, type):
+    def _create_event(self, lead, event_type):
         event_dico = lead.create_event()
         now = datetime.today().strftime(DF)
         event = self.env['crm.event.compassion'].create(
             {
                 'name': event_dico['context']['default_name'],
-                'type': type,
+                'type': event_type,
                 'start_date': now,
                 'end_date': now + ' 8:43:00',
                 'hold_start_date': now,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -15,6 +14,7 @@ from odoo.tools.mail import html2plaintext, html_sanitize
 class InteractionResume(models.TransientModel):
 
     _name = "interaction.resume"
+    _description = "Resume of a given partner"
     _order = "communication_date desc"
 
     partner_id = fields.Many2one("res.partner", "Partner")

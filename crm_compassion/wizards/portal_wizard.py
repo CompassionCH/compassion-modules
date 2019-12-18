@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,7 @@ class PortalWizard(models.TransientModel):
     @api.multi
     def action_apply(self):
         self.ensure_one()
-        res = super(PortalWizard, self).action_apply()
+        res = super().action_apply()
         for user in self.user_ids:
             users = self.env['res.users'].with_context(
                 lang='en_US').search([('name', '=', user.partner_id.name)])

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -24,7 +23,13 @@ class WeeklyRevision(models.Model):
     ##########################################################################
     week_start_date = fields.Date(required=True)
     week_end_date = fields.Date(required=True)
-    type = fields.Selection('get_revision_types', required=True)
+    type = fields.Selection([
+        ('web', _('Web')),
+        ('ambassador', _('Ambassador')),
+        ('events', _('Events')),
+        ('sub', _('Sub')),
+        ('cancel', _('Cancellation')),
+    ], required=True)
 
     demand = fields.Float('Demand prevision')
     resupply = fields.Float('Resupply prevision')
@@ -35,19 +40,6 @@ class WeeklyRevision(models.Model):
         ('unique_week_type', "unique(week_start_date,type)",
          "Weekly revision already exist!")
     ]
-
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
-    @api.model
-    def get_revision_types(self):
-        return [
-            ('web', _('Web')),
-            ('ambassador', _('Ambassador')),
-            ('events', _('Events')),
-            ('sub', _('Sub')),
-            ('cancel', _('Cancellation')),
-        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -63,7 +55,7 @@ class WeeklyRevision(models.Model):
         if revision:
             return revision
 
-        revision = super(WeeklyRevision, self).create(vals)
+        revision = super().create(vals)
         revision.recompute_effective_numbers()
         return revision
 

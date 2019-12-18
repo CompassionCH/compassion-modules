@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -39,7 +38,7 @@ class GenerateGiftWizard(models.TransientModel):
     _inherit = 'generate.gift.wizard'
 
     def _setup_invoice_line(self, contract):
-        invl_data = super(GenerateGiftWizard, self)._setup_invoice_line(
+        invl_data = super()._setup_invoice_line(
             contract)
         if contract.user_id:
             invl_data['user_id'] = contract.user_id.id

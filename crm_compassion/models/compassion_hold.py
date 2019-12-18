@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016-2018 Compassion CH (http://www.compassion.ch)
@@ -20,14 +19,14 @@ class AbstractHold(models.AbstractModel):
     event_id = fields.Many2one('crm.event.compassion', 'Event')
 
     def get_fields(self):
-        _fields = super(AbstractHold, self).get_fields()
+        _fields = super().get_fields()
         return _fields + ['campaign_id', 'event_id']
 
     def get_hold_values(self):
         """ Get the field values of one record.
             :return: Dictionary of values for the fields
         """
-        vals = super(AbstractHold, self).get_hold_values()
+        vals = super().get_hold_values()
         event = vals.get('event_id')
         if event:
             vals['event_id'] = event[0]
@@ -62,7 +61,7 @@ class CompassionHold(models.Model):
                 hold.origin_id = origin_obj.search(origin_search, limit=1)
 
     def reservation_to_hold(self, commkit_data):
-        res_ids = super(CompassionHold, self).reservation_to_hold(commkit_data)
+        res_ids = super().reservation_to_hold(commkit_data)
         for hold in self.browse(res_ids):
             hold.event_id = hold.reservation_id.event_id
             hold.campaign_id = hold.reservation_id.campaign_id
