@@ -15,7 +15,7 @@
                             <field name="star" widget="priority"/>
                         </group>
                         <group>
-                            <field name="improve_app" widget="html"/>
+                            <field name="improve_app"/>
                             <field name="source"/>
                         </group>
                     </group>
@@ -33,7 +33,7 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="star"/>
-                <field name="improve_app" widget="html"/>
+                <field name="improve_app"/>
                 <field name="source"/>
                 <field name="create_date"/>
             </tree>
