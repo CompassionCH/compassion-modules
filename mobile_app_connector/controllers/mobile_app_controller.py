@@ -12,6 +12,7 @@
 #
 ##############################################################################
 import werkzeug
+import cgi
 
 from ..mappings.compassion_login_mapping import MobileLoginMapping
 from ..mappings.app_banner_mapping import AppBannerMapping
@@ -104,6 +105,9 @@ class RestController(http.Controller):
         :param parameters: all other optional parameters sent by the request
         :return: json data for mobile app
         """
+        for key in parameters:
+            parameters[key] = cgi.escape(parameters[key])
+
         odoo_obj = request.env.get(model).with_context(
             lang=_get_lang(request, parameters))
         model_method = 'mobile_' + method

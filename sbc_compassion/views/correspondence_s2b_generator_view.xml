@@ -44,6 +44,8 @@
                             <field name="image_ids" states="draft,done" attrs="{'readonly': [('state', '!=', 'draft')]}" widget="many2many_binary"/>
                             <field name="body" states="draft,done" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="preview_image" states="preview" widget="image"/>
+                            <field name="filename" invisible="1"/>
+                            <field name="preview_pdf" states="preview" filename="filename"/>
                         </group>
                     </sheet>
                 </form>

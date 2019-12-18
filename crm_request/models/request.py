@@ -95,6 +95,9 @@ class CrmClaim(models.Model):
         else:
             ctx['claim_no_partner'] = True
 
+        # Assign current user to request
+        self.user_id = self.env.uid
+
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
