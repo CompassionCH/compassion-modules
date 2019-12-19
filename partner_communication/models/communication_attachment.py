@@ -47,6 +47,11 @@ class CommunicationAttachment(models.Model):
         :param vals: vals for creation
         :return: record created
         """
+
+        if not vals['report_id']:
+            vals['report_id'] = \
+                self.env['report']._get_report_from_name(vals['report_name']).id
+
         new_record = 'data' in vals and 'attachment_id' not in vals
         if new_record:
             name = vals['name']
@@ -55,11 +60,9 @@ class CommunicationAttachment(models.Model):
                 'res_model': 'partner.communication.job',
                 'datas': vals['data'],
                 'name': name,
+                'report_id': vals['report_id'],
             })
             vals['attachment_id'] = attachment.id
-
-        vals['report_id'] = \
-            self.env['report']._get_report_from_name(vals['report_name']).id
 
         res = super(CommunicationAttachment, self).create(vals)
 
