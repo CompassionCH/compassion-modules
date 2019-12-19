@@ -281,8 +281,8 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = letter.communication_type_ids[0].name + ' (' + \
-                              letter.sponsorship_id.partner_id.ref + " - " + \
-                              letter.child_id.local_id + ')'
+                    letter.sponsorship_id.partner_id.ref + " - " + \
+                    letter.child_id.local_id + ')'
             else:
                 letter.name = _('New correspondence')
 
@@ -626,7 +626,7 @@ class Correspondence(models.Model):
                 if letter:
                     # Avoid to publish twice a same letter
                     is_published = is_published and letter.state != \
-                                   published_state
+                        published_state
                     if is_published or letter.state != published_state:
                         letter.write(vals)
                 else:

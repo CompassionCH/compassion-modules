@@ -21,13 +21,12 @@ try:
     from pdfminer.layout import LAParams, LTTextBox, LTTextLine
     from pdfminer.pdfdocument import PDFDocument
     from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
-    from pdfminer.pdfpage import PDFPage, PDFTextExtractionNotAllowed
+    from pdfminer.pdfpage import PDFPage
     from pdfminer.pdfparser import PDFParser
 
 except ImportError:
     _logger.error("Python libraries 'PyPDF2', 'pdfminer' and 'Pillow' are required for"
                   " the correspondences migration in order to extract images from PDFs")
-
 
 
 @openupgrade.migrate(use_env=True)
@@ -176,7 +175,7 @@ def extract_attachment_from_pdf(pdf_data, size_filter=None):
 
     pdf = PyPDF2.PdfFileReader(pdf_data)
     x_object = pdf.getPage(0)['/Resources']['/XObject'].getObject()
-    
+
     for obj in x_object:
         if x_object[obj]['/Subtype'] == '/Image':
             size = (x_object[obj]['/Width'], x_object[obj]['/Height'])
@@ -195,6 +194,3 @@ def extract_attachment_from_pdf(pdf_data, size_filter=None):
                     filename = obj[1:] + '.png'
                 images[filename] = img
     return images
-
-
-
