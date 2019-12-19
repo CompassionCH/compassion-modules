@@ -74,6 +74,7 @@ class CorrespondenceS2bGenerator(models.Model):
     nb_letters = fields.Integer(compute='_compute_nb_letters')
     preview_image = fields.Binary(readonly=True)
     preview_pdf = fields.Binary(readonly=True)
+    filename = fields.Char(compute='_compute_filename')
     month = fields.Selection('_get_months')
 
     source = fields.Selection(selection=[
@@ -90,6 +91,10 @@ class CorrespondenceS2bGenerator(models.Model):
     @api.model
     def _get_months(self):
         return self.env['compassion.child']._get_months()
+
+    def _compute_filename(self):
+        for generator in self:
+            generator.filename = generator.name + '.pdf'
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

@@ -10,6 +10,7 @@
 ##############################################################################
 
 import logging
+import cgi
 
 from odoo import models, api, _
 
@@ -35,6 +36,9 @@ class CrmClaim(models.Model):
         :param params: no value expected
         :return: a dict with key FeedbackAndContactusResult
         """
+        for key in parameters:
+            parameters[key] = cgi.escape(parameters[key])
+
         email = parameters["email"]
         firstname = parameters["firstname"]
         lastname = parameters["lastname"]
