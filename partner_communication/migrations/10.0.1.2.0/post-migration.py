@@ -30,4 +30,5 @@ def migrate(env, version):
         ])
 
         report_name = communication_object.report_name
-        communication_object.report_id = env['report']._get_report_from_name(report_name).id
+        communication_object.report_id = \
+            env['report']._get_report_from_name(report_name).id
