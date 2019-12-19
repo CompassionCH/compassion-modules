@@ -64,7 +64,10 @@ class AppHub(models.AbstractModel):
         letters = self.env['correspondence'].search([
             ('partner_id', '=', partner_id),
             ('sponsorship_id', 'in', sponsorships.ids)
-        ])
+        ],
+            # Limit letters to avoid memory errors TODO Improve performance
+            # of fetching this in the app_tile instead. See CO-2915
+            order='scanned_date desc', limit=200)
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('visibility', '!=', 'public')
@@ -84,7 +87,9 @@ class AppHub(models.AbstractModel):
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
+        _logger.info("BEGIN RENDER TILES")
         messages = available_tiles[:limit].render_tile(tile_data)
+        _logger.info("END RENDER TILES")
 
         # GI7 is treated separately because it needs unpaid sponsorships
         msg_tmp = self.env['mobile.app.tile'].search([
