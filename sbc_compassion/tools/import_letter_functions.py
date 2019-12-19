@@ -405,3 +405,33 @@ def is_zip(name):
     """
     ext = os.path.splitext(name)[1]
     return ext.lower() == '.zip'
+
+
+def find_child(env, code):
+    """
+    Search for a child with the code given by the partner
+
+    :param env: Odoo's environment
+    :param code: the child's code or local_id
+    :return: The child, when found
+    """
+    field = len(code) == 9 and 'code' or 'local_id'
+    child = env['compassion.child'].search([(field, '=', code)])
+    return child
+
+
+def find_partner(env, code, email):
+    """
+    Search for a partner given a ref or a global_id and an email
+    :param env: Odoo's environment
+    :param code: the partner's global_id or ref
+    :param email: the partner's email
+    :return: The partner, if found
+    """
+    partner = env['res.partner'].search(
+        ['|', ('ref', '=', code), ('global_id', '=', code)])
+    if not partner:
+        partner = env['res.partner'].search([('email', '=', email)])
+    if len(partner) > 1:
+        partner = partner.filtered('has_sponsorships')
+    return partner[:1]
