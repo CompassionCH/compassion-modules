@@ -17,8 +17,8 @@ export default class LangDialog extends React.Component {
         let langs = [
             {value: 'fr', text:t('langFr')},
             {value: 'de', text:t('langDe')},
-            {value: 'en', text:t('langEn')},
             {value: 'it', text:t('langIt')},
+            {value: 'en', text:t('langEn')},
         ];
 
         return (
