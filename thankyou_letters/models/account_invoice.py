@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -33,7 +32,7 @@ class AccountInvoice(models.Model):
         """ Generate a Thank you Communication when invoice is a donation
             (no sponsorship product inside)
         """
-        res = super(AccountInvoice, self).action_invoice_paid()
+        res = super().action_invoice_paid()
         invoices = self._filter_invoice_to_thank()
         if invoices:
             invoices.generate_thank_you()
@@ -67,7 +66,7 @@ class AccountInvoice(models.Model):
                     comm.refresh_text()
                 else:
                     comm.unlink()
-        return super(AccountInvoice, self).write(vals)
+        return super().write(vals)
 
     @api.multi
     def group_by_partner(self):

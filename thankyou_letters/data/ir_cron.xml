@@ -6,9 +6,9 @@
             <field name="interval_type">months</field>
             <field name="numbercall">-1</field>
             <field name="function">thankyou_summary_cron</field>
-            <field name="model">account.invoice</field>
             <field name="args" eval="()"/>
             <field name="active" eval="False"/>
+            <field name="model_id" ref="model_account_invoice"/>
         </record>
         <record id="success_story_cron" model="ir.cron">
             <field name="name">Success Story Activation</field>
@@ -17,7 +17,7 @@
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
             <field name="function">validity_cron</field>
-            <field name="model">success.story</field>
+            <field name="model_id" ref="model_success_story"/>
         </record>
     </data>
 </odoo>

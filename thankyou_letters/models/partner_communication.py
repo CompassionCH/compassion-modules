@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -58,7 +57,7 @@ class PartnerCommunication(models.Model):
             default_vals = []
         default_vals.extend([
             'print_subject', 'print_header', 'show_signature'])
-        return super(PartnerCommunication, self)._get_default_vals(
+        return super()._get_default_vals(
             vals, default_vals)
 
     ##########################################################################
@@ -109,7 +108,7 @@ class PartnerCommunication(models.Model):
         for job in self:
             if not job.success_story_id.only_when_chosen:
                 job.set_success_story()
-        super(PartnerCommunication, self).refresh_text(refresh_uid)
+        super().refresh_text(refresh_uid)
         return True
 
     @api.multi
@@ -118,7 +117,7 @@ class PartnerCommunication(models.Model):
         Update the count of succes story prints when sending a receipt.
         :return: True
         """
-        res = super(PartnerCommunication, self).send()
+        res = super().send()
         for job in self.filtered('sent_date'):
             if job.success_story_id:
                 job.success_story_id.print_count += 1

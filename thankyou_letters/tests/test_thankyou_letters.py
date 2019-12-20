@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -18,7 +17,7 @@ class TestThankYouLetters(SavepointCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestThankYouLetters, cls).setUpClass()
+        super().setUpClass()
 
         # Create accounting needed data
         cls.account_model = cls.env['account.account']
