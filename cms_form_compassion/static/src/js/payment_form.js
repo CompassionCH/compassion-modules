@@ -14,7 +14,7 @@ odoo.define('cms_form_compassion.payment_form', function (require) {
         'RWF', 'KRW', 'VUV', 'VND', 'XOF'
     ];
 
-    var animation = require('web_editor.snippets.animation');
+    var animation = require('website.content.snippets.animation');
 
     var PaymentForm = animation.Class.extend({
         selector: '#payment_compassion',
