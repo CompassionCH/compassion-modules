@@ -18,6 +18,7 @@ def load_mappings(cr, registry):
         'childpool_rich_mix.json',
         'childpool_simple_search.json',
         'childpool_search_response.json',
+        'childpool_search_fields.json',
         'demand_planning.json',
         'disaster_alert.json',
         'fcp.json',
