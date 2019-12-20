@@ -73,7 +73,7 @@
 
     <menuitem id="menu_donation_sales"
               name="Communications"
-              parent="crm.crm_menu_root"
+              parent="account.menu_finance"
               sequence="5"/>
 
     <!-- Add menu in Sales-->
