@@ -23,5 +23,7 @@ def migrate(env, version):
     ])
 
     for attachment in attachments:
-        attachment.report_id = \
+        report_id =\
             env['report']._get_report_from_name(attachment.report_name).id
+        attachment.report_id = report_id
+        attachment.attachment_id.report_id = report_id
