@@ -652,7 +652,7 @@ class Correspondence(models.Model):
         onramp = SBCConnector()
         for letter in self.filtered(lambda l: not l.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
-                letter.letter_image, letter.letter_format)
+                letter.get_image(), letter.letter_format, base64encoded=False)
 
     @api.multi
     def enrich_letter(self, vals):
