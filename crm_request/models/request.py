@@ -18,7 +18,7 @@ class CrmClaim(models.Model):
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
     name = fields.Char(compute='_compute_name', store=True)
-    subject = fields.Char(required=True)
+    subject = fields.Char()
     alias_id = fields.Many2one(
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
