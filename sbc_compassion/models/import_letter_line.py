@@ -142,11 +142,8 @@ class ImportLetterLine(models.Model):
             del vals['is_encourager']
 
             if line.source == 'website':
-                """
-                To save disk space, we prefer storing the text, images and template_id
-                rather than the PDF (which contains a large background). PDFs will be
-                generated when needed.
-                """
+                # To save disk space, we prefer storing the text, images and template_id
+                # rather than the PDF (which contains a large background).
                 del vals['letter_image']
                 vals['store_letter_image'] = False
                 if line.original_attachment_ids:
