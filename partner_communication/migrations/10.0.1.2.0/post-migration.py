@@ -16,19 +16,12 @@ from openupgradelib import openupgrade
 def migrate(env, version):
     if not version:
         return
-    cr = env.cr
 
-    cr.execute("ALTER TABLE partner_communication_attachment "
-               "ADD COLUMN IF NOT EXISTS report_id INTEGER")
+    attachments = env['partner.communication.attachment'].search([
+        ('report_name', '!=', False),
+        ('communication_id', '!=', False)
+    ])
 
-    cr.execute("SELECT id FROM partner_communication_attachment")
-    communication_ids = cr.dictfetchall()
-
-    for communication_id in communication_ids:
-        communication_object = env['partner.communication.attachment'].search([
-            ('id', '=', communication_id['id'])
-        ])
-
-        report_name = communication_object.report_name
-        communication_object.report_id = \
-            env['report']._get_report_from_name(report_name).id
+    for attachment in attachments:
+        attachment.report_id = \
+            env['report']._get_report_from_name(attachment.report_name).id
