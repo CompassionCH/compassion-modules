@@ -48,9 +48,9 @@ class CommunicationAttachment(models.Model):
         :return: record created
         """
 
-        if not vals['report_id']:
-            vals['report_id'] = \
-                self.env['report']._get_report_from_name(vals['report_name']).id
+        if not vals.get('report_id'):
+            vals['report_id'] = self.env['report']._get_report_from_name(
+                vals.get('report_name')).id
 
         new_record = 'data' in vals and 'attachment_id' not in vals
         if new_record:
