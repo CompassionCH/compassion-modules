@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_backend" name="web_kanban assets compassion colorpicker" inherit_id="web_kanban.assets_backend">
+    <template id="assets_backend" name="web_kanban assets compassion colorpicker" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <link rel="stylesheet" href="/crm_compassion/static/src/less/kanban_view.less"/>
             <script type="text/javascript" src="/crm_compassion/static/src/js/kanban_record.js"></script>

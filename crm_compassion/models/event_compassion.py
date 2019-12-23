@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -27,8 +26,14 @@ class EventCompassion(models.Model):
     ##########################################################################
     name = fields.Char(size=128, required=True, track_visibility='onchange')
     full_name = fields.Char(compute='_compute_full_name')
-    type = fields.Selection(
-        'get_event_types', required=True, track_visibility='onchange')
+    type = fields.Selection([
+        ('stand', _("Stand")),
+        ('concert', _("Concert")),
+        ('presentation', _("Presentation")),
+        ('meeting', _("Meeting")),
+        ('sport', _("Sport event")),
+        ('tour', _("Sponsor tour")),
+    ], required=True, track_visibility='onchange')
     start_date = fields.Datetime(required=True)
     year = fields.Char(compute='_compute_year', store=True)
     end_date = fields.Datetime(required=True)
@@ -94,14 +99,12 @@ class EventCompassion(models.Model):
         related='origin_id.won_sponsorships', store=True)
     conversion_rate = fields.Float(
         related='origin_id.conversion_rate', store=True)
-    project_id = fields.Many2one('project.project', 'Project')
-    use_tasks = fields.Boolean()
     calendar_event_id = fields.Many2one('calendar.event')
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
     campaign_id = fields.Many2one('utm.campaign', 'Campaign')
 
-    # Multicompany
+    # Multi-company
     company_id = fields.Many2one(
         'res.company',
         'Company',
@@ -163,17 +166,6 @@ class EventCompassion(models.Model):
             event.full_name = event.type.title() + ' ' + event.name + ' ' +\
                 event.year
 
-    @api.model
-    def get_event_types(self):
-        return [
-            ('stand', _("Stand")),
-            ('concert', _("Concert")),
-            ('presentation', _("Presentation")),
-            ('meeting', _("Meeting")),
-            ('sport', _("Sport event")),
-            ('tour', _("Sponsor tour")),
-        ]
-
     @api.multi
     @api.depends('hold_ids')
     def _compute_allocate_children(self):
@@ -220,13 +212,7 @@ class EventCompassion(models.Model):
         elif event_name[-2:] == event_year[-2:]:
             vals['name'] = event_name[:-2]
 
-        event = super(EventCompassion, self).create(vals)
-
-        # Create project for the tasks
-        project_id = False
-        if event.use_tasks:
-            project_id = self.env['project.project'].with_context(
-                from_event=True).create(event._get_project_vals()).id
+        event = super().create(vals)
 
         # Analytic account and Origin linked to this event
         analytic_id = self.env['account.analytic.account'].create(
@@ -236,7 +222,6 @@ class EventCompassion(models.Model):
         event.with_context(no_sync=True).write({
             'origin_id': origin_id,
             'analytic_id': analytic_id,
-            'project_id': project_id,
         })
 
         # Add calendar event
@@ -249,18 +234,9 @@ class EventCompassion(models.Model):
     @api.multi
     def write(self, vals):
         """ Push values to linked objects. """
-        super(EventCompassion, self).write(vals)
+        super().write(vals)
         if not self.env.context.get('no_sync'):
             for event in self:
-                if 'use_tasks' in vals and event.use_tasks:
-                    # Link event to a Project
-                    project_id = self.env['project.project'].with_context(
-                        from_event=True).create(event._get_project_vals()).id
-                    event.write({'project_id': project_id})
-                elif event.project_id:
-                    # Update event
-                    event.project_id.with_context(from_event=True).write(
-                        event._get_project_vals())
 
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
@@ -283,7 +259,7 @@ class EventCompassion(models.Model):
             if default is None:
                 default = {}
             default['name'] = self.name + ' (copy)'
-        return super(EventCompassion, self).copy(default)
+        return super().copy(default)
 
     @api.multi
     def unlink(self):
@@ -295,13 +271,11 @@ class EventCompassion(models.Model):
                     _('The event is linked to expenses or sponsorships. '
                       'You cannot delete it.'))
             else:
-                if event.project_id:
-                    event.project_id.unlink()
                 if event.analytic_id:
                     event.analytic_id.unlink()
                 event.origin_id.unlink()
                 event.calendar_event_id.unlink()
-        return super(EventCompassion, self).unlink()
+        return super().unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -323,25 +297,6 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
-    def show_tasks(self):
-        self.ensure_one()
-        project_id = self.project_id.id
-        return {
-            'name': _('Project Tasks'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'kanban,tree,form,calendar,gantt,graph',
-            'view_type': 'form',
-            'res_model': 'project.task',
-            'src_model': 'crm.event.compassion',
-            'context': {
-                'search_default_project_id': [project_id],
-                'default_project_id': project_id,
-                'active_test': False},
-            'search_view_id': self.env['ir.model.data'].get_object_reference(
-                'project', 'view_task_search_form')[1]
-        }
-
     @api.multi
     def show_sponsorships(self):
         self.ensure_one()
@@ -438,34 +393,6 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _get_project_vals(self):
-        """ Creates a new project based on the event.
-        """
-        vals = {
-            'name': self.full_name,
-            'use_tasks': True,
-            'analytic_account_id': self.analytic_id.id,
-            'project_type': self.type,
-            'user_id': self.user_id.id,
-            'partner_id': self.partner_id.id,
-            'date_start': self.start_date,
-            'date': self.end_date,
-            'state': 'open',
-            'privacy_visibility': 'employees',
-        }
-        followers = list()
-        existing = self.project_id.message_follower_ids.mapped(
-            'partner_id').ids
-        for staff in self.staff_ids:
-            if staff.id not in existing:
-                followers.append((0, 0, {
-                    'partner_id': staff.id,
-                    'res_model': 'project.project'
-                }))
-        if followers:
-            vals['message_follower_ids'] = followers
-        return vals
-
     def _get_analytic_vals(self):
         name = self.name
         tag_ids = self.env['account.analytic.tag'].search([
@@ -572,17 +499,19 @@ class EventCompassion(models.Model):
                     # user_id field(bypass ORM to avoid tracking field change)
                     self.env.cr.execute(
                         "UPDATE crm_event_compassion "
-                        "SET user_id = %s WHERE id = %s", [user.id, event.id]
+                        f"SET user_id = {user.id} WHERE id = {event.id}"
                     )
                     values = {'user_ids': user.id}
-                    super(EventCompassion, event).message_auto_subscribe(
+                    super(event).message_auto_subscribe(
                         updated_fields, values
                     )
                 # Restore ambassador
+                user_id = "NULL"
+                if ambassador.id:
+                    user_id = ambassador.id
                 self.env.cr.execute(
                     "UPDATE crm_event_compassion "
-                    "SET user_id = %s WHERE id = %s", [ambassador.id or None,
-                                                       event.id]
+                    f"SET user_id = {user_id} WHERE id = {event.id}"
                 )
         return True
 
@@ -593,5 +522,5 @@ class EventCompassion(models.Model):
         auto_follow_fields = ['user_ids']
         if 'staff_ids' in updated_fields:
             updated_fields.append('user_ids')
-        return super(EventCompassion, self)._message_get_auto_subscribe_fields(
+        return super()._message_get_auto_subscribe_fields(
             updated_fields, auto_follow_fields)

@@ -56,7 +56,6 @@
                         <button name="show_income" type="object" class="oe_stat_button" icon="fa-money">
                             <field name="total_income" string="Income" widget="statinfo"/>
                         </button>
-                        <button name="show_tasks" string="Open tasks" type="object" attrs="{'invisible': [('use_tasks', '=', False)]}" class="oe_stat_button" icon="fa-tasks"/>
                     </div>
                     <group>
                         <group>
@@ -64,7 +63,6 @@
                             <field name="campaign_id"/>
                             <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
                             <field name="analytic_id" readonly="1"/>
-                            <field name="use_tasks"/>
                             <field name="user_id"/>
                         </group>
                         <group>
@@ -163,6 +161,5 @@
         </field>
     </record>
 
-    <menuitem id="menu_events_compassion" name="Events" parent="sales_team.menu_sales" sequence="3" action="action_events_compassion"/>
-    <menuitem id="sales_team.menu_sales" name="Sales" parent="sales_team.menu_base_partner" sequence="0"/>
+    <menuitem id="menu_events_compassion" name="Events" parent="crm.crm_menu_root" sequence="2" action="action_events_compassion"/>
 </odoo>

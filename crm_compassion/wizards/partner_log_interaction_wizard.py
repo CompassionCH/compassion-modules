@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -13,6 +12,7 @@ from odoo import models, api, fields
 
 class LogInteractionWizard(models.TransientModel):
     _name = 'partner.log.interaction.wizard'
+    _description = "Logging wizard for interactions"
 
     partner_id = fields.Many2one(
         'res.partner', 'Partner', default=lambda s: s._default_partner())

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
@@ -30,7 +29,7 @@ class Partner(models.Model):
     def _compute_comm_count(self):
         # Only count pending communications
         for partner in self:
-            partner.communication_count = self.env[1
+            partner.communication_count = self.env[
                 'partner.communication.job'].search_count([
                     ('partner_id', '=', partner.id),
                     ('state', 'in', ('pending', 'call')),
@@ -63,7 +62,7 @@ class Partner(models.Model):
 
     @api.multi
     def _compute_opportunity_count(self):
-        super(Partner, self)._compute_opportunity_count()
+        super()._compute_opportunity_count()
         for partner in self:
             operator = 'child_of' if partner.is_company else '='
             partner.opportunity_count += self.env['crm.lead'].search_count(

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,48 +29,47 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion CH - Events',
-    'version': '10.0.1.5.0',
+    'version': '11.0.0.0.0',
     'category': 'CRM',
     'sequence': 150,
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'base_location',
-        'sponsorship_compassion',
-        'partner_communication',
-        'project',
-        'crm_request',
+        'base_location',            # oca_addons/partner_contact
+        'sponsorship_compassion',   # compassion-modules
+        'partner_communication',    # compassion-modules
         'mail_tracking',
-        'web_kanban',
+        'base_automation',
     ],
     'data': [
-        'security/ir.model.access.csv',
-        'security/crm_compassion_security.xml',
         'data/account_analytic_data.xml',
         'data/calendar_event_type.xml',
-        'data/demand_planning_server_actions.xml',
-        'data/demand_planning_action_rules.xml',
-        'views/event_compassion_view.xml',
+        'data/demand_planning.xml',
+        'security/crm_compassion_security.xml',
+        'security/ir.model.access.csv',
+        'views/account_invoice_line.xml',
+        'views/calendar_event_view.xml',
+        'views/calendar_view.xml',
         'views/contract_origin_view.xml',
         'views/crm_lead_view.xml',
-        'views/project_view.xml',
-        'views/account_invoice_line.xml',
-        'views/interaction_resume_view.xml',
-        'views/res_partner_view.xml',
-        'views/calendar_event_view.xml',
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
+        'views/event_compassion_view.xml',
+        'views/field_view.xml',
+        'views/global_childpool_view.xml',
         'views/hold_view.xml',
-        'views/calendar_view.xml',
+        'views/interaction_resume_view.xml',
         'views/mail_message_view.xml',
         'views/partner_log_interaction_wizard_view.xml',
+        'views/res_partner_view.xml',
+        'views/sponsorship_view.xml',
         'views/web_kanban_colorpicker_template.xml',
     ],
     'qweb': [
         'static/src/xml/web_kanban_colorpicker.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

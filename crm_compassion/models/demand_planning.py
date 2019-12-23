@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -24,7 +23,7 @@ class DemandPlanning(models.Model):
         """ Weekly CRON for Demand Planning.
         3. Create last week revision
         """
-        super(DemandPlanning, self).process_weekly_demand()
+        super().process_weekly_demand()
         today = datetime.today()
         last_week_demand = self.env['demand.weekly.demand'].search([
             ('week_end_date', '<', today),
@@ -33,26 +32,26 @@ class DemandPlanning(models.Model):
         if last_week_demand:
             revision_obj = self.env['demand.weekly.revision']
             for type_tuple in revision_obj.get_revision_types():
-                type = type_tuple[0]
-                if type == 'web':
+                type_tuple = type_tuple[0]
+                if type_tuple == 'web':
                     demand = last_week_demand.number_children_website
                     resupply = last_week_demand.average_unsponsored_web
-                elif type == 'ambassador':
+                elif type_tuple == 'ambassador':
                     demand = last_week_demand.number_children_ambassador
                     resupply = last_week_demand.average_unsponsored_ambassador
-                elif type == 'events':
+                elif type_tuple == 'events':
                     demand = last_week_demand.number_children_events
                     resupply = last_week_demand.resupply_events
-                elif type == 'sub':
+                elif type_tuple == 'sub':
                     demand = last_week_demand.number_sub_sponsorship
                     resupply = last_week_demand.resupply_sub
-                elif type == 'cancel':
+                elif type_tuple == 'cancel':
                     demand = 0
                     resupply = last_week_demand.average_cancellation
                 revision_obj.create({
                     'week_start_date': last_week_demand.week_start_date,
                     'week_end_date': last_week_demand.week_end_date,
-                    'type': type,
+                    'type': type_tuple,
                     'demand': demand,
                     'resupply': resupply,
                 })
@@ -64,6 +63,6 @@ class DemandPlanning(models.Model):
         Only look for period locked when submitting same values.
         All other weeks are computed each time.
         """
-        search_filter = super(DemandPlanning, self)._search_week(start_date)
+        search_filter = super()._search_week(start_date)
         search_filter.append(('period_locked', '=', True))
         return search_filter

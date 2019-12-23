@@ -4,7 +4,7 @@
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-            <tree colors="red:color == 'red';green:color == 'green';grey:color == 'grey';" edit="0" create="0" delete="0">
+            <tree decoration-danger="state == 'failed'" decoration-success="state == 'reached'" decoration-muted="state == 'canceled'" edit="0" create="0" delete="0">
                 <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
                 <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
                 <field name="communication_date"/>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -127,7 +126,7 @@ class WeeklyDemand(models.Model):
             ('start_date', '>=', fields.Date.to_string(start_date)),
             ('medium_id', '!=', website_medium)
         ])
-        return float(sub_sponsored) / STATS_DURATION
+        return float(sub_sponsored) // STATS_DURATION
 
     @api.depends('number_children_website', 'number_children_ambassador',
                  'number_sub_sponsorship', 'number_children_events')
@@ -189,7 +188,7 @@ class WeeklyDemand(models.Model):
                 fields.Date.from_string(s.start_date)
             ).days <= SUB_DURATION)
         )
-        sub_reject_average = len(rejected_sub) / STATS_DURATION
+        sub_reject_average = len(rejected_sub) // STATS_DURATION
         for week in self:
             start_date = fields.Datetime.from_string(
                 week.week_start_date) - timedelta(days=SUB_DURATION)
@@ -202,7 +201,7 @@ class WeeklyDemand(models.Model):
                     ('medium_id.name', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (
-                    sub_reject_average / sub_average or 1)
+                    sub_reject_average // sub_average or 1)
             else:
                 week.resupply_sub = sub_reject_average
 
@@ -217,7 +216,7 @@ class WeeklyDemand(models.Model):
             ('end_reason_id', '!=', depart.id),
             ('end_date', '>=', fields.Date.to_string(start_date))
         ])
-        return float(cancellations) / STATS_DURATION
+        return float(cancellations) // STATS_DURATION
 
     @api.depends('average_unsponsored_web', 'average_cancellation',
                  'resupply_sub', 'resupply_events')
@@ -245,7 +244,7 @@ class WeeklyDemand(models.Model):
                 'average_unsponsored_ambassador']
             vals['average_unsponsored_ambassador'] = 0
 
-        return super(WeeklyDemand, self).create(vals)
+        return super().create(vals)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
