@@ -124,17 +124,12 @@ class GlobalChildSearch(models.TransientModel):
                  )
     def _compute_advanced_critieria_used(self):
 
-        advanced_criteria_used = self.chronic_illness or self.holding_gp_ids or \
-            self.father_alive or self. mother_alive or \
-            self.physical_disability or self.completion_date_after or \
-            self.completion_date_before or self.local_id
-
-        if advanced_criteria_used:
-            self.advanced_criteria_used = True
-        else:
-            self.advanced_criteria_used = self.state_selected and \
-                                          self.state_selected != 'Available'
-
+        self.advanced_criteria_used = \
+              self.chronic_illness or self.holding_gp_ids or \
+              self.father_alive or self.mother_alive or \
+              self.physical_disability or self.completion_date_after or \
+              self.completion_date_before or self.local_id or \
+              (self.state_selected and self.state_selected != 'Available')
 
     def _compute_nb_children(self):
         for search in self:
@@ -476,8 +471,11 @@ class GlobalChildSearch(models.TransientModel):
             for key, val in json_result.copy().items():
                 if not val:
                     del json_result[key]
+        # We need to do this "workaround" because there are multiple JSON values
+        # for the same odoo_field in the communications with GMC.
+        # (one for the advanced_search and one for the profile_search)
         if mapping_name == "advanced_search":
-            for dict in  json_result['BeneficiarySearchRequestList']['Filter']:
+            for dict in json_result['BeneficiarySearchRequestList']['Filter']:
                 if dict['Field'] == 'hasSpecialNeeds':
                     dict['Field'] = 'IsSpecialNeeds'
 
