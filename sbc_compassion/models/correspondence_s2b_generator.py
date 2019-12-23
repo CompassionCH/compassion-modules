@@ -185,7 +185,12 @@ class CorrespondenceS2bGenerator(models.Model):
                 'original_text': text,
             }
             if self.image_ids:
-                vals['original_attachment_ids'] = self.image_ids
+                vals['original_attachment_ids'] = [(0, 0, {
+                    'datas_fname': atchmt.datas_fname,
+                    'datas': atchmt.datas,
+                    'name': atchmt.name,
+                    'res_model': letters._name,
+                }) for atchmt in self.image_ids]
             letters += letters.create(vals)
 
         self.letter_ids = letters

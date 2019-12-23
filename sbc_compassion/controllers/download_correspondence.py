@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 
 class RestController(http.Controller):
 
-    @http.route('/web/pdf/correspondence', type='http', auth='public', methods=['GET'])
+    @http.route('/web/pdf/correspondence', type='http', auth='user', methods=['GET'])
     def generate_correspondence_pdf(self, object_id=None, **parameters):
         if object_id is None:
             raise BadRequest()

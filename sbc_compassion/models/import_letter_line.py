@@ -147,7 +147,12 @@ class ImportLetterLine(models.Model):
                 del vals['letter_image']
                 vals['store_letter_image'] = False
                 if line.original_attachment_ids:
-                    vals['original_attachment_ids'] = line.original_attachment_ids
+                    vals['original_attachment_ids'] = [(0, 0, {
+                        'datas_fname': atchmt.datas_fname,
+                        'datas': atchmt.datas,
+                        'name': atchmt.name,
+                        'res_model': 'correspondence',
+                    }) for atchmt in line.original_attachment_ids]
 
             letter_data.append(vals)
         return letter_data

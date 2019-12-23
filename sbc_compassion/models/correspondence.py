@@ -463,14 +463,6 @@ class Correspondence(models.Model):
                 raise UserError(
                     _('You can only attach tiff or pdf files'))
 
-        if 'original_attachment_ids' in vals:
-            vals['original_attachment_ids'] = [(0, 0, {
-                'datas_fname': atchmt.datas_fname,
-                'datas': atchmt.datas,
-                'name': atchmt.name,
-                'res_model': self._name,
-            }) for atchmt in vals['original_attachment_ids']]
-
         letter = super(Correspondence, self).create(vals)
         letter.file_name = letter._get_file_name()
         if letter_data and type_ == '.pdf':
