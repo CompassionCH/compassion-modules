@@ -58,6 +58,10 @@ class InteractionResume(models.TransientModel):
         :param partner_id: the partner
         :return: True
         """
+        partner = self.env['res.partner'].search([
+            ('id', '=', partner_id)
+        ])
+        aliases = partner.other_contact_ids
         self.search([('partner_id', '=', partner_id)]).unlink()
         self.env.cr.execute("""
             SELECT
