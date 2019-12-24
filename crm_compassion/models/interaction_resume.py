@@ -79,20 +79,19 @@ class InteractionResume(models.TransientModel):
             ('partner_id', 'in', partners_with_same_email.ids)
         ])
         for paper_communication in paper_communications:
-            self.env['interaction.resume'].create({
-                'communication_type': 'Paper',
-                'communication_date': paper_communication.sent_date,
-                'partner_id': paper_communication.partner_id.id,
-                'email': None,
-                'subject': paper_communication.subject,
-                'body': paper_communication.body_html.replace('<img[^>]*>', ''),
-                'direction': 'out',
-                'phone_id': 0,
-                'email_id': 0,
-                'message_id': 0,
-                'paper_id': paper_communication.id,
-                'tracking_status': None
-            })
+            self.create_interaction_resume(
+                "Phone",
+                paper_communication.sent_date,
+                paper_communication.partner_id.id,
+                None,
+                paper_communication.subject,
+                paper_communication.body_html,
+                "out",
+                0,
+                0,
+                0,
+                paper_communication.id,
+                None)
 
         # Phone communications
         phone_communications = self.env['crm.phonecall'].search([
@@ -102,20 +101,19 @@ class InteractionResume(models.TransientModel):
             direction = 'out'
             if phone_communication.direction == "inbound":
                 direction = 'in'
-            self.env['interaction.resume'].create({
-                'communication_type': 'Phone',
-                'communication_date': phone_communication.date,
-                'partner_id': phone_communication.partner_id.id,
-                'email': None,
-                'subject': phone_communication.name,
-                'body': phone_communication.name,
-                'direction': direction,
-                'phone_id': phone_communication.id,
-                'email_id': 0,
-                'message_id': 0,
-                'paper_id': 0,
-                'tracking_status': None
-            })
+            self.create_interaction_resume(
+                "Phone",
+                phone_communication.date,
+                phone_communication.partner_id.id,
+                None,
+                phone_communication.name,
+                phone_communication.name,
+                direction,
+                phone_communication.id,
+                0,
+                0,
+                0,
+                None)
 
         # Outgoing email communications
         outgoing_messages = self.env['mail.message'].search([
@@ -132,20 +130,19 @@ class InteractionResume(models.TransientModel):
             job = self.env['partner.communication.job'].search([
                 ('email_id', '=', email.id)
             ])
-            self.env['interaction.resume'].create({
-                'communication_type': 'Email',
-                'communication_date': email.date,
-                'partner_id': email.mail_message_id.author_id.id,
-                'email': html_sanitize(mt.recipient_address),
-                'subject': email.subject,
-                'body': email.body.replace('<img[^>]*>', ''),
-                'direction': 'out',
-                'phone_id': 0,
-                'email_id': email.id,
-                'message_id': 0,
-                'paper_id': job.id,
-                'tracking_status': mt.state or 'error'
-            })
+            self.create_interaction_resume(
+                "Email",
+                email.date,
+                email.mail_message_id.author_id.id,
+                mt.recipient_address,
+                email.subject,
+                email.body,
+                "out",
+                0,
+                email.id,
+                0,
+                job.id,
+                mt.state or "error")
 
         # Incoming email communications
         incoming_messages = self.env['mail.message'].search([
@@ -154,22 +151,40 @@ class InteractionResume(models.TransientModel):
             ('message_type', '=', 'email')
         ])
         for message in incoming_messages:
-            self.env['interaction.resume'].create({
-                'communication_type': 'Email',
-                'communication_date': message.date,
-                'partner_id': message.author_id.id,
-                'email': html_sanitize(message.author_id.email),
-                'subject': message.subject,
-                'body': message.body.replace('<img[^>]*>', ''),
-                'direction': 'in',
-                'phone_id': 0,
-                'email_id': 0,
-                'message_id': message.id,
-                'paper_id': 0,
-                'tracking_status': None
-            })
+            self.create_interaction_resume(
+                "Email",
+                message.date,
+                message.author_id.id,
+                message.author_id.email,
+                message.subject,
+                message.body,
+                "in",
+                0,
+                0,
+                message.id,
+                0,
+                None)
 
         return True
+
+    def create_interaction_resume(self, comm_type, date, partner_id, email,
+                                  subject, body, direction, phone_id,
+                                  email_id, message_id, paper_id,
+                                  tracking_status):
+        self.env['interaction.resume'].create({
+            'communication_type': comm_type,
+            'communication_date': date,
+            'partner_id': partner_id,
+            'email': html_sanitize(email),
+            'subject': subject,
+            'body': body.replace('<img[^>]*>', ''),
+            'direction': direction,
+            'phone_id': phone_id,
+            'email_id': email_id,
+            'message_id': message_id,
+            'paper_id': paper_id,
+            'tracking_status': tracking_status
+        })
 
     def open_object(self):
         """
