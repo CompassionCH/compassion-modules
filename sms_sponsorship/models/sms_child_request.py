@@ -107,9 +107,9 @@ class SmsChildRequest(models.Model):
     @api.multi
     def _compute_has_filter(self):
         for request in self:
-            request.has_filter = request.gender or request.min_age or \
-                                 request.field_office_id or (request.max_age and
-                                                             request.max_age != DEFAULT_MAX_AGE)
+            request.has_filter = \
+                request.gender or request.min_age or request.field_office_id or \
+                (request.max_age and request.max_age != DEFAULT_MAX_AGE)
 
     @api.model
     def select_lang(self):
@@ -226,14 +226,12 @@ class SmsChildRequest(models.Model):
 
     def take_child_from_childpool(self):
         try:
-            childpool_search = self.env[
-                'compassion.childpool.search'].create({
+            childpool_search = self.env['compassion.childpool.search'].create({
                 'take': 1,
                 'gender': self.gender,
                 'min_age': self.min_age,
                 'max_age': self.max_age,
-                'field_office_ids': [(6, 0,
-                                      self.field_office_id.ids or [])]
+                'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
             })
             childpool_search.with_context(skip_value=1000).do_search()
             # Request is valid two days, reminder is sent one day after
@@ -245,15 +243,15 @@ class SmsChildRequest(models.Model):
                 'primary_owner': self.env.uid,
                 'event_id': self.event_id.id,
                 'campaign_id': self.event_id.campaign_id.id,
-                'ambassador': self.event_id.user_id.partner_id.id or
-                              self.env.uid,
+                'ambassador': self.event_id.user_id.partner_id.id or self.env.uid,
                 'channel': 'sms',
                 'source_code': 'sms_sponsorship',
                 'return_action': 'view_holds'
             }
             ).send()
             child_hold = self.env['compassion.hold'].browse(
-                result_action['domain'][0][2])
+                result_action['domain'][0][2]
+            )
             child_hold.sms_request_id = self.id
             if child_hold.state == 'active':
                 self.write({
@@ -312,10 +310,9 @@ class SmsChildRequest(models.Model):
         min_age_match = not self.min_age or self.min_age <= child.age
         max_age_match = not self.max_age or self.max_age >= child.age
         country_match = not self.field_office_id or \
-                        self.field_office_id == child.field_office_id
+            self.field_office_id == child.field_office_id
 
-        return gender_match and min_age_match and max_age_match and \
-               country_match
+        return gender_match and min_age_match and max_age_match and country_match
 
     @api.multi
     def send_step1_reminder(self):
