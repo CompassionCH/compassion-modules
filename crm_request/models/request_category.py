@@ -9,10 +9,11 @@ from odoo import models, fields, api, _
 class RequestCategory(models.Model):
     _inherit = 'crm.claim.category'
 
-    template_id = fields.Many2one('mail.template',
-                                  'Template',
-                                  domain="[('model_id', '=', 'crm.claim')]",
-                                  default='self.env.ref("partner_communication.default_communication").id')
+    template_id = fields.Many2one(
+        'mail.template',
+        'Template',
+        domain="[('model_id', '=', 'crm.claim')]",
+        default='self.env.ref("partner_communication.default_communication").id')
     keywords = fields.Char(
         string='Keywords',
         help='List of keywords (separated by a comma ",") who could be '
