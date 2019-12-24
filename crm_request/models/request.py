@@ -23,7 +23,8 @@ class CrmClaim(models.Model):
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
-    claim_category = fields.Many2one(string='Category')
+    claim_category = fields.Many2one("crm.claim.category", string='Category',
+                                     default="_get_default_category")
     user_id = fields.Many2one(string='Assign to')
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
@@ -48,6 +49,10 @@ class CrmClaim(models.Model):
     def _get_lang(self):
         langs = self.env['res.lang'].search([])
         return [(l.code, l.name) for l in langs]
+
+    def _get_default_category(self):
+        for request in self:
+            request.claim_category = self.env.ref("crm_request.stage_undefined")
 
     @api.multi
     def action_reply(self):

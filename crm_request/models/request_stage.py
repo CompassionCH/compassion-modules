@@ -8,7 +8,3 @@ class RequestStage(models.Model):
     _inherit = "crm.claim.stage"
 
     active = fields.Boolean(default=True)
-    claim_category = fields.Many2one(
-        'crm.claim.category',
-        help="Claim classification"
-    )
