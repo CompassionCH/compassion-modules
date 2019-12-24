@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 admin_access_holiday_closure,admin_access_holiday_closure,model_holiday_closure,sales_team.group_sale_manager,1,1,1,1
+access_crm_stages,access_crm_stages,model_crm_claim_stage,sales_team.group_sale_manager,1,1,1,1

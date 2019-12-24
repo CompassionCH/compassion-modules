@@ -24,7 +24,7 @@ class CrmClaim(models.Model):
         help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
     claim_category = fields.Many2one("crm.claim.category", string='Category',
-                                     default="_get_default_category")
+                                     default='self.env.ref("crm_request.stage_undefined")')
     user_id = fields.Many2one(string='Assign to')
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
