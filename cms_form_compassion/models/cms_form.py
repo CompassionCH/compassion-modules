@@ -41,13 +41,13 @@ class CMSForm(models.AbstractModel):
         # count the number of recent, similar errors
         last_week_dt = (datetime.now() + timedelta(days=-7)).strftime(
             DEFAULT_SERVER_DATETIME_FORMAT)
-        err_count = 1 + self.env['ir.logging'].search_count([
+        err_count = 1 + self.env['ir.logging'].sudo().search_count([
             ('create_date', '>', last_week_dt),
             ('name', '=', err_name)
         ])
-        err_count_message = "This error occurred {} times in 7 days.\n".format(err_count)
+        err_count_message = "Occurred %d times in the last 7 days.\n\n" % err_count
 
-        message = "{}\n{}".format(
+        message = "{}{}".format(
             (err_count > 1) and err_count_message or "",
             traceback.format_exc(20)
         )
@@ -79,5 +79,5 @@ class CMSForm(models.AbstractModel):
         }
 
         # We are handling an exception, we need to commit the db transactions
-        self.env['ir.logging'].create(log_data)
+        self.env['ir.logging'].sudo().create(log_data)
         self.env.cr.commit()
