@@ -1,0 +1,12 @@
+<odoo>
+    <record model="ir.ui.view" id="ir_logging_form_view_inherited">
+        <field name="name">base.ir.logging.form.view.inherited</field>
+        <field name="model">ir.logging</field>
+        <field name="inherit_id" ref="base.ir_logging_form_view"/>
+        <field name="arch" type="xml">
+            <field name="message" position="after">
+                <field name="context_data"/>
+            </field>
+        </field>
+    </record>
+</odoo>
