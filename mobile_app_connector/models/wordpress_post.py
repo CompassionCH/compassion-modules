@@ -136,9 +136,8 @@ class WordpressPost(models.Model):
                         post_id = post_data['id']
                         found_ids.append(post_id)
                         if self.search([('wp_id', '=', post_id)]):
-                            cached_post = cached_posts.search([
-                                ('wp_id', '=', post_id)
-                            ])
+                            cached_post = cached_posts.filtered(lambda p: p.wp_id == post_id)
+
                             if cached_post:
                                 self._update_cached_post_categories(
                                     cached_post, post_data, requests)
@@ -197,7 +196,7 @@ class WordpressPost(models.Model):
         # If there is a difference between categories
         if sorted(cached_post.category_ids.ids) != sorted(categories_id):
             cached_post.write({
-                'category_ids': [(6, _, categories_id)],
+                'category_ids': [(6, 0, categories_id)],
                 'display_on_hub': self._update_display_on_hub(categories_id)
             })
 
@@ -228,9 +227,7 @@ class WordpressPost(models.Model):
 
     def _update_display_on_hub(self, categories_id):
         for category_id in categories_id:
-            category = self.env['wp.post.category'].search([
-                ('id', '=', category_id)
-            ])
+            category = self.env['wp.post.category'].browse(category_id)
             if category.display_on_hub:
                 return True
         return False
