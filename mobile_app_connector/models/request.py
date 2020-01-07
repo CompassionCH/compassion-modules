@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 
 class CrmClaim(models.Model):
-    """ A sponsored child """
     _inherit = 'crm.claim'
 
     @api.multi
@@ -60,6 +59,7 @@ class CrmClaim(models.Model):
             'categ_id': self.env['crm.claim.category'].sudo().search(
                 [('name', '=', source)]).id,
             'partner_id': contact_id,
+            'user_id': False
         })
         claim.message_post(body=question,
                            subject=_("Original request from %s %s ") %
