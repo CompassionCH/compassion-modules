@@ -98,7 +98,7 @@
                         <group>
                             <field name="team_id"/>
                             <field name="user_id" domain="[('share', '!=', True)]"/>
-                            <field name="claim_type" string="Type" required="True" options="{'no_create': True}"/>
+                            <field name="claim_category" string="Category" options="{'no_create': True}"/>
                             <field name="alias_id" groups="base.group_no_one"/>
                         </group>
                         <group>
@@ -150,6 +150,19 @@
         </field>
     </record>
 
+    <!-- Remove buttons replaced by interaction resume -->
+    <record id="view_res_partner_crm_remove_claims" model="ir.ui.view">
+        <field name="name">res.partner.crm.compassion.remove.claims</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="crm_claim.view_claim_res_partner_info_form"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <button name="%(crm_claim.crm_claim_category_claim0)d" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+        </field>
+    </record>
+
     <!-- Action -->
     <record model="ir.actions.act_window" id="request_action">
         <field name="name">Requests</field>
@@ -183,11 +196,11 @@
     <menuitem id="crm_claim.menu_config_claim" name="Configuration"
               parent="support_root" sequence="10"
               groups="sales_team.group_sale_manager"/>
-    <menuitem id="crm_claim_type.menu_crm_claim_type_act" name="Types"
+    <menuitem id="crm_claim.menu_crm_case_claim-act" name="Types"
               groups="sales_team.group_sale_manager"
               parent="crm_claim.menu_config_claim"/>
-    <menuitem id="crm_claim_type.crm_holiday_act" name="Holidays"
+    <menuitem id="crm_holiday_act_menu" name="Holidays"
               groups="sales_team.group_sale_manager"
-              parent="crm_claim_type.menu_crm_claim_type_act"/>
+              parent="crm_claim.menu_crm_case_claim-act"/>
 
 </odoo>
