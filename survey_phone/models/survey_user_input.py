@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -12,7 +11,6 @@
 import logging
 
 from odoo import api, models, fields, _
-from odoo.addons.base_phone import fields as phone_fields
 logger = logging.getLogger(__name__)
 
 
@@ -21,11 +19,14 @@ class SurveyUserInput(models.Model):
     Add some fields to the answer view for a survey. In particular a filed for
     both mobile and phone number as well as a clickable URL to the survey page.
     """
-    _inherit = 'survey.user_input'
+    _inherit = ['survey.user_input', 'phone.validation.mixin']
+    _name = "survey.user_input"
+    _phone_name_fields = ['phone', 'mobile']
+
     partner_id = fields.Many2one('res.partner', string='Partner',
                                  readonly=False)
-    phone = phone_fields.Phone(related='partner_id.phone', readonly=True)
-    mobile = phone_fields.Phone(related='partner_id.mobile', readonly=True)
+    phone = fields.Char(related='partner_id.phone', readonly=True)
+    mobile = fields.Char(related='partner_id.mobile', readonly=True)
     survey_link = fields.Char("Link to complete the survey",
                               compute='_compute_survey_link')
 
@@ -44,7 +45,7 @@ class SurveyUserInput(models.Model):
             'active_model': self._name,
         }
         return {
-            'type': 'ir.actions.report.xml',
+            'type': 'ir.actions.report',
             'report_name': 'survey_phone.survey_user_input',
             'datas': datas,
             'nodestroy': True

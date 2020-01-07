@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,19 +29,24 @@
 {
     'name': 'Survey Phone',
     'summary': 'Make the filling of survey by internal users easier.',
-    'version': '10.0.1.1.0',
+    'version': '11.0.0.0.0',
     'category': 'Other',
     'sequence': 150,
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['survey', 'base_phone'],
+    'depends': ['survey',                       # oca_addons/survey
+                'base_phone',                   # oca_addons/connector-telephony
+                'survey',
+                'partner_contact_birthdate',    # oca_addons/partner_contact
+                'advanced_translation',
+                ],
     'data': [
         'views/survey_user_input_view.xml',
         'views/survey_phone.xml',
         'report/survey_report.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
