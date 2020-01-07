@@ -6,6 +6,8 @@ import logging
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
+from odoo.tools import html_sanitize
+
 _logger = logging.getLogger(__name__)
 try:
     import detectlanguage
@@ -137,6 +139,7 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+        msg['body'] = html_sanitize(msg['body'])
 
         if custom_values is None:
             custom_values = {}
