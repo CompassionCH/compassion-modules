@@ -139,6 +139,7 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+        msg['subject'] = html_sanitize(msg['subject'])
         msg['body'] = html_sanitize(msg['body'])
 
         if custom_values is None:
