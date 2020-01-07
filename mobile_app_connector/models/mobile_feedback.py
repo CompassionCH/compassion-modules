@@ -11,7 +11,7 @@
 import logging
 
 from datetime import datetime
-from odoo import models, fields
+from odoo import models, fields, api
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,8 @@ class MobileFeedback(models.Model):
     name = fields.Char('What did you like', required=True,
                        readonly=True)
     partner_id = fields.Many2one('res.partner', 'Partner', readonly=True)
-    improve_app = fields.Char(readonly=True)
+    language = fields.Selection('_get_lang')
+    improve_app = fields.Char('How can we improve the app', readonly=True)
     source = fields.Selection([
         ('Android', 'Android'),
         ('iOS', 'iOS')], readonly=True)
@@ -44,6 +45,11 @@ class MobileFeedback(models.Model):
         default=datetime.today(),
     )
 
+    @api.model
+    def _get_lang(self):
+        langs = self.env['res.lang'].search([])
+        return [(l.code, l.name) for l in langs]
+
     def mobile_feedback(self, data=None, **parameters):
         star = str(float(parameters.get('star', 3.0)))
         what_did_u_like = parameters.get('Whatdidulike', '-')
@@ -56,4 +62,7 @@ class MobileFeedback(models.Model):
             'source': source,
             'improve_app': improve_app, 'star': star
         })
+        if 'lang' in self.env.context:
+            record['language'] = self.env.context['lang']
+
         return record.id
