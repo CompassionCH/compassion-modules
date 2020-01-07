@@ -123,13 +123,12 @@ class GlobalChildSearch(models.TransientModel):
                  'completion_date_after', 'completion_date_before', 'local_id'
                  )
     def _compute_advanced_critieria_used(self):
-
         self.advanced_criteria_used = \
-              self.chronic_illness or self.holding_gp_ids or \
-              self.father_alive or self.mother_alive or \
-              self.physical_disability or self.completion_date_after or \
-              self.completion_date_before or self.local_id or \
-              (self.state_selected and self.state_selected != 'Available')
+            self.chronic_illness or self.holding_gp_ids or \
+            self.father_alive or self.mother_alive or \
+            self.physical_disability or self.completion_date_after or \
+            self.completion_date_before or self.local_id or \
+            (self.state_selected and self.state_selected != 'Available')
 
     def _compute_nb_children(self):
         for search in self:
@@ -461,7 +460,6 @@ class GlobalChildSearch(models.TransientModel):
                 'min_days_waiting', between_id, days_range))
 
         return self.write({'search_filter_ids': new_filters})
-
 
     @api.multi
     def data_to_json(self, mapping_name=None):
