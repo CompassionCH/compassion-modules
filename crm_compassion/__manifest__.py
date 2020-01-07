@@ -39,9 +39,8 @@
         'base_location',            # oca_addons/partner_contact
         'sponsorship_compassion',   # compassion-modules
         'partner_communication',    # compassion-modules
-        'project',
-        'crm_request',              # compassion-modules
         'mail_tracking',
+        'base_automation',
     ],
     'data': [
         'data/account_analytic_data.xml',

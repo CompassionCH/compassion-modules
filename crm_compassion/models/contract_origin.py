@@ -22,7 +22,7 @@ class ContractOrigin(models.Model):
             if origin.type == 'event':
                 origin.name = origin.event_id.full_name
             else:
-                super(origin)._compute_name()
+                super(ContractOrigin, origin)._compute_name()
 
     @api.multi
     def write(self, vals):
