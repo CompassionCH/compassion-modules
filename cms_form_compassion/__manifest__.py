@@ -40,6 +40,7 @@
         'data/transaction_server_actions.xml',
         'templates/assets.xml',
         'templates/form_widgets.xml',
+        'views/ir_logging.xml',
     ],
     'demo': [
     ],
