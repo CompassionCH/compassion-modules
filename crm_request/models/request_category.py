@@ -19,6 +19,8 @@ class RequestCategory(models.Model):
         help='List of keywords (separated by a comma ",") who could be '
              'contained in the demand subject')
 
+    description = fields.Char(string='Description')
+
     @api.constrains('keywords')
     def _check_existing_key(self):
         # Avoid having two identical keys
