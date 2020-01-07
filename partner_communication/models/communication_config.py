@@ -181,18 +181,14 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.model
+    @api.multi
     def get_config_for_lang(self, lang):
         specific_config_found = False
         for config in self.omr_config_ids:
-            if config.lang_id:
-                if config.lang_id == lang:
-                    specific_config_found = True
-                    return config
+            if config.lang_id == lang:
+                return config
 
-        if not specific_config_found:
-            return self.omr_config_ids.filtered(lambda c: not c.lang_id)
-        return None
+        return self.omr_config_ids.filtered(lambda c: not c.lang_id)
 
     @api.model
     def get_send_mode(self):

@@ -281,11 +281,10 @@ class CommunicationJob(models.Model):
                 # or user specified in the config itself
                 # or the current user
                 user_id = self.env.uid
-                if omr_config:
-                    if omr_config.user_id:
-                        user_id = omr_config.user_id.id
+                if omr_config.user_id:
+                    user_id = omr_config.user_id.id
                 elif config.user_id:
-                    user_id = config.user_id
+                    user_id = config.user_id.id
                 vals['user_id'] = user_id
 
         # Check all default_vals fields
