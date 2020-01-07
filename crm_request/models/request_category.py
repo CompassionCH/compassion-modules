@@ -13,7 +13,7 @@ class RequestCategory(models.Model):
         'mail.template',
         'Template',
         domain="[('model_id', '=', 'crm.claim')]",
-        default='self.env.ref("partner_communication.default_communication").id')
+        compute='_get_default_template')
     keywords = fields.Char(
         string='Keywords',
         help='List of keywords (separated by a comma ",") who could be '

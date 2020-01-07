@@ -14,10 +14,15 @@ def migrate(env, version):
     if not version:
         return
 
+    # Get all existing claim_types
     env.cr.execute("""
-        SELECT * FROM crm_claim_type;
+        SELECT *
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA = 'public'
+        AND TABLE_NAME = 'crm_claim_type'; 
     """)
 
+    # Add each one to the claim categories
     for claim_type in env.cr.dictfetchall():
         env['crm.claim.category'].create({
             'id': claim_type['id'],
