@@ -50,7 +50,7 @@ class ThankYouConfig(models.Model):
     def get_need_call(self):
         return self.env['partner.communication.config'].get_need_call()
 
-    def build_inform_mode(self, partner):
+    def build_inform_mode(self, partner, print_if_not_email=False):
         """ Returns how the partner should be informed for the given
         thank you letter (digital, physical or False).
         It makes the product of the thank you preference and the partner
@@ -58,5 +58,5 @@ class ThankYouConfig(models.Model):
         """
         return self.env['partner.communication.config'] \
             .build_inform_mode(partner, self.send_mode,
-                               print_if_not_email=False,
-                               send_mode_pref_field='none')
+                               print_if_not_email=print_if_not_email,
+                               send_mode_pref_field=None)

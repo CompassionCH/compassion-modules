@@ -69,7 +69,9 @@ class AccountInvoiceLine(models.Model):
 
         thankyou_config = self.env['thankyou.config'].search(
             []).for_donation(invoice_lines)
-        send_mode, auto_mode = thankyou_config.build_inform_mode(partner)
+        send_mode, auto_mode = thankyou_config.build_inform_mode(
+            partner, communication_config.print_if_not_email)
+
         comm_vals = {
             'partner_id': partner.id,
             'config_id': communication_config.id,
