@@ -143,14 +143,16 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """ SMS step2 controller. Returns the sponsorship registration form."""
         sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
-        if sponsorship.sms_request_id.state == 'step2':
+        if sponsorship.sms_request_id.state == 'step2' or \
+                sponsorship.state == 'active' or sponsorship.state == "waiting":
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship.id, **kwargs)
-        return self.make_response(
-            'recurring.contract',
-            model_id=sponsorship and sponsorship.id,
-            **kwargs
-        )
+        if sponsorship.state == "draft":
+            return self.make_response(
+                'recurring.contract',
+                model_id=sponsorship and sponsorship.id,
+                **kwargs
+            )
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
