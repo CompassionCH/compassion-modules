@@ -19,7 +19,7 @@ def migrate(env, version):
         SELECT *
         FROM INFORMATION_SCHEMA.TABLES
         WHERE TABLE_SCHEMA = 'public'
-        AND TABLE_NAME = 'crm_claim_type'; 
+        AND TABLE_NAME = 'crm_claim_type';
     """)
 
     # Add each one to the claim categories
