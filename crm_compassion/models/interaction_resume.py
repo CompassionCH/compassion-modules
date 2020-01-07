@@ -65,14 +65,11 @@ class InteractionResume(models.TransientModel):
         partners_with_same_email_ids = self.env['res.partner'].search([
             ('email', '=', email_address)
         ]).mapped("id")
-        s = []
+
         for partner_id in partners_with_same_email_ids:
-            s.append(str(partner_id))
-        l = str(s)
-        # s = s[:-1]
-        count = len(partners_with_same_email_ids)
-        self.env.cr.execute("""
-                SELECT
+            self.search([('partner_id', '=', partner_id)]).unlink()
+            self.env.cr.execute("""
+                    SELECT
                         'Paper' as communication_type,
                         pcj.sent_date as communication_date,
                         COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
@@ -86,7 +83,7 @@ class InteractionResume(models.TransientModel):
                         pcj.id as paper_id,
                         NULL as tracking_status
                         FROM "partner_communication_job" as pcj
-                        JOIN res_partner p ON pcj.email_to = p.email
+                        JOIN res_partner p ON pcj.partner_id = p.id
                         FULL OUTER JOIN partner_communication_config c
                             ON pcj.config_id = c.id
                             AND c.name != 'Default communication'
@@ -112,7 +109,7 @@ class InteractionResume(models.TransientModel):
                         0 as paper_id,
                         NULL as tracking_status
                         FROM "crm_phonecall" as crmpc
-                        JOIN res_partner p ON crmpc.email_from = p.email
+                        JOIN res_partner p ON crmpc.partner_id = p.id
                         WHERE (p.contact_id in ({}) OR p.id in ({}))
                         )
             -- outgoing e-mails
@@ -135,7 +132,7 @@ class InteractionResume(models.TransientModel):
                         JOIN mail_mail_res_partner_rel rel
                         ON rel.mail_mail_id = mail.id
                         FULL OUTER JOIN mail_tracking_email mt ON mail.id = mt.mail_id
-                        JOIN res_partner p ON mail.email_to = p.email
+                        JOIN res_partner p ON rel.res_partner_id = p.id
                         FULL OUTER JOIN partner_communication_job job
                             ON job.email_id = mail.id
                         FULL OUTER JOIN partner_communication_config config
@@ -160,40 +157,19 @@ class InteractionResume(models.TransientModel):
                         0 as paper_id,
                         NULL as tracking_status
                         FROM "mail_message" as m
-                        JOIN res_partner p ON m.email_from = p.email
+                        JOIN res_partner p ON m.author_id = p.id
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
                         AND (p.contact_id in ({}) OR p.id in ({}))
                         )
+                        """.format(partner_id, partner_id, partner_id, partner_id,
+                                   partner_id, partner_id, partner_id, partner_id))
 
-                        """.format(l.strip('[]'), l.strip('[]'), l.strip('[]'), l.strip('[]'),
-                                   l.strip('[]'), l.strip('[]'), l.strip('[]'), l.strip('[]')))
-
-        for row in self.env.cr.dictfetchall():
-            # ensure that "Example <ex@exmaple.com>" is correctly printed
-            row['email'] = html_sanitize(row['email'])
-            self.create(row)
-
+            for row in self.env.cr.dictfetchall():
+                # ensure that "Example <ex@exmaple.com>" is correctly printed
+                row['email'] = html_sanitize(row['email'])
+                self.create(row)
         return True
-
-    def create_interaction_resume(self, comm_type, date, partner_id, email,
-                                  subject, body, direction, phone_id,
-                                  email_id, message_id, paper_id,
-                                  tracking_status):
-        self.env['interaction.resume'].create({
-            'communication_type': comm_type,
-            'communication_date': date,
-            'partner_id': partner_id,
-            'email': html_sanitize(email),
-            'subject': subject,
-            'body': body.replace('<img[^>]*>', ''),
-            'direction': direction,
-            'phone_id': phone_id,
-            'email_id': email_id,
-            'message_id': message_id,
-            'paper_id': paper_id,
-            'tracking_status': tracking_status
-        })
 
     def open_object(self):
         """
@@ -224,6 +200,3 @@ class InteractionResume(models.TransientModel):
             else:
                 # outgoing
                 row.color = 'green'
-
-
-
