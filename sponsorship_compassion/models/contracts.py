@@ -256,13 +256,13 @@ class SponsorshipContract(models.Model):
             contract.suspended_amount = amount
 
     @api.multi
-    @api.depends('partner_id', 'partner_id.ref', 'child_id',
+    @api.depends('correspondent_id', 'correspondent_id.ref', 'child_id',
                  'child_id.local_id')
     def _compute_name(self):
         """ Gives a friendly name for a sponsorship """
         for contract in self:
-            if contract.partner_id.ref or contract.reference:
-                name = contract.partner_id.ref or contract.reference
+            if contract.correspondent_id.ref or contract.reference:
+                name = contract.correspondent_id.ref or contract.reference
                 if contract.child_id:
                     name += ' - ' + contract.child_code
                 elif contract.contract_line_ids:

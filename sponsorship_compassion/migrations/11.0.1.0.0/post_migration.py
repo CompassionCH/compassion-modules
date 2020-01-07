@@ -46,4 +46,11 @@ def migrate(env, version):
         ALTER TABLE recurring_contract DROP COLUMN end_reason;
     """)
 
+    # Update contract names if correspondent is not the payer
+    update_contracts = env['recurring.contract'].search([
+        ('fully_managed', '=', False),
+        ('state', 'not in', ['cancelled', 'terminated'])
+    ])
+    update_contracts._compute_name()
+
     load_mappings(env.cr, env)
