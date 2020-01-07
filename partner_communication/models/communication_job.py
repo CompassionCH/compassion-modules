@@ -81,27 +81,27 @@ class CommunicationJob(models.Model):
     parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
     date = fields.Datetime(default=fields.Datetime.now)
-    sent_date = fields.Datetime(readonly=True)
+    sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection([
         ('call', _('Call partner')),
         ('pending', _('Pending')),
         ('done', _('Done')),
         ('cancel', _('Cancelled')),
-    ], default='pending', track_visibility='onchange')
+    ], default='pending', track_visibility='onchange', copy=False)
     need_call = fields.Selection(
         [('before_sending', 'Before the communication is sent'),
          ('after_sending', 'After the communication is sent')],
         help='Indicates we should have a personal contact with the partner',
     )
     auto_send = fields.Boolean(
-        help='Job is processed at creation if set to true')
+        help='Job is processed at creation if set to true', copy=False)
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one(
-        'mail.mail', 'Generated e-mail', readonly=True, index=True)
+        'mail.mail', 'Generated e-mail', readonly=True, index=True, copy=False)
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
     body_html = fields.Html(sanitize=False)
@@ -245,6 +245,13 @@ class CommunicationJob(models.Model):
             job.send()
 
         return job
+
+    @api.multi
+    def copy(self, vals=None):
+        if vals is None:
+            vals = {}
+        vals['auto_send'] = False
+        return super(CommunicationJob, self).copy(vals)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
