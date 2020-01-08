@@ -221,6 +221,7 @@ class CommunicationJob(models.Model):
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
+
         if 'send_mode' not in vals and 'default_send_mode' not in \
                 self.env.context:
             job.send_mode = send_mode[0]
@@ -240,6 +241,13 @@ class CommunicationJob(models.Model):
 
         if job.body_html or job.send_mode == 'physical':
             job.count_pdf_page()
+
+        # Difference between send_mode of partner and send_mode of job
+        if send_mode[0] != job.send_mode:
+            if "only" in job.partner_id.global_communication_delivery_preference:
+                # Send_mode chosen by the employee is not compatible with the partner
+                # So we remove it and an employee must set it manually afterwards
+                job.send_mode = ""
 
         if job.auto_send:
             job.send()
