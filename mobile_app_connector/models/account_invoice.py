@@ -9,6 +9,7 @@
 ##############################################################################
 
 from odoo import models, api, fields, _
+from datetime import datetime, timedelta
 
 
 class AccountInvoice(models.Model):
@@ -77,6 +78,16 @@ class AccountInvoice(models.Model):
                 line.price_unit = bckp_price
             result['Donation'].append(invoice.id)
         return result
+
+    # Called by a CRON every hour to remove drat invoices made from the app
+    # less than an hour ago
+    def remove_mobile_draft_invoices(self):
+        mobile_draft_invoices = self.env['account.invoice'].search([
+            ('origin', 'in', ["iOS", "Android"]),
+            ('state', '=', "draft"),
+            ('create_date', '<', str(datetime.now() - timedelta(hours=1))),
+        ])
+        mobile_draft_invoices.unlink()
 
 
 class DonationDataWrapper:
