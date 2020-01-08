@@ -61,8 +61,7 @@ class CompassionChild(models.Model):
                 data.append(mapping.get_connect_data(child))
         return {
             wrapper: data,
-            'Images': children_pictures.filtered(
-                lambda r: r.image_url).get_app_json(multi=True),
+            'Images': children_pictures.filtered('image_url').get_app_json(multi=True),
             'Location':
                 project.get_location_json(multi=False),
             'Time': {
