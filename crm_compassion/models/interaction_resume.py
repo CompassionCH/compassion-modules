@@ -63,7 +63,8 @@ class InteractionResume(models.TransientModel):
         ])
         email_address = original_partner.email
         partners_with_same_email_ids = self.env['res.partner'].search([
-            ('email', '=', email_address)
+            ('email', '=', email_address),
+            ('email', '!=', False)
         ]).ids
 
         for partner_id in partners_with_same_email_ids:
