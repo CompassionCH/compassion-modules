@@ -9,7 +9,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2020 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'Thank You Letters',
-    'version': '10.0.2.1.0',
+    'version': '10.0.2.1.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
