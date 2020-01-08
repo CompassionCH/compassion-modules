@@ -72,16 +72,6 @@ class CrmClaim(models.Model):
             'lang': self.language,
         }
 
-        # Used to find the last message sent by the partner
-        def _get_last_message_of_partner(communications, partner_id):
-            count = len(communications)
-            output = None
-            for x in range(1, count):
-                output = communications[count - x]
-                if output.author_id == partner_id:
-                    break
-            return output
-
         if self.partner_id:
             partner = self._get_partner_alias(
                 self.partner_id, parseaddr(self.email_from)[1]
@@ -94,7 +84,7 @@ class CrmClaim(models.Model):
             if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
-                message = _get_last_message_of_partner(messages, self.partner_id)
+                message = messages.filtered(lambda m: m.author_id == self.partner_id)[-1:]
                 if message:
                     ctx['reply_quote'] = message.get_message_quote()
                     ctx['message_id'] = message.id
