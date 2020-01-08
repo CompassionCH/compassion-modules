@@ -144,7 +144,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
         if sponsorship.sms_request_id.state == 'step2' or \
-                sponsorship.state == 'active' or sponsorship.state == "waiting":
+                sponsorship.state in ['active', 'waiting']:
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship.id, **kwargs)
         if sponsorship.state == "draft":
