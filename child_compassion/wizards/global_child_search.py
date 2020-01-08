@@ -123,12 +123,12 @@ class GlobalChildSearch(models.TransientModel):
                  'completion_date_after', 'completion_date_before', 'local_id'
                  )
     def _compute_advanced_critieria_used(self):
-        self.advanced_criteria_used = (self.state_selected and
-                                       self.state_selected != 'Available') or \
+        self.advanced_criteria_used = \
             self.chronic_illness or self.holding_gp_ids or \
-            self.father_alive or self. mother_alive or \
+            self.father_alive or self.mother_alive or \
             self.physical_disability or self.completion_date_after or \
-            self.completion_date_before or self.local_id
+            self.completion_date_before or self.local_id or \
+            (self.state_selected and self.state_selected != 'Available')
 
     def _compute_nb_children(self):
         for search in self:
@@ -393,7 +393,7 @@ class GlobalChildSearch(models.TransientModel):
         if self.child_name:
             new_filters.append(_get_filter(
                 'child_name', is_id, self.child_name))
-        if self.state_selected and self.state_selected != 'Available':
+        if self.state_selected:
             new_filters.append(_get_filter(
                 'state_selected', anyof_id, self.state_selected))
         if self.birthday_day:
@@ -469,6 +469,37 @@ class GlobalChildSearch(models.TransientModel):
             for key, val in json_result.copy().items():
                 if not val:
                     del json_result[key]
+        # We need to do this "workaround" because there are multiple JSON values
+        # for the same odoo_field in the communications with GMC.
+        # (one for the advanced_search and one for the profile_search)
+        if mapping_name == "advanced_search":
+            for dict in json_result['BeneficiarySearchRequestList']['Filter']:
+                if dict['Field'] == 'hasSpecialNeeds':
+                    dict['Field'] = 'IsSpecialNeeds'
+
+                if dict['Field'] == 'hivAffectedArea':
+                    dict['Field'] = 'IsHIVAffectedArea'
+
+                if dict['Field'] == 'isOrphan':
+                    dict['Field'] = 'IsOrphan'
+
+                if dict['Field'] == 'minDaysWaiting':
+                    dict['Field'] = 'WaitTime'
+
+                if dict['Field'] == 'churchPartnerName':
+                    dict['Field'] = 'ICPName'
+
+                if dict['Field'] == 'birthMonth':
+                    dict['Field'] = 'BirthMonth'
+
+                if dict['Field'] == 'birthDay':
+                    dict['Field'] = 'BirthDay'
+
+                if dict['Field'] == 'birthYear':
+                    dict['Field'] = 'BirthYear'
+
+                if dict['Field'] == 'minAge':
+                    dict['Field'] = 'Age'
         return json_result
 
     ##########################################################################
