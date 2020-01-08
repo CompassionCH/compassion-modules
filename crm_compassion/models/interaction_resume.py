@@ -58,7 +58,7 @@ class InteractionResume(models.TransientModel):
         :param partner_id: the partner
         :return: True
         """
-        original_partner = self.env['res.partner'].search([
+        original_partner = self.env['res.partner'].browse(partner_id)
             ('id', '=', partner_id)
         ])
         email_address = original_partner.email
