@@ -194,7 +194,7 @@ class CompassionCorrespondence(models.Model):
         :return: The ID of the sent letter, never used by the app.
         """
         params = params[0]
-        params['Message'] = escape(params['Message'])
+        params['Message'] = escape(params.get('Message', ''))
         template_id = self._get_required_param('TemplateID', params)
         if 'DbId' in params:
             # The letter was submitted on the last api call
@@ -222,7 +222,7 @@ class CompassionCorrespondence(models.Model):
         gen.generate_letters_job()
         gen.write({
             'state': 'done',
-            'date': fields.datetime.now(),
+            'date': fields.Datetime.now(),
         })
         return {
             'DbId': gen.letter_ids.mapped('id'),
