@@ -12,6 +12,8 @@
             <field name="name" position="after">
                 <field name="template_id" domain="[('model_id', '=', 'crm.claim')]"/>
                 <field name="keywords"/>
+                <field name="description"/>
+
             </field>
 
         </field>

@@ -25,9 +25,6 @@ class TestCrmClaimCategories(SingleTransactionCase):
             "keywords": keywords
         })
         self.assertEqual(new_category.name, "TestCategory")
-        self.assertEqual(new_category.template_id.id,
-                         self.env.ref(
-                             "partner_communication.default_communication").id)
         self.assertEqual(len(new_category.keywords.split(',')), 3)
 
         keywords2 = ["test4", "test5", "test6"]
@@ -36,9 +33,6 @@ class TestCrmClaimCategories(SingleTransactionCase):
             "keywords": keywords2
         })
         self.assertEqual(new_category_2.name, "TestCategory2")
-        self.assertEqual(new_category_2.template_id.id,
-                         self.env.ref(
-                             "partner_communication.default_communication").id)
         self.assertEqual(len(new_category_2.keywords.split(',')), 3)
 
         with self.assertRaises(ValidationError) as e:
