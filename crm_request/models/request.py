@@ -86,9 +86,11 @@ class CrmClaim(models.Model):
             if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
-                message = messages[0]
-                ctx['reply_quote'] = message.get_message_quote()
-                ctx['message_id'] = message.id
+                message = messages.filtered(
+                    lambda m: m.author_id == self.partner_id)[-1:]
+                if message:
+                    ctx['reply_quote'] = message.get_message_quote()
+                    ctx['message_id'] = message.id
 
             # Un-archive the email_alias so that a mail can be sent and set a
             # flag to re-archive them once the email is sent.
