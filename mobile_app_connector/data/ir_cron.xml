@@ -57,7 +57,7 @@
         <record id="remove_draft_mobile_invoices" model="ir.cron">
             <field name="name">Remove Draft Mobile Invoice</field>
             <field name="interval_number">1</field>
-            <field name="interval_type">hours</field>
+            <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
             <field name="function">remove_mobile_draft_invoices</field>
