@@ -15,6 +15,7 @@ from odoo import _
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
+from werkzeug.exceptions import NotFound
 
 
 def get_child_request(request_id, lang=None):
@@ -153,6 +154,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                 model_id=sponsorship and sponsorship.id,
                 **kwargs
             )
+        else:
+            raise NotFound()
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
