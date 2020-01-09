@@ -22,7 +22,6 @@
                 'partner_contact_in_several_companies',   # oca_addons/partner-contact
                 'advanced_translation',
                 'cms_form_compassion',
-                'partner_communication',
                 ],
 
     # always loaded

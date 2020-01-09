@@ -12,8 +12,7 @@ class RequestCategory(models.Model):
     template_id = fields.Many2one(
         'mail.template',
         'Template',
-        domain="[('model_id', '=', 'crm.claim')]",
-        compute='_get_default_template')
+        domain="[('model_id', '=', 'crm.claim')]")
     keywords = fields.Char(
         string='Keywords',
         help='List of keywords (separated by a comma ",") who could be '
@@ -41,9 +40,3 @@ class RequestCategory(models.Model):
         for record in self:
             keywords_list.extend(record.keywords.split(','))
         return keywords_list
-
-    @api.multi
-    def _get_default_template(self):
-        for category in self:
-            category.template_id = \
-                self.env.ref("partner_communication.default_communication").id
