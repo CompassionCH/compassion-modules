@@ -183,7 +183,6 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     @api.multi
     def get_config_for_lang(self, lang):
-        specific_config_found = False
         for config in self.omr_config_ids:
             if config.lang_id == lang:
                 return config

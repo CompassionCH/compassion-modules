@@ -276,7 +276,7 @@ class CommunicationJob(models.Model):
                 lang_of_partner = self.env['res.lang'].search([
                     ('code', 'like', partner.lang)
                 ])
-                omr_config = config.get_config_for_lang(lang_of_partner)
+                omr_config = config.get_config_for_lang(lang_of_partner)[0:]
                 # responsible for the communication is user specified in the omr_config
                 # or user specified in the config itself
                 # or the current user
