@@ -32,12 +32,13 @@
         <field name="arch" type="xml">
             <tree colors="blue:star=='4';grey:star=='3';green:star=='5'"
                 create="false">
+                <field name="create_date"/>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="star"/>
                 <field name="improve_app"/>
                 <field name="source"/>
-                <field name="create_date"/>
+                <field name="language"/>
             </tree>
         </field>
     </record>
@@ -48,11 +49,14 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="language"/>
                 <group expand="0" string="Group By">
                     <filter string="Star" name="star"
                             domain="[]" context="{'group_by':'star'}"/>
-                    <filter string="source" name="source"
+                    <filter string="Source" name="source"
                             domain="[]" context="{'group_by':'source'}"/>
+                    <filter string="Language" name="group_lang"
+                            domain="[]" context="{'group_by':'language'}"/>
                 </group>
             </search>
         </field>
