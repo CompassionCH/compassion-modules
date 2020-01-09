@@ -284,19 +284,29 @@ class CommunicationJob(models.Model):
         config = self.config_id.browse(vals['config_id'])
 
         # Determine user by default : take in config or employee
+        omr_config = config.omr_config_ids
         if not vals.get('user_id'):
-            vals['user_id'] = config.user_id.id or self.env.uid
-        user = self.env['res.users'].browse(vals['user_id'])
-        orm_config_of_right_lang = config.omr_config_ids \
-            .filtered(lambda c: c.lang_id.code == user.lang)
-        orm_config = orm_config_of_right_lang[0] if orm_config_of_right_lang \
-            else config.omr_config_ids
+            partner = self.env['res.partner'].browse(vals.get('partner_id'))
+            if partner:
+                lang_of_partner = self.env['res.lang'].search([
+                    ('code', 'like', partner.lang)
+                ])
+                omr_config = config.get_config_for_lang(lang_of_partner)[0:]
+                # responsible for the communication is user specified in the omr_config
+                # or user specified in the config itself
+                # or the current user
+                user_id = self.env.uid
+                if omr_config.user_id:
+                    user_id = omr_config.user_id.id
+                elif config.user_id:
+                    user_id = config.user_id.id
+                vals['user_id'] = user_id
 
         # Check all default_vals fields
         for default_val in default_vals:
             if default_val not in vals:
                 if default_val.startswith('omr_'):
-                    value = getattr(orm_config, default_val, False)
+                    value = getattr(omr_config, default_val, False)
                 else:
                     value = getattr(config, default_val)
                     if default_val.endswith('_id'):
@@ -410,7 +420,11 @@ class CommunicationJob(models.Model):
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
             # set default fields
-            default_vals = {'config_id': self.config_id.id}
+            partner_id = None
+            if self.partner_id:
+                partner_id = self.partner_id.id
+            default_vals = {'config_id': self.config_id.id,
+                            'partner_id': partner_id}
             self._get_default_vals(default_vals)
             for key, val in default_vals.iteritems():
                 if key.endswith('_id'):
