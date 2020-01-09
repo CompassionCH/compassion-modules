@@ -116,12 +116,6 @@ class WordpressPost(models.Model):
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
         found_ids = []
-        # Posts already fetched
-        cached_posts = self.env['wp.post'].search([
-            ('lang', '=', self.env.lang),
-            ('display_on_hub', '=', True),
-            ('category_ids.display_on_hub', '=', True)
-        ])
         try:
             h = HTMLParser()
             with wp_requests.Session(wp_config) as requests:
@@ -135,12 +129,10 @@ class WordpressPost(models.Model):
                                      str(i+1), str(len(wp_posts)))
                         post_id = post_data['id']
                         found_ids.append(post_id)
-                        if self.search([('wp_id', '=', post_id)]):
-                            cached_post = cached_posts.filtered(
-                                lambda p: p.wp_id == post_id)
-                            if cached_post:
-                                self._update_cached_post_categories(
-                                    cached_post, post_data, requests)
+                        cached_post = self.search([('wp_id', '=', post_id)])
+                        if cached_post:
+                            cached_post.update_post_categories(
+                                post_data, requests)
                             # Skip post already fetched
                             continue
 
@@ -169,7 +161,8 @@ class WordpressPost(models.Model):
                             _logger.warning('WP Post ID %s has no image',
                                             str(post_id))
                         # Fetch post category
-                        categories_id = self._fetch_categories_ids(post_data, requests)
+                        categories_id = self._fetch_categories_ids(post_data,
+                                                                   requests)
 
                         # Cache new post in database
                         self.create({
@@ -191,16 +184,29 @@ class WordpressPost(models.Model):
             _logger.warning("Error fetching wordpress posts", exc_info=True)
         return True
 
-    def _update_cached_post_categories(self, cached_post, post_data, requests):
+    def update_post_categories(self, post_data, requests):
+        """
+        Update the categories from a post, given the JSON data received.
+        :param post_data: JSON data from the Wordpress API
+        :param requests: The Wordpress API session
+        :return: None
+        """
+        self.ensure_one()
         categories_id = self._fetch_categories_ids(post_data, requests)
         # If there is a difference between categories
-        if sorted(cached_post.category_ids.ids) != sorted(categories_id):
-            cached_post.write({
+        if sorted(self.category_ids.ids) != sorted(categories_id):
+            self.write({
                 'category_ids': [(6, 0, categories_id)],
-                'display_on_hub': self._update_display_on_hub(categories_id)
             })
+        self.update_display_on_hub()
 
     def _fetch_categories_ids(self, post_data, requests):
+        """
+        Get the wordpress category ids associated to the JSON post data.
+        :param post_data: JSON post data retrieved from Wordpress API
+        :param requests: The Wordpress API session
+        :return: list of wp.post.category record ids
+        """
         categories_id = []
         category_obj = self.env['wp.post.category']
         try:
@@ -225,12 +231,11 @@ class WordpressPost(models.Model):
                          str(post_data['id']))
         return categories_id
 
-    def _update_display_on_hub(self, categories_id):
-        for category_id in categories_id:
-            category = self.env['wp.post.category'].browse(category_id)
-            if category.display_on_hub:
-                return True
-        return False
+    def update_display_on_hub(self):
+        """ Compute visibility of post based on the visibility of its
+        categories. It will be visible if at least one category is visible. """
+        for post in self:
+            post.display_on_hub = post.category_ids.filtered('display_on_hub')
 
     @api.model
     def _supported_langs(self):
