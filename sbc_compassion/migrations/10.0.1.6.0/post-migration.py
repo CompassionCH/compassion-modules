@@ -7,8 +7,8 @@
 #
 ##############################################################################
 import logging
-import base64
-from io import BytesIO
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from openupgradelib import openupgrade
 
 _logger = logging.getLogger(__name__)
@@ -38,12 +38,21 @@ def migrate(env, version):
 
     To avoid processing all the correspondences at the same time (that would block
     the server for a long time) we split the task in batches and process them in
-    queue jobs
+    queue jobs.
+
+    Jobs have a low priority and their ETA ensure they start after the server startup
     """
     if not version:
         return
 
-    batch_size = 4
+    batch_size = 10
+    job_options = {
+        'priority': 11,  # default = 10
+        'max_retries': 2,  # default = 5
+        'eta': datetime.today() + relativedelta(minutes=10),
+        'channel': 'root.sbc_compassion_migration',
+        'description': 'sbc_compassion PDF storage migration (10.0.1.6.0)'
+    }
 
     # Filters correspondences that can drop the PDF and regenerate it later
     correspondences = env['correspondence'].search([
@@ -52,14 +61,14 @@ def migrate(env, version):
         ('source', '=', 'compassion'),
         ('letter_format', '=', 'pdf'),
         ('direction', '=', 'Supporter To Beneficiary'),
-        ('store_letter_image', '=', True)
+        ('store_letter_image', '=', True),
         ('template_id', '!=', False)
     ])
     correspondences_ids = correspondences.filtered('letter_image').ids
 
     _logger.info("Creating {} Job Queues, migrating {} correspondences".format(
-        len(correspondences_ids) // batch_size, len(correspondences_ids)))
+        len(correspondences_ids) // batch_size + 1, len(correspondences_ids)))
 
     for i in range(0, len(correspondences_ids), batch_size):
         batch = correspondences_ids[i:i+batch_size]
-        env['correspondence.migration'].with_delay().migrate(batch)
+        env['correspondence.migration'].with_delay(**job_options).migrate(batch)
