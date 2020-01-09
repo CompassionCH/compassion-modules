@@ -10,12 +10,14 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="partner_id"/>
                             <field name="star" widget="priority"/>
+                            <field name="name"/>
+                            <field name="improve_app"/>
                         </group>
                         <group>
-                            <field name="improve_app"/>
+                            <field name="partner_id"/>
+                            <field name="create_date" />
+                            <field name="language"/>
                             <field name="source"/>
                         </group>
                     </group>
