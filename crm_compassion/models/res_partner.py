@@ -79,7 +79,7 @@ class Partner(models.Model):
         self.env['interaction.resume'].populate_resume(self.id)
         partners_with_same_email_ids = self.env['res.partner'].search([
             ('email', '=', self.email)
-        ]).mapped("id")
+        ]).ids
         return {
             'name': _('Interaction resume'),
             'type': 'ir.actions.act_window',
