@@ -136,8 +136,8 @@ class WordpressPost(models.Model):
                         post_id = post_data['id']
                         found_ids.append(post_id)
                         if self.search([('wp_id', '=', post_id)]):
-                            cached_post = cached_posts.filtered(lambda p: p.wp_id == post_id)
-
+                            cached_post = cached_posts.filtered(
+                                lambda p: p.wp_id == post_id)
                             if cached_post:
                                 self._update_cached_post_categories(
                                     cached_post, post_data, requests)
