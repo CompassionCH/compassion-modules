@@ -77,13 +77,16 @@ class Partner(models.Model):
         """
         self.ensure_one()
         self.env['interaction.resume'].populate_resume(self.id)
+        partners_with_same_email_ids = self.env['res.partner'].search([
+            ('email', '=', self.email)
+        ]).mapped("id")
         return {
             'name': _('Interaction resume'),
             'type': 'ir.actions.act_window',
             'res_model': 'interaction.resume',
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'domain': [('partner_id', '=', self.id)],
+            'domain': [('partner_id', 'in', partners_with_same_email_ids)],
             'target': 'current',
         }
 
