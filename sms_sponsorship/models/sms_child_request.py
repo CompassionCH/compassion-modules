@@ -9,16 +9,16 @@
 #
 ##############################################################################
 import logging
-
 from datetime import datetime
 from random import randint
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, api, fields, _
-from odoo.tools import config
-from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.base_phone.fields import Phone
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
+from odoo.addons.queue_job.job import job, related_action
+from odoo.tools import config
 
 # By default, don't propose children older than this
 DEFAULT_MAX_AGE = 12
@@ -63,7 +63,11 @@ class SmsChildRequest(models.Model):
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
     sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
     lang_code = fields.Char('Language', required=True)
-    source = fields.Char()
+    source = fields.Selection([
+        ('SMS', 'SMS'),
+        ('IOS', 'iOS'),
+        ('Android', 'Android'),
+    ], default='SMS', required=True)
 
     # Filter criteria made by sender
     gender = fields.Selection([
@@ -327,7 +331,8 @@ class SmsChildRequest(models.Model):
         Used to display a count icon in the menu
         :return: domain of jobs counted
         """
-        return [('state', 'in', ['new', 'child_reserved', 'step1'])]
+        return [('state', 'in', ['new', 'child_reserved', 'step1']),
+                ('source', '=', 'SMS')]
 
     @api.model
     def sms_reminder_cron(self):
