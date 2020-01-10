@@ -238,16 +238,16 @@ class SmsChildRequest(models.Model):
             expiration = datetime.now() + relativedelta(days=2)
             result_action = self.env['child.hold.wizard'].with_context(
                 active_id=childpool_search.id, async_mode=False).create({
-                'type': HoldType.E_COMMERCE_HOLD.value,
-                'expiration_date': fields.Datetime.to_string(expiration),
-                'primary_owner': self.env.uid,
-                'event_id': self.event_id.id,
-                'campaign_id': self.event_id.campaign_id.id,
-                'ambassador': self.event_id.user_id.partner_id.id or self.env.uid,
-                'channel': 'sms',
-                'source_code': 'sms_sponsorship',
-                'return_action': 'view_holds'
-            }
+                    'type': HoldType.E_COMMERCE_HOLD.value,
+                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'primary_owner': self.env.uid,
+                    'event_id': self.event_id.id,
+                    'campaign_id': self.event_id.campaign_id.id,
+                    'ambassador': self.event_id.user_id.partner_id.id or self.env.uid,
+                    'channel': 'sms',
+                    'source_code': 'sms_sponsorship',
+                    'return_action': 'view_holds'
+                }
             ).send()
             child_hold = self.env['compassion.hold'].browse(
                 result_action['domain'][0][2]
