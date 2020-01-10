@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-45.00
 # Copyright (C) 2019 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-import cgi
+import html
 
 from odoo import models, _
 
@@ -32,17 +31,18 @@ class MailMessage(models.Model):
         email_from = 'no-email'
         if self.email_from:
             email_from = self.email_from
-        email_from = '<b>' + lib_from + '</b>:' + cgi.escape(
-            email_from).encode('ascii', 'xmlcharrefreplace')
+        email_from = '<b>' + lib_from + '</b>:' + str(html.escape(
+            email_from).encode('ascii', 'xmlcharrefreplace'))
         mail_date = '<b>Date</b>:' + self.date
         body = ''
         if self.body and self.body != u'':
             body = self.body.replace('#1f497d', '#500050') + '</div>'
         subject = '<b>' + lib_subject + '</b>:'
         if self.subject and self.subject != u'':
-            subject = '<b>' + lib_subject + '</b>:' + cgi \
-                .escape(self.subject) \
-                .encode('ascii', 'xmlcharrefreplace') or self.record_name or ''
+            subject = '<b>' + lib_subject + '</b>:' + \
+                str(html
+                    .escape(self.subject)
+                    .encode('ascii', 'xmlcharrefreplace') or self.record_name or '')
 
         return header1 + header2 + header3 + br + str(
             email_from) + br + subject + br + mail_date + 2*br + body

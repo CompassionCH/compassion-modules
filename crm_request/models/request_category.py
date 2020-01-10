@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 #    Copyright (C) 2019 Compassion CH
 #    @author: Stephane Eicher <seicher@compassion.ch>
@@ -7,16 +6,19 @@
 from odoo import models, fields, api, _
 
 
-class RequestType(models.Model):
-    _inherit = 'crm.claim.type'
+class RequestCategory(models.Model):
+    _inherit = 'crm.claim.category'
 
-    template_id = fields.Many2one('mail.template',
-                                  'Template',
-                                  domain="[('model_id', '=', 'crm.claim')]")
+    template_id = fields.Many2one(
+        'mail.template',
+        'Template',
+        domain="[('model_id', '=', 'crm.claim')]")
     keywords = fields.Char(
         string='Keywords',
         help='List of keywords (separated by a comma ",") who could be '
              'contained in the demand subject')
+
+    description = fields.Char(string='Description')
 
     @api.constrains('keywords')
     def _check_existing_key(self):

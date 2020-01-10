@@ -13,4 +13,11 @@
         <field name="case_default" eval="True"/>
         <field name="claim_common" eval="True"/>
     </record>
+
+    <record model="crm.claim.category" id="stage_undefined">
+        <field name="name">Undefined</field>
+        <field name="sequence">9</field>
+        <field name="case_default" eval="True"/>
+        <field name="claim_common" eval="True"/>
+    </record>
 </odoo>

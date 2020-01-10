@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-45.00
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-45.00
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
@@ -19,12 +18,14 @@ class CrmClaim(models.Model):
 
     date = fields.Datetime(string='Date', readonly=True, index=False)
     name = fields.Char(compute='_compute_name', store=True)
-    subject = fields.Char(required=True)
+    subject = fields.Char()
     alias_id = fields.Many2one(
         'mail.alias', 'Alias',
         help="The destination email address that the contacts used.")
     code = fields.Char(string='Number')
-    claim_type = fields.Many2one(string='Type')
+    claim_category = fields.Many2one(
+        "crm.claim.category", string='Category',
+        compute='_get_default_category')
     user_id = fields.Many2one(string='Assign to')
     stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
     ref = fields.Char(related='partner_id.ref')
@@ -38,7 +39,7 @@ class CrmClaim(models.Model):
     @api.multi
     def _compute_name(self):
         for rd in self:
-            rd.name = u'{} - {}'.format(rd.code, rd.subject)
+            rd.name = f'{rd.code} - {rd.subject}'
 
     def _compute_color(self):
         for request in self:
@@ -49,6 +50,10 @@ class CrmClaim(models.Model):
     def _get_lang(self):
         langs = self.env['res.lang'].search([])
         return [(l.code, l.name) for l in langs]
+
+    def _get_default_category(self):
+        for request in self:
+            request.claim_category = self.env.ref("crm_request.stage_undefined").id
 
     @api.multi
     def action_reply(self):
@@ -61,7 +66,7 @@ class CrmClaim(models.Model):
             raise exceptions.UserError(_(
                 "You can only reply if you set the partner."
             ))
-        template_id = self.claim_type.template_id.id
+        template_id = self.claim_category.template_id.id
         ctx = {
             'default_model': 'crm.claim',
             'default_res_id': self.id,
@@ -111,7 +116,7 @@ class CrmClaim(models.Model):
                     return partner_alias
             # No match is found
             raise exceptions.Warning(
-                _('No partner aliases match: %s !') % email
+                _(f'No partner aliases match: {email} !')
             )
         else:
             return partner
@@ -144,18 +149,18 @@ class CrmClaim(models.Model):
 
         # Find the corresponding type
         subject = msg.get('subject')
-        type_ids = self.env['crm.claim.type'].search(
+        category_ids = self.env['crm.claim.category'].search(
             [('keywords', '!=', False)])
-        type_id = False
-        for record in type_ids:
+        category_id = False
+        for record in category_ids:
             if any(word in subject for word in record.get_keys()):
-                type_id = record.id
+                category_id = record.id
                 break
 
         defaults = {
             'date': msg.get('date'),  # Get the time of the sending of the mail
             'alias_id': alias.id,
-            'claim_type': type_id,
+            'claim_category': category_id,
             'subject': subject,
             'email_origin': msg.get('from'),
         }
@@ -181,8 +186,8 @@ class CrmClaim(models.Model):
         defaults.pop('name', False)
         defaults.update(custom_values)
 
-        request_id = super(CrmClaim, self).message_new(msg, defaults)
-        request = self.browse(request_id)
+        request_id = super().message_new(msg, defaults)
+        request = self.browse(request_id.id)
         if not request.language:
             request.language = self.detect_lang(
                 request.description).lang_id.code
@@ -192,7 +197,7 @@ class CrmClaim(models.Model):
             if request.holiday_closure_id:
                 request.send_holiday_answer()
         except Exception as e:
-            _logger.error("The automatic mail failed\n{}".format(e))
+            _logger.error(f"The automatic mail failed\n{e}")
 
         return request_id
 
@@ -201,7 +206,7 @@ class CrmClaim(models.Model):
         """Change the stage to "Waiting on support" when the customer write a
            new mail on the thread
         """
-        result = super(CrmClaim, self).message_update(msg_dict, update_vals)
+        result = super().message_update(msg_dict, update_vals)
         for request in self:
             request.stage_id = self.env[
                 'ir.model.data'].get_object_reference(
@@ -214,7 +219,7 @@ class CrmClaim(models.Model):
         """Change the stage to "Resolve" when the employee answer
            to the supporter but not if it's an automatic answer.
         """
-        result = super(CrmClaim, self).message_post(**kwargs)
+        result = super().message_post(**kwargs)
 
         if 'mail_server_id' in kwargs and not self.env.context.get(
                 'keep_stage'):
@@ -232,7 +237,7 @@ class CrmClaim(models.Model):
         the current user.
         - Push partner to associated mail messages
         """
-        super(CrmClaim, self).write(values)
+        super().write(values)
 
         if values.get('stage_id') == self.env.ref(
                 'crm_request.stage_wait_support').id:
@@ -285,21 +290,3 @@ class CrmClaim(models.Model):
                 request.id, force_send=True, email_values={
                     'email_to': request.email_origin}
             )
-
-
-class AssignRequestWizard(models.TransientModel):
-    _name = 'assign.request.wizard'
-    user_id = fields.Many2one('res.users', 'Assign to',
-                              default=lambda self: self.env.user,)
-    intern_note = fields.Text('Internal note')
-
-    @api.multi
-    def assign_to(self):
-        self.ensure_one()
-        model = self.env.context.get('active_model')
-        model_id = self.env.context.get('active_id')
-        request = self.env[model].browse(model_id)
-        request.user_id = self.user_id
-        if self.intern_note:
-            request.message_post(subject='Message for ' + self.user_id.name,
-                                 body=self.intern_note)

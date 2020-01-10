@@ -15,3 +15,4 @@ odoo-sphinx-autodoc
 regex
 bs4
 firebase_admin
+detectlanguage
