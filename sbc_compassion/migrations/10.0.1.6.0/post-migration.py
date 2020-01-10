@@ -13,21 +13,6 @@ from openupgradelib import openupgrade
 
 _logger = logging.getLogger(__name__)
 
-try:
-    import PyPDF2
-    from PIL import Image
-
-    from pdfminer.converter import PDFPageAggregator
-    from pdfminer.layout import LAParams, LTTextBox, LTTextLine
-    from pdfminer.pdfdocument import PDFDocument
-    from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
-    from pdfminer.pdfpage import PDFPage
-    from pdfminer.pdfparser import PDFParser
-
-except ImportError:
-    _logger.error("Python libraries 'PyPDF2', 'pdfminer' and 'Pillow' are required for"
-                  " the correspondences migration in order to extract images from PDFs")
-
 
 @openupgrade.migrate(use_env=True)
 def migrate(env, version):

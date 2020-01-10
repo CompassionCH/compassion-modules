@@ -196,8 +196,7 @@ def extract_attachment_from_pdf(pdf_data, size_filter=None):
                     img = Image.open(BytesIO(data))
                     filename = obj[1:] + encoders[_filter]
                 else:
-                    mode = x_object[obj][
-                               '/ColorSpace'] == '/DeviceRGB' and "RGB" or "P"
+                    mode = x_object[obj]['/ColorSpace'] == '/DeviceRGB' and "RGB" or "P"
                     img = Image.frombytes(mode, size, data)
                     filename = obj[1:] + '.png'
                 images[filename] = img
