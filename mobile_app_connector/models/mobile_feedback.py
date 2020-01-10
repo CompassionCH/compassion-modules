@@ -87,14 +87,15 @@ class MobileFeedback(models.Model):
 
         self.ensure_one()
 
-        body = html_bold("Your feedback from the app")
+        body = html_bold(_("Your feedback from the app"))
         if self.name:
-            body += html_bold("What did you like?")
+            body += html_bold(_("What did you like") + "?")
             body += html_paragraph(self.name)
         if self.improve_app:
-            body += html_bold("How can we improve the app?")
+            body += html_bold(_("How can we improve the app") + "?")
             body += html_paragraph(self.improve_app)
 
+        partner = self.partner_id
         claim = self.env['crm.claim'].create({
             'email_from': self.partner_id.email,
             'subject': "Mobile App Feedback",
@@ -102,13 +103,17 @@ class MobileFeedback(models.Model):
             'name': body,
             'categ_id': self.env['crm.claim.category'].search(
                 [('name', '=', self.source)]).id,
-            'partner_id': self.partner_id.id,
-            'language': self.language
+            'claim_type': self.env.ref(
+                'mobile_app_connector.claim_type_feedback').id,
+            'partner_id': partner.id,
+            'language': self.language,
+            'date': self.create_date
         })
         claim.message_post(
             body=body,
-            subject=_("Original request from %s %s ") %
-            (self.partner_id.firstname, self.partner_id.lastname))
+            subject=_("Your Mobile App Feedback"),
+            author_id=partner.id
+        )
 
         self.state = 'replied'
         self.crm_claim_id = claim

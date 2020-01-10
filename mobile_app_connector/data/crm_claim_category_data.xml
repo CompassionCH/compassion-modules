@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="claim_cat_android" model="crm.claim.category">
-        <field name="name">Android</field>
-    </record>
-    <record id="claim_cat_ios" model="crm.claim.category">
-        <field name="name">iOS</field>
-    </record>
+    <data noupdate="1">
+        <record id="claim_cat_android" model="crm.claim.category">
+            <field name="name">Android</field>
+        </record>
+        <record id="claim_cat_ios" model="crm.claim.category">
+            <field name="name">iOS</field>
+        </record>
+        <record id="claim_type_feedback" model="crm.claim.type">
+            <field name="name">Mobile App Feedback</field>
+        </record>
+    </data>
 </odoo>
