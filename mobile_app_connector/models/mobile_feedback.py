@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class MobileFeedback(models.Model):
     _name = 'mobile.app.feedback'
+    _inherit = 'ir.needaction_mixin'
     _description = 'Mobile App Feedback'
     _order = 'id desc'
 
@@ -48,7 +49,7 @@ class MobileFeedback(models.Model):
         ('read', 'Read'),
         ('replied', 'Replied'),
     ], default='unread')
-    crm_claim_id = fields.Many2one('crm.claim', 'Claim')
+    crm_claim_id = fields.Many2one('crm.claim', 'Answer to feedback')
 
     @api.model
     def _get_lang(self):
@@ -71,6 +72,10 @@ class MobileFeedback(models.Model):
             record['language'] = self.env.context['lang']
 
         return record.id
+
+    @api.multi
+    def mark_read(self):
+        return self.write({'state': 'read'})
 
     @api.multi
     def create_crm_claim(self):
@@ -116,3 +121,11 @@ class MobileFeedback(models.Model):
             'res_id': claim.id,
             'flags': {'initial_mode': 'edit'},
         }
+
+    @api.model
+    def _needaction_domain_get(self):
+        """
+        Used to display a count icon in the menu
+        :return: domain of jobs counted
+        """
+        return [('state', '=', 'unread')]
