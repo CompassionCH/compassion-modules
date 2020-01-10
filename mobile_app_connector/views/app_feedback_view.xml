@@ -5,7 +5,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-
+                    <button name="create_crm_claim" string="Reply" type="object"
+                            attrs="{'invisible': [('state', '=', 'replied')]}"/>
                 </header>
                 <sheet>
                     <group>
@@ -20,6 +21,10 @@
                             <field name="language"/>
                             <field name="source"/>
                         </group>
+                    </group>
+                    <group>
+                        <field name="state" invisible="1"/>
+                        <field name="crm_claim_id" attrs="{'invisible': [('state', '!=', 'replied')]}"/>
                     </group>
                 </sheet>
             </form>
@@ -38,6 +43,7 @@
                 <field name="star"/>
                 <field name="improve_app"/>
                 <field name="source"/>
+                <field name="state"/>
                 <field name="language"/>
             </tree>
         </field>
