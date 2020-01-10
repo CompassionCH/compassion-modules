@@ -15,6 +15,7 @@ from odoo import _
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
+from werkzeug.exceptions import NotFound
 
 
 def get_child_request(request_id, lang=None):
@@ -143,14 +144,18 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """ SMS step2 controller. Returns the sponsorship registration form."""
         sponsorship = request.env['recurring.contract'].sudo().browse(
             sponsorship_id)
-        if sponsorship.sms_request_id.state == 'step2':
+        if sponsorship.sms_request_id.state == 'step2' or \
+                sponsorship.state in ['active', 'waiting']:
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship.id, **kwargs)
-        return self.make_response(
-            'recurring.contract',
-            model_id=sponsorship and sponsorship.id,
-            **kwargs
-        )
+        if sponsorship.state == "draft":
+            return self.make_response(
+                'recurring.contract',
+                model_id=sponsorship and sponsorship.id,
+                **kwargs
+            )
+        else:
+            raise NotFound()
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',

@@ -6,6 +6,8 @@ import logging
 from email.utils import parseaddr
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
+from odoo.tools import html_sanitize
+
 _logger = logging.getLogger(__name__)
 try:
     import detectlanguage
@@ -56,11 +58,13 @@ class CrmClaim(models.Model):
         This function opens a window to compose an email, with the default
         template message loaded by default"""
         self.ensure_one()
+        original_partner = self.partner_id
 
-        if not self.partner_id:
+        if not original_partner:
             raise exceptions.UserError(_(
                 "You can only reply if you set the partner."
             ))
+
         template_id = self.claim_type.template_id.id
         ctx = {
             'default_model': 'crm.claim',
@@ -72,21 +76,27 @@ class CrmClaim(models.Model):
             'lang': self.language,
         }
 
-        if self.partner_id:
-            partner = self._get_partner_alias(
-                self.partner_id, parseaddr(self.email_from)[1]
+        if original_partner:
+            alias_partner = self._get_partner_alias(
+                original_partner, parseaddr(self.email_from)[1]
             )
+            partner = alias_partner
+            if alias_partner == original_partner:
+                partner = original_partner
+            self.partner_id = partner
             ctx['default_partner_ids'] = [partner.id]
 
             messages = self.mapped('message_ids').filtered(
-                lambda m: m.body and (m.author_id == self.partner_id or
-                                      self.partner_id in m.partner_ids))
+                lambda m: m.body and (m.author_id == original_partner or
+                                      partner in m.partner_ids))
             if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
-                message = messages[0]
-                ctx['reply_quote'] = message.get_message_quote()
-                ctx['message_id'] = message.id
+                message = messages.filtered(
+                    lambda m: m.author_id == self.partner_id)[:1]
+                if message:
+                    ctx['reply_quote'] = message.get_message_quote()
+                    ctx['message_id'] = message.id
 
             # Un-archive the email_alias so that a mail can be sent and set a
             # flag to re-archive them once the email is sent.
@@ -137,6 +147,7 @@ class CrmClaim(models.Model):
     def message_new(self, msg, custom_values=None):
         """ Use the html of the mail's body instead of html converted in text
         """
+        msg['body'] = html_sanitize(msg.get('body', ''))
 
         if custom_values is None:
             custom_values = {}

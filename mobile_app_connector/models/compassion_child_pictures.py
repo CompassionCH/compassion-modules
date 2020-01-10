@@ -15,13 +15,25 @@ from odoo import models, api
 from ..mappings.compassion_child_pictures_mapping \
     import MobileChildPicturesMapping
 
-
 logger = logging.getLogger(__name__)
 
 
 class CompassionChildPictures(models.Model):
     """ A sponsored child """
     _inherit = 'compassion.child.pictures'
+
+    @property
+    def image_url_compassion(self, type='fullshot'):
+        if type.lower() not in ['headshot', 'fullshot']:
+            raise ValueError("Expected argument 'type' to be 'headshot' or 'fullshot'")
+
+        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
+        endpoint = base_url + "/web/image/compassion.child.pictures"
+        return "{}/{}/{}/{}_{}.jpg".format(endpoint,
+                                           self.id,
+                                           type,
+                                           self.date,
+                                           self.child_id.id)
 
     @api.multi
     def get_app_json(self, multi=False):

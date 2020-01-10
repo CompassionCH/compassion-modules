@@ -21,7 +21,7 @@
         <field name="context">{}</field>
     </record>
 
-    <!-- Add an entry in Sponsorship \ Configuration \ Correspondence -->
+    <!-- Add an entry in Sales \ Communications \ Settings -->
     <menuitem name="Settings" id="thank_you_config_item" parent="menu_donation_sales"
               action="action_thank_you_config" sequence="10"/>
 </odoo>

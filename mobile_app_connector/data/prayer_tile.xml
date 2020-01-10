@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data>
+    <data noupdate="1">
         <record id="tile_pr1_1" model="mobile.app.tile">
             <field name="name">Strong friendships</field>
             <field name="subtype_id" ref="tile_subtype_pr1"/>
@@ -424,7 +424,6 @@
             <field name="action_text">Pray now</field>
             <field name="action_destination">Read overlay</field>
         </record>
-
         <function model="mobile.app.tile" name="init_tiles"/>
     </data>
 </odoo>

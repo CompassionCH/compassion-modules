@@ -13,6 +13,7 @@ from ..mappings.compassion_correspondence_mapping import \
     MobileCorrespondenceMapping, FromLetterMapping
 from werkzeug.exceptions import NotFound
 from base64 import b64encode
+from werkzeug.utils import escape
 
 
 class CompassionCorrespondence(models.Model):
@@ -161,7 +162,7 @@ class CompassionCorrespondence(models.Model):
             'name': 'app-' + child_local_id,
             'selection_domain':
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
-            'body': body,
+            'body': escape(body),
             's2b_template_id': int(template_id),
             'image_ids': datas
         })
@@ -193,6 +194,7 @@ class CompassionCorrespondence(models.Model):
         :return: The ID of the sent letter, never used by the app.
         """
         params = params[0]
+        params['Message'] = escape(params.get('Message', ''))
         template_id = self._get_required_param('TemplateID', params)
         if 'DbId' in params:
             # The letter was submitted on the last api call
@@ -220,7 +222,7 @@ class CompassionCorrespondence(models.Model):
         gen.generate_letters_job()
         gen.write({
             'state': 'done',
-            'date': fields.Date.today(),
+            'date': fields.Datetime.now(),
         })
         return {
             'DbId': gen.letter_ids.mapped('id'),
