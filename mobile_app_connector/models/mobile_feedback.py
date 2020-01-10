@@ -24,8 +24,7 @@ class MobileFeedback(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char('What did you like', required=True,
-                       readonly=True)
+    name = fields.Char('What did you like', readonly=True)
     partner_id = fields.Many2one('res.partner', 'Partner', readonly=True)
     language = fields.Selection('_get_lang')
     improve_app = fields.Char('How can we improve the app', readonly=True)
