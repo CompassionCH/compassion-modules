@@ -13,8 +13,7 @@
     <template id="survey_user_input">
         <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="user_input">
-                <t t-set="print_header" t-value="True"/>
-                <div class="page">
+                <div class="page" style="page-break-after: always;">
                     <style type="text/css">
                         .user_data {
                             margin: 10mm 0;
@@ -24,7 +23,7 @@
                         .answers {
                             background-color: transparent;
                             border-collapse: collapse;
-                            border-spacing: 0px
+                            border-spacing: 0px;
                         }
                         .answers .survey_label {
                             width: 40%;
@@ -36,30 +35,25 @@
                             font-style: italic;
                         }
                     </style>
-                    <!-- Header on first page -->
-                    <t t-if="print_header">
-                        <t t-set="print_header" t-value="False"/>
-                        <h1 t-esc="user_input.survey_id.title"/>
-                        <div class="user_data">
-                            <t t-set="partner" t-value="user_input.partner_id"/>
-                            <span t-esc="partner.firstname"/> <span t-esc="partner.lastname"/>
+                    <h1 t-esc="user_input.survey_id.title"/>
+                    <div class="user_data">
+                        <t t-set="partner" t-value="user_input.partner_id"/>
+                        <span t-esc="partner.firstname"/> <span t-esc="partner.lastname"/>
+                        <br/>
+                        <t t-if="partner.email">
+                            <span t-esc="partner.email or ''"/>
                             <br/>
-                            <t t-if="partner.email">
-                                <span t-esc="partner.email or ''"/>
-                                <br/>
-                            </t>
-                            <t t-if="partner.birthdate_date">
-                                Born on <span t-esc="partner.get_date('birthdate_date', 'date_full') or ''"/>
-                                <br/>
-                            </t>
-                            <t t-if="partner.gender">
-                                <span t-esc="partner.translate('gender') or ''"/>
-                                <br/>
-                            </t>
-                            <span t-esc="partner.phone or partner.mobile or ''"/>
-                        </div>
-                    </t>
-
+                        </t>
+                        <t t-if="partner.birthdate_date">
+                            Born on <span t-esc="partner.get_date('birthdate_date', 'date_full') or ''"/>
+                            <br/>
+                        </t>
+                        <t t-if="partner.gender">
+                            <span t-esc="partner.translate('gender') or ''"/>
+                            <br/>
+                        </t>
+                        <span t-esc="partner.phone or partner.mobile or ''"/>
+                    </div>
                     <br/>
                     <br/>
                     <t t-set="last_title" t-value="''"/>
