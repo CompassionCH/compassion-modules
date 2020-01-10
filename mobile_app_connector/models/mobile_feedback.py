@@ -80,10 +80,10 @@ class MobileFeedback(models.Model):
     @api.multi
     def create_crm_claim(self):
         def html_paragraph(text):
-            return "<p>{}</p>".format(text)
+            return u"<p>{}</p>".format(text)
 
         def html_bold(text):
-            return "<p><b>{}</b></p>".format(text)
+            return u"<p><b>{}</b></p>".format(text)
 
         self.ensure_one()
 
@@ -105,9 +105,10 @@ class MobileFeedback(models.Model):
             'partner_id': self.partner_id.id,
             'language': self.language
         })
-        claim.message_post(body=body,
-                           subject=_("Original request from %s %s ") %
-                           (self.partner_id.firstname, self.partner_id.lastname))
+        claim.message_post(
+            body=body,
+            subject=_("Original request from %s %s ") %
+            (self.partner_id.firstname, self.partner_id.lastname))
 
         self.state = 'replied'
         self.crm_claim_id = claim
