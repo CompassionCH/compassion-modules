@@ -144,6 +144,24 @@ class TextFields extends React.Component {
 
         return (
             <div>
+                <div style={{marginBottom: '25px'}}>
+                        <Button variant="outlined"
+                            onClick={() => {
+                                partner.firstname = '';
+                                partner.lastname = '';
+                                partner.email = '';
+                                this.setState({
+                                    partner: partner
+                                });
+                            }
+                            }
+                            color="primary"
+                            size="medium"
+                            fullWidth
+                    >
+                        {t('newSponsor')}
+                    </Button>
+                </div>
                 <Typography variant="title" style={{color: '#555555', marginLeft: '8px'}}>
                     {t("coordinates")}
                 </Typography>
