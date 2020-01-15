@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -65,13 +64,15 @@ def patternRecognition(image, pattern, crop_area=None,
     if img1 is None:
         raise UserError(
             _("Template image is broken"))
-    if isinstance(pattern, str):
+    if isinstance(pattern, bytes):
         with tempfile.NamedTemporaryFile() as temp:
             temp.write(base64.b64decode(pattern))
             temp.flush()
             img2 = cv2.imread(temp.name,
                               cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     else:
+        # TODO this will make this line fail:
+        # kp2, des2 = feature_descriptor.detectAndCompute(img2, None)
         img2 = pattern
     if img2 is None:
         raise UserError(
@@ -80,6 +81,7 @@ def patternRecognition(image, pattern, crop_area=None,
     # cut the part useful for the recognition
     (xmin, ymin), img1 = subsetImage(img1, crop_area)
 
+    feature_descriptor = None
     if algo == 'SIFT':
         # compute the keypoints and descriptors using SIFT
         feature_descriptor = cv2.xfeatures2d.SIFT_create()
@@ -230,7 +232,7 @@ def measure_disorder(posA, posB):
     # be close to zero
     SAD = (np.absolute(posA-posB)).sum()
     # we return the mean of the Sum of Absolute Difference
-    disorder_pt = SAD / len(posA)
+    disorder_pt = SAD // len(posA)
     return disorder_pt
 
 
@@ -391,8 +393,7 @@ def find_template(img, templates, resize_ratio=1.0):
     _logger.debug("\t\t\tTemplates scores:\t" + '\t'.join(score))
     if matching_template:
         _logger.info("\t\t\tTemplate '" + matching_template.name +
-                     "' matched with {} keypoints in {:.3} seconds".format(
-                         nb_keypoints, tic))
+                     f"' matched with {nb_keypoints} keypoints in {tic:.3} seconds")
     else:
         _logger.info("\t\t\tNo template found.")
     return matching_template, keyPointCenter(key_img)

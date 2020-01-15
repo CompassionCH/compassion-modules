@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -22,6 +21,6 @@ class ImportConfig(models.Model):
     is_encourager = fields.Boolean('Encourager')
 
     def get_fields(self):
-        res = super(ImportConfig, self).get_fields()
+        res = super().get_fields()
         res.append('is_encourager')
         return res

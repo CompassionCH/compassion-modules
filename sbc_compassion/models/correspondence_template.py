@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -150,13 +149,13 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        template = super(CorrespondenceTemplate, self).create(vals)
+        template = super().create(vals)
         template._compute_template_data()
         return template
 
     @api.multi
     def write(self, vals):
-        super(CorrespondenceTemplate, self).write(vals)
+        super().write(vals)
         if 'template_image' in vals or 'pattern_image' in vals:
             self._compute_template_data()
         return True
@@ -291,7 +290,7 @@ class CorrespondenceTemplate(models.Model):
                 add_background.name, header_data, text_list, []]
 
         text_list = []
-        for t_type, t_boxes in text.iteritems():
+        for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
                 temp_text.append(tempfile.NamedTemporaryFile(
                     prefix=t_type + '_', suffix='.txt'))
@@ -347,7 +346,7 @@ class CorrespondenceTemplate(models.Model):
         std_err_file.close()
 
         # Read and return output
-        pdf_file = open(pdf_name, "r")
+        pdf_file = open(pdf_name, "rb")
         res = pdf_file.read()
         pdf_file.close()
         os.remove(pdf_file.name)

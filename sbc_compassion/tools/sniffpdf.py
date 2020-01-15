@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -15,7 +14,7 @@
 
 import os
 import logging
-from cStringIO import StringIO
+from io import StringIO
 
 _logger = logging.getLogger(__name__)
 
@@ -31,23 +30,23 @@ except ImportError:
 def get_images(pdf_data, dst_folder, dst_name):
     # the following is from that blog:
     # http://nedbatchelder.com/blog/200712/extracting_jpgs_from_pdfs.html
-    startmark = "\xff\xd8"
+    startmark = b"\xff\xd8"
     startfix = 0
-    endmark = "\xff\xd9"
+    endmark = b"\xff\xd9"
     endfix = 2
     i = 0
 
     filenames = []
     njpg = 0
     while True:
-        istream = pdf_data.find("stream", i)
+        istream = pdf_data.find(b"stream", i)
         if istream < 0:
             break
         istart = pdf_data.find(startmark, istream, istream + 20)
         if istart < 0:
             i = istream + 20
             continue
-        iend = pdf_data.find("endstream", istart)
+        iend = pdf_data.find(b"endstream", istart)
         if iend < 0:
             raise Exception("Didn't find end of stream!")
         iend = pdf_data.find(endmark, iend - 20)
@@ -59,7 +58,7 @@ def get_images(pdf_data, dst_folder, dst_name):
         jpg = pdf_data[istart:iend]
 
         # save image number N at required location
-        filname = "{}/{}{}.jpg".format(dst_folder, dst_name, njpg)
+        filname = f"{dst_folder}/{dst_name}{njpg}.jpg"
         with open(filname, "wb") as jpgfile:
             jpgfile.write(jpg)
 

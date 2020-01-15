@@ -327,22 +327,23 @@ class GmcMessage(models.Model):
             results = [results]
         data_objects = self.env[action.model].with_context(
             lang='en_US').browse(self.mapped('object_id'))
+        content_sent = message_data.get(
+            action.connect_outgoing_wrapper, message_data)
 
         if 200 <= onramp_answer['code'] < 300:
             # Success, loop through answer to get individual results
             for i in range(0, len(results)):
                 result = results[i]
-                content_sent = message_data.get(
-                    action.connect_outgoing_wrapper, message_data)
+                content_data = \
+                    json.dumps(content_sent[i], indent=4, sort_keys=True) \
+                    if isinstance(content_sent, list) \
+                    else json.dumps(content_sent, indent=4, sort_keys=True)
                 if isinstance(result, dict) and result.get('Code',
                                                            2000) == 2000:
                     # Individual message was successfully processed
                     # Commit state before processing the success
                     self[i].write({
-                        'content': json.dumps(content_sent[i], indent=4,
-                                              sort_keys=True)
-                        if isinstance(content_sent, list) else json.dumps(
-                            content_sent, indent=4, sort_keys=True),
+                        'content': content_data,
                         'request_id': onramp_answer.get('request_id',
                                                         str(self[i].id)),
                         'answer': json.dumps(result, indent=4, sort_keys=True)
@@ -353,6 +354,7 @@ class GmcMessage(models.Model):
                     if action.failure_method:
                         getattr(data_objects[i], action.failure_method)(result)
                     self[i].write({
+                        'content': content_data,
                         'state': 'failure',
                         'failure_reason': result['Message'],
                         'answer': json.dumps(result, indent=4, sort_keys=True)
@@ -360,6 +362,7 @@ class GmcMessage(models.Model):
                 else:
                     # We got a simple string as result, nothing more to do
                     self[i].write({
+                        'content': content_data,
                         'state': 'success',
                         'answer': str(result)
                     })
@@ -368,6 +371,10 @@ class GmcMessage(models.Model):
                 result = results[i]
                 if action.failure_method:
                     getattr(data_objects[i], action.failure_method)(result)
+                self.write({
+                    'content': json.dumps(content_sent,
+                                          indent=4, sort_keys=True)
+                })
                 self[i]._answer_failure(onramp_answer, result)
 
     def _process_single_answer(self, data_object, answer_data):

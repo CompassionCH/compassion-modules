@@ -455,14 +455,14 @@ class CompassionChild(models.Model):
             child.revised_value_ids.unlink()
 
         # Update household
-        household_data = data.pop('household_id')
+        household_data = data.pop('household_id', {})
         household_id = household_data.get('household_id')
         household = self.env['compassion.household'].search([
             ('household_id', '=', household_id)
         ])
         if household:
             household.write(household_data)
-        else:
+        elif household_data:
             data['household_id'] = household.create(household_data).id
         return data
 

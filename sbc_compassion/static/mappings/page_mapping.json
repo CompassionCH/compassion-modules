@@ -1,0 +1,21 @@
+{
+  "name": "Correspondence Page",
+  "model": "correspondence.page",
+  "mapping": {
+    "OriginalPageURL": {
+      "field": "original_page_url"
+    },
+    "FinalPageURL": {
+      "field": "final_page_url"
+    },
+    "OriginalText": {
+      "field": "original_text"
+    },
+    "EnglishTranslatedText": {
+      "field": "english_text"
+    },
+    "TranslatedText": {
+      "field": "translated_text"
+    }
+  }
+}

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
@@ -24,7 +23,7 @@ DATA_DIR = os.path.dirname(os.path.realpath(__file__)) + '/data/'
 
 class TestSbcCompassion(BaseSponsorshipTest):
     def setUp(self):
-        super(TestSbcCompassion, self).setUp()
+        super().setUp()
 
         self.t_child = self.create_child('TT123456789')
         self.t_partner = self.env.ref('base.res_partner_address_31')
@@ -58,7 +57,7 @@ class TestSbcCompassion(BaseSponsorshipTest):
 
         #  tuple with
         for file_path in self.list_files_path:
-            with open(file_path) as f:
+            with open(file_path, 'rb') as f:
                 list_data.append(
                     (0, False, {
                         'name': f.name.split('/')[-1],

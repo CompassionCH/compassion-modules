@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
@@ -137,7 +136,7 @@ class ImportLettersHistory(models.Model):
                 letter.nber_letters = tmp
             else:
                 raise UserError(
-                    _("State: '{}' not implemented".format(letter.state)))
+                    _(f"State: '{letter.state}' not implemented"))
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -154,7 +153,7 @@ class ImportLettersHistory(models.Model):
                       "already open. Please finish it before creating a new "
                       "one.")
                 )
-        return super(ImportLettersHistory, self).create(vals)
+        return super().create(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -210,7 +209,7 @@ class ImportLettersHistory(models.Model):
     def onchange_config(self):
         config = self.config_id
         if config:
-            for field, val in config.get_correspondence_metadata().iteritems():
+            for field, val in list(config.get_correspondence_metadata().items()):
                 setattr(self, field, val)
 
     ##########################################################################
@@ -230,6 +229,7 @@ class ImportLettersHistory(models.Model):
         file_name_history = []
         logger.info("Imported files analysis started...")
         progress = 1
+
         for attachment in self.data:
             if attachment.name not in file_name_history:
                 file_name_history.append(attachment.name)
@@ -241,14 +241,12 @@ class ImportLettersHistory(models.Model):
                     zip_ = zipfile.ZipFile(zip_file, 'r')
                     for f in zip_.namelist():
                         logger.info(
-                            "Analyzing file {}/{}".format(
-                                progress, self.nber_letters))
+                            f"Analyzing file {progress}/{self.nber_letters}")
                         self._analyze_attachment(zip_.read(f), f)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
-                    logger.info("Analyzing file {}/{}".format(
-                        progress, self.nber_letters))
+                    logger.info(f"Analyzing file {progress}/{self.nber_letters}")
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:
@@ -265,6 +263,6 @@ class ImportLettersHistory(models.Model):
     def _analyze_attachment(self, file_data, file_name):
         line_vals = func.analyze_attachment(
             self.env, file_data, file_name, self.template_id)
-        for i in xrange(0, len(line_vals)):
+        for i in range(0, len(line_vals)):
             line_vals[i]['import_id'] = self.id
             self.env['import.letter.line'].create(line_vals[i])

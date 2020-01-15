@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -18,6 +17,7 @@ class CorrespondenceMetadata(models.AbstractModel):
     """
 
     _name = 'correspondence.metadata'
+    _description = 'Metadata of letter'
 
     ##########################################################################
     #                                 FIELDS                                 #

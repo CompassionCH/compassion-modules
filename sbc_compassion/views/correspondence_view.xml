@@ -3,7 +3,7 @@
         <field name="name">correspondence.tree</field>
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
-            <tree string="Correspondence" colors="red:is_final_letter">
+            <tree string="Correspondence" decoration-danger="is_final_letter">
                 <field name="scanned_date"/>
                 <field name="sponsorship_id"/>
                 <field name="kit_identifier"/>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -39,8 +38,8 @@ SELECT sp.id, sp.id AS sponsorship_id, sp.correspondent_id AS partner_id,
        sp.child_id, sp.type AS sponsorship_type, sp.activation_date,
        MAX(c.scanned_date) AS last_write_date,
        MIN(c.scanned_date) AS first_write_date,
-       COALESCE(MIN(c.scanned_date), CURRENT_DATE) - sp.activation_date
-            AS time_to_first_writing
+       EXTRACT(epoch FROM COALESCE(MIN(c.scanned_date), CURRENT_DATE)
+       - sp.activation_date)/86400 AS time_to_first_writing
 FROM recurring_contract sp
 FULL OUTER JOIN correspondence c ON c.sponsorship_id = sp.id
 WHERE sp.state = 'active' AND sp.child_id IS NOT NULL

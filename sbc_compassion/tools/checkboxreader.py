@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -77,7 +76,7 @@ class CheckboxReader:
         canny = canny[top:bottom, left:right]
         self.canny = canny
         # Comupte the integral of the image.
-        count = cv2.sumElems(canny)[0] / 255
+        count = cv2.sumElems(canny)[0] // 255
         return count
 
     ##########################################################################
@@ -115,8 +114,8 @@ class CheckboxReader:
 
         left = self._findmax(sum0)[1][0]
         top = self._findmax(sum1)[1][0]
-        right = left + squarsize + (linewidth + 1) / 2
-        bottom = top + squarsize + (linewidth + 1) / 2
+        right = left + squarsize + (linewidth + 1) // 2
+        bottom = top + squarsize + (linewidth + 1) // 2
 
         # add margin
         margin = 2
