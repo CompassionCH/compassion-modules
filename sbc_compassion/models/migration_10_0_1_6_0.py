@@ -58,6 +58,9 @@ class CorrespondenceMigration(models.AbstractModel):
         migrated = self.env['correspondence']
         for c in correspondences:
             try:
+                if not c.letter_image:
+                    continue
+
                 # Read the PDF in memory
                 pdf_data = BytesIO(base64.b64decode(c.letter_image))
 
