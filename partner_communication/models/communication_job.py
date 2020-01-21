@@ -301,6 +301,8 @@ class CommunicationJob(models.Model):
                 elif config.user_id:
                     user_id = config.user_id.id
                 vals['user_id'] = user_id
+            else:
+                vals['user_id'] = self.env.uid
 
         # Check all default_vals fields
         for default_val in default_vals:
