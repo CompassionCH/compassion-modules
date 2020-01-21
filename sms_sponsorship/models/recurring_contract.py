@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -81,8 +80,7 @@ class RecurringContract(models.Model):
         sponsorship._set_next_invoice_date_sms()
         sponsorship.with_delay().put_child_on_no_money_hold()
         partner.set_privacy_statement(origin='new_sponsorship')
-        sms_child_request.with_context(lang=partner.lang).complete_step1(
-            sponsorship.id)
+        sms_child_request.with_context(lang=partner.lang).complete_step1(sponsorship.id)
         return True
 
     @job(default_channel="root.sms_sponsorship")
@@ -159,7 +157,7 @@ class RecurringContract(models.Model):
         supposing that the staff has verified the partner.
         :return: True
         """
-        super(RecurringContract, self).contract_waiting()
+        super().contract_waiting()
         self._post_payment_first_month()
         return True
 

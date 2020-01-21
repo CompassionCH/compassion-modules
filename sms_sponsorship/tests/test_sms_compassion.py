@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -9,8 +8,11 @@
 #
 ##############################################################################
 import logging
+
+import mock
+
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion \
-    import BaseSponsorshipTest
+    import BaseSponsorshipTest, mock_update_hold
 
 _logger = logging.getLogger(__name__)
 
@@ -18,11 +20,9 @@ _logger = logging.getLogger(__name__)
 class TestSmsCompassion(BaseSponsorshipTest):
 
     def setUp(self):
-        super(TestSmsCompassion, self).setUp()
-        self.child = self.env['compassion.child'].create({
-            'global_id': 'AP1696234923',
-            'local_id': 'GD21321'
-        })
+        super().setUp()
+        self.child = self.create_child('PE012304567')
+
         self.partner = self.env.ref('base.res_partner_2')
         self.env['ir.config_parameter'].set_param('web.external.url', 'base/')
         self.child_request = self.env['sms.child.request'].create({
@@ -32,8 +32,9 @@ class TestSmsCompassion(BaseSponsorshipTest):
             'lang_code': 'en_US'
         })
 
-    def test_sms_sponsorship_creation__with_new_partner(self):
-
+    @mock.patch(mock_update_hold)
+    def test_sms_sponsorship_creation__with_new_partner(self, update_hold):
+        update_hold.return_value = True
         values = {
             'firstname': "testName",
             'lastname': 'testLastname',
@@ -57,7 +58,9 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ])
         self.assertTrue(new_sponsorship)
 
-    def test_sms_sponsorship_creation__with_existing_partner(self):
+    @mock.patch(mock_update_hold)
+    def test_sms_sponsorship_creation__with_existing_partner(self, update_hold):
+        update_hold.return_value = True
 
         new_partner2 = self.env['res.partner'].create({
             'firstname': "testName2",
@@ -97,7 +100,9 @@ class TestSmsCompassion(BaseSponsorshipTest):
         ], limit=1)
         self.assertTrue(new_sponsorship)
 
-    def test_sms_request(self):
+    @mock.patch(mock_update_hold)
+    def test_sms_request(self, update_hold):
+        update_hold.return_value = True
         values = {
             'firstname': self.partner.firstname,
             'lastname': self.partner.lastname,
@@ -113,7 +118,7 @@ class TestSmsCompassion(BaseSponsorshipTest):
             ('partner_id', '=', self.partner.id),
             ('child_id', '=', self.child_request.child_id.id)
         ], limit=1)
-        self.assertEquals(sms_request.sponsorship_id.id, sponsorship.id)
+        self.assertEqual(sms_request.sponsorship_id.id, sponsorship.id)
 
     def test_book_by_sms(self):
         pass

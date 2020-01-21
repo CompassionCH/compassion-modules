@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -10,13 +9,20 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion SMS Sponsorships',
-    'version': '10.0.1.0.1',
+    'version': '11.0.1.0.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
-    'depends': ['crm_compassion', 'cms_form_compassion', 'link_tracker',
-                'website_no_index'],
+    'depends': [
+        'crm_compassion',  # compassion-modules
+        'cms_form_compassion',  # compassion-modules
+        'link_tracker',  # source/addons
+        'website_no_index',  # Compassion's fork of OCA/website
+        'base_phone',  # OCA/connector_telephony
+        'stock',  # source/addons
+        'payment_ogone'  # source/addons
+    ],
     'data': [
         'security/ir.model.access.csv',
         'security/access_rules.xml',
@@ -30,6 +36,6 @@
         'templates/assets.xml',
         'templates/sms_registration_confirmation_template.xml',
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

@@ -1,4 +1,3 @@
-# coding: utf-8
 # pylint: disable=W7936
 from locust import HttpLocust, TaskSet, task
 from random import randint

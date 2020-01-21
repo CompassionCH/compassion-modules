@@ -8,8 +8,8 @@
     <!-- Configuration View -->
     <record id="view_notification_settings_sms_form" model="ir.ui.view">
         <field name="name">staff.notification.settings.sms.form</field>
-        <field name="model">staff.notification.settings</field>
-        <field name="inherit_id" ref="child_compassion.view_notification_settings_form"/>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="child_compassion.compassion_settings"/>
         <field name="arch" type="xml">
             <field name="disaster_notify_ids" position="after">
                 <field name="new_partner_notify_ids" widget="many2many_tags"/>

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -29,4 +28,4 @@ class CompassionHold(models.Model):
         self.sms_request_id.write({
             'state': 'expired'
         })
-        return super(CompassionHold, self).hold_released(vals)
+        return super().hold_released(vals)

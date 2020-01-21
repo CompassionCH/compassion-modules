@@ -3,10 +3,12 @@
         <field name="name">sms.child.request.tree</field>
         <field name="model">sms.child.request</field>
         <field name="arch" type="xml">
-            <tree colors="blue: state == 'new'; green: state == 'child_reserved'; grey: state in ('step2','expired')">
+            <tree   decoration-muted="state in ('step2','expired')"
+                    decoration-success="state == 'child_reserved'"
+                    decoration-info="state == 'failure'" >
                 <field name="date"/>
                 <field name="partner_id" required="1"/>
-                <field name="sender"/>
+                <field name="sender" widget="phone"/>
                 <field name="child_id"/>
                 <field name="sponsorship_confirmed"/>
                 <field name="state"/>
@@ -19,7 +21,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="change_child" type="object" string="Request new child" class="oe_highlight" states="new,child_reserved"/>
+                    <button name="change_child" type="object" string="Request new child" class="oe_highlight" states="child_reserved" />
                     <button name="mark_done" type="object" string="Mark as completed" states="new,child_reserved,step1"/>
                     <button name="cancel_request" type="object" string="Cancel request" states="new,child_reserved,step1"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,child_reserved,step1,step2"/>
@@ -29,7 +31,7 @@
                         <group>
                             <field name="date"/>
                             <field name="partner_id"/>
-                            <field name="sender"/>
+                            <field name="sender" widget="phone"/>
                             <field name="lang_code"/>
                             <field name="child_id" readonly="1"/>
                             <field name="sponsorship_id" readonly="1"/>
@@ -61,7 +63,7 @@
         <field name="model">sms.child.request</field>
         <field name="arch" type="xml">
             <search>
-                <field name="sender"/>
+                <field name="sender" widget="phone"/>
                 <field name="partner_id"/>
                 <field name="child_id"/>
                 <field name="state"/>
