@@ -33,7 +33,8 @@ class CorrespondenceMetadata(models.AbstractModel):
         ('letter', _('Letter')),
         ('email', _('E-Mail')),
         ('website', _('Compassion website')),
-        ('compassion', _('Written by Compasion'))], default='letter')
+        ('app', _('Mobile app')),
+        ('compassion', _('Written by Compassion'))], default='letter')
 
     @api.model
     def get_fields(self):

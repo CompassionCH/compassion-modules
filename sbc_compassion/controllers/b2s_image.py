@@ -25,7 +25,8 @@ class RestController(http.Controller):
 
     @http.route('/b2s_image', type='http', auth='public', methods=['GET'])
     # We don't want to rename parameter id because it's used by our sponsors
-    def handler_b2s_image(self, id=None):  # pylint: disable=redefined-builtin
+    # pylint: disable=redefined-builtin
+    def handler_b2s_image(self, id=None, **parameters):
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.

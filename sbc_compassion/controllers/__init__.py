@@ -9,3 +9,4 @@
 #
 ##############################################################################
 from . import b2s_image
+from . import download_correspondence

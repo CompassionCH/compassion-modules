@@ -49,6 +49,8 @@ class PageMapping(OnrampMapping):
         'OriginalPageURL': None,
         'FinalPageURL': None,
         'OriginalText': lambda text: _format_text(text),
+        'EnglishTranslatedText': lambda text: _format_text(text),
+        'TranslatedText': lambda text: _format_text(text),
     }
 
     def _process_odoo_data(self, odoo_data):

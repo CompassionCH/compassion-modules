@@ -164,7 +164,8 @@ class CompassionCorrespondence(models.Model):
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body': escape(body),
             's2b_template_id': int(template_id),
-            'image_ids': datas
+            'image_ids': datas,
+            'source': 'app'
         })
         gen.onchange_domain()
         # We commit otherwise the generation fails
