@@ -48,11 +48,17 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env['res.partner'].browse(partner_id)
-        # TODO For now we only display the contracts for which the sponsor
-        #  is correspondent (to avoid viewing letters when he doesn't write)
-        sponsorships = (partner.contracts_correspondant +
-                        partner.contracts_fully_managed).filtered('is_active')
-        unpaid = partner.contracts_fully_managed.filtered(
+
+        if partner.app_displayed_sponsorships == "all":
+            sponsorships = partner.sponsorship_ids
+            unpaid = partner.contracts_fully_managed + partner.contracts_paid
+        else:
+            sponsorships = partner.contracts_correspondant + \
+                           partner.contracts_fully_managed
+            unpaid = partner.contracts_fully_managed
+
+        sponsorships = sponsorships.filtered('is_active')
+        unpaid = unpaid.filtered(
             lambda c: not c.is_active and not c.parent_id and
             (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')

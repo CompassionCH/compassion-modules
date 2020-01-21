@@ -71,6 +71,7 @@
         'views/firebase_notification.xml',
         'views/communication_job.xml',
         'views/communication_config.xml',
+        'views/res_partner.xml'
     ],
     'demo': [
     ],

@@ -1,0 +1,14 @@
+<odoo>
+    <record model="ir.ui.view" id="view_partner_form_mobile">
+        <field name="name">res.partner.form.mobile</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_res_partner_invoice_line_button_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[1]//button[@name='create_contract']" position="after">
+                <group>
+                    <field name="app_displayed_sponsorships" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
