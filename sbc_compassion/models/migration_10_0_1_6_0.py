@@ -99,9 +99,10 @@ class CorrespondenceMigration(models.AbstractModel):
                     'english_text': english_text
                 })
                 migrated += c
-            except Exception as e:
-                _logger.error("Correspondence migration (id={}): Failed".format(c.id))
-                _logger.error(e)
+            except:
+                _logger.error(
+                    "Correspondence migration (id={}): Failed".format(c.id),
+                    exc_info=True)
 
         _logger.info("successfully migrated {}/{} correspondences".format(
             len(migrated), len(correspondences)))
