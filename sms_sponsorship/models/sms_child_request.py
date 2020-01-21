@@ -27,10 +27,11 @@ test_mode = config.get('test_enable')
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'phone.validation.mixin']
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
+    _phone_name_fields = ['sender']
 
     sender = fields.Char('Phone')
     date = fields.Datetime(required=True, default=fields.Datetime.now)
