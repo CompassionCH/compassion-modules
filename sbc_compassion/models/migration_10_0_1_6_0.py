@@ -19,7 +19,7 @@
 #   so we split the migration in batches of 10 correspondences.
 #
 ###############################################################################
-from odoo import models
+from odoo import api, models
 from odoo.addons.queue_job.job import job
 from io import BytesIO
 import logging
@@ -47,6 +47,7 @@ class CorrespondenceMigration(models.AbstractModel):
     _name = 'correspondence.migration'
 
     @job(default_channel='root.sbc_compassion_migration')
+    @api.multi
     def migrate(self, correspondences_ids):
 
         templates_backgrounds_sizes = get_template_background_sizes(self.env)
