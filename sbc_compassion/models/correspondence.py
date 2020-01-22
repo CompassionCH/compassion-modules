@@ -343,6 +343,7 @@ class Correspondence(models.Model):
                                 pages_text[i].strip('\n'))
                     last_page_text = getattr(letter.page_ids[i], field)
                     last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
+                    setattr(letter.page_ids[i], field, last_page_text)
             else:
                 for i in range(0, len(pages_text)):
                     letter.page_ids.create({
@@ -547,6 +548,39 @@ class Correspondence(models.Model):
 
         template = self.template_id.with_context(lang=self.partner_id.lang)
         image_data = self.get_image()
+        if not template or not image_data:
+            return False
+        source_text, text_boxes = self._get_translation_boxes()
+        # Extract pages and additional images
+        pages = []
+        images = []
+        with(Image(blob=image_data, resolution=150)) as page_image:
+            for i in page_image.sequence:
+                pages.append(base64.b64encode(Image(i).make_blob('jpg')))
+                # For additional pages, check if the page contains text.
+                # If not, it is considered as a picture attachment.
+                if i.index > 1:
+                    text = ''
+                    if len(self.page_ids) >= i.index + 1:
+                        text = getattr(self.page_ids[i.index], source_text, '')
+                    if len(text.strip()) < 5:
+                        images.append(pages.pop(i.index - len(images)))
+
+        self.letter_image = base64.b64encode(template.generate_pdf(
+            self.name, {}, {'Translation': text_boxes}, images, pages))
+
+        return True
+
+    def _get_translation_boxes(self):
+        """
+         Used to fetch the translation of a letter and spread it into
+        the translation boxes to be used in the composition of the letter
+        done with FPDF.
+        :return: field name used to fetch translation
+                 (english_text/translated_text),
+                 list of translation boxes (containing the translation text)
+        """
+        text_boxes = []
         pages = self.page_ids
         if self.translated_text:
             source = 'translated_text'
@@ -564,12 +598,11 @@ class Correspondence(models.Model):
                               "".join((p.english_text or "").split()))
         else:
             source = 'english_text'
-        if not getattr(self, source) or not template or not image_data:
-            return False
+        if not getattr(self, source):
+            return text_boxes
 
         # Get the text boxes separately
         text_pages = pages.mapped(source)
-        text_boxes = []
         for index, text in enumerate(text_pages):
             # Skip pages that should not contain anything
             page_layout = self.template_id.page_ids.filtered(
@@ -579,25 +612,7 @@ class Correspondence(models.Model):
             text_boxes.extend([
                 t.strip() for t in text.split(BOX_SEPARATOR)])
 
-        # Extract pages and additional images
-        pages = []
-        images = []
-        with(Image(blob=image_data, resolution=150)) as page_image:
-            for i in page_image.sequence:
-                pages.append(base64.b64encode(Image(i).make_blob('jpg')))
-                # For additional pages, check if the page contains text.
-                # If not, it is considered as a picture attachment.
-                if i.index > 1:
-                    text = ''
-                    if len(self.page_ids) >= i.index + 1:
-                        text = getattr(self.page_ids[i.index], source, '')
-                    if len(text.strip()) < 5:
-                        images.append(pages.pop(i.index - len(images)))
-
-        self.letter_image = base64.b64encode(template.generate_pdf(
-            self.name, {}, {'Translation': text_boxes}, images, pages))
-
-        return True
+        return text_boxes
 
     @api.model
     def process_commkit(self, commkit_data):
@@ -707,6 +722,7 @@ class Correspondence(models.Model):
         For S2B
         Generate a PDF with `template_id`, `original_attachment_ids` and `original_text`
         """
+        self.ensure_one()
         sponsor = self.sponsorship_id.correspondent_id
         child = self.sponsorship_id.child_id
         pdf_name = self.name
@@ -723,8 +739,11 @@ class Correspondence(models.Model):
             ).encode('utf8')
 
         image_data = self.mapped('original_attachment_ids.datas') or []
+        translation_boxes = self._get_translation_boxes()
         return self.template_id.generate_pdf(
-            pdf_name, (header, ''), {'Original': [self.original_text]}, image_data)
+            pdf_name, (header, ''), {'Original': [self.original_text],
+                                     'Translation': translation_boxes},
+            image_data)
 
     def download_pdf(self):
         return {
