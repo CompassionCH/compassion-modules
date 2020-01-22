@@ -88,4 +88,5 @@ class MobileAppJsonRequest(JsonRequest):
                 'http_status': code,
                 'message': str(exception)
             })
-        raise exception
+        # RE-Raise last error, without compromising the StackTrace
+        raise

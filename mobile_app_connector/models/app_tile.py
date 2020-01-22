@@ -165,8 +165,7 @@ class AppTile(models.Model):
                     self.env.ref(module % 'tile_type_child') +\
                     self.env.ref(module % 'tile_type_community')
                 if tile.subtype_id.type_id not in no_render and \
-                        tile.subtype_id != self.env.ref(
-                            module % 'tile_subtype_pr1'):
+                        tile.subtype_id != self.env.ref(module % 'tile_subtype_pr1'):
                     res.append(tile_json)
         return res
 

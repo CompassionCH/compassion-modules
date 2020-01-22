@@ -136,13 +136,13 @@ class WordpressPost(models.Model):
                             # Skip post already fetched
                             continue
 
-                        content_empty = False
+                        content_empty = True
                         self_url = post_data['_links']['self'][0]['href']
-                        content = requests.get(self_url).json()
-                        if not content['content']['rendered']:
-                            # We won't display the post in hub when content
-                            # is empty
-                            content_empty = True
+                        http_response = requests.get(self_url)
+                        if http_response.ok:
+                            content = http_response.json()
+                            if content['content']['rendered']:
+                                content_empty = False
                         try:
                             # Fetch image for thumbnail
                             image_json_url = post_data['_links'][
