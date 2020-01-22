@@ -666,7 +666,8 @@ class CommunicationJob(models.Model):
                 'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
                 'auto_delete': False,
                 'reply_to': (self.email_template_id.reply_to or
-                             self.user_id.email)
+                             self.user_id.email),
+                'email_from': self.env['res.users'].browse(self.env.uid).email
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
