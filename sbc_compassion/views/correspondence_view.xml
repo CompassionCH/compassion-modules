@@ -105,11 +105,6 @@
                             <field name="translate_date" attrs="{'invisible': [('translator_id', '=', False)]}"/>
                             <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
                         </group>
-                        <group>
-                            <field name="original_attachment_ids"
-                                   attrs="{'invisible': [('original_attachment_ids', '=', False)]}"
-                                   widget="many2many_kanban" />
-                        </group>
                     </group>
                     <field name="page_ids" context="{'default_correspondence_id': context.active_id}">
                         <tree>

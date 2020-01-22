@@ -40,20 +40,21 @@ def migrate(env, version):
     }
 
     # Filters correspondences that can drop the PDF and regenerate it later
-    correspondences = env['correspondence'].search([
-        '&', '&', '&', '&', '|',
+    correspondences_ids = env['correspondence'].search([
+        '|',
         ('source', '=', 'website'),
         ('source', '=', 'compassion'),
         ('letter_format', '=', 'pdf'),
         ('direction', '=', 'Supporter To Beneficiary'),
         ('store_letter_image', '=', True),
-        ('template_id', '!=', False)
-    ])
-    correspondences_ids = correspondences.filtered('letter_image').ids
+        ('template_id', '!=', False),
+        ('letter_image', '!=', False)
+    ]).ids
 
     _logger.info("Creating {} Job Queues, migrating {} correspondences".format(
         len(correspondences_ids) // batch_size + 1, len(correspondences_ids)))
 
     for i in range(0, len(correspondences_ids), batch_size):
         batch = correspondences_ids[i:i+batch_size]
-        env['correspondence.migration'].with_delay(**job_options).migrate(batch)
+        env['correspondence.migration'].with_delay(**job_options).migrate(
+            batch)
