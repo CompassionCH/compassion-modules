@@ -54,7 +54,7 @@ class AppHub(models.AbstractModel):
             unpaid = partner.contracts_fully_managed + partner.contracts_paid
         else:
             sponsorships = partner.contracts_correspondant + \
-                           partner.contracts_fully_managed
+                partner.contracts_fully_managed
             unpaid = partner.contracts_fully_managed
 
         sponsorships = sponsorships.filtered('is_active')
