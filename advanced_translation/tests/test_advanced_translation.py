@@ -19,10 +19,10 @@ class AdvancedTranslationTest(SingleTransactionCase):
     def test_keyword_gender(self):
         """Testing that the correct term is returned given the recordset.
         """
-        self.assertEquals(self.males[:1].get('his'), 'his')
-        self.assertEquals(self.males.get('his'), 'their(m)')
-        self.assertEquals(self.females[:1].get('his'), 'her')
-        self.assertEquals(self.females.get('his'), 'their(f)')
+        self.assertEquals(self.males[:1].get('demo_his'), 'his')
+        self.assertEquals(self.males.get('demo_his'), 'their(m)')
+        self.assertEquals(self.females[:1].get('demo_his'), 'her')
+        self.assertEquals(self.females.get('demo_his'), 'their(f)')
 
     def test_missing_keyword(self):
         """Missing keyword should return the translation of the term."""
