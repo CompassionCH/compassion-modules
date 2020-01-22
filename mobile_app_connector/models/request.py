@@ -12,6 +12,8 @@
 import logging
 
 from odoo import models, api, _
+from datetime import datetime
+from odoo.tools import html_escape as escape
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +63,50 @@ class CrmClaim(models.Model):
                            subject=_("Original request from %s %s ") %
                            (firstname, lastname))
 
+        partner = self.env['res.partner'].browse(int(contact_id))
+        if partner:
+            self.create_email_for_interaction_resume(subject, question, partner)
+
         return {
             "FeedbackAndContactusResult": _("Your question was well received")
         }
+
+    def create_email_for_interaction_resume(self, subject, body, partner):
+        """
+        Creates a mail to make the new request appear on the interaction resume
+        :param subject: subject of email
+        :param body: body of email
+        :param partner: partner making the request
+        :return: None
+        """
+        mail = self.env['mail.mail'].create({
+            'state': 'sent',
+            # 'recipient_ids': [(4, contact_id)],
+            'subject': subject,
+            'body_html': body,
+            'author_id': partner.id,
+            'email_from': partner.email,
+            'sent_date': datetime.today(),
+            'mail_message_id': self.env['mail.message'].create({
+                'model': 'res.partner',
+                'res_id': partner.id,
+                'body': escape(body),
+                'subject': subject,
+                'author_id': partner.id,
+                'subtype_id': self.env.ref('mail.mt_comment').id,
+                'date': datetime.today(),
+            }).id
+        })
+
+        self.env['mail.tracking.email'].sudo().create({
+            'mail_id': mail.id,
+            'recipient_address': partner.email,
+            'partner_id': partner.id
+        })
+
+        config = self.env.ref('partner_communication.default_communication')
+        self.env['partner.communication.job'].sudo().create({
+            'partner_id': partner.id,
+            'config_id': config.id,
+            'auto_send': False
+        })
