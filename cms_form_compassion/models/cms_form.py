@@ -95,6 +95,7 @@ class CMSForm(models.AbstractModel):
                 'error_count': err_count,
                 'error_message': str(err),
                 'error_type': err_class,
+                'user_id': self.env.uid,
                 'user_input': user_input,
             }, skipkeys=True, indent=4, ensure_ascii=True, sort_keys=True),
         }
