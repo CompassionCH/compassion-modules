@@ -96,6 +96,7 @@ class Correspondence(models.Model):
     # Whether the pdf should be stored on creation or generated when needed
     store_letter_image = fields.Boolean("Store PDF letter", default=True)
     letter_image = fields.Binary(attachment=True)
+    b64image = fields.Binary(compute='_compute_b64_image')
     file_name = fields.Char()
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
@@ -418,6 +419,11 @@ class Correspondence(models.Model):
             letter.is_final_letter = \
                 'Final Letter' in letter.communication_type_ids.mapped(
                     'name') or letter.sponsorship_state != 'active'
+
+    @api.multi
+    def _compute_b64_image(self):
+        for letter in self:
+            letter.b64image = base64.b64encode(letter.get_image())
 
     ##########################################################################
     #                              ORM METHODS                               #
