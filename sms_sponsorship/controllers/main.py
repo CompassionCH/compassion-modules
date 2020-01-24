@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -71,8 +70,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             partner = sms_child_request.partner_id
             result['lang'] = body.get('lang', sms_child_request.lang_code[:2])
             if sms_child_request.partner_id:
-                result['partner'] = partner.read(['firstname', 'lastname',
-                                                  'email'])
+                result['partner'] = partner.read(['firstname', 'lastname', 'email'])
                 if not result['partner'][0]['email']:
                     result['partner'][0]['email'] = ''
             return result
@@ -117,7 +115,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         else:
             tw['gender'] = False
         if body['age'] != '':
-            tw['min_age'], tw['max_age'] = map(int, body['age'].split('-'))
+            tw['min_age'], tw['max_age'] = list(map(int, body['age'].split('-')))
         else:
             tw['min_age'], tw['max_age'] = False, False
         if body['country']:
@@ -141,8 +139,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
            auth='public', website=True, noindex=['robots', 'meta', 'header'])
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
-        sponsorship = request.env['recurring.contract'].sudo().browse(
-            sponsorship_id)
+        sponsorship = request.env['recurring.contract'].sudo().browse(sponsorship_id)
         if sponsorship.sms_request_id.state == 'step2':
             # Sponsorship is already confirmed
             return self.sms_registration_confirmation(sponsorship.id, **kwargs)
@@ -165,8 +162,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         :param sponsorship_id: the sponsorship
         :return: The view to render
         """
-        sponsorship = request.env['recurring.contract'].sudo().browse(
-            sponsorship_id)
+        sponsorship = request.env['recurring.contract'].sudo().browse(sponsorship_id)
         values = {
             'sponsorship': sponsorship
         }
@@ -182,5 +178,4 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                   "still been activated! You will be able to pay later using "
                   "your selected payment method."),
                 type_='danger')
-        return request.render(
-            'sms_sponsorship.sms_registration_confirmation', values)
+        return request.render('sms_sponsorship.sms_registration_confirmation', values)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -81,7 +80,7 @@ if not testing:
         @property
         def form_widgets(self):
             # Hide fields
-            res = super(PartnerSmsRegistrationForm, self).form_widgets
+            res = super().form_widgets
             res.update({
                 'amount': 'cms_form_compassion.form.widget.hidden',
                 'acquirer_ids':
@@ -111,8 +110,7 @@ if not testing:
         def form_before_create_or_update(self, values, extra_values):
             sponsorship = self.main_object.sudo()
             values['partner_id'] = sponsorship.partner_id.id
-            super(PartnerSmsRegistrationForm,
-                  self).form_before_create_or_update(values, extra_values)
+            super().form_before_create_or_update(values, extra_values)
 
         def _form_write(self, values):
             """ Nothing to do on write, we handle everything in other methods.
@@ -132,9 +130,9 @@ if not testing:
                 sponsorship.with_delay(eta=delay).create_first_sms_invoice()
             message_post_values = self._get_post_message_values(extra_values)
             if message_post_values:
-                body = u"<ul>{}</ul>".format(u"".join(
-                    [u"<li>{}: {}</li>".format(k, v) for k, v in
-                     message_post_values.iteritems()]
+                body = "<ul>{}</ul>".format("".join(
+                    ["<li>{}: {}</li>".format(k, v) for k, v in
+                     message_post_values.items()]
                 ))
                 sponsorship.with_delay().post_message_from_step2(body)
             # Store payment setting for redirection
@@ -142,8 +140,7 @@ if not testing:
 
         def form_next_url(self, main_object=None):
             if self.pay_first_month_ebanking:
-                return super(PartnerSmsRegistrationForm, self).form_next_url(
-                    main_object)
+                return super().form_next_url(main_object)
             else:
                 return self._payment_accept_redirect
 
@@ -166,7 +163,7 @@ if not testing:
             return values
 
         def _get_partner_keys(self):
-            res = super(PartnerSmsRegistrationForm, self)._get_partner_keys()
+            res = super()._get_partner_keys()
             res.extend(['lang'])
             res.remove('state_id')
             return res

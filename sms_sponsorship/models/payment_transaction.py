@@ -1,4 +1,3 @@
-# coding: utf-8
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -28,11 +27,11 @@ class PaymentTransaction(models.Model):
                     transaction.reference:
                 transaction.invoice_id = transaction.sponsorship_id\
                     .invoice_line_ids[-1].invoice_id
-        return super(PaymentTransaction, self).confirm_transaction()
+        return super().confirm_transaction()
 
     def _get_auto_post_invoice(self):
         # The payment can only be posted if the sponsor was not created.
         if 'SMS-1MONTH-' in self.reference:
             return not self.sponsorship_id.sms_request_id.new_partner
         else:
-            return super(PaymentTransaction, self)._get_auto_post_invoice()
+            return super()._get_auto_post_invoice()

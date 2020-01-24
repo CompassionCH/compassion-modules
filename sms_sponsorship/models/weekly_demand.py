@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -20,7 +19,7 @@ class WeeklyDemand(models.Model):
     @api.depends('week_start_date', 'week_end_date')
     @api.multi
     def _compute_demand_events(self):
-        super(WeeklyDemand, self)._compute_demand_events()
+        super()._compute_demand_events()
         for week in self.filtered('week_start_date').filtered('week_end_date'):
             # ADD SMS demand to the previsions
             events = self.env['crm.event.compassion'].search([

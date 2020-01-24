@@ -8,12 +8,15 @@
     <!-- Configuration View -->
     <record id="view_notification_settings_sms_form" model="ir.ui.view">
         <field name="name">staff.notification.settings.sms.form</field>
-        <field name="model">staff.notification.settings</field>
-        <field name="inherit_id" ref="child_compassion.view_notification_settings_form"/>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="child_compassion.compassion_settings"/>
         <field name="arch" type="xml">
-            <field name="disaster_notify_ids" position="after">
-                <field name="new_partner_notify_ids" widget="many2many_tags"/>
-            </field>
+            <xpath expr="//div[@name='notification_configuration']//div[@class='o_setting_right_pane']" position='inside'>
+                <div name="sms_new_partner">
+                    <label for="sms_new_partner_notify_ids" string="New partner via SMS sponsorship" class="o_light_label"/>
+                    <field name="sms_new_partner_notify_ids" widget="many2many_tags"/>
+                </div>
+            </xpath>
         </field>
     </record>
 </odoo>

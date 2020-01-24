@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -17,7 +16,6 @@ from dateutil.relativedelta import relativedelta
 from odoo import models, api, fields, _
 from odoo.tools import config
 from odoo.addons.queue_job.job import job, related_action
-from odoo.addons.base_phone.fields import Phone
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 # By default, don't propose children older than this
@@ -29,13 +27,13 @@ test_mode = config.get('test_enable')
 
 class SmsChildRequest(models.Model):
     _name = 'sms.child.request'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'phone.validation.mixin']
     _description = 'SMS Child request'
     _rec_name = 'child_id'
     _order = 'date desc'
+    _phone_name_fields = ['sender']
 
-    sender = Phone(partner_field='partner_id',
-                   country_field='country_id')
+    sender = fields.Char('Phone')
     date = fields.Datetime(required=True, default=fields.Datetime.now)
     full_url = fields.Char(compute='_compute_full_url')
     step1_url_id = fields.Many2one('link.tracker')
@@ -61,8 +59,9 @@ class SmsChildRequest(models.Model):
         compute='_compute_event', inverse='_inverse_event', store=True
     )
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
-    sponsorship_confirmed = fields.Boolean('Sponsorship confirmed')
-    lang_code = fields.Char('Language', required=True)
+    sponsorship_confirmed = fields.Boolean('Sponsorship confirmed', readonly=True)
+    lang_code = fields.Selection('select_lang', required=True,
+                                 default=lambda s: s.env.lang)
     source = fields.Char()
 
     # Filter criteria made by sender
@@ -78,7 +77,7 @@ class SmsChildRequest(models.Model):
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
              "It prevents to fetch multiple children.")
-    sms_reminder_sent = fields.Boolean(default=False)
+    sms_reminder_sent = fields.Boolean(default=False, readonly=True)
     has_filter = fields.Boolean(compute='_compute_has_filter')
 
     @api.multi
@@ -109,9 +108,14 @@ class SmsChildRequest(models.Model):
     @api.multi
     def _compute_has_filter(self):
         for request in self:
-            request.has_filter = request.gender or request.min_age or \
-                request.field_office_id or (request.max_age and
-                                            request.max_age != DEFAULT_MAX_AGE)
+            request.has_filter = \
+                request.gender or request.min_age or request.field_office_id or \
+                (request.max_age and request.max_age != DEFAULT_MAX_AGE)
+
+    @api.model
+    def select_lang(self):
+        langs = self.env['res.lang'].search([])
+        return [(lang.code, lang.name) for lang in langs]
 
     @api.model
     def create(self, vals):
@@ -126,13 +130,12 @@ class SmsChildRequest(models.Model):
             if partner and len(partner) == 1:
                 vals['partner_id'] = partner.id
                 vals['lang_code'] = partner.lang
-        request = super(SmsChildRequest, self).create(vals)
-        base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url') + '/'
+        request = super().create(vals)
+        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
-                'url': base_url + request.lang_code +
-                '/sms_sponsorship/step1/' + str(request.id),
+                'title': "Sponsor a child",
+                'url': f"{base_url}/sms_sponsorship/step1/{request.id}"
             }).id,
             'is_trying_to_fetch_child': True
         })
@@ -191,14 +194,14 @@ class SmsChildRequest(models.Model):
         :return: True
         """
         self.ensure_one()
-        base_url = self.env['ir.config_parameter'].get_param(
-            'web.external.url') + '/'
+        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
         self.write({
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
             'step2_url_id': self.env['link.tracker'].sudo().create({
-                'url': base_url + self.lang_code + '/sms_sponsorship/step2/' +
-                str(sponsorship_id)
+                'title': "Confirm your sponsorship",
+                'url': f"{base_url}/{self.lang_code}/sms_sponsorship/step2/"
+                       f"{sponsorship_id}"
             }).id
         })
         self.partner_id.sms_send_step1_confirmation(self)
@@ -224,15 +227,13 @@ class SmsChildRequest(models.Model):
 
     def take_child_from_childpool(self):
         try:
-            childpool_search = self.env[
-                'compassion.childpool.search'].create({
-                    'take': 1,
-                    'gender': self.gender,
-                    'min_age': self.min_age,
-                    'max_age': self.max_age,
-                    'field_office_ids': [(6, 0,
-                                          self.field_office_id.ids or [])]
-                })
+            childpool_search = self.env['compassion.childpool.search'].create({
+                'take': 1,
+                'gender': self.gender,
+                'min_age': self.min_age,
+                'max_age': self.max_age,
+                'field_office_ids': [(6, 0, self.field_office_id.ids or [])]
+            })
             childpool_search.with_context(skip_value=1000).do_search()
             # Request is valid two days, reminder is sent one day after
             expiration = datetime.now() + relativedelta(days=2)
@@ -243,15 +244,15 @@ class SmsChildRequest(models.Model):
                     'primary_owner': self.env.uid,
                     'event_id': self.event_id.id,
                     'campaign_id': self.event_id.campaign_id.id,
-                    'ambassador': self.event_id.user_id.partner_id.id or
-                    self.env.uid,
+                    'ambassador': self.event_id.user_id.partner_id.id or self.env.uid,
                     'channel': 'sms',
                     'source_code': 'sms_sponsorship',
                     'return_action': 'view_holds'
                 }
             ).send()
             child_hold = self.env['compassion.hold'].browse(
-                result_action['domain'][0][2])
+                result_action['domain'][0][2]
+            )
             child_hold.sms_request_id = self.id
             if child_hold.state == 'active':
                 self.write({
@@ -267,7 +268,7 @@ class SmsChildRequest(models.Model):
         except:
             _logger.error("Error during SMS child reservation", exc_info=True)
             self.env.cr.rollback()
-            self.env.invalidate_all()
+            self.env.clear()
             return False
         finally:
             self.is_trying_to_fetch_child = False
@@ -312,8 +313,7 @@ class SmsChildRequest(models.Model):
         country_match = not self.field_office_id or \
             self.field_office_id == child.field_office_id
 
-        return gender_match and min_age_match and max_age_match and \
-            country_match
+        return gender_match and min_age_match and max_age_match and country_match
 
     @api.multi
     def send_step1_reminder(self):
@@ -357,8 +357,8 @@ class SmsChildRequest(models.Model):
         ])
 
         # send staff notification
-        notify_ids = self.env['staff.notification.settings'].get_param(
-            'new_partner_notify_ids')
+        notify_ids = self.env['res.config.settings'].get_param(
+            'sms_new_partner_notify_ids')
         if nb_sms_requests and notify_ids:
             self.message_post(
                 body=_("{} partner(s) have ongoing SMS Sponsorship").format(
