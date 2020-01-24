@@ -109,5 +109,5 @@ class FirebaseRegistration(models.Model):
                         "Firebase ID: %s" % firebase_id)
                     firebase_id.unlink()
                 else:
-                    raise ex
+                    raise
         return True

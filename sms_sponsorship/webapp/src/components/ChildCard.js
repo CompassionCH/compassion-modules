@@ -42,7 +42,7 @@ const styles = {
         alignItems: 'center'
     },
     cardAction: {
-        padding: '20px'
+        padding: '25px'
     }
 };
 
@@ -70,7 +70,7 @@ function SimpleMediaCard(props) {
                 <CardActions className={classes.cardAction}>
                     <ChildDetails appContext={props.appContext} t={t}/>
                 </CardActions>
-                    <div style={{padding: '0 20px'}}>
+                    <div style={{padding: '0 25px'}}>
                         <Button variant="outlined"
                             onClick={() => { props.appContext.setState({dialogOpen: true}) }}
                             color="primary"

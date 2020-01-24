@@ -47,7 +47,7 @@ class CorrespondenceMigration(models.AbstractModel):
     _name = 'correspondence.migration'
 
     @job(default_channel='root.sbc_compassion_migration')
-    @api.multi
+    @api.model
     def migrate(self, correspondences_ids):
 
         templates_backgrounds_sizes = get_template_background_sizes(self.env)

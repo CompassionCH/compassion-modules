@@ -53,6 +53,7 @@ class Main extends React.Component {
         success: false,
         langDialog: false,
         langChanged: false,
+        dialogOpen: false,
     };
 
     count_try = 0;
