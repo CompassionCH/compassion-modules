@@ -60,7 +60,7 @@ class MobileAppJsonRequest(JsonRequest):
                 }
                 self.context = dict(self.session.context)
             else:
-                raise error
+                raise
 
     def _json_response(self, result=None, error=None):
         odoo_result = super(MobileAppJsonRequest, self)._json_response(
