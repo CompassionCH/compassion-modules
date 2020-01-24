@@ -104,8 +104,8 @@ class RecurringContract(models.Model):
     @related_action(action='related_action_contract')
     def post_message_from_step2(self, message):
         # Post message in sponsorship
-        notify_ids = self.env['staff.notification.settings'].get_param(
-            'new_partner_notify_ids')
+        notify_ids = self.env['res.config.settings'].get_param(
+            'sms_new_partner_notify_ids')
         intro = _(
             "Please verify the following information given by the sponsor:")
         return self.message_post(
