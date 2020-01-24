@@ -12,7 +12,7 @@
 import logging
 import cgi
 
-from odoo import models, api, _
+from odoo import models, api, _, fields
 from datetime import datetime
 from odoo.tools import html_escape as escape
 
@@ -80,17 +80,16 @@ class CrmClaim(models.Model):
         Creates a mail to make the new request appear on the interaction resume
         :param subject: subject of email
         :param body: body of email
+        :param message: mail.message
         :param partner: partner making the request
         :return: None
         """
-        mail = self.env['mail.mail'].create({
+        self.env['mail.mail'].create({
             'state': 'sent',
-            # 'recipient_ids': [(4, contact_id)],
             'subject': subject,
             'body_html': body,
             'author_id': partner.id,
             'email_from': partner.email,
-            'sent_date': datetime.today(),
             'mail_message_id': self.env['mail.message'].create({
                 'model': 'res.partner',
                 'res_id': partner.id,
@@ -98,19 +97,6 @@ class CrmClaim(models.Model):
                 'subject': subject,
                 'author_id': partner.id,
                 'subtype_id': self.env.ref('mail.mt_comment').id,
-                'date': datetime.today(),
+                'date': fields.Datetime.now(),
             }).id
-        })
-
-        self.env['mail.tracking.email'].sudo().create({
-            'mail_id': mail.id,
-            'recipient_address': partner.email,
-            'partner_id': partner.id
-        })
-
-        config = self.env.ref('partner_communication.default_communication')
-        self.env['partner.communication.job'].sudo().create({
-            'partner_id': partner.id,
-            'config_id': config.id,
-            'auto_send': False
         })
