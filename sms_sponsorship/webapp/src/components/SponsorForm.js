@@ -56,7 +56,7 @@ class TextFields extends React.Component {
             partner: props.appContext.state.partner,
             snackBarOpen: false,
             formErrors: false,
-            message: ''
+            message: '',
         };
 
         if (!this.state.partner) {
@@ -144,14 +144,19 @@ class TextFields extends React.Component {
 
         return (
             <div>
-                <div style={{marginBottom: '25px'}}>
+                <Typography variant="title" style={{color: '#555555', marginLeft: '8px'}}>
+                    {t("coordinates")}
+                </Typography>
+                <div style={{marginTop: '25px'}}>
                         <Button variant="outlined"
                             onClick={() => {
+                                let sponsor_form = document.forms.sponsor_form;
                                 partner.firstname = '';
                                 partner.lastname = '';
                                 partner.email = '';
+                                sponsor_form.email2.value = '';
                                 this.setState({
-                                    partner: partner
+                                    partner: partner,
                                 });
                             }
                             }
@@ -162,9 +167,6 @@ class TextFields extends React.Component {
                         {t('newSponsor')}
                     </Button>
                 </div>
-                <Typography variant="title" style={{color: '#555555', marginLeft: '8px'}}>
-                    {t("coordinates")}
-                </Typography>
                 <form id="sponsor_form" className={classes.container} noValidate autoComplete="off">
                     <TextField
                         id="firstname"
