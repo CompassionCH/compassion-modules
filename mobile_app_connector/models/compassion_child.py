@@ -48,11 +48,12 @@ class CompassionChild(models.Model):
         children_pictures = self.sudo().mapped('pictures_ids')
         project = self.sudo().mapped('project_id')
 
-        if not self:
-            return {}
-        mapping = MobileChildMapping(self.env)
         if not wrapper:
             wrapper = 'Children' if multi else 'Child'
+        if not self:
+            return {wrapper: []}
+
+        mapping = MobileChildMapping(self.env)
         if len(self) == 1 and not multi:
             data = mapping.get_connect_data(self)
         else:
