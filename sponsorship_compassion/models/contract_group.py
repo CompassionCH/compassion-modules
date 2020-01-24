@@ -28,7 +28,8 @@ class ContractGroup(models.Model):
 
     contains_sponsorship = fields.Boolean(
         string='Contains sponsorship', compute='_compute_contains_sponsorship',
-        readonly=True, default=lambda self: 'S' in self.env.context.get(
+        readonly=True, default=lambda s: s.env.context.get(
+            'default_type', None) and 'S' in s.env.context.get(
             'default_type', 'O'))
     change_method = fields.Selection(default='clean_invoices')
 
