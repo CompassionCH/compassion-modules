@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models
+from odoo import models, _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import logging
 import traceback
@@ -9,8 +9,29 @@ from datetime import datetime, timedelta
 _logger = logging.getLogger(__name__)
 
 
+def _form_validate_date_fields(value, **req_values):
+    try:
+        if value:
+            datetime.strptime(value, '%d.%m.%Y')
+    except ValueError:
+        return "date", _('Dates should follow the format "dd.mm.yyyy"')
+    return 0, 0
+
+
 class CMSForm(models.AbstractModel):
     _inherit = 'cms.form'
+
+    #######################################################################
+    #                         Field validation                            #
+    #######################################################################
+
+    _form_validators = {
+        'date': _form_validate_date_fields
+    }
+
+    #######################################################################
+    #                          Errors logging                             #
+    #######################################################################
 
     def form_process(self, **kw):
         """Catch, log and propagate the error thrown during the form processing"""
@@ -69,11 +90,12 @@ class CMSForm(models.AbstractModel):
             'line': "",
             'func': "",
             'context_data': json.dumps({
-                # Addition data for debugging
+                # Additional data for debugging
                 'form_name': self._name,
                 'error_count': err_count,
                 'error_message': str(err),
                 'error_type': err_class,
+                'user_id': self.env.uid,
                 'user_input': user_input,
             }, skipkeys=True, indent=4, ensure_ascii=True, sort_keys=True),
         }

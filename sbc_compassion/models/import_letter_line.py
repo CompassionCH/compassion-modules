@@ -44,6 +44,11 @@ class ImportLetterLine(models.Model):
         ("ok", _("OK"))], compute="_compute_check_status",
         store=True, readonly=True)
     original_text = fields.Text()
+    original_attachment_ids = fields.One2many('ir.attachment', 'res_id',
+                                              domain=[('res_model', '=', _name)],
+                                              readonly=True,
+                                              ondelete='cascade',
+                                              string="Attached images")
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -135,5 +140,19 @@ class ImportLetterLine(models.Model):
             if line.is_encourager:
                 vals['relationship'] = 'Encourager'
             del vals['is_encourager']
+
+            if line.source == 'website':
+                # To save disk space, we prefer storing the text, images and template_id
+                # rather than the PDF (which contains a large background).
+                del vals['letter_image']
+                vals['store_letter_image'] = False
+                if line.original_attachment_ids:
+                    vals['original_attachment_ids'] = [(0, 0, {
+                        'datas_fname': atchmt.datas_fname,
+                        'datas': atchmt.datas,
+                        'name': atchmt.name,
+                        'res_model': 'correspondence',
+                    }) for atchmt in line.original_attachment_ids]
+
             letter_data.append(vals)
         return letter_data

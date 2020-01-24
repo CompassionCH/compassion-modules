@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2019 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino, Emmanuel Mathier
 #
@@ -93,14 +93,17 @@ class Correspondence(models.Model):
 
     # 2. Attachments and scans
     ##########################
+    # Whether the pdf should be stored on creation or generated when needed
+    store_letter_image = fields.Boolean("Store PDF letter", default=True)
     letter_image = fields.Binary(attachment=True)
+    b64image = fields.Binary(compute='_compute_b64_image')
     file_name = fields.Char()
     letter_format = fields.Selection([
         ('pdf', 'pdf'), ('tiff', 'tiff'), ('zip', 'zip')],
         compute='_compute_letter_format', store=True)
 
-    # 3. Letter language and text information
-    #########################################
+    # 3. Letter language, text information, attached images
+    #######################################################
     supporter_languages_ids = fields.Many2many(
         related='partner_id.spoken_lang_ids', readonly=True)
     beneficiary_language_ids = fields.Many2many(
@@ -120,6 +123,13 @@ class Correspondence(models.Model):
     translated_text = fields.Text(
         compute='_compute_translated_text',
         inverse='_inverse_translated')
+    original_attachment_ids = fields.One2many(
+        'ir.attachment', 'res_id',
+        readonly=True,
+        domain=[('res_model', '=', _name)],
+        ondelete='cascade',
+        string="Attached images"
+    )
     page_ids = fields.One2many(
         'correspondence.page', 'correspondence_id')
     nbr_pages = fields.Integer(
@@ -213,7 +223,7 @@ class Correspondence(models.Model):
             ('Field Office transcribing translation and content check '
              'process', _('FO content check')),  # *
             ('Field Office translation queue', _('SDL FO Translation Queue')),
-            ('In Translation', _('SDL FO Translation')),    # *
+            ('In Translation', _('SDL FO Translation')),  # *
             ('Quality check queue', _('Quality Check Queue')),
             ('Quality check process', _('Quality Check Process')),
             ('Translation and quality check complete',
@@ -334,6 +344,7 @@ class Correspondence(models.Model):
                                 pages_text[i].strip('\n'))
                     last_page_text = getattr(letter.page_ids[i], field)
                     last_page_text += '\n\n' + '\n\n'.join(pages_text[i + 1:])
+                    setattr(letter.page_ids[i], field, last_page_text)
             else:
                 for i in range(0, len(pages_text)):
                     letter.page_ids.create({
@@ -352,14 +363,16 @@ class Correspondence(models.Model):
     @api.depends('letter_image')
     def _compute_letter_format(self):
         for letter in self.filtered('letter_image'):
-            ftype = magic.from_buffer(base64.b64decode(
-                letter.letter_image), True)
-            if 'pdf' in ftype:
+            if self.store_letter_image:
+                ftype = magic.from_buffer(base64.b64decode(letter.letter_image), True)
+                if 'pdf' in ftype:
+                    letter.letter_format = 'pdf'
+                elif 'tiff' in ftype:
+                    letter.letter_format = 'tiff'
+                elif 'zip' in ftype:
+                    letter.letter_format = 'zip'
+            else:
                 letter.letter_format = 'pdf'
-            elif 'tiff' in ftype:
-                letter.letter_format = 'tiff'
-            elif 'zip' in ftype:
-                letter.letter_format = 'zip'
 
     @api.multi
     @api.depends('translator')
@@ -407,13 +420,20 @@ class Correspondence(models.Model):
                 'Final Letter' in letter.communication_type_ids.mapped(
                     'name') or letter.sponsorship_state != 'active'
 
+    @api.multi
+    def _compute_b64_image(self):
+        for letter in self:
+            letter.b64image = base64.b64encode(letter.get_image())
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
         """ Fill missing fields.
-        Letter image field is in binary so we convert to ir.attachment
+        The field `letter_image` is a binary and will be stored in an ir.attachment
+        If `stored_letter_image` is set to False, `letter_image` is dropped and PDFs
+        will be generated when requested using the template and
         """
         if vals.get('direction',
                     'Supporter To Beneficiary') == 'Supporter To Beneficiary':
@@ -434,6 +454,9 @@ class Correspondence(models.Model):
                         'Received in the system') == 'Received in the system':
                 vals['state'] = 'Published to Global Partner'
 
+        if vals.get('store_letter_image', True) is False:
+            vals['letter_image'] = False
+
         type_ = '.pdf'
         letter_data = False
         if vals.get('letter_image'):
@@ -446,6 +469,7 @@ class Correspondence(models.Model):
             else:
                 raise UserError(
                     _('You can only attach tiff or pdf files'))
+
         letter = super(Correspondence, self).create(vals)
         letter.file_name = letter._get_file_name()
         if letter_data and type_ == '.pdf':
@@ -467,6 +491,8 @@ class Correspondence(models.Model):
             vals['status_date'] = fields.Datetime.now()
         if 'translator_id' in vals:
             vals['translate_date'] = fields.Datetime.now()
+        if 'letter_image' in vals and self.store_letter_image is False:
+            vals['letter_image'] = False
         return super(Correspondence, self).write(vals)
 
     @api.multi
@@ -501,7 +527,7 @@ class Correspondence(models.Model):
                 'child_id': letter.child_id.id,
                 'partner_id': letter.partner_id.id
             })
-            if letter.sponsorship_id.state not in ('active', 'terminated') or\
+            if letter.sponsorship_id.state not in ('active', 'terminated') or \
                     letter.child_id.project_id.hold_s2b_letters:
                 message.state = 'postponed'
                 if letter.child_id.project_id.hold_s2b_letters:
@@ -525,8 +551,42 @@ class Correspondence(models.Model):
         :return: True if the composition succeeded, False otherwise
         """
         self.ensure_one()
+
         template = self.template_id.with_context(lang=self.partner_id.lang)
-        image_data = base64.b64decode(self.letter_image)
+        image_data = self.get_image()
+        if not template or not image_data:
+            return False
+        source_text, text_boxes = self._get_translation_boxes()
+        # Extract pages and additional images
+        pages = []
+        images = []
+        with(Image(blob=image_data, resolution=150)) as page_image:
+            for i in page_image.sequence:
+                pages.append(base64.b64encode(Image(i).make_blob('jpg')))
+                # For additional pages, check if the page contains text.
+                # If not, it is considered as a picture attachment.
+                if i.index > 1:
+                    text = ''
+                    if len(self.page_ids) >= i.index + 1:
+                        text = getattr(self.page_ids[i.index], source_text, '')
+                    if len(text.strip()) < 5:
+                        images.append(pages.pop(i.index - len(images)))
+
+        self.letter_image = base64.b64encode(template.generate_pdf(
+            self.name, {}, {'Translation': text_boxes}, images, pages))
+
+        return True
+
+    def _get_translation_boxes(self):
+        """
+         Used to fetch the translation of a letter and spread it into
+        the translation boxes to be used in the composition of the letter
+        done with FPDF.
+        :return: field name used to fetch translation
+                 (english_text/translated_text),
+                 list of translation boxes (containing the translation text)
+        """
+        text_boxes = []
         pages = self.page_ids
         if self.translated_text:
             source = 'translated_text'
@@ -541,15 +601,14 @@ class Correspondence(models.Model):
                 # Avoid capturing english text that hasn't been translated
                 pages = pages.filtered(source).filtered(
                     lambda p: "".join((p.translated_text or "").split()) !=
-                    "".join((p.english_text or "").split()))
+                              "".join((p.english_text or "").split()))
         else:
             source = 'english_text'
-        if not getattr(self, source) or not template or not image_data:
-            return False
+        if not getattr(self, source):
+            return text_boxes
 
         # Get the text boxes separately
         text_pages = pages.mapped(source)
-        text_boxes = []
         for index, text in enumerate(text_pages):
             # Skip pages that should not contain anything
             page_layout = self.template_id.page_ids.filtered(
@@ -559,25 +618,7 @@ class Correspondence(models.Model):
             text_boxes.extend([
                 t.strip() for t in text.split(BOX_SEPARATOR)])
 
-        # Extract pages and additional images
-        pages = []
-        images = []
-        with(Image(blob=image_data, resolution=150)) as page_image:
-            for i in page_image.sequence:
-                pages.append(base64.b64encode(Image(i).make_blob('jpg')))
-                # For additional pages, check if the page contains text.
-                # If not, it is considered as a picture attachment.
-                if i.index > 1:
-                    text = ''
-                    if len(self.page_ids) >= i.index + 1:
-                        text = getattr(self.page_ids[i.index], source, '')
-                    if len(text.strip()) < 5:
-                        images.append(pages.pop(i.index - len(images)))
-
-        self.letter_image = base64.b64encode(template.generate_pdf(
-            self.name, {}, {'Translation': text_boxes}, images, pages))
-
-        return True
+        return text_boxes
 
     @api.model
     def process_commkit(self, commkit_data):
@@ -624,7 +665,7 @@ class Correspondence(models.Model):
         onramp = SBCConnector()
         for letter in self.filtered(lambda l: not l.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
-                letter.letter_image, letter.letter_format)
+                letter.get_image(), letter.letter_format, base64encoded=False)
 
     @api.multi
     def enrich_letter(self, vals):
@@ -676,8 +717,46 @@ class Correspondence(models.Model):
     def get_image(self):
         """ Method for retrieving the image """
         self.ensure_one()
-        data = base64.b64decode(self.letter_image)
-        return data
+
+        if not self.store_letter_image:
+            return self.generate_original_pdf()
+
+        return base64.b64decode(self.letter_image)
+
+    def generate_original_pdf(self):
+        """
+        For S2B
+        Generate a PDF with `template_id`, `original_attachment_ids` and `original_text`
+        """
+        self.ensure_one()
+        sponsor = self.sponsorship_id.correspondent_id
+        child = self.sponsorship_id.child_id
+        pdf_name = self.name
+
+        header = u"{sponsor_id} - {sponsor_name}\n" \
+                 u"{child_id} - {child_name} - {child_gender} - {child_age}" \
+            .format(
+                sponsor_id=sponsor.global_id,
+                sponsor_name=sponsor.name,
+                child_id=child.local_id,
+                child_name=child.preferred_name,
+                child_gender=child.gender == 'F' and 'Female' or 'Male',
+                child_age=child.age
+            ).encode('utf8')
+
+        image_data = self.mapped('original_attachment_ids.datas') or []
+        translation_boxes = self._get_translation_boxes()
+        return self.template_id.generate_pdf(
+            pdf_name, (header, ''), {'Original': [self.original_text],
+                                     'Translation': translation_boxes},
+            image_data)
+
+    def download_pdf(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/pdf/correspondence?object_id={}'.format(self.id),
+            'target': 'self',
+        }
 
     def hold_letters(self, message='Project suspended'):
         """ Prevents to send S2B letters to GMC. """
@@ -738,7 +817,7 @@ class Correspondence(models.Model):
                 })
                 attachments.unlink()
             if not test_mode:
-                self.env.cr.commit()    # pylint: disable=invalid-commit
+                self.env.cr.commit()  # pylint: disable=invalid-commit
             index += 1
         return True
 

@@ -218,7 +218,7 @@ Make a donation]]></field>
         <field name="code">LE1</field>
         <field name="view_order">1</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
-        <field name="default_records_filter">lambda c: c.correspondent_id == c.env.user.partner_id</field>
+        <field name="default_records_filter"></field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body"><![CDATA[% set sponsorship = ctx['objects'].sudo()
 % set letters = sponsorship.sponsor_letter_ids
@@ -255,7 +255,7 @@ You never wrote to your sponsored child.
         <field name="code">LE_T2</field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_correspondence"/>
-        <field name="default_records_filter">lambda c: c.direction == 'Supporter To Beneficiary' and c.letter_image</field>
+        <field name="default_records_filter">lambda c: c.direction == 'Supporter To Beneficiary' and (c.letter_image or not c.store_letter_image)</field>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
         <field name="default_body">You wrote a letter on ${ctx['objects'].get_date('scanned_date')}</field>
         <field name="default_action_text">Read again</field>

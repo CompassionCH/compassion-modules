@@ -60,7 +60,7 @@ class MobileAppJsonRequest(JsonRequest):
                 }
                 self.context = dict(self.session.context)
             else:
-                raise error
+                raise
 
     def _json_response(self, result=None, error=None):
         odoo_result = super(MobileAppJsonRequest, self)._json_response(
@@ -88,4 +88,5 @@ class MobileAppJsonRequest(JsonRequest):
                 'http_status': code,
                 'message': str(exception)
             })
-        raise exception
+        # RE-Raise last error, without compromising the StackTrace
+        raise

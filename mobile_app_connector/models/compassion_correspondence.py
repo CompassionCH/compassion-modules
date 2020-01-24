@@ -99,7 +99,8 @@ class CompassionCorrespondence(models.Model):
         letter_id = other_params.get('correspondenceid')
         if letter_id:
             letter = self.browse(int(letter_id))
-            if letter.exists() and letter.letter_image:
+            if letter.exists() and (letter.letter_image or not
+                                    letter.store_letter_image):
                 letter.email_read = fields.Datetime.now()
                 return host + "/b2s_image?id=" + letter.uuid
         raise NotFound("Letter with id {} not found".format(letter_id))
@@ -164,7 +165,8 @@ class CompassionCorrespondence(models.Model):
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body': escape(body),
             's2b_template_id': int(template_id),
-            'image_ids': datas
+            'image_ids': datas,
+            'source': 'app'
         })
         gen.onchange_domain()
         # We commit otherwise the generation fails
