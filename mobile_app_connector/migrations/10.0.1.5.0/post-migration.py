@@ -13,6 +13,7 @@ import re
 
 TAG_RE = re.compile(r'<[^>]+>')
 
+
 @openupgrade.migrate(use_env=True)
 def migrate(env, version):
     if not version:
@@ -32,7 +33,8 @@ def migrate(env, version):
 
     # Create a mail for each claim
     for claim in claims:
-        # Filter requests on description TODO-> have a better way of filtering instead of a static String ?
+        # Filter requests on description
+        # TODO -> have a better way of filtering instead of a static String ?
         og_requests_claims = claim.message_ids.filtered(
             lambda m: "Original request" in m.description)
         if og_requests_claims:
