@@ -604,6 +604,11 @@ class Correspondence(models.Model):
                               "".join((p.english_text or "").split()))
         else:
             source = 'english_text'
+            # Avoid capturing translations that are the same text as the
+            # original text.
+            pages = pages.filtered(source).filtered(
+                lambda p: "".join((p.english_text or "").split()) !=
+                          "".join((p.original_text or "").split()))
         if not getattr(self, source):
             return text_boxes
 
@@ -618,7 +623,7 @@ class Correspondence(models.Model):
             text_boxes.extend([
                 t.strip() for t in text.split(BOX_SEPARATOR)])
 
-        return text_boxes
+        return source, text_boxes
 
     @api.model
     def process_commkit(self, commkit_data):
@@ -745,7 +750,7 @@ class Correspondence(models.Model):
             ).encode('utf8')
 
         image_data = self.mapped('original_attachment_ids.datas') or []
-        translation_boxes = self._get_translation_boxes()
+        source, translation_boxes = self._get_translation_boxes()
         return self.template_id.generate_pdf(
             pdf_name, (header, ''), {'Original': [self.original_text],
                                      'Translation': translation_boxes},
