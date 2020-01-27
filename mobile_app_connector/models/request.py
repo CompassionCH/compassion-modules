@@ -13,7 +13,6 @@ import logging
 import cgi
 
 from odoo import models, api, _, fields
-from datetime import datetime
 from odoo.tools import html_escape as escape
 
 logger = logging.getLogger(__name__)
