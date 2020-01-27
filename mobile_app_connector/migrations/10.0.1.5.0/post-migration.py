@@ -9,8 +9,9 @@
 #
 ##############################################################################
 from openupgradelib import openupgrade
-from odoo.tools import html_escape as escape
+import re
 
+TAG_RE = re.compile(r'<[^>]+>')
 
 @openupgrade.migrate(use_env=True)
 def migrate(env, version):
@@ -31,19 +32,26 @@ def migrate(env, version):
 
     # Create a mail for each claim
     for claim in claims:
-        env['mail.mail'].create({
-            'state': 'sent',
-            'subject': claim.subject,
-            'body_html': claim.name,
-            'author_id': claim.partner_id.id,
-            'email_from': claim.email_from,
-            'mail_message_id': env['mail.message'].create({
-                'model': 'res.partner',
-                'res_id': claim.partner_id.id,
-                'body': escape(claim.name),
-                'subject': claim.subject,
-                'author_id': claim.partner_id.id,
-                'subtype_id': env.ref('mail.mt_comment').id,
-                'date': claim.date,
-            }).id
-        })
+        # Filter requests on description TODO-> have a better way of filtering instead of a static String ?
+        og_requests_claims = claim.message_ids.filtered(
+            lambda m: "Original request" in m.description)
+        if og_requests_claims:
+            body = TAG_RE.sub("", og_requests_claims[0].body)
+            if body:
+                env['mail.mail'].create({
+                    'state': 'sent',
+                    'subject': claim.subject,
+                    'body_html': body,
+                    'author_id': claim.partner_id.id,
+                    'email_from': TAG_RE.sub("", claim.email_from),
+                    'mail_message_id': env['mail.message'].create({
+                        'model': 'res.partner',
+                        'res_id': claim.partner_id.id,
+                        'body': body,
+                        'subject': claim.subject,
+                        'author_id': claim.partner_id.id,
+                        'subtype_id': env.ref('mail.mt_comment').id,
+                        'email_from': TAG_RE.sub("", claim.email_from),
+                        'date': claim.date,
+                    }).id
+                })
