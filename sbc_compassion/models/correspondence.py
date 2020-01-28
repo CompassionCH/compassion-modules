@@ -750,11 +750,13 @@ class Correspondence(models.Model):
             ).encode('utf8')
 
         image_data = self.mapped('original_attachment_ids.datas') or []
-        source, translation_boxes = self._get_translation_boxes()
+        text_data = {'Original': [self.original_text]}
+        if self.kit_identifier:
+            # Only compose translation if the letter was already transmitted
+            # to GMC (to avoid transmitting PDF with translation boxes filled)
+            text_data['Translation'] = self._get_translation_boxes()[1]
         return self.template_id.generate_pdf(
-            pdf_name, (header, ''), {'Original': [self.original_text],
-                                     'Translation': translation_boxes},
-            image_data)
+            pdf_name, (header, ''), text_data, image_data)
 
     def download_pdf(self):
         return {
