@@ -45,10 +45,13 @@
                            statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
                     <button type="object" name="compose_letter_button"
                             string="Compose letter"
-                            states="Published to Global Partner"/>
+                            attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"/>
                     <button name="attach_original" type="object"
                             string="Replace by original"
-                            states="Published to Global Partner"/>
+                            attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"/>
+                    <button name="download_pdf" type="object"
+                            string="Download PDF"
+                            attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"/>
                 </header>
                 <sheet>
                     <h1>

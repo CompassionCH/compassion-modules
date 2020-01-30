@@ -48,11 +48,17 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env['res.partner'].browse(partner_id)
-        # TODO For now we only display the contracts for which the sponsor
-        #  is correspondent (to avoid viewing letters when he doesn't write)
-        sponsorships = (partner.contracts_correspondant +
-                        partner.contracts_fully_managed).filtered('is_active')
-        unpaid = partner.contracts_fully_managed.filtered(
+
+        if partner.app_displayed_sponsorships == "all":
+            sponsorships = partner.sponsorship_ids
+            unpaid = partner.contracts_fully_managed + partner.contracts_paid
+        else:
+            sponsorships = partner.contracts_correspondant + \
+                partner.contracts_fully_managed
+            unpaid = partner.contracts_fully_managed
+
+        sponsorships = sponsorships.filtered('is_active')
+        unpaid = unpaid.filtered(
             lambda c: not c.is_active and not c.parent_id and
             (c.state in ['waiting', 'draft']))
         children = sponsorships.mapped('child_id')
@@ -64,7 +70,10 @@ class AppHub(models.AbstractModel):
         letters = self.env['correspondence'].search([
             ('partner_id', '=', partner_id),
             ('sponsorship_id', 'in', sponsorships.ids)
-        ])
+        ],
+            # Limit letters to avoid memory errors TODO Improve performance
+            # of fetching this in the app_tile instead. See CO-2915
+            order='scanned_date desc', limit=200)
 
         available_tiles = self.env['mobile.app.tile'].search([
             ('visibility', '!=', 'public')
@@ -84,7 +93,9 @@ class AppHub(models.AbstractModel):
         }
         # TODO handle pagination properly
         limit = int(pagination.get('limit', 1000))
+        _logger.info("BEGIN RENDER TILES")
         messages = available_tiles[:limit].render_tile(tile_data)
+        _logger.info("END RENDER TILES")
 
         # GI7 is treated separately because it needs unpaid sponsorships
         msg_tmp = self.env['mobile.app.tile'].search([

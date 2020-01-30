@@ -9,11 +9,16 @@
 #
 ##############################################################################
 
-from odoo import api, models
+from odoo import api, models, fields, _
 
 
 class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
+
+    app_displayed_sponsorships = fields.Selection([
+        ("all", _("All (partner is the correspondent and/or the payer)")),
+        ("correspondent", _("Correspondent (Children the partner correspond with)")),
+    ], "Sponsorships displayed in the app", default="correspondent", required=True)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

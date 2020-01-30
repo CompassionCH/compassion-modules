@@ -49,7 +49,7 @@ class SBCConnector(OnrampConnector):
                       'in your Odoo configuration file.'))
         return SBCConnector.__instance
 
-    def send_letter_image(self, image_data, image_type):
+    def send_letter_image(self, image_data, image_type, base64encoded=True):
         """ Sends an image of a Letter to Onramp U.S. Image Upload Service.
         See http://developer.compassion.com/docs/read/compassion_connect2/
             service_catalog/Image_Submission
@@ -66,9 +66,13 @@ class SBCConnector(OnrampConnector):
         url = self._connect_url+'images/documents'
         OnrampConnector.log_message(
             'POST', url, headers, message='{image binary data not shown}')
+        if base64encoded:
+            data = base64.b64decode(image_data)
+        else:
+            data = image_data
         r = self._session.post(
             url, params=params, headers=headers,
-            data=base64.b64decode(image_data))
+            data=data)
         status = r.status_code
         if status == 201:
             letter_url = r.text

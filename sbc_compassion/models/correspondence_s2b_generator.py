@@ -12,7 +12,7 @@ import logging
 
 from io import BytesIO
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.tools.safe_eval import safe_eval
 from odoo.addons.queue_job.job import job, related_action
 
@@ -73,7 +73,15 @@ class CorrespondenceS2bGenerator(models.Model):
     nb_letters = fields.Integer(compute='_compute_nb_letters')
     preview_image = fields.Binary(readonly=True)
     preview_pdf = fields.Binary(readonly=True)
+    filename = fields.Char(compute='_compute_filename')
     month = fields.Selection('_get_months')
+
+    source = fields.Selection(selection=[
+        ('letter', _('Letter')),
+        ('email', _('E-Mail')),
+        ('website', _('Compassion website')),
+        ('app', _('Mobile app')),
+        ('compassion', _('Written by Compassion'))], default='compassion')
 
     def _compute_nb_letters(self):
         for generator in self:
@@ -82,6 +90,10 @@ class CorrespondenceS2bGenerator(models.Model):
     @api.model
     def _get_months(self):
         return self.env['compassion.child']._get_months()
+
+    def _compute_filename(self):
+        for generator in self:
+            generator.filename = generator.name + '.pdf'
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -161,16 +173,25 @@ class CorrespondenceS2bGenerator(models.Model):
         """
         letters = self.env['correspondence']
         for sponsorship in self.sponsorship_ids:
-            pdf, text = self._get_pdf(sponsorship)
-            letters += letters.create({
+            text = self._get_text(sponsorship)
+            vals = {
                 'sponsorship_id': sponsorship.id,
-                'letter_image': base64.b64encode(pdf),
+                'store_letter_image': False,
                 'template_id': self.s2b_template_id.id,
                 'direction': 'Supporter To Beneficiary',
-                'source': 'compassion',
+                'source': self.source,
                 'original_language_id': self.language_id.id,
                 'original_text': text,
-            })
+            }
+            if self.image_ids:
+                vals['original_attachment_ids'] = [(0, 0, {
+                    'datas_fname': atchmt.datas_fname,
+                    'datas': atchmt.datas,
+                    'name': atchmt.name,
+                    'res_model': letters._name,
+                }) for atchmt in self.image_ids]
+            letters += letters.create(vals)
+
         self.letter_ids = letters
         return True
 
@@ -188,8 +209,8 @@ class CorrespondenceS2bGenerator(models.Model):
             'target': 'current',
         }
 
-    def _get_pdf(self, sponsorship):
-        """ Generates a PDF given a sponsorship. """
+    def _get_text(self, sponsorship):
+        """ Generates the text given a sponsorship. """
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
         child = sponsorship.child_id
@@ -202,6 +223,15 @@ class CorrespondenceS2bGenerator(models.Model):
         text = self.body
         for keyword, replacement in list(keywords.items()):
             text = text.replace(keyword, replacement)
+
+        return text
+
+    def _get_pdf(self, sponsorship):
+        """ Generates a PDF given a sponsorship. """
+        self.ensure_one()
+        sponsor = sponsorship.correspondent_id
+        child = sponsorship.child_id
+        text = self._get_text(sponsorship)
 
         header = f"{sponsor.global_id} - {sponsor.name} - \n" \
                  f"{child.local_id} - {child.lastname +' '+ child.firstname}"\
