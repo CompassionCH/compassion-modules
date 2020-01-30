@@ -29,11 +29,8 @@ class CompassionChildPictures(models.Model):
 
         base_url = self.env['ir.config_parameter'].get_param('web.external.url')
         endpoint = base_url + "/web/image/compassion.child.pictures"
-        return "{}/{}/{}/{}_{}.jpg".format(endpoint,
-                                           self.id,
-                                           type,
-                                           self.date,
-                                           self.child_id.id)
+        return f"{endpoint}/{self.id}/{type}/" \
+            f"{self.date}_{self.child_id.id}.jpg"
 
     @api.multi
     def get_app_json(self, multi=False):

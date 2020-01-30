@@ -29,7 +29,7 @@ class CommunicationAttachment(models.Model):
         'partner.communication.job', 'Communication', required=True,
         ondelete='cascade')
     report_id = fields.Many2one(
-        'ir.actions.report.xml', string='ID of report used by the attachment')
+        'ir.actions.report', string='ID of report used by the attachment')
     report_name = fields.Char(
         required=True, help='Identifier of the report used to print')
     attachment_id = fields.Many2one(
@@ -49,8 +49,8 @@ class CommunicationAttachment(models.Model):
         """
 
         if not vals.get('report_id'):
-            vals['report_id'] = self.env['report']._get_report_from_name(
-                vals.get('report_name')).id
+            vals['report_id'] = self.env['ir.actions.report']\
+                ._get_report_from_name(vals.get('report_name')).id
 
         new_record = 'data' in vals and 'attachment_id' not in vals
         if new_record:

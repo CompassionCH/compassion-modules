@@ -719,16 +719,9 @@ class Correspondence(models.Model):
         child = self.sponsorship_id.child_id
         pdf_name = self.name
 
-        header = u"{sponsor_id} - {sponsor_name}\n" \
-                 u"{child_id} - {child_name} - {child_gender} - {child_age}" \
-            .format(
-                sponsor_id=sponsor.global_id,
-                sponsor_name=sponsor.name,
-                child_id=child.local_id,
-                child_name=child.preferred_name,
-                child_gender=child.gender == 'F' and 'Female' or 'Male',
-                child_age=child.age
-            ).encode('utf8')
+        header = f"{sponsor.global_id} - {sponsor.name}\n" \
+                 f"{child.local_id} - {child.preferred_name} - " \
+                 f"{child.gender == 'F' and 'Female' or 'Male'} - {child.age}"
 
         image_data = self.mapped('original_attachment_ids.datas') or []
         text_data = {'Original': [self.original_text]}
@@ -742,7 +735,7 @@ class Correspondence(models.Model):
     def download_pdf(self):
         return {
             'type': 'ir.actions.act_url',
-            'url': '/web/pdf/correspondence?object_id={}'.format(self.id),
+            'url': f'/web/pdf/correspondence?object_id={self.id}',
             'target': 'self',
         }
 

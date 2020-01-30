@@ -58,7 +58,8 @@ def analyze_attachment(env, file_data, file_name, force_template):
     letter_datas = list()
     _logger.info(f"\tImport file : {file_name}")
 
-    inputpdf = PdfFileReader(BytesIO(file_data))
+    pdf_in_buffer = BytesIO(file_data)
+    inputpdf = PdfFileReader(pdf_in_buffer)
     letter_indexes, imgs = _find_qrcodes(
         env, line_vals, inputpdf, new_dpi)
     _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
@@ -67,6 +68,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
     if len(letter_indexes) > 1:
         last_index = 0
         for index in letter_indexes[1:]:
+            inputpdf = PdfFileReader(pdf_in_buffer)
             output = PdfFileWriter()
             letter_data = BytesIO()
             for i in range(last_index, index):

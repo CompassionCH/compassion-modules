@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class MobileFeedback(models.Model):
     _name = 'mobile.app.feedback'
-    _inherit = 'ir.needaction_mixin'
+    _inherit = 'mail.activity.mixin'
     _description = 'Mobile App Feedback'
     _order = 'id desc'
 
@@ -80,10 +80,10 @@ class MobileFeedback(models.Model):
     @api.multi
     def create_crm_claim(self):
         def html_paragraph(text):
-            return u"<p>{}</p>".format(text)
+            return f"<p>{text}</p>"
 
         def html_bold(text):
-            return u"<p><b>{}</b></p>".format(text)
+            return f"<p><b>{text}</b></p>"
 
         self.ensure_one()
 
