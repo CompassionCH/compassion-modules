@@ -7,6 +7,7 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="model_id" ref="model_crm_event_compassion" />
+            <field name="state">code</field>
             <field name="code">model.hold_children_for_sms_cron()</field>
         </record>
 
@@ -20,6 +21,7 @@
             <field name="numbercall">-1</field>
             <field name="doall">1</field>
             <field name="model_id" ref="model_sms_child_request" />
+            <field name="state">code</field>
             <field name="code">model.sms_reminder_cron()</field>
         </record>
 
@@ -33,6 +35,7 @@
             <field name="nextcall" eval="(DateTime.now() + timedelta(days=((0-DateTime.now().weekday()+7)%7))).strftime('%Y-%m-%d 12:00:00')" />
             <field name="numbercall">-1</field>
             <field name="model_id" ref="model_sms_child_request" />
+            <field name="state">code</field>
             <field name="code">model.sms_notification_unfinished_cron()</field>
         </record>
     </data>

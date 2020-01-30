@@ -357,8 +357,8 @@ class SmsChildRequest(models.Model):
         ])
 
         # send staff notification
-        notify_ids = self.env['staff.notification.settings'].get_param(
-            'new_partner_notify_ids')
+        notify_ids = self.env['res.config.settings'].get_param(
+            'sms_new_partner_notify_ids')
         if nb_sms_requests and notify_ids:
             self.message_post(
                 body=_("{} partner(s) have ongoing SMS Sponsorship").format(
