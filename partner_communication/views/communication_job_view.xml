@@ -116,21 +116,6 @@
         </field>
     </record>
 
-    <!-- Add report option on attachments -->
-    <record model="ir.ui.view" id="attachment_report_view">
-        <field name="name">ir.attachment.print.report</field>
-        <field name="model">ir.attachment</field>
-        <field name="inherit_id" ref="base.view_attachment_form"/>
-        <field name="arch" type="xml">
-            <field name="type" position="after">
-                <field name="report_id"/>
-            </field>
-            <field name="type" position="after">
-                <field name="enable_omr"/>
-            </field>
-        </field>
-    </record>
-
     <record id="action_communication_tree" model="ir.actions.act_window">
         <field name="name">Communications</field>
         <field name="res_model">partner.communication.job</field>

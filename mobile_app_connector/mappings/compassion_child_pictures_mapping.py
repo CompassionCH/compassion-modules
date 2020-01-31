@@ -19,7 +19,7 @@ class MobileChildPicturesMapping(OnrampMapping):
 
     CONNECT_MAPPING = {
         'Date': 'date',
-        'Url': 'image_url',
+        'Url': 'image_url_compassion',
         'OrderDate': 'date',
     }
 

@@ -48,19 +48,6 @@ class CorrespondencePage(models.Model):
          _('The pages already exists in database.')),
     ]
 
-    def format_text(self, text):
-        return text and text.split('\n' + BOX_SEPARATOR + '\n') or ['']
-
-    @api.multi
-    def data_to_json(self, mapping_name=None):
-        json_data = super().data_to_json(mapping_name)
-        for json in json_data:
-            if isinstance(json, dict) and 'OriginalText' in list(json.keys()):
-                json['OriginalText'] = self.format_text(json['OriginalText'])
-            if 'OriginalText' not in json:
-                json['OriginalText'] = [""]
-        return json_data
-
     @api.model
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)

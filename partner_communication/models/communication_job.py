@@ -86,27 +86,27 @@ class CommunicationJob(models.Model):
     parent_id = fields.Many2one(related='partner_id.parent_id')
     object_ids = fields.Char('Resource ids', required=True)
     date = fields.Datetime(default=fields.Datetime.now)
-    sent_date = fields.Datetime(readonly=True)
+    sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection([
         ('call', _('Call partner')),
         ('pending', _('Pending')),
         ('done', _('Done')),
         ('cancel', _('Cancelled')),
-    ], default='pending', track_visibility='onchange')
+    ], default='pending', track_visibility='onchange', copy=False)
     need_call = fields.Selection(
         [('before_sending', 'Before the communication is sent'),
          ('after_sending', 'After the communication is sent')],
         help='Indicates we should have a personal contact with the partner',
     )
     auto_send = fields.Boolean(
-        help='Job is processed at creation if set to true')
+        help='Job is processed at creation if set to true', copy=False)
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
         related='config_id.email_template_id', store=True)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one(
-        'mail.mail', 'Generated e-mail', readonly=True, index=True)
+        'mail.mail', 'Generated e-mail', readonly=True, index=True, copy=False)
     phonecall_id = fields.Many2one('crm.phonecall', 'Phonecall log',
                                    readonly=True)
     body_html = fields.Html(sanitize=False)
@@ -224,6 +224,7 @@ class CommunicationJob(models.Model):
 
         # Determine send mode
         send_mode = job.config_id.get_inform_mode(job.partner_id)
+
         if 'send_mode' not in vals and 'default_send_mode' not in \
                 self.env.context:
             job.send_mode = send_mode[0]
@@ -244,10 +245,24 @@ class CommunicationJob(models.Model):
         if job.body_html or job.send_mode == 'physical':
             job.count_pdf_page()
 
+        # Difference between send_mode of partner and send_mode of job
+        if send_mode[0] != job.send_mode:
+            if "only" in job.partner_id.global_communication_delivery_preference:
+                # Send_mode chosen by the employee is not compatible with the partner
+                # So we remove it and an employee must set it manually afterwards
+                job.send_mode = ""
+
         if job.auto_send:
             job.send()
 
         return job
+
+    @api.multi
+    def copy(self, vals=None):
+        if vals is None:
+            vals = {}
+        vals['auto_send'] = False
+        return super(CommunicationJob, self).copy(vals)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
@@ -272,19 +287,31 @@ class CommunicationJob(models.Model):
         config = self.config_id.browse(vals['config_id'])
 
         # Determine user by default : take in config or employee
+        omr_config = config.omr_config_ids
         if not vals.get('user_id'):
-            vals['user_id'] = config.user_id.id or self.env.uid
-        user = self.env['res.users'].browse(vals['user_id'])
-        orm_config_of_right_lang = config.omr_config_ids \
-            .filtered(lambda c: c.lang_id.code == user.lang)
-        orm_config = orm_config_of_right_lang[0] if orm_config_of_right_lang \
-            else config.omr_config_ids
+            partner = self.env['res.partner'].browse(vals.get('partner_id'))
+            if partner:
+                lang_of_partner = self.env['res.lang'].search([
+                    ('code', 'like', partner.lang)
+                ])
+                omr_config = config.get_config_for_lang(lang_of_partner)[0:]
+                # responsible for the communication is user specified in the omr_config
+                # or user specified in the config itself
+                # or the current user
+                user_id = self.env.uid
+                if omr_config.user_id:
+                    user_id = omr_config.user_id.id
+                elif config.user_id:
+                    user_id = config.user_id.id
+                vals['user_id'] = user_id
+            else:
+                vals['user_id'] = self.env.uid
 
         # Check all default_vals fields
         for default_val in default_vals:
             if default_val not in vals:
                 if default_val.startswith('omr_'):
-                    value = getattr(orm_config, default_val, False)
+                    value = getattr(omr_config, default_val, False)
                 else:
                     value = getattr(config, default_val)
                     if default_val.endswith('_id'):
@@ -398,7 +425,11 @@ class CommunicationJob(models.Model):
             send_mode = self.config_id.get_inform_mode(self.partner_id)
             self.send_mode = send_mode[0]
             # set default fields
-            default_vals = {'config_id': self.config_id.id}
+            partner_id = None
+            if self.partner_id:
+                partner_id = self.partner_id.id
+            default_vals = {'config_id': self.config_id.id,
+                            'partner_id': partner_id}
             self._get_default_vals(default_vals)
             for key, val in list(default_vals.items()):
                 if key.endswith('_id'):
@@ -638,7 +669,8 @@ class CommunicationJob(models.Model):
                 'attachment_ids': [(6, 0, self.ir_attachment_ids.ids)],
                 'auto_delete': False,
                 'reply_to': (self.email_template_id.reply_to or
-                             self.user_id.email)
+                             self.user_id.email),
+                'email_from': self.user_id.email
             }
             if self.email_to:
                 # Replace partner e-mail by specified address

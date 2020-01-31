@@ -8,6 +8,8 @@
 #
 ##############################################################################
 
+from . import ir_logging
+from . import cms_form
 from . import widgets
 from . import payment_transaction
 from . import account_invoice

@@ -234,7 +234,7 @@ class CorrespondenceTemplate(models.Model):
             page_header = page.header_box_id
             if page_header and len(header) >= header_index:
                 header_file = tempfile.NamedTemporaryFile(
-                    prefix='header_', suffix='.txt')
+                    'w', prefix='header_', suffix='.txt')
                 header_file.write(header[header_index])
                 header_file.flush()
                 header_data = [header_file.name]
@@ -293,8 +293,8 @@ class CorrespondenceTemplate(models.Model):
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
                 temp_text.append(tempfile.NamedTemporaryFile(
-                    prefix=t_type + '_', suffix='.txt'))
-                temp_text[-1].write(txt.encode('utf8'))
+                    'w', prefix=t_type + '_', suffix='.txt'))
+                temp_text[-1].write(txt)
                 temp_text[-1].flush()
                 text_list.append([temp_text[-1].name, t_type])
 

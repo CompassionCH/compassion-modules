@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="default-welcome-screen" model="mobile.app.banner">
-        <field name="name">Default</field>
-        <field name="destination_type">Internal</field>
-        <field name="internal_action">Blog</field>
-        <field name="button_text">Default action</field>
-        <field name="body">Default welcome message</field>
-        <field name="active">True</field>
-        <field name="image_url">https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg</field>
-    </record>
+    <data noupdate="1">
+        <record id="default-welcome-screen" model="mobile.app.banner">
+            <field name="name">Default</field>
+            <field name="destination_type">Internal</field>
+            <field name="internal_action">Blog</field>
+            <field name="button_text">Default action</field>
+            <field name="body">Default welcome message</field>
+            <field name="active">True</field>
+            <field name="image_url">https://compassion.ch/wp-content/uploads/2019/01/hope_slide.jpg</field>
+        </record>
+    </data>
 </odoo>

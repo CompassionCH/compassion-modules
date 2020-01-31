@@ -9,13 +9,16 @@
       "field": "final_page_url"
     },
     "OriginalText": {
-      "field": "original_text"
+      "field": "original_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
     },
     "EnglishTranslatedText": {
-      "field": "english_text"
+      "field": "english_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
     },
     "TranslatedText": {
-      "field": "translated_text"
+      "field": "translated_text",
+      "to_json_conversion": "odoo_value and self._format_correspondence_page(odoo_value) or ['']"
     }
   }
 }

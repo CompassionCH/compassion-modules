@@ -115,7 +115,6 @@ class WordpressPost(models.Model):
             + post_type
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
-        category_obj = self.env['wp.post.category']
         found_ids = []
         try:
             h = HTMLParser()
@@ -130,17 +129,20 @@ class WordpressPost(models.Model):
                                      str(i+1), str(len(wp_posts)))
                         post_id = post_data['id']
                         found_ids.append(post_id)
-                        if self.search([('wp_id', '=', post_id)]):
+                        cached_post = self.search([('wp_id', '=', post_id)])
+                        if cached_post:
+                            cached_post.update_post_categories(
+                                post_data, requests)
                             # Skip post already fetched
                             continue
 
-                        content_empty = False
+                        content_empty = True
                         self_url = post_data['_links']['self'][0]['href']
-                        content = requests.get(self_url).json()
-                        if not content['content']['rendered']:
-                            # We won't display the post in hub when content
-                            # is empty
-                            content_empty = True
+                        http_response = requests.get(self_url)
+                        if http_response.ok:
+                            content = http_response.json()
+                            if content['content']['rendered']:
+                                content_empty = False
                         try:
                             # Fetch image for thumbnail
                             image_json_url = post_data['_links'][
@@ -159,28 +161,9 @@ class WordpressPost(models.Model):
                             _logger.warning('WP Post ID %s has no image',
                                             str(post_id))
                         # Fetch post category
-                        categories_id = []
-                        try:
-                            category_data = [
-                                d for d in post_data['_links']['wp:term']
-                                if d['taxonomy'] == 'category'
-                            ][0]
-                            category_json_url = category_data['href']
+                        categories_id = self._fetch_categories_ids(post_data,
+                                                                   requests)
 
-                            categories_request = requests.get(
-                                category_json_url).json()
-                            for c in categories_request:
-                                category = category_obj.search([
-                                    ('name', '=', c['name'])])
-                                if not category:
-                                    category = category_obj.create({
-                                        'name': c['name']
-                                    })
-                                categories_id.append(category.id)
-
-                        except (IndexError, KeyError):
-                            _logger.info('WP Post ID %s has no category.',
-                                         str(post_id))
                         # Cache new post in database
                         self.create({
                             'name': h.unescape(post_data['title']['rendered']),
@@ -200,6 +183,59 @@ class WordpressPost(models.Model):
         except ValueError:
             _logger.warning("Error fetching wordpress posts", exc_info=True)
         return True
+
+    def update_post_categories(self, post_data, requests):
+        """
+        Update the categories from a post, given the JSON data received.
+        :param post_data: JSON data from the Wordpress API
+        :param requests: The Wordpress API session
+        :return: None
+        """
+        self.ensure_one()
+        categories_id = self._fetch_categories_ids(post_data, requests)
+        # If there is a difference between categories
+        if sorted(self.category_ids.ids) != sorted(categories_id):
+            self.write({
+                'category_ids': [(6, 0, categories_id)],
+            })
+        self.update_display_on_hub()
+
+    def _fetch_categories_ids(self, post_data, requests):
+        """
+        Get the wordpress category ids associated to the JSON post data.
+        :param post_data: JSON post data retrieved from Wordpress API
+        :param requests: The Wordpress API session
+        :return: list of wp.post.category record ids
+        """
+        categories_id = []
+        category_obj = self.env['wp.post.category']
+        try:
+            category_data = [
+                d for d in post_data['_links']['wp:term']
+                if d['taxonomy'] == 'category'
+            ][0]
+            category_json_url = category_data['href']
+
+            categories_request = requests.get(
+                category_json_url).json()
+            for c in categories_request:
+                category = category_obj.search([
+                    ('name', '=', c['name'])])
+                if not category:
+                    category = category_obj.create({
+                        'name': c['name']
+                    })
+                categories_id.append(category.id)
+        except (IndexError, KeyError):
+            _logger.info('WP Post ID %s has no category.',
+                         str(post_data['id']))
+        return categories_id
+
+    def update_display_on_hub(self):
+        """ Compute visibility of post based on the visibility of its
+        categories. It will be visible if at least one category is visible. """
+        for post in self:
+            post.display_on_hub = post.category_ids.filtered('display_on_hub')
 
     @api.model
     def _supported_langs(self):

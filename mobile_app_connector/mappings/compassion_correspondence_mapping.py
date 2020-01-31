@@ -29,7 +29,7 @@ class MobileCorrespondenceMapping(OnrampMapping):
         'Supportergroup': None,
         'supporterId': ('sponsorship_id.partner_id.id', 'res.partner'),
         'pathextension': 'letter_format',
-        'base64string': 'letter_image'
+        'base64string': 'b64image'
     }
 
 
