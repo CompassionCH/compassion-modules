@@ -10,6 +10,7 @@
                 <field name="child_id"/>
                 <field name="sponsorship_confirmed"/>
                 <field name="state"/>
+                <field name="source"/>
             </tree>
         </field>
     </record>
@@ -33,6 +34,7 @@
                             <field name="lang_code"/>
                             <field name="child_id" readonly="1"/>
                             <field name="sponsorship_id" readonly="1"/>
+                            <field name="source" readonly="1"/>
                         </group>
                         <group>
                             <field name="event_id"/>
@@ -66,6 +68,7 @@
                 <field name="child_id"/>
                 <field name="state"/>
                 <filter name="active_filter" string="Active" domain="[('state', 'not in', ('step2', 'expired'))]"/>
+                <field name="source"/>
             </search>
         </field>
     </record>
