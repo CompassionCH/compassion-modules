@@ -610,7 +610,7 @@ class Correspondence(models.Model):
                 lambda p: "".join((p.english_text or "").split()) !=
                           "".join((p.original_text or "").split()))
         if not getattr(self, source):
-            return text_boxes
+            return source, text_boxes
 
         # Get the text boxes separately
         text_pages = pages.mapped(source)
