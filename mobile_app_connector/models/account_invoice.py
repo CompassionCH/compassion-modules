@@ -106,7 +106,7 @@ class AccountInvoice(models.Model):
 
         invoice_lines_values = []
         for payment in payments:
-            vals = {
+            l_vals = {
                 'product_id': payment['product_id'].id,
                 'account_id': payment['product_id'].property_account_income_id.id,
                 'quantity': 1,
@@ -114,13 +114,13 @@ class AccountInvoice(models.Model):
                 'name': payment['product_id'].name
             }
             if 'contract_id' in payment:
-                vals['contract_id'] = payment['contract_id'].id
+                l_vals['contract_id'] = payment['contract_id'].id
 
-            invoice_lines_values.append(vals)
+            invoice_lines_values.append(l_vals)
 
         # create invoice and merge lines
         if not invoice:
-            lines_cmd = [(0, 0, l_vals) for l_vals in invoice_lines_values]
+            lines_cmd = [(0, 0, v) for v in invoice_lines_values]
             if sponsorships_lines:
                 lines_cmd = [(6, 0, sponsorships_lines.ids)] + lines_cmd
                 # order is important
@@ -139,7 +139,7 @@ class AccountInvoice(models.Model):
                 invoice.invoice_line_ids += sponsorships_lines
             if invoice_lines_values:
                 invoice.write({
-                    'invoice_line_ids': [(0, 0, vals) for vals in invoice_lines_values]
+                    'invoice_line_ids': [(0, 0, v) for v in invoice_lines_values]
                 })
 
         if date_due:
