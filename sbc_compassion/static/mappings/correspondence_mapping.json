@@ -5,7 +5,7 @@
     "Beneficiary": {
       "field" : "child_id",
       "sub_mapping": {
-        "name": "Compassion Child",
+        "name": "Beneficiary Correspondence",
         "model": "compassion.child",
         "mapping": {
           "Age": {
