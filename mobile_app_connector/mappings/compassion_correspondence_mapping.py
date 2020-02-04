@@ -60,6 +60,11 @@ class FromLetterMapping(OnrampMapping):
         mapped = super(FromLetterMapping, self) \
             .get_connect_data(odoo_object, fields_to_submit)
         mapped['Type'] = 1  # todo figure out what to use here
+
+        if odoo_object.direction == "Supporter To Beneficiary":
+            mapped['Date'] = datetime.datetime.strptime(
+                odoo_object.scanned_date, '%Y-%m-%d').strftime('%d-%m-%Y %H:%M:%S')
+
         if not mapped['Message']:
             mapped['Message'] = _("Physical letters cannot be displayed.")
         return mapped
