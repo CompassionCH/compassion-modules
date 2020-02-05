@@ -39,9 +39,10 @@
         'sbc_compassion',
         'partner_contact_birthdate',
         'base_geolocalize',
-        'firebase_connector',
-        'sms_sponsorship',
-        'partner_communication'
+        'firebase_connector',           # compassion-modules
+        'sms_sponsorship',              # compassion-modules
+        'partner_communication',        # compassion-modules
+        'crm_claim'                     # oca_addons/crm
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
@@ -76,6 +77,7 @@
     'demo': [
     ],
     'development_status': 'Beta',
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings"
 }

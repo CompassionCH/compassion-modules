@@ -99,12 +99,12 @@ class MobileFeedback(models.Model):
         claim = self.env['crm.claim'].create({
             'email_from': self.partner_id.email,
             'subject': "Mobile App Feedback",
-            'code': self.env.ref('crm_claim_code.sequence_claim_app')._next(),
+            'code': self.env.ref('sequence_claim_app')._next(),
             'name': body,
             'categ_id': self.env['crm.claim.category'].search(
                 [('name', '=', self.source)]).id,
-            'claim_type': self.env.ref(
-                'mobile_app_connector.claim_type_feedback').id,
+            'claim_category': self.env.ref(
+                'mobile_app_connector.claim_cat_feedback').id,
             'partner_id': partner.id,
             'language': self.language,
             'date': self.create_date

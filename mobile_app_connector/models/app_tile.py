@@ -10,7 +10,6 @@
 import logging
 
 from odoo.tools.safe_eval import safe_eval
-from ..mappings.mobile_app_tile_mapping import TileMapping
 from odoo import api, models, fields
 
 _logger = logging.getLogger(__name__)
@@ -20,6 +19,7 @@ class AppTile(models.Model):
     # internal field Odoo
     _name = 'mobile.app.tile'
     _description = 'Tile'
+    _inherit = 'compassion.mapped.model'
     _order = 'view_order'
 
     # Fields of class
@@ -137,7 +137,9 @@ class AppTile(models.Model):
                           }
         :return: Tiles for mobile app (list of dict)
         """
-        tile_mapping = TileMapping(self.env)
+        tile_mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_tile"
+        ])
         res = []
         if tile_data is None:
             tile_data = {}
@@ -221,4 +223,15 @@ class AppTile(models.Model):
         except:
             _logger.error("Error rendering tile %s", self.name, exc_info=True)
             res = {}
+        return res
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        for key, value in list(res.copy().items()):
+            if key == 'ActionText':
+                if value:
+                    res[key] = str(value)
+                else:
+                    del res[key]
         return res

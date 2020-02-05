@@ -10,16 +10,17 @@
 ##############################################################################
 
 import logging
+import datetime
 
 from odoo import models, api
-from ..mappings.compassion_child_mapping import MobileChildMapping
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionChild(models.Model):
     """ A sponsored child """
-    _inherit = 'compassion.child'
+    _name = "compassion.child"
+    _inherit = ['compassion.child', 'compassion.mapped.model']
 
     def get_app_json_no_wrap(self):
         """
@@ -28,7 +29,9 @@ class CompassionChild(models.Model):
         """
         if not self:
             return {}
-        mapping = MobileChildMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_child"
+        ])
         if len(self) == 1:
             data = mapping.get_connect_data(self)
         else:
@@ -53,7 +56,9 @@ class CompassionChild(models.Model):
         if not self:
             return {wrapper: []}
 
-        mapping = MobileChildMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_child"
+        ])
         if len(self) == 1 and not multi:
             data = mapping.get_connect_data(self)
         else:
@@ -94,7 +99,9 @@ class CompassionChild(models.Model):
             ('partner_id', '=', sponsor.id)
         ])
 
-        mapping = MobileChildMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_child"
+        ])
         for child in children:
             result.append(mapping.get_connect_data(child))
         return result
@@ -155,3 +162,25 @@ class CompassionChild(models.Model):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if res['FullBodyImageURL']:
+            image_url = self.env['child.pictures.download.wizard']\
+                .get_picture_url(res['FullBodyImageURL'], 'headshot', 300, 300)
+            res['ImageUrl'] = image_url
+            res['ImageURL'] = image_url
+        for key, value in list(res.copy().items()):
+            if key == "BirthDate":
+                if value:
+                    res[key] = datetime.datetime.strptime(
+                        value, '%Y-%m-%d').strftime('%d/%m/%Y %H:%M:%S')
+            if key == "SupporterGroupId":
+                if value:
+                    res[key] = int(value)
+            if key == "Gender":
+                res[key] = "Female" if value == "F" else "Male"
+            if value:
+                del res[key]
+        return res

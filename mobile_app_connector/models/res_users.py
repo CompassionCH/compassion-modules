@@ -10,15 +10,15 @@
 
 import logging
 
-from odoo import models, api
+from odoo import models, api, _
 from odoo.http import request
-from ..mappings.compassion_login_mapping import MobileLoginMapping
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionLogin(models.Model):
-    _inherit = 'res.users'
+    _name = "res.users"
+    _inherit = ['res.users', 'compassion.mapped.model']
 
     @api.model
     def mobile_login(self, **other_params):
@@ -40,7 +40,9 @@ class CompassionLogin(models.Model):
             self.save_session(request.cr, uid, request.context)
 
         user = self.env['res.users'].browse(uid)
-        mapping = MobileLoginMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_login"
+        ])
         result = mapping.get_connect_data(user)
         return result
 
@@ -48,3 +50,15 @@ class CompassionLogin(models.Model):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not self:
+            res['error'] = _("Wrong user or password")
+        else:
+            res['login_count'] = len(self.log_ids)
+        for key, value in list(res.items()):
+            if not value:
+                del res[key]
+        return res

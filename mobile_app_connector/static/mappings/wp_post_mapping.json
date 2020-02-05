@@ -1,0 +1,45 @@
+{
+  "name": "mobile_app_wp_post",
+  "model": "wp.post",
+  "mapping": {
+    "Blog.ImageUrl": {
+      "field": "image_url"
+    },
+    "Blog.Title": {
+      "field": "name"
+    },
+    "Blog.Url": {
+      "field": "url"
+    },
+    "Blog.WP_id": {
+      "field": "wp_id"
+    },
+    "Blog.Post_type": {
+      "field": "post_type"
+    },
+    "Title": {
+      "field": "name"
+    },
+    "ActionText": {
+      "field": "image_url"
+    },
+    "SortOrder": {
+      "field": "view_order"
+    },
+    "IsAutomaticOrdering": {
+      "field": "is_automatic_ordering"
+    },
+    "OrderDate": {
+      "field": "date"
+    },
+    "Type": {
+      "to_json_conversion": "0"
+    },
+    "SubType": {
+      "to_json_conversion": "Tile"
+    },
+    "ActionDestination": {
+      "to_json_conversion": "Stories and prayer with relevant blog at the top"
+    }
+  }
+}

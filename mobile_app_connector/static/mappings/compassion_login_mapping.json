@@ -1,0 +1,124 @@
+{
+  "name": "mobile_app_login",
+  "model": "res.users",
+  "mapping": {
+    "userid": {
+      "field": "id"
+    },
+    "titleid": {
+      "field": "title.name",
+      "search_relational_record": true
+    },
+    "firstname": {
+      "field": "firstname"
+    },
+    "lastname": {
+      "field": "lastname"
+    },
+    "yearofbirth": {
+      "field": "birthdate_date"
+    },
+    "email": {
+      "field": "email"
+    },
+    "screenname": {
+      "field": "preferred_name"
+    },
+    "twitterid": {
+      "to_json_conversion": "1"
+    },
+    "username": {
+      "field": "login"
+    },
+    "password": {
+      "field": "password"
+    },
+    "status": {
+      "to_json_conversion": "1"
+    },
+    "contactid": {
+      "field": "partner_id.id",
+      "search_relational_record": true
+    },
+    "activation": {
+      "to_json_conversion": "1"
+    },
+    "alternateemail1": {
+      "to_json_conversion": "1"
+    },
+    "alternateemail2": {
+      "to_json_conversion": "1"
+    },
+    "homephone": {
+      "field": "phone"
+    },
+    "mobilephone": {
+      "field": "mobile"
+    },
+    "officephone": {
+      "to_json_conversion": "1"
+    },
+    "street1": {
+      "field": "street"
+    },
+    "street2": {
+      "field": "street2"
+    },
+    "street3": {
+      "to_json_conversion": "1"
+    },
+    "street4": {
+      "to_json_conversion": "1"
+    },
+    "street5": {
+      "to_json_conversion": "1"
+    },
+    "town": {
+      "field": "city"
+    },
+    "county": {
+      "field": "state_id.id",
+      "search_relational_record": true
+    },
+    "postcode": {
+      "field": "zip"
+    },
+    "country": {
+      "field": "country_id.id",
+      "search_relational_record": true
+    },
+    "receive_emails": {
+      "to_json_conversion": "1"
+    },
+    "no_emails": {
+      "to_json_conversion": "1"
+    },
+    "photo": {
+      "field": "image"
+    },
+    "sponsorshipplus_flag": {
+      "to_json_conversion": "1"
+    },
+    "fb_login": {
+      "to_json_conversion": "1"
+    },
+    "dd_flag": {
+      "to_json_conversion": "1"
+    },
+    "bb_dd_flag": {
+      "to_json_conversion": "1"
+    },
+    "login_count": {
+      "field": "login_date"
+    },
+    "last_login_time": {
+      "field": "login_date"
+    },
+    "createdTime": {
+      "field": "create_date"
+    },
+    "error": {
+      "to_json_conversion": "0"
+    }
+  }
+}

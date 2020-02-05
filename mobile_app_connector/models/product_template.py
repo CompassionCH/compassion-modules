@@ -13,14 +13,14 @@ import logging
 
 
 from odoo import models, api, fields
-from ..mappings.compassion_donation_mapping import MobileDonationMapping
 
 logger = logging.getLogger(__name__)
 
 
 class ProductTemplate(models.Model):
 
-    _inherit = "product.template"
+    _name = "product.template"
+    _inherit = ["product.template", "compassion.mapped.model"]
 
     mobile_app = fields.Boolean('Show in Mobile App', index=True)
     image_icon = fields.Char('Icon Mobile App',
@@ -39,11 +39,21 @@ class ProductTemplate(models.Model):
         result = []
         donation_types = self.search([('mobile_app', '=', True)])
 
-        mapping = MobileDonationMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_donation"
+        ])
         for donation in donation_types:
             result.append(mapping.get_connect_data(donation))
 
         return result
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        for key, value in list(res.items()):
+            if not value:
+                del res[key]
+        return res
 
 
 class Product(models.Model):

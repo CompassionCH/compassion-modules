@@ -1,0 +1,30 @@
+{
+  "name": "mobile_app_banner",
+  "model": "mobile.app.banner",
+  "mapping": {
+    "HERO_TITLE": {
+      "field": "name"
+    },
+    "HERO_DESCRIPTION": {
+      "field": "body"
+    },
+    "HERO_IMAGE": {
+      "field": "image_url"
+    },
+    "HERO_CTA_TEXT": {
+      "field": "button_text"
+    },
+    "HERO_CTA_DESTINATION": {
+      "field": "internal_action"
+    },
+    "HERO_CTA_DESTINATION_TYPE": {
+      "field": "destination_type"
+    },
+    "IS_DELETED": {
+      "to_json_conversion": "0"
+    },
+    "BLOG_DISPLAY_TYPE": {
+      "to_json_conversion": "Tile"
+    }
+  }
+}

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class AppBanner(models.Model):
     _name = 'mobile.app.banner'
     _description = 'Mobile App Banner'
+    _inherit = 'compassion.mapped.model'
     _order = 'state asc, print_count asc, date_start asc'
 
     ##########################################################################
@@ -99,3 +100,23 @@ class AppBanner(models.Model):
             {'active': False})
         # Activate current stories
         current_banners.write({'active': True})
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        result = []
+        for key, value in list(res.items()):
+            if value:
+                result[key] = None
+        return result
+
+    # @api.model
+    # def json_to_data(self, json, mapping_name=None):
+    #     odoo_data = super().json_to_data(json, mapping_name)
+    #     odoo_fields = ('original_text', 'english_text', 'translated_text')
+    #     for field in odoo_fields:
+    #         for page_data in odoo_data:
+    #             if field in page_data:
+    #                 page_data[field] = html.unescape(BOX_SEPARATOR.join(
+    #                     page_data[field]))
+    #     return odoo_data

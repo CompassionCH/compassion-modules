@@ -25,6 +25,7 @@ class WordpressPost(models.Model):
     """
     _name = 'wp.post'
     _description = 'Wordpress post'
+    _inherit = 'compassion.mapped.model'
     _order = 'date desc'
 
     name = fields.Char('Title', required=True)
@@ -244,3 +245,12 @@ class WordpressPost(models.Model):
         :return: res.lang recordset
         """
         return self.env['res.lang'].search([('code', '!=', 'en_US')])
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        # Queries should always be lists
+        res = super().data_to_json(mapping_name)
+        for key, value in list(res.items()):
+            if not value:
+                del res[key]
+        return res

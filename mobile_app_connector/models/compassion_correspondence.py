@@ -8,16 +8,16 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields
-from ..mappings.compassion_correspondence_mapping import \
-    MobileCorrespondenceMapping, FromLetterMapping
+from odoo import models, api, fields, _
 from werkzeug.exceptions import NotFound
 from base64 import b64encode
 from werkzeug.utils import escape
+import datetime
 
 
 class CompassionCorrespondence(models.Model):
-    _inherit = 'correspondence'
+    _name = "correspondence"
+    _inherit = ['correspondence', 'compassion.mapped.model']
 
     @api.multi
     def get_app_json(self, multi=False):
@@ -29,7 +29,9 @@ class CompassionCorrespondence(models.Model):
         child = self.sudo().mapped('child_id')
         if not self:
             return {}
-        mapping = FromLetterMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_from_letter"
+        ])
         wrapper = 'Letters' if multi else 'Letter'
         if len(self) == 1:
             data = mapping.get_connect_data(self)
@@ -65,7 +67,9 @@ class CompassionCorrespondence(models.Model):
             'supporterId',
             'base64string'
             ], json_data)
-        mapping = MobileCorrespondenceMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_correspondence"
+        ])
         vals = mapping.get_vals_from_connect(json_data)
         letter = self.env['correspondence'].create(vals)
 
@@ -90,7 +94,9 @@ class CompassionCorrespondence(models.Model):
             ('direction', '=', 'Beneficiary To Supporter')
         ])
 
-        mapper = FromLetterMapping(self.env)
+        mapper = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_from_letter"
+        ])
         return [mapper.get_connect_data(letter) for letter in letters]
 
     @api.model
@@ -229,3 +235,13 @@ class CompassionCorrespondence(models.Model):
         return {
             'DbId': gen.letter_ids.mapped('id'),
         }
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        res['Type'] = 1
+        if not res['Message']:
+            res['Message'] = _("Physical letters cannot be displayed.")
+        res['Date'] = datetime.datetime.strptime(
+            res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+        return res

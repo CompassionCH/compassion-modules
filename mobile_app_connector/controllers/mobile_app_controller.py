@@ -14,8 +14,6 @@
 import werkzeug
 import cgi
 
-from ..mappings.compassion_login_mapping import MobileLoginMapping
-from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized

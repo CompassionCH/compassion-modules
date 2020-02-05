@@ -11,7 +11,6 @@ import logging
 import random
 from collections import defaultdict
 
-from ..mappings.wp_post_mapping import WPPostMapping
 from odoo import api, models
 
 _logger = logging.getLogger(__name__)

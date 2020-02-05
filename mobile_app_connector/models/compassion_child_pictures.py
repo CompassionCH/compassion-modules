@@ -10,17 +10,17 @@
 ##############################################################################
 
 import logging
+import datetime
 
 from odoo import models, api
-from ..mappings.compassion_child_pictures_mapping \
-    import MobileChildPicturesMapping
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionChildPictures(models.Model):
     """ A sponsored child """
-    _inherit = 'compassion.child.pictures'
+    _name = "compassion.child.pictures"
+    _inherit = ['compassion.child.pictures', 'compassion.mapped.model']
 
     @property
     def image_url_compassion(self, type='fullshot'):
@@ -41,7 +41,9 @@ class CompassionChildPictures(models.Model):
         """
         if not self:
             return {}
-        mapping = MobileChildPicturesMapping(self.env)
+        mapping = self.env['compassion_mapping'].search([
+            'name', '=', "mobile_app_child_pictures"
+        ])
         # wrapper = 'Images' if multi else 'Images'
         if len(self) == 1:
             data = [mapping.get_connect_data(self)]
@@ -50,3 +52,10 @@ class CompassionChildPictures(models.Model):
             for child in self:
                 data.append(mapping.get_connect_data(child))
         return data
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        res['Date'] = datetime.datetime.strptime(
+            res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+        return res
