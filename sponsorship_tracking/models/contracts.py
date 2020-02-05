@@ -45,6 +45,7 @@ class RecurringContract(models.Model):
         'res.users', 'SDS Follower', default=lambda self: self.env.user,
         copy=False)
     sub_notes = fields.Text('Notes for SUB Sponsorship')
+    lifecycle_ids = fields.One2many(related="child_id.lifecycle_ids")
 
     ##########################################################################
     #                              ORM METHODS                               #

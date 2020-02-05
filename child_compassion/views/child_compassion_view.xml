@@ -146,6 +146,7 @@
                                     <tree>
                                         <field name="date"/>
                                         <field name="type"/>
+                                        <field name="comments"/>
                                     </tree>
                                 </field>
                                 <field name="revised_value_ids" attrs="{'invisible': [('revised_value_ids', '=', False)]}">
