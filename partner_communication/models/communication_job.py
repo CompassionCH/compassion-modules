@@ -667,7 +667,6 @@ class CommunicationJob(models.Model):
                 'auto_delete': False,
                 'reply_to': (self.email_template_id.reply_to or
                              self.user_id.email),
-                'email_from': self.user_id.email
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
