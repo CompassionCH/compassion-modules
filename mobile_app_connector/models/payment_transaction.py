@@ -13,17 +13,8 @@ class PaymentTransaction(models.Model):
     def cancel_mobile_transaction(self):
         for transaction in self:
             if transaction.invoice_id.origin in ["ios", "android"]:
-                # Aborted transaction from the app. We must keep sponsorships but can
-                # clean additional gifts
-                inv = transaction.invoice_id
-                inv.action_invoice_cancel()
-                inv.invoice_line_ids = inv.invoice_line_ids.filtered(
-                    lambda x: x.contract_id.id and x.product_id.id in
-                    x.mapped('contract_id.contract_line_ids.product_id').ids
-                )
-                if inv.invoice_line_ids:
-                    inv.action_invoice_draft()
-                    inv.action_invoice_open()
+                # Aborted transaction from the app.
+                transaction.invoice_id.action_invoice_cancel()
 
     @api.multi
     def cancel_transaction(self):

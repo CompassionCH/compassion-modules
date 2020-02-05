@@ -7,9 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from odoo import models, api, fields, _
-from datetime import timedelta
 from collections import defaultdict
 
 
@@ -22,22 +20,13 @@ class AccountInvoice(models.Model):
             Mobile app method:
             POST a Donation for a children or a pool
 
-            When the user is paying for a single sponsorship
-                - Find the related invoice (created monthly)
-                - Add other potential gifts and fund donation
-            When the user is paying for multiple different sponsorships
-                - Merge the invoice.lines in a single invoice
-            When the user is paying multiple times for the same sponsorship
-                - Create a new invoice and assign a staff member
-                (He wants to pay for multiple months in a row but invoices for future
-                months might not exist)
-
+            When the user is paying for sponsorship
+                - Find the oldest open partner invoice (created monthly)
+                - Check if the amount and number of sponsorships are matching
+                - If found, it will reuse the invoice, otherwise it will warn staff.
             Notes:
-            - Non-sponsorship-related lines will be removed upon transaction
-            cancellation.
             - The app sends a single product of 50.- for the sponsorships by wrongly
             merging the fund donation into the sponsorship product
-            - invoice.lines
 
             :param json_data:
             :param parameters:
@@ -55,54 +44,8 @@ class AccountInvoice(models.Model):
         if wrapper.gift_treated or not wrapper.partner_id:
             return result
 
-        # Monthly sponsorships payments
-
-        invoice = False
-        notify = False
-        date_due = False
-
-        sponsorships_lines = self.env['account.invoice.line']
-        payments = wrapper.child_gifts + wrapper.fund_donations
-
-        if wrapper.is_multiple_months_payment():
-            # User is paying for multiple months in a row, but there are probably not
-            # enough open invoices so we will just create a new one and notify a staff
-            # member that it needs to be processed manually
-            notify = True
-            # Create new invoice.lines for sponsorship_payments
-            payments = wrapper.sponsorships_payments + payments
-        else:
-            date_filter = fields.Datetime.to_string(
-                fields.date.today() - timedelta(days=365 / 2))
-            for payment in wrapper.sponsorships_payments:
-                # find oldest, unpaid related invoice and use its existing lines
-
-                spn = payment['contract_id']
-                open_inv = spn.mapped('invoice_line_ids.invoice_id').filtered(
-                    lambda v: v.state == 'open' and v.date_invoice > date_filter)
-                oldest_inv = min(open_inv, key=lambda v: v.date_due)
-
-                lines = oldest_inv.invoice_line_ids.filtered(
-                    lambda x: x.contract_id.id == spn.id and
-                    x.product_id.id in spn.mapped('contract_line_ids.product_id').ids
-                )
-
-                spn_total_price = sum(lines.mapped('price_unit'))
-                app_product_price = float(payment['amount'])
-                assert spn_total_price == app_product_price, \
-                    "Product total from the app does not correspond to the contract"
-
-                if not invoice and len(lines) == len(oldest_inv.invoice_line_ids):
-                    # we can use this invoice, it has no other lines
-                    invoice = oldest_inv
-                    invoice.action_invoice_cancel()
-                    invoice.action_invoice_draft()
-                else:
-                    # will be merged, remove the lines from the existing invoice
-                    lines.write({'invoice_id': False})
-                    sponsorships_lines += lines
-                    if not date_due or date_due > oldest_inv.date_due:
-                        date_due = oldest_inv.date_due
+        payments = wrapper.child_gifts + wrapper.fund_donations + \
+            wrapper.sponsorships_payments
 
         invoice_lines_values = []
         for payment in payments:
@@ -119,50 +62,55 @@ class AccountInvoice(models.Model):
             invoice_lines_values.append(l_vals)
 
         # create invoice and merge lines
-        if not invoice:
-            lines_cmd = [(0, 0, v) for v in invoice_lines_values]
-            if sponsorships_lines:
-                lines_cmd = [(6, 0, sponsorships_lines.ids)] + lines_cmd
-                # order is important
+        lines_cmd = [(0, 0, v) for v in invoice_lines_values]
+        existing_invoice = False
+        invoice = self.sudo().create({
+            'partner_id': wrapper.partner_id,
+            'invoice_line_ids': lines_cmd,
+            'origin': wrapper.source,
+            'type': 'out_invoice',
+            'date_invoice': fields.Date.today()
+        })
 
-            invoice = self.sudo().create({
-                'partner_id': wrapper.partner_id,
-                'invoice_line_ids': lines_cmd,
-                'origin': wrapper.source,
-                'type': 'out_invoice',
-                'date_invoice': fields.Date.today()
-            })
-        elif sponsorships_lines or invoice_lines_values:
-            # add or create the lines in the existing invoice
+        if wrapper.sponsorships_payments:
+            # User is paying for sponsorship: only if everything match an open invoice,
+            # we will use it.
+            sponsorship_invoice = invoice.search([
+                ('partner_id', '=', wrapper.partner_id),
+                ('state', '=', 'open'),
+                ('amount_total', '=', invoice.amount_total),
+            ], order='date asc', limit=1)
+            sp_invoice_contracts = sponsorship_invoice.invoice_line_ids.mapped(
+                'contract_id')
+            new_invoice_contracts = invoice.invoice_line_ids.mapped('contract_id')
+            common_sponsorships = sp_invoice_contracts & new_invoice_contracts
+            if common_sponsorships and len(common_sponsorships) == \
+                    len(sp_invoice_contracts):
+                invoice.unlink()
+                invoice = sponsorship_invoice
+                invoice.origin = wrapper.source + ' sponsorship payment'
+                existing_invoice = True
+            else:
+                # we will create a new invoice but notify a staff
+                # member that it needs to be processed manually, to avoid creating
+                # delays in his due months.
+                partner_ids = self.env['staff.notification.settings'].get_param(
+                    'gift_notify_ids')
+                invoice.message_post(
+                    _("This invoice created from the app needs to be manually "
+                      "processed. You may want to cancel another sponsorship invoice "
+                      "to avoid creating an overdue for the supporter."),
+                    _("Sponsorship paid from the app"),
+                    message_type='email',
+                    partner_ids=partner_ids)
 
-            if sponsorships_lines:
-                invoice.invoice_line_ids += sponsorships_lines
-            if invoice_lines_values:
-                invoice.write({
-                    'invoice_line_ids': [(0, 0, v) for v in invoice_lines_values]
-                })
+        if not existing_invoice:
+            for line in invoice.invoice_line_ids:
+                bckp_price = line.price_unit
+                line._onchange_product_id()
+                line.price_unit = bckp_price
 
-        if date_due:
-            invoice.date_due = date_due
-        invoice.origin = wrapper.source
-
-        if notify:
-            partner_id = self.env['staff.notification.settings'].get_param(
-                'gift_notify_ids')[0]
-
-            invoice.message_needaction = True
-            invoice.user_id = \
-                self.env['res.partner'].sudo().browse(partner_id).user_ids[:1]
-            invoice.message_post(
-                _("This invoice created from the app need to be manually processed. "
-                  "It might cancel older invoices."))
-
-        for line in invoice.invoice_line_ids:
-            bckp_price = line.price_unit
-            line._onchange_product_id()
-            line.price_unit = bckp_price
-
-        invoice.action_invoice_open()
+            invoice.action_invoice_open()
 
         result['Donation'].append(invoice.id)
         return result
