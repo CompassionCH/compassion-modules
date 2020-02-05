@@ -117,6 +117,15 @@
                             <field name="state" readonly="1"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="lifecycle_ids" context="{'default_child_id': active_id}">
+                            <tree>
+                                <field name="date"/>
+                                <field name="type"/>
+                                <field name="comments"/>
+                            </tree>
+                        </field>
+                    </group>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>

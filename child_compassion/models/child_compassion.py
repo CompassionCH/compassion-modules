@@ -611,6 +611,10 @@ class CompassionChild(models.Model):
                         child.hold_id.get_default_hold_expiration(
                             HoldType.CONSIGNMENT_HOLD)
                 })
+
+        # Retrieve livecycle events to have the info when setting up a new sponsorship
+        self.get_lifecycle_event()
+
         return True
 
     @api.multi
