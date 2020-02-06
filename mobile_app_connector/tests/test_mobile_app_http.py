@@ -25,8 +25,8 @@ class TestMobileAppHttp(HttpCase):
         super(TestMobileAppHttp, self).setUp()
         self.root_url = '/mobile-app-api/'
         # Add JSON type in request headers and fake token
-        self.opener.addheaders.append(('Content-Type', 'application/json'))
-        self.opener.addheaders.append(('Authorization', 'Bearer fake_token'))
+        self.opener.headers.update({"Content-Type": 'application/json'})
+        self.opener.headers.update({"Authorization": 'Bearer fake_token'})
 
     @patch(mock_oauth)
     def test_login(self, oauth_patch):
@@ -34,14 +34,14 @@ class TestMobileAppHttp(HttpCase):
         url = self.root_url + 'login?username={}&password={}'
         # Bad username and password
         response = self.url_open(url.format('wrong', 'login'))
-        self.assertEqual(response.code, 200)
-        json_data = simplejson.loads(response.read())
+        self.assertEqual(response.status_code, 200)
+        json_data = simplejson.loads(response.content)
         self.assertEqual(json_data['error'], 'Wrong user or password')
         # Good username and password
         response = self.url_open(url.format(self.admin_username, self.admin_password))
-        self.assertEqual(response.code, 200)
-        json_data = simplejson.loads(response.read())
-        self.assertEqual(json_data['userid'], '1')
+        self.assertEqual(response.status_code, 200)
+        json_data = simplejson.loads(response.content)
+        self.assertEqual(json_data['userid'], 1)
 
     @patch(mock_oauth)
     def test_hub_authentication(self, oauth_patch):
@@ -51,22 +51,22 @@ class TestMobileAppHttp(HttpCase):
         - if a partner is requested, the user must be authenticated
         """
         oauth_patch.return_value = 'admin'
-        url = self.root_url + 'hub/'
+        url = self.root_url + 'hub/0'
         # Public messages
-        response = self.url_open(url + '0')
-        self.assertEqual(response.code, 200)
-        json_data = simplejson.loads(response.read())
+        response = self.url_open(url)
+        self.assertEqual(response.status_code, 200)
+        json_data = simplejson.loads(response.content)
         self.assertIn('Messages', json_data)
         # Private messages without login should fail
         response = self.url_open(url + str(self.env.ref(
             'base.partner_root').id))
-        self.assertEqual(response.code, 401)
+        self.assertEqual(response.status_code, 401)
         # Private message while authenticated should work
         self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url + str(self.env.ref(
             'base.partner_root').id))
-        self.assertEqual(response.code, 200)
-        json_data = simplejson.loads(response.read())
+        self.assertEqual(response.status_code, 200)
+        json_data = simplejson.loads(response.content)
         self.assertIn('Messages', json_data)
 
     def test_entry_point(self):
@@ -74,20 +74,20 @@ class TestMobileAppHttp(HttpCase):
         self.env['res.users'].sudo().browse(1).partner_id.ref = '1818'
         url = self.root_url + 'compassion.child/sponsor_children?userid=1818'
         response = self.url_open(url)
-        self.assertEqual(response.code, 401)
+        self.assertEqual(response.status_code, 401)
         self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url)
-        self.assertEqual(response.code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_message_hub(self):
         # Test we can only call hub entry point for user while authenticated
         url = self.root_url + 'hub/0'
         response = self.url_open(url)
-        self.assertEqual(response.code, 200)
+        self.assertEqual(response.status_code, 200)
         url = self.root_url + 'hub/' + str(self.env.ref(
             'base.partner_root').id)
         response = self.url_open(url)
-        self.assertEqual(response.code, 401)
+        self.assertEqual(response.status_code, 401)
         self.authenticate(self.admin_username, self.admin_password)
         response = self.url_open(url)
-        self.assertEqual(response.code, 200)
+        self.assertEqual(response.status_code, 200)

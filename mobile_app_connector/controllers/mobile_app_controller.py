@@ -43,8 +43,7 @@ class RestController(http.Controller):
         """
         request.session.authenticate(
             request.session.db, username, password)
-        mapping = MobileLoginMapping(request.env)
-        return mapping.get_connect_data(request.env.user)
+        return request.env.user.data_to_json("mobile_app_login")
 
     @http.route('/mobile-app-api/firebase.registration/register',
                 auth='public', method='POST', type='json')
@@ -135,10 +134,15 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
+        print("ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS")
         hub_obj = request.env['mobile.app.hub'].\
             with_context(lang=_get_lang(request, parameters)).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
+            print("ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS")
+            print(partner_id)
+            print(request.env.user.partner_id.id)
+            print(request)
             if partner_id == request.env.user.partner_id.id:
                 # This will ensure the user is logged in
                 request.session.check_security()
@@ -163,8 +167,7 @@ class RestController(http.Controller):
         hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
         hero.print_count += 1
-        hero_mapping = AppBannerMapping(request.env)
-        res = hero_mapping.get_connect_data(hero)
+        res = hero.data_to_json("mobile_app_banner")
         return [res]
 
     @http.route('/sponsor_a_child',

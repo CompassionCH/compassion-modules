@@ -104,11 +104,12 @@ class AppBanner(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
-        result = []
+        if not res:
+            res = {}
         for key, value in list(res.items()):
-            if value:
-                result[key] = None
-        return result
+            if not value:
+                res[key] = None
+        return res
 
     # @api.model
     # def json_to_data(self, json, mapping_name=None):

@@ -21,9 +21,7 @@
       "field": "action_destination"
     },
     "Type": {
-      "field": "code",
-      "from_json_conversion": "type_id.code",
-      "search_relational_record": true
+      "from_json_conversion": "json_value"
     },
     "IsAutomaticOrdering": {
       "field": "is_automatic_ordering"

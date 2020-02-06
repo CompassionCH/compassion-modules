@@ -29,15 +29,12 @@ class CompassionChild(models.Model):
         """
         if not self:
             return {}
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_child"
-        ])
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_child")
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_child"))
         return data
 
     @api.multi
@@ -56,15 +53,12 @@ class CompassionChild(models.Model):
         if not self:
             return {wrapper: []}
 
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_child"
-        ])
         if len(self) == 1 and not multi:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_child")
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_child"))
         return {
             wrapper: data,
             'Images': children_pictures.filtered('image_url').get_app_json(multi=True),
@@ -99,11 +93,8 @@ class CompassionChild(models.Model):
             ('partner_id', '=', sponsor.id)
         ])
 
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_child"
-        ])
         for child in children:
-            result.append(mapping.get_connect_data(child))
+            result.append(child.data_to_json("mobile_app_child"))
         return result
 
     @api.model
@@ -166,7 +157,9 @@ class CompassionChild(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
-        if res['FullBodyImageURL']:
+        if not res:
+            res = {}
+        if "FullBodyImageURL" in res.keys():
             image_url = self.env['child.pictures.download.wizard']\
                 .get_picture_url(res['FullBodyImageURL'], 'headshot', 300, 300)
             res['ImageUrl'] = image_url
@@ -181,6 +174,6 @@ class CompassionChild(models.Model):
                     res[key] = int(value)
             if key == "Gender":
                 res[key] = "Female" if value == "F" else "Male"
-            if value:
-                del res[key]
+            if not value:
+                res[key] = None
         return res

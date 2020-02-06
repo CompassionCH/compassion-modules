@@ -137,14 +137,13 @@ class AppTile(models.Model):
                           }
         :return: Tiles for mobile app (list of dict)
         """
-        tile_mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_tile"
-        ])
         res = []
         if tile_data is None:
             tile_data = {}
         for tile in self:
-            tile_json = tile_mapping.get_connect_data(tile)
+            print(tile)
+            print(tile_data)
+            tile_json = tile.data_to_json("mobile_app_tile")
             records = tile._get_records(tile_data)
             if records:
                 # Convert text templates
@@ -228,10 +227,12 @@ class AppTile(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         for key, value in list(res.copy().items()):
             if key == 'ActionText':
                 if value:
                     res[key] = str(value)
                 else:
-                    del res[key]
+                    res[key] = None
         return res

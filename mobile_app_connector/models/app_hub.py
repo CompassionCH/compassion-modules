@@ -138,6 +138,7 @@ class AppHub(models.AbstractModel):
         TODO See if we send a link for a video (could be a wordpress post)
         :return: list of tiles displayed in mobile app.
         """
+        print("_public_hub")
         available_tiles = self.env['mobile.app.tile'].search([
             ('visibility', '!=', 'private')
         ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
@@ -174,9 +175,8 @@ class AppHub(models.AbstractModel):
             start = int(pagination.get('start', 0))
             number_mess = int(pagination.get('limit', 1000))
             offset = (start % number_mess) * self.LIMIT_WORDPRESS_TILES
-            wp_mapping = WPPostMapping(self.env)
             for post in available_posts[offset:self.LIMIT_WORDPRESS_TILES]:
-                messages.append(wp_mapping.get_connect_data(post))
+                messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,

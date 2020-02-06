@@ -40,10 +40,7 @@ class CompassionLogin(models.Model):
             self.save_session(request.cr, uid, request.context)
 
         user = self.env['res.users'].browse(uid)
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_login"
-        ])
-        result = mapping.get_connect_data(user)
+        result = self.data_to_json("mobile_app_login")
         return result
 
     def _get_required_param(self, key, params):
@@ -54,11 +51,13 @@ class CompassionLogin(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         if not self:
             res['error'] = _("Wrong user or password")
         else:
             res['login_count'] = len(self.log_ids)
         for key, value in list(res.items()):
             if not value:
-                del res[key]
+                res[key] = None
         return res

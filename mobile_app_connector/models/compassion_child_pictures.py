@@ -41,21 +41,20 @@ class CompassionChildPictures(models.Model):
         """
         if not self:
             return {}
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_child_pictures"
-        ])
         # wrapper = 'Images' if multi else 'Images'
         if len(self) == 1:
-            data = [mapping.get_connect_data(self)]
+            data = [self.data_to_json("mobile_app_child_pictures")]
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_child_pictures"))
         return data
 
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         res['Date'] = datetime.datetime.strptime(
             res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
         return res

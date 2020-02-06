@@ -39,20 +39,19 @@ class ProductTemplate(models.Model):
         result = []
         donation_types = self.search([('mobile_app', '=', True)])
 
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_donation"
-        ])
         for donation in donation_types:
-            result.append(mapping.get_connect_data(donation))
+            result.append(donation.data_to_json("mobile_app_donation"))
 
         return result
 
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         for key, value in list(res.items()):
             if not value:
-                del res[key]
+                res[key] = None
         return res
 
 

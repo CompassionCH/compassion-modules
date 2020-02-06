@@ -248,9 +248,10 @@ class WordpressPost(models.Model):
 
     @api.multi
     def data_to_json(self, mapping_name=None):
-        # Queries should always be lists
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         for key, value in list(res.items()):
             if not value:
-                del res[key]
+                res[key] = None
         return res

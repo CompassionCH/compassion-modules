@@ -29,16 +29,13 @@ class CompassionCorrespondence(models.Model):
         child = self.sudo().mapped('child_id')
         if not self:
             return {}
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_from_letter"
-        ])
         wrapper = 'Letters' if multi else 'Letter'
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_from_letter")
         else:
             data = []
             for letter in self:
-                data.append(mapping.get_connect_data(letter))
+                data.append(letter.data_to_json("mobile_app_from_letter"))
 
         order_date = self.sent_date or self.status_date
         if self.direction == 'Supporter to beneficiary':
@@ -67,10 +64,10 @@ class CompassionCorrespondence(models.Model):
             'supporterId',
             'base64string'
             ], json_data)
-        mapping = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_correspondence"
+        mapping = self.env['compassion.mapping'].search([
+            ('name', '=', "mobile_app_correspondence")
         ])
-        vals = mapping.get_vals_from_connect(json_data)
+        vals = mapping.json_to_data(json_data, "mobile_app_correspondence")
         letter = self.env['correspondence'].create(vals)
 
         if letter:
@@ -94,10 +91,10 @@ class CompassionCorrespondence(models.Model):
             ('direction', '=', 'Beneficiary To Supporter')
         ])
 
-        mapper = self.env['compassion_mapping'].search([
-            'name', '=', "mobile_app_from_letter"
+        mapper = self.env['compassion.mapping'].search([
+            ('name', '=', "mobile_app_from_letter")
         ])
-        return [mapper.get_connect_data(letter) for letter in letters]
+        return [letter.data_to_json("mobile_app_from_letter") for letter in letters]
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
@@ -239,6 +236,8 @@ class CompassionCorrespondence(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
         res['Type'] = 1
         if not res['Message']:
             res['Message'] = _("Physical letters cannot be displayed.")
