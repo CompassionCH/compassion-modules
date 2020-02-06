@@ -21,7 +21,9 @@
       "field": "action_destination"
     },
     "Type": {
-      "from_json_conversion": "json_value"
+      "field": "subtype_id.type_id",
+      "to_json_conversion": "odoo_value.code",
+      "search_relational_record": true
     },
     "IsAutomaticOrdering": {
       "field": "is_automatic_ordering"

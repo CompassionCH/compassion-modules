@@ -33,13 +33,13 @@
       "field": "date"
     },
     "Type": {
-      "to_json_conversion": "0"
+      "field": "tile_type"
     },
     "SubType": {
-      "to_json_conversion": "Tile"
+      "field": "tile_subtype"
     },
     "ActionDestination": {
-      "to_json_conversion": "Stories and prayer with relevant blog at the top"
+      "to_json_conversion": "'Stories and prayer with relevant blog at the top'"
     }
   }
 }

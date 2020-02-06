@@ -134,15 +134,10 @@ class RestController(http.Controller):
         :param partner_id: 0 for public, or partner id.
         :return: messages for displaying the hub
         """
-        print("ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS")
         hub_obj = request.env['mobile.app.hub'].\
             with_context(lang=_get_lang(request, parameters)).sudo()
         if partner_id:
             # Check if requested url correspond to the current user
-            print("ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS ERRORS")
-            print(partner_id)
-            print(request.env.user.partner_id.id)
-            print(request)
             if partner_id == request.env.user.partner_id.id:
                 # This will ensure the user is logged in
                 request.session.check_security()

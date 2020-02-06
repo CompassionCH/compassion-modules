@@ -141,8 +141,6 @@ class AppTile(models.Model):
         if tile_data is None:
             tile_data = {}
         for tile in self:
-            print(tile)
-            print(tile_data)
             tile_json = tile.data_to_json("mobile_app_tile")
             records = tile._get_records(tile_data)
             if records:
