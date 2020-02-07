@@ -7,9 +7,9 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">fetch_posts</field>
-            <field name="args">('posts',)</field>
-            <field name="model">wp.post</field>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('posts')</field>
+            <field name="state">code</field>
         </record>
 
         <record id="wp_fetch_agendas_cron" model="ir.cron">
@@ -18,9 +18,9 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">fetch_posts</field>
-            <field name="args">('agendas',)</field>
-            <field name="model">wp.post</field>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('agendas')</field>
+            <field name="state">code</field>
         </record>
 
         <record id="wp_fetch_downloads_cron" model="ir.cron">
@@ -29,9 +29,9 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">fetch_posts</field>
-            <field name="args">('download',)</field>
-            <field name="model">wp.post</field>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('download')</field>
+            <field name="state">code</field>
         </record>
 
         <record id="activate_banners" model="ir.cron">
@@ -40,8 +40,9 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">validity_cron</field>
-            <field name="model">mobile.app.banner</field>
+            <field name="model_id" ref="model_mobile_app_banner"/>
+            <field name="code">model.validity_cron()</field>
+            <field name="state">code</field>
         </record>
 
         <record id="activate_writings" model="ir.cron">
@@ -50,8 +51,9 @@
             <field name="interval_type">weeks</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">validity_cron</field>
-            <field name="model">mobile.app.writing</field>
+            <field name="model_id" ref="model_mobile_app_writing"/>
+            <field name="code">model.validity_cron()</field>
+            <field name="state">code</field>
         </record>
 
         <record id="remove_draft_mobile_invoices" model="ir.cron">
@@ -60,8 +62,9 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function">remove_mobile_draft_invoices</field>
-            <field name="model">account.invoice</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">model.remove_mobile_draft_invoices()</field>
+            <field name="state">code</field>
         </record>
     </data>
 </odoo>

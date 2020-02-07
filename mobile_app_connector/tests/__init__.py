@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-# from . import test_mobile_app_connector
+from . import test_mobile_app_connector
 from . import test_mobile_app_http

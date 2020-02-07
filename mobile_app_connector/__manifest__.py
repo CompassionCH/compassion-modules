@@ -42,7 +42,8 @@
         'firebase_connector',           # compassion-modules
         'sms_sponsorship',              # compassion-modules
         'partner_communication',        # compassion-modules
-        'crm_claim'                     # oca_addons/crm
+        'crm_claim',                    # oca_addons/crm
+        'wordpress_configuration'       # compassion-modules
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
