@@ -25,7 +25,7 @@
       "field": "preferred_name"
     },
     "twitterid": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "username": {
       "field": "login"
@@ -34,20 +34,20 @@
       "field": "password"
     },
     "status": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "contactid": {
       "field": "partner_id.id",
       "search_relational_record": true
     },
     "activation": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "alternateemail1": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "alternateemail2": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "homephone": {
       "field": "phone"
@@ -56,7 +56,7 @@
       "field": "mobile"
     },
     "officephone": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "street1": {
       "field": "street"
@@ -65,13 +65,13 @@
       "field": "street2"
     },
     "street3": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "street4": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "street5": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "town": {
       "field": "city"
@@ -89,25 +89,25 @@
       "search_relational_record": true
     },
     "receive_emails": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "no_emails": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "photo": {
       "field": "image"
     },
     "sponsorshipplus_flag": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "fb_login": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "dd_flag": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "bb_dd_flag": {
-      "to_json_conversion": "1"
+      "to_json_conversion": "'1'"
     },
     "login_count": {
       "field": "login_date"
@@ -119,7 +119,7 @@
       "field": "create_date"
     },
     "error": {
-      "to_json_conversion": "0"
+      "to_json_conversion": "'0'"
     }
   }
 }
