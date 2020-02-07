@@ -2,20 +2,28 @@
   "name": "mobile_app_wp_post",
   "model": "wp.post",
   "mapping": {
-    "Blog.ImageUrl": {
-      "field": "image_url"
-    },
-    "Blog.Title": {
-      "field": "name"
-    },
-    "Blog.Url": {
-      "field": "url"
-    },
-    "Blog.WP_id": {
-      "field": "wp_id"
-    },
-    "Blog.Post_type": {
-      "field": "post_type"
+    "Blog": {
+      "sub_mapping": {
+        "name": "mobile_app_wp_post_blog",
+        "model": "wp.post",
+        "mapping": {
+          "ImageUrl": {
+            "field": "image_url"
+          },
+          "Title": {
+            "field": "name"
+          },
+          "Url": {
+            "field": "url"
+          },
+          "WP_id": {
+            "field": "wp_id"
+          },
+          "Post_type": {
+            "field": "post_type"
+          }
+        }
+      }
     },
     "Title": {
       "field": "name"
