@@ -16,6 +16,7 @@ from . import compassion_project
 from . import product_template
 from . import compassion_correspondence
 from . import account_invoice
+from . import account_move
 from . import res_partner
 from . import app_hub
 from . import wordpress_post_category
@@ -34,3 +35,4 @@ from . import frequently_asked_questions
 from . import compassion_field_office
 from . import partner_communication
 from . import communication_config
+from . import payment_transaction

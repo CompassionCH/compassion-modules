@@ -19,9 +19,9 @@ class FirebaseNotification(models.Model):
     """
     Represent a mobile notification which can be sent to a set of partners.
     """
-
     _name = 'firebase.notification'
     _description = 'Notification to send to Firebase Cloud Messaging'
+    _order = 'send_date desc'
 
     partner_ids = fields.Many2many('res.partner', string="Partners")
     title = fields.Char(required=True)

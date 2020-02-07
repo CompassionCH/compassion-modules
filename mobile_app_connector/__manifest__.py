@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion EU Mobile App Connector',
-    'version': '10.0.1.5.0',
+    'version': '10.0.1.6.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -41,7 +41,7 @@
         'base_geolocalize',
         'firebase_connector',
         'sms_sponsorship',
-        'partner_communication'
+        'thankyou_letters'
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],

@@ -284,25 +284,21 @@ class CommunicationJob(models.Model):
         config = self.config_id.browse(vals['config_id'])
 
         # Determine user by default : take in config or employee
-        omr_config = config.omr_config_ids
+        partner = self.env['res.partner'].browse(vals.get('partner_id'))
+        lang_of_partner = self.env['res.lang'].search([
+            ('code', 'like', partner.lang or self.env.lang)
+        ])
+        omr_config = config.get_config_for_lang(lang_of_partner)[:1]
         if not vals.get('user_id'):
-            partner = self.env['res.partner'].browse(vals.get('partner_id'))
-            if partner:
-                lang_of_partner = self.env['res.lang'].search([
-                    ('code', 'like', partner.lang)
-                ])
-                omr_config = config.get_config_for_lang(lang_of_partner)[0:]
-                # responsible for the communication is user specified in the omr_config
-                # or user specified in the config itself
-                # or the current user
-                user_id = self.env.uid
-                if omr_config.user_id:
-                    user_id = omr_config.user_id.id
-                elif config.user_id:
-                    user_id = config.user_id.id
-                vals['user_id'] = user_id
-            else:
-                vals['user_id'] = self.env.uid
+            # responsible for the communication is user specified in the omr_config
+            # or user specified in the config itself
+            # or the current user
+            user_id = self.env.uid
+            if omr_config.user_id:
+                user_id = omr_config.user_id.id
+            elif config.user_id:
+                user_id = config.user_id.id
+            vals['user_id'] = user_id
 
         # Check all default_vals fields
         for default_val in default_vals:
@@ -667,7 +663,6 @@ class CommunicationJob(models.Model):
                 'auto_delete': False,
                 'reply_to': (self.email_template_id.reply_to or
                              self.user_id.email),
-                'email_from': self.user_id.email
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
