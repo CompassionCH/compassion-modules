@@ -78,6 +78,7 @@
     },
     "county": {
       "field": "state_id.id",
+      "from_json_conversion": "self.env['res.country.state'].search([('id', '=', state_id.id)]).id",
       "search_relational_record": true
     },
     "postcode": {

@@ -19,12 +19,6 @@
     },
     "HERO_CTA_DESTINATION_TYPE": {
       "field": "destination_type"
-    },
-    "IS_DELETED": {
-      "to_json_conversion": "0"
-    },
-    "BLOG_DISPLAY_TYPE": {
-      "to_json_conversion": "Tile"
     }
   }
 }

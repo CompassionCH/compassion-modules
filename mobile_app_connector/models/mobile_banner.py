@@ -106,18 +106,9 @@ class AppBanner(models.Model):
         res = super().data_to_json(mapping_name)
         if not res:
             res = {}
+        res['IS_DELETED'] = "0"
+        res['BLOG_DISPLAY_TYPE'] = "Tile"
         for key, value in list(res.items()):
             if not value:
                 res[key] = None
         return res
-
-    # @api.model
-    # def json_to_data(self, json, mapping_name=None):
-    #     odoo_data = super().json_to_data(json, mapping_name)
-    #     odoo_fields = ('original_text', 'english_text', 'translated_text')
-    #     for field in odoo_fields:
-    #         for page_data in odoo_data:
-    #             if field in page_data:
-    #                 page_data[field] = html.unescape(BOX_SEPARATOR.join(
-    #                     page_data[field]))
-    #     return odoo_data

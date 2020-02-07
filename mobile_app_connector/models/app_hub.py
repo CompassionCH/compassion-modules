@@ -44,7 +44,7 @@ class AppHub(models.AbstractModel):
         """
         if not partner_id:
             # Public mode is handled differently.
-            return self._public_hub(**pagination)
+             return self._public_hub(**pagination)
 
         partner = self.env['res.partner'].browse(partner_id)
 

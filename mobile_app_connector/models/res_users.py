@@ -60,4 +60,6 @@ class CompassionLogin(models.Model):
         for key, value in list(res.items()):
             if not value:
                 res[key] = None
+            else:
+                res[key] = str(value)
         return res
