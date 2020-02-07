@@ -36,7 +36,8 @@ class Session(requests.Session):
         if 'token' not in auth:
             raise exceptions.AccessError(_(
                 'Wordpress authentication failed !'))
-
-        self.headers.update({'Authorization': 'Bearer %s' % auth['token']})
+        self.headers.update({
+            "Authorization": f"Bearer {auth['token']}"
+        })
 
         return super(Session, self).__enter__()
