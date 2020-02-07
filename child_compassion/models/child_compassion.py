@@ -423,6 +423,24 @@ class CompassionChild(models.Model):
             }
             self.education_level = grade_mapping.get(self.us_grade_level)
 
+    def get_number(self):
+        """ Returns a string telling how many children are in the recordset.
+        """
+        number_dict = {
+            1: _("one"),
+            2: _("two"),
+            3: _("three"),
+            4: _("four"),
+            5: _("five"),
+            6: _("six"),
+            7: _("seven"),
+            8: _("eight"),
+            9: _("nine"),
+            10: _("ten"),
+        }
+        return number_dict.get(len(self), str(len(self))) + ' ' + self.get(
+            'child')
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################

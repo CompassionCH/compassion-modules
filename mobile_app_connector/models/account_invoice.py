@@ -7,8 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from odoo import models, api, fields, _
 from collections import defaultdict
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
@@ -114,6 +118,64 @@ class AccountInvoice(models.Model):
 
         result['Donation'].append(invoice.id)
         return result
+
+    def action_invoice_paid(self):
+        """
+        Notify the sponsor that we received the donation.
+        :return:
+        """
+        res = super(AccountInvoice, self).action_invoice_paid()
+        for invoice in self:
+            partner = invoice.partner_id
+            has_app = self.env['firebase.registration'].search_count([
+                ('partner_id', '=', partner.id)
+            ])
+            if invoice.invoice_type in ('gift', 'fund') and has_app:
+                invoice.send_mobile_notification()
+        return res
+
+    def _after_transaction_invoice_paid(self, transaction):
+        """
+        This will ensure we notify every payment made from the app, even if it's
+        for a sponsorship payment.
+        :param transaction: payment.transaction record
+        :return: None
+        """
+        super(AccountInvoice, self)._after_transaction_invoice_paid(transaction)
+        self.send_mobile_notification()
+
+    def send_mobile_notification(self):
+        self.ensure_one()
+        payment_moves = self.mapped('payment_move_line_ids.move_id')
+        if payment_moves.mapped('mobile_notification_id'):
+            # Avoid sending duplicate notifications
+            return True
+
+        partner = self.partner_id
+        # This ensures the translation func is done in the right language _()
+        context = {'lang': partner.lang}
+        lines = self.mapped('invoice_line_ids').with_context(context)
+        children = lines.mapped('contract_id.child_id')
+        amount, for_text = lines.get_donations()
+        if children:
+            if len(children) > 1:
+                for_text = children.get_number()
+            else:
+                for_text = children.preferred_name
+        notification = self.env['firebase.notification'].create({
+            'topic': 'spam',  # to ensure he will receive the notification
+            'destination': 'Donation',  # to put the gift icon
+            'fundType': lines.mapped('product_id')[:1].id,
+            'partner_ids': [(6, 0, partner.ids)],
+            'title': _('You gave CHF %s.- for %s') % (amount, for_text),
+            'body': _('Thank you for your generosity!')
+        })
+        _logger.info("Send notification of invoice paid to %s", partner.name)
+        notification.send()
+        payment_moves.write({
+            'mobile_notification_id': notification.id
+        })
+        return True
 
 
 class DonationDataWrapper:
