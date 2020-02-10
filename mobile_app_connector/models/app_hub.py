@@ -324,7 +324,7 @@ class AppHub(models.AbstractModel):
             else:
                 rest_group.append(tile)
 
-        for subtype, tiles in recent_content.iteritems():
+        for subtype, tiles in recent_content.items():
             if subtype == 'LE_T1':
                 for tile in tiles['tiles']:
                     tile['SortOrder'] = unread_letter_order
@@ -375,7 +375,7 @@ class AppHub(models.AbstractModel):
         # For weighted random, we create a list of every possible tile subtype
         # to select at random (a subtype with n tiles appears n times)
         random_list = []
-        for k, v in possible_subtype.iteritems():
+        for k, v in possible_subtype.items():
             random_list += [k] * v
         random.shuffle(random_list)
 
@@ -421,7 +421,7 @@ class AppHub(models.AbstractModel):
         # First we determine how many of the same subtype we should display
         # back to back
         number_tile_type = {}
-        for k, v in possible_subtype.iteritems():
+        for k, v in possible_subtype.items():
             number_tile_type[k] = max(1, v // (number_tile or 1))
 
         # We add the remaining tiles to the end of the hub

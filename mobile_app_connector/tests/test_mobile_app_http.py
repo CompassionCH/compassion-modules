@@ -41,7 +41,7 @@ class TestMobileAppHttp(HttpCase):
         response = self.url_open(url.format(self.admin_username, self.admin_password))
         self.assertEqual(response.status_code, 200)
         json_data = simplejson.loads(response.content)
-        self.assertEqual(json_data['userid'], 1)
+        self.assertEqual(json_data['userid'], '1')
 
     @patch(mock_oauth)
     def test_hub_authentication(self, oauth_patch):

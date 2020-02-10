@@ -47,7 +47,7 @@ class MobileAppJsonRequest(JsonRequest):
 
             super().__init__(*args)
             self.params = {
-                key: val for key, val in self.httprequest.args.iteritems()
+                key: val for key, val in self.httprequest.args.items()
             }
         except werkzeug.exceptions.BadRequest as error:
             # Put simply an empty JSON data
@@ -56,7 +56,7 @@ class MobileAppJsonRequest(JsonRequest):
                 # PUT The GET parameters as the parameters for the controller
                 self.params = {
                     key: val for key, val in
-                    self.httprequest.values.iteritems()
+                    self.httprequest.values.items()
                 }
                 self.context = dict(self.session.context)
             else:
