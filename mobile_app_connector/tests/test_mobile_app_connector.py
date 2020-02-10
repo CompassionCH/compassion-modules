@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 class TestMobileAppConnector(BaseSponsorshipTest):
 
     def setUp(self):
-        super(TestMobileAppConnector, self).setUp()
+        super().setUp()
         self.partner = self.env.ref('base.res_partner_address_10')
         self.partner.ref = 'myref'
         self.child = self.create_child('UG4239181')

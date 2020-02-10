@@ -42,7 +42,7 @@ class CommunicationJob(models.Model):
             "mobile_notification_topic",
         ])
 
-        return super(CommunicationJob, self)._get_default_vals(vals, default_vals)
+        return super()._get_default_vals(vals, default_vals)
 
     @api.multi
     def send(self):
@@ -50,7 +50,7 @@ class CommunicationJob(models.Model):
         jobs = self.filtered(lambda j: j.state == 'pending')\
             .filtered('mobile_notification_send')\
             .filtered('firebase_registration_exists')
-        res = super(CommunicationJob, self).send()
+        res = super().send()
 
         for job in jobs:
             mobile_notif = job.env["firebase.notification"].create({
@@ -70,7 +70,7 @@ class CommunicationJob(models.Model):
     @api.multi
     def unlink(self):
         self.mapped('mobile_notification_id').filtered(lambda n: not n.sent).unlink()
-        return super(CommunicationJob, self).unlink()
+        return super().unlink()
 
     @api.multi
     @api.depends("partner_id")

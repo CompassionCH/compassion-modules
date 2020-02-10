@@ -22,7 +22,7 @@ class TestMobileAppHttp(HttpCase):
     admin_password = "admin"
 
     def setUp(self):
-        super(TestMobileAppHttp, self).setUp()
+        super().setUp()
         self.root_url = '/mobile-app-api/'
         # Add JSON type in request headers and fake token
         self.opener.headers.update({"Content-Type": 'application/json'})

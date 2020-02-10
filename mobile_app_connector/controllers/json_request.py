@@ -45,7 +45,7 @@ class MobileAppJsonRequest(JsonRequest):
             # pylint: disable=pointless-statement
             args[0].values
 
-            super(MobileAppJsonRequest, self).__init__(*args)
+            super().__init__(*args)
             self.params = {
                 key: val for key, val in self.httprequest.args.iteritems()
             }
@@ -63,7 +63,7 @@ class MobileAppJsonRequest(JsonRequest):
                 raise
 
     def _json_response(self, result=None, error=None):
-        odoo_result = super(MobileAppJsonRequest, self)._json_response(
+        odoo_result = super()._json_response(
             result, error)
         if result is not None and error is None:
             odoo_result.data = simplejson.dumps(result)
