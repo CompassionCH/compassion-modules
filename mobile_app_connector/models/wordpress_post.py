@@ -9,7 +9,6 @@
 ##############################################################################
 import logging
 import html
-from html.parser import HTMLParser
 from ..tools import wp_requests
 
 from odoo import api, models, fields, _
@@ -149,7 +148,7 @@ class WordpressPost(models.Model):
                                 'wp:featuredmedia'][0]['href']
                             image_json = requests.get(image_json_url).json()
                             if '.jpg' in image_json['media_details']['sizes'][
-                                'medium']['source_url']:
+                                    'medium']['source_url']:
                                 image_url = \
                                     image_json['media_details']['sizes'][
                                         'medium']['source_url']

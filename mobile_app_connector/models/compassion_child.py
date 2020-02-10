@@ -116,10 +116,10 @@ class CompassionChild(models.Model):
 
         hobbies = child.translate('hobby_ids.value')
 
-        if isinstance(hobbies, unicode):
+        if isinstance(hobbies, str):
             hobbies = [hobbies]
 
-        if isinstance(guardians, unicode):
+        if isinstance(guardians, str):
             guardians = [guardians]
 
         at = self.env['ir.advanced.translation'].sudo()

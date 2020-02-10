@@ -91,9 +91,6 @@ class CompassionCorrespondence(models.Model):
             ('direction', '=', 'Beneficiary To Supporter')
         ])
 
-        mapper = self.env['compassion.mapping'].search([
-            ('name', '=', "mobile_app_from_letter")
-        ])
         return [letter.data_to_json("mobile_app_from_letter") for letter in letters]
 
     @api.model

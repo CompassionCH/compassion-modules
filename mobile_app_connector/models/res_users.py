@@ -39,7 +39,6 @@ class CompassionLogin(models.Model):
         if uid is not False:
             self.save_session(request.cr, uid, request.context)
 
-        user = self.env['res.users'].browse(uid)
         result = self.data_to_json("mobile_app_login")
         return result
 
