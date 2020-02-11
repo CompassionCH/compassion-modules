@@ -125,13 +125,15 @@ class AccountInvoice(models.Model):
         :return:
         """
         res = super(AccountInvoice, self).action_invoice_paid()
-        for invoice in self:
-            partner = invoice.partner_id
-            has_app = self.env['firebase.registration'].search_count([
-                ('partner_id', '=', partner.id)
-            ])
-            if invoice.invoice_type in ('gift', 'fund') and has_app:
-                invoice.send_mobile_notification()
+        # TODO Activate this when we can filter invoices that must not be notified
+        # (See CO-3068)
+        # for invoice in self:
+        #     partner = invoice.partner_id
+        #     has_app = self.env['firebase.registration'].search_count([
+        #         ('partner_id', '=', partner.id)
+        #     ])
+        #     if invoice.invoice_type in ('gift', 'fund') and has_app:
+        #         invoice.send_mobile_notification()
         return res
 
     def _after_transaction_invoice_paid(self, transaction):
