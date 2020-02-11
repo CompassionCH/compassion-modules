@@ -142,8 +142,9 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
            auth='public', website=True, noindex=['robots', 'meta', 'header'])
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
-        sponsorship = request.env['recurring.contract'].sudo().browse(
-            sponsorship_id)
+        sponsorship = request.env['recurring.contract'].sudo().search([
+            ('id', '=', sponsorship_id)
+        ])
         if sponsorship.sms_request_id.state == 'step2' or \
                 sponsorship.state in ['active', 'waiting']:
             # Sponsorship is already confirmed
