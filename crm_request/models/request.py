@@ -270,8 +270,7 @@ class CrmClaim(models.Model):
         :param text: text to detect
         :return: res.lang compassion record if the language is found, or False
         """
-        detectlanguage.configuration.api_key = config.get(
-            'detect_language_api_key')
+        detectlanguage.configuration.api_key = config.get('detect_language_api_key')
         language_name = False
         langs = detectlanguage.languages()
         try:
@@ -286,7 +285,7 @@ class CrmClaim(models.Model):
         if not language_name:
             return False
 
-        return self.env['res.lang.compassion'].search(
+        return self.env['res.lang.compassion'].with_context({'lang': 'en_US'}).search(
             [('name', '=ilike', language_name)], limit=1)
 
     @api.multi

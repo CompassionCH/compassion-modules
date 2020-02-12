@@ -164,6 +164,7 @@ class CompassionCorrespondence(models.Model):
             'selection_domain':
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body': escape(body),
+            'language_id':  int(self.env['crm.claim'].detect_lang(body)),
             's2b_template_id': int(template_id),
             'image_ids': datas,
             'source': 'app'
