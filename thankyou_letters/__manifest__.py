@@ -37,7 +37,13 @@
         'partner_communication',            # compassion-modules
         'advanced_translation',             # compassion-modules
         'web_widget_digitized_signature',   # oca_addons/web
+        'account'                           # source/addons
     ],
+    'external_dependencies': {
+        'python': [
+            'babel',
+        ]
+    },
     'data': [
         'security/ir.model.access.csv',
         'report/donation_report.xml',

@@ -7,29 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import locale
 import re
-import threading
 
-from contextlib import contextmanager
 from datetime import datetime
+from babel.dates import format_date
 
 from odoo import api, models, fields, _
-
-LOCALE_LOCK = threading.Lock()
-
-
-# TODO Remove this and replace (maybe with Babel package)
-@contextmanager
-def setlocale(name):
-    with LOCALE_LOCK:
-        saved = locale.setlocale(locale.LC_ALL)
-        try:
-            yield locale.setlocale(locale.LC_ALL, (name, 'UTF-8'))
-        except:
-            yield locale.setlocale(locale.LC_ALL, name)
-        finally:
-            locale.setlocale(locale.LC_ALL, saved)
 
 
 class ResPartner(models.Model):
@@ -103,22 +86,13 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_date_communication(self):
-        lang_map = {
-            'fr_CH': u'le %d %B %Y',
-            'fr': u'le %d %B %Y',
-            'de_DE': u'%d. %B %Y',
-            'de_CH': u'%d. %B %Y',
-            'en_US': u'%d %B %Y',
-            'it_IT': u'%d %B %Y',
-        }
+        """City and date displayed in the top right of a letter"""
         today = datetime.today()
         city = self.env.user.partner_id.company_id.city
         for partner in self:
-            lang = partner.lang
-            with setlocale(lang):
-                date = today.strftime(
-                    lang_map.get(lang, lang_map['en_US'])).decode('utf-8')
-                partner.date_communication = city + u", " + date
+            date = format_date(today, format='long', locale=partner.lang)
+            formatted_date = f"le {date}" if 'fr' in partner.lang else date
+            partner.date_communication = f"{city}, {formatted_date}"
 
 
 class ResUsers(models.Model):
