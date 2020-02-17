@@ -661,8 +661,14 @@ class CommunicationJob(models.Model):
         # Send by e-mail
         email = self.email_id
         if not email:
+            recipient_ids = list()
+            recipient_ids.append(partner.id)
+            recipient_ids = recipient_ids + partner.other_contact_ids.ids
+            email_cc = ""
+            if len(recipient_ids) > 1:
+                email_cc = self.prepare_cc_data(recipient_ids, partner.email)
             email_vals = {
-                'recipient_ids': [(4, partner.id)],
+                'recipient_ids': [(6, 0, recipient_ids)],
                 'communication_config_id': self.config_id.id,
                 'body_html': self.body_html,
                 'subject': self.subject,
@@ -670,7 +676,8 @@ class CommunicationJob(models.Model):
                 'auto_delete': False,
                 'reply_to': (self.email_template_id.reply_to or
                              self.user_id.email),
-                'email_from': self.user_id.email
+                'email_from': self.user_id.email,
+                'email_cc': email_cc
             }
             if self.email_to:
                 # Replace partner e-mail by specified address
@@ -696,6 +703,14 @@ class CommunicationJob(models.Model):
             else:
                 final_state = 'done'
         return final_state
+
+    def prepare_cc_data(self, recipient_ids, email):
+        email_cc = ''
+        for recipient_id in recipient_ids:
+            recipient = self.env['res.partner'].browse(recipient_id)
+            if recipient and recipient.email != email:
+                email_cc += ';' + recipient.email
+        return email_cc.strip(';')
 
     def _print_report(self):
         name = self.env.user.firstname or self.env.user.name
