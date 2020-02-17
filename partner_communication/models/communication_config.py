@@ -121,7 +121,9 @@ class CommunicationConfig(models.Model):
     )
     email_template_id = fields.Many2one(
         'mail.template', 'Email template',
-        domain=[('model', '=', 'partner.communication.job')]
+        domain=['|',
+                ('model', '=', 'partner.communication.job'),
+                ('model', '=', 'crm.claim')]
     )
     attachments_function = fields.Char(
         help='Define a function in the communication_job model that will '
@@ -153,15 +155,9 @@ class CommunicationConfig(models.Model):
                     f"{config.send_mode_pref_field}.")
                 )
 
-    @api.constrains('email_template_id', 'report_id')
+    @api.constrains('report_id')
     def _validate_attached_reports(self):
         for config in self:
-            if config.email_template_id and config.email_template_id.model \
-                    != 'partner.communication.job':
-                raise ValidationError(
-                    _("Attached e-mail templates should be linked to "
-                      "partner.communication.job objects!")
-                )
             if config.report_id and config.report_id.model != \
                     'partner.communication.job':
                 raise ValidationError(

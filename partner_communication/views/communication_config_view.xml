@@ -64,6 +64,9 @@
             <search>
                 <field name="name" string="Name"/>
                 <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="communication" string="Communication" domain="[('email_template_id.model', '=', 'partner.communication.job')]"/>
+                <filter name="support" string="Support" domain="[('email_template_id.model', '=', 'crm.claim')]"/>
             </search>
         </field>
      </record>
