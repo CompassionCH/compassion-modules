@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -8,10 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError
 import logging
 
+from odoo import api, models, fields, _
+from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -127,11 +126,11 @@ class CommunicationConfig(models.Model):
     )
     attachments_function = fields.Char(
         help='Define a function in the communication_job model that will '
-        'return all the attachment information for the communication in a '
-        'dict of following format: {attach_name: [report_name, b64_data]}'
-        'where attach_name is the name of the file generated,'
-        'report_name is the name of the report used for printing,'
-        'b64_data is the binary of the attachment'
+             'return all the attachment information for the communication in a '
+             'dict of following format: {attach_name: [report_name, b64_data]}'
+             'where attach_name is the name of the file generated,'
+             'report_name is the name of the report used for printing,'
+             'b64_data is the binary of the attachment'
     )
     omr_config_ids = fields.One2many(
         comodel_name='partner.communication.omr.config',
@@ -280,7 +279,7 @@ class CommunicationConfig(models.Model):
         if communication_send_mode != 'partner_preference':
             partner_mode = getattr(
                 partner, send_mode_pref_field or
-                'global_communication_delivery_preference',
+                         'global_communication_delivery_preference',
                 partner.global_communication_delivery_preference)
             if communication_send_mode == partner_mode:
                 send_mode = communication_send_mode
@@ -288,21 +287,21 @@ class CommunicationConfig(models.Model):
                 digital_only = 'digital_only' in partner_mode
             else:
                 auto_mode = (
-                    'auto' in partner_mode
-                    and 'auto' in communication_send_mode
-                    or 'auto' in partner_mode
-                    and communication_send_mode == 'both'
-                    or 'auto' in communication_send_mode
-                    and partner_mode == 'both'
+                        'auto' in partner_mode
+                        and 'auto' in communication_send_mode
+                        or 'auto' in partner_mode
+                        and communication_send_mode == 'both'
+                        or 'auto' in communication_send_mode
+                        and partner_mode == 'both'
                 )
                 comm_mode = communication_send_mode.replace('auto_', '')
                 partner_mode = partner_mode.replace('auto_', '')
                 send_mode = send_priority[comm_mode][partner_mode]
                 digital_only = 'digital_only' in partner_mode or \
-                    'digital_only' in comm_mode
+                               'digital_only' in comm_mode
         else:
             send_mode = getattr(
-                partner, send_mode_pref_field,  'none')
+                partner, send_mode_pref_field, 'none')
             auto_mode = 'auto' in send_mode or send_mode == 'both'
             digital_only = 'digital_only' in send_mode
 

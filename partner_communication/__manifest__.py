@@ -35,11 +35,11 @@
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'crm_phone',    # OCA/connector-telephony
+        'crm_phone',  # OCA/connector-telephony
         'base_report_to_printer',  # OCA/report-print-send
         'hr',
         'contacts',
-        'queue_job',    # OCA/queue
+        'queue_job',  # OCA/queue
         'utm',
         'partner_firstname'  # OCA/partner-contact
     ],
