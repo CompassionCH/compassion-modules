@@ -79,8 +79,6 @@ class FirebaseNotification(models.Model):
                         'partner_id': partner.id,
                         'notification_id': notif.id,
                     })
-            else:
-                raise UserError(_("We were not able to send the notification."))
 
     @api.multi
     def duplicate_to_unread(self):
