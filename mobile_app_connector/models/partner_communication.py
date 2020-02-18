@@ -10,8 +10,8 @@ class CommunicationJob(models.Model):
 
     mobile_notification_send = fields.Boolean("Send mobile notification", default=False)
     mobile_notification_auto_send = fields.Boolean("Auto send")
-    mobile_notification_title = fields.Char("Title")
-    mobile_notification_body = fields.Char("Body")
+    mobile_notification_title = fields.Text("Title")
+    mobile_notification_body = fields.Text("Body")
 
     mobile_notification_destination = fields.Selection([
         ('MyHub', 'My Hub'),
