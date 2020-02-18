@@ -19,7 +19,7 @@ class EventCompassion(models.Model):
     _description = 'Compassion event'
     _order = 'start_date desc'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     ##########################################################################
     #                                 FIELDS                                 #

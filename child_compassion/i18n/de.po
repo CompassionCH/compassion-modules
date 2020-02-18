@@ -5447,7 +5447,7 @@ msgid "Project Suspended"
 msgstr "Project Suspended"
 
 #. module: child_compassion
-#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_activity_ids
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_project_activity_ids
 msgid "Project activities"
 msgstr "Project activities"
 
