@@ -286,7 +286,7 @@ class CommunicationJob(models.Model):
             ('code', 'like', partner.lang or self.env.lang)
         ])
         config = self.config_id.browse(vals['config_id']).with_context(
-            lang=lang_of_partner)
+            lang=lang_of_partner.code)
 
         # Determine user by default : take in config or employee
         omr_config = config.get_config_for_lang(lang_of_partner)[:1]
