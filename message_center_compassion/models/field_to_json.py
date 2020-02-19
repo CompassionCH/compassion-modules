@@ -7,9 +7,13 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import safe_eval
+
+_logger = logging.getLogger(__name__)
 
 
 class FieldToJson(models.Model):
@@ -175,6 +179,9 @@ class FieldToJson(models.Model):
 
         # No records found given the values, we raise the error
         # to let user verify integrity of the data.
+        _logger.error("Associated object not found using mapping %s, "
+                      "JSON Key %s, JSON value %s",
+                      self.mapping_id.name, self.json_name, value)
         raise UserError(_(
             f"Trying to find a {relational_model._description} "
             f"that has the following values, but nothing was found: "
