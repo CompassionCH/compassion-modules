@@ -6,7 +6,8 @@
         <field name="interval_type">weeks</field>
         <field name="numbercall">-1</field>
         <field name="active" eval="True"/>
-        <field name="function">process_weekly_demand</field>
+        <field name="state">code</field>
+        <field name="code">model.process_weekly_demand()</field>
         <field name="model_id" ref="child_compassion.model_demand_planning"/>
         <!-- Invoke on Wednesday 8pm -->
         <field name="nextcall" eval="(datetime.today().replace(hour=20, minute=00) + timedelta(days=(2-datetime.today().weekday())%7)).strftime('%Y-%m-%d %H:%M:%S')" />
