@@ -142,21 +142,24 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
            auth='public', website=True, noindex=['robots', 'meta', 'header'])
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
-        sponsorship = request.env['recurring.contract'].sudo().search([
-            ('id', '=', sponsorship_id)
-        ])
-        if sponsorship.sms_request_id.state == 'step2' or \
-                sponsorship.state in ['active', 'waiting']:
-            # Sponsorship is already confirmed
-            return self.sms_registration_confirmation(sponsorship.id, **kwargs)
-        if sponsorship.state == "draft":
-            return self.make_response(
-                'recurring.contract',
-                model_id=sponsorship and sponsorship.id,
-                **kwargs
-            )
+        if sponsorship_id:
+            sponsorship = request.env['recurring.contract'].sudo().search([
+                ('id', '=', sponsorship_id)
+            ])
+            if sponsorship.sms_request_id.state == 'step2' or \
+                    sponsorship.state in ['active', 'waiting']:
+                # Sponsorship is already confirmed
+                return self.sms_registration_confirmation(sponsorship.id, **kwargs)
+            if sponsorship.state == "draft":
+                return self.make_response(
+                    'recurring.contract',
+                    model_id=sponsorship and sponsorship.id,
+                    **kwargs
+                )
+            else:
+                raise NotFound()
         else:
-            raise NotFound()
+            raise Exception("Please provide a sponsorship_id")
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
