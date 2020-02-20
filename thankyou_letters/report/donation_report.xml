@@ -13,9 +13,11 @@
     <template id="donation">
         <t t-set="success_story" t-value="docs.mapped('success_story_id')"/>
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="thankyou_letters.donation_document" t-lang="o.partner_id.lang"/>
-            </t>
+            <div class="article">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="thankyou_letters.donation_document" t-lang="o.partner_id.lang"/>
+                </t>
+            </div>
         </t>
     </template>
 
@@ -71,7 +73,7 @@
                     margin-top: 3mm;
                 }
                 #content {
-                    <t t-if="not reduce(lambda x,y: x and y, docs.mapped('print_subject'))">
+                    <t t-if="not docs.mapped('print_subject')">
                         margin-top: 5mm;
                     </t>
                     width: 100%;
