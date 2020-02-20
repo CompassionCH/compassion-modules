@@ -187,4 +187,4 @@ class RecurringContract(models.Model):
             next_invoice_date = current_date.replace(day=1)
 
         next_invoice_date += relativedelta(months=+1)
-        self.next_invoice_date = fields.Date.to_string(next_invoice_date)
+        self.next_invoice_date = next_invoice_date

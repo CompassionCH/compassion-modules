@@ -92,8 +92,7 @@ class SubSponsorshipWizard(models.TransientModel):
                 'context': self.with_context({
                     'default_take': 1,
                     'contract_id': sub_contract.id,
-                    'next_invoice_date': fields.Date.to_string(
-                        next_invoice_date),
+                    'next_invoice_date': next_invoice_date,
                     'default_type': HoldType.SUB_CHILD_HOLD.value,
                     'default_channel': 'sub',
                     'default_return_action': 'sub',

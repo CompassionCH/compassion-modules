@@ -375,7 +375,7 @@ class EventCompassion(models.Model):
             'days_allocate_before_event')
         dt = timedelta(days=days_allocate_before_event)
         for event in self.filtered('start_date'):
-            event.hold_start_date = fields.Date.to_string(event.start_date - dt)
+            event.hold_start_date = event.start_date - dt
             if not event.end_date or event.end_date < event.start_date:
                 event.end_date = event.start_date
 
@@ -386,7 +386,7 @@ class EventCompassion(models.Model):
             'days_hold_after_event')
         for event in self.filtered('end_date'):
             hold_end_date = event.end_date + timedelta(days=days_after)
-            event.hold_end_date = fields.Date.to_string(hold_end_date)
+            event.hold_end_date = hold_end_date
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -472,7 +472,7 @@ class EventCompassion(models.Model):
                 'default_no_money_yield_rate': no_money_yield*100,
                 'default_yield_rate': yield_rate*100,
                 'default_expiration_date':
-                    fields.Datetime.to_string(expiration_date),
+                    expiration_date,
                 'default_campaign_id': self.campaign_id.id
             }).env.context
         }

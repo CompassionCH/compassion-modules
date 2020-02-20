@@ -102,7 +102,7 @@ class SmsChildRequest(models.Model):
             event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
                 ('start_date', '<=', request.date),
-                ('start_date', '>=', fields.Datetime.to_string(limit_date))
+                ('start_date', '>=', limit_date)
             ], order='start_date desc', limit=1)
             # event_id is None if start_date of most recent event is>1 week old
             request.event_id = event_id
@@ -246,7 +246,7 @@ class SmsChildRequest(models.Model):
             result_action = self.env['child.hold.wizard'].with_context(
                 active_id=childpool_search.id, async_mode=False).create({
                     'type': HoldType.E_COMMERCE_HOLD.value,
-                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'expiration_date': expiration,
                     'primary_owner': self.env.uid,
                     'event_id': self.event_id.id,
                     'campaign_id': self.event_id.campaign_id.id,

@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from odoo import fields, models, api, _
 from odoo.addons.sponsorship_compassion.models.product_names import \
@@ -361,17 +361,15 @@ class SponsorshipGift(models.Model):
                 # search other gifts for the same sponsorship.
                 # we will compare the date with the first january of the
                 # current year
-                next_year = fields.Date.to_string(
-                    (date.today() + timedelta(days=365)).replace(month=1,
-                                                                 day=1))
-                firstJanuaryOfThisYear = fields.Date.today()[0:4] + '-01-01'
+                next_year = (date.today() + timedelta(days=365)).replace(month=1, day=1)
+                first_january_of_this_year = datetime.now().date().replace(month=1, day=1)
 
                 other_gifts = self.search([
                     ('sponsorship_id', '=', sponsorship.id),
                     ('gift_type', '=', self.gift_type),
                     ('attribution', '=', self.attribution),
                     ('sponsorship_gift_type', '=', self.sponsorship_gift_type),
-                    ('gift_date', '>=', firstJanuaryOfThisYear),
+                    ('gift_date', '>=', first_january_of_this_year),
                     ('gift_date', '<', next_year),
                 ])
 

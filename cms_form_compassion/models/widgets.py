@@ -81,6 +81,5 @@ class CHDateWidget(models.AbstractModel):
         value = super().w_extract(**req_values)
         if value:
             # Convert the date to ORM format
-            value = fields.Date.to_string(
-                datetime.strptime(value, '%d.%m.%Y').date())
+            value = datetime.strptime(value, '%d.%m.%Y').date()
         return value

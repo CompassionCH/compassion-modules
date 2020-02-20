@@ -69,10 +69,8 @@ class GenerateGiftWizard(models.TransientModel):
                         invoice_line_ids = self.env[
                             'account.invoice.line'].search([
                                 ('product_id', '=', self.product_id.id),
-                                ('due_date', '>=', fields.Date.to_string(
-                                    begin_year)),
-                                ('due_date', '<=', fields.Date.to_string(
-                                    end_year)),
+                                ('due_date', '>=', begin_year),
+                                ('due_date', '<=', end_year),
                                 ('contract_id', '=', contract.id),
                                 ('state', '!=', 'cancel')])
                         if invoice_line_ids and not self.force:
@@ -152,4 +150,4 @@ class GenerateGiftWizard(models.TransientModel):
             new_date = birthdate.replace(
                 day=28, year=inv_date.year + 1) + relativedelta(months=-2)
             new_date = max(new_date, inv_date)
-        return fields.Date.to_string(new_date)
+        return new_date

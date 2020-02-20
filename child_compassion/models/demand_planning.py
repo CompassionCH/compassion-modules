@@ -65,8 +65,8 @@ class DemandPlanning(models.Model):
                 end_date = (sunday + timedelta(days=6)).date()
                 vals.update(self.env['demand.weekly.demand'].get_defaults())
                 vals.update({
-                    'week_start_date': fields.Date.to_string(sunday.date()),
-                    'week_end_date': fields.Date.to_string(end_date)
+                    'week_start_date': sunday.date(),
+                    'week_end_date': end_date
                 })
             create_values.append(week_vals)
             sunday = sunday + timedelta(days=7)
@@ -132,7 +132,7 @@ class DemandPlanning(models.Model):
         :return: Search filter for weekly.demand
         """
         return [
-            ('week_start_date', '=', fields.Date.to_string(start_date)),
+            ('week_start_date', '=', start_date),
         ]
 
     @api.model
