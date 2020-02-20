@@ -39,9 +39,10 @@ class IrAdvancedTranslation(models.Model):
     @api.model
     def get(self, src, female=False, plural=False):
         """ Returns the translation term. """
+        lang = self.env.context.get('lang') or self.env.lang or 'en_US'
         term = self.search([
             ('src', '=', src),
-            ('lang', '=', self.env.lang or 'en_US')])
+            ('lang', '=', lang)])
         if not term:
             return _(src)
         if female and plural:
