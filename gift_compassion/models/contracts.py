@@ -114,8 +114,8 @@ class SponsorshipContract(models.Model):
                                                              today.month)[1])
             suspended_gifts = self.env['sponsorship.gift'].search([
                 ('child_id.project_id', '=', contract.project_id.id),
-                ('create_date', '>=', fields.Datetime.to_string(first_day)),
-                ('create_date', '<=', fields.Datetime.to_string(last_day)),
+                ('create_date', '>=', first_day),
+                ('create_date', '<=', last_day),
                 ('state', '=', 'In Progress'),
             ])
             suspended_gifts.action_suspended()

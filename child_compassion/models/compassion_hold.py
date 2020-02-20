@@ -95,7 +95,7 @@ class AbstractHold(models.AbstractModel):
         duration = config_obj.get_param(hold_param)
         diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
-        return fields.Datetime.to_string(datetime.now() + diff)
+        return datetime.now() + diff
 
     @api.onchange('type')
     def onchange_type(self):
@@ -261,7 +261,7 @@ class CompassionHold(models.Model):
         if child.state not in ('F', 'R'):
             raise UserError(_("Child is not departed."))
         vals.update({
-            'expiration_date': fields.Datetime.to_string(in_90_days),
+            'expiration_date': in_90_days,
             'state': 'active',
             'comments': 'Child was reinstated! Be sure to propose it to its '
                         'previous sponsor.'
@@ -379,8 +379,7 @@ class CompassionHold(models.Model):
         this_week_delay = datetime.now() + timedelta(days=7)
         holds = self.search([
             ('state', '=', 'active'),
-            ('expiration_date', '<=', fields.Datetime.to_string(
-                this_week_delay)),
+            ('expiration_date', '<=', this_week_delay),
             ('type', 'in', [HoldType.NO_MONEY_HOLD.value,
                             HoldType.SUB_CHILD_HOLD.value])
         ])
@@ -446,8 +445,7 @@ class CompassionHold(models.Model):
                 'no_money_extension': next_extension,
             }
             if is_extended:
-                hold_vals['expiration_date'] = fields.Datetime.to_string(
-                    new_hold_date)
+                hold_vals['expiration_date'] = new_hold_date
             old_date = hold.expiration_date
             hold.write(hold_vals)
             subject = "No money hold extension" if is_extended else \

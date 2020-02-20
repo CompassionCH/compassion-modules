@@ -449,8 +449,7 @@ class GlobalChildSearch(models.TransientModel):
             ))
         if self.completion_date_after or self.completion_date_before:
             start_date = self.completion_date_after or '1970-01-01'
-            stop_date = self.completion_date_before or fields.Date.to_string(
-                date.max)
+            stop_date = self.completion_date_before or date.max
             date_range = start_date + ';' + stop_date
             new_filters.append(_get_filter(
                 'completion_date_after', within_id, date_range))

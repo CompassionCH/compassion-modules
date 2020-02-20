@@ -84,7 +84,7 @@ class CompassionReservation(models.Model):
             'reservation_duration')
         dt = timedelta(days=days_reservation)
         expiration = datetime.date.today() + dt
-        return fields.Date.to_string(expiration)
+        return expiration
 
     ##########################################################################
     #                             ORM METHODS                                #
@@ -213,7 +213,7 @@ class CompassionReservation(models.Model):
         days_on_hold = self.env['availability.management.settings'].get_param(
             'reservation_hold_duration')
         dt = timedelta(days=days_on_hold)
-        self.expiration_date = fields.Date.to_string(expiration + dt)
+        self.expiration_date = expiration + dt
 
     ##########################################################################
     #                              Mapping METHOD                            #

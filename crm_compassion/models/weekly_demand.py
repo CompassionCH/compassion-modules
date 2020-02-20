@@ -123,7 +123,7 @@ class WeeklyDemand(models.Model):
         website_medium = self.env.ref('utm.utm_medium_website').id
         sub_sponsored = self.env['recurring.contract'].search_count([
             ('parent_id', '!=', False),
-            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('start_date', '>=', start_date),
             ('medium_id', '!=', website_medium)
         ])
         return float(sub_sponsored) // STATS_DURATION
@@ -146,7 +146,7 @@ class WeeklyDemand(models.Model):
         website_medium = self.env.ref('utm.utm_medium_website').id
         web_sponsored = self.env['recurring.contract'].search_count([
             ('medium_id', '=', website_medium),
-            ('start_date', '>=', fields.Date.to_string(start_date))
+            ('start_date', '>=', start_date)
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
             'number_children_website')
@@ -163,7 +163,7 @@ class WeeklyDemand(models.Model):
             ('origin_id.type', '=', 'partner'),
             ('origin_id.partner_id', '!=', False),
             ('origin_id.partner_id.user_ids', '!=', False),
-            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('start_date', '>=', start_date),
             ('medium_id', '!=', website_medium)
         ])
         allocate_per_week = self.env['demand.planning.settings'].get_param(
@@ -210,7 +210,7 @@ class WeeklyDemand(models.Model):
             ('type', 'like', 'S'),
             ('state', '=', 'terminated'),
             ('end_reason_id', '!=', depart.id),
-            ('end_date', '>=', fields.Date.to_string(start_date))
+            ('end_date', '>=', start_date)
         ])
         return float(cancellations) // STATS_DURATION
 
