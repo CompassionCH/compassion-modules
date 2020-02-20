@@ -43,7 +43,7 @@ class CMSForm(models.AbstractModel):
 
     def _handle_exception(self, err, **kw):
         def truncate_strings(params, length=50):
-            for k, v in params.iteritems():
+            for k, v in params.items():
                 if isinstance(v, dict):
                     truncate_strings(v)
                 elif isinstance(v, str):
@@ -54,7 +54,7 @@ class CMSForm(models.AbstractModel):
                      "entry in database.")
 
         err_class = err.__class__.__name__
-        err_name = f"'{err_class}' in '{self.__name__}'"
+        err_name = f"'{err_class}' in '{self._name}'"
 
         # We are handling an exception, rollback previous DB transactions
         self.env.cr.rollback()
