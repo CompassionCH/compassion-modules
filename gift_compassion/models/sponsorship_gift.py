@@ -153,17 +153,14 @@ class SponsorshipGift(models.Model):
                 'due_date') or [False]
             amounts = invoice_lines.mapped('price_subtotal')
 
-            gift.date_partner_paid = fields.Date.to_string(max(
-                [fields.Date.from_string(d) for d in pay_dates]))
+            gift.date_partner_paid = max([d for d in pay_dates])
 
             if gift.sponsorship_gift_type == 'Birthday':
                 gift.gift_date = self.env['generate.gift.wizard']. \
                     compute_date_birthday_invoice(
                     gift.child_id.birthdate, inv_dates[0])
             else:
-                gift_date = max(
-                    [fields.Date.from_string(d) for d in inv_dates])
-                gift.gift_date = gift_date and fields.Date.to_string(gift_date)
+                gift.gift_date = max([d for d in inv_dates])
 
             gift.amount = sum(amounts)
 

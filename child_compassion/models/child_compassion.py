@@ -524,8 +524,8 @@ class CompassionChild(models.Model):
             pictures = child.pictures_ids
             if res and len(pictures) > 1:
                 today = date.today()
-                last_photo = fields.Date.from_string(pictures[1].date)
-                new_photo = fields.Date.from_string(pictures[0].date)
+                last_photo = pictures[1].date
+                new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
                 if (diff_pic.months > 6 or diff_pic.years > 0) and (
@@ -651,7 +651,7 @@ class CompassionChild(models.Model):
         today = datetime.today()
         for child in self.filtered(lambda c: not c.has_been_sponsored):
             if child.hold_expiration:
-                expire = fields.Datetime.from_string(child.hold_expiration)
+                expire = child.hold_expiration
                 postpone = (expire - today).total_seconds() + 60
 
             child.with_delay(eta=postpone).unlink_job()

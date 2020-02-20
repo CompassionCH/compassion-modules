@@ -126,7 +126,7 @@ class AccountInvoice(models.Model):
         for partner_id in self.mapped('partner_id.id'):
             invoices = self.filtered(lambda i: i.partner_id.id == partner_id)
             past_invoices = invoices.filtered(
-                lambda i: fields.Date.from_string(i.date_invoice) <= today)
+                lambda i: i.date_invoice <= today)
             future_invoices = invoices - past_invoices
             past_amount = sum(past_invoices.mapped('amount_total'))
             future_amount = sum(future_invoices.mapped('amount_total'))

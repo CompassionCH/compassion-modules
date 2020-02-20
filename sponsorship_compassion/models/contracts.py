@@ -337,10 +337,8 @@ class SponsorshipContract(models.Model):
             if not contract.activation_date:
                 contract.contract_duration = 0
             else:
-                contract_start_date = fields.Date.from_string(
-                    contract.activation_date)
-                end_date = fields.Date.from_string(
-                    contract.end_date) if contract.end_date else date.today()
+                contract_start_date = contract.activation_date
+                end_date = contract.end_date if contract.end_date else date.today()
                 contract.contract_duration = \
                     (end_date - contract_start_date).days
 
@@ -670,8 +668,7 @@ class SponsorshipContract(models.Model):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
         if self.hold_expiration_date:
-            hold_expiration = fields.Datetime.from_string(
-                self.hold_expiration_date)
+            hold_expiration = self.hold_expiration_date
             if 'hold_id' in vals and hold_expiration >= datetime.now():
                 child = self.child_id
                 hold_vals = {
@@ -1122,7 +1119,7 @@ class SponsorshipContract(models.Model):
                         f"The contract {contract.name} is not active.")
                 if contract.state == 'terminated' and contract.end_date:
                     limit = date.today() - relativedelta(days=180)
-                    ended_since = fields.Date.from_string(contract.end_date)
+                    ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(
                             f"The contract {contract.name} is not active.")
@@ -1282,9 +1279,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             # Update next_invoice_date of group if necessary
             if contract.group_id.next_invoice_date:
-                next_invoice_date = fields.Datetime.from_string(
-                    contract.next_invoice_date)
-                group_date = fields.Datetime.from_string(
-                    contract.group_id.next_invoice_date)
+                next_invoice_date = contract.next_invoice_date
+                group_date = contract.group_id.next_invoice_date
                 if group_date > next_invoice_date:
                     contract.group_id._compute_next_invoice_date()

@@ -58,7 +58,7 @@
             <field name="origin_id" position="after">
             </field>
             <filter name="group_type" position="after">
-                <filter string="Ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
+                <filter string="Ambassador" name="ambassador" domain="[]"  context="{'group_by':'user_id'}"/>
             </filter>
         </field>
     </record>

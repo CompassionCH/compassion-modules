@@ -11,9 +11,9 @@
                 <field name="currency_id"/>
             </field>
             <filter name='group_contract' position="before">
-                <filter string="Ambassador" domain="[]" context="{'group_by':'user_id'}"/>
-                <filter string="Analytic Account" domain="[]" context="{'group_by':'account_analytic_id'}"/>
-                <filter string="Due Date" domain="[]" context="{'group_by':'due_date'}"/>
+                <filter string="Ambassador" name="ambassador" domain="[]" context="{'group_by':'user_id'}"/>
+                <filter string="Analytic Account" name="analytic_account" domain="[]" context="{'group_by':'account_analytic_id'}"/>
+                <filter string="Due Date" name="due_date" domain="[]" context="{'group_by':'due_date'}"/>
             </filter>
         </field>
     </record>
@@ -99,7 +99,7 @@
         <field name="inherit_id" ref="account.view_account_move_line_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//group">
-                <filter string="Analytic Account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+                <filter string="Analytic Account" name="analytic_account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
             </xpath>
         </field>
     </record>

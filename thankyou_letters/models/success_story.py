@@ -78,8 +78,8 @@ class SuccessStory(models.Model):
     @api.constrains('date_start', 'date_stop')
     def _check_dates(self):
         for story in self.filtered(lambda s: s.type == 'story'):
-            date_start = fields.Date.from_string(story.date_start)
-            date_stop = fields.Date.from_string(story.date_stop)
+            date_start = story.date_start
+            date_stop = story.date_stop
             if date_stop <= date_start:
                 raise ValidationError(_("Period is not valid"))
 

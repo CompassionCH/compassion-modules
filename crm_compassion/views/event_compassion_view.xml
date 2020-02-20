@@ -124,11 +124,11 @@
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
-                    <filter string="Opportunity" domain="[]" context="{'group_by':'lead_id'}"/>
-                    <filter string="Year" domain="[]" context="{'group_by':'year'}"/>
+                    <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Customer" name="customer" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Responsible" name="responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Opportunity" name="opportunity" domain="[]" context="{'group_by':'lead_id'}"/>
+                    <filter string="Year" name="year" domain="[]" context="{'group_by':'year'}"/>
                 </group>
             </search>
         </field>

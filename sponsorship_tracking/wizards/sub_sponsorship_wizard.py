@@ -61,12 +61,10 @@ class SubSponsorshipWizard(models.TransientModel):
                 'sponsorship_compassion.utm_campaign_sub').id
         })
         today = datetime.today()
-        next_invoice_date = fields.Date.from_string(
-            contract.next_invoice_date).replace(month=today.month,
-                                                year=today.year)
+        next_invoice_date = contract.next_invoice_date.replace(month=today.month,
+                                                               year=today.year)
         if contract.last_paid_invoice_date:
-            sub_invoice_date = fields.Date.from_string(
-                contract.last_paid_invoice_date) + relativedelta(months=1)
+            sub_invoice_date = contract.last_paid_invoice_date + relativedelta(months=1)
             next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
         if self.child_id:

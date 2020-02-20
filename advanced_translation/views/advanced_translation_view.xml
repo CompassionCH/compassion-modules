@@ -24,8 +24,8 @@
                 <field name="lang"/>
                 <field name="group"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Language" domain="[]" context="{'group_by':'lang'}"/>
-                    <filter string="Group" domain="[]" context="{'group_by':'group'}"/>
+                    <filter string="Language" name="language" domain="[]" context="{'group_by':'lang'}"/>
+                    <filter string="Group" name="group" domain="[]" context="{'group_by':'group'}"/>
                 </group>
             </search>
         </field>

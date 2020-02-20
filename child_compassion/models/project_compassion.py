@@ -439,8 +439,8 @@ class CompassionProject(models.Model):
         """
         for project in self:
             if not project.last_weather_refresh_date \
-                or datetime.now() - fields.Datetime.from_string(
-                    project.last_weather_refresh_date) > timedelta(hours=1):
+                or datetime.now() - project.last_weather_refresh_date >\
+                    timedelta(hours=1):
                 json = requests.get(
                     "https://api.openweathermap.org/data/2.5/weather" +
                     "?lat=" + str(project.gps_latitude) +
