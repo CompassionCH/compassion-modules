@@ -203,7 +203,7 @@ class TestSponsorship(BaseSponsorshipTest):
         logger.info(str(invoices.mapped('state')))
         invoice1 = invoices[0]
         today = date.today()
-        invoice_date = fields.Date.from_string(invoice.date_invoice)
+        invoice_date = invoice.date_invoice
         if invoice_date < today:
             self.assertEqual(invoice.state, 'paid')
         else:

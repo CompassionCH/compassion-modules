@@ -150,11 +150,11 @@
                 <field name="gmc_gift_id"/>
 
                 <filter name="not_sent" string="Not sent" domain="[('gmc_gift_id', '=', False)]"/>
-                <filter string="Sent" domain="[('gmc_gift_id', '!=', False)]"/>
-                <filter string="Delivered" domain="[('state', '=', 'Delivered')]"/>
+                <filter string="Sent" name="sent" domain="[('gmc_gift_id', '!=', False)]"/>
+                <filter string="Delivered" name="delivered" domain="[('state', '=', 'Delivered')]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Status" domain="[]" context="{'group_by': 'state'}"/>
-                    <filter string="Gift Type"
+                    <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Gift Type" name="gift_type"
                             domain="[]"
                             context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
                     <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'gift_date'}"/>

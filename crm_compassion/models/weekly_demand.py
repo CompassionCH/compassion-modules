@@ -83,12 +83,12 @@ class WeeklyDemand(models.Model):
                 ('hold_start_date', '<=', week.week_end_date),
                 ('start_date', '>=', week.week_start_date)
             ])
-            week_start = fields.Date.from_string(week.week_start_date)
-            week_end = fields.Date.from_string(week.week_end_date)
+            week_start = week.week_start_date
+            week_end = week.week_end_date
             allocate = 0
             for event in events:
-                hold_start = fields.Date.from_string(event.hold_start_date)
-                event_start = fields.Date.from_string(event.start_date)
+                hold_start = event.hold_start_date
+                event_start = event.start_date
                 days_for_allocation = (event_start - hold_start).days + 1
                 days_in_week = 7
                 if week_start < hold_start:
@@ -183,21 +183,17 @@ class WeeklyDemand(models.Model):
             ('end_date', '!=', None),
             ('medium_id.name', '!=', 'internet')
         ]).filtered(
-            lambda s: ((
-                fields.Date.from_string(s.end_date) -
-                fields.Date.from_string(s.start_date)
-            ).days <= SUB_DURATION)
+            lambda s: ((s.end_date -s.start_date).days <= SUB_DURATION)
         )
         sub_reject_average = len(rejected_sub) // STATS_DURATION
         for week in self:
-            start_date = fields.Datetime.from_string(
-                week.week_start_date) - timedelta(days=SUB_DURATION)
+            start_date = week.week_start_date - timedelta(days=SUB_DURATION)
             if start_date <= today:
                 sub = self.env['recurring.contract'].search_count([
                     ('parent_id', '!=', False),
                     ('start_date', '>=', start_date),
-                    ('start_date', '<=', fields.Date.from_string(
-                        week.week_end_date) - timedelta(days=SUB_DURATION)),
+                    ('start_date', '<=',
+                        week.week_end_date - timedelta(days=SUB_DURATION)),
                     ('medium_id.name', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (

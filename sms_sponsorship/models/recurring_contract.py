@@ -179,10 +179,8 @@ class RecurringContract(models.Model):
         if self.group_id:
             contract_group = self.group_id
             if contract_group.next_invoice_date:
-                next_group_date = fields.Datetime.from_string(
-                    contract_group.next_invoice_date)
-                next_invoice_date = current_date.replace(
-                    day=next_group_date.day)
+                next_group_date = contract_group.next_invoice_date
+                next_invoice_date = current_date.replace(day=next_group_date.day)
             else:
                 next_invoice_date = current_date.replace(day=1)
         else:

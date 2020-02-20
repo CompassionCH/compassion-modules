@@ -72,8 +72,7 @@ class EventCompassion(models.Model):
                 'max_age': DEFAULT_MAX_AGE
             })
             childpool_search.with_context(skip_value=1000).do_search()
-            expiration = fields.Datetime.from_string(event.end_date) + \
-                relativedelta(days=2)
+            expiration = event.end_date + relativedelta(days=2)
             self.env['child.hold.wizard'].with_context(
                 active_id=childpool_search.id).create({
                     'type': HoldType.CONSIGNMENT_HOLD.value,

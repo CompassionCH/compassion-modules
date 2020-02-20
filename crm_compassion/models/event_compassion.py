@@ -375,8 +375,7 @@ class EventCompassion(models.Model):
             'days_allocate_before_event')
         dt = timedelta(days=days_allocate_before_event)
         for event in self.filtered('start_date'):
-            event.hold_start_date = fields.Date.to_string(
-                fields.Datetime.from_string(event.start_date) - dt)
+            event.hold_start_date = fields.Date.to_string(event.start_date - dt)
             if not event.end_date or event.end_date < event.start_date:
                 event.end_date = event.start_date
 
@@ -386,9 +385,8 @@ class EventCompassion(models.Model):
         days_after = self.env['demand.planning.settings'].get_param(
             'days_hold_after_event')
         for event in self.filtered('end_date'):
-                hold_end_date = fields.Datetime.from_string(
-                    event.end_date) + timedelta(days=days_after)
-                event.hold_end_date = fields.Date.to_string(hold_end_date)
+            hold_end_date = event.end_date + timedelta(days=days_after)
+            event.hold_end_date = fields.Date.to_string(hold_end_date)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -422,8 +420,7 @@ class EventCompassion(models.Model):
         :return: dictionary of calendar.event values
         """
         self.ensure_one()
-        time_delta = (fields.Datetime.from_string(self.end_date) -
-                      fields.Datetime.from_string(self.start_date))
+        time_delta = (self.end_date - self.start_date)
         duration_in_hours = math.ceil(time_delta.days * 24 +
                                       time_delta.seconds / 3600.0)
         calendar_vals = {
@@ -456,7 +453,7 @@ class EventCompassion(models.Model):
         if self.number_allocate_children > 1:
             no_money_yield /= self.number_allocate_children
             yield_rate /= self.number_allocate_children
-        expiration_date = fields.Datetime.from_string(self.end_date) + \
+        expiration_date = self.end_date + \
             timedelta(days=self.env['demand.planning.settings'].
                       get_param('days_hold_after_event'))
         return {

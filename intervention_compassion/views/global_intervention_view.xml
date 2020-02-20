@@ -84,8 +84,8 @@
                 <field name="funding_status"/>
                 <field name="type"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
-                    <filter string="Funding Status" domain="[]" context="{'group_by':'funding_status'}"/>
+                    <filter string="Category" name="category" domain="[]" context="{'group_by':'category_id'}"/>
+                    <filter string="Funding Status" name="funding_status" domain="[]" context="{'group_by':'funding_status'}"/>
                 </group>
             </search>
         </field>

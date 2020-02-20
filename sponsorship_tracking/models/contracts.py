@@ -298,8 +298,7 @@ class RecurringContract(models.Model):
         limit = date.today() - relativedelta(days=50)
         valid_sub = self.filtered(
             lambda s: s.sds_state == 'sub_waiting' or (
-                s.sds_state in ['sub_reject', 'no_sub'] and
-                fields.Date.from_string(s.end_date) >= limit)
+                s.sds_state in ['sub_reject', 'no_sub'] and s.end_date >= limit)
         )
         valid_sub.write({
             'sds_state': 'sub',

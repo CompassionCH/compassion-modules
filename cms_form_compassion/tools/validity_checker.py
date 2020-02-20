@@ -17,5 +17,5 @@ def is_expired(obj):
     This function is used by confirmation endpoints to check if they have
     expired.
     """
-    expire = fields.Datetime.from_string(obj.create_date) + timedelta(days=1)
+    expire = obj.create_date + timedelta(days=1)
     return expire < datetime.now()

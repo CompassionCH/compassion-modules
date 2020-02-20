@@ -184,8 +184,7 @@ class GmcMessage(models.Model):
         today = datetime.now()
         messages = self.filtered(lambda mess: mess.state == 'pending')
         if not self.env.context.get('force_send'):
-            messages = messages.filtered(
-                lambda mess: fields.Datetime.from_string(mess.date) <= today)
+            messages = messages.filtered(lambda mess: mess.date <= today)
 
         # Verify all messages have the same action (cannot execute multiple
         # actions at once)

@@ -209,7 +209,7 @@ class CompassionReservation(models.Model):
     def onchange_expiration_date(self):
         if not self.reservation_expiration_date:
             return
-        expiration = fields.Date.from_string(self.reservation_expiration_date)
+        expiration = self.reservation_expiration_date
         days_on_hold = self.env['availability.management.settings'].get_param(
             'reservation_hold_duration')
         dt = timedelta(days=days_on_hold)

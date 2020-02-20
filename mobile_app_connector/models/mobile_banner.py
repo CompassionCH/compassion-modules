@@ -74,8 +74,8 @@ class AppBanner(models.Model):
     @api.constrains('date_start', 'date_stop')
     def _check_dates(self):
         for banner in self:
-            date_start = fields.Date.from_string(banner.date_start)
-            date_stop = fields.Date.from_string(banner.date_stop)
+            date_start = banner.date_start
+            date_stop = banner.date_stop
             if date_start and date_stop and date_stop <= date_start:
                 raise ValidationError(_("Period is not valid"))
 

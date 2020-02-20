@@ -184,10 +184,10 @@
                 <filter name="user" string="My Sponsorships" domain="[('sds_uid', '=', uid)]"/>
 
                 <group expand="0" string="Group By...">
-                    <filter string="Start date" domain="[]"  context="{'group_by':'start_date'}"/>
-                    <filter string="SDS state date" domain="[]" context="{'group_by':'sds_state_date'}"/>
-                    <filter string="Status" domain="[]"  context="{'group_by':'state'}"/>
-                    <filter string="SDS Status" domain="[]"  context="{'group_by':'sds_state'}"/>
+                    <filter string="Start date" name="start_date" domain="[]"  context="{'group_by':'start_date'}"/>
+                    <filter string="SDS state date" name="sds_state_date" domain="[]" context="{'group_by':'sds_state_date'}"/>
+                    <filter string="Status" name="status" domain="[]"  context="{'group_by':'state'}"/>
+                    <filter string="SDS Status" name="sds_status" domain="[]"  context="{'group_by':'sds_state'}"/>
                 </group>
             </search>
         </field>

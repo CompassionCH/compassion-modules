@@ -62,7 +62,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_start_period(self):
         for partner in self:
-            end = fields.Date.from_string(partner.end_period)
+            end = partner.end_period
             partner.start_period = fields.Date.to_string(
                 end - relativedelta(months=12))
 

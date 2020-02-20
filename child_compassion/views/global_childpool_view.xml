@@ -163,7 +163,7 @@
             <search>
                 <field name="global_child_ids"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Country" context="{'group_by': 'global_child_ids.fcp_id.field_office_id'}"/>
+                    <filter string="Country" name="country" context="{'group_by': 'global_child_ids.fcp_id.field_office_id'}"/>
                 </group>
             </search>
         </field>

@@ -63,8 +63,7 @@ class GenerateGiftWizard(models.TransientModel):
                             invoice_date = self.compute_date_birthday_invoice(
                                 contract.child_id.birthdate,
                                 self.invoice_date)
-                        begin_year = fields.Date.from_string(
-                            self.invoice_date).replace(month=1, day=1)
+                        begin_year = self.invoice_date.replace(month=1, day=1)
                         end_year = begin_year.replace(month=12, day=31)
                         # If a gift was already made for the year, abort
                         invoice_line_ids = self.env[
@@ -144,8 +143,8 @@ class GenerateGiftWizard(models.TransientModel):
     @api.model
     def compute_date_birthday_invoice(self, child_birthdate, payment_date):
         """Set date of invoice two months before child's birthdate"""
-        inv_date = fields.Date.from_string(payment_date)
-        birthdate = fields.Date.from_string(child_birthdate)
+        inv_date = payment_date
+        birthdate = child_birthdate
         new_date = inv_date
         if birthdate.month >= inv_date.month + 2:
             new_date = inv_date.replace(day=28, month=birthdate.month - 2)

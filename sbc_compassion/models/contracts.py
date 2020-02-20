@@ -70,17 +70,14 @@ class Contracts(models.Model):
             try:
                 # Try to get days difference between today and last letter
                 contract.last_letter = (
-                    date.today() - fields.Date.from_string(
-                        contract.sponsor_letter_ids[:1].scanned_date)).days
+                    date.today() - contract.sponsor_letter_ids[:1].scanned_date).days
             except TypeError:
                 contract.last_letter = -1
 
     def _compute_write_for_birthday_alert(self):
         today = date.today()
         for contract in self:
-            next_birthday = fields.Date.from_string(
-                contract.child_id.birthdate).replace(
-                year=today.year)
+            next_birthday = contract.child_id.birthdate.replace(year=today.year)
 
             # take next year birthday
             # if birthday already pass for this year

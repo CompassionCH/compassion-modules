@@ -437,8 +437,7 @@ class CompassionHold(models.Model):
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
             hold_extension = first_extension \
                 if not hold.no_money_extension else second_extension
-            new_hold_date = fields.Datetime.from_string(
-                hold.expiration_date) + timedelta(days=hold_extension)
+            new_hold_date = hold.expiration_date + timedelta(days=hold_extension)
             is_extended = hold.no_money_extension < 2
             next_extension = hold.no_money_extension
             if hold.type == HoldType.NO_MONEY_HOLD.value:

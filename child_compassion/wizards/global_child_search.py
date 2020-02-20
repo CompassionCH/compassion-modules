@@ -573,7 +573,7 @@ class GlobalChildSearch(models.TransientModel):
         if self.min_days_waiting and child.waiting_days < \
                 self.min_days_waiting:
             return False
-        birthdate = fields.Date.from_string(child.birthdate)
+        birthdate = child.birthdate
         if self.birthday_month and self.birthday_month != birthdate.month:
             return False
         if self.birthday_day and self.birthday_day != birthdate.day:
