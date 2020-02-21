@@ -112,11 +112,13 @@ class AdvancedTranslatable(models.AbstractModel):
         return values
 
     @api.multi
-    def get_date(self, field, date_type='short'):
+    def get_date(self, field, date_type='date_short'):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
         :param date_type: a valid src of a ir.advanced.translation date format
+        or a babel date format string
+        (one of “full”, “long”, “medium”, or “short”, or a custom date/time pattern)
         :return: the formatted dates
         """
         _lang = self.env.context.get('lang') or self.env.lang or 'en_US'

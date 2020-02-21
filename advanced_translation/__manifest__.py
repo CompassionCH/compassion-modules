@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     'name': 'Advanced Translation',
-    'version': '11.0.1.0.0',
+    'version': '11.0.1.0.1',
     'category': 'Other',
     'sequence': 150,
     'author': 'Compassion CH',
@@ -44,6 +44,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/advanced_translation_view.xml',
+        'data/ir.advanced.translation.csv'
     ],
     'demo': [
         'demo/ir.advanced.translation.csv'
