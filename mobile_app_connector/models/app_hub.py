@@ -190,7 +190,7 @@ class AppHub(models.AbstractModel):
         :param kwargs: other request parameters (ignored)
         :return: JSON compatible data for mobile app
         """
-        base_url = self.env['ir.config_parameter'].get_param(
+        base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url') + '/mobile-app-api'
         hub_endpoint = '/hub/{}?start={}&limit={}'
         self._assign_order(messages)
