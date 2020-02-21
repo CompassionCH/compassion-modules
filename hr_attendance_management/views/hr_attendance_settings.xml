@@ -8,14 +8,16 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id"
                ref="child_compassion.compassion_settings"/>
-        <field name="arch"
-               type="xml">
-            <field name="group_attendance_use_pin"
-                   position="after">
-                <field name="free_break" widget="float_time"/>
-                <field name="max_extra_hours" widget="float_time"/>
-                <field name="beginning_date_for_balance_computation" widget="date"/>
-            </field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='group_attendance_use_pin']" position='after'>
+                <group name="hr_attendance_settings">
+                    <group>
+                        <field name="free_break"/>
+                        <field name="max_extra_hours"/>
+                        <field name="beginning_date_for_balance_computation" widget="date"/>
+                    </group>
+                </group>
+            </xpath>
         </field>
     </record>
 

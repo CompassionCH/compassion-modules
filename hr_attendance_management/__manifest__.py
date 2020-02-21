@@ -33,12 +33,12 @@
     'author': "Compassion Switzerland, "
               "Odoo Community Association (OCA)",
     'depends': [
-        'partner_contact_gender',
-        'hr_attendance',
-        'hr_holidays_public',
-        'hr_contract',
-        'hr_employee_calendar_planning',
-        'child_compassion'
+        'hr_attendance',                    # source/addons
+        'hr_holidays_public',               # hr
+        'hr_contract',                      # source/addons
+        'hr_employee_calendar_planning',    # hr
+        'child_compassion',                 # compassion-modules
+        'partner_contact_gender'            # oca_addons/partner-contact
     ],
     'version': '11.0.0.0.0',
     'auto_install': False,

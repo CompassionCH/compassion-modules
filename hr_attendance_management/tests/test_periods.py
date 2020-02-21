@@ -40,8 +40,7 @@ class TestPeriod(SavepointCase):
             'previous_period': None,
             'lost': 0,
             'employee_id': cls.jack.id,
-            'continuous_cap': True,
-            'origin': "create"
+            'continuous_cap': True
         })
 
         cls.period2 = cls.env['hr.employee.period'].create({
@@ -51,8 +50,7 @@ class TestPeriod(SavepointCase):
             'previous_period': cls.period1.id,
             'lost': 0,
             'employee_id': cls.jack.id,
-            'continuous_cap': True,
-            'origin': "create"
+            'continuous_cap': True
         })
 
         cls.period3 = cls.env['hr.employee.period'].create({
@@ -62,8 +60,7 @@ class TestPeriod(SavepointCase):
             'previous_period': cls.period2.id,
             'lost': 0,
             'employee_id': cls.jack.id,
-            'continuous_cap': True,
-            'origin': "create"
+            'continuous_cap': True
         })
 
     def create_att_day_for_date_with_supp_hours(self, date, employee_id, hours=0):
