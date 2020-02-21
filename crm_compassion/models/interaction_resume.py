@@ -72,7 +72,7 @@ class InteractionResume(models.TransientModel):
                         pcj.sent_date as communication_date,
                         COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
                         NULL AS email,
-                        COALESCE(c.name, pcj.subject) AS subject,
+                        COALESCE(source.name, pcj.subject) AS subject,
                         REGEXP_REPLACE(pcj.body_html, '<img[^>]*>', '') AS body,
                         'out' AS direction,
                         0 as phone_id,
@@ -84,7 +84,9 @@ class InteractionResume(models.TransientModel):
                         JOIN res_partner p ON pcj.partner_id = p.id
                         FULL OUTER JOIN partner_communication_config c
                             ON pcj.config_id = c.id
-                            AND c.name != 'Default communication'
+                        FULL OUTER JOIN utm_source source
+                            ON c.source_id = source.id
+                            AND source.name != 'Default communication'
                         WHERE pcj.state = 'done'
                         AND pcj.send_mode = 'physical'
                         AND (p.contact_id = %s OR p.id = %s)
@@ -117,7 +119,7 @@ class InteractionResume(models.TransientModel):
                         m.date as communication_date,
                         COALESCE(p.contact_id, p.id) AS partner_id,
                         mt.recipient_address as email,
-                        COALESCE(config.name, m.subject) as subject,
+                        COALESCE(source.name, m.subject) as subject,
                         REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                         'out' AS direction,
                         0 as phone_id,
@@ -135,7 +137,9 @@ class InteractionResume(models.TransientModel):
                             ON job.email_id = mail.id
                         FULL OUTER JOIN partner_communication_config config
                             ON job.config_id = config.id
-                            AND config.name != 'Default communication'
+                        FULL OUTER JOIN utm_source source
+                            ON config.source_id = source.id
+                            AND source.name != 'Default communication'
                         WHERE mail.state = ANY (ARRAY ['sent', 'received'])
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         )

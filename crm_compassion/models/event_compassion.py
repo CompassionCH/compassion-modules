@@ -502,7 +502,7 @@ class EventCompassion(models.Model):
                         f"SET user_id = {user.id} WHERE id = {event.id}"
                     )
                     values = {'user_ids': user.id}
-                    super(event).message_auto_subscribe(
+                    super(EventCompassion, event).message_auto_subscribe(
                         updated_fields, values
                     )
                 # Restore ambassador

@@ -149,7 +149,7 @@ class ChildLifecycleEvent(models.Model):
 
     # Common fields
     ###############
-    # comments = fields.Char(readonly=True)
+    comments = fields.Char(readonly=True)
     status = fields.Char()
 
     # Planned Exit fields

@@ -1,6 +1,5 @@
 import re
 import logging
-from collections import OrderedDict
 from babel.dates import format_datetime
 
 
@@ -113,29 +112,25 @@ class AdvancedTranslatable(models.AbstractModel):
         return values
 
     @api.multi
-    def get_date(self, field, date_type='short'):
+    def get_date(self, field, date_type='date_short'):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
         :param date_type: a valid src of a ir.advanced.translation date format
+        or a babel date format string
+        (one of “full”, “long”, “medium”, or “short”, or a custom date/time pattern)
         :return: the formatted dates
         """
+        _lang = self.env.context.get('lang') or self.env.lang or 'en_US'
         _format = self.env['ir.advanced.translation'].get(date_type)
-        dates = map(fields.Datetime.from_string,
-                    self.filtered(field).sorted(
-                        key=lambda r: getattr(r, field)).mapped(field))
-        ordered_dates = OrderedDict.fromkeys(dates)
-        for d in dates:
-            ordered_dates[d] = format_datetime(
-                d, _format, tzinfo=self.env.tz, locale=self.env.lang)
-        # Filter unique dates
-        unique = set()
-        unique_add = unique.add
-        dates_string = [d for d in ordered_dates.values() if not (
-            d in unique or unique_add(d))]
-        if len(dates_string) > 1:
-            res_string = ', '.join(dates_string[:-1])
-            res_string += ' ' + _('and') + ' ' + dates_string[-1]
+        dates = sorted(set(map(fields.Datetime.from_string,
+                               self.filtered(field).mapped(field))))
+
+        dates = [format_datetime(d, _format, locale=_lang) for d in dates]
+
+        if len(dates) > 1:
+            res_string = ', '.join(dates[:-1])
+            res_string += ' ' + _('and') + ' ' + dates[-1]
         else:
-            res_string = dates_string and dates_string[0] or ''
+            res_string = dates and dates[0] or ''
         return res_string

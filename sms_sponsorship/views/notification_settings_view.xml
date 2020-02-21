@@ -11,7 +11,7 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="child_compassion.compassion_settings"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='notification_configuration']//div[@class='o_setting_right_pane']" position='inside'>
+            <xpath expr="//div[@name='notification_configuration']//div[hasclass('o_setting_right_pane')]" position='inside'>
                 <div name="sms_new_partner">
                     <label for="sms_new_partner_notify_ids" string="New partner via SMS sponsorship" class="o_light_label"/>
                     <field name="sms_new_partner_notify_ids" widget="many2many_tags"/>

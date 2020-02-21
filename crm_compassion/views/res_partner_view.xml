@@ -47,18 +47,16 @@
         <field name="state">code</field>
         <field name="code">action = records.create_odoo_user()</field>
         <field name="binding_model_id" ref="model_res_partner"/>
-        <field name="binding_type">report</field>
+        <field name="binding_type">action</field>
     </record>
 
     <record id="log_call_action" model="ir.actions.server">
         <field name="model_id" ref="model_res_partner"/>
         <field name="name">Log your call</field>
-        <field name="code">
-                if object:
-                    action = object.log_call()
-        </field>
+        <field name="state">code</field>
+        <field name="code">action = record.log_call()</field>
         <field name="binding_model_id" ref="model_res_partner"/>
-        <field name="binding_type">report</field>
+        <field name="binding_type">action</field>
     </record>
 
     <!-- Replace domain of communications button to display only pending communications -->

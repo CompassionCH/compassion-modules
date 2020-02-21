@@ -20,6 +20,16 @@
             </group>
             <!-- Remove change_method (we always use clean_invoices) -->
             <field name="change_method" position="replace"/>
+
+            <group name="info" position="inside">
+                <field name="contains_sponsorship" invisible="1"/>
+            </group>
+            <field name="recurring_value" position="attributes">
+                <attribute name="attrs">{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+            </field>
+            <field name="recurring_unit" position="attributes">
+                <attribute name="attrs">{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+            </field>
         </field>
     </record>
 </odoo>

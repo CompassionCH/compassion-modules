@@ -39,6 +39,7 @@
       "field": "child_id.global_id",
       "search_relational_record": true
     },
-    "RecordType": "type"
+    "RecordType": "type",
+    "Comments": "comments"
   }
 }

@@ -49,7 +49,6 @@
     ],
     'data': [
         'views/sponsorship_contract_view.xml',
-        'views/sponsorship_contract_group_view.xml',
         'views/invoice_line_view.xml',
         'views/res_partner_view.xml',
         'views/privacy_statement.xml',

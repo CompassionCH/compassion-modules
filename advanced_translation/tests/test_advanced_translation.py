@@ -7,14 +7,15 @@ class AdvancedTranslationTest(SingleTransactionCase):
     def setUpClass(cls):
         """ Create test data."""
         super().setUpClass()
+
         cls.test_partner_obj = cls.env['res.partner']
         tang = cls.browse_ref(cls, 'base.res_partner_address_1')
         joseph = cls.browse_ref(cls, 'base.res_partner_address_2')
-        cls.males = tang + joseph
+        cls.males = (tang + joseph).with_context(lang='en_US')
         julia = cls.browse_ref(cls, 'base.res_partner_address_26')
         jessica = cls.browse_ref(cls, 'base.res_partner_address_14')
         (julia + jessica).write({'gender': 'F'})
-        cls.females = julia + jessica
+        cls.females = (julia + jessica).with_context(lang='en_US')
 
     def test_keyword_gender(self):
         """Testing that the correct term is returned given the recordset.
