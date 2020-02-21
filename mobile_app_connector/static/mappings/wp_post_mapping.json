@@ -29,7 +29,7 @@
       "field": "name"
     },
     "ActionText": {
-      "field": "image_url"
+      "field": "name"
     },
     "SortOrder": {
       "field": "view_order"

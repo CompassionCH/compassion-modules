@@ -172,7 +172,6 @@ class AppHub(models.AbstractModel):
             start = int(pagination.get('start', 0))
             number_mess = int(pagination.get('limit', 1000))
             offset = (start % number_mess) * self.LIMIT_WORDPRESS_TILES
-            print(len(available_posts))
             for post in available_posts[offset:self.LIMIT_WORDPRESS_TILES]:
                 messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
