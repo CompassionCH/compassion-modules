@@ -31,7 +31,7 @@
 # pylint: disable=C8101
 {
     'name': "Compassion Logging",
-    'version': '10.0.1.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Audit and Logging',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',

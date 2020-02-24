@@ -29,7 +29,7 @@
 {
     'name': 'Survey Phone',
     'summary': 'Make the filling of survey by internal users easier.',
-    'version': '11.0.0.0.0',
+    'version': '12.0.1.0.0',
     'category': 'Other',
     'sequence': 150,
     'author': 'Compassion CH',

@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Mass Label Reporting",
-    "version": "11.0.0.0.0",
+    "version": "12.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
