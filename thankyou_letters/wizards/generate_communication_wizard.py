@@ -14,7 +14,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     _inherit = 'partner.communication.generate.wizard'
 
     success_story_id = fields.Many2one(
-        'success.story', 'Success Story', domain=[('type', '=', 'story')])
+        'success.story', 'Success Story', domain=[('type', '=', 'story')], readonly=False)
     print_subject = fields.Boolean(default=True)
     print_header = fields.Boolean()
 

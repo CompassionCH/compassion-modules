@@ -21,7 +21,7 @@ class Email(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    communication_config_id = fields.Many2one('partner.communication.config')
+    communication_config_id = fields.Many2one('partner.communication.config', readonly=False)
 
     @api.multi
     def send(self, auto_commit=False, raise_exception=False):

@@ -60,10 +60,10 @@ class AbstractHold(models.AbstractModel):
     expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Many2one(
         'res.users', required=True, default=lambda self: self.env.user,
-        domain=[('share', '=', False)]
+        domain=[('share', '=', False)], readonly=False
     )
     secondary_owner = fields.Char()
-    ambassador = fields.Many2one('res.partner')
+    ambassador = fields.Many2one('res.partner', readonly=False)
     yield_rate = fields.Integer()
     no_money_yield_rate = fields.Integer()
     channel = fields.Selection([
@@ -146,14 +146,14 @@ class CompassionHold(models.Model):
         ('expired', "Expired")],
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
-    reservation_id = fields.Many2one('compassion.reservation', 'Reservation')
+    reservation_id = fields.Many2one('compassion.reservation', 'Reservation', readonly=False)
     no_money_extension = fields.Integer(
         help="Counts how many time the no money hold was extended."
     )
 
     # Track field changes
-    ambassador = fields.Many2one(track_visibility='onchange')
-    primary_owner = fields.Many2one(track_visibility='onchange')
+    ambassador = fields.Many2one(track_visibility='onchange', readonly=False)
+    primary_owner = fields.Many2one(track_visibility='onchange', readonly=False)
     type = fields.Selection(track_visibility='onchange')
     channel = fields.Selection(track_visibility='onchange')
     expiration_date = fields.Datetime(track_visibility='onchange')

@@ -24,7 +24,7 @@ class GiftNotificationSettings(models.TransientModel):
             ('user_ids.share', '=', False),
         ],
         compute='_compute_relation_gift_notify_ids',
-        inverse='_inverse_relation_gift_notify_ids'
+        inverse='_inverse_relation_gift_notify_ids', readonly=False
     )
 
     def _compute_relation_gift_notify_ids(self):

@@ -23,13 +23,13 @@ class CrmClaim(models.Model):
     subject = fields.Char()
     alias_id = fields.Many2one(
         'mail.alias', 'Alias',
-        help="The destination email address that the contacts used.")
+        help="The destination email address that the contacts used.", readonly=False)
     code = fields.Char(string='Number')
     claim_category = fields.Many2one(
         "crm.claim.category", string='Category',
-        compute='_get_default_category')
-    user_id = fields.Many2one(string='Assign to')
-    stage_id = fields.Many2one(group_expand='_read_group_stage_ids')
+        compute='_get_default_category', readonly=False)
+    user_id = fields.Many2one(string='Assign to', readonly=False)
+    stage_id = fields.Many2one(group_expand='_read_group_stage_ids', readonly=False)
     ref = fields.Char(related='partner_id.ref')
     color = fields.Integer('Color index', compute='_compute_color')
     email_origin = fields.Char()

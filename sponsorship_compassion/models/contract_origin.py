@@ -34,13 +34,13 @@ class ContractOrigin(models.Model):
         " * Transfer : sponsorship transferred from another country."
         " * Other : select only if none other type matches.",
         required=True, index=True)
-    partner_id = fields.Many2one('res.partner', 'Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
     analytic_id = fields.Many2one(
-        'account.analytic.account', 'Analytic Account')
+        'account.analytic.account', 'Analytic Account', readonly=False)
     contract_ids = fields.One2many(
         'recurring.contract', 'origin_id', 'Sponsorships originated',
         readonly=True)
-    country_id = fields.Many2one('res.country', 'Country')
+    country_id = fields.Many2one('res.country', 'Country', readonly=False)
     other_name = fields.Char('Give details', size=128)
     won_sponsorships = fields.Integer(
         compute='_compute_won_sponsorships', store=True)

@@ -15,8 +15,8 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 class AbstractHold(models.AbstractModel):
     _inherit = 'compassion.abstract.hold'
 
-    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
-    event_id = fields.Many2one('crm.event.compassion', 'Event')
+    campaign_id = fields.Many2one('utm.campaign', 'Campaign', readonly=False)
+    event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=False)
 
     def get_fields(self):
         _fields = super().get_fields()
@@ -40,8 +40,8 @@ class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
     origin_id = fields.Many2one('recurring.contract.origin',
-                                compute='_compute_origin', store=True)
-    event_id = fields.Many2one(track_visibility='onchange')
+                                compute='_compute_origin', store=True, readonly=False)
+    event_id = fields.Many2one(track_visibility='onchange', readonly=False)
 
     @api.multi
     @api.depends('channel', 'type', 'event_id', 'ambassador')
@@ -71,12 +71,12 @@ class CompassionHold(models.Model):
 class ChildCompassion(models.Model):
     _inherit = 'compassion.child'
 
-    hold_event = fields.Many2one(related='hold_id.event_id', store=True)
-    campaign_id = fields.Many2one(related='hold_id.campaign_id')
+    hold_event = fields.Many2one(related='hold_id.event_id', store=True, readonly=False)
+    campaign_id = fields.Many2one(related='hold_id.campaign_id', readonly=False)
 
 
 class Reservation(models.Model):
     _inherit = 'compassion.reservation'
 
-    event_id = fields.Many2one('crm.event.compassion', 'Event')
-    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
+    event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=False)
+    campaign_id = fields.Many2one('utm.campaign', 'Campaign', readonly=False)

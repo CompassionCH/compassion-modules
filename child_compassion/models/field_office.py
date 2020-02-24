@@ -20,7 +20,7 @@ class FieldOffice(models.Model):
     name = fields.Char('Name')
     field_office_id = fields.Char(required=True)
     project_ids = fields.One2many(
-        'compassion.project', 'field_office_id', 'Compassion projects')
+        'compassion.project', 'field_office_id', 'Compassion projects', readonly=False)
     region = fields.Char()
     country_director = fields.Char()
     date_start = fields.Date('Field office start')
@@ -29,7 +29,7 @@ class FieldOffice(models.Model):
     website = fields.Char()
     social_media_site = fields.Char()
     country = fields.Char()
-    country_id = fields.Many2one('res.country', 'Country')
+    country_id = fields.Many2one('res.country', 'Country', readonly=False)
     country_code = fields.Char(related='country_id.code')
     street = fields.Char()
     city = fields.Char()
@@ -39,7 +39,7 @@ class FieldOffice(models.Model):
     learning_image_url = fields.Char()
     learning_summary = fields.Text(translate=True)
     learning_ids = fields.One2many(
-        'field.office.learning', 'field_office_id', string='What I learn'
+        'field.office.learning', 'field_office_id', string='What I learn', readonly=False
     )
     available_on_childpool = fields.Boolean(
         default=True,
@@ -47,22 +47,22 @@ class FieldOffice(models.Model):
     )
 
     primary_language_id = fields.Many2one('res.lang.compassion', 'Primary '
-                                                                 'language')
+                                                                 'language', readonly=False)
     spoken_language_ids = fields.Many2many(
         'res.lang.compassion', 'field_office_spoken_langs',
-        string='Spoken languages')
+        string='Spoken languages', readonly=False)
     translated_language_ids = fields.Many2many(
         'res.lang.compassion', 'field_office_translated_langs',
-        string='Translated languages')
+        string='Translated languages', readonly=False)
 
     staff_number = fields.Integer()
     country_information = fields.Char()
     high_risk_ids = fields.Many2many(
-        'fo.high.risk', string='Beneficiary high risks'
+        'fo.high.risk', string='Beneficiary high risks', readonly=False
     )
 
     disaster_alert_ids = fields.Many2many(
-        'fo.disaster.alert', string='Disaster alerts'
+        'fo.disaster.alert', string='Disaster alerts', readonly=False
     )
     fcp_hours_week = fields.Integer(
         'Hours/week', default=8, oldname='icp_hours_week')
@@ -71,7 +71,7 @@ class FieldOffice(models.Model):
     fcp_medical_check = fields.Integer(
         'Medical check/year', default=1, oldname='icp_medical_check')
     fcp_ids = fields.One2many(
-        'compassion.project', 'field_office_id', 'FCP', oldname='icp_ids')
+        'compassion.project', 'field_office_id', 'FCP', oldname='icp_ids', readonly=False)
 
     _sql_constraints = [
         ('field_office_id', 'unique(field_office_id)',

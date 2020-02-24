@@ -25,7 +25,7 @@ class FieldToJson(models.Model):
 
     mapping_id = fields.Many2one(
         'compassion.mapping', index=True, required=True,
-        ondelete='cascade'
+        ondelete='cascade', readonly=False
     )
     model = fields.Char(related='mapping_id.model_id.model', readonly=True)
     field_id = fields.Many2one(
@@ -35,13 +35,13 @@ class FieldToJson(models.Model):
              "In case of sub mapping, this should only be a relational field "
              "that will be used to compute the sub values. If empty, the sub "
              "values will be determined from the same record as the parent.",
-        ondelete='cascade'
+        ondelete='cascade', readonly=False
     )
     relational_field_id = fields.Many2one(
         'ir.model.fields', 'Relational field',
         help="In case the JSON value points to relational value, specify "
              "here where is the relation stored.",
-        ondelete='cascade'
+        ondelete='cascade', readonly=False
     )
     search_relational_record = fields.Boolean(
         help="When converting JSON to data, set to true if you should lookup "
@@ -57,7 +57,7 @@ class FieldToJson(models.Model):
     sub_mapping_id = fields.Many2one(
         'compassion.mapping', string='Sub mapping',
         help='This will nest a dictionary in the JSON and use given mapping'
-             'to compute the value.'
+             'to compute the value.', readonly=False
     )
     to_json_conversion = fields.Text(
         help='Pyhton function that will convert the value for its JSON '

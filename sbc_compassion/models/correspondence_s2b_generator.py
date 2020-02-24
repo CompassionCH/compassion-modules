@@ -42,21 +42,21 @@ class CorrespondenceS2bGenerator(models.Model):
     ], default='draft')
     name = fields.Char(required=True)
     date = fields.Datetime(default=fields.Datetime.now)
-    image_ids = fields.Many2many('ir.attachment', string='Attached images')
+    image_ids = fields.Many2many('ir.attachment', string='Attached images', readonly=False)
     s2b_template_id = fields.Many2one(
-        'correspondence.template', 'S2B Template', required=True)
+        'correspondence.template', 'S2B Template', required=True, readonly=False)
     background = fields.Binary(
         related='s2b_template_id.template_image'
     )
     selection_domain = fields.Char(
         default="[('state', '=', 'active'), ('child_id', '!=', False)]")
     sponsorship_ids = fields.Many2many(
-        'recurring.contract', string='Sponsorships', required=True
+        'recurring.contract', string='Sponsorships', required=True, readonly=False
     )
     language_id = fields.Many2one(
         'res.lang.compassion', 'Language',
         default=lambda s: s.env.ref(
-            'child_compassion.lang_compassion_english')
+            'child_compassion.lang_compassion_english'), readonly=False
     )
     body = fields.Text(
         required=True,
@@ -68,7 +68,7 @@ class CorrespondenceS2bGenerator(models.Model):
         oldname='body_html'
     )
     letter_ids = fields.One2many(
-        'correspondence', 'generator_id', 'Letters'
+        'correspondence', 'generator_id', 'Letters', readonly=False
     )
     nb_letters = fields.Integer(compute='_compute_nb_letters')
     preview_image = fields.Binary(readonly=True)

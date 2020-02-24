@@ -49,7 +49,7 @@ class MobileFeedback(models.Model):
         ('read', 'Read'),
         ('replied', 'Replied'),
     ], default='unread')
-    crm_claim_id = fields.Many2one('crm.claim', 'Answer to feedback')
+    crm_claim_id = fields.Many2one('crm.claim', 'Answer to feedback', readonly=False)
 
     @api.model
     def _get_lang(self):

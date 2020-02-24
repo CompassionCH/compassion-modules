@@ -22,16 +22,16 @@ class HoldWizard(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     intervention_id = fields.Many2one(
-        'compassion.global.intervention', 'Intervention'
+        'compassion.global.intervention', 'Intervention', readonly=False
     )
-    created_intervention_id = fields.Many2one('compassion.intervention')
+    created_intervention_id = fields.Many2one('compassion.intervention', readonly=False)
     hold_amount = fields.Float(required=True)
-    usd = fields.Many2one(related='intervention_id.currency_usd')
+    usd = fields.Many2one(related='intervention_id.currency_usd', readonly=False)
     expiration_date = fields.Date(required=True)
     next_year_opt_in = fields.Boolean()
     user_id = fields.Many2one(
         'res.users', 'Primary owner', default=lambda s: s.env.user,
-        domain=[('share', '=', False)], required=True
+        domain=[('share', '=', False)], required=True, readonly=False
     )
     secondary_owner = fields.Char()
     service_level = fields.Selection([

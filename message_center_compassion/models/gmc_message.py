@@ -44,7 +44,7 @@ class GmcMessage(models.Model):
         'Related records', help='Used for incoming messages containing '
                                 'several records. (ids separated by commas)')
     res_name = fields.Char(compute='_compute_res_name', store=True)
-    partner_id = fields.Many2one('res.partner', 'Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
 
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(

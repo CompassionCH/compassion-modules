@@ -20,7 +20,7 @@ class ChildNote(models.Model):
     _inherit = ['compassion.mapped.model']
 
     child_id = fields.Many2one(
-        'compassion.child', 'Child', required=True, ondelete='cascade'
+        'compassion.child', 'Child', required=True, ondelete='cascade', readonly=False
     )
     body = fields.Char()
     record_type = fields.Char()

@@ -71,7 +71,7 @@ class CompassionChild(models.Model):
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
     partner_id = fields.Many2one(
-        'res.partner', related='sponsor_id'
+        'res.partner', related='sponsor_id', readonly=False
     )
     sponsor_ref = fields.Char(
         'Sponsor reference', related='sponsor_id.ref')
@@ -88,8 +88,8 @@ class CompassionChild(models.Model):
     hold_id = fields.Many2one('compassion.hold', 'Hold', readonly=True)
     hold_type = fields.Selection(related='hold_id.type', store=True)
     hold_channel = fields.Selection(related='hold_id.channel', store=True)
-    hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True)
-    hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True)
+    hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True, readonly=False)
+    hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True, readonly=False)
     hold_expiration = fields.Datetime(related='hold_id.expiration_date',
                                       string='Hold expiration', store=True)
 

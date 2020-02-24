@@ -50,10 +50,10 @@ class PrivacyStatementAgreement(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    partner_id = fields.Many2one('res.partner', 'Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
     agreement_date = fields.Date()
     privacy_statement_id = fields.Many2one('compassion.privacy.statement',
-                                           'Privacy statement')
+                                           'Privacy statement', readonly=False)
     version = fields.Char(related='privacy_statement_id.version',
                           readonly=True)
     origin_signature = fields.Selection(

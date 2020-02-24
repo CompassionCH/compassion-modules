@@ -23,7 +23,7 @@ class ThankYouConfig(models.Model):
         'get_need_call',
         help='Indicates we should have a personal contact with the partner'
     )
-    user_id = fields.Many2one('res.users', string='Thanker')
+    user_id = fields.Many2one('res.users', string='Thanker', readonly=False)
 
     @api.multi
     def for_donation(self, invoice_lines):

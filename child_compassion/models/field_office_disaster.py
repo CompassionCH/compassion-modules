@@ -18,10 +18,10 @@ class ICPDisasterImpact(models.Model):
     _order = 'id desc'
 
     project_id = fields.Many2one(
-        'compassion.project', 'Project', ondelete='cascade'
+        'compassion.project', 'Project', ondelete='cascade', readonly=False
     )
     disaster_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade', readonly=False
     )
 
     impact_on_fcp_program = fields.Char(oldname='impact_on_icp_program')
@@ -37,10 +37,10 @@ class FieldOfficeDisasterUpdate(models.Model):
     _inherit = 'compassion.mapped.model'
 
     disaster_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade', readonly=False
     )
     fo_id = fields.Many2one(
-        'compassion.field.office', 'Field Office', ondelete='cascade'
+        'compassion.field.office', 'Field Office', ondelete='cascade', readonly=False
     )
 
     fodu_id = fields.Char()
@@ -71,10 +71,10 @@ class ChildDisasterImpact(models.Model):
     _order = 'id desc'
 
     child_id = fields.Many2one(
-        'compassion.child', 'Child', ondelete='cascade'
+        'compassion.child', 'Child', ondelete='cascade', readonly=False
     )
     disaster_id = fields.Many2one(
-        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade'
+        'fo.disaster.alert', 'Disaster Alert', ondelete='cascade', readonly=False
     )
 
     name = fields.Char()
@@ -85,7 +85,7 @@ class ChildDisasterImpact(models.Model):
     caregivers_seriously_injured_number = fields.Integer()
     state = fields.Selection(related='disaster_id.state')
     house_condition = fields.Char()
-    loss_ids = fields.Many2many('fo.disaster.loss', string='Child loss')
+    loss_ids = fields.Many2many('fo.disaster.loss', string='Child loss', readonly=False)
     siblings_died_number = fields.Integer()
     siblings_seriously_injured_number = fields.Integer()
     sponsorship_status = fields.Char()
@@ -160,7 +160,7 @@ class FieldOfficeDisasterAlert(models.Model):
     estimated_serious_injuries = fields.Char()
 
     field_office_id = fields.Many2one(
-        'compassion.field.office', string="Field Offices", ondelete='cascade'
+        'compassion.field.office', string="Field Offices", ondelete='cascade', readonly=False
     )
     field_office_damage = fields.Char()
     field_office_impact_description = fields.Char()
@@ -196,13 +196,13 @@ class FieldOfficeDisasterAlert(models.Model):
     source_kit_name = fields.Char()
 
     fcp_disaster_impact_ids = fields.One2many(
-        'fcp.disaster.impact', 'disaster_id', 'FCP Disaster Impact',
+        'fcp.disaster.impact', 'disaster_id', 'FCP Disaster Impact', readonly=False
     )
     fo_disaster_update_ids = fields.One2many(
-        'fo.disaster.update', 'disaster_id', 'Field Office Update'
+        'fo.disaster.update', 'disaster_id', 'Field Office Update', readonly=False
     )
     child_disaster_impact_ids = fields.One2many(
-        'child.disaster.impact', 'disaster_id', 'Child Disaster Impact'
+        'child.disaster.impact', 'disaster_id', 'Child Disaster Impact', readonly=False
     )
     number_impacted_children = fields.Integer(
         compute='_compute_impacted_children', store=True)

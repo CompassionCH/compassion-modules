@@ -26,7 +26,7 @@ class GenerateGiftWizard(models.TransientModel):
 
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one(
-        'product.product', "Gift Type", required=True)
+        'product.product', "Gift Type", required=True, readonly=False)
     invoice_date = fields.Date(default=fields.Date.today())
     description = fields.Char("Additional comments", size=200)
     force = fields.Boolean(

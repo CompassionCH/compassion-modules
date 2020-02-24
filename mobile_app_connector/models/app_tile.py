@@ -41,7 +41,7 @@ class AppTile(models.Model):
         required=True,
         help='Choose private if the sponsor must be logged in to see the tile'
     )
-    model_id = fields.Many2one('ir.model', "Associated records")
+    model_id = fields.Many2one('ir.model', "Associated records", readonly=False)
     model = fields.Char(related='model_id.model')
     records_filter = fields.Char(
         'Records filter function',
@@ -67,7 +67,7 @@ class AppTile(models.Model):
              "Use ctx['objects'] to get associated records."
     )
     subtype_id = fields.Many2one(
-        'mobile.app.tile.subtype', 'Type', required=True)
+        'mobile.app.tile.subtype', 'Type', required=True, readonly=False)
     code = fields.Char(related='subtype_id.code')
     preview = fields.Binary(related='subtype_id.tile_preview', readonly=True)
     action_destination = fields.Selection(

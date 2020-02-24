@@ -22,7 +22,7 @@ class LabelPrintWizard(models.TransientModel):
 
     config_id = fields.Many2one(
         'label.config', 'Label Type', required=True,
-        default=lambda s: s.env.ref('label.label_4455'),
+        default=lambda s: s.env.ref('label.label_4455'), readonly=False
     )
     number_of_labels = fields.Integer(
         'Number of Labels (per item)', required=True, default=33
@@ -32,7 +32,7 @@ class LabelPrintWizard(models.TransientModel):
     )
     brand_id = fields.Many2one(
         'label.brand', 'Brand Name', required=True,
-        default=lambda s: s.env.ref('label.herma4')
+        default=lambda s: s.env.ref('label.herma4'), readonly=False
     )
 
     @api.onchange('config_id')

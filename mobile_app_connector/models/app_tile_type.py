@@ -23,7 +23,7 @@ class AppTileType(models.Model):
     code = fields.Char(required=True)
     view_order = fields.Integer('View order', required=True)
     subtype_ids = fields.One2many(
-        'mobile.app.tile.subtype', 'type_id', 'Subtypes')
+        'mobile.app.tile.subtype', 'type_id', 'Subtypes', readonly=False)
     param_1 = fields.Char('first parameter')
     param_2 = fields.Char('second parameter')
     param_3 = fields.Char('third parameter')
@@ -40,10 +40,10 @@ class AppTileSubtype(models.Model):
     name = fields.Char('Description', required=True)
     code = fields.Char(required=True)
     view_order = fields.Integer('View order', required=True)
-    type_id = fields.Many2one('mobile.app.tile.type', required=True)
+    type_id = fields.Many2one('mobile.app.tile.type', required=True, readonly=False)
     tile_preview = fields.Binary(attachment=True)
     default_model_id = fields.Many2one(
-        'ir.model', "Default model", help="Select related objects type")
+        'ir.model', "Default model", help="Select related objects type", readonly=False)
     default_model = fields.Char(related='default_model_id.model')
     default_records_filter = fields.Char(
         'Records filter function',

@@ -19,7 +19,7 @@ class GetLetterImageWizard(models.Model):
     _description = 'Get Letter & Image Wizard'
 
     name = fields.Char()
-    action_id = fields.Many2one('gmc.action.connect', 'Message Type')
+    action_id = fields.Many2one('gmc.action.connect', 'Message Type', readonly=False)
     server_url = fields.Char(default='http://localhost:8069/onramp')
     message_type_url = fields.Char(
         related='action_id.connect_schema')

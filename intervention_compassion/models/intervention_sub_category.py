@@ -26,7 +26,7 @@ class InterventionSubCategory(models.Model):
     category_ids = fields.Many2many(
         'compassion.intervention.category',
         'compassion_intervention_cat_subcat_rel',
-        'subcategory_id', 'category_id', 'Categories',
+        'subcategory_id', 'category_id', 'Categories', readonly=False
     )
 
     _sql_constraints = [

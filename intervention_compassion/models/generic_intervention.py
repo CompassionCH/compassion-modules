@@ -52,7 +52,7 @@ class GenericIntervention(models.AbstractModel):
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
-    currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
+    currency_usd = fields.Many2one('res.currency', compute='_compute_usd', readonly=False)
     estimated_costs = fields.Float(readonly=True)
     remaining_amount_to_raise = fields.Float(readonly=True)
     pdc_costs = fields.Float(help='Program development costs', readonly=True)

@@ -22,7 +22,7 @@ class FirebaseNotification(models.Model):
     _name = 'firebase.notification'
     _description = 'Notification to send to Firebase Cloud Messaging'
 
-    partner_ids = fields.Many2many('res.partner', string="Partners")
+    partner_ids = fields.Many2many('res.partner', string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
     send_date = fields.Datetime()
@@ -125,11 +125,11 @@ class FirebaseNotificationPartnerRead(models.Model):
     partner_id = fields.Many2one('res.partner',
                                  'Partner',
                                  ondelete='cascade',
-                                 index=True)
+                                 index=True, readonly=False)
     notification_id = fields.Many2one('firebase.notification',
                                       'Notification',
                                       required=True,
                                       ondelete="cascade",
-                                      index=True)
+                                      index=True, readonly=False)
     opened = fields.Boolean(default=False)
     read_date = fields.Datetime()

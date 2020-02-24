@@ -18,9 +18,9 @@ class CrmLead(models.Model):
     planned_sponsorships = fields.Integer(
         'Expected new sponsorships', track_visibility='onchange')
     event_ids = fields.One2many(
-        'crm.event.compassion', 'lead_id', 'Events')
-    phonecall_ids = fields.One2many('crm.phonecall', 'opportunity_id')
-    meeting_ids = fields.One2many('calendar.event', 'opportunity_id')
+        'crm.event.compassion', 'lead_id', 'Events', readonly=False)
+    phonecall_ids = fields.One2many('crm.phonecall', 'opportunity_id', readonly=False)
+    meeting_ids = fields.One2many('calendar.event', 'opportunity_id', readonly=False)
 
     @api.multi
     def create_event(self):

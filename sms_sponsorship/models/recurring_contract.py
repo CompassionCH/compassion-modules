@@ -20,9 +20,9 @@ _logger = logging.getLogger(__name__)
 class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
-    group_id = fields.Many2one(required=False)
+    group_id = fields.Many2one(required=False, readonly=False)
     sms_request_id = fields.Many2one('sms.child.request', 'SMS request',
-                                     compute='_compute_sms_request_id')
+                                     compute='_compute_sms_request_id', readonly=False)
 
     @api.multi
     def _compute_sms_request_id(self):

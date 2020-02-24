@@ -27,12 +27,12 @@ if not testing:
         # displayed in a modal view or in a full page.
         _display_type = 'modal'
 
-        partner_id = fields.Many2one('res.partner')
+        partner_id = fields.Many2one('res.partner', readonly=False)
         amount = fields.Float(required=True)
-        currency_id = fields.Many2one('res.currency', 'Currency')
+        currency_id = fields.Many2one('res.currency', 'Currency', readonly=False)
         acquirer_ids = fields.Many2many(
-            'payment.acquirer', string='Payment Method')
-        acquirer_id = fields.Many2one('payment.acquirer', 'Selected acquirer')
+            'payment.acquirer', string='Payment Method', readonly=False)
+        acquirer_id = fields.Many2one('payment.acquirer', 'Selected acquirer', readonly=False)
         # Used for redirection to payment transaction
         transaction_id = 0
 

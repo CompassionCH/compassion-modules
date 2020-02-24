@@ -12,7 +12,7 @@ class WordpressConfiguration(models.Model):
     _description = "Wordpress parameters (host, user, password) for a company"
     _order = "host"
 
-    company_id = fields.Many2one('res.company', 'Company', required=False)
+    company_id = fields.Many2one('res.company', 'Company', required=False, readonly=False)
 
     host = fields.Char(required=True)
     user = fields.Char(required=True)

@@ -38,47 +38,47 @@ class EventCompassion(models.Model):
     year = fields.Char(compute='_compute_year', store=True)
     end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
-        'res.partner', 'Customer', track_visibility='onchange')
-    zip_id = fields.Many2one('res.better.zip', 'Address')
+        'res.partner', 'Customer', track_visibility='onchange', readonly=False)
+    zip_id = fields.Many2one('res.better.zip', 'Address', readonly=False)
     street = fields.Char(size=128)
     street2 = fields.Char(size=128)
     city = fields.Char(size=128)
-    state_id = fields.Many2one('res.country.state', 'State')
+    state_id = fields.Many2one('res.country.state', 'State', readonly=False)
     zip = fields.Char(size=24)
-    country_id = fields.Many2one('res.country', 'Country')
+    country_id = fields.Many2one('res.country', 'Country', readonly=False)
     user_id = fields.Many2one(
-        'res.users', 'Ambassador', track_visibility='onchange')
+        'res.users', 'Ambassador', track_visibility='onchange', readonly=False)
     hold_ids = fields.One2many('compassion.hold',
                                'event_id',
                                readonly=True)
     allocate_child_ids = fields.One2many(
         'compassion.child',
         compute='_compute_allocate_children',
-        string='Allocated children')
+        string='Allocated children', readonly=False)
     effective_allocated = fields.Integer(compute='_compute_allocate_children')
     staff_ids = fields.Many2many(
         'res.partner', 'partners_to_staff_event', 'event_id', 'partner_id',
-        'Staff', track_visibility='onchange')
+        'Staff', track_visibility='onchange', readonly=False)
     user_ids = fields.Many2many(
-        'res.users', compute='_compute_users', track_visibility='onchange'
+        'res.users', compute='_compute_users', track_visibility='onchange', readonly=False
     )
     description = fields.Text()
     analytic_id = fields.Many2one(
-        'account.analytic.account', 'Analytic Account', copy=False)
+        'account.analytic.account', 'Analytic Account', copy=False, readonly=False)
     origin_id = fields.Many2one(
-        'recurring.contract.origin', 'Origin', copy=False)
+        'recurring.contract.origin', 'Origin', copy=False, readonly=False)
     contract_ids = fields.One2many(
         'recurring.contract', related='origin_id.contract_ids', readonly=True)
     expense_line_ids = fields.One2many(
         'account.analytic.line',
-        compute='_compute_expense_lines', string='Expenses'
+        compute='_compute_expense_lines', string='Expenses', readonly=False
     )
     invoice_line_ids = fields.One2many(
         'account.invoice.line', 'event_id', readonly=True
     )
     income_line_ids = fields.One2many(
         'account.invoice.line',
-        compute='_compute_income_lines', string='Income'
+        compute='_compute_income_lines', string='Income', readonly=False
     )
     total_expense = fields.Float(
         compute='_compute_expense', readonly=True, store=True)
@@ -94,15 +94,15 @@ class EventCompassion(models.Model):
         'Expected sponsorships',
         track_visibility='onchange', required=True)
     lead_id = fields.Many2one(
-        'crm.lead', 'Opportunity', track_visibility='onchange')
+        'crm.lead', 'Opportunity', track_visibility='onchange', readonly=False)
     won_sponsorships = fields.Integer(
         related='origin_id.won_sponsorships', store=True)
     conversion_rate = fields.Float(
         related='origin_id.conversion_rate', store=True)
-    calendar_event_id = fields.Many2one('calendar.event')
+    calendar_event_id = fields.Many2one('calendar.event', readonly=False)
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
-    campaign_id = fields.Many2one('utm.campaign', 'Campaign')
+    campaign_id = fields.Many2one('utm.campaign', 'Campaign', readonly=False)
 
     # Multi-company
     company_id = fields.Many2one(
@@ -110,7 +110,7 @@ class EventCompassion(models.Model):
         'Company',
         required=True,
         index=True,
-        default=lambda self: self.env.user.company_id.id
+        default=lambda self: self.env.user.company_id.id, readonly=False
     )
 
     ##########################################################################
