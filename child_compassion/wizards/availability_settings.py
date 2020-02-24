@@ -13,7 +13,6 @@ from odoo import api, models, fields
 
 class AvailabilitySettings(models.TransientModel):
     """ Settings configuration for Demand Planning."""
-    _name = 'availability.management.settings'
     _inherit = 'res.config.settings'
 
     # Hold default durations

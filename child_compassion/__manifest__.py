@@ -36,7 +36,7 @@
     'website': 'http://www.compassion.ch',
     'development_status': 'Stable',
     'depends': [
-        'mail_tracking',         # social/mail_tracking
+        'mail_tracking',  # social/mail_tracking
         'web_sheet_full_width',  # OCA/web
         'message_center_compassion',
         'advanced_translation'
@@ -60,7 +60,8 @@
         'views/gmc_message_view.xml',
         'views/compassion_reservation_view.xml',
         'views/field_office_disaster_alert_view.xml',
-        'views/res_config_view.xml',
+        'views/availability_management_view.xml',
+        'views/compassion_settings_view.xml',
         'views/notification_settings_view.xml',
         'views/child_pictures_view.xml',
         'views/demand_planning.xml',
