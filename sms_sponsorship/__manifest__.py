@@ -9,7 +9,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion SMS Sponsorships',
-    'version': '11.0.1.0.2',
+    'version': '12.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',

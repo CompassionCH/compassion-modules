@@ -28,20 +28,20 @@
 
 # pylint: disable=C8101
 {
-    "name": "Partner Communication",
-    "version": "11.0.2.0.0",
-    "category": "Other",
-    "author": "Compassion CH",
-    "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
-    "depends": [
-        "crm_phone",  # OCA/connector-telephony
-        "base_report_to_printer",  # OCA/report-print-send
-        "hr",
-        "contacts",
-        "queue_job",  # OCA/queue
-        "utm",
-        "partner_firstname",  # OCA/partner-contact
+    'name': 'Partner Communication',
+    'version': '12.0.1.0.0',
+    'category': 'Other',
+    'author': 'Compassion CH',
+    'license': 'AGPL-3',
+    'website': 'http://www.compassion.ch',
+    'depends': [
+        'crm_phone',    # OCA/connector-telephony
+        'base_report_to_printer',  # OCA/report-print-send
+        'hr',
+        'contacts',
+        'queue_job',    # OCA/queue
+        'utm',
+        'partner_firstname'  # OCA/partner-contact
     ],
     "external_dependencies": {"python": ["phonenumbers", "PyPDF2", "wand"]},
     "data": [
