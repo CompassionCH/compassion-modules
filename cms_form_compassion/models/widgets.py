@@ -22,7 +22,7 @@ class PaymentAcquirer(models.AbstractModel):
         widget = super().widget_init(
             form, fname, field, **kw)
         widget.w_acquirers = self.env['payment.acquirer'].search(
-            [('website_published', '=', True)]
+            [('is_published', '=', True)]
         )
         return widget
 

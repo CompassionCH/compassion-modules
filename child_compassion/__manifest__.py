@@ -37,7 +37,6 @@
     'development_status': 'Stable',
     'depends': [
         'mail_tracking',         # social/mail_tracking
-        'web_sheet_full_width',  # OCA/web
         'message_center_compassion',
         'advanced_translation'
     ],
