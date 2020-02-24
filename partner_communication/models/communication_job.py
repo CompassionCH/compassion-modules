@@ -75,15 +75,15 @@ class CommunicationJob(models.Model):
     config_id = fields.Many2one(
         'partner.communication.config', 'Type', required=True,
         default=lambda s: s.env.ref(
-            'partner_communication.default_communication'),
+            'partner_communication.default_communication'), readonly=False
     )
     model = fields.Char(related='config_id.model')
     partner_id = fields.Many2one(
-        'res.partner', 'Send to', required=True, ondelete='cascade')
+        'res.partner', 'Send to', required=True, ondelete='cascade', readonly=False)
     partner_phone = fields.Char(related='partner_id.phone')
     partner_mobile = fields.Char(related='partner_id.mobile')
-    country_id = fields.Many2one(related='partner_id.country_id')
-    parent_id = fields.Many2one(related='partner_id.parent_id')
+    country_id = fields.Many2one(related='partner_id.country_id', readonly=False)
+    parent_id = fields.Many2one(related='partner_id.parent_id', readonly=False)
     object_ids = fields.Char('Resource ids', required=True)
     date = fields.Datetime(default=fields.Datetime.now)
     sent_date = fields.Datetime(readonly=True, copy=False)
@@ -102,7 +102,7 @@ class CommunicationJob(models.Model):
         help='Job is processed at creation if set to true', copy=False)
     send_mode = fields.Selection('send_mode_select')
     email_template_id = fields.Many2one(
-        related='config_id.email_template_id', store=True)
+        related='config_id.email_template_id', store=True, readonly=False)
     email_to = fields.Char(
         help='optional e-mail address to override recipient')
     email_id = fields.Many2one(
@@ -115,16 +115,16 @@ class CommunicationJob(models.Model):
     subject = fields.Char()
     attachment_ids = fields.One2many(
         'partner.communication.attachment', 'communication_id',
-        string="Attachments")
+        string="Attachments", readonly=False)
     ir_attachment_ids = fields.Many2many(
         'ir.attachment', string='Attachments',
         compute='_compute_ir_attachments',
         inverse='_inverse_ir_attachments',
-        domain=[('report_id', '!=', False)]
+        domain=[('report_id', '!=', False)], readonly=False
     )
     ir_attachment_tmp = fields.Many2many('ir.attachment', string='Attachments',
                                          compute='_compute_void',
-                                         inverse='_inverse_ir_attachment_tmp')
+                                         inverse='_inverse_ir_attachment_tmp', readonly=False)
 
     def _compute_ir_attachments(self):
         for job in self:

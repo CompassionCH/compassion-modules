@@ -28,7 +28,7 @@ class CorrespondencePage(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     correspondence_id = fields.Many2one(
-        'correspondence', ondelete='cascade', required=True)
+        'correspondence', ondelete='cascade', required=True, readonly=False)
 
     original_page_url = fields.Char()
     final_page_url = fields.Char()

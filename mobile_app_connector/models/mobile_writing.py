@@ -42,7 +42,7 @@ class AppWriting(models.Model):
         ], compute='_compute_state', store=True, default='new')
 
     template_ids = fields.Many2many('correspondence.template',
-                                    string="Templates")
+                                    string="Templates", readonly=False)
 
     print_count = fields.Integer(readonly=True)
     position = fields.Integer()

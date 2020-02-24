@@ -14,7 +14,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     partner_communication_config = fields.Many2one(
-        'partner.communication.config', 'Thank you config', required=False)
+        'partner.communication.config', 'Thank you config', required=False, readonly=False)
 
     thanks_name = fields.Char(translate=True)
     requires_thankyou = fields.Boolean(
@@ -25,7 +25,7 @@ class ProductTemplate(models.Model):
     success_story_id = fields.Many2one(
         'success.story', 'Success story',
         help='Forces a success story when receiving a donation for this '
-             'product.'
+             'product.', readonly=False
     )
 
 
@@ -34,4 +34,4 @@ class Product(models.Model):
 
     thanks_name = fields.Char(related='product_tmpl_id.thanks_name')
     success_story_id = fields.Many2one(
-        related='product_tmpl_id.success_story_id')
+        related='product_tmpl_id.success_story_id', readonly=False)

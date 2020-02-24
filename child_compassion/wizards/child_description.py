@@ -38,7 +38,7 @@ class ChildDescription(models.TransientModel):
     _description = 'Child Description Generator'
 
     child_id = fields.Many2one(
-        'compassion.child', required=True, ondelete='cascade')
+        'compassion.child', required=True, ondelete='cascade', readonly=False)
 
     # language mappings are like this : {'M': [values], 'F': [values]}
     # where [values] is a list of list

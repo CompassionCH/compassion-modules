@@ -29,7 +29,7 @@ class GiftThresholdSettings(models.Model):
     max_amount = fields.Float()
     gift_frequency = fields.Integer()
     yearly_threshold = fields.Boolean()
-    currency_id = fields.Many2one('res.currency', 'Currency')
+    currency_id = fields.Many2one('res.currency', 'Currency', readonly=False)
 
     _sql_constraints = [(
         "unique_gift_threshold",

@@ -39,7 +39,7 @@ class GlobalChildSearch(models.TransientModel):
     ])
     field_office_ids = fields.Many2many(
         'compassion.field.office', 'childpool_field_office_search_rel',
-        string='Field Offices')
+        string='Field Offices', readonly=False)
     min_age = fields.Integer(size=2)
     max_age = fields.Integer(size=2)
     birthday_month = fields.Integer(size=2)
@@ -48,7 +48,7 @@ class GlobalChildSearch(models.TransientModel):
     child_name = fields.Char()
     fcp_ids = fields.Many2many(
         'compassion.project', 'childpool_project_search_rel',
-        string='Projects', oldname='icp_ids')
+        string='Projects', oldname='icp_ids', readonly=False)
     fcp_name = fields.Char()
     hiv_affected_area = fields.Boolean()
     is_orphan = fields.Boolean()
@@ -64,7 +64,7 @@ class GlobalChildSearch(models.TransientModel):
         compute='_compute_advanced_critieria_used')
     search_filter_ids = fields.Many2many(
         'compassion.query.filter', 'compassion_child_search_filters',
-        'search_id', 'query_id', 'Filters'
+        'search_id', 'query_id', 'Filters', readonly=False
     )
     local_id = fields.Char('Child code')
     state_chooser = fields.Selection(lambda s: s.env[
@@ -76,7 +76,7 @@ class GlobalChildSearch(models.TransientModel):
     )
     holding_gp_ids = fields.Many2many(
         'compassion.global.partner', 'child_search_holding_gp',
-        'search_id', 'global_partner_id', 'Holding Global Partner'
+        'search_id', 'global_partner_id', 'Holding Global Partner', readonly=False
     )
     father_alive = fields.Selection(lambda s: s.env[
         'compassion.household']._get_yes_no())

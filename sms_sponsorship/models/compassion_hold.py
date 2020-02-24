@@ -21,7 +21,7 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _inherit = 'compassion.hold'
 
-    sms_request_id = fields.Many2one('sms.child.request')
+    sms_request_id = fields.Many2one('sms.child.request', readonly=False)
 
     @api.multi
     def hold_released(self, vals=None):

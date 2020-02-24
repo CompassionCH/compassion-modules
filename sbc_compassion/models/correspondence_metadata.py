@@ -27,7 +27,7 @@ class CorrespondenceMetadata(models.AbstractModel):
         ('not_sent', _('Not sent'))])
     attachments_description = fields.Char()
     template_id = fields.Many2one(
-        'correspondence.template', 'Template')
+        'correspondence.template', 'Template', readonly=False)
     mandatory_review = fields.Boolean()
     source = fields.Selection(selection=[
         ('letter', _('Letter')),

@@ -15,7 +15,7 @@ class DemandPlanningSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     default_s2b_template_id = fields.Many2one(
-        'correspondence.template', 'Default S2B template')
+        'correspondence.template', 'Default S2B template', readonly=False)
 
     @api.multi
     def set_values(self):

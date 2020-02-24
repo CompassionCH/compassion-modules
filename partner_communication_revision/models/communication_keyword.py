@@ -42,7 +42,7 @@ class CommunicationKeyword(models.Model):
         'partner.communication.revision',
         'Template',
         required=True,
-        ondelete='cascade'
+        ondelete='cascade', readonly=False
     )
     type = fields.Selection(
         [('if', 'If Condition'),

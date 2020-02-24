@@ -77,4 +77,4 @@ class CorrespondenceLanguageCheckbox(models.Model):
     _inherit = 'correspondence.positioned.object'
     _description = 'Correspondence Lang Checkbox'
 
-    language_id = fields.Many2one('res.lang.compassion')
+    language_id = fields.Many2one('res.lang.compassion', readonly=False)

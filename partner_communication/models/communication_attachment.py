@@ -27,13 +27,13 @@ class CommunicationAttachment(models.Model):
     name = fields.Char(required=True)
     communication_id = fields.Many2one(
         'partner.communication.job', 'Communication', required=True,
-        ondelete='cascade')
+        ondelete='cascade', readonly=False)
     report_id = fields.Many2one(
-        'ir.actions.report', string='ID of report used by the attachment')
+        'ir.actions.report', string='ID of report used by the attachment', readonly=False)
     report_name = fields.Char(
         required=True, help='Identifier of the report used to print')
     attachment_id = fields.Many2one(
-        'ir.attachment', string="Attachments", required=True)
+        'ir.attachment', string="Attachments", required=True, readonly=False)
     data = fields.Binary(compute='_compute_data')
 
     def _compute_data(self):

@@ -34,12 +34,12 @@ class GenerateCommunicationWizard(models.TransientModel):
     selection_domain = fields.Char(default=lambda s: s._default_domain())
     partner_ids = fields.Many2many(
         'res.partner', string='Recipients',
-        default=lambda s: s._default_partners()
+        default=lambda s: s._default_partners(), readonly=False
     )
     force_language = fields.Selection('_lang_select')
     model_id = fields.Many2one(
         'partner.communication.config', 'Template',
-        domain=[('model', '=', 'res.partner')]
+        domain=[('model', '=', 'res.partner')], readonly=False
     )
     send_mode = fields.Selection('_send_mode_select', default='physical')
     customize_template = fields.Boolean()
@@ -48,14 +48,14 @@ class GenerateCommunicationWizard(models.TransientModel):
     report_id = fields.Many2one(
         'ir.actions.report', 'Letter template',
         domain=[('model', '=', 'partner.communication.job')],
-        default=lambda s: s._default_report()
+        default=lambda s: s._default_report(), readonly=False
     )
     language_added_in_domain = fields.Boolean()
     preview_email = fields.Html(readonly=True)
     preview_pdf = fields.Binary(readonly=True)
     communication_ids = fields.Many2many(
         'partner.communication.job', 'partner_communication_generation_rel',
-        string='Communications')
+        string='Communications', readonly=False)
     progress = fields.Float(compute='_compute_progress')
 
     ##########################################################################

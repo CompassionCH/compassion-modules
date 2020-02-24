@@ -26,10 +26,10 @@ class PartnerCommunication(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     success_story_id = fields.Many2one(
-        'success.story', 'Success Story', domain=[('type', '=', 'story')])
+        'success.story', 'Success Story', domain=[('type', '=', 'story')], readonly=False)
     success_sentence_id = fields.Many2one(
         'success.story', 'Success Sentence',
-        domain=[('type', '=', 'sentence')])
+        domain=[('type', '=', 'sentence')], readonly=False)
     success_sentence = fields.Text(related='success_sentence_id.body_text')
     add_success_story = fields.Boolean(related='config_id.add_success_story')
     amount = fields.Float(compute='_compute_donation_amount', store=True)

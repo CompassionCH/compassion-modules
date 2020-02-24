@@ -23,7 +23,7 @@ class HoldWizard(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     intervention_id = fields.Many2one(
-        'compassion.intervention', 'Intervention'
+        'compassion.intervention', 'Intervention', readonly=False
     )
     additional_fund_amount = fields.Float(
         related='intervention_id.requested_additional_funding'
@@ -32,7 +32,7 @@ class HoldWizard(models.TransientModel):
         related='intervention_id.additional_marketing_information'
     )
     hold_id = fields.Char(related='intervention_id.hold_id')
-    usd = fields.Many2one(related='intervention_id.currency_usd')
+    usd = fields.Many2one(related='intervention_id.currency_usd', readonly=False)
     commitment_amount = fields.Float(required=True)
     commit_to_additional_fund = fields.Boolean()
 

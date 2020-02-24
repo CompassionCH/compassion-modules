@@ -20,9 +20,9 @@ class PartnerSponsorshipReport(models.Model):
     start_period = fields.Date(compute='_compute_start_period')
 
     related_active_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_active_sponsorship')
+        "recurring.contract", compute='_compute_related_active_sponsorship', readonly=False)
     related_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_sponsorship')
+        "recurring.contract", compute='_compute_related_sponsorship', readonly=False)
 
     # sr -> Sponsorship Report
     sr_sponsorship = fields.Integer('Number of sponsorship',

@@ -27,7 +27,7 @@ class SubSponsorshipWizard(models.TransientModel):
         ('direct', 'Direct')
     ])
     child_id = fields.Many2one(
-        'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
+        'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])], readonly=False)
     no_sub_default_reasons = fields.Selection([
         ('other_sponsorship', _('Sponsors other children')),
         ('financial', _('Financial reasons')),

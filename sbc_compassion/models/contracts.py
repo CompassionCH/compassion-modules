@@ -24,13 +24,13 @@ class Contracts(models.Model):
 
     writing_language = fields.Many2one(
         'res.lang.compassion', related='reading_language',
-        help='By now equals to reading language. Could be used in the future')
+        help='By now equals to reading language. Could be used in the future', readonly=False)
     child_letter_ids = fields.Many2many(
         'correspondence', string='Child letters',
-        compute='_compute_get_letters')
+        compute='_compute_get_letters', readonly=False)
     sponsor_letter_ids = fields.Many2many(
         'correspondence', string='Sponsor letters',
-        compute='_compute_get_letters')
+        compute='_compute_get_letters', readonly=False)
     nb_letters = fields.Integer(
         compute='_compute_get_letters'
     )

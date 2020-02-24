@@ -27,7 +27,7 @@ class LearningInfo(models.Model):
         help="Contains the description of the learning information.",
     )
     field_office_id = fields.Many2one(
-        'compassion.field.office', 'Field office', required=True
+        'compassion.field.office', 'Field office', required=True, readonly=False
     )
 
     def get_learning_json(self):

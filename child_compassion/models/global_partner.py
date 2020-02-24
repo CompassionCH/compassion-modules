@@ -18,5 +18,5 @@ class GlobalPartner(models.Model):
     _description = 'Compassion Global Partner'
 
     name = fields.Char(required=True)
-    country_id = fields.Many2one('res.country', 'Country')
+    country_id = fields.Many2one('res.country', 'Country', readonly=False)
     code = fields.Char(related='country_id.code', store=True)

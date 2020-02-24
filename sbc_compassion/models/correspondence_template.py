@@ -104,19 +104,19 @@ class CorrespondenceTemplate(models.Model):
              'pattern inside the template (given in pixels)')
     checkbox_ids = fields.Many2many(
         'correspondence.lang.checkbox', string='Language checkboxes',
-        copy=True)
+        copy=True, readonly=False)
     nber_keypoints = fields.Integer("Number of key points")
     usage_count = fields.Integer(
         compute='_compute_usage_count'
     )
     page_ids = fields.One2many(
         'correspondence.template.page', 'template_id', 'Pages', required=True,
-        copy=True
+        copy=True, readonly=False
     )
     additional_page_id = fields.Many2one(
         'correspondence.template.page', 'Additional page',
         help='Template used in case the S2B text is too long to fit on the '
-             'standard two-sided page.'
+             'standard two-sided page.', readonly=False
     )
 
     ##########################################################################

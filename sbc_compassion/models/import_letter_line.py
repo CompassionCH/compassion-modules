@@ -24,16 +24,16 @@ class ImportLetterLine(models.Model):
     ##########################################################################
 
     sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship',
-                                     compute='_compute_sponsorship')
-    partner_id = fields.Many2one('res.partner', 'Partner')
+                                     compute='_compute_sponsorship', readonly=False)
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
     name = fields.Char(compute='_compute_name')
-    child_id = fields.Many2one('compassion.child', 'Child')
+    child_id = fields.Many2one('compassion.child', 'Child', readonly=False)
     letter_language_id = fields.Many2one(
-        'res.lang.compassion', 'Language')
+        'res.lang.compassion', 'Language', readonly=False)
     letter_image = fields.Binary(attachment=True, readonly=True)
     file_name = fields.Char(readonly=True)
     letter_image_preview = fields.Binary(attachment=True, readonly=True)
-    import_id = fields.Many2one('import.letters.history')
+    import_id = fields.Many2one('import.letters.history', readonly=False)
     reviewed = fields.Boolean()
     status = fields.Selection([
         ("no_lang", _("Language not Detected")),
