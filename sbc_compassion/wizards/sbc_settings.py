@@ -13,9 +13,7 @@ from odoo import api, models, fields
 
 class SBCSettings(models.TransientModel):
     """ Settings configuration for any Notifications."""
-    _name = 'sbc.settings'
     _inherit = 'res.config.settings'
-    _description = 'SBC Settings'
 
     # Users to notify after Child Departure
     additional_b2s_translation = fields.Binary(
