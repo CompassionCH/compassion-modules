@@ -55,5 +55,6 @@ class CompassionChildPictures(models.Model):
         if not res:
             res = {}
         res['Date'] = datetime.datetime.strptime(
-            res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+            res['Date'], '%Y-%m-%d').strftime('%d-%m-%Y %H:%M:%S')
+
         return res
