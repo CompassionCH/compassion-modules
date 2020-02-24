@@ -42,14 +42,14 @@ class OnrampConnector(object):
             connect_url = config.get('connect_url')
             api_key = config.get('connect_api_key')
             if connect_url and api_key:
-                OnrampConnector.__instance._connect_url = connect_url
-                OnrampConnector.__instance._api_key = api_key
+                OnrampConnector._connect_url = connect_url
+                OnrampConnector._api_key = api_key
                 session = requests.Session()
                 session.params.update({
                     'api_key': api_key,
                     'gpid': 'CH'
                 })
-                OnrampConnector.__instance._session = session
+                OnrampConnector._session = session
             else:
                 raise UserError(
                     _('Please give connect_url and connect_api_key values '

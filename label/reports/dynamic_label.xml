@@ -1,5 +1,5 @@
 <odoo>
-    <template id="report_label">
+    <template id="dynamic_label">
         <link rel="stylesheet" href="/label/static/src/css/label.css"/>
         <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="o">
