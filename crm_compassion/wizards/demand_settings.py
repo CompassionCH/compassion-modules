@@ -13,7 +13,6 @@ from odoo import api, models, fields
 
 class DemandPlanningSettings(models.TransientModel):
     """ Settings configuration for Demand Planning."""
-    _name = 'demand.planning.settings'
     _inherit = 'res.config.settings'
 
     number_children_website = fields.Integer()
