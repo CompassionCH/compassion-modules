@@ -16,6 +16,9 @@ from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 from werkzeug.exceptions import NotFound
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def get_child_request(request_id, lang=None):
@@ -157,9 +160,12 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                     **kwargs
                 )
             else:
+                _logger.error("No valid sponsorship found for given id : %s",
+                              sponsorship_id)
                 raise NotFound()
         else:
-            raise Exception("Please provide a sponsorship_id")
+            _logger.error("No sponsorship_id was given to the route")
+            raise NotFound()
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
            'confirm', type='http', auth='public',
