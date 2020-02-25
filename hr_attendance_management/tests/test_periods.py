@@ -374,7 +374,9 @@ class TestPeriod(SavepointCase):
         all_periods = self.env['hr.employee.period'].search([
             ('employee_id', '=', self.jack.id)
         ])
-        self.assertEquals(initial_periods_count + 1,
+        # The period with dates: 2018-12-31 - 2019-02-01
+        # is surrounded by the new one so it will be deleted
+        self.assertEquals(initial_periods_count,
                           self.get_periods_count(self.jack.id))
 
         new_previous_period = self.get_previous_period(start_date, self.jack.id)

@@ -38,7 +38,7 @@
         'hr_contract',                      # source/addons
         'hr_employee_calendar_planning',    # hr
         'child_compassion',                 # compassion-modules
-        'partner_contact_gender'            # oca_addons/partner-contact
+        'thankyou_letters'                  # compassion-modules
     ],
     'version': '11.0.0.0.0',
     'auto_install': False,
