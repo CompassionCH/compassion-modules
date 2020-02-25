@@ -32,7 +32,7 @@ class ProjectActivity(models.Model):
     _name = 'child.project.activity'
     _inherit = 'child.property'
     _description = 'Project Activity'
-    res_field = 'activity_ids'
+    res_field = 'project_activity_ids'
 
 
 class SchoolSubject(models.Model):

@@ -202,7 +202,7 @@
                                            widget="many2many_tags"/>
                                     <field name="christian_activity_ids"
                                            widget="many2many_tags"/>
-                                    <field name="activity_ids"
+                                    <field name="project_activity_ids"
                                            widget="many2many_tags"/>
                                 </group>
                                 <group string="Household">
@@ -242,8 +242,8 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"
-                           widget="mail_followers"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                     <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
