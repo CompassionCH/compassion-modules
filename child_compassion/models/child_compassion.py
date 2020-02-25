@@ -99,7 +99,8 @@ class CompassionChild(models.Model):
     duty_ids = fields.Many2many(
         'child.household.duty', string='Household duties', readonly=True)
     project_activity_ids = fields.Many2many(
-        'child.project.activity', string='Project activities', readonly=True)
+        'child.project.activity', string='Project activities', readonly=True,
+        oldname='activity_ids')
     subject_ids = fields.Many2many(
         'child.school.subject', string='School subjects', readonly=True)
 
