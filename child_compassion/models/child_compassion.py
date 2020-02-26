@@ -29,7 +29,7 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'local_id'
-    _inherit = ['compassion.generic.child', 'mail.thread',
+    _inherit = ['compassion.generic.child', 'mail.thread', 'mail.activity.mixin',
                 'translatable.model']
     _description = "Sponsored Child"
     _order = 'local_id asc,date desc'
@@ -37,7 +37,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     # General Information
     #####################
     local_id = fields.Char(track_visibility='onchange')
@@ -99,8 +98,9 @@ class CompassionChild(models.Model):
                                  readonly=True)
     duty_ids = fields.Many2many(
         'child.household.duty', string='Household duties', readonly=True)
-    activity_ids = fields.Many2many(
-        'child.project.activity', string='Project activities', readonly=True)
+    project_activity_ids = fields.Many2many(
+        'child.project.activity', string='Project activities', readonly=True,
+        oldname='activity_ids')
     subject_ids = fields.Many2many(
         'child.school.subject', string='School subjects', readonly=True)
 

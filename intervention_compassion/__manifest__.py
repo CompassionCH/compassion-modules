@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion Interventions',
-    'version': '11.0.0.0.1',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -39,7 +39,7 @@
     'external_dependencies': {},
     'data': [
         'data/compassion.intervention.category.csv',
-        'data/compassion.inter.subcat.csv',
+        'data/compassion.intervention.subcategory.csv',
         'data/compassion.intervention.deliverable.csv',
         'data/install_category_rel.xml',
         'data/intervention_server_actions.xml',

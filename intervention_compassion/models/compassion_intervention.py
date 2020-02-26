@@ -58,6 +58,11 @@ class CompassionIntervention(models.Model):
         string='FCPs', readonly=True,
     )
     product_template_id = fields.Many2one('product.template', 'Linked product')
+    subcategory_ids = fields.Many2many(
+        'compassion.intervention.subcategory',
+        'compassion_intervention_subcategory_rel',
+        string='Subcategory', readonly=True
+    )
 
     # Multicompany
     company_id = fields.Many2one(

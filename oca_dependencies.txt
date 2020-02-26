@@ -25,6 +25,7 @@ server-ux
 crm
 geospatial
 # hr
+hr https://github.com/OCA/hr 11.0
 partner-contact
 queue
 report-print-send

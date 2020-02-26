@@ -37,9 +37,6 @@ class GenericIntervention(models.AbstractModel):
     )
 
     type = fields.Selection(related='category_id.type')
-    subcategory_ids = fields.Many2many(
-        'compassion.inter.subcat', string='Subcategory', readonly=True
-    )
     funding_status = fields.Selection('get_funding_statuses', readonly=True)
 
     # Schedule Information
