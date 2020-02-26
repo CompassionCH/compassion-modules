@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -45,9 +44,9 @@ class MobileAppJsonRequest(JsonRequest):
             # pylint: disable=pointless-statement
             args[0].values
 
-            super(MobileAppJsonRequest, self).__init__(*args)
+            super().__init__(*args)
             self.params = {
-                key: val for key, val in self.httprequest.args.iteritems()
+                key: val for key, val in self.httprequest.args.items()
             }
         except werkzeug.exceptions.BadRequest as error:
             # Put simply an empty JSON data
@@ -56,14 +55,14 @@ class MobileAppJsonRequest(JsonRequest):
                 # PUT The GET parameters as the parameters for the controller
                 self.params = {
                     key: val for key, val in
-                    self.httprequest.values.iteritems()
+                    self.httprequest.values.items()
                 }
                 self.context = dict(self.session.context)
             else:
                 raise
 
     def _json_response(self, result=None, error=None):
-        odoo_result = super(MobileAppJsonRequest, self)._json_response(
+        odoo_result = super()._json_response(
             result, error)
         if result is not None and error is None:
             odoo_result.data = simplejson.dumps(result)

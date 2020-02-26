@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -54,7 +53,7 @@ class CrmClaim(models.Model):
             'email_from': email,
             'subject': subject,
             'code':
-                self.env.ref('crm_claim_code.sequence_claim_app')
+                self.env.ref('mobile_app_connector.sequence_claim_app')
                     .sudo()._next(),
             'name': question,
             'categ_id': self.env['crm.claim.category'].sudo().search(

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -52,7 +51,7 @@ class FirebaseNotification(models.Model):
             super(FirebaseNotification, notif).send(data)
 
     def duplicate_to_unread(self):
-        res = super(FirebaseNotification, self).duplicate_to_unread()
+        res = super().duplicate_to_unread()
         new = self.browse(res['res_id'])
         new.destination = self.destination
         new.fundType = self.fundType

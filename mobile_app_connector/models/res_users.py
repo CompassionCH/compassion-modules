@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -10,15 +9,15 @@
 
 import logging
 
-from odoo import models, api
+from odoo import models, api, _
 from odoo.http import request
-from ..mappings.compassion_login_mapping import MobileLoginMapping
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionLogin(models.Model):
-    _inherit = 'res.users'
+    _name = "res.users"
+    _inherit = ['res.users', 'compassion.mapped.model']
 
     @api.model
     def mobile_login(self, **other_params):
@@ -39,12 +38,26 @@ class CompassionLogin(models.Model):
         if uid is not False:
             self.save_session(request.cr, uid, request.context)
 
-        user = self.env['res.users'].browse(uid)
-        mapping = MobileLoginMapping(self.env)
-        result = mapping.get_connect_data(user)
+        result = self.data_to_json("mobile_app_login")
         return result
 
     def _get_required_param(self, key, params):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
+        if not self:
+            res['error'] = _("Wrong user or password")
+        else:
+            res['login_count'] = len(self.log_ids)
+        for key, value in list(res.items()):
+            if not value:
+                res[key] = None
+            else:
+                res[key] = str(value)
+        return res

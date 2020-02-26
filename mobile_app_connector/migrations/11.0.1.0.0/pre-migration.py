@@ -1,23 +1,20 @@
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2020 Compassion CH (http://www.compassion.ch)
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import models
-from . import tools
-from . import controllers
-from . import forms
-from . import wizards
-
-from odoo.addons.message_center_compassion.tools.load_mappings import \
-    load_mapping_files
+from openupgradelib import openupgrade
+from message_center_compassion.tools import load_mappings
 
 
-def load_mappings(cr, registry):
+@openupgrade.migrate(use_env=True)
+def migrate(env, version):
+    if not version:
+        return
+
     path = 'mobile_app_connector/static/mappings/'
     files = [
         'app_banner_mapping.json',
@@ -31,5 +28,4 @@ def load_mappings(cr, registry):
         'mobile_child_picture_mapping.json',
         'wp_post_mapping.json',
     ]
-    load_mapping_files(cr, path, files)
-
+    load_mappings.load_mapping_files(env.cr, path, files)

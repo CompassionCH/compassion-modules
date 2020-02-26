@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -10,16 +9,17 @@
 ##############################################################################
 
 import logging
+import datetime
 
 from odoo import models, api
-from ..mappings.compassion_child_mapping import MobileChildMapping
 
 logger = logging.getLogger(__name__)
 
 
 class CompassionChild(models.Model):
     """ A sponsored child """
-    _inherit = 'compassion.child'
+    _name = "compassion.child"
+    _inherit = ['compassion.child', 'compassion.mapped.model']
 
     def get_app_json_no_wrap(self):
         """
@@ -28,13 +28,12 @@ class CompassionChild(models.Model):
         """
         if not self:
             return {}
-        mapping = MobileChildMapping(self.env)
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_child")
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_child"))
         return data
 
     @api.multi
@@ -53,13 +52,12 @@ class CompassionChild(models.Model):
         if not self:
             return {wrapper: []}
 
-        mapping = MobileChildMapping(self.env)
         if len(self) == 1 and not multi:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_child")
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_child"))
         return {
             wrapper: data,
             'Images': children_pictures.filtered('image_url').get_app_json(multi=True),
@@ -94,9 +92,8 @@ class CompassionChild(models.Model):
             ('partner_id', '=', sponsor.id)
         ])
 
-        mapping = MobileChildMapping(self.env)
         for child in children:
-            result.append(mapping.get_connect_data(child))
+            result.append(child.data_to_json("mobile_app_child"))
         return result
 
     @api.model
@@ -118,10 +115,10 @@ class CompassionChild(models.Model):
 
         hobbies = child.translate('hobby_ids.value')
 
-        if isinstance(hobbies, unicode):
+        if isinstance(hobbies, str):
             hobbies = [hobbies]
 
-        if isinstance(guardians, unicode):
+        if isinstance(guardians, str):
             guardians = [guardians]
 
         at = self.env['ir.advanced.translation'].sudo()
@@ -155,3 +152,27 @@ class CompassionChild(models.Model):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
+        if "FullBodyImageURL" in res.keys():
+            image_url = self.env['child.pictures.download.wizard']\
+                .get_picture_url(res['FullBodyImageURL'], 'headshot', 300, 300)
+            res['ImageUrl'] = image_url
+            res['ImageURL'] = image_url
+        for key, value in list(res.copy().items()):
+            if key == "BirthDate":
+                if value:
+                    res[key] = datetime.datetime.strptime(
+                        value, '%Y-%m-%d').strftime('%d/%m/%Y %H:%M:%S')
+            if key == "SupporterGroupId":
+                if value:
+                    res[key] = int(value)
+            if key == "Gender":
+                res[key] = "Female" if value == "F" else "Male"
+            if not value:
+                res[key] = None
+        return res

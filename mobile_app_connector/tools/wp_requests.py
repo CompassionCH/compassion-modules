@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -21,7 +20,7 @@ class Session(requests.Session):
         :param wp_config: wordpress.configuration record
         """
         self.wp_config = wp_config
-        super(Session, self).__init__()
+        super().__init__()
 
     def __enter__(self):
         """Authenticate and set the JSON Web Token for the session"""
@@ -36,7 +35,8 @@ class Session(requests.Session):
         if 'token' not in auth:
             raise exceptions.AccessError(_(
                 'Wordpress authentication failed !'))
+        self.headers.update({
+            "Authorization": f"Bearer {auth['token']}"
+        })
 
-        self.headers.update({'Authorization': 'Bearer %s' % auth['token']})
-
-        return super(Session, self).__enter__()
+        return super().__enter__()

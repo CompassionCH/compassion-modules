@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -30,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'Compassion EU Mobile App Connector',
-    'version': '10.0.1.5.0',
+    'version': '11.0.1.0.0',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -39,9 +38,11 @@
         'sbc_compassion',
         'partner_contact_birthdate',
         'base_geolocalize',
-        'firebase_connector',
-        'sms_sponsorship',
-        'partner_communication'
+        'firebase_connector',           # compassion-modules
+        'sms_sponsorship',              # compassion-modules
+        'partner_communication',        # compassion-modules
+        'crm_claim',                    # oca_addons/crm
+        'wordpress_configuration'       # compassion-modules
     ],
     'external_dependencies': {
         'python': ['simplejson', 'bs4', 'requests'],
@@ -76,6 +77,7 @@
     'demo': [
     ],
     'development_status': 'Beta',
-    'installable': False,
+    'installable': True,
     'auto_install': False,
+    'post_init_hook': "load_mappings"
 }

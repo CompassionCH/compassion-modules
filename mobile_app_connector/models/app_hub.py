@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -11,7 +10,6 @@ import logging
 import random
 from collections import defaultdict
 
-from ..mappings.wp_post_mapping import WPPostMapping
 from odoo import api, models
 
 _logger = logging.getLogger(__name__)
@@ -155,7 +153,6 @@ class AppHub(models.AbstractModel):
                 available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile({
                     'product.product': products})
             )
-
         # Fetch tiles from Wordpress
         tiles.extend(self._fetch_wordpress_tiles(**pagination))
         return self._construct_hub_message(0, tiles, **pagination)
@@ -175,9 +172,8 @@ class AppHub(models.AbstractModel):
             start = int(pagination.get('start', 0))
             number_mess = int(pagination.get('limit', 1000))
             offset = (start % number_mess) * self.LIMIT_WORDPRESS_TILES
-            wp_mapping = WPPostMapping(self.env)
             for post in available_posts[offset:self.LIMIT_WORDPRESS_TILES]:
-                messages.append(wp_mapping.get_connect_data(post))
+                messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
 
     def _construct_hub_message(self, partner_id, messages, children=None,
@@ -194,7 +190,7 @@ class AppHub(models.AbstractModel):
         :param kwargs: other request parameters (ignored)
         :return: JSON compatible data for mobile app
         """
-        base_url = self.env['ir.config_parameter'].get_param(
+        base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url') + '/mobile-app-api'
         hub_endpoint = '/hub/{}?start={}&limit={}'
         self._assign_order(messages)
@@ -326,7 +322,7 @@ class AppHub(models.AbstractModel):
             else:
                 rest_group.append(tile)
 
-        for subtype, tiles in recent_content.iteritems():
+        for subtype, tiles in recent_content.items():
             if subtype == 'LE_T1':
                 for tile in tiles['tiles']:
                     tile['SortOrder'] = unread_letter_order
@@ -377,7 +373,7 @@ class AppHub(models.AbstractModel):
         # For weighted random, we create a list of every possible tile subtype
         # to select at random (a subtype with n tiles appears n times)
         random_list = []
-        for k, v in possible_subtype.iteritems():
+        for k, v in possible_subtype.items():
             random_list += [k] * v
         random.shuffle(random_list)
 
@@ -423,7 +419,7 @@ class AppHub(models.AbstractModel):
         # First we determine how many of the same subtype we should display
         # back to back
         number_tile_type = {}
-        for k, v in possible_subtype.iteritems():
+        for k, v in possible_subtype.items():
             number_tile_type[k] = max(1, v // (number_tile or 1))
 
         # We add the remaining tiles to the end of the hub

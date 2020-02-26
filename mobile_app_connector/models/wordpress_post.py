@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -8,9 +7,8 @@
 #
 ##############################################################################
 import logging
-from HTMLParser import HTMLParser
+import html
 from ..tools import wp_requests
-
 
 from odoo import api, models, fields, _
 
@@ -25,6 +23,7 @@ class WordpressPost(models.Model):
     """
     _name = 'wp.post'
     _description = 'Wordpress post'
+    _inherit = 'compassion.mapped.model'
     _order = 'date desc'
 
     name = fields.Char('Title', required=True)
@@ -112,12 +111,11 @@ class WordpressPost(models.Model):
         wp_config = self.env['wordpress.configuration'].get_config()
         # This is standard Wordpress REST API URL
         wp_api_url = 'https://' + wp_config.host + '/wp-json/wp/v2/' \
-            + post_type
+                     + post_type
         # This is for avoid loading all post content
         params = {'context': 'embed', 'per_page': 100}
         found_ids = []
         try:
-            h = HTMLParser()
             with wp_requests.Session(wp_config) as requests:
                 for lang in self._supported_langs():
                     params['lang'] = lang.code[:2]
@@ -125,8 +123,8 @@ class WordpressPost(models.Model):
 
                     _logger.info('Processing posts in %s', lang.name)
                     for i, post_data in enumerate(wp_posts):
-                        _logger.info("...processing post %s/%s",
-                                     str(i+1), str(len(wp_posts)))
+                        _logger.info("...processing post "
+                                     f"{str(i + 1)}/{str(len(wp_posts))}")
                         post_id = post_data['id']
                         found_ids.append(post_id)
                         cached_post = self.search([('wp_id', '=', post_id)])
@@ -166,7 +164,7 @@ class WordpressPost(models.Model):
 
                         # Cache new post in database
                         self.create({
-                            'name': h.unescape(post_data['title']['rendered']),
+                            'name': html.unescape(post_data['title']['rendered']),
                             'date': post_data['date'],
                             'wp_id': post_id,
                             'url': post_data['link'],
@@ -244,3 +242,13 @@ class WordpressPost(models.Model):
         :return: res.lang recordset
         """
         return self.env['res.lang'].search([('code', '!=', 'en_US')])
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
+        for key, value in list(res.items()):
+            if not value:
+                res[key] = None
+        return res

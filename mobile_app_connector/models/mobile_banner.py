@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -19,6 +18,7 @@ logger = logging.getLogger(__name__)
 class AppBanner(models.Model):
     _name = 'mobile.app.banner'
     _description = 'Mobile App Banner'
+    _inherit = 'compassion.mapped.model'
     _order = 'state asc, print_count asc, date_start asc'
 
     ##########################################################################
@@ -99,3 +99,15 @@ class AppBanner(models.Model):
             {'active': False})
         # Activate current stories
         current_banners.write({'active': True})
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
+        res['IS_DELETED'] = "0"
+        res['BLOG_DISPLAY_TYPE'] = "Tile"
+        for key, value in list(res.items()):
+            if not value:
+                res[key] = None
+        return res

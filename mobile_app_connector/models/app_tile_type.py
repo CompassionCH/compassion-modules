@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -64,7 +63,7 @@ class AppTileSubtype(models.Model):
              "Use ctx['objects'] to get associated records."
     )
     default_action_destination = fields.Selection(
-        'select_action_destination', required=True)
+        lambda s: s.select_action_destination(), required=True)
 
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'This subtype already exists')

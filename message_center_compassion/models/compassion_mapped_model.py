@@ -32,7 +32,7 @@ class CompassionMappedModel(models.AbstractModel):
         search_criterias = [('model_id.model', '=', self._name)]
         if mapping_name:
             search_criterias.append(('name', '=', mapping_name))
-        mapping = self.env['compassion.mapping'].search(
+        mapping = self.env['compassion.mapping'].sudo().search(
             search_criterias, limit=1)
         result = list()
         for record in self:
