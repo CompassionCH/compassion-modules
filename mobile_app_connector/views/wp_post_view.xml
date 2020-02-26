@@ -2,7 +2,7 @@
     <!-- Add Top menu in Sales Module -->
     <menuitem id="menu_mobile_app"
               name="Mobile App"
-              parent="sale.res_partner_menu"
+              parent="sale.sale_menu_root"
               sequence="2"/>
     <menuitem id="menu_mobile_app_hub"
               name="Hub"
