@@ -233,27 +233,6 @@
         <field name="context">{'default_type':'S'}</field>
     </record>
 
-    <record id="action_reccuring_contract_view_pivot" model="ir.actions.act_window.view">
-        <field eval="20" name="sequence"/>
-        <field name="view_mode">pivot</field>
-        <field name="view_id" ref="view_compassion_sponsorship_pivot"/>
-        <field name="act_window_id" ref="action_sponsorship_contract"/>
-    </record>
-
-    <record id="action_reccuring_contract_view_form" model="ir.actions.act_window.view">
-        <field eval="10" name="sequence"/>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="view_sponsorship_contract_form_compassion"/>
-        <field name="act_window_id" ref="action_sponsorship_contract"/>
-    </record>
-
-    <record id="action_recurring_contract_view_tree" model="ir.actions.act_window.view">
-        <field eval="5" name="sequence"/>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="sponsorship_compassion.view_recurring_contract_tree_compassion"/>
-        <field name="act_window_id" ref="action_sponsorship_contract"/>
-    </record>
-
     <!-- Add timelineview use with the partner link  -->
     <record id="view_partner_sponsorship_timeline_view" model="ir.ui.view">
         <field name="name">Timeline</field>
