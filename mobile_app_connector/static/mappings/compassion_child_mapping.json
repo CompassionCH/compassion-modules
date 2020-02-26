@@ -41,10 +41,12 @@
       "to_json_conversion": false
     },
     "Country": {
-      "from_json_conversion": "project_id.country_id.name"
+      "field": "project_id.country_id",
+      "to_json_conversion": "self.env['res.country'].search([('id', '=', odoo_value.id)]).name"
     },
     "CountryCode": {
-      "from_json_conversion": "project_id.country_id.name"
+      "field": "project_id.country_id",
+      "to_json_conversion": "self.env['res.country'].search([('id', '=', odoo_value.id)]).code"
     },
     "directdebitflag": {
       "to_json_conversion": false

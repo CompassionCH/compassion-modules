@@ -149,7 +149,7 @@ class CompassionCorrespondence(models.Model):
         # Another difference between iOS/Android (string or integer)
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['mobile.app.settings'].get_param(
+            template_id = self.env['res.config.settings'].get_param(
                 'default_s2b_template_id')
         attached_file = other_params.get('file_upl')
         datas = False
@@ -207,7 +207,7 @@ class CompassionCorrespondence(models.Model):
         # iOS and Android do not return the same format
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['mobile.app.settings'].get_param(
+            template_id = self.env['res.config.settings'].get_param(
                 'default_s2b_template_id')
         child_id = self._get_required_param('Need', params)
         if isinstance(child_id, list):
