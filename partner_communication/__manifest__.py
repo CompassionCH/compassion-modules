@@ -28,41 +28,39 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Partner Communication',
-    'version': '11.0.1.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': [
-        'crm_phone',    # OCA/connector-telephony
-        'base_report_to_printer',  # OCA/report-print-send
-        'hr',
-        'contacts',
-        'queue_job',    # OCA/queue
-        'utm',
-        'partner_firstname'  # OCA/partner-contact
+    "name": "Partner Communication",
+    "version": "11.0.2.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": [
+        "crm_phone",  # OCA/connector-telephony
+        "base_report_to_printer",  # OCA/report-print-send
+        "hr",
+        "contacts",
+        "queue_job",  # OCA/queue
+        "utm",
+        "partner_firstname",  # OCA/partner-contact
     ],
-    'external_dependencies': {
-        'python': ['phonenumbers', 'PyPDF2', 'wand']
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'security/communication_job_security.xml',
-        'report/a4_no_margin.xml',
-        'views/communication_job_view.xml',
-        'views/communication_config_view.xml',
-        'views/call_wizard_view.xml',
-        'views/res_partner_view.xml',
-        'views/change_text_wizard_view.xml',
-        'views/pdf_wizard_view.xml',
-        'views/generate_communication_wizard_view.xml',
-        'views/crm_phone_view.xml',
-        'views/ir_attachment_view.xml',
-        'data/default_communication.xml'
+    "external_dependencies": {"python": ["phonenumbers", "PyPDF2", "wand"]},
+    "data": [
+        "security/ir.model.access.csv",
+        "security/communication_job_security.xml",
+        "report/a4_no_margin.xml",
+        "views/communication_job_view.xml",
+        "views/communication_config_view.xml",
+        "views/call_wizard_view.xml",
+        "views/res_partner_view.xml",
+        "views/change_text_wizard_view.xml",
+        "views/pdf_wizard_view.xml",
+        "views/generate_communication_wizard_view.xml",
+        "views/crm_phone_view.xml",
+        "views/ir_attachment_view.xml",
+        "data/default_communication.xml",
     ],
-    'qweb': [],
-    'demo': ["demo/demo_data.xml"],
-    'installable': True,
-    'auto_install': False
+    "qweb": [],
+    "demo": ["demo/demo_data.xml"],
+    "installable": True,
+    "auto_install": False,
 }
