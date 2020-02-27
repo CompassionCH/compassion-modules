@@ -347,7 +347,7 @@ class CommunicationJob(models.Model):
                                                            'digital')):
             origin = self.env.context.get('origin')
             # if we print first in a communication with send_mode == both
-            if origin == "print" and job.send_mode == 'both':
+            if origin == "both_print" and job.send_mode == 'both':
                 job.send_mode = 'digital'
                 return job._print_report()
 
@@ -726,9 +726,14 @@ class CommunicationJob(models.Model):
 
             # Print attachments
             job.attachment_ids.print_attachments()
+            origin = self.env.context.get('origin')
+            state = 'done'
+            if job.need_call == 'after_sending':
+                state = 'call'
+            elif origin == 'both_print':
+                state = 'pending'
             job.write({
-                'state': 'call' if job.need_call == 'after_sending'
-                else 'done',
+                'state': state,
                 'sent_date': fields.Datetime.now()
             })
             if not testing:
