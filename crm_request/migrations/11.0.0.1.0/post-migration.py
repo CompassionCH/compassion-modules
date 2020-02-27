@@ -16,7 +16,6 @@ def migrate(env, version):
 
     # Get all existing claim_types
     env.cr.execute("SELECT * FROM crm_claim_type")
-    claim_type_to_category_dict = {}
     # Create a claim category for each claim type
     for claim_type in env.cr.dictfetchall():
         new_cat = env['crm.claim.category'].create({
