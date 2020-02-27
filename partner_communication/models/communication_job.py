@@ -345,6 +345,12 @@ class CommunicationJob(models.Model):
         to_print = todo.filtered(lambda j: j.send_mode == 'physical')
         for job in todo.filtered(lambda j: j.send_mode in ('both',
                                                            'digital')):
+            origin = self.env.context.get('origin')
+            # if we print first in a communication with send_mode == both
+            if origin == "print" and job.send_mode == 'both':
+                job.send_mode = 'digital'
+                return job._print_report()
+
             state = job._send_mail()
             if job.send_mode != 'both':
                 job.write({
