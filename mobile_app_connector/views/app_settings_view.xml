@@ -18,6 +18,7 @@
         <field name="view_id" ref="view_app_settings_form"/>
         <field name="view_type">form</field>
         <field name="target">inline</field>
+        <field name="context">{'module' : 'child_compassion'}</field>
     </record>
 
     <!-- Add menu for app banners -->

@@ -21,19 +21,15 @@ class SBCSettings(models.TransientModel):
     )
 
     @api.multi
-    def set_additional_b2s_translation(self):
+    def set_values(self):
+        super().set_values()
         # This is stored in page template for additional B2S pages
         page_template = self.env.ref('sbc_compassion.b2s_additional_page')
         page_template.background = self.additional_b2s_translation
 
     @api.model
-    def get_default_values(self, _fields):
+    def get_values(self):
+        res = super().get_values()
         b2s_add_page = self.env.ref('sbc_compassion.b2s_additional_page')
-        return {
-            'additional_b2s_translation': b2s_add_page.background,
-        }
-
-    @api.model
-    def get_param(self, param):
-        """ Retrieve a single parameter. """
-        return self.get_default_values([param])[param]
+        res['additional_b2s_translation'] = b2s_add_page.background
+        return res

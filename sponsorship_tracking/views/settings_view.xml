@@ -24,7 +24,7 @@
                             </div>
                             <div class="row mt16">
                                 <label class="col-md-5 o_light_label"
-                                       for="sub_fr"/>
+                                       for="sub_de"/>
                                 <field name="sub_de"/>
                             </div>
 
@@ -58,7 +58,6 @@
         <field name="view_mode">form</field>
         <field name="target">inline</field>
         <field name="context">{'module' : 'child_compassion'}</field>
-
     </record>
 
     <menuitem id="menu_sds_followers_configuration" name="SDS Followers"
