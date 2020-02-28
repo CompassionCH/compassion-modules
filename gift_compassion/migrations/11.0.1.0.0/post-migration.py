@@ -8,8 +8,7 @@
 ##############################################################################
 from openupgradelib import openupgrade
 
-from odoo.addons.message_center_compassion.tools.load_mappings import \
-    load_mapping_files
+from odoo.addons.gift_compassion import load_mappings
 
 
 @openupgrade.migrate(use_env=True)
@@ -17,8 +16,4 @@ def migrate(env, version):
     if not version:
         return
 
-    path = 'gift_compassion/static/mappings/'
-    files = [
-        'mapping.json',
-    ]
-    load_mapping_files(env.cr, path, files)
+    load_mappings(env.cr, env)

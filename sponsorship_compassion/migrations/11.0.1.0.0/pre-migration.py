@@ -21,8 +21,8 @@ def migrate(env, version):
           'sponsorship_compassion.menu_contracts_section')
          ])
 
-    openupgrade.rename_columns(env.cr, {
-        'crm_lead_res_partner_industry_rel': [
-            ('res_partner_sector_id', 'res_partner_industry_id'),
-        ],
-    })
+    # openupgrade.rename_columns(env.cr, {
+    #     'crm_lead_res_partner_industry_rel': [
+    #         ('res_partner_sector_id', 'res_partner_industry_id'),
+    #     ],
+    # })

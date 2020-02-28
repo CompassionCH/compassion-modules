@@ -13,6 +13,7 @@ from odoo.addons.message_center_compassion.tools.load_mappings import \
 from . import models
 from . import wizards
 
+
 def load_mappings(cr, registry):
     path = 'gift_compassion/static/mappings/'
     files = [

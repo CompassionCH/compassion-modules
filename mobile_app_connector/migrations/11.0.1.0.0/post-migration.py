@@ -1,13 +1,13 @@
 ##############################################################################
 #
-#    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
-#    @author: Benoît Schopfer <mails@benoitschopfer.ch>
+#    Copyright (C) 2020 Compassion CH (http://www.compassion.ch)
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 from openupgradelib import openupgrade
-from odoo.addons.sbc_compassion import load_mappings
+from odoo.addons.mobile_app_connector import load_mappings
 
 
 @openupgrade.migrate(use_env=True)

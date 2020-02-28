@@ -7,7 +7,7 @@
 #
 ##############################################################################
 from openupgradelib import openupgrade
-from ... import load_mappings
+from odoo.addons.sponsorship_compassion import load_mappings
 
 
 @openupgrade.migrate(use_env=True)

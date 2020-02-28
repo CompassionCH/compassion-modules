@@ -16,4 +16,5 @@ def migrate(cr, version):
         return
 
     # Rename table gmc_message_pool
+    openupgrade.rename_tables(cr, [('gmc_message_pool', 'gmc_message')])
     openupgrade.rename_models(cr, [('gmc.message.pool', 'gmc.message')])
