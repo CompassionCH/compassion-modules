@@ -10,9 +10,10 @@
 import logging
 import random
 from collections import defaultdict
+from dateutil.relativedelta import relativedelta
 
 from ..mappings.wp_post_mapping import WPPostMapping
-from odoo import api, models
+from odoo import api, models, fields
 
 _logger = logging.getLogger(__name__)
 
@@ -57,7 +58,13 @@ class AppHub(models.AbstractModel):
                 partner.contracts_fully_managed
             unpaid = partner.contracts_fully_managed
 
-        sponsorships = sponsorships.filtered('is_active')
+        # show active sponsorships and sponsorships that ended less than 2 months ago.
+        date_limit = fields.Datetime.to_string(
+            fields.datetime.now() - relativedelta(months=2)
+        )
+        sponsorships = sponsorships.filtered(
+            lambda sp: sp.is_active or sp.end_date and sp.end_date > date_limit)
+
         unpaid = unpaid.filtered(
             lambda c: not c.is_active and not c.parent_id and
             (c.state in ['waiting', 'draft']))
