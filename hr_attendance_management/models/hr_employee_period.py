@@ -35,8 +35,7 @@ def get_previous_overlapping_period(employee_periods, res):
 def get_next_overlapping_period(employee_periods, res):
     return employee_periods.filtered(
         lambda r: res.end_date > r.start_date > res.start_date
-        and r.end_date >= res.end_date
-    )
+        and r.end_date > res.end_date)
 
 
 def get_surrounding_period(employee_periods, res):
