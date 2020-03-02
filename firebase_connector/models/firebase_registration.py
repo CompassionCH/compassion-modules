@@ -80,7 +80,7 @@ class FirebaseRegistration(models.Model):
             data = {}
 
         if not firebase_app:
-            _logger.error("google_application_credentials is not correctly"
+            _logger.error("google_application_credentials is not correctly "
                           "configured in odoo.conf or invalid. Skipping "
                           "sending notifications")
             return False
@@ -103,11 +103,18 @@ class FirebaseRegistration(models.Model):
                     messaging.ThirdPartyAuthError,
                     messaging.UnregisteredError) as ex:
                 _logger.error(ex)
+                # Save error in ir.logging to allow tracking of errors
+                self.env['ir.logging'].create({
+                    'name': 'Firebase ' + ex.__class__.__name__,
+                    'type': 'server',
+                    'message': ex,
+                    'path': '/firebase_connector/models/firebase_regitration.py',
+                    'line': '100',
+                    'func': 'send_message'
+                })
                 if ex.code == 'NOT_FOUND':
                     _logger.debug(
                         "A device is not reachable from Firebase, unlinking."
                         "Firebase ID: %s" % firebase_id)
                     firebase_id.unlink()
-                else:
-                    raise
         return True

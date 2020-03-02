@@ -281,13 +281,14 @@ class CommunicationJob(models.Model):
                              'omr_single_sided',
                              ])
 
-        config = self.config_id.browse(vals['config_id'])
-
-        # Determine user by default : take in config or employee
         partner = self.env['res.partner'].browse(vals.get('partner_id'))
         lang_of_partner = self.env['res.lang'].search([
             ('code', 'like', partner.lang or self.env.lang)
         ])
+        config = self.config_id.browse(vals['config_id']).with_context(
+            lang=lang_of_partner.code)
+
+        # Determine user by default : take in config or employee
         omr_config = config.get_config_for_lang(lang_of_partner)[:1]
         if not vals.get('user_id'):
             # responsible for the communication is user specified in the omr_config
