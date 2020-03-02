@@ -68,7 +68,7 @@ class Correspondence(models.Model):
         track_visibility='onchange')
     name = fields.Char(compute='_compute_name')
     partner_id = fields.Many2one(
-        related='sponsorship_id.correspondent_id', store=True
+        'res.partner', 'Partner', readonly=True, ondelete='restrict'
     )
     child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
     # Field used for identifying correspondence by GMC
@@ -456,6 +456,10 @@ class Correspondence(models.Model):
 
         if vals.get('store_letter_image', True) is False:
             vals['letter_image'] = False
+
+        if 'partner_id' not in vals:
+            sp = self.env['recurring.contract'].browse(vals['sponsorship_id'])
+            vals['partner_id'] = sp.partner_id.id
 
         type_ = '.pdf'
         letter_data = False
