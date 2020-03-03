@@ -304,7 +304,7 @@ class CommunicationConfig(models.Model):
                 )
                 comm_mode = communication_send_mode.replace("auto_", "")
                 partner_mode = partner_mode.replace("auto_", "")
-                send_mode = send_priority[comm_mode][partner_mode]
+                send_mode = send_priority.get(comm_mode, {}).get(partner_mode, 'none')
                 digital_only = (
                     "digital_only" in partner_mode or "digital_only" in comm_mode
                 )

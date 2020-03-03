@@ -163,6 +163,7 @@ class CompassionCorrespondence(models.Model):
             'selection_domain':
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body': escape(body),
+            'language_id':  int(self.env['crm.claim'].detect_lang(body)),
             's2b_template_id': int(template_id),
             'image_ids': datas,
             'source': 'app'
@@ -232,6 +233,10 @@ class CompassionCorrespondence(models.Model):
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
+        if mapping_name != 'mobile_app_correspondence':
+            return res
+
+        # Specific date formats for mobile app
         if not res:
             res = {}
         res['Type'] = 1
@@ -239,4 +244,8 @@ class CompassionCorrespondence(models.Model):
             res['Message'] = _("Physical letters cannot be displayed.")
         res['Date'] = datetime.datetime.strptime(
             res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+        for letter in self:
+            if letter.direction == "Supporter To Beneficiary":
+                res['Date'] = res['Date'][:10]
+                break
         return res

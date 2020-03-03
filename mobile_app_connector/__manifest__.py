@@ -40,7 +40,7 @@
         'base_geolocalize',
         'firebase_connector',           # compassion-modules
         'sms_sponsorship',              # compassion-modules
-        'partner_communication',        # compassion-modules
+        'thankyou_letters',        # compassion-modules
         'crm_claim',                    # oca_addons/crm
         'wordpress_configuration'       # compassion-modules
     ],

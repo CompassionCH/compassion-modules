@@ -11,9 +11,9 @@ class CommunicationConfig(models.Model):
 
     mobile_notification_auto_send = fields.Boolean("Auto send", default=False)
 
-    mobile_notification_title = fields.Char("Title", translate=True)
+    mobile_notification_title = fields.Text("Title", translate=True)
 
-    mobile_notification_body = fields.Char("Body", translate=True)
+    mobile_notification_body = fields.Text("Body", translate=True)
 
     mobile_notification_destination = fields.Selection([
         ('MyHub', 'My Hub'),
