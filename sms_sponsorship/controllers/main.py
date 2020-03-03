@@ -16,6 +16,9 @@ from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 from werkzeug.exceptions import NotFound
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def get_child_request(request_id, lang=None):
@@ -142,19 +145,26 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
            auth='public', website=True, noindex=['robots', 'meta', 'header'])
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
-        sponsorship = request.env['recurring.contract'].sudo().browse(
-            sponsorship_id)
-        if sponsorship.sms_request_id.state == 'step2' or \
-                sponsorship.state in ['active', 'waiting']:
-            # Sponsorship is already confirmed
-            return self.sms_registration_confirmation(sponsorship.id, **kwargs)
-        if sponsorship.state == "draft":
-            return self.make_response(
-                'recurring.contract',
-                model_id=sponsorship and sponsorship.id,
-                **kwargs
-            )
+        if sponsorship_id:
+            sponsorship = request.env['recurring.contract'].sudo().search([
+                ('id', '=', sponsorship_id)
+            ])
+            if sponsorship.sms_request_id.state == 'step2' or \
+                    sponsorship.state in ['active', 'waiting']:
+                # Sponsorship is already confirmed
+                return self.sms_registration_confirmation(sponsorship.id, **kwargs)
+            if sponsorship.state == "draft":
+                return self.make_response(
+                    'recurring.contract',
+                    model_id=sponsorship and sponsorship.id,
+                    **kwargs
+                )
+            else:
+                _logger.error("No valid sponsorship found for given id : %s",
+                              sponsorship_id)
+                raise NotFound()
         else:
+            _logger.error("No sponsorship_id was given to the route")
             raise NotFound()
 
     @route('/sms_sponsorship/step2/<int:sponsorship_id>/'
