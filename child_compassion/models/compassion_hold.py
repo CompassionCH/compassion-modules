@@ -129,7 +129,7 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _name = 'compassion.hold'
     _rec_name = 'hold_id'
-    _inherit = ['compassion.abstract.hold', 'mail.thread',
+    _inherit = ['compassion.abstract.hold', 'mail.thread', 'mail.activity.mixin',
                 'compassion.mapped.model']
     _description = 'Compassion hold'
 

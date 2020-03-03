@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -8,16 +7,16 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields
-from ..mappings.compassion_correspondence_mapping import \
-    MobileCorrespondenceMapping, FromLetterMapping
+from odoo import models, api, fields, _
 from werkzeug.exceptions import NotFound
 from base64 import b64encode
 from werkzeug.utils import escape
+import datetime
 
 
 class CompassionCorrespondence(models.Model):
-    _inherit = 'correspondence'
+    _name = "correspondence"
+    _inherit = ['correspondence', 'compassion.mapped.model']
 
     @api.multi
     def get_app_json(self, multi=False):
@@ -29,14 +28,13 @@ class CompassionCorrespondence(models.Model):
         child = self.sudo().mapped('child_id')
         if not self:
             return {}
-        mapping = FromLetterMapping(self.env)
         wrapper = 'Letters' if multi else 'Letter'
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_from_letter")
         else:
             data = []
             for letter in self:
-                data.append(mapping.get_connect_data(letter))
+                data.append(letter.data_to_json("mobile_app_from_letter"))
 
         order_date = self.sent_date or self.status_date
         if self.direction == 'Supporter to beneficiary':
@@ -65,8 +63,10 @@ class CompassionCorrespondence(models.Model):
             'supporterId',
             'base64string'
             ], json_data)
-        mapping = MobileCorrespondenceMapping(self.env)
-        vals = mapping.get_vals_from_connect(json_data)
+        mapping = self.env['compassion.mapping'].search([
+            ('name', '=', "mobile_app_correspondence")
+        ])
+        vals = mapping.json_to_data(json_data, "mobile_app_correspondence")
         letter = self.env['correspondence'].create(vals)
 
         if letter:
@@ -90,8 +90,7 @@ class CompassionCorrespondence(models.Model):
             ('direction', '=', 'Beneficiary To Supporter')
         ])
 
-        mapper = FromLetterMapping(self.env)
-        return [mapper.get_connect_data(letter) for letter in letters]
+        return [letter.data_to_json("mobile_app_from_letter") for letter in letters]
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
@@ -150,7 +149,7 @@ class CompassionCorrespondence(models.Model):
         # Another difference between iOS/Android (string or integer)
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['mobile.app.settings'].get_param(
+            template_id = self.env['res.config.settings'].get_param(
                 'default_s2b_template_id')
         attached_file = other_params.get('file_upl')
         datas = False
@@ -164,6 +163,7 @@ class CompassionCorrespondence(models.Model):
             'selection_domain':
             "[('child_id.local_id', '=', '" + child_local_id + "')]",
             'body': escape(body),
+            'language_id':  int(self.env['crm.claim'].detect_lang(body)),
             's2b_template_id': int(template_id),
             'image_ids': datas,
             'source': 'app'
@@ -208,7 +208,7 @@ class CompassionCorrespondence(models.Model):
         # iOS and Android do not return the same format
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['mobile.app.settings'].get_param(
+            template_id = self.env['res.config.settings'].get_param(
                 'default_s2b_template_id')
         child_id = self._get_required_param('Need', params)
         if isinstance(child_id, list):
@@ -229,3 +229,23 @@ class CompassionCorrespondence(models.Model):
         return {
             'DbId': gen.letter_ids.mapped('id'),
         }
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if mapping_name != 'mobile_app_correspondence':
+            return res
+
+        # Specific date formats for mobile app
+        if not res:
+            res = {}
+        res['Type'] = 1
+        if not res['Message']:
+            res['Message'] = _("Physical letters cannot be displayed.")
+        res['Date'] = datetime.datetime.strptime(
+            res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+        for letter in self:
+            if letter.direction == "Supporter To Beneficiary":
+                res['Date'] = res['Date'][:10]
+                break
+        return res

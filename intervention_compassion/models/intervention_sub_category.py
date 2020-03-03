@@ -19,7 +19,7 @@ IMPORT_DIR = os.path.join(os.path.dirname(__file__)) + '/../data/'
 
 
 class InterventionSubCategory(models.Model):
-    _name = 'compassion.inter.subcat'
+    _name = 'compassion.intervention.subcategory'
     _description = 'Intervention Subcategory'
 
     name = fields.Char(required=True, translate=False)

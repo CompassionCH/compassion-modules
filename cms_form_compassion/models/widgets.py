@@ -58,6 +58,14 @@ class Document(models.AbstractModel):
     _inherit = 'cms.form.widget.binary.mixin'
     _w_template = 'cms_form_compassion.field_widget_document'
 
+    def w_extract(self, **req_values):
+        req_values.setdefault(self.w_fname + '_keepcheck', 'no')
+        value = req_values.get(self.w_fname)
+        if hasattr(value, 'seek'):
+            value.seek(0)
+
+        return self.form_to_binary(value, **req_values)
+
 
 class ReadonlyWidget(models.AbstractModel):
     _name = 'cms_form_compassion.form.widget.readonly'

@@ -18,9 +18,9 @@ class FirebaseNotification(models.Model):
     """
     Represent a mobile notification which can be sent to a set of partners.
     """
-
     _name = 'firebase.notification'
     _description = 'Notification to send to Firebase Cloud Messaging'
+    _order = 'send_date desc'
 
     partner_ids = fields.Many2many('res.partner', string="Partners", readonly=False)
     title = fields.Char(required=True)
@@ -78,8 +78,6 @@ class FirebaseNotification(models.Model):
                         'partner_id': partner.id,
                         'notification_id': notif.id,
                     })
-            else:
-                raise UserError(_("We were not able to send the notification."))
 
     @api.multi
     def duplicate_to_unread(self):

@@ -39,7 +39,7 @@
     'external_dependencies': {},
     'data': [
         'data/compassion.intervention.category.csv',
-        'data/compassion.inter.subcat.csv',
+        'data/compassion.intervention.subcategory.csv',
         'data/compassion.intervention.deliverable.csv',
         'data/install_category_rel.xml',
         'data/intervention_server_actions.xml',

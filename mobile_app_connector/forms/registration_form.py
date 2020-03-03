@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -65,7 +64,7 @@ if not testing:
         @property
         def form_widgets(self):
             # GTC field widget
-            res = super(UserRegistrationForm, self).form_widgets
+            res = super().form_widgets
             res.update({
                 'gtc_accept': 'cms_form_compassion.form.widget.terms',
                 'partner_birthdate': 'cms.form.widget.date.ch',
@@ -143,7 +142,7 @@ if not testing:
         def form_after_create_or_update(self, values, extra_values):
             """ Mark the privacy statement as accepted.
             """
-            super(UserRegistrationForm, self).form_after_create_or_update(
+            super().form_after_create_or_update(
                 values, extra_values)
             if self.form_next_url() == '/registration/confirm':
                 # form submitted
@@ -169,7 +168,7 @@ if not testing:
         def form_validate(self, request_values=None):
             if self.form_next_url() == '/registration/confirm':
                 # form submitted
-                return super(UserRegistrationForm, self).form_validate(
+                return super().form_validate(
                     request_values)
             else:  # form not submitted (previous)
                 return 0, 0
@@ -272,8 +271,7 @@ if not testing:
                 # Forbid update of an existing partner
                 extra_values.update({'skip_update': True})
 
-                super(RegistrationNotSupporter,
-                      self).form_before_create_or_update(values, extra_values)
+                super().form_before_create_or_update(values, extra_values)
 
                 partner = self.env['res.partner'].sudo().browse(
                     values.get('partner_id'))
@@ -292,7 +290,7 @@ if not testing:
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
             if self.form_next_url() == '/registration/confirm':
-                super(RegistrationNotSupporter, self)._form_create(values)
+                super()._form_create(values)
 
     class RegistrationSupporterForm(models.AbstractModel):
         """
@@ -381,7 +379,7 @@ if not testing:
             """ Here we create the user using the portal wizard or
             reactivate existing users that never connected. """
             if self.form_next_url() == '/registration/confirm':
-                super(RegistrationSupporterForm, self)._form_create(values)
+                super()._form_create(values)
 
         def _add_mailto(self, link_text, to, subject, body):
             subject_mail = subject.replace(' ', '%20')

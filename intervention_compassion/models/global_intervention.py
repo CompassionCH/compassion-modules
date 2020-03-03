@@ -31,6 +31,11 @@ class GlobalIntervention(models.TransientModel):
         'compassion.project', 'fcp_global_interventions', 'intervention_id',
         'fcp_id', string='FCPs', readonly=True
     )
+    subcategory_ids = fields.Many2many(
+        'compassion.intervention.subcategory',
+        'compassion_global_intervention_subcategory_rel',
+        string='Subcategory', readonly=True
+    )
 
     @api.multi
     def _compute_amount_on_hold(self):

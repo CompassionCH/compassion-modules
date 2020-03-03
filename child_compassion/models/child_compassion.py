@@ -29,7 +29,7 @@ class CompassionChild(models.Model):
     """ A sponsored child """
     _name = 'compassion.child'
     _rec_name = 'local_id'
-    _inherit = ['compassion.generic.child', 'mail.thread',
+    _inherit = ['compassion.generic.child', 'mail.thread', 'mail.activity.mixin',
                 'translatable.model']
     _description = "Sponsored Child"
     _order = 'local_id asc,date desc'
@@ -37,7 +37,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     # General Information
     #####################
     local_id = fields.Char(track_visibility='onchange')
@@ -99,8 +98,9 @@ class CompassionChild(models.Model):
                                  readonly=True)
     duty_ids = fields.Many2many(
         'child.household.duty', string='Household duties', readonly=True)
-    activity_ids = fields.Many2many(
-        'child.project.activity', string='Project activities', readonly=True)
+    project_activity_ids = fields.Many2many(
+        'child.project.activity', string='Project activities', readonly=True,
+        oldname='activity_ids')
     subject_ids = fields.Many2many(
         'child.school.subject', string='School subjects', readonly=True)
 
@@ -303,8 +303,8 @@ class CompassionChild(models.Model):
     @api.depends('birthdate')
     def _compute_birthday_month(self):
         for child in self.filtered('birthdate'):
-            child.birthday_month = child.get_date('birthdate', '%B')
-            child.birthday_dm = child.get_date('birthdate', '%m-%d')
+            child.birthday_month = child.get_date('birthdate', 'MMMM')
+            child.birthday_dm = child.get_date('birthdate', 'MM-dd')
 
     @api.constrains('state', 'hold_type')
     def check_state(self):
@@ -442,6 +442,24 @@ class CompassionChild(models.Model):
                 '12': 'Highschool',
             }
             self.education_level = grade_mapping.get(self.us_grade_level)
+
+    def get_number(self):
+        """ Returns a string telling how many children are in the recordset.
+        """
+        number_dict = {
+            1: _("one"),
+            2: _("two"),
+            3: _("three"),
+            4: _("four"),
+            5: _("five"),
+            6: _("six"),
+            7: _("seven"),
+            8: _("eight"),
+            9: _("nine"),
+            10: _("ten"),
+        }
+        return number_dict.get(len(self), str(len(self))) + ' ' + self.get(
+            'child')
 
     @api.model
     def json_to_data(self, json, mapping_name=None):

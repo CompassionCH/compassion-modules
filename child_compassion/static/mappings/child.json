@@ -43,7 +43,7 @@
     },
     "CurrentUniversityYearOfStudy": "university_year",
     "FavoriteProjectActivity": {
-      "field": "activity_ids.name",
+      "field": "project_activity_ids.name",
       "search_relational_record": true
     },
     "FavoriteSchoolSubject": {

@@ -7,7 +7,7 @@
         <record id="claim_cat_ios" model="crm.claim.category">
             <field name="name">iOS</field>
         </record>
-        <record id="claim_type_feedback" model="crm.claim.type">
+        <record id="claim_cat_feedback" model="crm.claim.category">
             <field name="name">Mobile App Feedback</field>
         </record>
     </data>

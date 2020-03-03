@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -14,8 +13,6 @@
 import werkzeug
 import cgi
 
-from ..mappings.compassion_login_mapping import MobileLoginMapping
-from ..mappings.app_banner_mapping import AppBannerMapping
 from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
@@ -45,8 +42,7 @@ class RestController(http.Controller):
         """
         request.session.authenticate(
             request.session.db, username, password)
-        mapping = MobileLoginMapping(request.env)
-        return mapping.get_connect_data(request.env.user)
+        return request.env.user.data_to_json("mobile_app_login")
 
     @http.route('/mobile-app-api/firebase.registration/register',
                 auth='public', method='POST', type='json')
@@ -165,8 +161,7 @@ class RestController(http.Controller):
         hero = hero_obj.search([], limit=1)
         # Increment banner's print_count value
         hero.print_count += 1
-        hero_mapping = AppBannerMapping(request.env)
-        res = hero_mapping.get_connect_data(hero)
+        res = hero.data_to_json("mobile_app_banner")
         return [res]
 
     @http.route('/sponsor_a_child',

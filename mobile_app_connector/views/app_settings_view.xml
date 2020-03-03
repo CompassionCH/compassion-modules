@@ -6,24 +6,28 @@
     
     <record id="view_app_settings_form" model="ir.ui.view">
         <field name="name">mobile.app.settings.form</field>
-        <field name="model">mobile.app.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="child_compassion.compassion_settings"/>
         <field name="arch" type="xml">
-            <form class="oe_form_configuration">
-                <header>
-                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
-                    or
-                    <button string="Cancel" type="object" name="cancel" class="oe_link"/>
-                </header>
-                <group string="S2B Default template">
-                    <field name="default_s2b_template_id"/>
-                </group>
-            </form>
+            <xpath expr="//div[@name='notification_configuration']//div[@class='o_setting_right_pane']" position='inside'>
+                <div name="app_settings">
+                    <group string="S2B Default template">
+                        <label for="default_s2b_template_id" string="Default S2B template" class="o_light_label"/>
+                        <field name="default_s2b_template_id"/>
+                    </group>
+                    <footer>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </footer>
+                </div>
+            </xpath>
         </field>
     </record>
 
     <record id="action_mobile_app_settings" model="ir.actions.act_window">
         <field name="name">General settings</field>
-        <field name="res_model">mobile.app.settings</field>
+        <field name="res_model">res.config.settings</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
     </record>

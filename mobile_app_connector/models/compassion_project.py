@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2018 Compassion CH (http://www.compassion.ch)
@@ -9,13 +8,12 @@
 ##############################################################################
 
 from odoo import models, api
-from ..mappings.compassion_project_mapping import MobileProjectMapping, \
-    MobileLocationMapping
 
 
 class CompassionProject(models.Model):
-    ''' A Compassion project '''
-    _inherit = 'compassion.project'
+    """A Compassion project """
+    _name = "compassion.project"
+    _inherit = ['compassion.project', 'compassion.mapped.model']
 
     @api.multi
     def get_location_json(self, multi=False):
@@ -26,10 +24,9 @@ class CompassionProject(models.Model):
         """
         if not self:
             return {}
-        mapping = MobileLocationMapping(self.env)
         # Location is only supported for one child (we take the first if
         # we have many children)
-        data = mapping.get_connect_data(self[:1])
+        data = self[:1].data_to_json("mobile_app_project")
         return data
 
     @api.multi
@@ -72,13 +69,12 @@ class CompassionProject(models.Model):
         """
         if not self:
             return {}
-        mapping = MobileProjectMapping(self.env)
         if len(self) == 1:
-            data = mapping.get_connect_data(self)
+            data = self.data_to_json("mobile_app_project")
         else:
             data = []
             for child in self:
-                data.append(mapping.get_connect_data(child))
+                data.append(child.data_to_json("mobile_app_project"))
         return data
 
     @api.model
@@ -100,13 +96,22 @@ class CompassionProject(models.Model):
             ('fcp_id', '=', self._get_required_param('IcpId', params))
         ], limit=1)
 
-        mapping = MobileProjectMapping(self.env)
         if project:
             result['ProjectServiceResult']['ICPResponseList'] = [(
-                mapping.get_connect_data(project))]
+                project.data_to_json("mobile_app_project"))]
         return result
 
     def _get_required_param(self, key, params):
         if key not in params:
             raise ValueError('Required parameter {}'.format(key))
         return params[key]
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        res = super().data_to_json(mapping_name)
+        if not res:
+            res = {}
+        for key, value in list(res.items()):
+            if not value:
+                res[key] = None
+        return res

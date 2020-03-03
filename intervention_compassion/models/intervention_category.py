@@ -18,7 +18,7 @@ class InterventionCategory(models.Model):
     name = fields.Char(required=True, translate=False)
     type = fields.Selection('get_types', required=True)
     subcategory_ids = fields.Many2many(
-        'compassion.inter.subcat',
+        'compassion.intervention.subcategory',
         'compassion_intervention_cat_subcat_rel',
         'category_id', 'subcategory_id',
         'Subcategories', readonly=False

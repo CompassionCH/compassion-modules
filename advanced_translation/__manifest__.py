@@ -44,6 +44,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/advanced_translation_view.xml',
+        'data/ir.advanced.translation.csv'
     ],
     'demo': [
         'demo/ir.advanced.translation.csv'

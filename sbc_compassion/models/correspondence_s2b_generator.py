@@ -53,11 +53,7 @@ class CorrespondenceS2bGenerator(models.Model):
     sponsorship_ids = fields.Many2many(
         'recurring.contract', string='Sponsorships', required=True, readonly=False
     )
-    language_id = fields.Many2one(
-        'res.lang.compassion', 'Language',
-        default=lambda s: s.env.ref(
-            'child_compassion.lang_compassion_english'), readonly=False
-    )
+    language_id = fields.Many2one('res.lang.compassion', 'Language', readonly=False)
     body = fields.Text(
         required=True,
         help='You can use the following tags to replace with values :\n\n'

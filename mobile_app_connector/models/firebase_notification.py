@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
@@ -27,7 +26,8 @@ class FirebaseNotification(models.Model):
         ('spam', "None (bypass user's preferences)")
     ], default='general_notification', required=True)
 
-    fundType = fields.Many2one('product.product', readonly=False)
+    fundType = fields.Many2one('product.product', 'Fund product', readonly=False)
+    child_id = fields.Many2one('compassion.child', 'Child', readonly=False)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -52,7 +52,7 @@ class FirebaseNotification(models.Model):
             super(FirebaseNotification, notif).send(data)
 
     def duplicate_to_unread(self):
-        res = super(FirebaseNotification, self).duplicate_to_unread()
+        res = super().duplicate_to_unread()
         new = self.browse(res['res_id'])
         new.destination = self.destination
         new.fundType = self.fundType
@@ -93,10 +93,10 @@ class FirebaseNotification(models.Model):
             ).opened else "0"
 
             messages.append({
-                "CHILD_IMAGE": "",
+                "CHILD_IMAGE": notif.child_id.pictures_ids[:1].image_url_compassion,
                 "CHILD_NAME": "",
                 "CREATED_BY": "",
-                "CREATED_ON": "",
+                "CREATED_ON": notif.send_date,
                 "DESTINATION": notif.destination,
                 "DISPLAY_ORDER": "",
                 "HERO": "",
@@ -105,7 +105,7 @@ class FirebaseNotification(models.Model):
                 "MESSAGE_BODY": notif.body,
                 "MESSAGE_TITLE": notif.title,
                 "MESSAGE_TYPE": "",
-                "NEEDKEY": "",
+                "NEEDKEY": notif.child_id.local_id,
                 "OA_BRAND_ID": "",
                 "OA_ID": "",
                 "SEND_NOTIFICATION": "",
@@ -113,7 +113,7 @@ class FirebaseNotification(models.Model):
                 "SUPPORTER_ID": "",
                 "SUPPORTER_NAME": "",
                 "UPDATED_BY": "",
-                "UPDATED_ON": "",
+                "UPDATED_ON": notif.send_date,
                 "USER_ID": "",
                 "IS_READ": is_read,
                 "POST_TITLE": str(notif.fundType.id),

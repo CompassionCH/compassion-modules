@@ -176,10 +176,10 @@ class WeeklyDemand(models.Model):
         """ Compute SUB resupply. """
         sub_average = self._default_demand_sub()
         today = datetime.today()
+        start_date = today - timedelta(weeks=STATS_DURATION)
         rejected_sub = self.env['recurring.contract'].search([
             ('parent_id', '!=', False),
-            ('start_date', '>=',
-             datetime.today() - timedelta(weeks=STATS_DURATION)),
+            ('start_date', '>=', fields.Datetime.to_string(start_date)),
             ('end_date', '!=', None),
             ('medium_id.name', '!=', 'internet')
         ]).filtered(
@@ -189,11 +189,11 @@ class WeeklyDemand(models.Model):
         for week in self:
             start_date = week.week_start_date - timedelta(days=SUB_DURATION)
             if start_date <= today:
+                limit_date =  week.week_end_date - timedelta(days=SUB_DURATION)
                 sub = self.env['recurring.contract'].search_count([
                     ('parent_id', '!=', False),
                     ('start_date', '>=', start_date),
-                    ('start_date', '<=',
-                        week.week_end_date - timedelta(days=SUB_DURATION)),
+                    ('start_date', '<=', limit_date),
                     ('medium_id.name', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (

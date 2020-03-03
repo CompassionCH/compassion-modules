@@ -62,8 +62,8 @@
             <field name="company_currency" position="after">
                 <field name="event_ids"/>
             </field>
-            <xpath expr="//ul[hasclass('dropdown-menu')]/li/a[@name='action_set_unactive']" position="after">
-                <li><a name="create_event" type="object">Create Event</a></li>
+            <xpath expr="//div[hasclass('dropdown-menu')]/t/a[@type='delete']" position="after">
+                <a role="menuitem" name="create_event" type="object" class="dropdown-item">Create event</a>
             </xpath>
         </field>
     </record>
