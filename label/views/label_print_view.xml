@@ -40,7 +40,7 @@
                                             <field name="python_field" attrs="{'invisible': [('python_expression','=',False)], 'required': [('python_expression','=',True)]}"/>
                                         </group>
                                         <newline/>
-                                        <label string="Python experession field must be start with obj. e.g:- obj.M2O_field.field_name" colspan="4"/>
+                                        Python expression field must start with "obj." e.g:- obj.M2O_field.field_name
                                     </group>
                                 </form>
                                 <tree string="Fields">

@@ -1,29 +1,29 @@
 <odoo>
-    <record id="crm.res_partner_menu_crm" model="ir.ui.menu">
+    <record id="crm_compassion.res_partner_menu_crm" model="ir.ui.menu">
         <field name="name">Sponsorship</field>
         <field name="sequence">3</field>
     </record>
 
     <menuitem id="menu_crm_supporter"
               name="Supporters"
-              parent="crm.res_partner_menu_crm"
+              parent="crm_compassion.res_partner_menu_crm"
               sequence="0"
               action="base.action_partner_customer_form"/>
 
     <menuitem id="menu_crm_children"
-              parent="crm.res_partner_menu_crm"
+              parent="crm_compassion.res_partner_menu_crm"
               name="Children"
               action="child_compassion.open_view_children_tree"
               sequence="1"/>
 
     <menuitem id="menu_crm_sponsorship"
-              parent="crm.res_partner_menu_crm"
+              parent="crm_compassion.res_partner_menu_crm"
               name="Sponsorships"
               sequence="2"
               action="sponsorship_compassion.action_sponsorship_contract"/>
 
     <menuitem id="menu_crm_origin"
-              parent="crm.res_partner_menu_crm"
+              parent="crm_compassion.res_partner_menu_crm"
               name="Origins"
               groups="child_compassion.group_sponsorship"
               sequence="3"
