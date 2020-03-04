@@ -173,7 +173,7 @@ class CompassionCorrespondence(models.Model):
         self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
         web_base_url = \
-            self.env['ir.config_parameter'].get_param('web.external.url')
+            self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         url = web_base_url + "/web/image/" + gen._name + "/" + \
             str(gen.id) + "/preview_pdf"
         return url

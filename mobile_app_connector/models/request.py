@@ -65,9 +65,10 @@ class CrmClaim(models.Model):
                            subject=_("Original request from %s %s ") %
                            (firstname, lastname))
 
-        partner = self.env['res.partner'].browse(int(contact_id))
-        if partner:
-            self.create_email_for_interaction_resume(subject, question, partner)
+        if contact_id:
+            partner = self.env['res.partner'].browse(int(contact_id))
+            if partner.exists():
+                self.create_email_for_interaction_resume(subject, question, partner)
 
         return {
             "FeedbackAndContactusResult": _("Your question was well received")

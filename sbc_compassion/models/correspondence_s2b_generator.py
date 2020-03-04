@@ -236,7 +236,7 @@ class CorrespondenceS2bGenerator(models.Model):
 
         return self.s2b_template_id.generate_pdf(
             sponsorship.name,
-            (header.encode('utf8'), ''),  # Headers (front/back)
+            (header, ''),  # Headers (front/back)
             {'Original': [text]},  # Text
             self.mapped('image_ids.datas')  # Images
         ), text
