@@ -13,8 +13,13 @@ import cgi
 
 from odoo import models, api, _, fields
 from odoo.tools import html_escape as escape
+from odoo.tools import config
 
 logger = logging.getLogger(__name__)
+try:
+    import detectlanguage
+except ImportError:
+    logger.warning("Please install detectlanguage")
 
 
 class CrmClaim(models.Model):
@@ -49,6 +54,8 @@ class CrmClaim(models.Model):
         else:
             contact_id = None
 
+        partner = self.sudo().env['res.partner'].search([('email', 'like', email)])
+
         claim = self.sudo().create({
             'email_from': email,
             'subject': subject,
@@ -58,16 +65,15 @@ class CrmClaim(models.Model):
             'name': question,
             'categ_id': self.env['crm.claim.category'].sudo().search(
                 [('name', '=', source)]).id,
-            'partner_id': contact_id,
-            'user_id': False
+            'partner_id': contact_id or partner.id,
+            'user_id': False,
+            'language': self.sudo().detect_lang(question).lang_id.code
         })
         claim.message_post(body=question,
                            subject=_("Original request from %s %s ") %
                            (firstname, lastname))
-
-        partner = self.env['res.partner'].browse(int(contact_id))
         if partner:
-            self.create_email_for_interaction_resume(subject, question, partner)
+            self.sudo().create_email_for_interaction_resume(subject, question, partner)
 
         return {
             "FeedbackAndContactusResult": _("Your question was well received")
@@ -98,3 +104,29 @@ class CrmClaim(models.Model):
                 'date': fields.Datetime.now(),
             }).id
         })
+
+    @api.model
+    def detect_lang(self, text):
+        """
+        Use detectlanguage API to find the language of the given text
+        :param text: text to detect
+        :return: res.lang compassion record if the language is found, or False
+        """
+        detectlanguage.configuration.api_key = config.get(
+            'detect_language_api_key')
+        language_name = False
+        langs = detectlanguage.languages()
+        try:
+            code_lang = detectlanguage.simple_detect(text)
+        except (IndexError, detectlanguage.DetectLanguageError):
+            # Language could not be detected
+            return False
+        for lang in langs:
+            if lang.get("code") == code_lang:
+                language_name = lang.get("name")
+                break
+        if not language_name:
+            return False
+
+        return self.env['res.lang.compassion'].search(
+            [('name', '=ilike', language_name)], limit=1)
