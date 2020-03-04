@@ -52,8 +52,3 @@ class StaffNotificationSettings(models.TransientModel):
         res = super().get_values()
         res['disaster_notify_ids'] = self._get_disaster_notify_ids()
         return res
-
-    @api.model
-    def get_param(self, param):
-        """ Retrieve a single parameter. """
-        return self.sudo().get_values()[param]
