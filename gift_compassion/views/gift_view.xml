@@ -95,7 +95,7 @@
                             <field name="gift_date"/>
                             <field name="date_partner_paid"/>
                             <field name="date_sent"/>
-                            <field name="message_id" groups="message_center_compassion.group_gmc"/>
+                            <field name="message_id" groups="message_center_compassion.group_gmc_user"/>
                             <field name="payment_id"/>
                             <field name="inverse_payment_id"
                                    attrs="{'invisible': [('inverse_payment_id', '=', False)]}"/>

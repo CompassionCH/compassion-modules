@@ -8,7 +8,10 @@
     },
     "ActiveDate": "date_start",
     "AlternateAddressCountry": "country",
-    "Country": "country_id.name",
+    "Country": {
+      "field": "country_id.name",
+      "search_relational_record": true
+    },
     "CountryInformationContent": "country_information",
     "Currency": "currency",
     "FieldOfficeDirector": "country_director",

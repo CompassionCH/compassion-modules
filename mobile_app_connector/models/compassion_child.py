@@ -67,8 +67,7 @@ class CompassionChild(models.Model):
                     "ChildTime": project.get_time()[0],
                     "ChildTimezone": project[0].timezone,
                     },
-            'OrderDate': max(x for y in self
-                             for x in y.sponsorship_ids.mapped('start_date')),
+            'OrderDate': max(self.mapped('sponsorship_ids.create_date')),
             'Weather': project[0].get_weather_json(multi=False)
         }
 
