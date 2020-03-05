@@ -28,7 +28,7 @@
         <field name="name">Compassion Settings</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="notification_settings"/>
+        <field name="view_id" ref="compassion_settings"/>
         <field name="view_mode">form</field>
         <field name="target">inline</field>
         <field name="context">{'module' : 'child_compassion'}</field>
