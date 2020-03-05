@@ -49,18 +49,4 @@
             </xpath>
         </field>
     </record>
-
-    <record id="open_sds_follower_config" model="ir.actions.act_window">
-        <field name="name">SDS Followers</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="view_sds_follower_settings_form"/>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
-        <field name="context">{'module' : 'child_compassion'}</field>
-    </record>
-
-    <menuitem id="menu_sds_followers_configuration" name="SDS Followers"
-              parent="child_compassion.menu_configuration"
-              action="open_sds_follower_config"/>
 </odoo>
