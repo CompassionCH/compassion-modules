@@ -53,19 +53,4 @@
             </xpath>
         </field>
     </record>
-
-    <record id="open_view_demand_planning_config" model="ir.actions.act_window">
-        <field name="name">Demand Planning Configuration</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="demand_settings_form"/>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
-        <field name="context">{'module' : 'child_compassion'}</field>
-
-    </record>
-
-    <menuitem id="menu_demand_planning_configuration" name="Demand Planning"
-              parent="child_compassion.child_config"
-              action="open_view_demand_planning_config"/>
 </odoo>

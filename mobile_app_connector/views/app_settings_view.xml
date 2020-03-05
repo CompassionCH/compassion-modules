@@ -26,21 +26,11 @@
         </field>
     </record>
 
-    <record id="action_mobile_app_settings" model="ir.actions.act_window">
-        <field name="name">General settings</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="view_app_settings_form"/>
-        <field name="view_type">form</field>
-        <field name="target">inline</field>
-        <field name="context">{'module' : 'child_compassion'}</field>
-    </record>
-
     <!-- Add menu for app banners -->
     <menuitem id="menu_mobile_app_general_settings"
               name="General settings"
               parent="menu_mobile_app_settings"
-              action="action_mobile_app_settings"
+              action="child_compassion.open_settings_compassion"
               sequence="1"/>
 
 </odoo>

@@ -34,10 +34,14 @@ class SdsFollowerSettings(models.TransientModel):
     def set_values(self):
         super().set_values()
         config = self.env["ir.config_parameter"]
-        config.set_param("sponsorship_tracking.sub_follower_fr", str(self.sub_fr))
-        config.set_param("sponsorship_tracking.sub_follower_de", str(self.sub_de))
-        config.set_param("sponsorship_tracking.sub_follower_it", str(self.sub_it))
-        config.set_param("sponsorship_tracking.sub_follower_en", str(self.sub_en))
+        config.set_param("sponsorship_tracking.sub_follower_fr", str(self.sub_fr.id
+                                                                     or 0))
+        config.set_param("sponsorship_tracking.sub_follower_de", str(self.sub_de.id
+                                                                     or 0))
+        config.set_param("sponsorship_tracking.sub_follower_it", str(self.sub_it.id
+                                                                     or 0))
+        config.set_param("sponsorship_tracking.sub_follower_en", str(self.sub_en.id
+                                                                     or 0))
 
     @api.model
     def get_values(self):
