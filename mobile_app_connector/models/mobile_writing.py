@@ -97,7 +97,7 @@ class AppWriting(models.Model):
             [('active', '=', True)])
 
         return [
-            x.get_json() for x in actives
+            x.sudo().get_json() for x in actives
         ]
 
     @api.multi

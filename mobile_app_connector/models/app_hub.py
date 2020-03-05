@@ -98,7 +98,8 @@ class AppHub(models.AbstractModel):
         # GI7 is treated separately because it needs unpaid sponsorships
         msg_tmp = self.env['mobile.app.tile'].search([
             ('subtype_id', '=',
-             self.env.ref('mobile_app_connector.tile_subtype_gi7').id)
+             self.env.ref('mobile_app_connector.tile_subtype_gi7').id),
+            ('create_date', '!=', False)
         ]).render_tile(unpaid_data)
         messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
