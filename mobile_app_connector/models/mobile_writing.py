@@ -109,7 +109,7 @@ class AppWriting(models.Model):
             + "/"
         return {
             'templates': [
-                {'templateURL': "http://" + base_url + str(t.id) + "/template_image",
+                {'templateURL': base_url + str(t.id) + "/template_image",
                  'id': str(t.id)} for t in self.template_ids
             ],
             'categoryIconString': self.icon,

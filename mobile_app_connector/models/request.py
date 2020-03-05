@@ -65,7 +65,7 @@ class CrmClaim(models.Model):
             'name': question,
             'categ_id': self.env['crm.claim.category'].sudo().search(
                 [('name', '=', source)]).id,
-            'partner_id': contact_id or partner.id,
+            'partner_id': partner.id,
             'user_id': False,
             'language': self.sudo().detect_lang(question).lang_id.code
         })
