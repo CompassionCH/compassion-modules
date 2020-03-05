@@ -17,3 +17,4 @@ access_correspondence_s2b_generator,Full access on correspondence generator,mode
 read_access_generator,Read access for template generation,model_correspondence_s2b_generator,,1,0,0,0
 read_access_last_writing_report,Read access for last writing report,model_correspondence_last_writing_report,child_compassion.group_sponsorship,1,0,0,0
 read_access_template,Read access for template,model_correspondence_template,base.group_public,1,0,0,0
+access_correspondence_template_portal,Read only access on correspondence_template,model_correspondence_template,base.group_portal,1,0,0,0

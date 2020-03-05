@@ -49,6 +49,13 @@ class CrmClaim(models.Model):
         else:
             contact_id = None
 
+        if contact_id:
+            partner = self.sudo().env['res.partner'].browse(int(contact_id))
+        else:
+            partner = self.sudo().env['res.partner'].search([
+                ('email', 'like', email)
+            ], limit=1)
+
         claim = self.sudo().create({
             'email_from': email,
             'subject': subject,
@@ -58,17 +65,15 @@ class CrmClaim(models.Model):
             'name': question,
             'categ_id': self.env['crm.claim.category'].sudo().search(
                 [('name', '=', source)]).id,
-            'partner_id': contact_id,
-            'user_id': False
+            'partner_id': partner.id,
+            'user_id': False,
+            'language': self.sudo().detect_lang(question).lang_id.code
         })
         claim.message_post(body=question,
                            subject=_("Original request from %s %s ") %
                            (firstname, lastname))
-
-        if contact_id:
-            partner = self.env['res.partner'].browse(int(contact_id))
-            if partner.exists():
-                self.create_email_for_interaction_resume(subject, question, partner)
+        if partner.exists():
+            self.sudo().create_email_for_interaction_resume(subject, question, partner)
 
         return {
             "FeedbackAndContactusResult": _("Your question was well received")
