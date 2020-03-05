@@ -21,7 +21,7 @@ class LinkTracker(models.AbstractModel):
         Replace web.base.url with web.external.url
         :return:
         """
-        base_url = self.env['ir.config_parameter'].get_param(
+        base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.external.url')
         for link in self:
             link.short_url = urljoin(base_url, f'/r/{link.code}')

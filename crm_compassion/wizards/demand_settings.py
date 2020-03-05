@@ -43,7 +43,7 @@ class DemandPlanningSettings(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        config = self.env["ir.config_parameter"]
+        config = self.env["ir.config_parameter"].sudo()
 
         res["number_children_website"] = int(
             config.get_param("crm_compassion.number_children_web", "500")

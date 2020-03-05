@@ -97,7 +97,7 @@ class AccountInvoice(models.Model):
                 # we will create a new invoice but notify a staff
                 # member that it needs to be processed manually, to avoid creating
                 # delays in his due months.
-                partner_ids = self.env['staff.notification.settings'].get_param(
+                partner_ids = self.env['res.config.settings'].sudo().get_param(
                     'gift_notify_ids')
                 invoice.message_post(
                     _("This invoice created from the app needs to be manually "

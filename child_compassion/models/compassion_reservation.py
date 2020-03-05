@@ -79,8 +79,7 @@ class CompassionReservation(models.Model):
             reservation.child_id = child
 
     def _default_expiration_date(self):
-        days_reservation = self.env[
-            'availability.management.settings'].get_param(
+        days_reservation = self.env['res.config.settings'].sudo().get_param(
             'reservation_duration')
         dt = timedelta(days=days_reservation)
         expiration = datetime.date.today() + dt
@@ -210,7 +209,7 @@ class CompassionReservation(models.Model):
         if not self.reservation_expiration_date:
             return
         expiration = fields.Date.from_string(self.reservation_expiration_date)
-        days_on_hold = self.env['res.config.settings'].get_param(
+        days_on_hold = self.env['res.config.settings'].sudo().get_param(
             'reservation_hold_duration')
         dt = timedelta(days=days_on_hold)
         self.expiration_date = fields.Date.to_string(expiration + dt)

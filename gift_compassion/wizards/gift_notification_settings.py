@@ -32,9 +32,8 @@ class GiftNotificationSettings(models.TransientModel):
 
     @api.model
     def _get_gift_notify_ids(self):
-        param_obj = self.env['ir.config_parameter']
-        partners = param_obj.get_param(
-            'gift_compassion.gift_notify_ids', False)
+        param_obj = self.env['ir.config_parameter'].sudo()
+        partners = param_obj.get_param('gift_compassion.gift_notify_ids', False)
         if partners:
             return [
                 (6, 0, list(map(int, partners.split(','))))
@@ -43,7 +42,7 @@ class GiftNotificationSettings(models.TransientModel):
             return False
 
     def _inverse_relation_gift_notify_ids(self):
-        self.env['ir.config_parameter'].set_param(
+        self.env['ir.config_parameter'].sudo().set_param(
             'gift_compassion.gift_notify_ids',
             ','.join(map(str, self.gift_notify_ids.ids)))
 

@@ -9,7 +9,7 @@
                 <div>
                     % set user = object.get_objects()
                     % set revisions = object.env['partner.communication.revision'].search(['|', '&amp;', ('user_id', '=', user.id), ('state', 'in', ['pending', 'corrected']), '&amp;', ('correction_user_id', '=', user.id), ('state', '=', 'submit')])
-                    % set base_url = object.env['ir.config_parameter'].get_param('web.external.url')
+                    % set base_url = object.env['ir.config_parameter'].sudo().get_param('web.external.url')
                 </div>
                 <p>
                     Dear ${object.partner_id.firstname},

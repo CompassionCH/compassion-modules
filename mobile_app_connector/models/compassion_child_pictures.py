@@ -26,7 +26,7 @@ class CompassionChildPictures(models.Model):
         if type.lower() not in ['headshot', 'fullshot']:
             raise ValueError("Expected argument 'type' to be 'headshot' or 'fullshot'")
 
-        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         endpoint = base_url + "/web/image/compassion.child.pictures"
         return f"{endpoint}/{self.id}/{type}/" \
             f"{self.date}_{self.child_id.id}.jpg"

@@ -69,7 +69,7 @@ class AvailabilitySettings(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        param_obj = self.env["ir.config_parameter"]
+        param_obj = self.env["ir.config_parameter"].sudo()
 
         res["consignment_hold_duration"] = int(
             param_obj.get_param("child_compassion.consignment_hold_duration", "14")

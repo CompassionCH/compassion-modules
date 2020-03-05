@@ -89,7 +89,7 @@ class AccountInvoice(models.Model):
         comm_obj = self.env['partner.communication.job']
         first = datetime.today().replace(day=1)
         last_month = first - relativedelta(months=1)
-        user_id = self.env['ir.config_parameter'].get_param(
+        user_id = self.env['ir.config_parameter'].sudo().get_param(
             'thankyou_letters.summary_user_id')
         if user_id:
             partner = self.env['res.users'].browse(int(user_id)).mapped(

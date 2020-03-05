@@ -32,7 +32,7 @@ class StaffNotificationSettings(models.TransientModel):
 
     @api.model
     def _get_disaster_notify_ids(self):
-        param_obj = self.env['ir.config_parameter']
+        param_obj = self.env['ir.config_parameter'].sudo()
         partners = param_obj.get_param(
             'child_compassion.disaster_notify_ids', False)
         if partners:
