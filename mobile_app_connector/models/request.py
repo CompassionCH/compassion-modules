@@ -52,7 +52,9 @@ class CrmClaim(models.Model):
         if contact_id:
             partner = self.sudo().env['res.partner'].browse(int(contact_id))
         else:
-            partner = self.sudo().env['res.partner'].search([('email', 'like', email)], limit=1)
+            partner = self.sudo().env['res.partner'].search([
+                ('email', 'like', email)
+            ], limit=1)
 
         claim = self.sudo().create({
             'email_from': email,
