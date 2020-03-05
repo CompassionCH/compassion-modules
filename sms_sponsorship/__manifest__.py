@@ -17,7 +17,6 @@
     'depends': [
         'crm_compassion',  # compassion-modules
         'cms_form_compassion',  # compassion-modules
-        'link_tracker',  # source/addons
         'website_no_index',  # Compassion's fork of OCA/website
         'base_phone',  # OCA/connector_telephony
         'stock',  # source/addons

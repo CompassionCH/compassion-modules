@@ -40,7 +40,8 @@
         'website_no_index',  # website (OCA)
         'portal',  # source/addons
         'queue_job',  # oca_addons/queue
-        'base_automation'  # source/addons
+        'base_automation',  # source/addons
+        'link_tracker',  # source/addons
     ],
     'data': [
         'data/transaction_server_actions.xml',
