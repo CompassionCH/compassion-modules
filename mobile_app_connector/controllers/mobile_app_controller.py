@@ -11,7 +11,7 @@
 #
 ##############################################################################
 import werkzeug
-import cgi
+import html
 
 from odoo import http, _
 from odoo.http import request
@@ -102,7 +102,7 @@ class RestController(http.Controller):
         :return: json data for mobile app
         """
         for key in parameters:
-            parameters[key] = cgi.escape(parameters[key])
+            parameters[key] = html.escape(parameters[key])
 
         odoo_obj = request.env.get(model).with_context(
             lang=_get_lang(request, parameters))
