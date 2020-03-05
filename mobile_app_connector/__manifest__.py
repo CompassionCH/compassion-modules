@@ -45,7 +45,7 @@
         'wordpress_configuration'       # compassion-modules
     ],
     'external_dependencies': {
-        'python': ['simplejson', 'bs4', 'requests', 'detectlanguage'],
+        'python': ['simplejson', 'bs4', 'requests'],
     },
     'data': [
         'security/ir.model.access.csv',
