@@ -15,3 +15,4 @@ from . import payment_transaction
 from . import account_invoice
 from . import queue_job
 from . import match_partner
+from . import link_tracker
