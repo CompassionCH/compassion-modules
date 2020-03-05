@@ -21,7 +21,7 @@
                             <field name="force_language" attrs="{'required': [('body_html', '!=', False), '|', ('model_id', '=', False), ('customize_template', '=', True)]}"/>
                         </group>
                         <group>
-                            <field name="report_id" attrs="{'invisible': [('send_mode', '=', False)]}"/>
+                            <field name="report_id"/>
                         </group>
                         <field name="subject" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
                         <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}" wiget="text_ckeditor4"/>

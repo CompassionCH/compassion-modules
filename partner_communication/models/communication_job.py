@@ -396,15 +396,9 @@ class CommunicationJob(models.Model):
                 fields = self.env['mail.compose.message'].with_context(
                     lang=lang).get_generated_fields(
                     job.email_template_id, [job.id])
-                body = job.report_id.render_qweb_html([job.id])
-                body_html = tools.html_sanitize(body[0],
-                                                sanitize_attributes=True,
-                                                sanitize_style=True,
-                                                strip_classes=True)
                 job.write({
-                    'body_html': fields['body_html'] if len(fields['body_html']) > 50
-                    else body_html,
-                    'subject': fields['subject'],
+                    'body_html': fields['body_html'],
+                    'subject': fields['subject']
                 })
                 if refresh_uid:
                     job.user_id = self.env.user
