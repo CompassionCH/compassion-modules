@@ -55,16 +55,5 @@
             <field name="code">model.validity_cron()</field>
             <field name="state">code</field>
         </record>
-
-        <record id="remove_draft_mobile_invoices" model="ir.cron">
-            <field name="name">Remove Draft Mobile Invoice</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="model_account_invoice"/>
-            <field name="code">model.remove_mobile_draft_invoices()</field>
-            <field name="state">code</field>
-        </record>
     </data>
 </odoo>

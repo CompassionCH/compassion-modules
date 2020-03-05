@@ -9,8 +9,8 @@ class CommunicationJob(models.Model):
 
     mobile_notification_send = fields.Boolean("Send mobile notification", default=False)
     mobile_notification_auto_send = fields.Boolean("Auto send")
-    mobile_notification_title = fields.Char("Title")
-    mobile_notification_body = fields.Char("Body")
+    mobile_notification_title = fields.Text("Title")
+    mobile_notification_body = fields.Text("Body")
 
     mobile_notification_destination = fields.Selection([
         ('MyHub', 'My Hub'),
@@ -25,7 +25,8 @@ class CommunicationJob(models.Model):
         ('spam', "None (bypass user's preferences)")
     ], "Topic", default='general_notification')
 
-    mobile_notification_id = fields.Many2one("firebase.notification")
+    mobile_notification_id = fields.Many2one(
+        "firebase.notification", "Notification", copy=False)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
@@ -52,9 +53,15 @@ class CommunicationJob(models.Model):
         res = super().send()
 
         for job in jobs:
+            # For notifications, we take only the first related object (no multi-mode)
+            # to render the notification text.
+            object = self.get_objects()[:1]
+            template = job.email_template_id.with_context(lang=job.partner_id.lang)
             mobile_notif = job.env["firebase.notification"].create({
-                'title': job.mobile_notification_title,
-                'body': job.mobile_notification_body,
+                'title': template.render_template(
+                    job.mobile_notification_title, object._name, object.id),
+                'body': template.render_template(
+                    job.mobile_notification_body, object._name, object.id),
                 'destination': job.mobile_notification_destination,
                 'topic': job.mobile_notification_topic,
                 'partner_ids': [(4, job.partner_id.id)]

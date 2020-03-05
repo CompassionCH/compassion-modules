@@ -36,9 +36,9 @@
     'license': 'AGPL-3',
     'website': 'http://www.compassion.ch',
     'depends': [
-        'base_location',            # oca_addons/partner_contact
-        'sponsorship_compassion',   # compassion-modules
-        'partner_communication',    # compassion-modules
+        'base_location',  # oca_addons/partner_contact
+        'sponsorship_compassion',  # compassion-modules
+        'partner_communication',  # compassion-modules
         'mail_tracking',
         'base_automation',
     ],
@@ -53,6 +53,7 @@
         'views/calendar_view.xml',
         'views/contract_origin_view.xml',
         'views/crm_lead_view.xml',
+        'views/demand_planning_settings.xml',
         'views/demand_planning.xml',
         'views/demand_weekly_revision.xml',
         'views/event_compassion_view.xml',

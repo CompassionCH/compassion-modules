@@ -233,7 +233,7 @@ class RecurringContract(models.Model):
             'sponsorship_compassion.end_reason_child_exchange')
         for contract in self.filtered('child_id'):
             lang = contract.correspondent_id.lang[:2]
-            sds_user = self.env['sds.follower.settings'].get_param(
+            sds_user = self.env['res.config.settings'].get_param(
                 'sub_' + lang)
             if contract.end_reason_id == departure:
                 # When a departure comes for a sub sponsorship, we consider

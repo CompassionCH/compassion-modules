@@ -29,11 +29,11 @@ class WeeklyDemand(models.Model):
     # Demand fields
     number_children_website = fields.Integer(
         'Web demand',
-        default=lambda self: self.env['demand.planning.settings'].get_param(
+        default=lambda self: self.env['res.config.settings'].get_param(
             'number_children_website'))
     number_children_ambassador = fields.Integer(
         'Ambassadors demand',
-        default=lambda self: self.env['demand.planning.settings'].get_param(
+        default=lambda self: self.env['res.config.settings'].get_param(
             'number_children_ambassador'))
     number_sub_sponsorship = fields.Float(
         'SUB demand',
@@ -148,7 +148,7 @@ class WeeklyDemand(models.Model):
             ('medium_id', '=', website_medium),
             ('start_date', '>=', fields.Date.to_string(start_date))
         ])
-        allocate_per_week = self.env['demand.planning.settings'].get_param(
+        allocate_per_week = self.env['res.config.settings'].get_param(
             'number_children_website')
         return allocate_per_week - (float(web_sponsored) / STATS_DURATION)
 
@@ -166,7 +166,7 @@ class WeeklyDemand(models.Model):
             ('start_date', '>=', fields.Date.to_string(start_date)),
             ('medium_id', '!=', website_medium)
         ])
-        allocate_per_week = self.env['demand.planning.settings'].get_param(
+        allocate_per_week = self.env['res.config.settings'].get_param(
             'number_children_ambassador')
         return allocate_per_week - (float(ambass_sponsored) / STATS_DURATION)
 
@@ -264,9 +264,9 @@ class WeeklyDemand(models.Model):
 
     def get_defaults(self):
         """ Returns the computation defaults in a dictionary. """
-        web = self.env['demand.planning.settings'].get_param(
+        web = self.env['res.config.settings'].get_param(
             'number_children_website')
-        ambassador = self.env['demand.planning.settings'].get_param(
+        ambassador = self.env['res.config.settings'].get_param(
             'number_children_ambassador')
         return {
             'number_children_website': web,
