@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     'name': 'CMS Form additions for Compassion',
-    'version': '11.0.1.1.0',
+    'version': '11.0.1.1.1',
     'category': 'Other',
     'author': 'Compassion CH',
     'license': 'AGPL-3',
@@ -40,10 +40,12 @@
         'website_no_index',  # website (OCA)
         'portal',  # source/addons
         'queue_job',  # oca_addons/queue
-        'base_automation'  # source/addons
+        'base_automation',  # source/addons
+        'link_tracker',  # source/addons
     ],
     'data': [
         'data/transaction_server_actions.xml',
+        'data/ir.config_parameter.xml',
         'templates/assets.xml',
         'templates/form_widgets.xml',
         'views/ir_logging.xml',

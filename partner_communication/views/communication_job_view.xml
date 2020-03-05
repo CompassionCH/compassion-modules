@@ -6,8 +6,8 @@
             <form>
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="call,pending,done"/>
-                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'physical'),('state', 'not in', 'pending')]}"/>
-                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'digital'),('state', 'not in', 'pending')]}"/>
+                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'physical'),('state', 'not in', 'pending')]}" context="{'origin': 'both_email'}"/>
+                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'digital'),('state', 'not in', 'pending')]}" context="{'origin': 'both_print'}"/>
                     <button name="log_call" string="Log call" icon="fa-phone" type="object" states='call,pending'/>
                     <button name="reset" string="Retry" type="object" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" states='call,pending'/>
@@ -31,7 +31,7 @@
                             <field name="sent_date" readonly="1"/>
                             <field name="send_mode" required="1"/>
                             <field name="need_call"/>
-                            <field name="report_id" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
+                            <field name="report_id"/>
                             <field name="auto_send"/>
                         </group>
                     </group>
@@ -51,7 +51,7 @@
                     </group>
                     <group>
                         <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
-                        <field name="body_html"/>
+                        <field name="body_html" widget="html"/>
                     </group>
                     <group>
                         <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />

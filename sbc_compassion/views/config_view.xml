@@ -56,21 +56,9 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="open_sbc_config" model="ir.actions.act_window">
-        <field name="name">General SBC settings</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.config.settings</field>
-        <field name="view_id" ref="view_sbc_settings_form"/>
-        <field name="view_mode">form</field>
-        <field name="target">inline</field>
-        <field name="context">{'module' : 'child_compassion'}</field>
-    </record>
-
     <!-- Menu Definition -->
     <menuitem id="correspondence_config" name="Correspondence"
-              parent="child_compassion.menu_configuration" sequence="3"/>
-    <menuitem id="sbc_settings_menu" parent="correspondence_config"
-              name="General settings" action="open_sbc_config" sequence="1"/>
+              parent="child_compassion.menu_configuration" sequence="4"/>
     <menuitem id="import_letter_config_menu" parent="correspondence_config"
               name="Letter Import" action="import_letter_config_action" sequence="3"/>
 </odoo>

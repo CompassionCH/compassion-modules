@@ -53,10 +53,9 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="child_compassion.notification_settings"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='notification_configuration']" position='inside'>
+            <xpath expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']">
                 <div name="gift_undeliverable">
-                    <label for="gift_notify_ids" string="Gift Undeliverable"
-                           class="o_light_label"/>
+                    <label for="gift_notify_ids" class="o_light_label"/>
                     <field name="gift_notify_ids" widget="many2many_tags"/>
                 </div>
             </xpath>
