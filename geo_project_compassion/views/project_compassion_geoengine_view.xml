@@ -23,6 +23,7 @@
             <geoengine>
                 <field name="fcp_id"/>
                 <field name="name" select="1"/>
+                <field name="geo_point"/>
             </geoengine>
         </field>
         <field eval="16" name="priority"/>
