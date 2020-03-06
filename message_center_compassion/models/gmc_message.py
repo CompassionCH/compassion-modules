@@ -205,6 +205,7 @@ class GmcMessage(models.Model):
                 message_update.update(self._perform_incoming_action())
             except:
                 # Abort pending operations
+                logger.error("Failure when processing message", exc_info=True)
                 self.env.cr.rollback()
                 self.env.clear()
                 # Write error
