@@ -29,5 +29,5 @@ class RevisionInstall(models.AbstractModel):
                     'config_id': config.id,
                     'revision_date': revision_date
                 })
-            config.revision_date = revision_date
+            config.revision_date = revision_date.date()
         return True

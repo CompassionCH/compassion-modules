@@ -158,13 +158,12 @@ class EventCompassion(models.Model):
     @api.depends('start_date')
     def _compute_year(self):
         for event in self.filtered('start_date'):
-            event.year = event.start_date[:4]
+            event.year = str(event.start_date.year)
 
     @api.multi
     def _compute_full_name(self):
         for event in self:
-            event.full_name = event.type.title() + ' ' + event.name + ' ' +\
-                event.year
+            event.full_name = event.type.title() + ' ' + event.name + ' ' + event.year
 
     @api.multi
     @api.depends('hold_ids')
@@ -181,7 +180,7 @@ class EventCompassion(models.Model):
     @api.constrains('hold_start_date', 'start_date')
     def _check_hold_start_date(self):
         for event in self:
-            if event.hold_start_date > event.start_date:
+            if event.hold_start_date > event.start_date.date():
                 raise ValidationError(
                     _("The hold start date must "
                       "be before the event starting date !"))
@@ -225,8 +224,7 @@ class EventCompassion(models.Model):
         })
 
         # Add calendar event
-        calendar_event = self.env[
-            'calendar.event'].create(event._get_calendar_vals())
+        calendar_event = self.env['calendar.event'].create(event._get_calendar_vals())
         event.with_context(no_calendar=True).calendar_event_id = calendar_event
 
         return event
@@ -370,22 +368,21 @@ class EventCompassion(models.Model):
     def onchange_start_date(self):
         """ Update end_date and hold_start_date as soon as start_date is
         changed """
-        days_allocate_before_event = self.env['res.config.settings'].sudo().get_param(
+        days_allocate_before_event = self.env['res.config.settings'].get_param(
             'days_allocate_before_event')
         dt = timedelta(days=days_allocate_before_event)
         for event in self.filtered('start_date'):
-            event.hold_start_date = event.start_date - dt
+            event.hold_start_date = (event.start_date - dt).date()
             if not event.end_date or event.end_date < event.start_date:
                 event.end_date = event.start_date
 
     @api.onchange('end_date')
     @api.multi
     def onchange_end_date(self):
-        days_after = self.env['res.config.settings'].sudo().get_param(
+        days_after = self.env['res.config.settings'].get_param(
             'days_hold_after_event')
         for event in self.filtered('end_date'):
-                hold_end_date = event.end_date + timedelta(days=days_after)
-                event.hold_end_date = hold_end_date
+            event.hold_end_date = (event.end_date + timedelta(days=days_after)).date()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -419,8 +416,7 @@ class EventCompassion(models.Model):
         :return: dictionary of calendar.event values
         """
         self.ensure_one()
-        time_delta = (self.end_date -
-                      self.start_date)
+        time_delta = (self.end_date - self.start_date)
         duration_in_hours = math.ceil(time_delta.days * 24 +
                                       time_delta.seconds / 3600.0)
         calendar_vals = {
@@ -437,10 +433,8 @@ class EventCompassion(models.Model):
                         self.user_id.partner_id).ids)],
             'start': self.start_date,
             'stop': self.end_date or self.start_date,
-            'allday': self.end_date and (
-                self.start_date[0:10] != self.end_date[0:10]),
+            'allday': self.end_date and self.start_date.date() != self.end_date.date(),
             'state': 'open',  # to block that meeting date in the calendar
-            'class': 'confidential',
         }
         return calendar_vals
 
@@ -454,8 +448,8 @@ class EventCompassion(models.Model):
             no_money_yield /= self.number_allocate_children
             yield_rate /= self.number_allocate_children
         expiration_date = self.end_date + \
-            timedelta(days=self.env['res.config.settings'].sudo()
-                      .get_param('days_hold_after_event'))
+            timedelta(days=self.env['res.config.settings'].
+                      get_param('days_hold_after_event'))
         return {
             'name': _('Global Childpool'),
             'type': 'ir.actions.act_window',
