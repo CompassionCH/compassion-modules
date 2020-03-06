@@ -10,7 +10,7 @@
 
     <record id="active_action_state_field" model="ir.server.object.lines">
         <field name="server_id" ref="intervention_active_action"/>
-        <field name="col1" ref="field_compassion_intervention_state"/>
+        <field name="col1" ref="field_compassion_intervention__state"/>
         <field name="type">value</field>
         <field name="value">active</field>
     </record>
@@ -26,7 +26,7 @@
 
     <record id="close_action_state_field" model="ir.server.object.lines">
         <field name="server_id" ref="intervention_close_action"/>
-        <field name="col1" ref="field_compassion_intervention_state"/>
+        <field name="col1" ref="field_compassion_intervention__state"/>
         <field name="type">value</field>
         <field name="value">close</field>
     </record>
@@ -45,7 +45,7 @@
 
     <record id="sla_done_action_field" model="ir.server.object.lines">
         <field name="server_id" ref="intervention_sla_done_action"/>
-        <field name="col1" ref="field_compassion_intervention_state"/>
+        <field name="col1" ref="field_compassion_intervention__state"/>
         <field name="type">value</field>
         <field name="value">on_hold</field>
     </record>
@@ -63,7 +63,7 @@
 
     <record id="sla_wait_action_field" model="ir.server.object.lines">
         <field name="server_id" ref="intervention_sla_wait_action"/>
-        <field name="col1" ref="field_compassion_intervention_state"/>
+        <field name="col1" ref="field_compassion_intervention__state"/>
         <field name="type">value</field>
         <field name="value">sla</field>
     </record>

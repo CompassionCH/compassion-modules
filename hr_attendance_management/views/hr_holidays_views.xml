@@ -3,13 +3,13 @@
 <odoo>
     <record id="edit_holiday_status_form_attendance"
             model="ir.ui.view">
-        <field name="name">hr.holidays.form</field>
-        <field name="model">hr.holidays</field>
+        <field name="name">hr.leave.form</field>
+        <field name="model">hr.leave</field>
         <field name="inherit_id"
-               ref="hr_holidays.edit_holiday_new"/>
+               ref="hr_holidays.hr_leave_view_form"/>
         <field name="arch"
                type="xml">
-            <field name="notes" position="before">
+            <field name="name" position="before">
                 <field name="attendance_day_ids">
                     <tree>
                         <field name="date"/>

@@ -3,7 +3,7 @@
 from odoo import models, fields
 
 
-class HrHolidaysStatus(models.Model):
-    _inherit = 'hr.holidays.status'
+class HrLeaveType(models.Model):
+    _inherit = 'hr.leave.type'
 
     keep_due_hours = fields.Boolean(oldname='remove_from_due_hours')

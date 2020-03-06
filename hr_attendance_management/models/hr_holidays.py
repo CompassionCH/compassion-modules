@@ -3,8 +3,8 @@
 from odoo import models, fields, api
 
 
-class HrHolidays(models.Model):
-    _inherit = 'hr.holidays'
+class HrLeave(models.Model):
+    _inherit = 'hr.leave'
 
     attendance_day_ids = fields.Many2many('hr.attendance.day', store=True,
                                           string='Attendances days',
