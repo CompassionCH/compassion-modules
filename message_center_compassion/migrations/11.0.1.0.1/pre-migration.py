@@ -18,3 +18,9 @@ def migrate(cr, version):
     # Rename table gmc_message_pool
     openupgrade.rename_tables(cr, [('gmc_message_pool', 'gmc_message')])
     openupgrade.rename_models(cr, [('gmc.message.pool', 'gmc.message')])
+
+    # Move security group
+    openupgrade.rename_xmlids(cr, [
+        ('message_center_compassion.group_gmc',
+         'message_center_compassion.group_gmc_manager'),
+    ])

@@ -18,19 +18,14 @@ def migrate(env, version):
 
     load_mappings(env.cr, env)
 
-    # Add sponsorship group to everyone
-    sponsorship_group = env.ref('child_compassion.group_sponsorship')
-    env['res.users'].search([
-        ('share', '=', False),
-        ('email', 'ilike', 'compassion.ch')
-    ]).write({
-        'groups_id': [(4, sponsorship_group.id)]
-    })
+    # Force reloading security groups
+    openupgrade.load_xml(env.cr, 'child_compassion', 'security/sponsorship_groups.xml')
+
     # Add admin groups
     sponsorship_manager_group = env.ref('child_compassion.group_manager')
-    gmc_manager_group = env.ref('message_center_compassion.group_gmc_manager')
     env['res.users'].search([
-        ('login', 'in', ['ecino', 'dwulliamoz', 'seicher', 'admin']),
+        ('login', 'in', ['ecino', 'dwulliamoz', 'seicher', 'admin',
+                         'sherrendorff']),
     ]).write({
-        'groups_id': [(4, sponsorship_manager_group.id), (4, gmc_manager_group.id)]
+        'groups_id': [(4, sponsorship_manager_group.id)]
     })
