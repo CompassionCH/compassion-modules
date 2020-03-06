@@ -161,7 +161,8 @@
                 <filter name="my_attendances" string="My attendances" domain="[('employee_id.user_id.id', '=', uid)]"/>
                 <group expand="0"
                        string="Group By">
-                    <filter string="Employee" name="employee"
+                    <filter name="employee"
+                            string="Employee"
                             domain=""
                             context="{'group_by':'employee_id'}"/>
                 </group>

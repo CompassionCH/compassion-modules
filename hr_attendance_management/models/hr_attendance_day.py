@@ -41,7 +41,7 @@ class HrAttendanceDay(models.Model):
     name = fields.Char(compute='_compute_name', store=True)
 
     # Leaves
-    leave_ids = fields.Many2many('hr.holidays', string='Leaves', readonly=False)
+    leave_ids = fields.Many2many('hr.leave', string='Leaves', readonly=False)
     # todo replace by employee_id.is_absent_totay
     in_leave = fields.Boolean('In leave', compute='_compute_in_leave',
                               store=True)
@@ -375,9 +375,9 @@ class HrAttendanceDay(models.Model):
 
         att_date = rd.date
 
-        # link to leaves (hr.holidays )
+        # link to leaves (hr.leave)
         date_str = att_date
-        rd.leave_ids = self.env['hr.holidays'].search([
+        rd.leave_ids = self.env['hr.leave'].search([
             ('employee_id', '=', rd.employee_id.id),
             ('type', '=', 'remove'),
             ('date_from', '<=', date_str),
