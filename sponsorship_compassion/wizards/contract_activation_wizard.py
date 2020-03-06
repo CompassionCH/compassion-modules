@@ -14,6 +14,7 @@ from odoo import models, api
 class ActivateContractWizard(models.TransientModel):
     """ This wizard force activation of a contract. """
     _name = 'recurring.contract.activate.wizard'
+    _description = 'Recurring contract activation wizard'
 
     @api.multi
     def activate_contract(self):

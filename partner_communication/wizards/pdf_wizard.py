@@ -26,6 +26,7 @@ class PdfPreviewWizard(models.TransientModel):
     Generate pdf of communication.
     """
     _name = 'partner.communication.pdf.wizard'
+    _description = 'Partner Communication - PDF Wizard'
 
     communication_id = fields.Many2one(
         'partner.communication.job', required=True, ondelete='cascade', readonly=False)

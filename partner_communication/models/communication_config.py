@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class OmrConfig(models.AbstractModel):
     _name = "partner.communication.orm.config.abstract"
+    _description = "Partner Communication - ORM Config"
 
     omr_enable_marks = fields.Boolean(
         string="Enable OMR",
@@ -56,6 +57,7 @@ class CommunicationDefaults(models.AbstractModel):
     and communication job. """
 
     _name = "partner.communication.defaults"
+    _description = "Partner Communication Defaults"
 
     user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)], readonly=False)
     need_call = fields.Selection(

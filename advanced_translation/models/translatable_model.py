@@ -14,6 +14,7 @@ class AdvancedTranslatable(models.AbstractModel):
     based on the source recordset and a gender field in the model.
     """
     _name = 'translatable.model'
+    _description = 'Translatable Model'
 
     gender = fields.Selection([
         ('M', 'Male'),

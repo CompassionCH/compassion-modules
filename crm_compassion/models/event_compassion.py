@@ -39,7 +39,7 @@ class EventCompassion(models.Model):
     end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
         'res.partner', 'Customer', track_visibility='onchange', readonly=False)
-    zip_id = fields.Many2one('res.better.zip', 'Address', readonly=False)
+    zip_id = fields.Many2one('res.city.zip', 'Address', readonly=False)
     street = fields.Char(size=128)
     street2 = fields.Char(size=128)
     city = fields.Char(size=128)
@@ -89,7 +89,8 @@ class EventCompassion(models.Model):
     number_allocate_children = fields.Integer(
         'Number of children to allocate',
         track_visibility='onchange',
-        required=True)
+        required=True,
+        default=0)
     planned_sponsorships = fields.Integer(
         'Expected sponsorships',
         track_visibility='onchange', required=True)

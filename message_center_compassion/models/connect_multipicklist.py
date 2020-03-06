@@ -14,6 +14,7 @@ from odoo import api, models, fields, _
 
 class ConnectMultipicklist(models.AbstractModel):
     _name = 'connect.multipicklist'
+    _description = 'Connect Multipicklist'
 
     name = fields.Char(required=True, translate=False)
     res_model = 'connect.multipicklist'

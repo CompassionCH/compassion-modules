@@ -23,6 +23,7 @@ except ImportError:
 
 class CallWizard(models.TransientModel):
     _name = 'partner.communication.call.wizard'
+    _description = 'Partner Communication Call Wizard'
 
     comments = fields.Text()
 

@@ -25,6 +25,7 @@ class DownloadChildPictures(models.TransientModel):
     """
 
     _name = 'child.pictures.download.wizard'
+    _description = 'Child Picture Download Wizard'
 
     ##########################################################################
     #                                 FIELDS                                 #

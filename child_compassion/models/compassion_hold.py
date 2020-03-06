@@ -49,6 +49,7 @@ class HoldType(Enum):
 class AbstractHold(models.AbstractModel):
     """ Defines the basics of each model that must set up hold values. """
     _name = 'compassion.abstract.hold'
+    _description = 'Compassion Abstract Hold'
 
     ##########################################################################
     #                                 FIELDS                                 #
