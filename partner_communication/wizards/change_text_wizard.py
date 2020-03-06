@@ -15,6 +15,7 @@ from odoo.exceptions import UserError
 
 class ChangeTextWizard(models.TransientModel):
     _name = 'partner.communication.change.text.wizard'
+    _description = 'Partner Communication Change Text Wizard'
 
     template_text = fields.Text(default=lambda s: s._default_text())
     state = fields.Char(default='edit')

@@ -17,6 +17,7 @@ class CompassionMappedModel(models.AbstractModel):
     define mappings and be converted to JSON for GMC Connect.
     """
     _name = "compassion.mapped.model"
+    _description = "Compassion Mapping"
 
     @api.multi
     def data_to_json(self, mapping_name=None):

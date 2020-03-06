@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 class ContractOrigin(models.Model):
     """ Origin of a contract """
     _name = 'recurring.contract.origin'
+    _description = 'Recurring Contract Origin'
 
     ##########################################################################
     #                                 FIELDS                                 #

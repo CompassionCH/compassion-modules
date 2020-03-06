@@ -23,6 +23,7 @@ test_mode = config.get('test_enable')
 class GenerateGiftWizard(models.TransientModel):
     """ This wizard generates a Gift Invoice for a given contract. """
     _name = 'generate.gift.wizard'
+    _description = 'Gift Generation Wizard'
 
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one(

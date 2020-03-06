@@ -31,6 +31,7 @@ class GmcAction(models.Model):
           the answer sent by GMC when message was successfully transmitted.
     """
     _name = 'gmc.action'
+    _description = 'GMC Action'
 
     name = fields.Char('GMC Message', required=True)
     direction = fields.Selection(

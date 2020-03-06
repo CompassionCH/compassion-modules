@@ -25,6 +25,7 @@ except ImportError:
 
 class GenerateCommunicationWizard(models.TransientModel):
     _name = 'partner.communication.generate.wizard'
+    _description = 'Partner Communication Generation Wizard'
 
     state = fields.Selection([
         ('edit', 'edit'),

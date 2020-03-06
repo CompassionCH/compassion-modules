@@ -6,6 +6,8 @@ from odoo import api, fields, models
 
 class AssignRequestWizard(models.TransientModel):
     _name = 'assign.request.wizard'
+    _description = 'Request Assignation Wizard'
+
     user_id = fields.Many2one('res.users', 'Assign to',
                               default=lambda self: self.env.user, readonly=False)
     intern_note = fields.Text('Internal note')

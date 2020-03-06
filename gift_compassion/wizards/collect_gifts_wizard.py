@@ -15,6 +15,7 @@ from odoo.tools import safe_eval
 class CollectGiftWizard(models.TransientModel):
     """ This wizard generates a Gift Invoice for a given contract. """
     _name = 'gift.collect.wizard'
+    _description = 'Gift Collect Wizard'
 
     invoice_line_ids = fields.Many2many(
         'account.invoice.line', string='Invoice lines', readonly=False
