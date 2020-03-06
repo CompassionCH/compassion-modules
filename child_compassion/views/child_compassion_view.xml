@@ -37,7 +37,7 @@
                             <div class="oe_kanban_details">
                                 <!-- Title and data -->
                                 <div class="oe_product_desc">
-                                    <img class="oe_kanban_image"
+                                    <img class="oe_kanban_image" alt="child"
                                          t-att-src="kanban_image('compassion.child', 'portrait', record.id.raw_value)"/>
                                     <h4>
                                         <a type="open">

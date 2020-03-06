@@ -7,18 +7,16 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api
-from odoo.addons.base_geoengine import geo_model
-from odoo.addons.base_geoengine.fields import GeoPoint
+from odoo import api, models, fields
 
 
-class CompassionProject(geo_model.GeoModel):
+class CompassionProject(models.Model):
     """Add geo_point to compassion.project"""
 
     _inherit = "compassion.project"
     _description = "Project Geolocation Point"
 
-    geo_point = GeoPoint(readonly=True, store=True)
+    geo_point = fields.GeoPoint(readonly=True, store=True)
 
     @api.multi
     def details_answer(self, vals):
@@ -30,7 +28,7 @@ class CompassionProject(geo_model.GeoModel):
     def compute_geopoint(self):
         """ Compute geopoints. """
         for project in self.filtered(lambda p: p.gps_latitude and p.gps_longitude):
-            geo_point = GeoPoint.from_latlon(
+            geo_point = fields.GeoPoint.from_latlon(
                 self.env.cr,
                 project.gps_latitude,
                 project.gps_longitude)

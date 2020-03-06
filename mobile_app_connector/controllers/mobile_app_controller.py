@@ -16,7 +16,7 @@ import html
 from odoo import http, _
 from odoo.http import request
 from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
-from odoo.addons.base.ir.ir_mail_server import MailDeliveryException
+from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 
 
 def _get_lang(req, params):
