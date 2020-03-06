@@ -14,9 +14,8 @@ class ChildLifecycleEvent(models.Model):
     """ A child lifecycle event (BLE) """
     _name = 'compassion.child.ble'
     _description = 'Child Lifecycle Event'
-    _inherit = 'translatable.model'
     _order = 'date desc, id desc'
-    _inherit = ['compassion.mapped.model']
+    _inherit = ['compassion.mapped.model', 'translatable.model']
 
     child_id = fields.Many2one(
         'compassion.child', 'Child', required=True, ondelete='cascade',
