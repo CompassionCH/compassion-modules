@@ -19,7 +19,8 @@ access_global_partner,Read access on global partner,model_compassion_global_part
 access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
 access_child_household,Full access on child household,model_compassion_household,group_sponsorship,1,1,1,1
 access_household_member,Full access on household member,model_compassion_household_member,group_sponsorship,1,1,1,1
-access_major_revision,User access on major revision fields,model_compassion_major_revision,group_sponsorship,1,0,1,1
+access_major_revision,User access on major revision fields,model_compassion_major_revision,group_sponsorship,1,0,0,0
+full_access_major_revision,Full access on major revision fields,model_compassion_major_revision,message_center_compassion.group_gmc_user,1,1,1,1
 access_compassion_project,Access on compassion_project,model_compassion_project,group_sponsorship,1,1,1,0
 access_project_lifecycle,Read access on project_lifecycle,model_compassion_project_ile,group_sponsorship,1,1,1,0
 access_compassion_reservation_spo,Full access on reservations,model_compassion_reservation,group_sponsorship,1,1,1,1
