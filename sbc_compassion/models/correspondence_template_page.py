@@ -25,18 +25,18 @@ class CorrespondenceTemplatePage(models.Model):
     ##########################################################################
     template_id = fields.Many2one(
         'correspondence.template', 'Template', required=True,
-        ondelete='cascade', index=True)
+        ondelete='cascade', index=True, readonly=False)
     page_index = fields.Integer(required=True, default=1)
     name = fields.Char(compute='_compute_name')
     background = fields.Binary(
         'Page background', attachment=True, help='Use 300 DPI images')
-    header_box_id = fields.Many2one('correspondence.text.box', string="Header")
+    header_box_id = fields.Many2one('correspondence.text.box', string="Header", readonly=False)
     text_box_ids = fields.Many2many(
         'correspondence.text.box', 'correspondence_text_boxes_rel',
-        string='Text boxes')
+        string='Text boxes', readonly=False)
     image_box_ids = fields.Many2many(
         'correspondence.positioned.object', 'correspondence_image_boxes_rel',
-        string='Image boxes')
+        string='Image boxes', readonly=False)
 
     _sql_constraints = [(
         'unique_page', 'unique(template_id,page_index)',

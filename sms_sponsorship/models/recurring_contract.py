@@ -20,9 +20,9 @@ _logger = logging.getLogger(__name__)
 class RecurringContract(models.Model):
     _inherit = 'recurring.contract'
 
-    group_id = fields.Many2one(required=False)
+    group_id = fields.Many2one(required=False, readonly=False)
     sms_request_id = fields.Many2one('sms.child.request', 'SMS request',
-                                     compute='_compute_sms_request_id')
+                                     compute='_compute_sms_request_id', readonly=False)
 
     @api.multi
     def _compute_sms_request_id(self):
@@ -179,8 +179,7 @@ class RecurringContract(models.Model):
         if self.group_id:
             contract_group = self.group_id
             if contract_group.next_invoice_date:
-                next_group_date = fields.Datetime.from_string(
-                    contract_group.next_invoice_date)
+                next_group_date = contract_group.next_invoice_date
                 next_invoice_date = current_date.replace(
                     day=next_group_date.day)
             else:
@@ -189,4 +188,4 @@ class RecurringContract(models.Model):
             next_invoice_date = current_date.replace(day=1)
 
         next_invoice_date += relativedelta(months=+1)
-        self.next_invoice_date = fields.Date.to_string(next_invoice_date)
+        self.next_invoice_date = next_invoice_date

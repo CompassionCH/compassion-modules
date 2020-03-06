@@ -15,7 +15,7 @@ class Contracts(models.Model):
 
     _inherit = 'recurring.contract'
 
-    user_id = fields.Many2one('res.partner', 'Ambassador')
+    user_id = fields.Many2one('res.partner', 'Ambassador', readonly=False)
 
     @api.onchange('origin_id')
     def on_change_origin(self):

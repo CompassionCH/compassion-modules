@@ -26,12 +26,12 @@ class InterventionSearch(models.TransientModel):
     ##########################################################################
     search_filter_ids = fields.Many2many(
         'compassion.query.filter', 'compassion_intervention_search_filters',
-        'search_id', 'query_id', 'Filters'
+        'search_id', 'query_id', 'Filters', readonly=False
     )
     intervention_ids = fields.Many2many(
         'compassion.global.intervention',
         'compassion_intervention_search_to_results',
-        'search_id', 'global_intervention_id', 'Interventions'
+        'search_id', 'global_intervention_id', 'Interventions', readonly=False
     )
     use_advanced_search = fields.Boolean()
 
@@ -40,17 +40,17 @@ class InterventionSearch(models.TransientModel):
     type_chooser = fields.Selection('get_types')
     type_selected = fields.Char(readonly=True)
     category_id = fields.Many2one(
-        'compassion.intervention.category', 'Category')
+        'compassion.intervention.category', 'Category', readonly=False)
     status_chooser = fields.Selection('get_statuses')
     status_selected = fields.Char(readonly=True)
     intervention_id = fields.Char()
     fcp_ids = fields.Many2many(
         'compassion.project', 'compassion_intervention_search_fcp',
-        'search_id', 'fcp_id', 'FCPs', oldname='icp_ids',
+        'search_id', 'fcp_id', 'FCPs', oldname='icp_ids', readonly=False
     )
     field_office_ids = fields.Many2many(
         'compassion.field.office', 'compassion_intervention_search_fo',
-        'search_id', 'fo_id', 'Field offices'
+        'search_id', 'fo_id', 'Field offices', readonly=False
     )
     remaining_amount_equal = fields.Float()
     remaining_amount_greater = fields.Float('Remaining amount greater than')

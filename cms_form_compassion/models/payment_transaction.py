@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
-    invoice_id = fields.Many2one('account.invoice', 'Invoice')
+    invoice_id = fields.Many2one('account.invoice', 'Invoice', readonly=False)
 
     @api.multi
     def cancel_transaction(self):

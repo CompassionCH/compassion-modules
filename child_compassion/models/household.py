@@ -19,7 +19,7 @@ class Household(models.Model):
 
     household_id = fields.Char(required=True)
     child_ids = fields.One2many(
-        'compassion.child', 'household_id', 'Beneficiaries')
+        'compassion.child', 'household_id', 'Beneficiaries', readonly=False)
     name = fields.Char()
     number_beneficiaries = fields.Integer()
     revised_value_ids = fields.One2many(
@@ -41,7 +41,7 @@ class Household(models.Model):
     youth_headed_household = fields.Boolean()
     primary_caregiver = fields.Char(compute='_compute_primary_caregiver')
     primary_caregiver_id = fields.Many2one(
-        'compassion.household.member', compute='_compute_primary_caregiver')
+        'compassion.household.member', compute='_compute_primary_caregiver', readonly=False)
 
     # Employment
     ############
@@ -58,7 +58,7 @@ class Household(models.Model):
     ])
     female_guardian_job = fields.Selection('_get_jobs')
     member_ids = fields.One2many(
-        'compassion.household.member', 'household_id', 'Members')
+        'compassion.household.member', 'household_id', 'Members', readonly=False)
     nb_brothers = fields.Integer(compute='_compute_siblings')
     nb_sisters = fields.Integer(compute='_compute_siblings')
 
@@ -239,11 +239,11 @@ class HouseholdMembers(models.Model):
 
     beneficiary_local_id = fields.Char()
     child_id = fields.Many2one(
-        'compassion.child', 'Child', ondelete='cascade'
+        'compassion.child', 'Child', ondelete='cascade', readonly=False
     )
     household_id = fields.Many2one(
         'compassion.household', 'Household',
-        required=True, ondelete='cascade')
+        required=True, ondelete='cascade', readonly=False)
     is_caregiver = fields.Boolean()
     is_primary_caregiver = fields.Boolean()
     name = fields.Char()

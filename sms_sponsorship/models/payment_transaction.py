@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
-    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
+    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship', readonly=False)
 
     @api.multi
     def confirm_transaction(self):

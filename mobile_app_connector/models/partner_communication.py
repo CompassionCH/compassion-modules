@@ -26,7 +26,7 @@ class CommunicationJob(models.Model):
     ], "Topic", default='general_notification')
 
     mobile_notification_id = fields.Many2one(
-        "firebase.notification", "Notification", copy=False)
+        "firebase.notification", "Notification", copy=False, readonly=False)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):

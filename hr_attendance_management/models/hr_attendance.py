@@ -21,12 +21,12 @@ class HrAttendance(models.Model):
         related='attendance_day_id.total_attendance', readonly=True)
     has_change_day_request = fields.Boolean(
         related='attendance_day_id.has_change_day_request', readonly=True)
-    location_id = fields.Many2one('hr.attendance.location', 'Location')
+    location_id = fields.Many2one('hr.attendance.location', 'Location', readonly=False)
 
     # Link the resource.calendar to the attendance thus we keep a trace of
     # due_hours
     working_schedule_id = fields.Many2one('resource.calendar',
-                                          string='Working schedule')
+                                          string='Working schedule', readonly=False)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -53,8 +53,8 @@ class HrAttendance(models.Model):
     @api.depends('check_in')
     def _compute_date(self):
         for attendance in self.filtered('check_in'):
-            date = fields.Date.from_string(attendance.check_in)
-            attendance.date = fields.Date.to_string(date)
+            date = attendance.check_in
+            attendance.date = date
 
     ##########################################################################
     #                               ORM METHODS                              #
@@ -77,8 +77,8 @@ class HrAttendance(models.Model):
             # Check if the date of check_in has changed and change the
             # attendance_day
             for att in self:
-                old_check_in = fields.Date.from_string(att.check_in)
-                check_in = fields.Date.from_string(vals['check_in'])
+                old_check_in = att.check_in
+                check_in = vals['check_in']
                 if old_check_in != check_in:
                     # Update break time of old attendance day
                     att._find_related_day()
@@ -101,7 +101,7 @@ class HrAttendance(models.Model):
         """
         attendance_days = self.env['hr.attendance.day']
         for attendance in self:
-            date = fields.Date.from_string(attendance.check_in)
+            date = attendance.check_in
             employee_id = attendance.employee_id.id
             attendance_day = self.env['hr.attendance.day'].search([
                 ('employee_id', '=', employee_id),
@@ -110,7 +110,7 @@ class HrAttendance(models.Model):
             if not attendance_day:
                 attendance_day = self.env['hr.attendance.day'].create({
                     'employee_id': employee_id,
-                    'date': fields.Date.to_string(date)
+                    'date': date
                 })
             attendance_days |= attendance_day
         return attendance_days

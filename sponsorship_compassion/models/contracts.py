@@ -33,7 +33,7 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     correspondent_id = fields.Many2one(
         'res.partner', string='Correspondent', track_visibility='onchange',
-        index=True
+        index=True, readonly=False
     )
     partner_codega = fields.Char(
         'Partner ref', related='correspondent_id.ref', readonly=True)
@@ -46,9 +46,9 @@ class SponsorshipContract(models.Model):
         "child's birthday.", track_visibility='onchange')
     reading_language = fields.Many2one(
         'res.lang.compassion', 'Preferred language',
-        track_visiblity='onchange')
+        track_visiblity='onchange', readonly=False)
     transfer_partner_id = fields.Many2one(
-        'compassion.global.partner', 'Transferred to')
+        'compassion.global.partner', 'Transferred to', readonly=False)
     global_id = fields.Char(help='Connect global ID', readonly=True,
                             copy=False, track_visibility='onchange')
     hold_expiration_date = fields.Datetime(
@@ -58,9 +58,9 @@ class SponsorshipContract(models.Model):
         ('correspondent_id', 'Correspondent')
     ], default='correspondent_id')
     gift_partner_id = fields.Many2one('res.partner',
-                                      compute='_compute_gift_partner')
+                                      compute='_compute_gift_partner', readonly=False)
     contract_line_ids = fields.One2many(
-        default=lambda self: self._get_standard_lines()
+        default=lambda self: self._get_standard_lines(), readonly=False
     )
     preferred_name = fields.Char(related='child_id.preferred_name')
     suspended_amount = fields.Float(compute='_compute_suspended_amount')
@@ -72,7 +72,7 @@ class SponsorshipContract(models.Model):
                 'mandate': [('readonly', False)]}, ondelete='restrict',
         track_visibility='onchange', index=True)
     project_id = fields.Many2one('compassion.project', 'Project',
-                                 related='child_id.project_id')
+                                 related='child_id.project_id', readonly=False)
     child_name = fields.Char(
         'Sponsored child name', related='child_id.name', readonly=True)
     child_code = fields.Char(
@@ -88,10 +88,10 @@ class SponsorshipContract(models.Model):
     months_paid = fields.Integer(compute='_compute_months_paid')
     origin_id = fields.Many2one(
         'recurring.contract.origin', 'Origin', ondelete='restrict',
-        track_visibility='onchange', index=True)
+        track_visibility='onchange', index=True, readonly=False)
     parent_id = fields.Many2one(
         'recurring.contract', 'Previous sponsorship',
-        track_visibility='onchange', index=True, copy=False)
+        track_visibility='onchange', index=True, copy=False, readonly=False)
     sub_sponsorship_id = fields.Many2one(
         'recurring.contract', 'sub sponsorship', readonly=True, copy=False,
         index=True
@@ -116,7 +116,7 @@ class SponsorshipContract(models.Model):
     )
     contract_duration = fields.Integer(compute='_compute_contract_duration',
                                        help='Contract duration in days')
-    hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id')
+    hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id', readonly=False)
 
     _sql_constraints = [
         ('unique_global_id', 'unique(global_id)',
@@ -337,10 +337,8 @@ class SponsorshipContract(models.Model):
             if not contract.activation_date:
                 contract.contract_duration = 0
             else:
-                contract_start_date = fields.Date.from_string(
-                    contract.activation_date)
-                end_date = fields.Date.from_string(
-                    contract.end_date) if contract.end_date else date.today()
+                contract_start_date = contract.activation_date
+                end_date = contract.end_date if contract.end_date else date.today()
                 contract.contract_duration = \
                     (end_date - contract_start_date).days
 
@@ -670,8 +668,7 @@ class SponsorshipContract(models.Model):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
         if self.hold_expiration_date:
-            hold_expiration = fields.Datetime.from_string(
-                self.hold_expiration_date)
+            hold_expiration = self.hold_expiration_date
             if 'hold_id' in vals and hold_expiration >= datetime.now():
                 child = self.child_id
                 hold_vals = {
@@ -1122,7 +1119,7 @@ class SponsorshipContract(models.Model):
                         f"The contract {contract.name} is not active.")
                 if contract.state == 'terminated' and contract.end_date:
                     limit = date.today() - relativedelta(days=180)
-                    ended_since = fields.Date.from_string(contract.end_date)
+                    ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(
                             f"The contract {contract.name} is not active.")
@@ -1282,9 +1279,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             # Update next_invoice_date of group if necessary
             if contract.group_id.next_invoice_date:
-                next_invoice_date = fields.Datetime.from_string(
-                    contract.next_invoice_date)
-                group_date = fields.Datetime.from_string(
-                    contract.group_id.next_invoice_date)
+                next_invoice_date = contract.next_invoice_date
+                group_date = contract.group_id.next_invoice_date
                 if group_date > next_invoice_date:
                     contract.group_id._compute_next_invoice_date()

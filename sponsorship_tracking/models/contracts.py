@@ -43,9 +43,9 @@ class RecurringContract(models.Model):
     no_sub_reason = fields.Char('No sub reason')
     sds_uid = fields.Many2one(
         'res.users', 'SDS Follower', default=lambda self: self.env.user,
-        copy=False)
+        copy=False, readonly=False)
     sub_notes = fields.Text('Notes for SUB Sponsorship')
-    lifecycle_ids = fields.One2many(related="child_id.lifecycle_ids")
+    lifecycle_ids = fields.One2many(related="child_id.lifecycle_ids", readonly=False)
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -299,7 +299,7 @@ class RecurringContract(models.Model):
         valid_sub = self.filtered(
             lambda s: s.sds_state == 'sub_waiting' or (
                 s.sds_state in ['sub_reject', 'no_sub'] and
-                fields.Date.from_string(s.end_date) >= limit)
+                s.end_date >= limit)
         )
         valid_sub.write({
             'sds_state': 'sub',

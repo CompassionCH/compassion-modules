@@ -36,7 +36,7 @@ class WordpressPost(models.Model):
         ('agendas', 'Agenda'),
         ('download', 'Download')
     ])
-    category_ids = fields.Many2many('wp.post.category', string='Categories')
+    category_ids = fields.Many2many('wp.post.category', string='Categories', readonly=False)
 
     lang = fields.Selection('select_lang', 'Language', required=True)
     display_on_hub = fields.Boolean(

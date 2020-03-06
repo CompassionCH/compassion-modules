@@ -26,8 +26,8 @@ class FirebaseNotification(models.Model):
         ('spam', "None (bypass user's preferences)")
     ], default='general_notification', required=True)
 
-    fundType = fields.Many2one('product.product', 'Fund product')
-    child_id = fields.Many2one('compassion.child', 'Child')
+    fundType = fields.Many2one('product.product', 'Fund product', readonly=False)
+    child_id = fields.Many2one('compassion.child', 'Child', readonly=False)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

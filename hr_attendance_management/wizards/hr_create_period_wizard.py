@@ -8,7 +8,7 @@ class ChangeDayDWizard(models.TransientModel):
     _description = "Wizard used for creating periods"
 
     employee_id = fields.Many2one('hr.employee', string="ID of concerned employee",
-                                  compute="_compute_employee_id")
+                                  compute="_compute_employee_id", readonly=False)
     start_date = fields.Date(string="Start date of new period")
     end_date = fields.Date(string="End date of new period")
     continuous_cap = fields.Boolean(string="Employee capped or not",

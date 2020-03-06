@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     ##########################################################################
     spoken_lang_ids = fields.Many2many(
         'res.lang.compassion', string='Spoken languages',
-        groups='child_compassion.group_sponsorship'
+        groups='child_compassion.group_sponsorship', readonly=False
     )
     translator_email = fields.Char(
         help='e-mail address used in SDL',
@@ -31,7 +31,7 @@ class ResPartner(models.Model):
         groups='child_compassion.group_sponsorship'
     )
     translated_letter_ids = fields.One2many(
-        'correspondence', 'translator_id', 'Translated letters')
+        'correspondence', 'translator_id', 'Translated letters', readonly=False)
     last_writing_date = fields.Date(compute='_compute_last_writing_date')
 
     @api.multi

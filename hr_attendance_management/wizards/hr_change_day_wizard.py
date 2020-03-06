@@ -66,7 +66,7 @@ class ChangeDayDWizard(models.TransientModel):
     def _select_dates(self):
         # orders by date
         def _date_format(_date):
-            return fields.Date.from_string(_date).strftime("%A %x")
+            return _date.strftime("%A %x")
 
         data = self._context.get('due_hours_data', {})
         return [(k, _date_format(k)) for k in sorted(data.keys())]

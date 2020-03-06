@@ -97,8 +97,8 @@ class AccountInvoice(models.Model):
             invoices = self.search([
                 ('type', '=', 'out_invoice'),
                 ('state', '=', 'paid'),
-                ('last_payment', '>=', fields.Date.to_string(last_month)),
-                ('last_payment', '<', fields.Date.to_string(first)),
+                ('last_payment', '>=', last_month),
+                ('last_payment', '<', first),
             ])
             config = self.env.ref('thankyou_letters.config_thankyou_summary')
             comm_obj.create({

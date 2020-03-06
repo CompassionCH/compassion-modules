@@ -15,7 +15,7 @@ class LogInteractionWizard(models.TransientModel):
     _description = "Logging wizard for interactions"
 
     partner_id = fields.Many2one(
-        'res.partner', 'Partner', default=lambda s: s._default_partner())
+        'res.partner', 'Partner', default=lambda s: s._default_partner(), readonly=False)
     subject = fields.Char()
     body = fields.Html()
 

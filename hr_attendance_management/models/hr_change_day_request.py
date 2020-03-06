@@ -11,11 +11,11 @@ class HrChangeDayRequest(models.Model):
 
     name = fields.Char(compute='_compute_name', store=True)
     user_id = fields.Many2one('res.users', string='Manager',
-                              track_visibility='onchange')
+                              track_visibility='onchange', readonly=False)
 
-    day1_id = fields.Many2one('hr.forced.due.hours')
-    day2_id = fields.Many2one('hr.forced.due.hours')
-    employee_id = fields.Many2one('hr.employee', related='day1_id.employee_id')
+    day1_id = fields.Many2one('hr.forced.due.hours', readonly=False)
+    day2_id = fields.Many2one('hr.forced.due.hours', readonly=False)
+    employee_id = fields.Many2one('hr.employee', related='day1_id.employee_id', readonly=False)
 
     date1 = fields.Date('Date 1', related='day1_id.date')
     date2 = fields.Date('Date 2', related='day2_id.date')

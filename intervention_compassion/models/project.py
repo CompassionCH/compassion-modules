@@ -15,7 +15,7 @@ class FCP(models.Model):
 
     intervention_ids = fields.Many2many(
         'compassion.intervention', 'fcp_interventions',
-        'fcp_id', 'intervention_id', 'Interventions'
+        'fcp_id', 'intervention_id', 'Interventions', readonly=False
     )
     nb_interventions = fields.Integer(compute='_compute_nb_interventions')
 

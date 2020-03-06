@@ -30,7 +30,7 @@ class ImportReview(models.TransientModel):
     current_line_id = fields.Many2one(
         'import.letter.line', 'Letter', compute='_compute_current_line',
         store=True, readonly=True)
-    postpone_import_id = fields.Many2one('import.letters.history')
+    postpone_import_id = fields.Many2one('import.letters.history', readonly=False)
 
     # Import line related fields
     state = fields.Selection(related='current_line_id.status', readonly=True)
@@ -38,13 +38,13 @@ class ImportReview(models.TransientModel):
         related='current_line_id.letter_image_preview')
     letter_file = fields.Binary(related='current_line_id.letter_image')
     fname = fields.Char(related='current_line_id.file_name')
-    partner_id = fields.Many2one(related='current_line_id.partner_id')
-    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
-    child_id = fields.Many2one(related='current_line_id.child_id')
-    template_id = fields.Many2one(related='current_line_id.template_id')
+    partner_id = fields.Many2one(related='current_line_id.partner_id', readonly=False)
+    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship', readonly=False)
+    child_id = fields.Many2one(related='current_line_id.child_id', readonly=False)
+    template_id = fields.Many2one(related='current_line_id.template_id', readonly=False)
     language_id = fields.Many2one(
         related='current_line_id.letter_language_id',
-        order='translatable desc, id asc')
+        order='translatable desc, id asc', readonly=False)
     is_encourager = fields.Boolean(related='current_line_id.is_encourager')
     mandatory_review = fields.Boolean(
         related='current_line_id.mandatory_review')

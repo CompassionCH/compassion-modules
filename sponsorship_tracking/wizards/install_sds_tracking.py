@@ -109,7 +109,7 @@ class InstallSdsTracking(models.TransientModel):
         for contract in child_departed_contracts:
             sub_contracts = contract_obj.search(
                 [('parent_id', '=', contract.id)])
-            contract_end_date = fields.Datetime.from_string(contract.end_date)
+            contract_end_date = contract.end_date
 
             if not sub_contracts:
                 if contract_end_date < max_sub_waiting:
@@ -122,10 +122,8 @@ class InstallSdsTracking(models.TransientModel):
                         sub_accept_ids.append(contract.id)
                         break
                     elif sub_contract.end_date:
-                        sub_end_date = fields.Datetime.from_string(
-                            sub_contract.end_date)
-                        sub_start_date = fields.Datetime.from_string(
-                            sub_contract.start_date)
+                        sub_end_date = sub_contract.end_date
+                        sub_start_date = sub_contract.start_date
                         if (sub_contract.end_reason_id == depart or
                             sub_end_date >
                                 sub_start_date + timedelta(days=50)):

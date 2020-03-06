@@ -31,9 +31,9 @@ if not testing:
 
         _inherit = ['cms.form', 'res.partner.match']
 
-        partner_id = fields.Many2one('res.partner')
+        partner_id = fields.Many2one('res.partner', readonly=False)
         partner_title = fields.Many2one(
-            'res.partner.title', 'Title', required=True)
+            'res.partner.title', 'Title', required=True, readonly=False)
         partner_firstname = fields.Char('First Name', required=True)
         partner_lastname = fields.Char('Last Name', required=True)
         partner_email = fields.Char('Email', required=True)
@@ -42,9 +42,9 @@ if not testing:
         partner_zip = fields.Char('Zip', required=True)
         partner_city = fields.Char('City', required=True)
         partner_country_id = fields.Many2one(
-            'res.country', 'Country', required=True)
+            'res.country', 'Country', required=True, readonly=False)
         partner_state_id = fields.Many2one(
-            'res.country.state', 'State')
+            'res.country.state', 'State', readonly=False)
         partner_lang = fields.Selection(_lang_get, 'Language')
         partner_birthdate = fields.Date('Birthdate')
 

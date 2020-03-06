@@ -27,7 +27,7 @@ class SponsorshipGift(models.Model):
     # Related records
     #################
     sponsorship_id = fields.Many2one(
-        'recurring.contract', 'Sponsorship', required=True
+        'recurring.contract', 'Sponsorship', required=True, readonly=False
     )
     partner_id = fields.Many2one(
         'res.partner', 'Partner', related='sponsorship_id.correspondent_id',
@@ -35,27 +35,27 @@ class SponsorshipGift(models.Model):
     )
     project_id = fields.Many2one(
         'compassion.project', 'Project',
-        related='sponsorship_id.project_id', store=True
+        related='sponsorship_id.project_id', store=True, readonly=False
     )
     project_suspended = fields.Boolean(
         related='project_id.hold_gifts', track_visibility='onchange'
     )
     child_id = fields.Many2one(
         'compassion.child', 'Child', related='sponsorship_id.child_id',
-        store=True
+        store=True, readonly=False
     )
     invoice_line_ids = fields.One2many(
         'account.invoice.line', 'gift_id', string='Invoice lines',
         readonly=True
     )
     payment_id = fields.Many2one(
-        'account.move', 'GMC Payment', copy=False
+        'account.move', 'GMC Payment', copy=False, readonly=False
     )
     inverse_payment_id = fields.Many2one(
-        'account.move', 'Inverse move', copy=False
+        'account.move', 'Inverse move', copy=False, readonly=False
     )
     message_id = fields.Many2one(
-        'gmc.message', 'GMC message', copy=False
+        'gmc.message', 'GMC message', copy=False, readonly=False
     )
 
     # Gift information
@@ -76,8 +76,8 @@ class SponsorshipGift(models.Model):
         compute='_compute_invoice_fields',
         inverse=lambda g: True, store=True, track_visibility='onchange')
     currency_id = fields.Many2one('res.currency', default=lambda s:
-                                  s.env.user.company_id.currency_id)
-    currency_usd = fields.Many2one('res.currency', compute='_compute_usd')
+                                  s.env.user.company_id.currency_id, readonly=False)
+    currency_usd = fields.Many2one('res.currency', compute='_compute_usd', readonly=False)
     exchange_rate = fields.Float(readonly=True, copy=False, digits=(12, 6))
     amount_us_dollars = fields.Float('Amount due', readonly=True, copy=False)
     instructions = fields.Char()
@@ -154,7 +154,7 @@ class SponsorshipGift(models.Model):
             amounts = invoice_lines.mapped('price_subtotal')
 
             gift.date_partner_paid = fields.Date.to_string(max(
-                [fields.Date.from_string(d) for d in pay_dates]))
+                [d for d in pay_dates]))
 
             if gift.sponsorship_gift_type == 'Birthday':
                 gift.gift_date = self.env['generate.gift.wizard']. \
@@ -162,8 +162,8 @@ class SponsorshipGift(models.Model):
                     gift.child_id.birthdate, inv_dates[0])
             else:
                 gift_date = max(
-                    [fields.Date.from_string(d) for d in inv_dates])
-                gift.gift_date = gift_date and fields.Date.to_string(gift_date)
+                    [d for d in inv_dates])
+                gift.gift_date = gift_date and gift_date
 
             gift.amount = sum(amounts)
 

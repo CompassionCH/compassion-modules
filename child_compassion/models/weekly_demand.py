@@ -40,7 +40,7 @@ class WeeklyDemand(models.Model):
     @api.multi
     def _compute_period_locked(self):
         for week in self:
-            date_week = fields.Datetime.from_string(week.week_start_date)
+            date_week = week.week_start_date
             if date_week:
                 week.period_locked = date_week <= (datetime.today() +
                                                    timedelta(weeks=8))

@@ -20,7 +20,7 @@ class StaffNotificationSettings(models.TransientModel):
         string='SMS new partner',
         domain=[('user_ids', '!=', False)],
         compute='_compute_relation_sms_new_partner_notify_ids',
-        inverse='_inverse_relation_sms_new_partner_notify_ids')
+        inverse='_inverse_relation_sms_new_partner_notify_ids', readonly=False)
 
     def _inverse_relation_sms_new_partner_notify_ids(self):
         self.env['ir.config_parameter'].set_param(

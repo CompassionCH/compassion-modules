@@ -17,7 +17,7 @@ class ValidateRevisionWizard(models.TransientModel):
     revision_id = fields.Many2one(
         'partner.communication.revision',
         default=lambda s: s._default_revision(),
-        required=True
+        required=True, readonly=False
     )
     revision_mode = fields.Selection(
         [('proposition', 'Reviser'),
@@ -30,7 +30,7 @@ class ValidateRevisionWizard(models.TransientModel):
         'res.users', 'Set person in charge',
         domain=[('share', '=', False)],
         compute='_compute_user_id',
-        inverse='_inverse_user_id'
+        inverse='_inverse_user_id', readonly=False
     )
     comments = fields.Text()
 

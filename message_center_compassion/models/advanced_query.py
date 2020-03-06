@@ -17,16 +17,16 @@ class QueryFilter(models.TransientModel):
     _description = 'Compassion Query'
 
     model = fields.Char()
-    field_id = fields.Many2one('ir.model.fields', 'Field')
+    field_id = fields.Many2one('ir.model.fields', 'Field', readonly=False)
     field_type = fields.Selection(related='field_id.ttype', readonly=True)
-    operator_id = fields.Many2one('compassion.query.operator', 'Operator')
+    operator_id = fields.Many2one('compassion.query.operator', 'Operator', readonly=False)
     operator = fields.Char(related='operator_id.gmc_name')
     start_date = fields.Date()
     end_date = fields.Date()
     value = fields.Char(help='Separate values with ;')
     mapped_fields = fields.Many2many(
         'ir.model.fields', 'search_filter_to_fields',
-        compute='_compute_mapped_fields')
+        compute='_compute_mapped_fields', readonly=False)
 
     @api.onchange('start_date', 'end_date')
     def onchange_dates(self):

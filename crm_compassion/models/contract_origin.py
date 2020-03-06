@@ -14,7 +14,7 @@ class ContractOrigin(models.Model):
     """ Add event to origin of a contract """
     _inherit = 'recurring.contract.origin'
 
-    event_id = fields.Many2one('crm.event.compassion', 'Event')
+    event_id = fields.Many2one('crm.event.compassion', 'Event', readonly=False)
 
     @api.depends('type')
     def _compute_name(self):

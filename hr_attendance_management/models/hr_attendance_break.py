@@ -12,10 +12,10 @@ class HrAttendanceBreak(models.Model):
     ##########################################################################
 
     name = fields.Char(compute='_compute_name')
-    employee_id = fields.Many2one('hr.employee', "Employee", required=True)
+    employee_id = fields.Many2one('hr.employee', "Employee", required=True, readonly=False)
     attendance_day_id = fields.Many2one(
         'hr.attendance.day', "Attendance day", required=True,
-        ondelete="cascade")
+        ondelete="cascade", readonly=False)
 
     original_duration = fields.Float(
         compute='_compute_original_duration', store=True)
@@ -31,8 +31,8 @@ class HrAttendanceBreak(models.Model):
     start = fields.Datetime(compute='_compute_start_stop', store=True)
     stop = fields.Datetime(compute='_compute_start_stop', store=True)
 
-    previous_attendance = fields.Many2one('hr.attendance')
-    next_attendance = fields.Many2one('hr.attendance')
+    previous_attendance = fields.Many2one('hr.attendance', readonly=False)
+    next_attendance = fields.Many2one('hr.attendance', readonly=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -48,9 +48,9 @@ class HrAttendanceBreak(models.Model):
             else:
                 # Insert the beginning/end time of the break in is name
                 start = fields.Datetime.context_timestamp(
-                    rd.employee_id, fields.Datetime.from_string(rd.start))
+                    rd.employee_id, rd.start)
                 stop = fields.Datetime.context_timestamp(
-                    rd.employee_id, fields.Datetime.from_string(rd.stop))
+                    rd.employee_id, rd.stop)
                 rd.name = start.strftime('%H:%M') + ' - ' + stop.strftime(
                     '%H:%M')
 
@@ -68,8 +68,8 @@ class HrAttendanceBreak(models.Model):
             if not att_break.stop:
                 att_break.original_duration = 0
             else:
-                start = fields.Datetime.from_string(att_break.start)
-                stop = fields.Datetime.from_string(att_break.stop)
+                start = att_break.start
+                stop = att_break.stop
                 delta = stop - start
                 att_break.original_duration = delta.total_seconds() // 3600.0
 

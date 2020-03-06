@@ -60,10 +60,10 @@ class AbstractHold(models.AbstractModel):
     expiration_date = fields.Datetime(required=True)
     primary_owner = fields.Many2one(
         'res.users', required=True, default=lambda self: self.env.user,
-        domain=[('share', '=', False)]
+        domain=[('share', '=', False)], readonly=False
     )
     secondary_owner = fields.Char()
-    ambassador = fields.Many2one('res.partner')
+    ambassador = fields.Many2one('res.partner', readonly=False)
     yield_rate = fields.Integer()
     no_money_yield_rate = fields.Integer()
     channel = fields.Selection([
@@ -146,14 +146,14 @@ class CompassionHold(models.Model):
         ('expired', "Expired")],
         readonly=True, default='draft', track_visibility='onchange')
     reinstatement_reason = fields.Char(readonly=True)
-    reservation_id = fields.Many2one('compassion.reservation', 'Reservation')
+    reservation_id = fields.Many2one('compassion.reservation', 'Reservation', readonly=False)
     no_money_extension = fields.Integer(
         help="Counts how many time the no money hold was extended."
     )
 
     # Track field changes
-    ambassador = fields.Many2one(track_visibility='onchange')
-    primary_owner = fields.Many2one(track_visibility='onchange')
+    ambassador = fields.Many2one(track_visibility='onchange', readonly=False)
+    primary_owner = fields.Many2one(track_visibility='onchange', readonly=False)
     type = fields.Selection(track_visibility='onchange')
     channel = fields.Selection(track_visibility='onchange')
     expiration_date = fields.Datetime(track_visibility='onchange')
@@ -261,7 +261,7 @@ class CompassionHold(models.Model):
         if child.state not in ('F', 'R'):
             raise UserError(_("Child is not departed."))
         vals.update({
-            'expiration_date': fields.Datetime.to_string(in_90_days),
+            'expiration_date': in_90_days,
             'state': 'active',
             'comments': 'Child was reinstated! Be sure to propose it to its '
                         'previous sponsor.'
@@ -379,8 +379,7 @@ class CompassionHold(models.Model):
         this_week_delay = datetime.now() + timedelta(days=7)
         holds = self.search([
             ('state', '=', 'active'),
-            ('expiration_date', '<=', fields.Datetime.to_string(
-                this_week_delay)),
+            ('expiration_date', '<=', this_week_delay),
             ('type', 'in', [HoldType.NO_MONEY_HOLD.value,
                             HoldType.SUB_CHILD_HOLD.value])
         ])
@@ -437,8 +436,7 @@ class CompassionHold(models.Model):
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
             hold_extension = first_extension \
                 if not hold.no_money_extension else second_extension
-            new_hold_date = fields.Datetime.from_string(
-                hold.expiration_date) + timedelta(days=hold_extension)
+            new_hold_date = hold.expiration_date + timedelta(days=hold_extension)
             is_extended = hold.no_money_extension < 2
             next_extension = hold.no_money_extension
             if hold.type == HoldType.NO_MONEY_HOLD.value:
@@ -447,8 +445,7 @@ class CompassionHold(models.Model):
                 'no_money_extension': next_extension,
             }
             if is_extended:
-                hold_vals['expiration_date'] = fields.Datetime.to_string(
-                    new_hold_date)
+                hold_vals['expiration_date'] = new_hold_date
             old_date = hold.expiration_date
             hold.write(hold_vals)
             subject = "No money hold extension" if is_extended else \

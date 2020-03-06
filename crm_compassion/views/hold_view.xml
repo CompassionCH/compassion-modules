@@ -35,7 +35,7 @@
                 <field name="event_id"/>
             </field>
             <filter name="ambassador" position="before">
-                <filter string="Event" domain="[]" context="{'group_by':'event_id'}"/>
+                <filter string="Event" name="event" domain="[]" context="{'group_by':'event_id'}"/>
             </filter>
         </field>
     </record>
@@ -60,7 +60,7 @@
                 <field name="hold_event"/>
             </field>
             <filter name="ambassador" position="before">
-                <filter string="Event" domain="[]" context="{'group_by':'hold_event'}"/>
+                <filter string="Event" name="event" domain="[]" context="{'group_by':'hold_event'}"/>
             </filter>
         </field>
     </record>

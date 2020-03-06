@@ -9,7 +9,7 @@
     'website': 'http://www.compassion.ch',
 
     'category': 'CRM',
-    'version': '11.0.0.1.0',
+    'version': '12.0.1.0.0',
 
     # Python dependencies
     'external_dependencies': {

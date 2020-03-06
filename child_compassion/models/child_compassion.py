@@ -70,7 +70,7 @@ class CompassionChild(models.Model):
     sponsor_id = fields.Many2one(
         'res.partner', 'Sponsor', track_visibility='onchange', readonly=True)
     partner_id = fields.Many2one(
-        'res.partner', related='sponsor_id'
+        'res.partner', related='sponsor_id', readonly=False
     )
     sponsor_ref = fields.Char(
         'Sponsor reference', related='sponsor_id.ref')
@@ -87,8 +87,8 @@ class CompassionChild(models.Model):
     hold_id = fields.Many2one('compassion.hold', 'Hold', readonly=True)
     hold_type = fields.Selection(related='hold_id.type', store=True)
     hold_channel = fields.Selection(related='hold_id.channel', store=True)
-    hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True)
-    hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True)
+    hold_owner = fields.Many2one(related='hold_id.primary_owner', store=True, readonly=False)
+    hold_ambassador = fields.Many2one(related='hold_id.ambassador', store=True, readonly=False)
     hold_expiration = fields.Datetime(related='hold_id.expiration_date',
                                       string='Hold expiration', store=True)
 
@@ -524,8 +524,8 @@ class CompassionChild(models.Model):
             pictures = child.pictures_ids
             if res and len(pictures) > 1:
                 today = date.today()
-                last_photo = fields.Date.from_string(pictures[1].date)
-                new_photo = fields.Date.from_string(pictures[0].date)
+                last_photo = pictures[1].date
+                new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
                 if (diff_pic.months > 6 or diff_pic.years > 0) and (
@@ -651,7 +651,7 @@ class CompassionChild(models.Model):
         today = datetime.today()
         for child in self.filtered(lambda c: not c.has_been_sponsored):
             if child.hold_expiration:
-                expire = fields.Datetime.from_string(child.hold_expiration)
+                expire = child.hold_expiration
                 postpone = (expire - today).total_seconds() + 60
 
             child.with_delay(eta=postpone).unlink_job()

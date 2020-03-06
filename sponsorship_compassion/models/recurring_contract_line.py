@@ -23,7 +23,7 @@ class SponsorshipLine(models.Model):
         ('SC', 'Correspondence')
     ], related='contract_id.type', readonly=True)
     sponsorship_id = fields.Many2one(
-        'recurring.contract', 'Sponsorship', ondelete='cascade'
+        'recurring.contract', 'Sponsorship', ondelete='cascade', readonly=False
     )
 
     @api.model

@@ -44,7 +44,7 @@ class GmcMessage(models.Model):
         'Related records', help='Used for incoming messages containing '
                                 'several records. (ids separated by commas)')
     res_name = fields.Char(compute='_compute_res_name', store=True)
-    partner_id = fields.Many2one('res.partner', 'Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
 
     request_id = fields.Char('Unique request ID', readonly=True)
     date = fields.Datetime(
@@ -185,7 +185,7 @@ class GmcMessage(models.Model):
         messages = self.filtered(lambda mess: mess.state == 'pending')
         if not self.env.context.get('force_send'):
             messages = messages.filtered(
-                lambda mess: fields.Datetime.from_string(mess.date) <= today)
+                lambda mess: mess.date <= today)
 
         # Verify all messages have the same action (cannot execute multiple
         # actions at once)

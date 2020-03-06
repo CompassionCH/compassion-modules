@@ -19,7 +19,7 @@ class GmcActionConnect(models.Model):
     _rec_name = 'connect_schema'
 
     connect_schema = fields.Char(required=True)
-    action_id = fields.Many2one('gmc.action', 'GMC Action', required=False)
+    action_id = fields.Many2one('gmc.action', 'GMC Action', required=False, readonly=False)
     ignored = fields.Boolean(
         help='True if the received connect_schema sould be ignored'
     )

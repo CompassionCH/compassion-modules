@@ -17,7 +17,7 @@ class CollectGiftWizard(models.TransientModel):
     _name = 'gift.collect.wizard'
 
     invoice_line_ids = fields.Many2many(
-        'account.invoice.line', string='Invoice lines',
+        'account.invoice.line', string='Invoice lines', readonly=False
     )
     domain = fields.Char(
         default="[('product_id.name', '=', 'Child gift'),"

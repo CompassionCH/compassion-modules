@@ -94,7 +94,7 @@ class TestPeriod(SavepointCase):
                 key=lambda a: a.date and a.check_out)[-1]
 
         last_attendance.write({
-            'check_out': fields.Datetime.from_string(last_attendance.check_out) +
+            'check_out': last_attendance.check_out +
             timedelta(hours=hours)
         })
 

@@ -18,10 +18,10 @@ class LastWritingReport(models.Model):
     _order = 'last_write_date desc,activation_date desc'
     _auto = False
 
-    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
+    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship', readonly=False)
     name = fields.Char(related='sponsorship_id.name')
-    partner_id = fields.Many2one('res.partner', 'Partner')
-    child_id = fields.Many2one('compassion.child', 'Child')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
+    child_id = fields.Many2one('compassion.child', 'Child', readonly=False)
     sponsorship_type = fields.Selection(related='sponsorship_id.type')
     activation_date = fields.Date()
     first_write_date = fields.Date()

@@ -38,9 +38,9 @@ class SmsChildRequest(models.Model):
     sender = fields.Char('Phone')
     date = fields.Datetime(required=True, default=fields.Datetime.now)
     full_url = fields.Char(compute='_compute_full_url')
-    step1_url_id = fields.Many2one('link.tracker')
+    step1_url_id = fields.Many2one('link.tracker', readonly=False)
     step1_url = fields.Char('Step 1 URL', related='step1_url_id.short_url')
-    step2_url_id = fields.Many2one('link.tracker')
+    step2_url_id = fields.Many2one('link.tracker', readonly=False)
     step2_url = fields.Char('Step 2 URL', related='step2_url_id.short_url')
     state = fields.Selection([
         ('new', 'Request received'),
@@ -49,18 +49,18 @@ class SmsChildRequest(models.Model):
         ('step2', 'Step 2 completed'),
         ('expired', 'Request expired')
     ], default='new', track_visibility='onchange')
-    partner_id = fields.Many2one('res.partner', 'Partner')
+    partner_id = fields.Many2one('res.partner', 'Partner', readonly=False)
     country_id = fields.Many2one(
         'res.country', related='partner_id.country_id', readonly=True)
     child_id = fields.Many2one(
-        'compassion.child', 'Child', ondelete='set null')
-    hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id')
+        'compassion.child', 'Child', ondelete='set null', readonly=False)
+    hold_id = fields.Many2one('compassion.hold', related='child_id.hold_id', readonly=False)
     event_id = fields.Many2one(
         'crm.event.compassion', 'Event',
         domain=[('accepts_sms_booking', '=', True)],
-        compute='_compute_event', inverse='_inverse_event', store=True
+        compute='_compute_event', inverse='_inverse_event', store=True, readonly=False
     )
-    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship')
+    sponsorship_id = fields.Many2one('recurring.contract', 'Sponsorship', readonly=False)
     sponsorship_confirmed = fields.Boolean('Sponsorship confirmed', readonly=True)
     lang_code = fields.Selection('select_lang', required=True,
                                  default=lambda s: s.env.lang)
@@ -78,7 +78,7 @@ class SmsChildRequest(models.Model):
     min_age = fields.Integer(size=2)
     max_age = fields.Integer(size=2, default=DEFAULT_MAX_AGE)
     field_office_id = fields.Many2one(
-        'compassion.field.office', 'Field Office')
+        'compassion.field.office', 'Field Office', readonly=False)
 
     is_trying_to_fetch_child = fields.Boolean(
         help="This is set to true when a child is currently being fetched. "
@@ -102,7 +102,7 @@ class SmsChildRequest(models.Model):
             event_id = self.env['crm.event.compassion'].search([
                 ('accepts_sms_booking', '=', True),
                 ('start_date', '<=', request.date),
-                ('start_date', '>=', fields.Datetime.to_string(limit_date))
+                ('start_date', '>=', limit_date)
             ], order='start_date desc', limit=1)
             # event_id is None if start_date of most recent event is>1 week old
             request.event_id = event_id
@@ -246,7 +246,7 @@ class SmsChildRequest(models.Model):
             result_action = self.env['child.hold.wizard'].with_context(
                 active_id=childpool_search.id, async_mode=False).create({
                     'type': HoldType.E_COMMERCE_HOLD.value,
-                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'expiration_date': expiration,
                     'primary_owner': self.env.uid,
                     'event_id': self.event_id.id,
                     'campaign_id': self.event_id.campaign_id.id,

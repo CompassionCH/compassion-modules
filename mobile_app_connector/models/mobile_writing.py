@@ -42,7 +42,7 @@ class AppWriting(models.Model):
         ], compute='_compute_state', store=True, default='new')
 
     template_ids = fields.Many2many('correspondence.template',
-                                    string="Templates")
+                                    string="Templates", readonly=False)
 
     print_count = fields.Integer(readonly=True)
     position = fields.Integer()
@@ -63,8 +63,8 @@ class AppWriting(models.Model):
     @api.constrains('date_start', 'date_stop')
     def _check_dates(self):
         for writing in self:
-            date_start = fields.Date.from_string(writing.date_start)
-            date_stop = fields.Date.from_string(writing.date_stop)
+            date_start = writing.date_start
+            date_stop = writing.date_stop
             if date_start and date_stop and date_stop <= date_start:
                 raise ValidationError(_("Period is not valid"))
 

@@ -47,7 +47,7 @@ class EventCompassion(models.Model):
         in_one_day = datetime.now() + relativedelta(days=1)
         events = self.search([
             ('accepts_sms_booking', '=', True),
-            ('start_date', '<=', fields.Datetime.to_string(in_one_day)),
+            ('start_date', '<=', in_one_day),
             ('start_date', '>=', fields.Datetime.now()),
             ('initial_sms_allocation_done', '=', False)
         ])
@@ -72,12 +72,12 @@ class EventCompassion(models.Model):
                 'max_age': DEFAULT_MAX_AGE
             })
             childpool_search.with_context(skip_value=1000).do_search()
-            expiration = fields.Datetime.from_string(event.end_date) + \
+            expiration = event.end_date + \
                 relativedelta(days=2)
             self.env['child.hold.wizard'].with_context(
                 active_id=childpool_search.id).create({
                     'type': HoldType.CONSIGNMENT_HOLD.value,
-                    'expiration_date': fields.Datetime.to_string(expiration),
+                    'expiration_date': expiration,
                     'primary_owner': self.env.uid,
                     'event_id': event.id,
                     'campaign_id': event.campaign_id.id,

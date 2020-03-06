@@ -35,8 +35,8 @@ class MajorRevision(models.Model):
         ('Primary Caregiver', 'Primary Caregiver'),
     ], required=True)
     old_value = fields.Char()
-    child_id = fields.Many2one('compassion.child', ondelete='cascade')
-    household_id = fields.Many2one('compassion.household', ondelete='cascade')
+    child_id = fields.Many2one('compassion.child', ondelete='cascade', readonly=False)
+    household_id = fields.Many2one('compassion.household', ondelete='cascade', readonly=False)
 
     @api.model
     def create(self, vals):

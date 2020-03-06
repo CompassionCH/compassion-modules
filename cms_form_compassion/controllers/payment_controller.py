@@ -36,7 +36,7 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
             raise NotFound()
 
         acquirer = request.env['payment.acquirer'].search(
-            [('website_published', '=', True),
+            [('is_published', '=', True),
              ('company_id', '=', invoice.company_id.id)],
             limit=1
         )
