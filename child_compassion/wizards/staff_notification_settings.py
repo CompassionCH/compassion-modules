@@ -32,7 +32,7 @@ class StaffNotificationSettings(models.TransientModel):
 
     @api.model
     def _get_disaster_notify_ids(self):
-        param_obj = self.env['ir.config_parameter']
+        param_obj = self.env['ir.config_parameter'].sudo()
         partners = param_obj.get_param(
             'child_compassion.disaster_notify_ids', False)
         if partners:
@@ -52,8 +52,3 @@ class StaffNotificationSettings(models.TransientModel):
         res = super().get_values()
         res['disaster_notify_ids'] = self._get_disaster_notify_ids()
         return res
-
-    @api.model
-    def get_param(self, param):
-        """ Retrieve a single parameter. """
-        return self.sudo().get_values()[param]

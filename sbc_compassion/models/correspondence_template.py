@@ -363,7 +363,7 @@ class CorrespondenceTemplate(models.Model):
         return os.path.join(self._absolute_path, folder + "/" + filename)
 
     def _compute_template_data(self):
-        config_obj = self.env['ir.config_parameter']
+        config_obj = self.env['ir.config_parameter'].sudo()
         for template in self.filtered('template_image'):
             template_cv_image = template._get_cv2_image()
             template.page_height, template.page_width = \

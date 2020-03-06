@@ -98,5 +98,5 @@ class CommunicationAttachment(models.Model):
                     print_name=self.env.user.firstname[:3] + ' ' +
                     attachment.name
                 ).print_document(
-                    attachment.report_name, to_print, report.report_type)
+                    attachment.report_name, to_print)
         return True

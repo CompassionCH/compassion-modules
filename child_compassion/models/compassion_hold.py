@@ -90,9 +90,9 @@ class AbstractHold(models.AbstractModel):
         :param hold_type: HoldType Enum
         :return:
         """
-        config_obj = self.env['availability.management.settings']
+        config_obj = self.env['res.config.settings']
         hold_param = hold_type.name.lower() + '_duration'
-        duration = config_obj.get_param(hold_param)
+        duration = config_obj.sudo().get_param(hold_param)
         diff = timedelta(days=duration) if hold_type != \
             HoldType.E_COMMERCE_HOLD else timedelta(minutes=duration)
         return datetime.now() + diff
@@ -420,7 +420,7 @@ class CompassionHold(models.Model):
         Send a notification to hold owner.
         :return: None
         """
-        settings = self.env['availability.management.settings']
+        settings = self.env['res.config.settings'].sudo()
         first_extension = settings.get_param('no_money_hold_duration')
         second_extension = settings.get_param('no_money_hold_extension')
         body_extension = (

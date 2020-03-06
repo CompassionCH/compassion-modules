@@ -27,7 +27,7 @@ class DemandPlanningSettings(models.TransientModel):
     @api.model
     def get_values(self):
         res = super().get_values()
-        param_obj = self.env['ir.config_parameter']
+        param_obj = self.env['ir.config_parameter'].sudo()
         s2b_template_id = int(param_obj.get_param(
             'mobile_app_connector.s2b_template', "0"))
         res.update({

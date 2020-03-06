@@ -137,7 +137,7 @@ class SmsChildRequest(models.Model):
                 vals['partner_id'] = partner.id
                 vals['lang_code'] = partner.lang
         request = super().create(vals)
-        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         request.write({
             'step1_url_id': self.env['link.tracker'].sudo().create({
                 'title': "Sponsor a child",
@@ -200,7 +200,7 @@ class SmsChildRequest(models.Model):
         :return: True
         """
         self.ensure_one()
-        base_url = self.env['ir.config_parameter'].get_param('web.external.url')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         self.write({
             'sponsorship_id': sponsorship_id,
             'state': 'step1',
@@ -364,7 +364,7 @@ class SmsChildRequest(models.Model):
         ])
 
         # send staff notification
-        notify_ids = self.env['res.config.settings'].get_param(
+        notify_ids = self.env['res.config.settings'].sudo().get_param(
             'sms_new_partner_notify_ids')
         if nb_sms_requests and notify_ids:
             self.message_post(

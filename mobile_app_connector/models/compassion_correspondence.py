@@ -94,7 +94,7 @@ class CompassionCorrespondence(models.Model):
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
-        host = self.env['ir.config_parameter'].get_param('web.external.url')
+        host = self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         letter_id = other_params.get('correspondenceid')
         if letter_id:
             letter = self.browse(int(letter_id))
@@ -149,7 +149,7 @@ class CompassionCorrespondence(models.Model):
         # Another difference between iOS/Android (string or integer)
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['res.config.settings'].get_param(
+            template_id = self.env['res.config.settings'].sudo().get_param(
                 'default_s2b_template_id')
         attached_file = other_params.get('file_upl')
         datas = False
@@ -173,7 +173,7 @@ class CompassionCorrespondence(models.Model):
         self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
         web_base_url = \
-            self.env['ir.config_parameter'].get_param('web.external.url')
+            self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         url = web_base_url + "/web/image/" + gen._name + "/" + \
             str(gen.id) + "/preview_pdf"
         return url
@@ -208,7 +208,7 @@ class CompassionCorrespondence(models.Model):
         # iOS and Android do not return the same format
         if template_id == '0' or template_id == 0:
             # write a card -> default template
-            template_id = self.env['res.config.settings'].get_param(
+            template_id = self.env['res.config.settings'].sudo().get_param(
                 'default_s2b_template_id')
         child_id = self._get_required_param('Need', params)
         if isinstance(child_id, list):

@@ -227,7 +227,7 @@ class FieldOfficeDisasterAlert(models.Model):
         disaster_id = vals.get('disaster_id')
         disaster = self.search([('disaster_id', '=', disaster_id)])
         # Notify users
-        notify_ids = self.env['res.config.settings'].get_param(
+        notify_ids = self.env['res.config.settings'].sudo().get_param(
             'disaster_notify_ids')
         if disaster:
             disaster.write(vals)

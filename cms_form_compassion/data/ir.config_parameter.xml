@@ -1,0 +1,8 @@
+<odoo>
+    <data noupdate="1">
+        <record id="external_url" model="ir.config_parameter">
+            <field name="key">web.external.url</field>
+            <field name="value">http://localhost:8069</field>
+        </record>
+    </data>
+</odoo>

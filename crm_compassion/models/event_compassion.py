@@ -370,8 +370,7 @@ class EventCompassion(models.Model):
     def onchange_start_date(self):
         """ Update end_date and hold_start_date as soon as start_date is
         changed """
-        days_allocate_before_event = self.env[
-            'demand.planning.settings'].get_param(
+        days_allocate_before_event = self.env['res.config.settings'].sudo().get_param(
             'days_allocate_before_event')
         dt = timedelta(days=days_allocate_before_event)
         for event in self.filtered('start_date'):
@@ -382,7 +381,7 @@ class EventCompassion(models.Model):
     @api.onchange('end_date')
     @api.multi
     def onchange_end_date(self):
-        days_after = self.env['demand.planning.settings'].get_param(
+        days_after = self.env['res.config.settings'].sudo().get_param(
             'days_hold_after_event')
         for event in self.filtered('end_date'):
             hold_end_date = event.end_date + timedelta(days=days_after)
@@ -453,9 +452,9 @@ class EventCompassion(models.Model):
         if self.number_allocate_children > 1:
             no_money_yield /= self.number_allocate_children
             yield_rate /= self.number_allocate_children
-        expiration_date = self.end_date + \
-            timedelta(days=self.env['demand.planning.settings'].
-                      get_param('days_hold_after_event'))
+        expiration_date = fields.Datetime.from_string(self.end_date) + \
+            timedelta(days=self.env['res.config.settings'].sudo()
+                      .get_param('days_hold_after_event'))
         return {
             'name': _('Global Childpool'),
             'type': 'ir.actions.act_window',

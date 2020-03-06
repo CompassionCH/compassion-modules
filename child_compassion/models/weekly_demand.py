@@ -57,9 +57,9 @@ class WeeklyDemand(models.Model):
 
     def get_defaults(self):
         """ Returns the computation defaults in a dictionary. """
-        demand = self.env['ir.config_parameter'].get_param(
+        demand = self.env['ir.config_parameter'].sudo().get_param(
             'child_compassion.default_demand', 0)
-        resupply = self.env['ir.config_parameter'].get_param(
+        resupply = self.env['ir.config_parameter'].sudo().get_param(
             'child_compassion.default_resupply', 0)
         return {
             'total_demand': demand,

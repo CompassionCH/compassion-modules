@@ -203,7 +203,7 @@ class AppTile(models.Model):
                 'ActionText': template_obj.render_template(
                     self.action_text, self._name, self.id),
                 'SortOrder': self.view_order,
-                'IsAutomaticOrdering': self.is_automatic_ordering,
+                'IsAutomaticOrdering': self.is_automatic_ordering
             }
 
             if self.prayer_title and self.prayer_body:
@@ -219,6 +219,8 @@ class AppTile(models.Model):
         except:
             _logger.error("Error rendering tile %s", self.name, exc_info=True)
             res = {}
+        if not res.get('OrderDate'):
+            res['OrderDate'] = self.create_date
         return res
 
     @api.multi

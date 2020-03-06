@@ -694,8 +694,7 @@ class SponsorshipGift(models.Model):
             inverse_move.post()
             gift.inverse_payment_id = inverse_move
 
-        notify_ids = self.env['res.config.settings'].get_param(
-            'gift_notify_ids')
+        notify_ids = self.env['res.config.settings'].sudo().get_param('gift_notify_ids')
         if notify_ids:
             for gift in self:
                 partner = gift.partner_id

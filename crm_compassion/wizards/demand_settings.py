@@ -13,8 +13,8 @@ from odoo import api, models, fields
 
 class DemandPlanningSettings(models.TransientModel):
     """ Settings configuration for Demand Planning."""
-    _name = 'demand.planning.settings'
-    _inherit = 'res.config.settings'
+
+    _inherit = "res.config.settings"
 
     number_children_website = fields.Integer()
     number_children_ambassador = fields.Integer()
@@ -22,51 +22,39 @@ class DemandPlanningSettings(models.TransientModel):
     days_hold_after_event = fields.Integer()
 
     @api.multi
-    def set_number_children_website(self):
-        self.env['ir.config_parameter'].set_param(
-            'crm_compassion.number_children_web',
-            str(self.number_children_website))
-
-    @api.multi
-    def set_number_children_ambassador(self):
-        self.env['ir.config_parameter'].set_param(
-            'crm_compassion.number_children_ambassador',
-            str(self.number_children_ambassador))
-
-    @api.multi
-    def set_days_allocate_before_event(self):
-        self.env['ir.config_parameter'].set_param(
-            'crm_compassion.days_allocate_before_event',
-            str(self.days_allocate_before_event))
-
-    @api.multi
-    def set_days_hold_after_event(self):
-        self.env['ir.config_parameter'].set_param(
-            'crm_compassion.days_hold_after_event',
-            str(self.days_hold_after_event))
+    def set_values(self):
+        super().set_values()
+        config = self.env["ir.config_parameter"]
+        config.set_param(
+            "crm_compassion.number_children_web", str(self.number_children_website)
+        )
+        config.set_param(
+            "crm_compassion.number_children_ambassador",
+            str(self.number_children_ambassador),
+        )
+        config.set_param(
+            "crm_compassion.days_allocate_before_event",
+            str(self.days_allocate_before_event),
+        )
+        config.set_param(
+            "crm_compassion.days_hold_after_event", str(self.days_hold_after_event)
+        )
 
     @api.model
-    def get_default_values(self, _fields):
-        param_obj = self.env['ir.config_parameter']
-        web = int(param_obj.get_param(
-            'crm_compassion.number_children_web', '500'))
-        ambassador = int(param_obj.get_param(
-            'crm_compassion.number_children_ambassador', '10'))
-        days_event = int(param_obj.get_param(
-            'crm_compassion.days_allocate_before_event', '10'))
-        days_hold_after_event = int(param_obj.get_param(
-            'crm_compassion.days_hold_after_event', '10'))
+    def get_values(self):
+        res = super().get_values()
+        config = self.env["ir.config_parameter"].sudo()
 
-        all_values = {
-            'number_children_website': web,
-            'number_children_ambassador': ambassador,
-            'days_allocate_before_event': days_event,
-            'days_hold_after_event': days_hold_after_event
-        }
-
-        return {key: all_values.get(key, 10) for key in _fields}
-
-    @api.model
-    def get_param(self, param):
-        """ Retrieve a single parameter. """
-        return self.get_default_values([param])[param]
+        res["number_children_website"] = int(
+            config.get_param("crm_compassion.number_children_web", "500")
+        )
+        res["number_children_ambassador"] = int(
+            config.get_param("crm_compassion.number_children_ambassador", "10",)
+        )
+        res["days_allocate_before_event"] = int(
+            config.get_param("crm_compassion.days_allocate_before_event", "10",)
+        )
+        res["days_hold_after_event"] = int(
+            config.get_param("crm_compassion.days_hold_after_event", "10")
+        )
+        return res

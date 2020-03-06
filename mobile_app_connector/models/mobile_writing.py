@@ -97,14 +97,14 @@ class AppWriting(models.Model):
             [('active', '=', True)])
 
         return [
-            x.get_json() for x in actives
+            x.sudo().get_json() for x in actives
         ]
 
     @api.multi
     def get_json(self):
         self.ensure_one()
         web_base_url = \
-            self.env['ir.config_parameter'].get_param('web.external.url')
+            self.env['ir.config_parameter'].sudo().get_param('web.external.url')
         base_url = web_base_url + "/web/image/" + self.template_ids[0]._name \
             + "/"
         return {

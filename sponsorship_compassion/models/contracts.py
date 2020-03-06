@@ -240,7 +240,7 @@ class SponsorshipContract(models.Model):
     def _compute_suspended_amount(self):
         """ Suspended amount is all amount donated to suspension product
         and amount not reconciled. """
-        suspend_config = int(self.env['ir.config_parameter'].get_param(
+        suspend_config = int(self.env['ir.config_parameter'].sudo().get_param(
             'sponsorship_compassion.suspend_product_id', 0))
         suspend_product = self.env['product.product'].browse(
             suspend_config).exists()
@@ -517,7 +517,7 @@ class SponsorshipContract(models.Model):
         logger.info(f"suspension of contracts {ids} called")
         date_start = datetime.today().strftime(DF)
 
-        config_obj = self.env['ir.config_parameter']
+        config_obj = self.env['ir.config_parameter'].sudo()
         suspend_config = config_obj.get_param(
             'sponsorship_compassion.suspend_product_id')
         # Cancel invoices in the period of suspension
@@ -691,7 +691,7 @@ class SponsorshipContract(models.Model):
             Add analytic account to invoice_lines.
         """
         contracts = self.filtered(lambda c: c.total_amount != 0)
-        suspend_config = int(self.env['ir.config_parameter'].get_param(
+        suspend_config = int(self.env['ir.config_parameter'].sudo().get_param(
             'sponsorship_compassion.suspend_product_id', 0))
         res = list()
         for contract in contracts:
