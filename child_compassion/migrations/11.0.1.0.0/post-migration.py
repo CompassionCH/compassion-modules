@@ -21,7 +21,7 @@ def migrate(env, version):
     # Add sponsorship group to everyone
     sponsorship_group = env.ref('child_compassion.group_sponsorship')
     env['res.users'].search([
-        ('internal', '=', True),
+        ('share', '=', False),
         ('email', 'ilike', 'compassion.ch')
     ]).write({
         'groups_id': [(4, sponsorship_group.id)]
