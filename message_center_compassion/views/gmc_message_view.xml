@@ -156,11 +156,11 @@
                 <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
                 <filter string="Success" name="success" domain="[('state','=','success')]" />
                 <group expand="0" string="Group By...">
-                    <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Date" domain="[]" context="{'group_by':'date'}"/>
-                    <filter string="Process Date" domain="[]" context="{'group_by':'process_date'}"/>
-                    <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Message Type" domain="[]" context="{'group_by':'action_id'}"/>
+                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Date" name="date" domain="[]" context="{'group_by':'date'}"/>
+                    <filter string="Process Date" name="process_date" domain="[]" context="{'group_by':'process_date'}"/>
+                    <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Message Type" name="message_type" domain="[]" context="{'group_by':'action_id'}"/>
                 </group>
             </search>
         </field>

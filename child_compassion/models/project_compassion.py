@@ -79,7 +79,7 @@ class CompassionProject(models.Model):
     territory = fields.Char(readonly=True)
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field Office',
-        compute='_compute_field_office', store=True)
+        compute='_compute_field_office', store=True, readonly=False)
 
     # Church information
     ####################
@@ -196,10 +196,10 @@ class CompassionProject(models.Model):
         readonly=True
     )
     local_currency = fields.Many2one('res.currency',
-                                     related='country_id.currency_id')
+                                     related='country_id.currency_id', readonly=False)
     monthly_income = fields.Float(
         help='Average family income in local currency', readonly=True)
-    usd = fields.Many2one('res.currency', compute='_compute_usd')
+    usd = fields.Many2one('res.currency', compute='_compute_usd', readonly=False)
     chf_income = fields.Float(compute='_compute_chf_income')
     unemployment_rate = fields.Float(readonly=True)
     annual_primary_school_cost = fields.Float(
@@ -254,7 +254,7 @@ class CompassionProject(models.Model):
         'fcp.diet', string='Primary diet', readonly=True)
     fcp_disaster_impact_ids = fields.One2many(
         'fcp.disaster.impact', 'project_id', 'FCP Disaster Impacts',
-        oldname='icp_disaster_impact_ids'
+        oldname='icp_disaster_impact_ids', readonly=False
     )
     current_weather = fields.Selection([
         ('Clear', 'Clear'),
@@ -439,8 +439,7 @@ class CompassionProject(models.Model):
         """
         for project in self:
             if not project.last_weather_refresh_date \
-                or datetime.now() - fields.Datetime.from_string(
-                    project.last_weather_refresh_date) > timedelta(hours=1):
+                or datetime.now() - project.last_weather_refresh_date > timedelta(hours=1):
                 json = requests.get(
                     "https://api.openweathermap.org/data/2.5/weather" +
                     "?lat=" + str(project.gps_latitude) +

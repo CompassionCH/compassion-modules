@@ -27,7 +27,7 @@ class SubSponsorshipWizard(models.TransientModel):
         ('direct', 'Direct')
     ])
     child_id = fields.Many2one(
-        'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])])
+        'compassion.child', 'Child', domain=[('state', 'in', ['N', 'I'])], readonly=False)
     no_sub_default_reasons = fields.Selection([
         ('other_sponsorship', _('Sponsors other children')),
         ('financial', _('Financial reasons')),
@@ -61,12 +61,10 @@ class SubSponsorshipWizard(models.TransientModel):
                 'sponsorship_compassion.utm_campaign_sub').id
         })
         today = datetime.today()
-        next_invoice_date = fields.Date.from_string(
-            contract.next_invoice_date).replace(month=today.month,
+        next_invoice_date = contract.next_invoice_date.replace(month=today.month,
                                                 year=today.year)
         if contract.last_paid_invoice_date:
-            sub_invoice_date = fields.Date.from_string(
-                contract.last_paid_invoice_date) + relativedelta(months=1)
+            sub_invoice_date = contract.last_paid_invoice_date + relativedelta(months=1)
             next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
         if self.child_id:
@@ -94,8 +92,7 @@ class SubSponsorshipWizard(models.TransientModel):
                 'context': self.with_context({
                     'default_take': 1,
                     'contract_id': sub_contract.id,
-                    'next_invoice_date': fields.Date.to_string(
-                        next_invoice_date),
+                    'next_invoice_date': next_invoice_date,
                     'default_type': HoldType.SUB_CHILD_HOLD.value,
                     'default_channel': 'sub',
                     'default_return_action': 'sub',

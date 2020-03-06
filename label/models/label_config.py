@@ -17,7 +17,7 @@ class LabelBrand(models.Model):
 
     brand_name = fields.Char("Name", size=64, index=1)
     label_config_ids = fields.One2many(
-        'label.config', 'label_main_id', 'Label Config')
+        'label.config', 'label_main_id', 'Label Config', readonly=False)
 
 
 class LabelConfig(models.Model):
@@ -31,7 +31,7 @@ class LabelConfig(models.Model):
     bottom_margin = fields.Float("Bottom Margin  (in mm)", default=0.0)
     left_margin = fields.Float("Left Margin (in mm)", default=0.0)
     right_margin = fields.Float("Right Margin (in mm)", default=0.0)
-    label_main_id = fields.Many2one('label.brand', 'Label')
+    label_main_id = fields.Many2one('label.brand', 'Label', readonly=False)
     cell_spacing = fields.Float("Cell Spacing (in mm)", default=0.0)
 
 
@@ -39,8 +39,8 @@ class LabelPrintField(models.Model):
     _name = "label.print.field"
     _description = 'Label Print Field'
 
-    field_id = fields.Many2one('ir.model.fields', 'Fields', required=False)
-    report_id = fields.Many2one('label.print', 'Report')
+    field_id = fields.Many2one('ir.model.fields', 'Fields', required=False, readonly=False)
+    report_id = fields.Many2one('label.print', 'Report', readonly=False)
     type = fields.Selection([('normal', 'Normal'), ('barcode', 'Barcode')],
                             'Type', required=True,
                             default='normal')

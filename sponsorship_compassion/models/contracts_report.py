@@ -20,9 +20,9 @@ class PartnerSponsorshipReport(models.Model):
     start_period = fields.Date(compute='_compute_start_period')
 
     related_active_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_active_sponsorship')
+        "recurring.contract", compute='_compute_related_active_sponsorship', readonly=False)
     related_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_sponsorship')
+        "recurring.contract", compute='_compute_related_sponsorship', readonly=False)
 
     # sr -> Sponsorship Report
     sr_sponsorship = fields.Integer('Number of sponsorship',
@@ -62,7 +62,7 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_start_period(self):
         for partner in self:
-            end = fields.Date.from_string(partner.end_period)
+            end = partner.end_period
             partner.start_period = fields.Date.to_string(
                 end - relativedelta(months=12))
 

@@ -30,13 +30,13 @@ class GenericChild(models.AbstractModel):
     #####################
     global_id = fields.Char('Global ID', required=True, readonly=True)
     correspondence_language_id = fields.Many2one(
-        'res.lang.compassion', 'Correspondence language')
+        'res.lang.compassion', 'Correspondence language', readonly=False)
     local_id = fields.Char(
         'Local ID', size=11, help='Child reference', readonly=True)
-    project_id = fields.Many2one('compassion.project', 'Project')
+    project_id = fields.Many2one('compassion.project', 'Project', readonly=False)
     field_office_id = fields.Many2one(
         'compassion.field.office', 'Field office',
-        related='project_id.field_office_id')
+        related='project_id.field_office_id', readonly=False)
     name = fields.Char()
     firstname = fields.Char()
     lastname = fields.Char()
@@ -102,7 +102,7 @@ class GenericChild(models.AbstractModel):
     def _compute_age(self):
         today = date.today()
         for child in self.filtered('birthdate'):
-            born = fields.Date.from_string(child.birthdate)
+            born = child.birthdate
             child.age = today.year - born.year - \
                 ((today.month, today.day) < (born.month, born.day))
 
@@ -130,14 +130,14 @@ class GlobalChild(models.TransientModel):
 
     color = fields.Integer(compute='_compute_color')
     is_special_needs = fields.Boolean()
-    field_office_id = fields.Many2one(store=True)
+    field_office_id = fields.Many2one(store=True, readonly=False)
     search_view_id = fields.Many2one(
-        'compassion.childpool.search'
+        'compassion.childpool.search', readonly=False
     )
     priority_score = fields.Float(help='How fast the child should be '
                                        'sponsored')
     holding_global_partner_id = fields.Many2one(
-        'compassion.global.partner', 'Holding global partner'
+        'compassion.global.partner', 'Holding global partner', readonly=False
     )
     waiting_days = fields.Integer()
     hold_expiration_date = fields.Datetime()

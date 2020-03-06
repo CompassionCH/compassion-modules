@@ -28,7 +28,7 @@
 
 # pylint: disable=C8101
 {'name': 'Geospatial support for compassion projects',
- 'version': '11.0.1.0.0',
+ 'version': '12.0.1.0.0',
  'category': 'GeoBI',
  'author': "Fluckiger Nathan",
  'license': 'AGPL-3',

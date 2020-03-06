@@ -25,7 +25,7 @@ class ChildPictures(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     child_id = fields.Many2one(
-        'compassion.child', 'Child', required=True, ondelete='cascade')
+        'compassion.child', 'Child', required=True, ondelete='cascade', readonly=False)
     fullshot = fields.Binary(attachment=True)
     headshot = fields.Binary(attachment=True)
     image_url = fields.Char()

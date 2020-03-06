@@ -16,7 +16,7 @@ class ValidateRevisionWizard(models.TransientModel):
 
     revision_id = fields.Many2one(
         'partner.communication.revision',
-        default=lambda s: s._default_revision(),
+        default=lambda s: s._default_revision(), readonly=False
     )
     state = fields.Selection(related='revision_id.state')
     reviser_name = fields.Char(related='revision_id.user_id.name')

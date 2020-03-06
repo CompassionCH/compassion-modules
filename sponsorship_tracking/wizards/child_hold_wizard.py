@@ -43,8 +43,7 @@ class ChildHoldWizard(models.TransientModel):
             # Prevent choosing child completing in less than 2 years
             in_two_years = datetime.today() + relativedelta(years=2)
             child = holds[0].child_id
-            if child.completion_date and fields.Datetime.from_string(
-                    child.completion_date) < in_two_years:
+            if child.completion_date and child.completion_date < in_two_years:
                 raise UserError(_(
                     "Completion date of child is in less than 2 years! "
                     "Please choose another child."

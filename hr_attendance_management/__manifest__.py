@@ -40,7 +40,7 @@
         'child_compassion',                 # compassion-modules
         'thankyou_letters'                  # compassion-modules
     ],
-    'version': '11.0.0.0.0',
+    'version': '12.0.1.0.0',
     'auto_install': False,
     'website': 'https://www.compassion.ch',
     'license': 'AGPL-3',

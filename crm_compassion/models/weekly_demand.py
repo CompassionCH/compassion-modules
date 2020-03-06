@@ -83,12 +83,12 @@ class WeeklyDemand(models.Model):
                 ('hold_start_date', '<=', week.week_end_date),
                 ('start_date', '>=', week.week_start_date)
             ])
-            week_start = fields.Date.from_string(week.week_start_date)
-            week_end = fields.Date.from_string(week.week_end_date)
+            week_start = week.week_start_date
+            week_end = week.week_end_date
             allocate = 0
             for event in events:
-                hold_start = fields.Date.from_string(event.hold_start_date)
-                event_start = fields.Date.from_string(event.start_date)
+                hold_start = event.hold_start_date
+                event_start = event.start_date
                 days_for_allocation = (event_start - hold_start).days + 1
                 days_in_week = 7
                 if week_start < hold_start:
@@ -123,7 +123,7 @@ class WeeklyDemand(models.Model):
         website_medium = self.env.ref('utm.utm_medium_website').id
         sub_sponsored = self.env['recurring.contract'].search_count([
             ('parent_id', '!=', False),
-            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('start_date', '>=', start_date),
             ('medium_id', '!=', website_medium)
         ])
         return float(sub_sponsored) // STATS_DURATION
@@ -146,7 +146,7 @@ class WeeklyDemand(models.Model):
         website_medium = self.env.ref('utm.utm_medium_website').id
         web_sponsored = self.env['recurring.contract'].search_count([
             ('medium_id', '=', website_medium),
-            ('start_date', '>=', fields.Date.to_string(start_date))
+            ('start_date', '>=', start_date)
         ])
         allocate_per_week = self.env['res.config.settings'].sudo().get_param(
             'number_children_website')
@@ -163,7 +163,7 @@ class WeeklyDemand(models.Model):
             ('origin_id.type', '=', 'partner'),
             ('origin_id.partner_id', '!=', False),
             ('origin_id.partner_id.user_ids', '!=', False),
-            ('start_date', '>=', fields.Date.to_string(start_date)),
+            ('start_date', '>=', start_date),
             ('medium_id', '!=', website_medium)
         ])
         allocate_per_week = self.env['res.config.settings'].sudo().get_param(
@@ -179,26 +179,24 @@ class WeeklyDemand(models.Model):
         start_date = today - timedelta(weeks=STATS_DURATION)
         rejected_sub = self.env['recurring.contract'].search([
             ('parent_id', '!=', False),
-            ('start_date', '>=', fields.Datetime.to_string(start_date)),
+            ('start_date', '>=', start_date),
             ('end_date', '!=', None),
             ('medium_id.name', '!=', 'internet')
         ]).filtered(
             lambda s: ((
-                fields.Date.from_string(s.end_date) -
-                fields.Date.from_string(s.start_date)
+                s.end_date -
+                s.start_date
             ).days <= SUB_DURATION)
         )
         sub_reject_average = len(rejected_sub) // STATS_DURATION
         for week in self:
-            start_date = fields.Datetime.from_string(
-                week.week_start_date) - timedelta(days=SUB_DURATION)
+            start_date = week.week_start_date - timedelta(days=SUB_DURATION)
             if start_date <= today:
-                limit_date = fields.Date.from_string(
-                    week.week_end_date) - timedelta(days=SUB_DURATION)
+                limit_date = week.week_end_date - timedelta(days=SUB_DURATION)
                 sub = self.env['recurring.contract'].search_count([
                     ('parent_id', '!=', False),
                     ('start_date', '>=', start_date),
-                    ('start_date', '<=', fields.Datetime.from_string(limit_date)),
+                    ('start_date', '<=', limit_date),
                     ('medium_id.name', '!=', 'internet')
                 ])
                 week.resupply_sub = sub * (
@@ -215,7 +213,7 @@ class WeeklyDemand(models.Model):
             ('type', 'like', 'S'),
             ('state', '=', 'terminated'),
             ('end_reason_id', '!=', depart.id),
-            ('end_date', '>=', fields.Date.to_string(start_date))
+            ('end_date', '>=', start_date)
         ])
         return float(cancellations) // STATS_DURATION
 

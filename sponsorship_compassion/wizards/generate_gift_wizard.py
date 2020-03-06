@@ -26,7 +26,7 @@ class GenerateGiftWizard(models.TransientModel):
 
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one(
-        'product.product', "Gift Type", required=True)
+        'product.product', "Gift Type", required=True, readonly=False)
     invoice_date = fields.Date(default=fields.Date.today())
     description = fields.Char("Additional comments", size=200)
     force = fields.Boolean(
@@ -63,17 +63,14 @@ class GenerateGiftWizard(models.TransientModel):
                             invoice_date = self.compute_date_birthday_invoice(
                                 contract.child_id.birthdate,
                                 self.invoice_date)
-                        begin_year = fields.Date.from_string(
-                            self.invoice_date).replace(month=1, day=1)
+                        begin_year = self.invoice_date.replace(month=1, day=1)
                         end_year = begin_year.replace(month=12, day=31)
                         # If a gift was already made for the year, abort
                         invoice_line_ids = self.env[
                             'account.invoice.line'].search([
                                 ('product_id', '=', self.product_id.id),
-                                ('due_date', '>=', fields.Date.to_string(
-                                    begin_year)),
-                                ('due_date', '<=', fields.Date.to_string(
-                                    end_year)),
+                                ('due_date', '>=', begin_year),
+                                ('due_date', '<=', end_year),
                                 ('contract_id', '=', contract.id),
                                 ('state', '!=', 'cancel')])
                         if invoice_line_ids and not self.force:
@@ -144,8 +141,8 @@ class GenerateGiftWizard(models.TransientModel):
     @api.model
     def compute_date_birthday_invoice(self, child_birthdate, payment_date):
         """Set date of invoice two months before child's birthdate"""
-        inv_date = fields.Date.from_string(payment_date)
-        birthdate = fields.Date.from_string(child_birthdate)
+        inv_date = payment_date
+        birthdate = child_birthdate
         new_date = inv_date
         if birthdate.month >= inv_date.month + 2:
             new_date = inv_date.replace(day=28, month=birthdate.month - 2)
@@ -153,4 +150,4 @@ class GenerateGiftWizard(models.TransientModel):
             new_date = birthdate.replace(
                 day=28, year=inv_date.year + 1) + relativedelta(months=-2)
             new_date = max(new_date, inv_date)
-        return fields.Date.to_string(new_date)
+        return new_date

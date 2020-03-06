@@ -13,7 +13,7 @@ class HrForcedDueHours(models.Model):
                          'This "Forced due hour" already exists')]
 
     employee_id = fields.Many2one('hr.employee',
-                                  string='Employee', required=True)
+                                  string='Employee', required=True, readonly=False)
     date = fields.Date('Date', required=True)
     forced_due_hours = fields.Float('Forced due hours', required=True)
 

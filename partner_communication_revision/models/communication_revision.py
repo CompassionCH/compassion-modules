@@ -56,7 +56,7 @@ class CommunicationRevision(models.Model):
         'partner.communication.config',
         'Communication type',
         required=True,
-        ondelete='cascade'
+        ondelete='cascade', readonly=False
     )
     model = fields.Char(related='config_id.model_id.model', readonly=True)
     lang = fields.Selection('select_lang', required=True)
@@ -78,10 +78,10 @@ class CommunicationRevision(models.Model):
     raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one('res.users', 'Responsible', domain=[
-        ('share', '=', False)], track_visibility='onchange')
+        ('share', '=', False)], track_visibility='onchange', readonly=False)
     correction_user_id = fields.Many2one('res.users', 'Corrector', domain=[
-        ('share', '=', False)], track_visibility='onchange')
-    update_user_id = fields.Many2one('res.users', 'Modified by')
+        ('share', '=', False)], track_visibility='onchange', readonly=False)
+    update_user_id = fields.Many2one('res.users', 'Modified by', readonly=False)
     proposition_text = fields.Html()
     proposition_correction = fields.Html()
     compare_lang = fields.Selection('select_lang')
@@ -89,23 +89,23 @@ class CommunicationRevision(models.Model):
     compare_subject = fields.Char()
     preview_text = fields.Html()
     keyword_ids = fields.One2many(
-        'partner.communication.keyword', 'revision_id', 'Keywords'
+        'partner.communication.keyword', 'revision_id', 'Keywords', readonly=False
     )
     show_all_keywords = fields.Boolean()
     edit_keyword_ids = fields.One2many(
         'partner.communication.keyword',
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
-        string='Keywords'
+        string='Keywords', readonly=False
     )
     if_keyword_ids = fields.One2many(
         'partner.communication.keyword',
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
-        string='Conditional text'
+        string='Conditional text', readonly=False
     )
     for_keyword_ids = fields.One2many(
         'partner.communication.keyword',
         compute='_compute_keyword_ids', inverse='_inverse_keyword_ids',
-        string='Loops'
+        string='Loops', readonly=False
     )
     is_proposer = fields.Boolean(compute='_compute_allowed')
     is_corrector = fields.Boolean(compute='_compute_allowed')

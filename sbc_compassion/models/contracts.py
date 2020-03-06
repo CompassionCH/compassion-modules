@@ -24,13 +24,13 @@ class Contracts(models.Model):
 
     writing_language = fields.Many2one(
         'res.lang.compassion', related='reading_language',
-        help='By now equals to reading language. Could be used in the future')
+        help='By now equals to reading language. Could be used in the future', readonly=False)
     child_letter_ids = fields.Many2many(
         'correspondence', string='Child letters',
-        compute='_compute_get_letters')
+        compute='_compute_get_letters', readonly=False)
     sponsor_letter_ids = fields.Many2many(
         'correspondence', string='Sponsor letters',
-        compute='_compute_get_letters')
+        compute='_compute_get_letters', readonly=False)
     nb_letters = fields.Integer(
         compute='_compute_get_letters'
     )
@@ -70,16 +70,14 @@ class Contracts(models.Model):
             try:
                 # Try to get days difference between today and last letter
                 contract.last_letter = (
-                    date.today() - fields.Date.from_string(
-                        contract.sponsor_letter_ids[:1].scanned_date)).days
+                    date.today() - contract.sponsor_letter_ids[:1].scanned_date).days
             except TypeError:
                 contract.last_letter = -1
 
     def _compute_write_for_birthday_alert(self):
         today = date.today()
         for contract in self:
-            next_birthday = fields.Date.from_string(
-                contract.child_id.birthdate).replace(
+            next_birthday = contract.child_id.birthdate.replace(
                 year=today.year)
 
             # take next year birthday

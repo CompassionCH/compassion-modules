@@ -17,9 +17,9 @@ class CompassionMapping(models.Model):
 
     name = fields.Char(required=True)
     model_id = fields.Many2one(
-        'ir.model', 'Model', required=True, index=True, ondelete='cascade')
+        'ir.model', 'Model', required=True, index=True, ondelete='cascade', readonly=False)
     json_spec_ids = fields.One2many(
-        'compassion.field.to.json', 'mapping_id', string='JSON Specifications')
+        'compassion.field.to.json', 'mapping_id', string='JSON Specifications', readonly=False)
 
     @api.model
     def create_from_json(self, json):

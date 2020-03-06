@@ -16,10 +16,10 @@ class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
     user_id = fields.Many2one(
-        'res.partner', 'Ambassador')
+        'res.partner', 'Ambassador', readonly=False)
     currency_id = fields.Many2one(
         'res.currency', 'Currency', related='invoice_id.currency_id',
-        store=True)
+        store=True, readonly=False)
     event_id = fields.Many2one(
         'crm.event.compassion', 'Event',
         related='account_analytic_id.event_id', store=True, readonly=True

@@ -29,7 +29,7 @@ class SurveyMailComposeMessage(models.TransientModel):
     phone_partner_ids = fields.Many2many('res.partner',
                                          'survey_phone_res_partner_rel',
                                          'wizard_id', 'partner_id',
-                                         string='Existing contacts')
+                                         string='Existing contacts', readonly=False)
 
     @api.multi
     def add_new_answer(self):

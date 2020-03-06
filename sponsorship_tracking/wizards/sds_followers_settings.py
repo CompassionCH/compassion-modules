@@ -18,16 +18,16 @@ class SdsFollowerSettings(models.TransientModel):
 
     # Users to notify after Child Departure
     sub_fr = fields.Many2one(
-        "res.users", string="Sub sponsorships (FR)", domain=[("share", "=", False)]
+        "res.users", string="Sub sponsorships (FR)", domain=[("share", "=", False)], readonly=False
     )
     sub_de = fields.Many2one(
-        "res.users", string="Sub sponsorships (DE)", domain=[("share", "=", False)]
+        "res.users", string="Sub sponsorships (DE)", domain=[("share", "=", False)], readonly=False
     )
     sub_it = fields.Many2one(
-        "res.users", string="Sub sponsorships (IT)", domain=[("share", "=", False)]
+        "res.users", string="Sub sponsorships (IT)", domain=[("share", "=", False)], readonly=False
     )
     sub_en = fields.Many2one(
-        "res.users", string="Sub sponsorships (EN)", domain=[("share", "=", False)]
+        "res.users", string="Sub sponsorships (EN)", domain=[("share", "=", False)], readonly=False
     )
 
     @api.multi

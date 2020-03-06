@@ -15,5 +15,5 @@ class AccountMove(models.Model):
 
     mobile_notification_id = fields.Many2one(
         'firebase.notification', 'Mobile notification',
-        help='Mobile notification sent for a donation confirmation'
+        help='Mobile notification sent for a donation confirmation', readonly=False
     )

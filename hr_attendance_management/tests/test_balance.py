@@ -125,8 +125,7 @@ class TestAnnualBalance(SavepointCase):
         # update catch it correctly.
         for person in [self.michael, self.jack]:
             person.attendance_days_ids[-1].attendance_ids[0].check_out = \
-                fields.Datetime.from_string(
-                    person.attendance_days_ids[-1].attendance_ids[0].check_out) + \
+                person.attendance_days_ids[-1].attendance_ids[0].check_out + \
                 timedelta(hours=3)
         self.michael._compute_balance()
         self.jack._compute_balance()

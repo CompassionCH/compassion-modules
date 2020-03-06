@@ -20,7 +20,7 @@ class Phonecall(models.Model):
     _inherit = 'crm.phonecall'
 
     communication_id = fields.Many2one(
-        'partner.communication.job', 'Communication')
+        'partner.communication.job', 'Communication', readonly=False)
 
     @api.model
     def create(self, vals):

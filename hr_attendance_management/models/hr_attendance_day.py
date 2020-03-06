@@ -27,26 +27,26 @@ class HrAttendanceDay(models.Model):
     date = fields.Date(required=True, default=fields.Date.today())
     employee_id = fields.Many2one(
         'hr.employee', "Employee", ondelete="cascade", required=True,
-        default=lambda self: self.env.user.employee_ids[0].id)
+        default=lambda self: self.env.user.employee_ids[0].id, readonly=False)
 
     # Working schedule
     working_schedule_id = fields.Many2one('resource.calendar', store=True,
                                           string='Working schedule',
                                           compute='_compute_working_schedule',
-                                          inverse='_inverse_working_schedule')
+                                          inverse='_inverse_working_schedule', readonly=False)
     cal_att_ids = fields.Many2many('resource.calendar.attendance', store=True,
-                                   compute='_compute_cal_att_ids')
+                                   compute='_compute_cal_att_ids', readonly=False)
     working_day = fields.Char(compute='_compute_working_day',
                               readonly=True, store=True)
     name = fields.Char(compute='_compute_name', store=True)
 
     # Leaves
-    leave_ids = fields.Many2many('hr.holidays', string='Leaves')
+    leave_ids = fields.Many2many('hr.holidays', string='Leaves', readonly=False)
     # todo replace by employee_id.is_absent_totay
     in_leave = fields.Boolean('In leave', compute='_compute_in_leave',
                               store=True)
     public_holiday_id = fields.Many2one('hr.holidays.public.line',
-                                        'Public holidays')
+                                        'Public holidays', readonly=False)
 
     # Due hours
     due_hours = fields.Float('Due hours', compute='_compute_due_hours',
@@ -86,7 +86,7 @@ class HrAttendanceDay(models.Model):
                                compute='_compute_break_total',
                                store=True)
     rule_id = fields.Many2one('hr.attendance.rules', 'Rules',
-                              compute='_compute_rule_id')
+                              compute='_compute_rule_id', readonly=False)
 
     day_balance = fields.Float("Day balance",
                                compute='_compute_day_balance',
@@ -122,7 +122,7 @@ class HrAttendanceDay(models.Model):
         Find the resource.calendar.attendance matching
         """
         for att_day in self:
-            week_day = fields.Date.from_string(att_day.date).weekday()
+            week_day = att_day.date.weekday()
 
             # select the calendar attendance(s) that are valid today.
             current_cal_att = att_day.working_schedule_id.mapped(
@@ -167,8 +167,7 @@ class HrAttendanceDay(models.Model):
     @api.depends('date')
     def _compute_working_day(self):
         for att_day in self:
-            att_day.working_day = fields.Date.from_string(
-                att_day.date).strftime('%A').title()
+            att_day.working_day = att_day.date.strftime('%A').title()
 
     @api.multi
     @api.depends('working_day')
@@ -374,10 +373,10 @@ class HrAttendanceDay(models.Model):
     def create(self, vals):
         rd = super().create(vals)
 
-        att_date = fields.Date.from_string(rd.date)
+        att_date = rd.date
 
         # link to leaves (hr.holidays )
-        date_str = fields.Date.to_string(att_date)
+        date_str = att_date
         rd.leave_ids = self.env['hr.holidays'].search([
             ('employee_id', '=', rd.employee_id.id),
             ('type', '=', 'remove'),
@@ -463,8 +462,8 @@ class HrAttendanceDay(models.Model):
                     leave.holiday_status_id.keep_due_hours:
                 continue
             else:
-                utc_start = fields.Datetime.from_string(leave.date_from)
-                utc_end = fields.Datetime.from_string(leave.date_to)
+                utc_start = leave.date_from
+                utc_end = leave.date_to
 
                 # Convert UTC in local timezone
                 user_tz = self.employee_id.user_id.tz
@@ -479,7 +478,7 @@ class HrAttendanceDay(models.Model):
                 leave_start_date = local_start.date()
                 leave_end_date = local_end.date()
 
-                date = fields.Date.from_string(self.date)
+                date = self.date
 
                 full_day = due_hours
 

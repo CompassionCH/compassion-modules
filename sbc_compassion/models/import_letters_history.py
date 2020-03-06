@@ -55,15 +55,15 @@ class ImportLettersHistory(models.Model):
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
         "Number of files", readonly=True, compute="_compute_nber_letters")
-    data = fields.Many2many('ir.attachment', string="Add a file")
+    data = fields.Many2many('ir.attachment', string="Add a file", readonly=False)
     import_line_ids = fields.One2many(
         'import.letter.line', 'import_id', 'Files to process',
-        ondelete='cascade')
+        ondelete='cascade', readonly=False)
     letters_ids = fields.One2many(
         'correspondence', 'import_id', 'Imported letters',
         readonly=True)
     config_id = fields.Many2one(
-        'import.letter.config', 'Import settings')
+        'import.letter.config', 'Import settings', readonly=False)
 
     ##########################################################################
     #                             FIELDS METHODS                             #

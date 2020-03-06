@@ -213,10 +213,10 @@
                 <field name="state"/>
                 <filter name="active" string="Active" domain="[('state', 'not in', ['close', 'cancel'])]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Category" domain="[]" context="{'group_by':'category_id'}"/>
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Funding Status" domain="[]" context="{'group_by':'funding_status'}"/>
-                    <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Category" name="category" domain="[]" context="{'group_by':'category_id'}"/>
+                    <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Funding Status" name="funding_status" domain="[]" context="{'group_by':'funding_status'}"/>
+                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
                 </group>
             </search>
         </field>

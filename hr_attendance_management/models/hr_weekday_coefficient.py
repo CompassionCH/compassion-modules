@@ -22,7 +22,7 @@ class HrWeekdayCoefficient(models.Model):
         ('6', 'Sunday'), ], 'Day of Week', required=True, index=True,
         default='0')
     category_ids = fields.Many2many('hr.employee.category',
-                                    string='Employee tag')
+                                    string='Employee tag', readonly=False)
     coefficient = fields.Float(
         help='Multiply the worked hours by the coefficient')
 

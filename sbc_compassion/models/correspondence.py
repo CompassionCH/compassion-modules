@@ -62,12 +62,12 @@ class Correspondence(models.Model):
     sponsorship_id = fields.Many2one(
         'recurring.contract', 'Sponsorship', required=True, domain=[
             ('state', 'not in', ['draft', 'cancelled'])],
-        track_visibility='onchange')
+        track_visibility='onchange', readonly=False)
     name = fields.Char(compute='_compute_name')
     partner_id = fields.Many2one(
-        related='sponsorship_id.correspondent_id', store=True
+        related='sponsorship_id.correspondent_id', store=True, readonly=False
     )
-    child_id = fields.Many2one(related='sponsorship_id.child_id', store=True)
+    child_id = fields.Many2one(related='sponsorship_id.child_id', store=True, readonly=False)
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char('Kit id', copy=False, readonly=True)
     direction = fields.Selection(
@@ -141,9 +141,9 @@ class Correspondence(models.Model):
         readonly=True)
     # First spoken lang of partner
     original_language_id = fields.Many2one(
-        'res.lang.compassion', 'Original language')
+        'res.lang.compassion', 'Original language', readonly=False)
     translation_language_id = fields.Many2one(
-        'res.lang.compassion', 'Translation language')
+        'res.lang.compassion', 'Translation language', readonly=False)
     original_text = fields.Text(
         compute='_compute_original_text',
         inverse='_inverse_original')
@@ -161,11 +161,11 @@ class Correspondence(models.Model):
         string="Attached images"
     )
     page_ids = fields.One2many(
-        'correspondence.page', 'correspondence_id')
+        'correspondence.page', 'correspondence_id', readonly=False)
     nbr_pages = fields.Integer(
         string='Number of pages', compute='_compute_nbr_pages',
         store=True)
-    template_id = fields.Many2one('correspondence.template', 'Template')
+    template_id = fields.Many2one('correspondence.template', 'Template', readonly=False)
 
     # 4. Additional information
     ###########################
@@ -185,11 +185,11 @@ class Correspondence(models.Model):
     rework_comments = fields.Text()
     original_letter_url = fields.Char()
     final_letter_url = fields.Char()
-    import_id = fields.Many2one('import.letters.history')
+    import_id = fields.Many2one('import.letters.history', readonly=False)
     translator = fields.Char()
     translator_id = fields.Many2one(
         'res.partner', 'Local translator', compute='_compute_translator',
-        inverse='_inverse_set_translator', store=True)
+        inverse='_inverse_set_translator', store=True, readonly=False)
     email = fields.Char(related='partner_id.email')
     translate_date = fields.Datetime()
     sponsorship_state = fields.Selection(
@@ -197,7 +197,7 @@ class Correspondence(models.Model):
         readonly=True
     )
     is_final_letter = fields.Boolean(compute='_compute_is_final_letter')
-    generator_id = fields.Many2one('correspondence.s2b.generator')
+    generator_id = fields.Many2one('correspondence.s2b.generator', readonly=False)
 
     # Letter remote access
     ######################

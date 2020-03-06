@@ -21,7 +21,7 @@ class InterventionCategory(models.Model):
         'compassion.intervention.subcategory',
         'compassion_intervention_cat_subcat_rel',
         'category_id', 'subcategory_id',
-        'Subcategories'
+        'Subcategories', readonly=False
     )
 
     _sql_constraints = [

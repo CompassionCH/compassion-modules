@@ -96,14 +96,14 @@ class CreateHrAttendance(models.TransientModel):
 
     date_from = fields.Date(string="Date from")
     date_to = fields.Date(string="Date to")
-    employee_ids = fields.Many2many('hr.employee', string='Employee')
+    employee_ids = fields.Many2many('hr.employee', string='Employee', readonly=False)
 
     def create_attendance_day(self):
-        date_to = fields.Date.from_string(self.date_to)
+        date_to = self.date_to
         att_day = self.env['hr.attendance.day']
 
         for employee_id in self.employee_ids:
-            current_date = fields.Date.from_string(self.date_from)
+            current_date = self.date_from
             while current_date <= date_to:
                 already_exist = att_day.search([
                     ('employee_id', '=', employee_id.id),

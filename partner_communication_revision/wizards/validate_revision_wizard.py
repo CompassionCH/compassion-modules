@@ -16,10 +16,10 @@ class ValidateRevisionWizard(models.TransientModel):
 
     translation_revision_id = fields.Many2one(
         'partner.communication.revision',
-        default=lambda s: s._get_translations()[:1])
+        default=lambda s: s._get_translations()[:1], readonly=False)
     translator_user_id = fields.Many2one(
         'res.users', 'Translator',
-        domain=[('share', '=', False)],
+        domain=[('share', '=', False)], readonly=False
     )
     lang = fields.Selection(
         'select_lang', 'Lang of translation',

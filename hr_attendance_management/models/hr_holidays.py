@@ -8,7 +8,7 @@ class HrHolidays(models.Model):
 
     attendance_day_ids = fields.Many2many('hr.attendance.day', store=True,
                                           string='Attendances days',
-                                          compute='_compute_att_day')
+                                          compute='_compute_att_day', readonly=False)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

@@ -16,4 +16,4 @@ class ProductTemplate(models.Model):
 
     intervention_id = fields.One2many('compassion.intervention',
                                       'product_template_id',
-                                      "Product's source")
+                                      "Product's source", readonly=False)

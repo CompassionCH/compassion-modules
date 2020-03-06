@@ -12,7 +12,7 @@ class RequestCategory(models.Model):
     template_id = fields.Many2one(
         'mail.template',
         'Template',
-        domain="[('model_id', '=', 'crm.claim')]")
+        domain="[('model_id', '=', 'crm.claim')]", readonly=False)
     keywords = fields.Char(
         string='Keywords',
         help='List of keywords (separated by a comma ",") who could be '

@@ -15,7 +15,7 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
     interaction_resume_ids = fields.One2many(
-        'interaction.resume', 'partner_id', 'Interaction resume')
+        'interaction.resume', 'partner_id', 'Interaction resume', readonly=False)
 
     # Do not clutter the mail thread with emails that can be seen in
     # interaction resume

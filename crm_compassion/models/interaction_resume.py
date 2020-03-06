@@ -17,7 +17,7 @@ class InteractionResume(models.TransientModel):
     _description = "Resume of a given partner"
     _order = "communication_date desc"
 
-    partner_id = fields.Many2one("res.partner", "Partner")
+    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
     email = fields.Char()
     communication_type = fields.Selection([('Paper', "Paper"),
                                            ("Phone", "Phone"),
@@ -33,11 +33,11 @@ class InteractionResume(models.TransientModel):
     subject = fields.Text()
     has_attachment = fields.Boolean(compute='_compute_has_attachment')
     body = fields.Html()
-    phone_id = fields.Many2one("crm.phonecall", "Phonecall")
-    paper_id = fields.Many2one("partner.communication.job", "Communication")
-    email_id = fields.Many2one("mail.mail", "Email")
+    phone_id = fields.Many2one("crm.phonecall", "Phonecall", readonly=False)
+    paper_id = fields.Many2one("partner.communication.job", "Communication", readonly=False)
+    email_id = fields.Many2one("mail.mail", "Email", readonly=False)
     color = fields.Char(compute='_compute_color')
-    message_id = fields.Many2one("mail.message", "Email")
+    message_id = fields.Many2one("mail.message", "Email", readonly=False)
     tracking_status = fields.Selection([
         ('error', 'Error'),
         ('deferred', 'Deferred'),

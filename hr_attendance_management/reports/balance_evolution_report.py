@@ -10,7 +10,7 @@ class BalanceEvolutionReport(models.TransientModel):
     _name = "balance.evolution.graph"
 
     day = fields.Date()
-    employee_id = fields.Many2one('hr.employee', 'Employee')
+    employee_id = fields.Many2one('hr.employee', 'Employee', readonly=False)
     balance = fields.Float()
 
     @api.model

@@ -16,9 +16,9 @@ class LabelPrint(models.Model):
     _description = 'Label Print'
 
     name = fields.Char("Name", size=64, required=True, index=1)
-    model_id = fields.Many2one('ir.model', 'Model', required=True, index=1)
+    model_id = fields.Many2one('ir.model', 'Model', required=True, index=1, readonly=False)
     field_ids = fields.One2many(
-        "label.print.field", 'report_id', string='Fields')
+        "label.print.field", 'report_id', string='Fields', readonly=False)
     ref_ir_act_report = fields.Many2one(
         'ir.actions.act_window', 'Sidebar action', readonly=True,
         help="Sidebar action to make this template available on records "

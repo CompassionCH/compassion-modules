@@ -57,7 +57,7 @@ class CompassionIntervention(models.Model):
         'compassion.project', 'fcp_interventions', 'intervention_id', 'fcp_id',
         string='FCPs', readonly=True,
     )
-    product_template_id = fields.Many2one('product.template', 'Linked product')
+    product_template_id = fields.Many2one('product.template', 'Linked product', readonly=False)
     subcategory_ids = fields.Many2many(
         'compassion.intervention.subcategory',
         'compassion_intervention_subcategory_rel',
@@ -70,7 +70,7 @@ class CompassionIntervention(models.Model):
         'Company',
         required=True,
         index=True,
-        default=lambda self: self.env.user.company_id.id
+        default=lambda self: self.env.user.company_id.id, readonly=False
     )
 
     # Schedule Information
@@ -108,7 +108,7 @@ class CompassionIntervention(models.Model):
     )
     local_currency_id = fields.Many2one('res.currency',
                                         related='field_office_id.country_id.'
-                                                'currency_id')
+                                                'currency_id', readonly=False)
 
     # Intervention Details Information
     ##################################
@@ -143,7 +143,7 @@ class CompassionIntervention(models.Model):
         'compassion_intervention_deliverable1_rel',
         'intervention_id', 'deliverable_id',
         string='Level 1 Deliverables',
-        compute='_compute_level1_deliverables'
+        compute='_compute_level1_deliverables', readonly=False
     )
     deliverable_level_2_ids = fields.Many2many(
         'compassion.intervention.deliverable',

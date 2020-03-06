@@ -16,7 +16,7 @@ class CommunicationConfig(models.Model):
     revision_number = fields.Float(default=1.0, readonly=True)
     revision_date = fields.Date(default=fields.Date.today(), readonly=True)
     revision_ids = fields.One2many(
-        'partner.communication.revision', 'config_id', 'Revisions'
+        'partner.communication.revision', 'config_id', 'Revisions', readonly=False
     )
     state = fields.Selection(
         [('active', 'Active'),

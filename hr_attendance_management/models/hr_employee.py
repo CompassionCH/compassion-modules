@@ -24,7 +24,7 @@ class HrEmployee(models.Model):
         compute="_compute_current_period_start_date", store=False)
 
     attendance_days_ids = fields.One2many('hr.attendance.day', 'employee_id',
-                                          "Attendance days")
+                                          "Attendance days", readonly=False)
     balance = fields.Float('Balance', compute='_compute_balance', store=True)
     initial_balance = fields.Float('Initial Balance')
 
@@ -45,7 +45,7 @@ class HrEmployee(models.Model):
 
     work_location_id = fields.Many2one('hr.attendance.location',
                                        string='Work Location',
-                                       compute="_compute_work_location")
+                                       compute="_compute_work_location", readonly=False)
 
     work_location = fields.Char(compute='_compute_work_location')
 
@@ -67,7 +67,7 @@ class HrEmployee(models.Model):
                 previous_period = previous_periods.sorted(
                     key=lambda e: e.end_date)[-1]
                 employee.current_period_start_date = \
-                    fields.Date.from_string(previous_period.end_date)
+                    previous_period.end_date
             else:
                 config = self.env['res.config.settings'].create({})
                 employee.current_period_start_date = \
@@ -119,13 +119,13 @@ class HrEmployee(models.Model):
                 employee_history_sorted = \
                     employee.period_ids.sorted(key=lambda r: r.end_date)
                 start_date = \
-                    fields.Date.from_string(employee_history_sorted[-1].end_date)
+                    employee_history_sorted[-1].end_date
                 # If there is an history for this employee, take values of last
                 # period
-                if start_date < fields.Date.from_string(end_date):
+                if start_date < end_date:
                     balance = employee_history_sorted[-1].final_balance
                 # If last period goes to today.
-                elif start_date == fields.Date.from_string(end_date):
+                elif start_date == end_date:
                     final_balance = employee_history_sorted[-1].final_balance
                 # If the period goes to today, recompute from 01.01.2018
                 else:
@@ -238,9 +238,9 @@ class HrEmployee(models.Model):
                     fields.Date.today() + datetime.timedelta(days=1))
 
         if not isinstance(start_date, str):
-            start_date = fields.Date.to_string(start_date)
+            start_date = start_date
         if not isinstance(end_date, str):
-            end_date = fields.Date.to_string(end_date)
+            end_date = end_date
 
         if start_date > end_date:
             raise ValidationError(_("Start date must be earlier than end date."))
@@ -394,8 +394,7 @@ class HrEmployee(models.Model):
             if attendance.check_out:
                 worked_hours += attendance.worked_hours
             else:
-                delta = datetime.datetime.now() - fields.Datetime.from_string(
-                    attendance.check_in)
+                delta = datetime.datetime.now() - attendance.check_in
                 worked_hours += delta.total_seconds() // 3600.0
         return worked_hours
 
