@@ -25,10 +25,9 @@ class HrAttendanceSettings(models.TransientModel):
     @api.multi
     def set_beginning_date(self):
         # self.ensure_one()
-        self.env["ir.config_parameter"].set_param(
-            "hr_attendance_management.beginning_date_for_balance_computation",
-            str(date.today().replace(year=2018, month=1, day=1)),
-        )
+        self.env['ir.config_parameter'].set_param(
+            'hr_attendance_management.beginning_date_for_balance_computation',
+            fields.Date.to_string(date.today().replace(year=2018, month=1, day=1)))
 
     @api.multi
     def set_free_break(self):
@@ -62,29 +61,18 @@ class HrAttendanceSettings(models.TransientModel):
         ):
             self.set_beginning_date()
 
-        return (
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param(
-                "hr_attendance_management.beginning_date_for_balance_computation"
-            )
-        )
+        return fields.Date.to_date(self.env['ir.config_parameter'].get_param(
+            'hr_attendance_management.beginning_date_for_balance_computation'))
 
     @api.model
     def get_free_break(self):
-        return float(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("hr_attendance_management.free_break", "0.0")
-        )
+        return float(self.env['ir.config_parameter'].get_param(
+            'hr_attendance_management.free_break', '0.0'))
 
     @api.model
     def get_max_extra_hours(self):
-        return float(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("hr_attendance_management.max_extra_hours", "0.0")
-        )
+        return float(self.env['ir.config_parameter'].get_param(
+            'hr_attendance_management.max_extra_hours', '0.0'))
 
     @api.model
     def get_values(self):

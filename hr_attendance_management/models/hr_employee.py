@@ -117,7 +117,7 @@ class HrEmployee(models.Model):
         store it if True
         """
         for employee in self:
-            config = self.env["res.config.settings"].create({})
+            config = self.env['res.config.settings']
             # config.set_beginning_date()
             # Compute from 01.01.2018 as default
             balance = employee.initial_balance
@@ -258,18 +258,9 @@ class HrEmployee(models.Model):
             self.env["res.config.settings"].create({}).get_max_extra_hours()
         )
         if not start_date:
-            start_date = fields.Date.to_string(
-                fields.Date.today().replace(month=1, day=1)
-            )
+            start_date = fields.Date.today().replace(month=1, day=1)
         if not end_date:
-            end_date = fields.Date.to_string(
-                fields.Date.today() + datetime.timedelta(days=1)
-            )
-
-        if not isinstance(start_date, str):
-            start_date = start_date
-        if not isinstance(end_date, str):
-            end_date = end_date
+            end_date = fields.Date.today() + datetime.timedelta(days=1)
 
         if start_date > end_date:
             raise ValidationError(_("Start date must be earlier than end date."))

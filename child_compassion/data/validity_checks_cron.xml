@@ -13,9 +13,9 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function" eval="'check_hold_validity'" />
             <field name="model_id" ref="child_compassion.model_compassion_hold"/>
-            <field name="args" eval="()"/>
+            <field name="state">code</field>
+            <field name="code">model.check_hold_validity()</field>
         </record>
         <record id="no_money_cron" model="ir.cron">
             <field name="name">Postpone No Money Holds</field>
@@ -23,9 +23,9 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function" eval="'postpone_no_money_cron'" />
             <field name="model_id" ref="child_compassion.model_compassion_hold"/>
-            <field name="args" eval="()"/>
+            <field name="state">code</field>
+            <field name="code">model.postpone_no_money_cron()</field>
         </record>
         <record id="project_reservation_cron" model="ir.cron">
             <field name="name">Check reservations validity</field>
@@ -33,9 +33,9 @@
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
             <field name="active" eval="True"/>
-            <field name="function" eval="'check_reservation_validity'" />
             <field name="model_id" ref="child_compassion.model_compassion_reservation"/>
-            <field name="args" eval="()"/>
+            <field name="state">code</field>
+            <field name="code">model.check_reservation_validity()</field>
         </record>
     </data>
 </odoo>

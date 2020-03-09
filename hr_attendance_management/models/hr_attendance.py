@@ -55,8 +55,7 @@ class HrAttendance(models.Model):
     @api.depends("check_in")
     def _compute_date(self):
         for attendance in self.filtered("check_in"):
-            date = attendance.check_in
-            attendance.date = date
+            attendance.date = attendance.check_in.date()
 
     ##########################################################################
     #                               ORM METHODS                              #

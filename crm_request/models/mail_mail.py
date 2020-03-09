@@ -9,7 +9,8 @@ class MailMail(models.Model):
     """
 
     @api.multi
-    def _postprocess_sent_message(self, mail_sent=True):
+    def _postprocess_sent_message(self, success_pids, failure_reason=False,
+                                  failure_type='UNKNOWN'):
         for mail in self:
             partner_ids = mail.partner_ids
             for partner in mail.partner_ids:
@@ -19,5 +20,6 @@ class MailMail(models.Model):
             # When we deactivate a partner, he is remove from the email.
             mail.write({"partner_ids": partner_ids})
 
-        s = super()._postprocess_sent_message(mail_sent)
+        s = super()._postprocess_sent_message(
+            success_pids, failure_reason, failure_type)
         return s
