@@ -47,7 +47,7 @@ class TestThankYouLetters(SavepointCase):
         )
 
         # Use products
-        cls.product_membership = cls.env.ref("product.membership_0")
+        cls.product_membership = cls.env.ref("product.product_delivery_01")
         cls.product_ipod = cls.env.ref("product.product_product_11")
         cls.product_mouse = cls.env.ref("product.product_product_10")
 

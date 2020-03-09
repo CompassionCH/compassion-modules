@@ -11,7 +11,7 @@ class AdvancedTranslationTest(SingleTransactionCase):
         tang = cls.browse_ref(cls, "base.res_partner_address_1")
         joseph = cls.browse_ref(cls, "base.res_partner_address_2")
         cls.males = (tang + joseph).with_context(lang="en_US")
-        julia = cls.browse_ref(cls, "base.res_partner_address_26")
+        julia = cls.browse_ref(cls, "base.res_partner_address_33")
         jessica = cls.browse_ref(cls, "base.res_partner_address_14")
         (julia + jessica).write({"gender": "F"})
         cls.females = (julia + jessica).with_context(lang="en_US")
