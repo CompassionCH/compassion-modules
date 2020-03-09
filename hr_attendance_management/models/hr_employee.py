@@ -4,11 +4,9 @@
 import datetime
 import logging
 import threading
-from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
