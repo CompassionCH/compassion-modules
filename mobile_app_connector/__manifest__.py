@@ -28,56 +28,53 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Compassion EU Mobile App Connector',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': [
-        'sbc_compassion',
-        'partner_contact_birthdate',
-        'base_geolocalize',
-        'firebase_connector',           # compassion-modules
-        'sms_sponsorship',              # compassion-modules
-        'thankyou_letters',        # compassion-modules
-        'crm_claim',                    # oca_addons/crm
-        'wordpress_configuration'       # compassion-modules
+    "name": "Compassion EU Mobile App Connector",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "https://github.com/CompassionCH/compassion-modules/tree/10.0",
+    "depends": [
+        "sbc_compassion",
+        "partner_contact_birthdate",
+        "base_geolocalize",
+        "firebase_connector",  # compassion-modules
+        "sms_sponsorship",  # compassion-modules
+        "thankyou_letters",  # compassion-modules
+        "crm_claim",  # oca_addons/crm
+        "wordpress_configuration",  # compassion-modules
     ],
-    'external_dependencies': {
-        'python': ['simplejson', 'bs4', 'requests'],
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'security/access_rules.xml',
-        'data/tile_type_data.xml',
-        'data/default_hub.xml',
-        'data/default_banner.xml',
-        'data/prayer_tile.xml',
-        'data/template_mail_user_not_found.xml',
-        'data/ir_cron.xml',
-        'data/request_sequence.xml',
-        'data/crm_claim_category_data.xml',
-        'views/wp_post_view.xml',
-        'views/wp_post_category_view.xml',
-        'views/app_banner_view.xml',
-        'views/app_settings_view.xml',
-        'views/app_writing_view.xml',
-        'views/tile_type_view.xml',
-        'views/tile_view.xml',
-        'views/product_view.xml',
-        'views/app_feedback_view.xml',
-        'views/firebase_registration.xml',
-        'templates/registration_form.xml',
-        'views/firebase_notification.xml',
-        'views/communication_job.xml',
-        'views/communication_config.xml',
-        'views/res_partner.xml'
+    "external_dependencies": {"python": ["simplejson", "bs4", "requests"], },
+    "data": [
+        "security/ir.model.access.csv",
+        "security/access_rules.xml",
+        "data/tile_type_data.xml",
+        "data/default_hub.xml",
+        "data/default_banner.xml",
+        "data/prayer_tile.xml",
+        "data/template_mail_user_not_found.xml",
+        "data/ir_cron.xml",
+        "data/request_sequence.xml",
+        "data/crm_claim_category_data.xml",
+        "views/wp_post_view.xml",
+        "views/wp_post_category_view.xml",
+        "views/app_banner_view.xml",
+        "views/app_settings_view.xml",
+        "views/app_writing_view.xml",
+        "views/tile_type_view.xml",
+        "views/tile_view.xml",
+        "views/product_view.xml",
+        "views/app_feedback_view.xml",
+        "views/firebase_registration.xml",
+        "templates/registration_form.xml",
+        "views/firebase_notification.xml",
+        "views/communication_job.xml",
+        "views/communication_config.xml",
+        "views/res_partner.xml",
     ],
-    'demo': [
-    ],
-    'development_status': 'Beta',
-    'installable': True,
-    'auto_install': False,
-    'post_init_hook': "load_mappings"
+    "demo": [],
+    "development_status": "Beta",
+    "installable": True,
+    "auto_install": False,
+    "post_init_hook": "load_mappings",
 }

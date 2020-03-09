@@ -9,11 +9,11 @@
 ##############################################################################
 import logging
 
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
+
 from odoo import http
 from odoo.http import request
-
-from werkzeug.wrappers import Response
-from werkzeug.datastructures import Headers
 
 _logger = logging.getLogger(__name__)
 
@@ -24,16 +24,15 @@ class RestController(http.Controller):
     for requesting children from the global childpool.
     """
 
-    @http.route('/web_children_hold', type='http', auth='public', methods=[
-        'GET'])
+    @http.route("/web_children_hold", type="http", auth="public", methods=["GET"])
     def handler_web_children_hold(self):
 
         headers = request.httprequest.headers
         self._validate_headers(headers)
 
         # load children via a research on childpool
-        child_research = request.env['compassion.childpool.search'].sudo()
-        research = child_research.create({'take': 5})
+        child_research = request.env["compassion.childpool.search"].sudo()
+        research = child_research.create({"take": 5})
         research.rich_mix()
 
         # create a hold for all children found
@@ -44,10 +43,10 @@ class RestController(http.Controller):
         for child in research.global_child_ids:
             if child.image_url:
                 data += '<img src="' + child.image_url + '"/> <br>'
-            data += child.name + ' ' + child.birthdate + '<br>'
+            data += child.name + " " + child.birthdate + "<br>"
 
         headers = Headers()
-        response = Response(data, content_type='text/html', headers=headers)
+        response = Response(data, content_type="text/html", headers=headers)
 
         return response
 

@@ -15,8 +15,14 @@ import logging
 import os
 from io import BytesIO
 from time import time
-from . import zxing_wrapper, zbar_wrapper, patternrecognition as pr, \
-    checkboxreader as cbr, sniffpdf
+
+from . import (
+    zxing_wrapper,
+    zbar_wrapper,
+    patternrecognition as pr,
+    checkboxreader as cbr,
+    sniffpdf,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -26,8 +32,7 @@ try:
     from PyPDF2 import PdfFileWriter, PdfFileReader
     from wand.image import Image as WandImage
 except ImportError:
-    _logger.warning('Please install numpy, cv2, PyPDF2 and wand to use SBC '
-                    'module')
+    _logger.warning("Please install numpy, cv2, PyPDF2 and wand to use SBC " "module")
 
 ##########################################################################
 #                           GENERAL METHODS                              #
@@ -52,7 +57,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
     :rtype: list(dict)
     """
     new_dpi = 100.0
-    resize_ratio = new_dpi/300.0
+    resize_ratio = new_dpi / 300.0
 
     line_vals = list()
     letter_datas = list()
@@ -60,8 +65,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
 
     pdf_in_buffer = BytesIO(file_data)
     inputpdf = PdfFileReader(pdf_in_buffer)
-    letter_indexes, imgs = _find_qrcodes(
-        env, line_vals, inputpdf, new_dpi)
+    letter_indexes, imgs = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
     _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
 
     # Construct the data for each detected letter: store as PDF
@@ -83,28 +87,26 @@ def analyze_attachment(env, file_data, file_name, force_template):
     # now try to find the layout for all splitted letters
     for i in range(len(letter_datas)):
         _logger.info(
-            "\tAnalyzing template and language of letter "
-            f"{i+1}/{len(letter_datas)}")
+            f"\tAnalyzing template and language of letter {i + 1}/{len(letter_datas)}"
+        )
 
         letter_vals = line_vals[i]
-        file_split = file_name.split('.')
-        attach_name = file_split[0] + '-' + str(i) + '.pdf'
-        letter_vals['letter_image'] = base64.b64encode(letter_datas[i])
-        letter_vals['file_name'] = attach_name
+        file_split = file_name.split(".")
+        attach_name = file_split[0] + "-" + str(i) + ".pdf"
+        letter_vals["letter_image"] = base64.b64encode(letter_datas[i])
+        letter_vals["file_name"] = attach_name
         if force_template:
-            letter_vals['template_id'] = force_template.id
+            letter_vals["template_id"] = force_template.id
         else:
             # use pattern recognition to find the template
             _find_template(env, imgs[i], letter_vals, resize_ratio)
-        if letter_vals['template_id'] != \
-                env.ref('sbc_compassion.default_template').id:
+        if letter_vals["template_id"] != env.ref("sbc_compassion.default_template").id:
             tic = time()
             _find_languages(env, imgs[i], letter_vals, resize_ratio)
-            _logger.info(
-                f"\t\tLanguage analysis done in {time()-tic:.3} sec.")
+            _logger.info(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
         else:
             _logger.info("\t\tAnalysis failed")
-            letter_vals['letter_language_id'] = False
+            letter_vals["letter_language_id"] = False
 
     return line_vals
 
@@ -129,7 +131,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     letter_indexes = list()
     page_imgs = list()
 
-    previous_qrcode = ''
+    previous_qrcode = ""
     _logger.info(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
     for i in range(inputpdf.numPages):
         tic = time()
@@ -142,34 +144,35 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         # read the qrcode on the current page
         qrcode, img_path = _decode_page(env, page_buffer.read())
 
-        if (qrcode and qrcode['data'] != previous_qrcode) or i == 0:
-            previous_qrcode = qrcode and qrcode['data']
+        if (qrcode and qrcode["data"] != previous_qrcode) or i == 0:
+            previous_qrcode = qrcode and qrcode["data"]
             letter_indexes.append(i)
             # we finally resize the image before returning it
             img = cv2.imread(img_path)
             f = new_dpi / 300.0
-            img = cv2.resize(
-                img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
+            img = cv2.resize(img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
             page_imgs.append(img)
             partner_id, child_id = decode_barcode(env, qrcode)
-            page_preview = cv2.imencode('.jpg', img)
+            page_preview = cv2.imencode(".jpg", img)
             preview_data = base64.b64encode(page_preview[1])
             values = {
-                'partner_id': partner_id,
-                'child_id': child_id,
-                'letter_image_preview': preview_data
+                "partner_id": partner_id,
+                "child_id": child_id,
+                "letter_image_preview": preview_data,
             }
             _logger.info(
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened and QRCode "
-                f"analyzed in {time() - tic:.2} sec")
+                f"analyzed in {time() - tic:.2} sec"
+            )
             line_vals.append(values)
         else:
             _logger.info(
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened, "
-                f"no QRCode on this page. {time() - tic:.2} sec")
+                f"no QRCode on this page. {time() - tic:.2} sec"
+            )
 
         os.remove(img_path)
-    letter_indexes.append(i+1)
+    letter_indexes.append(i + 1)
 
     return letter_indexes, page_imgs
 
@@ -194,7 +197,8 @@ def _decode_page(env, page_data):
     if len(layouts) == 1 and sniffpdf.contains_a_single_image(layouts[0]):
         # extract jpg images from page_data en save them.
         img_url = sniffpdf.get_images(
-            page_data, dst_folder=os.getcwd(), dst_name='page')
+            page_data, dst_folder=os.getcwd(), dst_name="page"
+        )
         img_url = img_url[0]
         _logger.info(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
         # its time to remove the temporary PDF file
@@ -207,26 +211,25 @@ def _decode_page(env, page_data):
         # Slowly convert from vectorial to image data
         with WandImage(blob=page_data, resolution=300) as page_image:
             # Convert from image data to an array
-            page_data = np.asarray(bytearray(page_image.make_blob('jpg')))
+            page_data = np.asarray(bytearray(page_image.make_blob("jpg")))
             # And we finally obtain our cv image
         img = cv2.imdecode(page_data, 1)  # Read in color
         if img is None:
             return None, None, None
-        img_url = os.getcwd() + '/page.jpg'
+        img_url = os.getcwd() + "/page.jpg"
         cv2.imwrite(img_url, img)
 
-        _logger.info(f"\t\tPDF opened with wand.image in { time() - tic:.3} sec")
+        _logger.info(f"\t\tPDF opened with wand.image in {time() - tic:.3} sec")
 
     tic = time()
 
-    decoder_lib = 'zbar'
-    if decoder_lib == 'zxing':
+    decoder_lib = "zbar"
+    if decoder_lib == "zxing":
         qrdata = zxing_wrapper.scan_qrcode(img_url)
-        _logger.debug(
-            f"\t\tQRCode decoded using ZXing in {time()-tic:.3} sec")
-    elif decoder_lib == 'zbar':
+        _logger.debug(f"\t\tQRCode decoded using ZXing in {time() - tic:.3} sec")
+    elif decoder_lib == "zbar":
         qrdata = zbar_wrapper.scan_qrcode(img_url)
-        _logger.debug(f"\t\tQRCode decoded using ZBar in {time()-tic:.3} sec")
+        _logger.debug(f"\t\tQRCode decoded using ZBar in {time() - tic:.3} sec")
 
     return qrdata, img_url
 
@@ -242,20 +245,28 @@ def decode_barcode(env, barcode):
     """
     partner_id = None
     child_id = None
-    if barcode is not None and b'XX' in barcode['data']:
-        barcode_split = barcode['data'].split(b'XX')
+    if barcode is not None and b"XX" in barcode["data"]:
+        barcode_split = barcode["data"].split(b"XX")
         if len(barcode_split) == 2:
             partner_ref, child_code = barcode_split
-            child_ref_field = 'local_id'
+            child_ref_field = "local_id"
             if len(child_code) == 9:
                 # Old reference
-                child_ref_field = 'code'
-            child_id = env['compassion.child'].search(
-                [(child_ref_field, '=', child_code)],
-                order='id desc', limit=1).id
-            partner_id = env['res.partner'].search(
-                [('ref', '=', partner_ref),
-                 ('has_sponsorships', '=', True)], limit=1).id
+                child_ref_field = "code"
+            child_id = (
+                env["compassion.child"]
+                .search([(child_ref_field, "=", child_code)], order="id desc",
+                        limit=1)
+                .id
+            )
+            partner_id = (
+                env["res.partner"]
+                .search(
+                    [("ref", "=", partner_ref), ("has_sponsorships", "=", True)],
+                    limit=1,
+                )
+                .id
+            )
     return partner_id, child_id
 
 
@@ -269,16 +280,14 @@ def _find_template(env, img, line_vals, resize_ratio):
     :returns: center position of detected pattern
     :rtype: layout
     """
-    templates = env['correspondence.template'].search(
-        [('pattern_image', '!=', False)])
+    templates = env["correspondence.template"].search([("pattern_image", "!=", False)])
     templates = templates.filtered(lambda t: t.pattern_image != "")
-    template, result_img = pr.find_template(
-        img, templates, resize_ratio=resize_ratio)
+    template, result_img = pr.find_template(img, templates, resize_ratio=resize_ratio)
 
     if template is None:
-        template = env.ref('sbc_compassion.default_template')
+        template = env.ref("sbc_compassion.default_template")
 
-    line_vals['template_id'] = template.id
+    line_vals["template_id"] = template.id
 
 
 def _find_languages(env, img, line_vals, resize_ratio=1.0):
@@ -303,9 +312,8 @@ def _find_languages(env, img, line_vals, resize_ratio=1.0):
         (and the template)
     :returns: None
     """
-    line_vals['letter_language_id'] = False
-    template = env['correspondence.template'].browse(
-        line_vals['template_id'])
+    line_vals["letter_language_id"] = False
+    template = env["correspondence.template"].browse(line_vals["template_id"])
     if not template:
         return
 
@@ -319,7 +327,7 @@ def _find_languages(env, img, line_vals, resize_ratio=1.0):
         d = int(checkbox.x_max * resize_ratio)
         if not (0 < a < b < h and 0 < c < d < w):
             continue
-        checkbox_image = cbr.CheckboxReader(img[a:b+1, c:d+1])
+        checkbox_image = cbr.CheckboxReader(img[a: b + 1, c: d + 1])
 
         score = checkbox_image.compute_boxscore(boxsize=17)
         checkbox_list.append(checkbox)
@@ -329,7 +337,7 @@ def _find_languages(env, img, line_vals, resize_ratio=1.0):
     lang = list([checkbox_list[ind] for ind in checked_ind])
     if len(lang) == 1:
         lang = lang[0].language_id
-        line_vals['letter_language_id'] = lang.id
+        line_vals["letter_language_id"] = lang.id
 
 
 def check_file(name):
@@ -363,7 +371,7 @@ def is_pdf(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    return ext.lower() == '.pdf'
+    return ext.lower() == ".pdf"
 
 
 def is_tiff(name):
@@ -375,7 +383,7 @@ def is_tiff(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    return ext.lower() == '.tif' or ext.lower() == '.tiff'
+    return ext.lower() == ".tif" or ext.lower() == ".tiff"
 
 
 def is_png(name):
@@ -387,7 +395,7 @@ def is_png(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    return ext.lower() == '.png'
+    return ext.lower() == ".png"
 
 
 def is_zip(name):
@@ -399,7 +407,7 @@ def is_zip(name):
     :rtype: bool
     """
     ext = os.path.splitext(name)[1]
-    return ext.lower() == '.zip'
+    return ext.lower() == ".zip"
 
 
 def find_child(env, code):
@@ -410,8 +418,8 @@ def find_child(env, code):
     :param code: the child's code or local_id
     :return: The child, when found
     """
-    field = len(code) == 9 and 'code' or 'local_id'
-    child = env['compassion.child'].search([(field, '=', code)])
+    field = len(code) == 9 and "code" or "local_id"
+    child = env["compassion.child"].search([(field, "=", code)])
     return child
 
 
@@ -423,10 +431,11 @@ def find_partner(env, code, email):
     :param email: the partner's email
     :return: The partner, if found
     """
-    partner = env['res.partner'].search(
-        ['|', ('ref', '=', code), ('global_id', '=', code)])
+    partner = env["res.partner"].search(
+        ["|", ("ref", "=", code), ("global_id", "=", code)]
+    )
     if not partner:
-        partner = env['res.partner'].search([('email', '=', email)])
+        partner = env["res.partner"].search([("email", "=", email)])
     if len(partner) > 1:
-        partner = partner.filtered('has_sponsorships')
+        partner = partner.filtered("has_sponsorships")
     return partner[:1]

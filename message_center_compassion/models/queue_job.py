@@ -12,16 +12,16 @@ from odoo import api, models, _
 
 
 class QueueJob(models.Model):
-    _inherit = 'queue.job'
+    _inherit = "queue.job"
 
     @api.multi
     def related_action_messages(self):
         action = {
-            'name': _("Messages"),
-            'type': 'ir.actions.act_window',
-            'res_model': 'gmc.message',
-            'domain': [('id', 'in', self.record_ids)],
-            'view_type': 'form',
-            'view_mode': 'tree,form',
+            "name": _("Messages"),
+            "type": "ir.actions.act_window",
+            "res_model": "gmc.message",
+            "domain": [("id", "in", self.record_ids)],
+            "view_type": "form",
+            "view_mode": "tree,form",
         }
         return action

@@ -4,19 +4,25 @@ from odoo import models, fields
 
 
 class ChangeDayDWizard(models.TransientModel):
-    _name = 'hr.create.period.wizard'
+    _name = "hr.create.period.wizard"
     _description = "Wizard used for creating periods"
 
-    employee_id = fields.Many2one('hr.employee', string="ID of concerned employee",
-                                  compute="_compute_employee_id", readonly=False)
+    employee_id = fields.Many2one(
+        "hr.employee",
+        string="ID of concerned employee",
+        compute="_compute_employee_id",
+        readonly=False,
+    )
     start_date = fields.Date(string="Start date of new period")
     end_date = fields.Date(string="End date of new period")
-    continuous_cap = fields.Boolean(string="Employee capped or not",
-                                    related="employee_id.extra_hours_continuous_cap")
+    continuous_cap = fields.Boolean(
+        string="Employee capped or not",
+        related="employee_id.extra_hours_continuous_cap",
+    )
 
     def _compute_employee_id(self):
-        active_ids = self.env.context.get('active_ids')
-        employee_records = self.env['hr.employee'].browse(active_ids)
+        active_ids = self.env.context.get("active_ids")
+        employee_records = self.env["hr.employee"].browse(active_ids)
         for employee in employee_records:
             self.employee_id = employee
 
@@ -35,14 +41,17 @@ class ChangeDayDWizard(models.TransientModel):
             if previous_periods:
                 previous_period_id = previous_periods[-1].id
 
-            record.employee_id.create_period(record.employee_id.id,
-                                             record.start_date,
-                                             # Add one day to end_date as the logic
-                                             # uses an exclusive superior bound
-                                             str(datetime.datetime.strptime
-                                                 (record.end_date, '%Y-%m-%d').date()
-                                                 + datetime.timedelta(days=1)),
-                                             0,
-                                             previous_period_id,
-                                             0,
-                                             record.continuous_cap)
+            record.employee_id.create_period(
+                record.employee_id.id,
+                record.start_date,
+                # Add one day to end_date as the logic
+                # uses an exclusive superior bound
+                str(
+                    datetime.datetime.strptime(record.end_date, "%Y-%m-%d").date()
+                    + datetime.timedelta(days=1)
+                ),
+                0,
+                previous_period_id,
+                0,
+                record.continuous_cap,
+            )

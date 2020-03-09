@@ -28,20 +28,20 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Wordpress configuration for multi-company',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': [],
-    'external_dependencies': {},
-    'data': [
-        'security/ir.model.access.csv',
-        'views/wordpress_configuration.xml',
-        'data/default.xml',
+    "name": "Wordpress configuration for multi-company",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": [],
+    "external_dependencies": {},
+    "data": [
+        "security/ir.model.access.csv",
+        "views/wordpress_configuration.xml",
+        "data/default.xml",
     ],
-    'demo': [],
-    'installable': True,
-    'auto_install': False,
+    "demo": [],
+    "installable": True,
+    "auto_install": False,
 }

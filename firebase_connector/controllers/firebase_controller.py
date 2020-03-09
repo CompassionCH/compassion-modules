@@ -7,11 +7,12 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import http
-from odoo.http import request
+import logging
+
 from werkzeug.exceptions import Unauthorized
 
-import logging
+from odoo import http
+from odoo.http import request
 
 
 def verify_and_retrieve(registration_id, partner_id=None):
@@ -29,31 +30,37 @@ def verify_and_retrieve(registration_id, partner_id=None):
             request.session.check_security()
         else:
             raise Unauthorized()
-    existing = request.env['firebase.registration'].sudo().search(
-        [('registration_id', '=', registration_id)])
+    existing = (
+        request.env["firebase.registration"]
+        .sudo()
+        .search([("registration_id", "=", registration_id)])
+    )
 
     assert len(existing) < 2, "Two firebase registration with same id"
     return existing
 
 
 class RestController(http.Controller):
-
-    @http.route('/firebase/register', type='http', methods=['PUT'],
-                auth='public', csrf=False)
+    @http.route(
+        "/firebase/register", type="http", methods=["PUT"], auth="public", csrf=False
+    )
     def firebase_register(self, registration_id, partner_id=None, **kwargs):
         existing = verify_and_retrieve(registration_id, partner_id)
         if existing:
             existing.partner_id = partner_id
         else:
-            existing = request.env['firebase.registration'].sudo().create({
-                'registration_id': registration_id,
-                'partner_id': partner_id,
-            })
+            existing = (
+                request.env["firebase.registration"]
+                .sudo()
+                .create(
+                    {"registration_id": registration_id, "partner_id": partner_id, })
+            )
 
         return str(existing.id)
 
-    @http.route('/firebase/unregister', type='http', methods=['PUT'],
-                auth='public', csrf=False)
+    @http.route(
+        "/firebase/unregister", type="http", methods=["PUT"], auth="public", csrf=False
+    )
     def firebase_unregister(self, registration_id, partner_id=None, **kwargs):
         existing = verify_and_retrieve(registration_id, partner_id)
 

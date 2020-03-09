@@ -9,8 +9,13 @@
 ##############################################################################
 
 # Name of gifts products
-GIFT_REF = ["gift_birthday", "gift_gen", "gift_family", "gift_project",
-            "gift_graduation"]
+GIFT_REF = [
+    "gift_birthday",
+    "gift_gen",
+    "gift_family",
+    "gift_project",
+    "gift_graduation",
+]
 
 # Name of gift category
 GIFT_CATEGORY = "Sponsor gifts"

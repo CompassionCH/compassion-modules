@@ -14,6 +14,9 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    intervention_id = fields.One2many('compassion.intervention',
-                                      'product_template_id',
-                                      "Product's source", readonly=False)
+    intervention_id = fields.One2many(
+        "compassion.intervention",
+        "product_template_id",
+        "Product's source",
+        readonly=False,
+    )

@@ -8,8 +8,8 @@
 #
 ##############################################################################
 
-import logging
 import cgi
+import logging
 
 from odoo import models, api, _, fields
 from odoo.tools import html_escape as escape
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class CrmClaim(models.Model):
-    _inherit = 'crm.claim'
+    _inherit = "crm.claim"
 
     @api.multi
     def mobile_contact_us(self, parameters, **params):
@@ -50,34 +50,39 @@ class CrmClaim(models.Model):
             contact_id = None
 
         if contact_id:
-            partner = self.sudo().env['res.partner'].browse(int(contact_id))
+            partner = self.sudo().env["res.partner"].browse(int(contact_id))
         else:
-            partner = self.sudo().env['res.partner'].search([
-                ('email', 'like', email)
-            ], limit=1)
+            partner = (
+                self.sudo()
+                .env["res.partner"]
+                .search([("email", "like", email)], limit=1)
+            )
 
-        claim = self.sudo().create({
-            'email_from': email,
-            'subject': subject,
-            'code':
-                self.env.ref('mobile_app_connector.sequence_claim_app')
-                    .sudo()._next(),
-            'name': question,
-            'categ_id': self.env['crm.claim.category'].sudo().search(
-                [('name', '=', source)]).id,
-            'partner_id': partner.id,
-            'user_id': False,
-            'language': self.sudo().detect_lang(question).lang_id.code
-        })
-        claim.message_post(body=question,
-                           subject=_("Original request from %s %s ") %
-                           (firstname, lastname))
+        claim = self.sudo().create(
+            {
+                "email_from": email,
+                "subject": subject,
+                "code": self.env.ref("mobile_app_connector.sequence_claim_app")
+                    .sudo()
+                    ._next(),
+                "name": question,
+                "categ_id": self.env["crm.claim.category"]
+                    .sudo()
+                    .search([("name", "=", source)])
+                    .id,
+                "partner_id": partner.id,
+                "user_id": False,
+                "language": self.sudo().detect_lang(question).lang_id.code,
+            }
+        )
+        claim.message_post(
+            body=question,
+            subject=_("Original request from %s %s ") % (firstname, lastname),
+        )
         if partner.exists():
             self.sudo().create_email_for_interaction_resume(subject, question, partner)
 
-        return {
-            "FeedbackAndContactusResult": _("Your question was well received")
-        }
+        return {"FeedbackAndContactusResult": _("Your question was well received")}
 
     def create_email_for_interaction_resume(self, subject, body, partner):
         """
@@ -88,19 +93,25 @@ class CrmClaim(models.Model):
         :param partner: partner making the request
         :return: None
         """
-        self.env['mail.mail'].create({
-            'state': 'sent',
-            'subject': subject,
-            'body_html': body,
-            'author_id': partner.id,
-            'email_from': partner.email,
-            'mail_message_id': self.env['mail.message'].create({
-                'model': 'res.partner',
-                'res_id': partner.id,
-                'body': escape(body),
-                'subject': subject,
-                'author_id': partner.id,
-                'subtype_id': self.env.ref('mail.mt_comment').id,
-                'date': fields.Datetime.now(),
-            }).id
-        })
+        self.env["mail.mail"].create(
+            {
+                "state": "sent",
+                "subject": subject,
+                "body_html": body,
+                "author_id": partner.id,
+                "email_from": partner.email,
+                "mail_message_id": self.env["mail.message"]
+                .create(
+                    {
+                        "model": "res.partner",
+                        "res_id": partner.id,
+                        "body": escape(body),
+                        "subject": subject,
+                        "author_id": partner.id,
+                        "subtype_id": self.env.ref("mail.mt_comment").id,
+                        "date": fields.Datetime.now(),
+                    }
+                )
+                .id,
+            }
+        )

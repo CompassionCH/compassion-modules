@@ -4,14 +4,12 @@ from odoo import models, fields, api
 
 
 class ChangeDayDWizard(models.TransientModel):
-    _name = 'hr.change.day.wizard'
+    _name = "hr.change.day.wizard"
     _description = "Wizard used to modify our days of work"
 
-    state = fields.Selection([
-        ('step1', 'step1'),
-        ('step2', 'step2'),
-    ], default='step1')
-    date_select = fields.Selection(selection='_select_dates')
+    state = fields.Selection([("step1", "step1"), ("step2", "step2"), ],
+                             default="step1")
+    date_select = fields.Selection(selection="_select_dates")
 
     @api.model
     def get_due_hours_data(self):
@@ -28,29 +26,26 @@ class ChangeDayDWizard(models.TransientModel):
         date_to += datetime.timedelta(7)
 
         # Create attendance days up to next sunday for having the due hours
-        att_day = self.env['hr.attendance.day']
+        att_day = self.env["hr.attendance.day"]
         att_day_created = att_day
         current_date = date_from
 
         while current_date <= date_to:
-            already_exist = att_day.search([
-                ('employee_id', '=', employee_id.id),
-                ('date', '=', current_date)
-            ])
+            already_exist = att_day.search(
+                [("employee_id", "=", employee_id.id), ("date", "=", current_date)]
+            )
             if not already_exist:
-                att_day_created += att_day.create({
-                    'employee_id': employee_id.id,
-                    'date': current_date,
-                })
+                att_day_created += att_day.create(
+                    {"employee_id": employee_id.id, "date": current_date, }
+                )
             current_date += datetime.timedelta(days=1)
 
-        next_att_days = att_day.search([
-            ('date', '>', date_from), ('date', '<=', date_to),
-            ('due_hours', '>', 0)
-        ])
+        next_att_days = att_day.search(
+            [("date", ">", date_from), ("date", "<=", date_to), ("due_hours", ">", 0)]
+        )
 
-        dates = next_att_days.mapped('date')
-        due_hours = next_att_days.mapped('due_hours')
+        dates = next_att_days.mapped("date")
+        due_hours = next_att_days.mapped("due_hours")
 
         data = dict()
         for index, date in enumerate(dates):
@@ -68,32 +63,32 @@ class ChangeDayDWizard(models.TransientModel):
         def _date_format(_date):
             return _date.strftime("%A %x")
 
-        data = self._context.get('due_hours_data', {})
+        data = self._context.get("due_hours_data", {})
         return [(k, _date_format(k)) for k in sorted(data.keys())]
 
     @api.multi
     def go_to_step2(self):
-        self.state = 'step2'
+        self.state = "step2"
         return {
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': self._name,
-            'res_id': self.id,
-            'type': 'ir.actions.act_window',
-            'target': 'new',
-            'context': {'due_hours_data': self.get_due_hours_data()}
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": self._name,
+            "res_id": self.id,
+            "type": "ir.actions.act_window",
+            "target": "new",
+            "context": {"due_hours_data": self.get_due_hours_data()},
         }
 
     @api.multi
     def change_due_hours(self):
-        employee_id = self.env['res.users'].browse(self._uid).employee_ids
-        data = self._context.get('due_hours_data', {})
+        employee_id = self.env["res.users"].browse(self._uid).employee_ids
+        data = self._context.get("due_hours_data", {})
         vals = {
-            'employee_id': employee_id.id,
-            'date1': datetime.date.today(),
-            'forced1': data[self.date_select],
-            'date2': self.date_select,
-            'forced2': 0,
-            'user_id': employee_id.parent_id.user_id.id
+            "employee_id": employee_id.id,
+            "date1": datetime.date.today(),
+            "forced1": data[self.date_select],
+            "date2": self.date_select,
+            "forced2": 0,
+            "user_id": employee_id.parent_id.user_id.id,
         }
-        self.env['hr.change.day.request'].create(vals)
+        self.env["hr.change.day.request"].create(vals)

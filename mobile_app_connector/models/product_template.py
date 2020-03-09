@@ -10,7 +10,6 @@
 
 import logging
 
-
 from odoo import models, api, fields
 
 logger = logging.getLogger(__name__)
@@ -21,10 +20,10 @@ class ProductTemplate(models.Model):
     _name = "product.template"
     _inherit = ["product.template", "compassion.mapped.model"]
 
-    mobile_app = fields.Boolean('Show in Mobile App', index=True)
-    image_icon = fields.Char('Icon Mobile App',
-                             help="See https://fontawesome.com to "
-                                  "find code icon.")
+    mobile_app = fields.Boolean("Show in Mobile App", index=True)
+    image_icon = fields.Char(
+        "Icon Mobile App", help="See https://fontawesome.com to " "find code icon."
+    )
 
     @api.model
     def mobile_donation_type(self, **params):
@@ -36,7 +35,7 @@ class ProductTemplate(models.Model):
         """
 
         result = []
-        donation_types = self.search([('mobile_app', '=', True)])
+        donation_types = self.search([("mobile_app", "=", True)])
 
         for donation in donation_types:
             result.append(donation.data_to_json("mobile_app_donation"))
@@ -68,8 +67,8 @@ class Product(models.Model):
         if not self:
             return {}
         return {
-            'Appeal': {
-                'FundType': self[:1].default_code,
-                'FundId': self[:1].product_tmpl_id.id
+            "Appeal": {
+                "FundType": self[:1].default_code,
+                "FundId": self[:1].product_tmpl_id.id,
             }
         }

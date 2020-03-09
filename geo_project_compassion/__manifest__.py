@@ -27,17 +27,13 @@
 ##############################################################################
 
 # pylint: disable=C8101
-{'name': 'Geospatial support for compassion projects',
- 'version': '12.0.1.0.0',
- 'category': 'GeoBI',
- 'author': "Fluckiger Nathan",
- 'license': 'AGPL-3',
- 'depends': [
-     'base_geoengine',  # OCA/geospatial
-     'child_compassion',
- ],
- 'data': [
-     'views/project_compassion_geoengine_view.xml'
- ],
- 'installable': True,
- }
+{
+    "name": "Geospatial support for compassion projects",
+    "version": "12.0.1.0.0",
+    "category": "GeoBI",
+    "author": "Fluckiger Nathan",
+    "license": "AGPL-3",
+    "depends": ["base_geoengine", "child_compassion", ],  # OCA/geospatial
+    "data": ["views/project_compassion_geoengine_view.xml"],
+    "installable": True,
+}

@@ -13,11 +13,13 @@ from odoo import api, models, fields
 
 class AnalyticAccount(models.Model):
     """ Add year in name of analytic accounts. """
-    _inherit = 'account.analytic.account'
+
+    _inherit = "account.analytic.account"
 
     year = fields.Char()
     event_id = fields.Many2one(
-        'crm.event.compassion', 'Event', store=True, readonly=True)
+        "crm.event.compassion", "Event", store=True, readonly=True
+    )
 
     @api.multi
     def name_get(self):
@@ -25,8 +27,8 @@ class AnalyticAccount(models.Model):
         for analytic in self:
             name = analytic.name
             if analytic.code:
-                name = '[' + analytic.code + '] ' + name
+                name = "[" + analytic.code + "] " + name
             if analytic.year and not name.endswith(analytic.year):
-                name = name + ' ' + analytic.year
+                name = name + " " + analytic.year
             res.append((analytic.id, name))
         return res

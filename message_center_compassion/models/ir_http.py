@@ -8,12 +8,13 @@
 #
 ##############################################################################
 import logging
+
 import requests
+from werkzeug.exceptions import Unauthorized
 
 from odoo import models
 from odoo.http import request
 from odoo.tools import config
-from werkzeug.exceptions import Unauthorized
 
 _logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ except ImportError:
 
 
 class IrHTTP(models.AbstractModel):
-    _inherit = 'ir.http'
+    _inherit = "ir.http"
 
     @classmethod
     def _auth_method_oauth2(cls):
@@ -33,19 +34,19 @@ class IrHTTP(models.AbstractModel):
 
     @classmethod
     def _oauth_validation(cls):
-        cert_url = config.get('connect_token_cert')
-        if request.httprequest.method == 'GET':
-            mode = 'read'
-        if request.httprequest.method == 'POST':
-            mode = 'write'
+        cert_url = config.get("connect_token_cert")
+        if request.httprequest.method == "GET":
+            mode = "read"
+        if request.httprequest.method == "POST":
+            mode = "write"
 
         # Get public certificate of issuer for token validation
         try:
-            token_data = request.httprequest.headers.get('Authorization')
+            token_data = request.httprequest.headers.get("Authorization")
             access_token = token_data.split()[1]
             _logger.info("Received access token: %s", access_token)
             cert = requests.get(cert_url)
-            key_json = cert.json()['keys'][0]
+            key_json = cert.json()["keys"][0]
         except (ValueError, AttributeError):
             # If any error occurs during token and certificate retrieval,
             # we put a wrong certificate, and jwt library will fail
@@ -54,15 +55,14 @@ class IrHTTP(models.AbstractModel):
 
         public_key = jwk.RSAJWK.from_dict(key_json)
         jwt_decoded = JWT().decode(
-            access_token, key=public_key, algorithms=['RS256'],
-            do_verify=True
+            access_token, key=public_key, algorithms=["RS256"], do_verify=True
         )
         # validation
         # is scope read or write in scopes ?
-        scope = jwt_decoded.get('scope')
+        scope = jwt_decoded.get("scope")
         if scope and mode not in scope:
             raise Unauthorized()
-        client_id = jwt_decoded.get('client_id') or jwt_decoded.get('ClientID')
+        client_id = jwt_decoded.get("client_id") or jwt_decoded.get("ClientID")
         _logger.info("TOKEN CLIENT IS -----------------> " + client_id)
         return client_id
 
@@ -74,8 +74,7 @@ class IrHTTP(models.AbstractModel):
         :param client_id: token client id
         :return: res.user record
         """
-        user = request.env['res.users'].sudo().search(
-            [('login', '=', client_id)])
+        user = request.env["res.users"].sudo().search([("login", "=", client_id)])
         if user:
             request.uid = user.id
         else:

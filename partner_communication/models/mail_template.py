@@ -15,11 +15,11 @@ class MailTemplate(models.Model):
     """change generate_email to can be call with res_ids
     not only an id but with a record, this is use for the change
     of email_preview.template res_id selection to reference field"""
-    _inherit = 'mail.template'
+
+    _inherit = "mail.template"
 
     @api.multi
     def generate_email(self, res_ids, fields=None):
-
         if isinstance(res_ids, models.BaseModel):
             res_ids = res_ids.id
 

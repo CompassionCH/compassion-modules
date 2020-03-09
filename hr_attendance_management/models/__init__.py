@@ -1,4 +1,3 @@
-
 # Copyright (C) 2016 Open Net Sarl
 # Copyright (C) 2018 Compassion CH
 # LicenseAGPL-3.0 or later (http://www.gnu.org/licenses/agpl).

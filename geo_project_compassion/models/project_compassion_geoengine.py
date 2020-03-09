@@ -29,8 +29,7 @@ class CompassionProject(models.Model):
         """ Compute geopoints. """
         for project in self.filtered(lambda p: p.gps_latitude and p.gps_longitude):
             geo_point = fields.GeoPoint.from_latlon(
-                self.env.cr,
-                project.gps_latitude,
-                project.gps_longitude)
-            project.write({'geo_point': geo_point.wkt})
+                self.env.cr, project.gps_latitude, project.gps_longitude
+            )
+            project.write({"geo_point": geo_point.wkt})
         return True

@@ -12,18 +12,24 @@ from odoo import models
 
 
 class ProjectCompassion(models.Model):
-    _inherit = 'compassion.project'
+    _inherit = "compassion.project"
 
     def _hold_letters(self):
-        letters = self.env['correspondence'].search([
-            ('child_id.code', 'like', self.fcp_id),
-            ('direction', '=', 'Supporter to Beneficiary'),
-            ('kit_identifier', '=', False)])
+        letters = self.env["correspondence"].search(
+            [
+                ("child_id.code", "like", self.fcp_id),
+                ("direction", "=", "Supporter to Beneficiary"),
+                ("kit_identifier", "=", False),
+            ]
+        )
         letters.hold_letters()
 
     def _reactivate_letters(self):
-        letters = self.env['correspondence'].search([
-            ('child_id.code', 'like', self.fcp_id),
-            ('direction', '=', 'Supporter to Beneficiary'),
-            ('kit_identifier', '=', False)])
+        letters = self.env["correspondence"].search(
+            [
+                ("child_id.code", "like", self.fcp_id),
+                ("direction", "=", "Supporter to Beneficiary"),
+                ("kit_identifier", "=", False),
+            ]
+        )
         letters.reactivate_letters()

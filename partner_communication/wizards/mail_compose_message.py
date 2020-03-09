@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -13,7 +12,7 @@ from odoo import models, api, fields
 
 
 class EmailComposeMessage(models.TransientModel):
-    _inherit = 'mail.compose.message'
+    _inherit = "mail.compose.message"
 
     body = fields.Html(sanitize=False)
 
@@ -26,15 +25,15 @@ class EmailComposeMessage(models.TransientModel):
         :return: browse records of created e-mails (one per resource object)
         """
         all_mail_values = self._get_mail_values(template, res_ids)
-        email_obj = self.env['mail.mail']
+        email_obj = self.env["mail.mail"]
         emails = email_obj
         for res_id in res_ids:
             mail_values = all_mail_values[res_id]
             if default_mail_values:
                 mail_values.update(default_mail_values)
 
-            if mail_values.get('body_html'):
-                mail_values['body'] = mail_values['body_html']
+            if mail_values.get("body_html"):
+                mail_values["body"] = mail_values["body_html"]
             emails += email_obj.create(mail_values)
         return emails
 
@@ -63,14 +62,20 @@ class EmailComposeMessage(models.TransientModel):
         """
         if not isinstance(res_ids, list):
             res_ids = [res_ids]
-        wizard = self.sudo().with_context(active_ids=res_ids).create({
-            'template_id': template.id,
-            'composition_mode': 'mass_mail',
-            'model': template.model,
-            'author_id': self.env.user.partner_id.id,
-        })
+        wizard = (
+            self.sudo()
+                .with_context(active_ids=res_ids)
+                .create(
+                {
+                    "template_id": template.id,
+                    "composition_mode": "mass_mail",
+                    "model": template.model,
+                    "author_id": self.env.user.partner_id.id,
+                }
+            )
+        )
         # Fetch template values.
         wizard.write(
-            wizard.onchange_template_id(
-                template.id, 'mass_mail', False, False)['value'])
+            wizard.onchange_template_id(template.id, "mass_mail", False, False)["value"]
+        )
         return wizard.get_mail_values(res_ids)

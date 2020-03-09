@@ -13,15 +13,15 @@ from odoo import models, api
 
 class ActivateContractWizard(models.TransientModel):
     """ This wizard force activation of a contract. """
-    _name = 'recurring.contract.activate.wizard'
-    _description = 'Recurring contract activation wizard'
+
+    _name = "recurring.contract.activate.wizard"
+    _description = "Recurring contract activation wizard"
 
     @api.multi
     def activate_contract(self):
-        contract_obj = self.env['recurring.contract']
+        contract_obj = self.env["recurring.contract"]
         # Ids of contracts are stored in context
-        for contract in contract_obj.browse(
-                self.env.context.get('active_ids', list())):
-            if contract.state in ('draft', 'waiting'):
+        for contract in contract_obj.browse(self.env.context.get("active_ids", list())):
+            if contract.state in ("draft", "waiting"):
                 contract.force_activation()
         return True

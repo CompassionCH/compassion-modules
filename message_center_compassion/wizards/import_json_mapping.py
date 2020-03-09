@@ -7,9 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api
 import base64
 import json
+
+from odoo import models, fields, api
 
 
 class ImportJsonMapping(models.TransientModel):
@@ -21,6 +22,6 @@ class ImportJsonMapping(models.TransientModel):
     @api.multi
     def import_json_mapping(self):
         self.ensure_one()
-        dec = str(base64.decodebytes(self.file), 'utf-8')
+        dec = str(base64.decodebytes(self.file), "utf-8")
         data = json.loads(dec)
-        return self.env['compassion.mapping'].create_from_json(data)
+        return self.env["compassion.mapping"].create_from_json(data)

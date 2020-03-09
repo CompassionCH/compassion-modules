@@ -9,34 +9,33 @@
 ##############################################################################
 
 
-from odoo import api, models
 from werkzeug.exceptions import BadRequest
+
+from odoo import api, models
 
 
 class FieldOffice(models.Model):
-    _inherit = 'compassion.field.office'
+    _inherit = "compassion.field.office"
 
     @api.model
     def mobile_get_learning(self, **other_params):
-        if 'country' not in other_params:
+        if "country" not in other_params:
             raise BadRequest()
 
-        country = other_params['country']
-        country_id = self.env['res.country'].search([
-            ('name', '=', country)
-        ])
-        field_office = self.search([
-            ('country_id', '=', country_id.id)
-        ])
+        country = other_params["country"]
+        country_id = self.env["res.country"].search([("name", "=", country)])
+        field_office = self.search([("country_id", "=", country_id.id)])
         res = []
         for field_id in field_office.ids:
-            res.append({
-                'ID': field_id,
-                'PROJECT_ID': country,
-                'SUMMARY': field_office.learning_summary,
-                'IMAGE': field_office.learning_image_url,
-                'SCHEDULE': field_office._get_schedules_json()
-            })
+            res.append(
+                {
+                    "ID": field_id,
+                    "PROJECT_ID": country,
+                    "SUMMARY": field_office.learning_summary,
+                    "IMAGE": field_office.learning_image_url,
+                    "SCHEDULE": field_office._get_schedules_json(),
+                }
+            )
         return res
 
     def _get_schedules_json(self):

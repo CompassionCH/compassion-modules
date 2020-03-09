@@ -27,26 +27,27 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    'name': 'Survey Phone',
-    'summary': 'Make the filling of survey by internal users easier.',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'sequence': 150,
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': ['survey',                       # oca_addons/survey
-                'base_phone',                   # oca_addons/connector-telephony
-                'survey',
-                'partner_contact_birthdate',    # oca_addons/partner_contact
-                'advanced_translation',
-                ],
-    'data': [
-        'views/survey_user_input_view.xml',
-        'views/survey_phone.xml',
-        'report/survey_report.xml',
+    "name": "Survey Phone",
+    "summary": "Make the filling of survey by internal users easier.",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "sequence": 150,
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": [
+        "survey",  # oca_addons/survey
+        "base_phone",  # oca_addons/connector-telephony
+        "survey",
+        "partner_contact_birthdate",  # oca_addons/partner_contact
+        "advanced_translation",
     ],
-    'demo': [],
-    'installable': True,
-    'auto_install': False,
+    "data": [
+        "views/survey_user_input_view.xml",
+        "views/survey_phone.xml",
+        "report/survey_report.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "auto_install": False,
 }

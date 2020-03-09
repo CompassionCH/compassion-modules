@@ -1,43 +1,44 @@
 # Copyright (C) 2018 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from datetime import datetime, timedelta
-from odoo import fields
-from odoo.tests import SavepointCase
 import logging
+from datetime import datetime, timedelta
+
+from odoo.tests import SavepointCase
 
 logger = logging.getLogger(__name__)
 
 
 class TestAnnualBalance(SavepointCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.jack = cls.env.ref('hr.employee_fme')
-        cls.gilles = cls.env.ref('hr.employee_qdp')
-        cls.pieter = cls.env.ref('hr.employee_root')
-        cls.michael = cls.env.ref('hr.employee_niv')
+        cls.jack = cls.env.ref("hr.employee_fme")
+        cls.gilles = cls.env.ref("hr.employee_qdp")
+        cls.pieter = cls.env.ref("hr.employee_root")
+        cls.michael = cls.env.ref("hr.employee_niv")
 
         # Add work schedule (8h/work days) for Gilles, Jack and Michael
-        cls.gilles.calendar_id = cls.env.ref('resource.resource_calendar_std')
-        cls.jack.calendar_id = cls.env.ref('resource.resource_calendar_std')
-        cls.michael.calendar_id = cls.env.ref('resource.resource_calendar_std')
+        cls.gilles.calendar_id = cls.env.ref("resource.resource_calendar_std")
+        cls.jack.calendar_id = cls.env.ref("resource.resource_calendar_std")
+        cls.michael.calendar_id = cls.env.ref("resource.resource_calendar_std")
 
-        cls.config = cls.env['res.config.settings'].create({})
+        cls.config = cls.env["res.config.settings"].create({})
 
         # Create attendance days for employees
-        attendances = cls.env['hr.attendance'].search([], order='check_in')
+        attendances = cls.env["hr.attendance"].search([], order="check_in")
         cls.all_attendances = attendances
 
-        cls.monday = (datetime.today().date()
-                      - timedelta(days=datetime.now().weekday() + 7))
+        cls.monday = datetime.today().date() - timedelta(
+            days=datetime.now().weekday() + 7
+        )
         cls.tuesday = cls.monday + timedelta(days=1)
         cls.wednesday = cls.monday + timedelta(days=2)
         cls.thursday = cls.monday + timedelta(days=3)
         cls.friday = cls.monday + timedelta(days=4)
         cls.saturday = cls.monday + timedelta(days=5)
+
     ##########################################################################
     #                           ATTENDANCE DAY                               #
     ##########################################################################
@@ -51,23 +52,19 @@ class TestAnnualBalance(SavepointCase):
         :return: None
         """
 
-        start_01 = date.strftime('%Y-%m-%d 08:00:00')
-        stop_01 = date.strftime('%Y-%m-%d 12:00:00')
+        start_01 = date.strftime("%Y-%m-%d 08:00:00")
+        stop_01 = date.strftime("%Y-%m-%d 12:00:00")
         # 4h in the morning
-        start_02 = date.strftime('%Y-%m-%d 12:30:00')
+        start_02 = date.strftime("%Y-%m-%d 12:30:00")
         stop_hour_2 = f"{16 + hours}:30"
-        stop_02 = date.strftime('%Y-%m-%d ' + stop_hour_2)
+        stop_02 = date.strftime("%Y-%m-%d " + stop_hour_2)
         # 4h in the afternoon
-        self.env['hr.attendance'].create({
-            'check_in': start_01,
-            'check_out': stop_01,
-            'employee_id': employee.id,
-        })
-        self.env['hr.attendance'].create({
-            'check_in': start_02,
-            'check_out': stop_02,
-            'employee_id': employee.id,
-        })
+        self.env["hr.attendance"].create(
+            {"check_in": start_01, "check_out": stop_01, "employee_id": employee.id, }
+        )
+        self.env["hr.attendance"].create(
+            {"check_in": start_02, "check_out": stop_02, "employee_id": employee.id, }
+        )
 
     def test_annual_no_limit(self):
         self.config.max_extra_hours = 2
@@ -108,12 +105,12 @@ class TestAnnualBalance(SavepointCase):
         # self.assertRaises(ValidationError, change_date_and_raises(364))
 
         # Execute cron
-        self.env['hr.employee.period'].search([
-            ('employee_id', '=', self.jack.id)
-        ]).unlink()
-        self.env['hr.employee.period'].search([
-            ('employee_id', '=', self.michael.id)
-        ]).unlink()
+        self.env["hr.employee.period"].search(
+            [("employee_id", "=", self.jack.id)]
+        ).unlink()
+        self.env["hr.employee.period"].search(
+            [("employee_id", "=", self.michael.id)]
+        ).unlink()
         # self.jack._cron_compute_annual_balance()
         self.jack._compute_balance()
         # michael extra hours should be affected by the yearly cutoff
@@ -124,9 +121,13 @@ class TestAnnualBalance(SavepointCase):
         # Now will modify an attendance in the recent past and see if the
         # update catch it correctly.
         for person in [self.michael, self.jack]:
-            person.attendance_days_ids[-1].attendance_ids[0].check_out = \
-                person.attendance_days_ids[-1].attendance_ids[0].check_out + \
-                timedelta(hours=3)
+            person.attendance_days_ids[-1].attendance_ids[
+                0
+            ].check_out = person.attendance_days_ids[-1].attendance_ids[
+                0
+            ].check_out + timedelta(
+                hours=3
+            )
         self.michael._compute_balance()
         self.jack._compute_balance()
         self.assertEqual(self.jack.balance, 2)

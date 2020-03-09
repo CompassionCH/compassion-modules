@@ -7,8 +7,9 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
+
+from odoo import models, fields, api
 
 
 # For more readability we have split "res.partner" by functionality
@@ -16,55 +17,59 @@ from dateutil.relativedelta import relativedelta
 class PartnerSponsorshipReport(models.Model):
     _inherit = "res.partner"
 
-    end_period = fields.Date(compute='_compute_end_period')
-    start_period = fields.Date(compute='_compute_start_period')
+    end_period = fields.Date(compute="_compute_end_period")
+    start_period = fields.Date(compute="_compute_start_period")
 
     related_active_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_active_sponsorship', readonly=False)
+        "recurring.contract",
+        compute="_compute_related_active_sponsorship",
+        readonly=False,
+    )
     related_sponsorships = fields.One2many(
-        "recurring.contract", compute='_compute_related_sponsorship', readonly=False)
+        "recurring.contract", compute="_compute_related_sponsorship", readonly=False
+    )
 
     # sr -> Sponsorship Report
-    sr_sponsorship = fields.Integer('Number of sponsorship',
-                                    compute='_compute_sr_sponsorship',
-                                    help='Count only the sponsorships who '
-                                         'are fully managed or those who are '
-                                         'paid (not the correspondent).')
-    sr_nb_boy = fields.Integer('Number of boys', compute='_compute_boy')
-    sr_nb_girl = fields.Integer('Number of girls', compute='_compute_girl')
-    sr_time_fcp = fields.Integer('Total hour spent at the FCP',
-                                 compute='_compute_time_scp')
-    sr_nb_meal = fields.Integer('Number of meals served',
-                                compute='_compute_meal')
-    sr_nb_bible = fields.Integer('Number of bibles distributed',
-                                 compute='_compute_nb_bible')
-    sr_nb_medic_check = fields.Integer('Number of given medical checks',
-                                       compute='_compute_medic_check')
-    sr_total_donation = fields.Monetary('Invoices',
-                                        compute='_compute_total_donation')
-    sr_total_gift = fields.Integer('Gift',
-                                   compute='_compute_total_gift')
+    sr_sponsorship = fields.Integer(
+        "Number of sponsorship",
+        compute="_compute_sr_sponsorship",
+        help="Count only the sponsorships who "
+             "are fully managed or those who are "
+             "paid (not the correspondent).",
+    )
+    sr_nb_boy = fields.Integer("Number of boys", compute="_compute_boy")
+    sr_nb_girl = fields.Integer("Number of girls", compute="_compute_girl")
+    sr_time_fcp = fields.Integer(
+        "Total hour spent at the FCP", compute="_compute_time_scp"
+    )
+    sr_nb_meal = fields.Integer("Number of meals served", compute="_compute_meal")
+    sr_nb_bible = fields.Integer(
+        "Number of bibles distributed", compute="_compute_nb_bible"
+    )
+    sr_nb_medic_check = fields.Integer(
+        "Number of given medical checks", compute="_compute_medic_check"
+    )
+    sr_total_donation = fields.Monetary("Invoices", compute="_compute_total_donation")
+    sr_total_gift = fields.Integer("Gift", compute="_compute_total_gift")
 
     @api.multi
     def _compute_related_sponsorship(self):
         for partner in self:
             sponsorships = partner.sponsorship_ids
-            sponsorships |= partner.member_ids.mapped('sponsorship_ids')
+            sponsorships |= partner.member_ids.mapped("sponsorship_ids")
             partner.related_sponsorships = sponsorships
 
     @api.multi
     def _compute_related_active_sponsorship(self):
         for partner in self:
             sponsorships = partner.related_sponsorships
-            partner.related_active_sponsorships = sponsorships.filtered(
-                'is_active')
+            partner.related_active_sponsorships = sponsorships.filtered("is_active")
 
     @api.multi
     def _compute_start_period(self):
         for partner in self:
             end = partner.end_period
-            partner.start_period = fields.Date.to_string(
-                end - relativedelta(months=12))
+            partner.start_period = fields.Date.to_string(end - relativedelta(months=12))
 
     @api.multi
     def _compute_end_period(self):
@@ -80,39 +85,43 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_boy(self):
         for partner in self:
-            partner.sr_nb_boy = len(partner.related_active_sponsorships.mapped(
-                'child_id').filtered(lambda r: r.gender == 'M'))
+            partner.sr_nb_boy = len(
+                partner.related_active_sponsorships.mapped("child_id").filtered(
+                    lambda r: r.gender == "M"
+                )
+            )
 
     @api.multi
     def _compute_girl(self):
         for partner in self:
             partner.sr_nb_girl = len(
-                partner.related_active_sponsorships.mapped(
-                    'child_id').filtered(lambda r: r.gender == 'F'))
+                partner.related_active_sponsorships.mapped("child_id").filtered(
+                    lambda r: r.gender == "F"
+                )
+            )
 
     @api.multi
     def _compute_time_scp(self):
         def get_time_in_scp(sponsorship):
-            nb_weeks = sponsorship.contract_duration // 7.
+            nb_weeks = sponsorship.contract_duration // 7.0
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_hours_week
 
         for partner in self:
-            total_day = sum(
-                partner.related_sponsorships.mapped(get_time_in_scp))
+            total_day = sum(partner.related_sponsorships.mapped(get_time_in_scp))
             partner.sr_time_fcp = total_day
 
     @api.multi
     def _compute_meal(self):
         def get_nb_meal(sponsorship):
-            nb_weeks = sponsorship.contract_duration // 7.
+            nb_weeks = sponsorship.contract_duration // 7.0
             country = sponsorship.child_id.field_office_id
             return nb_weeks * country.fcp_meal_week
 
         for partner in self:
             total_meal = sum(
-                partner.related_sponsorships.filtered('global_id').mapped(
-                    get_nb_meal))
+                partner.related_sponsorships.filtered("global_id").mapped(get_nb_meal)
+            )
             partner.sr_nb_meal = total_meal
 
     @api.multi
@@ -124,30 +133,30 @@ class PartnerSponsorshipReport(models.Model):
 
         for partner in self:
             total_check = sum(
-                partner.related_sponsorships.filtered('global_id').mapped(
-                    get_nb_check))
+                partner.related_sponsorships.filtered("global_id").mapped(get_nb_check)
+            )
             partner.sr_nb_medic_check = total_check
 
     @api.multi
     def _compute_nb_bible(self):
         for partner in self:
-            total_bible = len(
-                partner.related_sponsorships.filtered('global_id'))
+            total_bible = len(partner.related_sponsorships.filtered("global_id"))
             partner.sr_nb_bible = total_bible
 
     @api.multi
     def _compute_total_donation(self):
         def get_sum_invoice(_partner):
-            invoices = self.env['account.invoice'].search([
-                ('partner_id', '=', _partner.id),
-                ('type', '=', 'out_invoice'),
-                ('state', '=', 'paid'),
-                ('invoice_type', 'in',
-                 ['gift', 'sponsorship', 'fund']),
-                ('last_payment', '<', _partner.end_period),
-                ('last_payment', '>', _partner.start_period)
-            ])
-            return sum(invoices.mapped('amount_total'))
+            invoices = self.env["account.invoice"].search(
+                [
+                    ("partner_id", "=", _partner.id),
+                    ("type", "=", "out_invoice"),
+                    ("state", "=", "paid"),
+                    ("invoice_type", "in", ["gift", "sponsorship", "fund"]),
+                    ("last_payment", "<", _partner.end_period),
+                    ("last_payment", ">", _partner.start_period),
+                ]
+            )
+            return sum(invoices.mapped("amount_total"))
 
         for partner in self:
             sr_total_donation = get_sum_invoice(partner)
@@ -159,14 +168,16 @@ class PartnerSponsorshipReport(models.Model):
     @api.multi
     def _compute_total_gift(self):
         def get_nb_gift(_partner):
-            return self.env['account.invoice'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('invoice_type', '=', 'gift'),
-                 ('type', '=', 'out_invoice'),
-                 ('state', '=', 'paid'),
-                 ('last_payment', '<', _partner.end_period),
-                 ('last_payment', '>=', _partner.start_period)
-                 ])
+            return self.env["account.invoice"].search_count(
+                [
+                    ("partner_id", "=", _partner.id),
+                    ("invoice_type", "=", "gift"),
+                    ("type", "=", "out_invoice"),
+                    ("state", "=", "paid"),
+                    ("last_payment", "<", _partner.end_period),
+                    ("last_payment", ">=", _partner.start_period),
+                ]
+            )
 
         for partner in self:
             sr_total_gift = get_nb_gift(partner)
@@ -179,38 +190,45 @@ class PartnerSponsorshipReport(models.Model):
     def open_sponsorship_report(self):
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Sponsorship Report',
-            'res_model': 'res.partner',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'context': self.with_context(
-                form_view_ref='sponsorship_compassion.sponsorship_report_form'
+            "type": "ir.actions.act_window",
+            "name": "Sponsorship Report",
+            "res_model": "res.partner",
+            "view_type": "form",
+            "view_mode": "form",
+            "context": self.with_context(
+                form_view_ref="sponsorship_compassion.sponsorship_report_form"
             ).env.context,
-            'res_id': self.id
+            "res_id": self.id,
         }
 
     @api.multi
     def open_donation_details(self):
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Donations details',
-            'res_model': 'account.invoice.line',
-            'views': [[self.env.ref('sponsorship_compassion'
-                                    '.view_invoice_line_partner_tree').id,
-                       'list']],
-            'context': self.with_context(
+            "type": "ir.actions.act_window",
+            "name": "Donations details",
+            "res_model": "account.invoice.line",
+            "views": [
+                [
+                    self.env.ref(
+                        "sponsorship_compassion" ".view_invoice_line_partner_tree"
+                    ).id,
+                    "list",
+                ]
+            ],
+            "context": self.with_context(
                 search_default_group_product=1,
-                tree_view_ref='sponsorship_compassion'
-                              '.view_invoice_line_partner_tree '
+                tree_view_ref="sponsorship_compassion"
+                              ".view_invoice_line_partner_tree ",
             ).env.context,
-            "domain": ['|', ("partner_id", "=", self.id),
-                       ("partner_id.church_id", "=", self.id),
-                       ('invoice_id.invoice_type', 'in',
-                        ['gift', 'sponsorship', 'fund']),
-                       ('invoice_id.type', '=', 'out_invoice'),
-                       ('state', '=', 'paid'),
-                       ('last_payment', '<', self.end_period),
-                       ('last_payment', '>=', self.start_period)]
+            "domain": [
+                "|",
+                ("partner_id", "=", self.id),
+                ("partner_id.church_id", "=", self.id),
+                ("invoice_id.invoice_type", "in", ["gift", "sponsorship", "fund"]),
+                ("invoice_id.type", "=", "out_invoice"),
+                ("state", "=", "paid"),
+                ("last_payment", "<", self.end_period),
+                ("last_payment", ">=", self.start_period),
+            ],
         }

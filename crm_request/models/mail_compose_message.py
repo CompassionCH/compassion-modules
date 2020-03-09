@@ -10,7 +10,8 @@ class MailComposer(models.TransientModel):
     Extend the mail composer so that it can send message to archived partner,
     and put back the selected partner in the claim in case it was not linked.
     """
-    _inherit = 'mail.compose.message'
+
+    _inherit = "mail.compose.message"
 
     @api.multi
     def send_mail(self, auto_commit=False):
@@ -18,29 +19,27 @@ class MailComposer(models.TransientModel):
         res = super().send_mail(auto_commit)
 
         # Put back selected partner into claim
-        if self.env.context.get('claim_no_partner'):
-            gen_mail = self.env['mail.mail'].search([
-                ('res_id', '=', self.res_id),
-                ('model', '=', 'crm.claim')
-            ], limit=1)
-            self.env['crm.claim'].browse(self.res_id).write({
-                'partner_id': gen_mail.recipient_ids[:1].id
-            })
+        if self.env.context.get("claim_no_partner"):
+            gen_mail = self.env["mail.mail"].search(
+                [("res_id", "=", self.res_id), ("model", "=", "crm.claim")], limit=1
+            )
+            self.env["crm.claim"].browse(self.res_id).write(
+                {"partner_id": gen_mail.recipient_ids[:1].id}
+            )
 
         return res
 
     @api.multi
-    def onchange_template_id(self, template_id, composition_mode, model,
-                             res_id):
+    def onchange_template_id(self, template_id, composition_mode, model, res_id):
         """
         Append the quote of previous e-mail to the body of the message.
         """
         result = super().onchange_template_id(
             template_id, composition_mode, model, res_id
         )
-        reply_quote = self.env.context.get('reply_quote')
+        reply_quote = self.env.context.get("reply_quote")
         if reply_quote:
-            result['value']['body'] = append_content_to_html(
-                result['value']['body'],
-                '<br/><br/>' + reply_quote, plaintext=False)
+            result["value"]["body"] = append_content_to_html(
+                result["value"]["body"], "<br/><br/>" + reply_quote, plaintext=False
+            )
         return result

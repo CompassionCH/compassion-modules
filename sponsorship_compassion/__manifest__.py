@@ -28,59 +28,57 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Compassion Sponsorships',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': [
-        'recurring_contract',               # compassion-accounting
-        'utm',
-        'crm',
-        'child_compassion',
-        'account_cancel',
-        'web_m2x_options',                  # oca/web
-        'account_invoice_split_invoice',    # compassion-accounting
-        'partner_firstname',                # oca/partner-contact
-        'account_analytic_attribution',     # compassion-accounting
-        'account_analytic_default',
-        'web_timeline',                     # oca_addons/web
+    "name": "Compassion Sponsorships",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": [
+        "recurring_contract",  # compassion-accounting
+        "utm",
+        "crm",
+        "child_compassion",
+        "account_cancel",
+        "web_m2x_options",  # oca/web
+        "account_invoice_split_invoice",  # compassion-accounting
+        "partner_firstname",  # oca/partner-contact
+        "account_analytic_attribution",  # compassion-accounting
+        "account_analytic_default",
+        "web_timeline",  # oca_addons/web
     ],
-    'data': [
-        'views/sponsorship_contract_view.xml',
-        'views/invoice_line_view.xml',
-        'views/res_partner_view.xml',
-        'views/privacy_statement.xml',
-        'views/generate_gift_view.xml',
-        'views/account_invoice_split_wizard_view.xml',
-        'views/child_view.xml',
-        'views/contracts_report_view.xml',
-        'views/gmc_message_view.xml',
-        'views/end_contract_wizard_view.xml',
-        'views/download_child_pictures_view.xml',
-        'views/project_view.xml',
-        'views/activate_contract_view.xml',
-        'views/contract_group_view.xml',
-        'views/contract_origin_view.xml',
-        'views/project_view.xml',
-        'views/utm_medium_view.xml',
-        'data/compassion_mapping.xml',
-        'data/sponsorship_product.xml',
-        'data/gmc_action.xml',
-        'data/end_reasons.xml',
-        'data/partner_category_data.xml',
-        'data/utm_data.xml',
-        'data/res_partner_sequence.xml',
-        'security/ir.model.access.csv',
-        'security/record_rules.xml',
-        'views/product_views.xml'
+    "data": [
+        "views/sponsorship_contract_view.xml",
+        "views/invoice_line_view.xml",
+        "views/res_partner_view.xml",
+        "views/privacy_statement.xml",
+        "views/generate_gift_view.xml",
+        "views/account_invoice_split_wizard_view.xml",
+        "views/child_view.xml",
+        "views/contracts_report_view.xml",
+        "views/gmc_message_view.xml",
+        "views/end_contract_wizard_view.xml",
+        "views/download_child_pictures_view.xml",
+        "views/project_view.xml",
+        "views/activate_contract_view.xml",
+        "views/contract_group_view.xml",
+        "views/contract_origin_view.xml",
+        "views/project_view.xml",
+        "views/utm_medium_view.xml",
+        "data/compassion_mapping.xml",
+        "data/sponsorship_product.xml",
+        "data/gmc_action.xml",
+        "data/end_reasons.xml",
+        "data/partner_category_data.xml",
+        "data/utm_data.xml",
+        "data/res_partner_sequence.xml",
+        "security/ir.model.access.csv",
+        "security/record_rules.xml",
+        "views/product_views.xml",
     ],
-    'demo': [
-        'demo/demo_data.yml',
-    ],
-    'installable': True,
-    'auto_install': False,
-    'development_status': 'Stable',
-    'post_init_hook': "load_mappings",
+    "demo": ["demo/demo_data.yml", ],
+    "installable": True,
+    "auto_install": False,
+    "development_status": "Stable",
+    "post_init_hook": "load_mappings",
 }

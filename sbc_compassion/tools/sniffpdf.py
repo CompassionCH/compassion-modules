@@ -12,8 +12,8 @@
 # https://www.binpress.com/tutorial/manipulating-pdfs-with-python/167
 
 
-import os
 import logging
+import os
 from io import StringIO
 
 _logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ try:
     from pdfminer.layout import LAParams, LTImage
     from pdfminer.pdfpage import PDFPage
 except ImportError:
-    _logger.error('Please install pdfminer to use SBC module')
+    _logger.error("Please install pdfminer to use SBC module")
 
 
 def get_images(pdf_data, dst_folder, dst_name):
@@ -70,8 +70,8 @@ def get_images(pdf_data, dst_folder, dst_name):
 
 def data2pdf(pdf_data, dst_url=None):
     if not dst_url:
-        dst_url = os.getcwd() + '/sniffpdf_gettext_tmp.pdf'
-    with open(dst_url, 'wb') as tmp:
+        dst_url = os.getcwd() + "/sniffpdf_gettext_tmp.pdf"
+    with open(dst_url, "wb") as tmp:
         tmp.write(pdf_data)
     return dst_url
 
@@ -91,7 +91,7 @@ def get_text(url, pages=None):
     converter = TextConverter(manager, output, laparams=LAParams())
     interpreter = PDFPageInterpreter(manager, converter)
 
-    with open(url, 'rb') as infile:
+    with open(url, "rb") as infile:
         # should be a single page, but iterate anyway
         for page in PDFPage.get_pages(infile, pagenums):
             interpreter.process_page(page)
@@ -125,7 +125,7 @@ def get_layout(url, pages=None):
     device = PDFPageAggregator(manager, laparams=laparams)
     interpreter = PDFPageInterpreter(manager, device)
     layouts = []
-    with open(url, 'rb') as infile:
+    with open(url, "rb") as infile:
         for page in PDFPage.get_pages(infile, pagenos=pagenums):
             interpreter.process_page(page)
             layouts.append(device.get_result())
@@ -146,7 +146,7 @@ def contains_a_single_image(LTObject):
     :return:
     """
 
-    if hasattr(LTObject, '_objs'):
+    if hasattr(LTObject, "_objs"):
         if len(LTObject._objs) != 1:
             return False
         else:

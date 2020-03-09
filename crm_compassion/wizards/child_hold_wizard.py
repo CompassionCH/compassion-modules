@@ -11,17 +11,18 @@ from odoo import models, fields
 
 
 class ChildHoldWizard(models.TransientModel):
-    _inherit = 'child.hold.wizard'
+    _inherit = "child.hold.wizard"
 
-    return_action = fields.Selection(
-        selection_add=[('event', 'Go back to event')])
+    return_action = fields.Selection(selection_add=[("event", "Go back to event")])
 
     def _get_action(self, holds):
         action = super()._get_action(holds)
-        if self.return_action == 'event':
-            action.update({
-                'res_model': 'crm.event.compassion',
-                'res_id': self.env.context.get('event_id'),
-                'view_mode': 'form,tree',
-            })
+        if self.return_action == "event":
+            action.update(
+                {
+                    "res_model": "crm.event.compassion",
+                    "res_id": self.env.context.get("event_id"),
+                    "view_mode": "form,tree",
+                }
+            )
         return action

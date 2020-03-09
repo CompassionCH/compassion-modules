@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 #    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
@@ -18,44 +17,45 @@ _logger = logging.getLogger(__name__)
 try:
     from wand.image import Image
 except ImportError:
-    _logger.warning('Please install wand to use PDF Previews')
+    _logger.warning("Please install wand to use PDF Previews")
 
 
 class PdfPreviewWizard(models.TransientModel):
     """
     Generate pdf of communication.
     """
-    _name = 'partner.communication.pdf.wizard'
-    _description = 'Partner Communication - PDF Wizard'
+
+    _name = "partner.communication.pdf.wizard"
+    _description = "Partner Communication - PDF Wizard"
 
     communication_id = fields.Many2one(
-        'partner.communication.job', required=True, ondelete='cascade', readonly=False)
-    preview = fields.Binary(compute='_compute_pdf')
-    state = fields.Selection(related='communication_id.send_mode')
-    send_state = fields.Selection(related='communication_id.state')
-    body_html = fields.Html(compute='_compute_html')
+        "partner.communication.job", required=True, ondelete="cascade", readonly=False
+    )
+    preview = fields.Binary(compute="_compute_pdf")
+    state = fields.Selection(related="communication_id.send_mode")
+    send_state = fields.Selection(related="communication_id.state")
+    body_html = fields.Html(compute="_compute_html")
 
     @api.multi
     def _compute_pdf(self):
-        if self.state != 'physical':
+        if self.state != "physical":
             return
         comm = self.communication_id
         report = comm.report_id.with_context(
-            lang=comm.partner_id.lang, must_skip_send_to_printer=True)
+            lang=comm.partner_id.lang, must_skip_send_to_printer=True
+        )
         data = report.render_qweb_pdf(comm.ids)
         with Image(blob=data[0]) as pdf_image:
-            preview = base64.b64encode(pdf_image.make_blob(format='jpeg'))
+            preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
         self.preview = preview
 
     @api.multi
     def _compute_html(self):
         comm = self.communication_id
-        template = getattr(comm.email_template_id,
-                           'sendgrid_localized_template', False)
+        template = getattr(comm.email_template_id, "sendgrid_localized_template", False)
         if template:
-            body_html = template.html_content.replace(
-                '<%body%>', comm.body_html)
+            body_html = template.html_content.replace("<%body%>", comm.body_html)
             self.body_html = body_html
 
         self.body_html = comm.body_html

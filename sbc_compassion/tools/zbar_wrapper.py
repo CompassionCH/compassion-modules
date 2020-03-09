@@ -12,7 +12,9 @@
 ZBar is detected, it apply a few filter on the input image and try the
 scanning again. This technique reduces the number of false negative."""
 import logging
+
 from PIL import Image
+
 _logger = logging.getLogger(__name__)
 try:
     from pyzbar import pyzbar

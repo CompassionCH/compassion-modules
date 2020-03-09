@@ -9,8 +9,6 @@
 ##############################################################################
 from datetime import timedelta, datetime
 
-from odoo import fields
-
 
 def is_expired(obj):
     """

@@ -16,8 +16,8 @@ class ResLang(models.Model):
     """ This class adds spoken languages to match Compassion needs.
     """
 
-    _name = 'res.lang.compassion'
-    _description = 'Compassion language'
+    _name = "res.lang.compassion"
+    _description = "Compassion language"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -25,10 +25,9 @@ class ResLang(models.Model):
 
     name = fields.Char(size=128, translate=True)
     code_iso = fields.Char(size=128)
-    lang_id = fields.Many2one('res.lang', readonly=False)
-    translatable = fields.Boolean(help='Can be translated by GP')
+    lang_id = fields.Many2one("res.lang", readonly=False)
+    translatable = fields.Boolean(help="Can be translated by GP")
 
     _sql_constraints = [
-        ('lang_id', 'unique(lang_id)',
-         'The lang already exists in database.'),
+        ("lang_id", "unique(lang_id)", "The lang already exists in database."),
     ]

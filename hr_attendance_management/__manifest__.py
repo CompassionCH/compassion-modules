@@ -27,53 +27,50 @@
 ##############################################################################
 
 {
-    'name': 'HR (Extra) Hours Management',
-    'summary': 'Compute extra hours based on attendances',
-    'category': 'Human Resources',
-    'author': "Compassion Switzerland, "
-              "Odoo Community Association (OCA)",
-    'depends': [
-        'hr_attendance',                    # source/addons
-        'hr_holidays_public',               # hr
-        'hr_contract',                      # source/addons
-        'hr_employee_calendar_planning',    # hr
-        'child_compassion',                 # compassion-modules
-        'thankyou_letters'                  # compassion-modules
+    "name": "HR (Extra) Hours Management",
+    "summary": "Compute extra hours based on attendances",
+    "category": "Human Resources",
+    "author": "Compassion Switzerland, " "Odoo Community Association (OCA)",
+    "depends": [
+        "hr_attendance",  # source/addons
+        "hr_holidays_public",  # hr
+        "hr_contract",  # source/addons
+        "hr_employee_calendar_planning",  # hr
+        "child_compassion",  # compassion-modules
+        "thankyou_letters",  # compassion-modules
     ],
-    'version': '12.0.1.0.0',
-    'auto_install': False,
-    'website': 'https://www.compassion.ch',
-    'license': 'AGPL-3',
-    'images': [],
-    'data': [
-        'security/ir.model.access.csv',
-        'security/ir_rule.xml',
-        'views/hr_create_period_wizard_view.xml',
-        'views/hr_attendance_calendar_view.xml',
-        'views/hr_attendance_day_view.xml',
-        'views/hr_attendance_settings.xml',
-        'views/hr_attendance_view.xml',
-        'views/hr_employee.xml',
-        'views/hr_holidays_status_views.xml',
-        'views/hr_holidays_views.xml',
-        'views/attendance.xml',
-        'views/hr_attendance_break.xml',
-        'views/hr_attendance_location.xml',
-        'views/hr_employee_periods.xml',
-        'data/attendance_computation_cron.xml',
-        'data/annual_balance_cron.xml',
-        'data/hr_attendance_settings.xml',
-        'views/extra_hours_evolution_graph.xml',
-        'views/hr_change_day_wizard_view.xml',
-        'views/hr_change_day_requests.xml'
+    "version": "12.0.1.0.0",
+    "auto_install": False,
+    "website": "https://www.compassion.ch",
+    "license": "AGPL-3",
+    "images": [],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/ir_rule.xml",
+        "views/hr_create_period_wizard_view.xml",
+        "views/hr_attendance_calendar_view.xml",
+        "views/hr_attendance_day_view.xml",
+        "views/hr_attendance_settings.xml",
+        "views/hr_attendance_view.xml",
+        "views/hr_employee.xml",
+        "views/hr_holidays_status_views.xml",
+        "views/hr_holidays_views.xml",
+        "views/attendance.xml",
+        "views/hr_attendance_break.xml",
+        "views/hr_attendance_location.xml",
+        "views/hr_employee_periods.xml",
+        "data/attendance_computation_cron.xml",
+        "data/annual_balance_cron.xml",
+        "data/hr_attendance_settings.xml",
+        "views/extra_hours_evolution_graph.xml",
+        "views/hr_change_day_wizard_view.xml",
+        "views/hr_change_day_requests.xml",
     ],
-    'demo': [
-        'demo/hr_config.xml',
-        'demo/hr_attendance_day.xml',
-        'demo/hr_contract.xml',
+    "demo": [
+        "demo/hr_config.xml",
+        "demo/hr_attendance_day.xml",
+        "demo/hr_contract.xml",
     ],
-    'installable': True,
-    'qweb': [
-        "static/src/xml/attendance.xml",
-    ],
+    "installable": True,
+    "qweb": ["static/src/xml/attendance.xml", ],
 }

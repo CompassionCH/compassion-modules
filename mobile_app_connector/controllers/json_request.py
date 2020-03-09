@@ -8,20 +8,22 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import werkzeug
 import logging
+
 import simplejson
+import werkzeug
+# Monkeypatch type of request root to use MobileAppJsonRequest
+from odoo.addons.message_center_compassion.controllers.json_request import (
+    get_request as old_get_request,
+)
 
 from odoo.http import JsonRequest, Root, SessionExpiredException
-# Monkeypatch type of request root to use MobileAppJsonRequest
-from odoo.addons.message_center_compassion.controllers.json_request import \
-    get_request as old_get_request
 
 _logger = logging.getLogger(__name__)
 
 
 def get_request(self, httprequest):
-    if httprequest.environ['PATH_INFO'].startswith('/mobile-app-api'):
+    if httprequest.environ["PATH_INFO"].startswith("/mobile-app-api"):
         return MobileAppJsonRequest(httprequest)
     return old_get_request(self, httprequest)
 
@@ -45,25 +47,19 @@ class MobileAppJsonRequest(JsonRequest):
             args[0].values
 
             super().__init__(*args)
-            self.params = {
-                key: val for key, val in self.httprequest.args.items()
-            }
+            self.params = {key: val for key, val in self.httprequest.args.items()}
         except werkzeug.exceptions.BadRequest as error:
             # Put simply an empty JSON data
-            if 'Invalid JSON data' in error.description:
+            if "Invalid JSON data" in error.description:
                 self.jsonrequest = {}
                 # PUT The GET parameters as the parameters for the controller
-                self.params = {
-                    key: val for key, val in
-                    self.httprequest.values.items()
-                }
+                self.params = {key: val for key, val in self.httprequest.values.items()}
                 self.context = dict(self.session.context)
             else:
                 raise
 
     def _json_response(self, result=None, error=None):
-        odoo_result = super()._json_response(
-            result, error)
+        odoo_result = super()._json_response(result, error)
         if result is not None and error is None:
             odoo_result.data = simplejson.dumps(result)
         return odoo_result
@@ -71,21 +67,25 @@ class MobileAppJsonRequest(JsonRequest):
     def _handle_exception(self, exception):
         if isinstance(exception, ValueError):
             code = 400
-            return self._json_response(error={
-                'code': code,
-                'http_code': code,
-                'http_status': code,
-                'message': str(exception)
-            })
+            return self._json_response(
+                error={
+                    "code": code,
+                    "http_code": code,
+                    "http_status": code,
+                    "message": str(exception),
+                }
+            )
         if isinstance(exception, SessionExpiredException):
             # This happens if user is not logged in while calling mobile
             # app JSON endpoints.
             code = 401
-            return self._json_response(error={
-                'code': code,
-                'http_code': code,
-                'http_status': code,
-                'message': str(exception)
-            })
+            return self._json_response(
+                error={
+                    "code": code,
+                    "http_code": code,
+                    "http_status": code,
+                    "message": str(exception),
+                }
+            )
         # RE-Raise last error, without compromising the StackTrace
         raise

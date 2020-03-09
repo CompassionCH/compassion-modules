@@ -7,9 +7,10 @@
 #
 ##############################################################################
 
+import logging
+
 from odoo import api, models, fields
 from odoo.tools import config
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -21,15 +22,14 @@ except ImportError as e:
     _logger.warning("Please install the PIP package firebase_admin")
 
 try:
-    firebase_credentials = \
-        credentials.Certificate(config.get('google_application_credentials'))
-    firebase_app = firebase_admin.initialize_app(
-        credential=firebase_credentials)
+    firebase_credentials = credentials.Certificate(
+        config.get("google_application_credentials")
+    )
+    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
 except (KeyError, ValueError) as e:
     firebase_app = None
     _logger.warning(
-        "google_application_credentials is not correctly configured "
-        "in odoo.conf"
+        "google_application_credentials is not correctly configured " "in odoo.conf"
     )
 
 
@@ -40,19 +40,21 @@ class FirebaseRegistration(models.Model):
     It provides function to send messages to the device.
     """
 
-    _name = 'firebase.registration'
-    _description = 'Device registered with Firebase Cloud Messaging'
-    _rec_name = 'registration_id'
+    _name = "firebase.registration"
+    _description = "Device registered with Firebase Cloud Messaging"
+    _rec_name = "registration_id"
 
-    registration_id = fields.Char(required=True,
-                                  string="Firebase Registration ID")
-    partner_id = fields.Many2one('res.partner', string="Partner", readonly=False)
-    partner_name = fields.Char(related='partner_id.name', readonly=True)
+    registration_id = fields.Char(required=True, string="Firebase Registration ID")
+    partner_id = fields.Many2one("res.partner", string="Partner", readonly=False)
+    partner_name = fields.Char(related="partner_id.name", readonly=True)
 
     _sql_constraints = [
-        ('firebase_id_unique',
-         'UNIQUE(registration_id)',
-         'Firebase registration ID should be unique')]
+        (
+            "firebase_id_unique",
+            "UNIQUE(registration_id)",
+            "Firebase registration ID should be unique",
+        )
+    ]
 
     def send_message_from_interface(self):
         """
@@ -61,8 +63,9 @@ class FirebaseRegistration(models.Model):
         :return: None
         """
 
-        self.send_message(self.env.context.get('message_title'),
-                          self.env.context.get('message_body'))
+        self.send_message(
+            self.env.context.get("message_title"), self.env.context.get("message_body")
+        )
 
     @api.multi
     def send_message(self, message_title, message_body, data=None):
@@ -79,41 +82,45 @@ class FirebaseRegistration(models.Model):
             data = {}
 
         if not firebase_app:
-            _logger.error("google_application_credentials is not correctly "
-                          "configured in odoo.conf or invalid. Skipping "
-                          "sending notifications")
+            _logger.error(
+                "google_application_credentials is not correctly "
+                "configured in odoo.conf or invalid. Skipping "
+                "sending notifications"
+            )
             return False
 
         notif = messaging.Notification(title=message_title, body=message_body)
 
         for firebase_id in self:
-            data.update({
-                'title': message_title,
-                'body': message_body
-            })
+            data.update({"title": message_title, "body": message_body})
 
-            message = messaging.Message(notification=notif,
-                                        data=data,
-                                        token=firebase_id.registration_id)
+            message = messaging.Message(
+                notification=notif, data=data, token=firebase_id.registration_id
+            )
             try:
                 messaging.send(message=message)
-            except (messaging.QuotaExceededError,
+            except (
+                    messaging.QuotaExceededError,
                     messaging.SenderIdMismatchError,
                     messaging.ThirdPartyAuthError,
-                    messaging.UnregisteredError) as ex:
+                    messaging.UnregisteredError,
+            ) as ex:
                 _logger.error(ex)
                 # Save error in ir.logging to allow tracking of errors
-                self.env['ir.logging'].create({
-                    'name': 'Firebase ' + ex.__class__.__name__,
-                    'type': 'server',
-                    'message': ex,
-                    'path': '/firebase_connector/models/firebase_regitration.py',
-                    'line': '100',
-                    'func': 'send_message'
-                })
-                if ex.code == 'NOT_FOUND':
+                self.env["ir.logging"].create(
+                    {
+                        "name": "Firebase " + ex.__class__.__name__,
+                        "type": "server",
+                        "message": ex,
+                        "path": "/firebase_connector/models/firebase_regitration.py",
+                        "line": "100",
+                        "func": "send_message",
+                    }
+                )
+                if ex.code == "NOT_FOUND":
                     _logger.debug(
                         "A device is not reachable from Firebase, unlinking."
-                        "Firebase ID: %s" % firebase_id)
+                        "Firebase ID: %s" % firebase_id
+                    )
                     firebase_id.unlink()
         return True

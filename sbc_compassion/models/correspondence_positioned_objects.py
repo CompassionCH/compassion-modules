@@ -15,18 +15,23 @@ class CorrespondencePositionedObject(models.Model):
     """ This class represents any object that is positioned in a PDF. A
     positioned object is anything that is located with its left-highest and
     right-lowest point. """
-    _name = 'correspondence.positioned.object'
-    _description = 'Correspondence positioned object'
+
+    _name = "correspondence.positioned.object"
+    _description = "Correspondence positioned object"
 
     name = fields.Char()
     x_min = fields.Float(
-        help='Minimum X position of the object in millimeters', required=True)
+        help="Minimum X position of the object in millimeters", required=True
+    )
     x_max = fields.Float(
-        help='Maximum X position of the object in millimeters', required=True)
+        help="Maximum X position of the object in millimeters", required=True
+    )
     y_min = fields.Float(
-        help='Minimum Y position of the object in millimeters', required=True)
+        help="Minimum Y position of the object in millimeters", required=True
+    )
     y_max = fields.Float(
-        help='Maximum Y position of the object in millimeters', required=True)
+        help="Maximum Y position of the object in millimeters", required=True
+    )
 
     def get_json_repr(self):
         """
@@ -35,22 +40,18 @@ class CorrespondencePositionedObject(models.Model):
         :return: list of values
         """
         self.ensure_one()
-        return list(map(str, [
-            self.x_min, self.y_min, self.x_max, self.y_max
-        ]))
+        return list(map(str, [self.x_min, self.y_min, self.x_max, self.y_max]))
 
 
 class CorrespondenceTextBox(models.Model):
-    _name = 'correspondence.text.box'
-    _inherit = 'correspondence.positioned.object'
-    _description = 'Correspondence Text Box'
+    _name = "correspondence.text.box"
+    _inherit = "correspondence.positioned.object"
+    _description = "Correspondence Text Box"
 
-    text_line_height = fields.Float(
-        help='Line height in millimeters', required=True)
-    text_type = fields.Selection([
-        ('Original', 'Original'),
-        ('Translation', 'Translation'),
-    ])
+    text_line_height = fields.Float(help="Line height in millimeters", required=True)
+    text_type = fields.Selection(
+        [("Original", "Original"), ("Translation", "Translation"), ]
+    )
 
     def get_json_repr(self):
         """
@@ -73,8 +74,8 @@ class CorrespondenceLanguageCheckbox(models.Model):
     in order to find it and verify if it is ticked or not.
     The object s  """
 
-    _name = 'correspondence.lang.checkbox'
-    _inherit = 'correspondence.positioned.object'
-    _description = 'Correspondence Lang Checkbox'
+    _name = "correspondence.lang.checkbox"
+    _inherit = "correspondence.positioned.object"
+    _description = "Correspondence Lang Checkbox"
 
-    language_id = fields.Many2one('res.lang.compassion', readonly=False)
+    language_id = fields.Many2one("res.lang.compassion", readonly=False)

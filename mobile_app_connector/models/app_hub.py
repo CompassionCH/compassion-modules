@@ -21,7 +21,8 @@ class AppHub(models.AbstractModel):
     It generates and orders the list of tiles that will be displayed at the
     user.
     """
-    _name = 'mobile.app.hub'
+
+    _name = "mobile.app.hub"
 
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed
@@ -45,83 +46,95 @@ class AppHub(models.AbstractModel):
             # Public mode is handled differently.
             return self._public_hub(**pagination)
 
-        partner = self.env['res.partner'].browse(partner_id)
+        partner = self.env["res.partner"].browse(partner_id)
 
         if partner.app_displayed_sponsorships == "all":
             sponsorships = partner.sponsorship_ids
             unpaid = partner.contracts_fully_managed + partner.contracts_paid
         else:
-            sponsorships = partner.contracts_correspondant + \
-                partner.contracts_fully_managed
+            sponsorships = (
+                partner.contracts_correspondant + partner.contracts_fully_managed
+            )
             unpaid = partner.contracts_fully_managed
 
-        sponsorships = sponsorships.filtered('is_active')
+        sponsorships = sponsorships.filtered("is_active")
         unpaid = unpaid.filtered(
-            lambda c: not c.is_active and not c.parent_id and
-            (c.state in ['waiting', 'draft']))
-        children = sponsorships.mapped('child_id')
-        sponsorship_amounts = sponsorships.mapped('total_amount')
-        sponsorship_types = sponsorships.mapped('type')
-        unpaid_children = unpaid.mapped('child_id')
-        unpaid_amounts = unpaid.mapped('total_amount')
+            lambda c: not c.is_active
+            and not c.parent_id
+            and (c.state in ["waiting", "draft"])
+        )
+        children = sponsorships.mapped("child_id")
+        sponsorship_amounts = sponsorships.mapped("total_amount")
+        sponsorship_types = sponsorships.mapped("type")
+        unpaid_children = unpaid.mapped("child_id")
+        unpaid_amounts = unpaid.mapped("total_amount")
 
-        letters = self.env['correspondence'].search([
-            ('partner_id', '=', partner_id),
-            ('sponsorship_id', 'in', sponsorships.ids)
-        ],
+        letters = self.env["correspondence"].search(
+            [
+                ("partner_id", "=", partner_id),
+                ("sponsorship_id", "in", sponsorships.ids),
+            ],
             # Limit letters to avoid memory errors TODO Improve performance
             # of fetching this in the app_tile instead. See CO-2915
-            order='scanned_date desc', limit=200)
+            order="scanned_date desc",
+            limit=200,
+        )
 
-        available_tiles = self.env['mobile.app.tile'].search([
-            ('visibility', '!=', 'public')
-        ])
-        products = self.env['product.product'].sudo().search([
-            ('mobile_app', '=', True)
-        ])
+        available_tiles = self.env["mobile.app.tile"].search(
+            [("visibility", "!=", "public")]
+        )
+        products = (
+            self.env["product.product"].sudo().search([("mobile_app", "=", True)])
+        )
         tile_data = {
-            'res.partner': partner,
-            'recurring.contract': sponsorships,
-            'compassion.child': children,
-            'product.product': products,
-            'correspondence': letters,
+            "res.partner": partner,
+            "recurring.contract": sponsorships,
+            "compassion.child": children,
+            "product.product": products,
+            "correspondence": letters,
         }
-        unpaid_data = {
-            'recurring.contract': unpaid
-        }
+        unpaid_data = {"recurring.contract": unpaid}
         # TODO handle pagination properly
-        limit = int(pagination.get('limit', 1000))
+        limit = int(pagination.get("limit", 1000))
         _logger.info("BEGIN RENDER TILES")
         messages = available_tiles[:limit].render_tile(tile_data)
         _logger.info("END RENDER TILES")
 
         # GI7 is treated separately because it needs unpaid sponsorships
-        msg_tmp = self.env['mobile.app.tile'].search([
-            ('subtype_id', '=',
-             self.env.ref('mobile_app_connector.tile_subtype_gi7').id),
-            ('create_date', '!=', False)
-        ]).render_tile(unpaid_data)
+        msg_tmp = (
+            self.env["mobile.app.tile"]
+            .search(
+                [
+                    (
+                        "subtype_id",
+                        "=",
+                        self.env.ref("mobile_app_connector.tile_subtype_gi7").id,
+                    ),
+                    ("create_date", "!=", False),
+                ]
+            )
+            .render_tile(unpaid_data)
+        )
         messages.extend(msg_tmp)
         messages.extend(self._fetch_wordpress_tiles(**pagination))
-        res = self._construct_hub_message(
-            partner_id, messages, children, **pagination)
+        res = self._construct_hub_message(partner_id, messages, children, **pagination)
 
         # Amount for monthly sponsorship
-        res.update({'SponsorshipTypes': sponsorship_types})
-        res.update({'SponsorshipAmounts': sponsorship_amounts})
+        res.update({"SponsorshipTypes": sponsorship_types})
+        res.update({"SponsorshipAmounts": sponsorship_amounts})
 
         # Handle children with awaiting payment
         if unpaid_children:
             unpaid_dict = unpaid_children.get_app_json(
-                multi=True, wrapper='UnpaidChildren')
+                multi=True, wrapper="UnpaidChildren"
+            )
             res.update(unpaid_dict)
-            res.update({'UnpaidAmounts': unpaid_amounts})
+            res.update({"UnpaidAmounts": unpaid_amounts})
 
         # To allow donation for users that are not sponsor
-        res.update({
-            'SupporterGroupId': partner_id,
-            'SupporterId': partner_id,
-        })
+        res.update(
+            {"SupporterGroupId": partner_id, "SupporterId": partner_id, }
+        )
 
         return res
 
@@ -138,21 +151,24 @@ class AppHub(models.AbstractModel):
         TODO See if we send a link for a video (could be a wordpress post)
         :return: list of tiles displayed in mobile app.
         """
-        available_tiles = self.env['mobile.app.tile'].search([
-            ('visibility', '!=', 'private')
-        ]).sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
+        available_tiles = (
+            self.env["mobile.app.tile"]
+                .search([("visibility", "!=", "private")])
+                .sorted(key=lambda t: t.view_order + t.subtype_id.view_order)
+        )
         tiles = []
         # Fetch products for fund donations
-        products = self.env['product.product'].sudo().search([
-            ('mobile_app', '=', True)
-        ])
+        products = (
+            self.env["product.product"].sudo().search([("mobile_app", "=", True)])
+        )
         if available_tiles:
-            start = int(pagination.get('start', 0))
-            number_mess = int(pagination.get('limit', 1000))
+            start = int(pagination.get("start", 0))
+            number_mess = int(pagination.get("limit", 1000))
             offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
             tiles.extend(
-                available_tiles[offset:self.LIMIT_PUBLIC_TILES].render_tile({
-                    'product.product': products})
+                available_tiles[offset: self.LIMIT_PUBLIC_TILES].render_tile(
+                    {"product.product": products}
+                )
             )
         # Fetch tiles from Wordpress
         tiles.extend(self._fetch_wordpress_tiles(**pagination))
@@ -163,22 +179,25 @@ class AppHub(models.AbstractModel):
         Gets the cached wordpress posts
         :return: List of JSON messages for use in the hub.
         """
-        available_posts = self.env['wp.post'].search([
-            ('lang', '=', self.env.lang),
-            ('display_on_hub', '=', True),
-            ('category_ids.display_on_hub', '=', True)
-        ])
+        available_posts = self.env["wp.post"].search(
+            [
+                ("lang", "=", self.env.lang),
+                ("display_on_hub", "=", True),
+                ("category_ids.display_on_hub", "=", True),
+            ]
+        )
         messages = []
         if available_posts:
-            start = int(pagination.get('start', 0))
-            number_mess = int(pagination.get('limit', 1000))
+            start = int(pagination.get("start", 0))
+            number_mess = int(pagination.get("limit", 1000))
             offset = (start % number_mess) * self.LIMIT_WORDPRESS_TILES
-            for post in available_posts[offset:self.LIMIT_WORDPRESS_TILES]:
+            for post in available_posts[offset: self.LIMIT_WORDPRESS_TILES]:
                 messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
 
-    def _construct_hub_message(self, partner_id, messages, children=None,
-                               start=0, limit=100, **kwargs):
+    def _construct_hub_message(
+            self, partner_id, messages, children=None, start=0, limit=100, **kwargs
+    ):
         """
         Wrapper for constructing the JSON message for the mobile app, for
         the main hub display.
@@ -191,27 +210,31 @@ class AppHub(models.AbstractModel):
         :param kwargs: other request parameters (ignored)
         :return: JSON compatible data for mobile app
         """
-        base_url = self.env['ir.config_parameter'].sudo().get_param(
-            'web.base.url') + '/mobile-app-api'
-        hub_endpoint = '/hub/{}?start={}&limit={}'
+        base_url = (
+            self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+            + "/mobile-app-api"
+        )
+        hub_endpoint = "/hub/{}?start={}&limit={}"
         self._assign_order(messages)
         if children is None:
-            children = self.env['compassion.child']
+            children = self.env["compassion.child"]
         result = children.get_app_json(multi=True)
 
-        result.update({
-            "Size": len(messages),  # Total size of available messages
-            "Start": start,  # Starting point of message subset returned
-            "Limit": limit,  # Limit number of messages returned
-            "_Links": {  # This is used for lazy load of messages in App.
-                "Base": base_url,
-                "Next": hub_endpoint.format(
-                    partner_id, int(start) + int(limit), limit),
-                "Self": base_url + hub_endpoint.format(partner_id, start,
-                                                       limit),
-            },
-            "Messages": messages[int(start):min(len(messages), int(limit))],
-        })
+        result.update(
+            {
+                "Size": len(messages),  # Total size of available messages
+                "Start": start,  # Starting point of message subset returned
+                "Limit": limit,  # Limit number of messages returned
+                "_Links": {  # This is used for lazy load of messages in App.
+                    "Base": base_url,
+                    "Next": hub_endpoint.format(
+                        partner_id, int(start) + int(limit), limit
+                    ),
+                    "Self": base_url + hub_endpoint.format(partner_id, start, limit),
+                },
+                "Messages": messages[int(start): min(len(messages), int(limit))],
+            }
+        )
         return result
 
     def _assign_order(self, messages):
@@ -262,22 +285,22 @@ class AppHub(models.AbstractModel):
         fixed_content_order = promoted_content_order + category_length + gap  # = 3000
         rest_of_tiles_order = fixed_content_order + category_length + gap  # = 4000
 
-        to_order = [m for m in messages if m['IsAutomaticOrdering']]
+        to_order = [m for m in messages if m["IsAutomaticOrdering"]]
         to_order.sort(key=lambda m: m["OrderDate"], reverse=True)
 
-        letters = {'tiles': [], 'max_number_tile': 1}
-        prayers = {'tiles': [], 'max_number_tile': 0}
-        community = {'tiles': [], 'max_number_tile': 0}
-        stories = {'tiles': [], 'max_number_tile': 0}
-        giving = {'tiles': [], 'max_number_tile': 0}
-        pictures = {'tiles': [], 'max_number_tile': 1}
-        child_fact = {'tiles': [], 'max_number_tile': 0}
+        letters = {"tiles": [], "max_number_tile": 1}
+        prayers = {"tiles": [], "max_number_tile": 0}
+        community = {"tiles": [], "max_number_tile": 0}
+        stories = {"tiles": [], "max_number_tile": 0}
+        giving = {"tiles": [], "max_number_tile": 0}
+        pictures = {"tiles": [], "max_number_tile": 1}
+        child_fact = {"tiles": [], "max_number_tile": 0}
         # tiles that will be in first group of displayed tiles
         recent_content = {
-            "CH1": {'tiles': [], 'max_number_tile': 0},
+            "CH1": {"tiles": [], "max_number_tile": 0},
             "CH2": pictures,
             "CH3": child_fact,
-            "CH-T1": {'tiles': [], 'max_number_tile': 1},
+            "CH-T1": {"tiles": [], "max_number_tile": 1},
             "CH_T2": child_fact,
             "CO1": community,
             "CO2": community,
@@ -289,9 +312,9 @@ class AppHub(models.AbstractModel):
             "GI7": giving,
             "GI_T1": giving,
             "LE1": letters,
-            "LE_T1": {'tiles': [], 'max_number_tile': 2},
-            "LE_T2": {'tiles': [], 'max_number_tile': 0},
-            'LE_T3': letters,
+            "LE_T1": {"tiles": [], "max_number_tile": 2},
+            "LE_T2": {"tiles": [], "max_number_tile": 0},
+            "LE_T3": letters,
             "PR1": prayers,
             "PR_T1": prayers,
             "PR_T2": prayers,
@@ -299,68 +322,72 @@ class AppHub(models.AbstractModel):
             "ST_T1": stories,
             "ST_T2": stories,
             "ST1": stories,
-            "MI1": {'tiles': [], 'max_number_tile': 1},
-            "MI2": {'tiles': [], 'max_number_tile': 0},
+            "MI1": {"tiles": [], "max_number_tile": 1},
+            "MI2": {"tiles": [], "max_number_tile": 0},
         }
         fixed_group = []
         fixed_group_tiles = ["CH1", "CO1", "CO2", "CO3", "CO4"]
         rest_group = []
 
         # Group of tile to spread across the whole hub
-        spread_group_tiles = ['PR1', 'GI1', 'GI3', 'GI5']
+        spread_group_tiles = ["PR1", "GI1", "GI3", "GI5"]
         spread_group = []
 
         for tile in to_order:
-            recent_group = recent_content[tile['SubType']]
-            if recent_group['max_number_tile'] > len(recent_group['tiles']) \
-                    and (tile['SubType'] != 'LE_T1' or
-                         tile.get('UnReadRecently')):
-                recent_group['tiles'].append(tile)
-            elif tile['SubType'] in fixed_group_tiles:
+            recent_group = recent_content[tile["SubType"]]
+            if recent_group["max_number_tile"] > len(recent_group["tiles"]) and (
+                    tile["SubType"] != "LE_T1" or tile.get("UnReadRecently")
+            ):
+                recent_group["tiles"].append(tile)
+            elif tile["SubType"] in fixed_group_tiles:
                 fixed_group.append(tile)
-            elif tile['SubType'] in spread_group_tiles:
+            elif tile["SubType"] in spread_group_tiles:
                 spread_group.append(tile)
             else:
                 rest_group.append(tile)
 
         for subtype, tiles in recent_content.items():
-            if subtype == 'LE_T1':
-                for tile in tiles['tiles']:
-                    tile['SortOrder'] = unread_letter_order
-                    unread_letter_order += \
-                        category_length // len(tiles['tiles'])
-                tiles['tiles'] = []
+            if subtype == "LE_T1":
+                for tile in tiles["tiles"]:
+                    tile["SortOrder"] = unread_letter_order
+                    unread_letter_order += category_length // len(tiles["tiles"])
+                tiles["tiles"] = []
             else:
-                for tile in tiles['tiles']:
-                    tile['SortOrder'] = promoted_content_order
+                for tile in tiles["tiles"]:
+                    tile["SortOrder"] = promoted_content_order
                     promoted_content_order += 10
-                tiles['tiles'] = []
+                tiles["tiles"] = []
 
         for tile in fixed_group:
-            tile['SortOrder'] = fixed_content_order
+            tile["SortOrder"] = fixed_content_order
             fixed_content_order += category_length // len(fixed_group)
 
-        rest_group.sort(key=lambda x: x['OrderDate'], reverse=True)
+        rest_group.sort(key=lambda x: x["OrderDate"], reverse=True)
 
         for tile in rest_group:
-            tile['SortOrder'] = rest_of_tiles_order
+            tile["SortOrder"] = rest_of_tiles_order
             rest_of_tiles_order += category_length // len(rest_group)
 
         for tile in to_order:
             # login tile and CH1 tiles should be first
-            if tile['SubType'] == "MI1" or tile['SubType'] == 'CH1':
-                tile['SortOrder'] = login_order
+            if tile["SubType"] == "MI1" or tile["SubType"] == "CH1":
+                tile["SortOrder"] = login_order
                 login_order += 1
 
         messages.sort(key=lambda m: int(m["SortOrder"]))
 
         # Spread tiles across the hub:
-        group_by = 'SubType'
+        group_by = "SubType"
         possible_subtype = defaultdict(int)
         tile_grouped = defaultdict(list)
         number_spread_tile = len(spread_group)
-        number_tile = len([m for m in messages if m['SortOrder'] >= 2000 and
-                           not m['SubType'] in spread_group_tiles])
+        number_tile = len(
+            [
+                m
+                for m in messages
+                if m["SortOrder"] >= 2000 and not m["SubType"] in spread_group_tiles
+            ]
+        )
 
         # First we classify the tile by subtype for easier use afterwards
         for tile in spread_group:
@@ -381,33 +408,35 @@ class AppHub(models.AbstractModel):
         # For every tile currently displayed on the hub we try to add one or
         # more (as defined above) new tile in between from the spread group
         bias_factor = 0
-        for c, n in zip(messages, messages[1:]+[messages[0]]):
-            diff = n['SortOrder'] - c['SortOrder'] - 1
-            if (c['SortOrder'] >= 2000 and
-                    not c['SubType'] in spread_group_tiles and
-                    not n['SubType'] in spread_group_tiles and
-                    diff > 0):
+        for c, n in zip(messages, messages[1:] + [messages[0]]):
+            diff = n["SortOrder"] - c["SortOrder"] - 1
+            if (
+                    c["SortOrder"] >= 2000
+                    and not c["SubType"] in spread_group_tiles
+                    and not n["SubType"] in spread_group_tiles
+                    and diff > 0
+            ):
                 percent_to_add = len(spread_group) / (number_tile - 1) + (
-                    bias_factor * 0.01)
+                    bias_factor * 0.01
+                )
                 # We add tiles between two others if we have enough tile to
                 # spread or at random (weighted by the number of tiles and
                 # the probability augmenting of not choosing to add
                 # it at a previous step)
-                if (len(spread_group) > (number_tile - 1) or
-                        random.random() < percent_to_add):
-                    number_jump = min(diff, max(1, number_spread_tile //
-                                                number_tile))
+                if (
+                        len(spread_group) > (number_tile - 1)
+                        or random.random() < percent_to_add
+                ):
+                    number_jump = min(diff, max(1, number_spread_tile // number_tile))
                     jump = max(1, diff // (number_jump + 1))
                     for i in range(1, number_jump + 1):
                         try:
                             key = random_list.pop()
                         except IndexError:
                             break
-                        if (key in possible_subtype and
-                                possible_subtype[key] != 0):
+                        if key in possible_subtype and possible_subtype[key] != 0:
                             final_tile = tile_grouped[key].pop()
-                            final_tile['SortOrder'] = c['SortOrder'] + (jump *
-                                                                        i)
+                            final_tile["SortOrder"] = c["SortOrder"] + (jump * i)
                             possible_subtype[key] -= 1
                             if possible_subtype[key] == 0:
                                 del possible_subtype[key]
@@ -429,7 +458,7 @@ class AppHub(models.AbstractModel):
             for i in range(number_tile_type[key]):
                 if key in possible_subtype and possible_subtype[key] != 0:
                     final_tile = tile_grouped[key].pop()
-                    final_tile['SortOrder'] = rest_of_tiles_order
+                    final_tile["SortOrder"] = rest_of_tiles_order
                     rest_of_tiles_order += 10
                     possible_subtype[key] -= 1
                     if possible_subtype[key] == 0:

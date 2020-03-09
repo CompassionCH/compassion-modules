@@ -27,28 +27,22 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    'name': 'Advanced Translation',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'sequence': 150,
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'development_status': 'Stable',
-    'depends': ['base'],
-    'external_dependencies': {
-        'python': [
-            'babel',
-        ]
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'views/advanced_translation_view.xml',
-        'data/ir.advanced.translation.csv'
+    "name": "Advanced Translation",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "sequence": 150,
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "development_status": "Stable",
+    "depends": ["base"],
+    "external_dependencies": {"python": ["babel", ]},
+    "data": [
+        "security/ir.model.access.csv",
+        "views/advanced_translation_view.xml",
+        "data/ir.advanced.translation.csv",
     ],
-    'demo': [
-        'demo/ir.advanced.translation.csv'
-    ],
-    'installable': True,
-    'auto_install': False,
+    "demo": ["demo/ir.advanced.translation.csv"],
+    "installable": True,
+    "auto_install": False,
 }

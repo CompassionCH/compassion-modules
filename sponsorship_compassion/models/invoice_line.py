@@ -12,7 +12,6 @@ from odoo import fields, models
 
 
 class InvoiceLine(models.Model):
-    _inherit = 'account.invoice.line'
+    _inherit = "account.invoice.line"
 
-    last_payment = fields.Date(
-        related='invoice_id.last_payment', store=True)
+    last_payment = fields.Date(related="invoice_id.last_payment", store=True)

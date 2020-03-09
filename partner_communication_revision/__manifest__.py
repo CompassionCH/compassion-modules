@@ -28,38 +28,31 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Partner Communication Revisions',
-    'version': '12.0.1.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': [
-        'partner_communication',
-        'web_tree_dynamic_colored_field'  # OCA/web
+    "name": "Partner Communication Revisions",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": ["partner_communication", "web_tree_dynamic_colored_field"],  # OCA/web
+    "external_dependencies": {"python": ["pyquery", "regex", "bs4", "PyPDF2"]},
+    "data": [
+        "security/ir.model.access.csv",
+        "data/email_template.xml",
+        "data/communication_config.xml",
+        "data/reminder_cron.xml",
+        "views/new_proposition_wizard_view.xml",
+        "views/validate_revision_wizard_view.xml",
+        "views/communication_config_view.xml",
+        "views/revision_preview_view.xml",
+        "views/communication_revision_view.xml",
+        "views/communication_keyword_view.xml",
+        "views/cancel_revision_wizard_view.xml",
+        "views/submit_revision_wizard_view.xml",
+        "data/install.xml",
     ],
-    'external_dependencies': {
-        'python': ['pyquery', 'regex', 'bs4', 'PyPDF2']
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'data/email_template.xml',
-        'data/communication_config.xml',
-        'data/reminder_cron.xml',
-        'views/new_proposition_wizard_view.xml',
-        'views/validate_revision_wizard_view.xml',
-        'views/communication_config_view.xml',
-        'views/revision_preview_view.xml',
-        'views/communication_revision_view.xml',
-        'views/communication_keyword_view.xml',
-        'views/cancel_revision_wizard_view.xml',
-        'views/submit_revision_wizard_view.xml',
-        'data/install.xml'
-    ],
-    'qweb': [],
-    'demo': [
-        'data/demo.xml'
-    ],
-    'installable': True,
-    'auto_install': False
+    "qweb": [],
+    "demo": ["data/demo.xml"],
+    "installable": True,
+    "auto_install": False,
 }

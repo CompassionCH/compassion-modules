@@ -14,13 +14,13 @@ from odoo import models, fields
 class ImportConfig(models.Model):
     """ This class defines all metadata of a correspondence"""
 
-    _name = 'import.letter.config'
-    _inherit = 'correspondence.metadata'
+    _name = "import.letter.config"
+    _inherit = "correspondence.metadata"
 
     name = fields.Char()
-    is_encourager = fields.Boolean('Encourager')
+    is_encourager = fields.Boolean("Encourager")
 
     def get_fields(self):
         res = super().get_fields()
-        res.append('is_encourager')
+        res.append("is_encourager")
         return res

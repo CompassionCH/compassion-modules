@@ -5,28 +5,30 @@ from odoo import models, fields, api
 
 
 class HrAttendance(models.Model):
-    _inherit = 'hr.attendance'
+    _inherit = "hr.attendance"
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    attendance_day_id = fields.Many2one(comodel_name='hr.attendance.day',
-                                        string='Attendance day',
-                                        readonly=True)
+    attendance_day_id = fields.Many2one(
+        comodel_name="hr.attendance.day", string="Attendance day", readonly=True
+    )
 
-    date = fields.Date('Date', compute='_compute_date', store=True)
-    due_hours = fields.Float(related='attendance_day_id.due_hours',
-                             readonly=True)
+    date = fields.Date("Date", compute="_compute_date", store=True)
+    due_hours = fields.Float(related="attendance_day_id.due_hours", readonly=True)
     total_attendance = fields.Float(
-        related='attendance_day_id.total_attendance', readonly=True)
+        related="attendance_day_id.total_attendance", readonly=True
+    )
     has_change_day_request = fields.Boolean(
-        related='attendance_day_id.has_change_day_request', readonly=True)
-    location_id = fields.Many2one('hr.attendance.location', 'Location', readonly=False)
+        related="attendance_day_id.has_change_day_request", readonly=True
+    )
+    location_id = fields.Many2one("hr.attendance.location", "Location", readonly=False)
 
     # Link the resource.calendar to the attendance thus we keep a trace of
     # due_hours
-    working_schedule_id = fields.Many2one('resource.calendar',
-                                          string='Working schedule', readonly=False)
+    working_schedule_id = fields.Many2one(
+        "resource.calendar", string="Working schedule", readonly=False
+    )
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -37,22 +39,22 @@ class HrAttendance(models.Model):
         hr_attendance_day view. """
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Contract',
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': self._name,
-            'res_id': self.id,
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": "Contract",
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": self._name,
+            "res_id": self.id,
+            "target": "current",
         }
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('check_in')
+    @api.depends("check_in")
     def _compute_date(self):
-        for attendance in self.filtered('check_in'):
+        for attendance in self.filtered("check_in"):
             date = attendance.check_in
             attendance.date = date
 
@@ -72,20 +74,20 @@ class HrAttendance(models.Model):
 
     @api.multi
     def write(self, vals):
-        att_day_updated = self.env['hr.attendance']
-        if 'check_in' in vals:
+        att_day_updated = self.env["hr.attendance"]
+        if "check_in" in vals:
             # Check if the date of check_in has changed and change the
             # attendance_day
             for att in self:
                 old_check_in = att.check_in
-                check_in = vals['check_in']
+                check_in = vals["check_in"]
                 if old_check_in != check_in:
                     # Update break time of old attendance day
                     att._find_related_day()
                     # Save attendance to update attendance days after writing
                     # the change.
                     att_day_updated += att
-        if 'check_out' in vals:
+        if "check_out" in vals:
             # Update breaks
             att_day_updated = self
 
@@ -99,18 +101,16 @@ class HrAttendance(models.Model):
         Called when an attendance is mapped to an attendance day
         :return: hr.attendance.day record
         """
-        attendance_days = self.env['hr.attendance.day']
+        attendance_days = self.env["hr.attendance.day"]
         for attendance in self:
             date = attendance.check_in
             employee_id = attendance.employee_id.id
-            attendance_day = self.env['hr.attendance.day'].search([
-                ('employee_id', '=', employee_id),
-                ('date', '=', date)
-            ])
+            attendance_day = self.env["hr.attendance.day"].search(
+                [("employee_id", "=", employee_id), ("date", "=", date)]
+            )
             if not attendance_day:
-                attendance_day = self.env['hr.attendance.day'].create({
-                    'employee_id': employee_id,
-                    'date': date
-                })
+                attendance_day = self.env["hr.attendance.day"].create(
+                    {"employee_id": employee_id, "date": date}
+                )
             attendance_days |= attendance_day
         return attendance_days

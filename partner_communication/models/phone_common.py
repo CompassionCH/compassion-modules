@@ -11,13 +11,12 @@ from odoo import api, models
 
 
 class PhoneCommon(models.AbstractModel):
-    _inherit = 'phone.common'
+    _inherit = "phone.common"
 
     @api.model
     def click2dial(self, erp_number):
         # Redirect to log call wizard after call from communication
         res = super().click2dial(erp_number)
-        if self.env.context.get('click2dial_model') == \
-                'partner.communication.job':
-            res['action_model'] = 'partner.communication.call.wizard'
+        if self.env.context.get("click2dial_model") == "partner.communication.job":
+            res["action_model"] = "partner.communication.call.wizard"
         return res

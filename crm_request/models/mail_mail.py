@@ -4,9 +4,9 @@ from odoo import models, api
 class MailMail(models.Model):
     _inherit = "mail.mail"
 
-    '''
+    """
         Inherit mail.mail to deactivate a linked partner after a send.
-    '''
+    """
 
     @api.multi
     def _postprocess_sent_message(self, mail_sent=True):
@@ -17,7 +17,7 @@ class MailMail(models.Model):
                     partner.toggle_active()
 
             # When we deactivate a partner, he is remove from the email.
-            mail.write({'partner_ids': partner_ids})
+            mail.write({"partner_ids": partner_ids})
 
         s = super()._postprocess_sent_message(mail_sent)
         return s

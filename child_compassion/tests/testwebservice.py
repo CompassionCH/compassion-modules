@@ -8,9 +8,11 @@
 #
 ##############################################################################
 
+import logging
+
 from odoo.tests import common
 from odoo.tools.config import config
-import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -23,26 +25,22 @@ class TestWebservice(common.TransactionCase):
         self.child_id = self._create_child("TZ1120316", "Child 1")
 
     def _create_project(self, project_code, project_name):
-        project_obj = self.env['compassion.project']
-        project_id = project_obj.create({
-            'fcp_id': project_code,
-            'name': project_name,
-        }).id
+        project_obj = self.env["compassion.project"]
+        project_id = project_obj.create(
+            {"fcp_id": project_code, "name": project_name, }
+        ).id
         return project_id
 
     def _create_child(self, child_code, child_name):
-        child_obj = self.env['compassion.child']
-        child_id = child_obj.create({
-            'local_id': child_code,
-            'name': child_name,
-        }).id
+        child_obj = self.env["compassion.child"]
+        child_id = child_obj.create({"local_id": child_code, "name": child_name, }).id
         return child_id
 
     def test_config_set(self):
         """Test that the config is properly set on the server
         """
-        url = config.get('compass_url')
-        api_key = config.get('compass_api_key')
+        url = config.get("compass_url")
+        api_key = config.get("compass_api_key")
         self.assertTrue(url)
         self.assertTrue(api_key)
 
@@ -50,7 +48,7 @@ class TestWebservice(common.TransactionCase):
         """ Test the webservice on Project TZ112. """
         # Test the basics
         self.assertTrue(self.project_id)
-        project_obj = self.env['compassion.project']
+        project_obj = self.env["compassion.project"]
         project = project_obj.browse(self.project_id)
         self.assertTrue(project)
         self.assertEqual(project.id, self.project_id)
@@ -60,22 +58,22 @@ class TestWebservice(common.TransactionCase):
         project.update_informations()
 
         # Test the data
-        self.assertEqual(project.name, "Tanzania Assembly of God (TAG) "
-                         "Karatu Student Center")
+        self.assertEqual(
+            project.name, "Tanzania Assembly of God (TAG) " "Karatu Student Center"
+        )
         self.assertEqual(project.type, "CDSP")
         self.assertEqual(project.start_date, "2002-04-16")
-        self.assertEqual(project.local_church_name,
-                         "Tanzania Assembly of God Karatu")
+        self.assertEqual(project.local_church_name, "Tanzania Assembly of God Karatu")
         self.assertEqual(project.closest_city, "Arusha")
         self.assertEqual(project.terrain_description_ids[0].value_en, "hilly")
-        self.assertEqual(project.country_id.name, 'Tanzania')
+        self.assertEqual(project.country_id.name, "Tanzania")
         self.assertTrue(project.country_id.description_en)
 
     def test_child_tz1120316(self):
         """ Test the webservice on child TZ1120316"""
         # Test the basics
         self.assertTrue(self.child_id)
-        child_obj = self.env['compassion.child']
+        child_obj = self.env["compassion.child"]
         child = child_obj.browse(self.child_id)
         self.assertTrue(child)
         self.assertEqual(child.name, "Child 1")
@@ -88,15 +86,20 @@ class TestWebservice(common.TransactionCase):
 
         # Generate descriptions for the child
         child.generate_descriptions()
-        child_desc_wiz = self.env['child.description.wizard'].with_context(
-            child_id=child.id).create({
-                'child_id': child.id,
-                'case_study_id': child.case_study_ids[0].id,
-                'keep_desc_fr': True,
-                'keep_desc_en': True,
-                'keep_desc_it': True,
-                'keep_desc_de': True,
-            })
+        child_desc_wiz = (
+            self.env["child.description.wizard"]
+                .with_context(child_id=child.id)
+                .create(
+                {
+                    "child_id": child.id,
+                    "case_study_id": child.case_study_ids[0].id,
+                    "keep_desc_fr": True,
+                    "keep_desc_en": True,
+                    "keep_desc_it": True,
+                    "keep_desc_de": True,
+                }
+            )
+        )
         desc_child = child_desc_wiz.generate_descriptions()
         self.assertTrue(desc_child)
         desc_child_validated = child_desc_wiz.validate_descriptions()
@@ -107,13 +110,18 @@ class TestWebservice(common.TransactionCase):
         self.assertTrue(child.desc_en)
         child.project_id.update_informations()
         child.project_id.generate_descriptions()
-        project_desc_wiz = self.env['project.description.wizard'].with_context(
-            active_id=child.project_id.id).create({
-                'project_id': child.project_id.id,
-                'keep_desc_fr': True,
-                'keep_desc_it': True,
-                'keep_desc_de': True,
-            })
+        project_desc_wiz = (
+            self.env["project.description.wizard"]
+                .with_context(active_id=child.project_id.id)
+                .create(
+                {
+                    "project_id": child.project_id.id,
+                    "keep_desc_fr": True,
+                    "keep_desc_it": True,
+                    "keep_desc_de": True,
+                }
+            )
+        )
         self.assertTrue(child.project_id.description_en)
         desc_project = project_desc_wiz.generate_descriptions()
         self.assertTrue(desc_project)

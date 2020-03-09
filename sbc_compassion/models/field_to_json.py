@@ -8,12 +8,13 @@
 #
 ##############################################################################
 import logging
+
 from odoo import models, api
+
 _logger = logging.getLogger(__name__)
 
-
-BOX_SEPARATOR = '#BOX#'
-PAGE_SEPARATOR = '#PAGE#'
+BOX_SEPARATOR = "#BOX#"
+PAGE_SEPARATOR = "#PAGE#"
 
 
 class FieldToJson(models.Model):
@@ -21,4 +22,4 @@ class FieldToJson(models.Model):
 
     @api.model
     def _format_correspondence_page(self, text):
-        return text and text.split('\n' + BOX_SEPARATOR + '\n') or ['']
+        return text and text.split("\n" + BOX_SEPARATOR + "\n") or [""]

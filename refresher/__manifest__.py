@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #       ______ Releasing children from poverty      _
@@ -29,15 +28,13 @@
 # pylint: disable=C8101
 
 {
-    'name': 'refresher',
-    'version': '12.0.1.0.0',
-    'author': 'Samuel Fringeli',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'data': [
-        'templates/assets.xml'
-    ],
-    'depends': ['web'],
-    'installable': False,
-    'auto_install': False,
+    "name": "refresher",
+    "version": "12.0.1.0.0",
+    "author": "Samuel Fringeli",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "data": ["templates/assets.xml"],
+    "depends": ["web"],
+    "installable": False,
+    "auto_install": False,
 }

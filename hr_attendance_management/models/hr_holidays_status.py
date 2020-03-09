@@ -4,6 +4,6 @@ from odoo import models, fields
 
 
 class HrLeaveType(models.Model):
-    _inherit = 'hr.leave.type'
+    _inherit = "hr.leave.type"
 
-    keep_due_hours = fields.Boolean(oldname='remove_from_due_hours')
+    keep_due_hours = fields.Boolean(oldname="remove_from_due_hours")

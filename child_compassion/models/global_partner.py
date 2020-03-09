@@ -13,10 +13,10 @@ from odoo import models, fields
 
 
 class GlobalPartner(models.Model):
-    _name = 'compassion.global.partner'
-    _inherit = 'compassion.mapped.model'
-    _description = 'Compassion Global Partner'
+    _name = "compassion.global.partner"
+    _inherit = "compassion.mapped.model"
+    _description = "Compassion Global Partner"
 
     name = fields.Char(required=True)
-    country_id = fields.Many2one('res.country', 'Country', readonly=False)
-    code = fields.Char(related='country_id.code', store=True)
+    country_id = fields.Many2one("res.country", "Country", readonly=False)
+    code = fields.Char(related="country_id.code", store=True)
