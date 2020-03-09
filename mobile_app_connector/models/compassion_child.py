@@ -118,6 +118,10 @@ class CompassionChild(models.Model):
 
         hobbies = child.translate('hobby_ids.value')
 
+        familyMembers = household.member_ids.filtered(
+            lambda x: not x.child_id or x.child_id.id != child.id).mapped(
+            lambda x: x.name.split(' ')[0] + ", " + x.translate('role'))
+
         if isinstance(hobbies, unicode):
             hobbies = [hobbies]
 
@@ -139,6 +143,7 @@ class CompassionChild(models.Model):
                 'female_guardian_job_type'),
             'hobbies': hobbies,
             'guardians': guardians,
+            'familyMembers': familyMembers,
             'notEnrolledReason': self._lower((child.not_enrolled_reason or ''))
         }
 
