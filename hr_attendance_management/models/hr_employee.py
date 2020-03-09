@@ -134,9 +134,9 @@ class HrEmployee(models.Model):
             final_balance = None
 
             with cond:
-                _logger.info("waiting predicate")
+                # _logger.info("waiting predicate")
                 cond.wait_for(employee.condition())
-                _logger.info("Condition passed")
+                # _logger.info("Condition passed")
 
                 if employee.period_ids:
                     employee_history_sorted = \
@@ -201,10 +201,10 @@ class HrEmployee(models.Model):
         def predicate():
             return self.periods_computed
         if not predicate():
-            _logger.info("Computing periods")
+            # _logger.info("Computing periods")
             self._compute_periods()
         self.periods_computed = True
-        _logger.info("Condition notified")
+        # _logger.info("Condition notified")
         cond.notify(1)
         return predicate
 
