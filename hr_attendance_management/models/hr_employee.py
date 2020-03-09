@@ -162,7 +162,7 @@ class HrEmployee(models.Model):
             # it means there is a period with end_date == today
             # so we just assign the value. The cap is taken in consideration
             # here.
-            elif final_balance != None:
+            elif final_balance is not None:
                 max_extra_hours = self.env['res.config.settings'].create({}) \
                     .get_max_extra_hours()
                 bal = min(max_extra_hours, final_balance)
