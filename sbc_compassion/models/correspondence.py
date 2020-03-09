@@ -459,7 +459,7 @@ class Correspondence(models.Model):
 
         if 'partner_id' not in vals:
             sp = self.env['recurring.contract'].browse(vals['sponsorship_id'])
-            vals['partner_id'] = sp.partner_id.id
+            vals['partner_id'] = sp.correspondent_id.id
 
         type_ = '.pdf'
         letter_data = False
