@@ -155,20 +155,6 @@
         </field>
     </record>
 
-    <!-- Childpool search search view -->
-    <record id="view_compassion_childpool_search" model="ir.ui.view">
-        <field name="name">compassion.childpool.search.search</field>
-        <field name="model">compassion.childpool.search</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="global_child_ids"/>
-                <group expand="0" string="Group By...">
-                    <filter string="Country" name="country" context="{'group_by': 'global_child_ids.fcp_id.field_office_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
     <!-- Child Hold and Reservation Wizard view -->
     <record id="view_compassion_global_child_attributes_form" model="ir.ui.view">
         <field name="name">child.hold.wizard.form</field>

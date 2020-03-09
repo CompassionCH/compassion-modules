@@ -100,8 +100,7 @@ class FieldToJson(models.Model):
         if self.to_json_conversion:
             res[self.json_name] = safe_eval(
                 self.to_json_conversion,
-                locals_dict={"odoo_value": odoo_value, "self": self},
-                globals_dict={"fields": fields},
+                {"odoo_value": odoo_value, "self": self, "fields": fields},
             )
         elif (
                 self.field_id.ttype not in ("boolean", "float", "integer", "monetary")
@@ -136,7 +135,7 @@ class FieldToJson(models.Model):
             # Calls a conversion method defined in mapping
             converted_value = safe_eval(
                 self.from_json_conversion,
-                locals_dict={"json_value": json_value, "self": self},
+                {"json_value": json_value, "self": self},
             )
         if self.relational_field_id:
             converted_value = self._json_to_relational_value(converted_value)
