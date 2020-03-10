@@ -76,7 +76,7 @@
         "security/record_rules.xml",
         "views/product_views.xml",
     ],
-    "demo": ["demo/demo_data.yml", ],
+    "demo": ["demo/demo_data.xml", ],
     "installable": True,
     "auto_install": False,
     "development_status": "Stable",

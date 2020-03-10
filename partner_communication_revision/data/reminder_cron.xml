@@ -3,7 +3,7 @@
         <record id="send_revision_reminders_cron" model="ir.cron">
             <field name="name">Send reminders for communication revision texts</field>
             <field name="active" eval="True"/>
-            <field name="user_id" ref="base.user_root"/>
+            <field name="user_id" ref="base.user_admin"/>
             <field name="interval_number">7</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field> <!-- don't limit the number of calls -->

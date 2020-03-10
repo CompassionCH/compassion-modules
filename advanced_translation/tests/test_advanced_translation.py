@@ -31,7 +31,7 @@ class AdvancedTranslationTest(SingleTransactionCase):
     def test_get_list(self):
         """Should return comma separated values."""
         self.assertEquals(
-            self.males.sorted("name").get_list("name"), "Joseph Walters and Tang Tsui"
+            self.males.sorted("name").get_list("name"), "Ron Gibson and Willie Burke"
         )
         self.assertEquals(self.males.get_list("name", 1, "test"), "test")
         self.assertEquals(self.males.get_list("gender"), "Male")

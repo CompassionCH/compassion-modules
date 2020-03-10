@@ -12,7 +12,7 @@ from mock import patch
 from .onramp_base_test import TestOnramp
 
 mock_oauth = (
-    "odoo.addons.message_center_compassion.models.ir_http" ".IrHTTP._oauth_validation"
+    "odoo.addons.message_center_compassion.models.ir_http.IrHTTP._oauth_validation"
 )
 
 
@@ -50,8 +50,8 @@ class TestOnRampController(TestOnramp):
         access is granted. """
         oauth_patch.return_value = "admin"
         response = self._send_post({"nothing": "nothing"})
-        self.assertEqual(response.status_code, 200)
         json_result = response.json()
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json_result["Message"], "Unknown message type - not processed."
         )

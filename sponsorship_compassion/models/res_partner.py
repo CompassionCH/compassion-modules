@@ -30,28 +30,20 @@ class ResPartner(models.Model):
         compute="_compute_related_contracts",
         string="Fully managed sponsorships",
         order="state asc",
-        groups="child_compassion.group_sponsorship",
-        readonly=False,
     )
     contracts_paid = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Sponsorships as payer only",
-        groups="child_compassion.group_sponsorship",
-        readonly=False,
     )
     contracts_correspondant = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Sponsorships as correspondant only",
-        groups="child_compassion.group_sponsorship",
-        readonly=False,
     )
     sponsorship_ids = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
-        groups="child_compassion.group_sponsorship",
-        readonly=False,
     )
     mandatory_review = fields.Boolean(
         help="Indicates that we should review the letters of this sponsor "
@@ -62,8 +54,6 @@ class ResPartner(models.Model):
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Other contracts",
-        groups="child_compassion.group_sponsorship",
-        readonly=False,
     )
     unrec_items = fields.Integer(
         compute="_compute_count_items", groups="child_compassion.group_sponsorship"
