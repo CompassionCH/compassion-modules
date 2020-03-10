@@ -58,6 +58,7 @@ class HrEmployee(models.Model):
                                  compute="_compute_periods")
 
     periods_computed = fields.Boolean(False)
+    updating_periods = fields.Boolean(False)
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -100,7 +101,9 @@ class HrEmployee(models.Model):
             ], order="start_date asc")
 
             if len(employee.period_ids) != 0:
+                employee.updating_periods = True
                 employee.period_ids[0].update_period()
+                employee.updating_periods = False
             employee.periods_computed = True
 
     @api.multi
@@ -125,6 +128,7 @@ class HrEmployee(models.Model):
             with cond:
                 # _logger.info("waiting predicate")
                 cond.wait_for(employee.condition())
+                employee.periods_computed = False
                 # _logger.info("Condition passed")
 
                 if employee.period_ids:
@@ -190,9 +194,9 @@ class HrEmployee(models.Model):
         def predicate():
             return self.periods_computed
         if not predicate():
-            # _logger.info("Computing periods")
-            self._compute_periods()
-        self.periods_computed = True
+            if not self.updating_periods:
+                # _logger.info("Computing periods")
+                self._compute_periods()
         # _logger.info("Condition notified")
         cond.notify(1)
         return predicate
