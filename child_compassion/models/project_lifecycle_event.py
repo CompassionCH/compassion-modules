@@ -13,26 +13,28 @@ from odoo import models, fields, api
 
 
 class ProjectLifecycle(models.Model):
-    _name = 'compassion.project.ile'
-    _inherit = ['translatable.model', 'compassion.mapped.model']
-    _description = 'Project lifecycle event'
-    _order = 'date desc, id desc'
+    _name = "compassion.project.ile"
+    _inherit = ["translatable.model", "compassion.mapped.model"]
+    _description = "Project lifecycle event"
+    _order = "date desc, id desc"
 
     project_id = fields.Many2one(
-        'compassion.project', required=True, ondelete='cascade',
-        readonly=True)
+        "compassion.project", required=True, ondelete="cascade", readonly=True
+    )
     date = fields.Date(readonly=True, default=fields.Date.today)
-    type = fields.Selection([
-        ('Suspension', 'Suspension'),
-        ('Reactivation', 'Reactivation'),
-        ('Transition', 'Transition'),
-    ], readonly=True)
+    type = fields.Selection(
+        [
+            ("Suspension", "Suspension"),
+            ("Reactivation", "Reactivation"),
+            ("Transition", "Transition"),
+        ],
+        readonly=True,
+    )
     action_plan = fields.Text(readonly=True)
 
     # Reactivation
     ##############
-    fcp_improvement_desc = fields.Text(
-        readonly=True, oldname='icp_improvement_desc')
+    fcp_improvement_desc = fields.Text(readonly=True, oldname="icp_improvement_desc")
 
     # Suspension
     ############
@@ -40,7 +42,8 @@ class ProjectLifecycle(models.Model):
     suspension_end_date = fields.Date(readonly=True)
     suspension_detail = fields.Char(readonly=True)
     suspension_reason_ids = fields.Many2many(
-        'fcp.lifecycle.reason', string='Suspension reason', readonly=True)
+        "fcp.lifecycle.reason", string="Suspension reason", readonly=True
+    )
 
     hold_cdsp_funds = fields.Boolean(readonly=True)
     hold_csp_funds = fields.Boolean(readonly=True)
@@ -48,21 +51,24 @@ class ProjectLifecycle(models.Model):
     hold_s2b_letters = fields.Boolean(readonly=True)
     hold_b2s_letters = fields.Boolean(readonly=True)
     hold_child_updates = fields.Boolean(readonly=True)
-    is_beneficiary_information_updates_withheld = fields.Boolean(
-        readonly=True)
+    is_beneficiary_information_updates_withheld = fields.Boolean(readonly=True)
 
     extension_1 = fields.Boolean(
-        help='Suspension is extended by 30 days', readonly=True)
+        help="Suspension is extended by 30 days", readonly=True
+    )
     extension_1_reason_ids = fields.Many2many(
-        'fcp.suspension.extension.reason',
-        relation='compassion_project_ile_sus_extension1_rel',
-        readonly=True)
+        "fcp.suspension.extension.reason",
+        relation="compassion_project_ile_sus_extension1_rel",
+        readonly=True,
+    )
     extension_2 = fields.Boolean(
-        help='Suspension is extended by additional 30 days (60 in total)',
-        relation='compassion_project_ile_sus_extension2_rel',
-        readonly=True)
+        help="Suspension is extended by additional 30 days (60 in total)",
+        relation="compassion_project_ile_sus_extension2_rel",
+        readonly=True,
+    )
     extension_2_reason_ids = fields.Many2many(
-        'fcp.suspension.extension.reason', readonly=True)
+        "fcp.suspension.extension.reason", readonly=True
+    )
 
     # Transition
     ############
@@ -70,52 +76,55 @@ class ProjectLifecycle(models.Model):
     transition_complete = fields.Boolean(readonly=True)
     details = fields.Text(readonly=True)
     transition_reason_ids = fields.Many2many(
-        'fcp.lifecycle.reason', string='Transition reason', readonly=True,
-        relation='compassion_project_ile_transition_reason_rel')
+        "fcp.lifecycle.reason",
+        string="Transition reason",
+        readonly=True,
+        relation="compassion_project_ile_transition_reason_rel",
+    )
     projected_transition_date = fields.Date(readonly=True)
     future_involvement_ids = fields.Many2many(
-        'fcp.involvement', string='Future involvement', readonly=True)
+        "fcp.involvement", string="Future involvement", readonly=True
+    )
 
     name = fields.Char(readonly=True, index=True, required=True)
     reactivation_date = fields.Date(readonly=True)
-    project_status = fields.Selection(related='project_id.status')
+    project_status = fields.Selection(related="project_id.status")
 
-    gender = fields.Char(size=1, default='M')
+    gender = fields.Char(size=1, default="M")
 
     _sql_constraints = [
-        ('unique_name', 'unique(name)', 'Lifecycle event already exists')
+        ("unique_name", "unique(name)", "Lifecycle event already exists")
     ]
 
     @api.model
     def _get_project_status(self):
         return [
-            ('Active', 'Active'),
-            ('Phase Out', 'Phase Out'),
-            ('Suspended', 'Suspended'),
-            ('Transitioned', 'Transitioned'),
+            ("Active", "Active"),
+            ("Phase Out", "Phase Out"),
+            ("Suspended", "Suspended"),
+            ("Transitioned", "Transitioned"),
         ]
 
     @api.model
     def create(self, vals):
         """ Call suspension and reactivation process on projects. """
-        project = self.env['compassion.project'].browse(
-            vals.get('project_id'))
-        fund_suspended = project.suspension == 'fund-suspended'
+        project = self.env["compassion.project"].browse(vals.get("project_id"))
+        fund_suspended = project.suspension == "fund-suspended"
         hold_gifts = project.hold_gifts
         hold_letters = project.hold_s2b_letters
-        lifecycle = self.search([('name', '=', vals['name'])])
+        lifecycle = self.search([("name", "=", vals["name"])])
         if lifecycle:
             lifecycle.write(vals)
         else:
             lifecycle = super().create(vals)
-        if lifecycle.type == 'Suspension':
+        if lifecycle.type == "Suspension":
             if lifecycle.hold_cdsp_funds and not fund_suspended:
                 project.suspend_funds()
             if lifecycle.hold_gifts and not hold_gifts:
                 project.hold_gifts_action()
             if lifecycle.hold_s2b_letters and not hold_letters:
                 project.hold_letters_action()
-        if lifecycle.type == 'Reactivation':
+        if lifecycle.type == "Reactivation":
             if fund_suspended:
                 project.reactivate_project()
             if hold_gifts and not lifecycle.hold_gifts:
@@ -127,18 +136,17 @@ class ProjectLifecycle(models.Model):
     @api.model
     def process_commkit(self, commkit_data):
         lifecycle_ids = list()
-        for single_data in commkit_data.get('ICPLifecycleEventList',
-                                            [commkit_data]):
-            project = self.env['compassion.project'].search([
-                ('fcp_id', '=', single_data['ICP_ID'])
-            ])
+        for single_data in commkit_data.get("ICPLifecycleEventList", [commkit_data]):
+            project = self.env["compassion.project"].search(
+                [("fcp_id", "=", single_data["ICP_ID"])]
+            )
             if not project:
-                project.create({'fcp_id': single_data['ICP_ID']})
+                project.create({"fcp_id": single_data["ICP_ID"]})
             vals = self.json_to_data(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
 
-            lifecycle.project_id.status = vals['project_status']
+            lifecycle.project_id.status = vals["project_status"]
             lifecycle.project_id.last_update_date = fields.Date.today()
 
         return lifecycle_ids
@@ -146,13 +154,13 @@ class ProjectLifecycle(models.Model):
     @api.multi
     def data_to_json(self, mapped_name=None):
         odoo_data = super().data_to_json(mapped_name)
-        status = odoo_data.get('project_status')
+        status = odoo_data.get("project_status")
         if status:
             status_mapping = {
-                'Active': 'A',
-                'Phase Out': 'P',
-                'Suspended': 'S',
-                'Transitioned': 'T',
+                "Active": "A",
+                "Phase Out": "P",
+                "Suspended": "S",
+                "Transitioned": "T",
             }
-            odoo_data['project_status'] = status_mapping[status]
+            odoo_data["project_status"] = status_mapping[status]
         return odoo_data

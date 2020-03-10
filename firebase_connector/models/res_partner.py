@@ -14,7 +14,7 @@ class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
 
     firebase_registration_ids = fields.One2many(
-        'firebase.registration', 'partner_id', readonly=True
+        "firebase.registration", "partner_id", readonly=True
     )
 
     def send_notification(self, message_title, message_body, all_device=True):
@@ -30,5 +30,4 @@ class GetPartnerMessage(models.Model):
             for reg in self.firebase_registration_ids:
                 reg.send_message(message_title, message_body)
         else:
-            self.firebase_registration_ids[0].send_message(message_title,
-                                                           message_body)
+            self.firebase_registration_ids[0].send_message(message_title, message_body)

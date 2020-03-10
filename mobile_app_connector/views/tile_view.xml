@@ -55,8 +55,8 @@
                         <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                           <div class="panel-body">
                                 <p>The subtype sets the display style of the tile in the Mobile application.</p>
-                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_1.png" />
-                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_2.png" />
+                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_1.png" alt="tile_1"/>
+                                <img style="float:left;" src="/mobile_app_connector/static/img/Tiles_2.png" alt="tile_2"/>
                           </div>
                         </div>
                       </div>

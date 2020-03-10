@@ -28,31 +28,30 @@
 
 # pylint: disable=C8101
 {
-    'name': 'CMS Form additions for Compassion',
-    'version': '11.0.1.1.1',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': [
-        'cms_form',  # oca_addons/website_cms
-        'website_payment',  # source/addons
-        'website_no_index',  # website (OCA)
-        'portal',  # source/addons
-        'queue_job',  # oca_addons/queue
-        'base_automation',  # source/addons
-        'link_tracker',  # source/addons
+    "name": "CMS Form additions for Compassion",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "https://github.com/CompassionCH/compassion-modules/tree/10.0",
+    "depends": [
+        "cms_form",  # oca_addons/website_cms
+        "website_payment",  # source/addons
+        "website_no_index",  # website (OCA)
+        "portal",  # source/addons
+        "queue_job",  # oca_addons/queue
+        "base_automation",  # source/addons
+        "link_tracker",  # source/addons
     ],
-    'data': [
-        'data/transaction_server_actions.xml',
-        'data/ir.config_parameter.xml',
-        'templates/assets.xml',
-        'templates/form_widgets.xml',
-        'views/ir_logging.xml',
+    "data": [
+        "data/transaction_server_actions.xml",
+        "data/ir.config_parameter.xml",
+        "templates/assets.xml",
+        "templates/form_widgets.xml",
+        "views/ir_logging.xml",
     ],
-    'demo': [
-    ],
-    'development_status': 'Stable',
-    'installable': True,
-    'auto_install': False,
+    "demo": [],
+    "development_status": "Stable",
+    "installable": True,
+    "auto_install": False,
 }

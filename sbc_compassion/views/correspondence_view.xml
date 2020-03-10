@@ -179,10 +179,10 @@
                 <separator />
                 <filter name="state_published" string="Published state" domain="[('state','=','Published to Global Partner')]" />
                 <group expand="0" string="Group By">
-                    <filter string="Partner" domain="[]" context="{'group_by': 'partner_id'}" />
-                    <filter string="Sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
-                    <filter string="State" domain="[]" context="{'group_by': 'state'}" />
-                    <filter string="Translator" domain="[]" context="{'group_by': 'translator_id'}" />
+                    <filter string="Partner" name="partner" domain="[]" context="{'group_by': 'partner_id'}" />
+                    <filter string="Sponsorship" name="sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
+                    <filter string="State" name="state" domain="[]" context="{'group_by': 'state'}" />
+                    <filter string="Translator" name="translator" domain="[]" context="{'group_by': 'translator_id'}" />
                 </group>
             </search>
         </field>

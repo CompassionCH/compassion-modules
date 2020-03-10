@@ -37,7 +37,7 @@
                             <div class="oe_kanban_details">
                                 <!-- Title and data -->
                                 <div class="oe_product_desc">
-                                    <img class="oe_kanban_image"
+                                    <img class="oe_kanban_image" alt="child"
                                          t-att-src="kanban_image('compassion.child', 'portrait', record.id.raw_value)"/>
                                     <h4>
                                         <a type="open">
@@ -297,12 +297,12 @@
                 <separator/>
                 <filter name="my_children" string="My Allocations" domain="[('hold_owner','=',uid)]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="State" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Hold Type" domain="[]" context="{'group_by':'hold_type'}"/>
-                    <filter string="Channel" domain="[]" context="{'group_by':'hold_channel'}"/>
-                    <filter string="Owner" domain="[]" context="{'group_by':'hold_owner'}"/>
+                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Hold Type" name="hold_type" domain="[]" context="{'group_by':'hold_type'}"/>
+                    <filter string="Channel" name="channel" domain="[]" context="{'group_by':'hold_channel'}"/>
+                    <filter string="Owner" name="owner" domain="[]" context="{'group_by':'hold_owner'}"/>
                     <filter name="ambassador" string="Ambassador" domain="[]" context="{'group_by':'hold_ambassador'}"/>
-                    <filter string="Allocation Date" domain="[]" context="{'group_by':'date'}"/>
+                    <filter string="Allocation Date" name="allocation_date" domain="[]" context="{'group_by':'date'}"/>
                 </group>
             </search>
         </field>

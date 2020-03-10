@@ -1,13 +1,12 @@
-# coding: utf-8
-
 import logging
+
 from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
 
 class PaymentTransaction(models.Model):
-    _inherit = 'payment.transaction'
+    _inherit = "payment.transaction"
 
     @api.multi
     def cancel_mobile_transaction(self):

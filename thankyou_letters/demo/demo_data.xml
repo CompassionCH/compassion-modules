@@ -38,13 +38,13 @@
         <field name="thanks_name">a great iPod</field>
     </record>
 
-    <!-- Enable Thank You for Gold Membership-->
-    <record id="product.membership_0" model="product.product">
+    <!-- Enable Thank You for Office Chair -->
+    <record id="product.product_delivery_01" model="product.product">
         <field name="requires_thankyou">True</field>
-        <field name="thanks_name">a great gold membership</field>
+        <field name="thanks_name">a great office chair</field>
     </record>
 
-    <!-- Disable Thank You for Mouse -->
+    <!-- Disable Thank You for Cabinet with Doors -->
     <record id="product.product_product_10" model="product.product">
         <field name="requires_thankyou">False</field>
     </record>

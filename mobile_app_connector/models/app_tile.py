@@ -8,101 +8,99 @@
 ##############################################################################
 import logging
 
-from odoo.tools.safe_eval import safe_eval
 from odoo import api, models, fields
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
 
 class AppTile(models.Model):
     # internal field Odoo
-    _name = 'mobile.app.tile'
-    _description = 'Tile'
-    _inherit = 'compassion.mapped.model'
-    _order = 'view_order'
+    _name = "mobile.app.tile"
+    _description = "Tile"
+    _inherit = "compassion.mapped.model"
+    _order = "view_order"
 
     # Fields of class
-    priority = fields.Selection([
-        ('High', 'High'),
-        ('Normal', 'Normal'),
-        ('Low', 'Low')
-    ], 'Priority', default='Normal', required=True)
+    priority = fields.Selection(
+        [("High", "High"), ("Normal", "Normal"), ("Low", "Low")],
+        "Priority",
+        default="Normal",
+        required=True,
+    )
     name = fields.Char(required=True)
     display_name = fields.Char(
-        'Name', compute='_compute_display_name', store=True, readonly=True)
-    view_order = fields.Integer('View order', required=True, default=6000)
+        "Name", compute="_compute_display_name", store=True, readonly=True
+    )
+    view_order = fields.Integer("View order", required=True, default=6000)
     is_automatic_ordering = fields.Boolean("Automatic ordering", default=True)
     start_date = fields.Datetime()
     end_date = fields.Datetime()
-    active = fields.Boolean(oldname='is_active', default=True)
+    active = fields.Boolean(oldname="is_active", default=True)
     visibility = fields.Selection(
-        [('public', 'Public'), ('private', 'Private'), ('both', 'Both')],
+        [("public", "Public"), ("private", "Private"), ("both", "Both")],
         required=True,
-        help='Choose private if the sponsor must be logged in to see the tile'
+        help="Choose private if the sponsor must be logged in to see the tile",
     )
-    model_id = fields.Many2one('ir.model', "Associated records")
-    model = fields.Char(related='model_id.model')
+    model_id = fields.Many2one("ir.model", "Associated records", readonly=False)
+    model = fields.Char(related="model_id.model")
     records_filter = fields.Char(
-        'Records filter function',
-        help='will use the filtered function on the associated records'
+        "Records filter function",
+        help="will use the filtered function on the associated records",
     )
-    mode = fields.Selection([
-        ('one', 'Unique tile'),
-        ('many', 'One tile per record')
-    ], help='This defines how to process related data')
+    mode = fields.Selection(
+        [("one", "Unique tile"), ("many", "One tile per record")],
+        help="This defines how to process related data",
+    )
     title = fields.Text(
         translate=True,
-        help="Mako template enabled."
-             "Use ctx['objects'] to get associated records."
+        help="Mako template enabled." "Use ctx['objects'] to get associated records.",
     )
     body = fields.Text(
         translate=True,
-        help="Mako template enabled."
-             "Use ctx['objects'] to get associated records."
+        help="Mako template enabled." "Use ctx['objects'] to get associated records.",
     )
     action_text = fields.Text(
         translate=True,
-        help="Mako template enabled."
-             "Use ctx['objects'] to get associated records."
+        help="Mako template enabled." "Use ctx['objects'] to get associated records.",
     )
     subtype_id = fields.Many2one(
-        'mobile.app.tile.subtype', 'Type', required=True)
-    code = fields.Char(related='subtype_id.code')
-    preview = fields.Binary(related='subtype_id.tile_preview', readonly=True)
+        "mobile.app.tile.subtype", "Type", required=True, readonly=False
+    )
+    code = fields.Char(related="subtype_id.code")
+    preview = fields.Binary(related="subtype_id.tile_preview", readonly=True)
     action_destination = fields.Selection(
-        lambda s: s.env['mobile.app.tile.subtype'].select_action_destination(),
-        required=True)
-    is_prayer = fields.Boolean(compute='_compute_is_prayer')
+        lambda s: s.env["mobile.app.tile.subtype"].select_action_destination(),
+        required=True,
+    )
+    is_prayer = fields.Boolean(compute="_compute_is_prayer")
     prayer_title = fields.Text(
         translate=True,
-        help="Mako template enabled."
-             "Use ctx['objects'] to get associated records."
+        help="Mako template enabled." "Use ctx['objects'] to get associated records.",
     )
     prayer_body = fields.Text(
         translate=True,
-        help="Mako template enabled."
-             "Use ctx['objects'] to get associated records."
+        help="Mako template enabled." "Use ctx['objects'] to get associated records.",
     )
 
-    @api.depends('subtype_id', 'subtype_id.code', 'name')
+    @api.depends("subtype_id", "subtype_id.code", "name")
     def _compute_display_name(self):
         for tile in self:
-            tile.display_name = u'[{}] {}'.format(tile.code, tile.name)
+            tile.display_name = u"[{}] {}".format(tile.code, tile.name)
 
     def _compute_is_prayer(self):
-        prayer_type = self.env.ref('mobile_app_connector.tile_type_prayer')
+        prayer_type = self.env.ref("mobile_app_connector.tile_type_prayer")
         for tile in self:
             tile.is_prayer = tile.subtype_id.type_id == prayer_type
 
-    @api.onchange('subtype_id')
+    @api.onchange("subtype_id")
     def _onchange_subtype(self):
         if self.subtype_id:
             if self.subtype_id.default_body:
                 self.body = self.subtype_id.default_body
             self.title = self.subtype_id.default_title
             self.action_text = self.subtype_id.default_action_text
-            self.action_destination =\
-                self.subtype_id.default_action_destination
+            self.action_destination = self.subtype_id.default_action_destination
             self.model_id = self.subtype_id.default_model_id
             self.records_filter = self.subtype_id.default_records_filter
 
@@ -118,7 +116,7 @@ class AppTile(models.Model):
             domain = []
         # We iterate on all language to force the translations to be applied
         # to the texts.
-        for lang in self.env['res.lang'].search([('active', '=', True)]):
+        for lang in self.env["res.lang"].search([("active", "=", True)]):
             for tile in self.search(domain).with_context(lang=lang.code):
                 tile._onchange_subtype()
         return True
@@ -144,12 +142,12 @@ class AppTile(models.Model):
             records = tile._get_records(tile_data)
             if records:
                 # Convert text templates
-                if tile.mode == 'one':
+                if tile.mode == "one":
                     text_data = tile._render_single_tile(records)
                     if text_data:
                         tile_json.update(text_data)
                         res.append(tile_json)
-                elif tile.mode == 'many':
+                elif tile.mode == "many":
                     for record in records:
                         text_data = tile._render_single_tile(record)
                         if text_data:
@@ -157,13 +155,17 @@ class AppTile(models.Model):
                             res.append(tile_json.copy())
             else:
                 # Some tiles shouldn't rendered when no records are associated
-                module = 'mobile_app_connector.%s'
-                no_render = self.env.ref(module % 'tile_type_donation') + \
-                    self.env.ref(module % 'tile_type_letter') +\
-                    self.env.ref(module % 'tile_type_child') +\
-                    self.env.ref(module % 'tile_type_community')
-                if tile.subtype_id.type_id not in no_render and \
-                        tile.subtype_id != self.env.ref(module % 'tile_subtype_pr1'):
+                module = "mobile_app_connector.%s"
+                no_render = (
+                    self.env.ref(module % "tile_type_donation")
+                    + self.env.ref(module % "tile_type_letter")
+                    + self.env.ref(module % "tile_type_child")
+                    + self.env.ref(module % "tile_type_community")
+                )
+                if (
+                        tile.subtype_id.type_id not in no_render
+                        and tile.subtype_id != self.env.ref(module % "tile_subtype_pr1")
+                ):
                     res.append(tile_json)
         return res
 
@@ -180,8 +182,7 @@ class AppTile(models.Model):
                 records = records.filtered(safe_eval(self.records_filter))
             except:
                 _logger.error(
-                    'Cannot filter recordset given the function',
-                    exc_info=True
+                    "Cannot filter recordset given the function", exc_info=True
                 )
         return records
 
@@ -193,34 +194,34 @@ class AppTile(models.Model):
         """
         try:
             self.ensure_one()
-            template_obj = self.env['mail.template']\
-                .with_context(objects=records)
+            template_obj = self.env["mail.template"].with_context(objects=records)
             res = {
-                'Title': template_obj.render_template(
-                    self.title, self._name, self.id),
-                'Body': template_obj.render_template(
-                    self.body, self._name, self.id),
-                'ActionText': template_obj.render_template(
-                    self.action_text, self._name, self.id),
-                'SortOrder': self.view_order,
-                'IsAutomaticOrdering': self.is_automatic_ordering
+                "Title": template_obj.render_template(self.title, self._name, self.id),
+                "Body": template_obj.render_template(self.body, self._name, self.id),
+                "ActionText": template_obj.render_template(
+                    self.action_text, self._name, self.id
+                ),
+                "SortOrder": self.view_order,
+                "IsAutomaticOrdering": self.is_automatic_ordering,
             }
 
             if self.prayer_title and self.prayer_body:
-                res['PrayerPoint'] = {
-                    'Body': template_obj.render_template(
-                        self.prayer_body, self._name, self.id),
-                    'Title': template_obj.render_template(
-                        self.prayer_title, self._name, self.id),
+                res["PrayerPoint"] = {
+                    "Body": template_obj.render_template(
+                        self.prayer_body, self._name, self.id
+                    ),
+                    "Title": template_obj.render_template(
+                        self.prayer_title, self._name, self.id
+                    ),
                 }
 
-            if hasattr(records, 'get_app_json'):
+            if hasattr(records, "get_app_json"):
                 res.update(records.get_app_json(multi=len(records) > 1))
         except:
             _logger.error("Error rendering tile %s", self.name, exc_info=True)
             res = {}
-        if not res.get('OrderDate'):
-            res['OrderDate'] = self.create_date
+        if not res.get("OrderDate"):
+            res["OrderDate"] = self.create_date
         return res
 
     @api.multi
@@ -229,7 +230,7 @@ class AppTile(models.Model):
         if not res:
             res = {}
         for key, value in list(res.copy().items()):
-            if key == 'ActionText':
+            if key == "ActionText":
                 if value:
                     res[key] = str(value)
                 else:

@@ -8,29 +8,34 @@
 #
 ##############################################################################
 import json
-import werkzeug
 import logging
 import uuid
 from datetime import datetime
 
+import werkzeug
+
 from odoo import exceptions
-from odoo.tools import config
 from odoo.http import (
-    Response, JsonRequest, Root, SessionExpiredException,
-    AuthenticationError
+    Response,
+    JsonRequest,
+    Root,
+    SessionExpiredException,
+    AuthenticationError,
 )
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
 # Monkeypatch type of request rooter to use RESTJsonRequest
 old_get_request = Root.get_request
 
-TEST_MODE = config.get('test_enable')
+TEST_MODE = config.get("test_enable")
 
 
 def get_request(self, httprequest):
-    if (httprequest.mimetype == "application/json" and
-            httprequest.environ['PATH_INFO'].startswith('/onramp')):
+    if httprequest.mimetype == "application/json" and httprequest.environ[
+        "PATH_INFO"
+    ].startswith("/onramp"):
         return RESTJsonRequest(httprequest)
     return old_get_request(self, httprequest)
 
@@ -67,11 +72,11 @@ Sample Unsuccessful Response
     "RelatedRecordId":""
 }
 """
+
     def __init__(self, *args):
         """ Setup a GUID for any message and keep track of timestamp. """
         self.uuid = str(uuid.uuid4())
-        self.timestamp = datetime.strftime(
-            datetime.now(), '%Y-%m-%dT%H:%M:%S')
+        self.timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")
         try:
             super(RESTJsonRequest, self).__init__(*args)
         except:
@@ -85,7 +90,7 @@ Sample Unsuccessful Response
         """ Log the received message before processing it. """
         _logger.info(
             "[%s] %s %s %s",
-            self.httprequest.environ['REQUEST_METHOD'],
+            self.httprequest.environ["REQUEST_METHOD"],
             self.httprequest.url,
             [(k, v) for k, v in self.httprequest.headers.items()],
             self.jsonrequest,
@@ -97,93 +102,104 @@ Sample Unsuccessful Response
         response = {}
         status = 200
         if error is not None:
-            status = error.get('ErrorCode')
+            status = error.get("ErrorCode")
             response = error
         if result is not None:
-            status = result.pop('code', 200)
+            status = result.pop("code", 200)
             response = result
 
-        mime = 'application/json'
+        mime = "application/json"
         body = json.dumps(response)
         headers = [
-            ('Content-Type', mime),
-            ('Content-Length', len(body)),
-            ('x-cim-RequestId', self.uuid),
+            ("Content-Type", mime),
+            ("Content-Length", len(body)),
+            ("x-cim-RequestId", self.uuid),
         ]
 
-        http_response = Response(
-            body, headers=headers, status=status)
+        http_response = Response(body, headers=headers, status=status)
         _logger.info('[SEND] %s %s "%s"', status, headers, response)
         return http_response
 
     def _handle_exception(self, exception):
         """Format the errors to conform to GMC error types."""
         error = {
-            'ErrorId': self.uuid,
-            'ErrorTimestamp': self.timestamp,
-            'ErrorClass': 'BusinessException',
-            'ErrorRetryable': False,
-            'ErrorModule': 'REST OnRamp',
-            'ErrorSubModule': 'Rest OnRamp Authorization',
-            'ErrorMethod': 'ValidateToken',
-            'ErrorLoggedInUser': '',
-            'RelatedRecordId': ''
+            "ErrorId": self.uuid,
+            "ErrorTimestamp": self.timestamp,
+            "ErrorClass": "BusinessException",
+            "ErrorRetryable": False,
+            "ErrorModule": "REST OnRamp",
+            "ErrorSubModule": "Rest OnRamp Authorization",
+            "ErrorMethod": "ValidateToken",
+            "ErrorLoggedInUser": "",
+            "RelatedRecordId": "",
         }
         if isinstance(exception, werkzeug.exceptions.HTTPException):
             # General exception, send back the exception message
-            error.update({
-                'ErrorCode': exception.code,
-                'ErrorCategory': 'CommunicationError',
-                'ErrorMessage': exception.description,
-            })
+            error.update(
+                {
+                    "ErrorCode": exception.code,
+                    "ErrorCategory": "CommunicationError",
+                    "ErrorMessage": exception.description,
+                }
+            )
             if not TEST_MODE:
                 _logger.error(exception.description, exc_info=True)
         elif isinstance(exception, exceptions.AccessDenied):
             # Access error
-            error.update({
-                'ErrorCode': 401,
-                'ErrorCategory': 'AuthorizationError',
-                'ErrorMessage': '401 Unauthorized',
-            })
+            error.update(
+                {
+                    "ErrorCode": 401,
+                    "ErrorCategory": "AuthorizationError",
+                    "ErrorMessage": "401 Unauthorized",
+                }
+            )
             if not TEST_MODE:
-                _logger.error('401 Unauthorized', exc_info=True)
+                _logger.error("401 Unauthorized", exc_info=True)
         elif isinstance(exception, AttributeError):
             # Raised if JSON could not be parsed or invalid body was received
-            error.update({
-                'ErrorCode': 400,
-                'ErrorSubModule': 'Rest OnRamp Message Validation',
-                'ErrorMethod': 'Message Validation',
-                'ErrorCategory': 'InputValidationError',
-                'ErrorMessage': exception.message,
-            })
+            error.update(
+                {
+                    "ErrorCode": 400,
+                    "ErrorSubModule": "Rest OnRamp Message Validation",
+                    "ErrorMethod": "Message Validation",
+                    "ErrorCategory": "InputValidationError",
+                    "ErrorMessage": exception.message,
+                }
+            )
             if not TEST_MODE:
                 _logger.error(exception.message, exc_info=True)
         elif isinstance(exception, AuthenticationError):
-            error.update({
-                'ErrorCode': 401,
-                'ErrorCategory': 'AuthenticationError',
-                'ErrorMessage': 'Session Invalid',
-            })
+            error.update(
+                {
+                    "ErrorCode": 401,
+                    "ErrorCategory": "AuthenticationError",
+                    "ErrorMessage": "Session Invalid",
+                }
+            )
             if not TEST_MODE:
-                _logger.error('Session Invalid', exc_info=True)
+                _logger.error("Session Invalid", exc_info=True)
         elif isinstance(exception, SessionExpiredException):
-            error.update({
-                'ErrorCode': 401,
-                'ErrorCategory': 'AuthenticationError',
-                'ErrorMessage': 'Session Expired',
-            })
+            error.update(
+                {
+                    "ErrorCode": 401,
+                    "ErrorCategory": "AuthenticationError",
+                    "ErrorMessage": "Session Expired",
+                }
+            )
             if not TEST_MODE:
-                _logger.error('Session Expired', exc_info=True)
+                _logger.error("Session Expired", exc_info=True)
         else:
             # Any other cases, lookup what exception type was raised.
             if not isinstance(exception, (exceptions.UserError)):
                 if not TEST_MODE:
                     _logger.error(
-                        "Exception during JSON request handling.",
-                        exc_info=True)
-            error.update({
-                'ErrorCode': 500,
-                'ErrorCategory': 'ApplicationError',
-                'ErrorMessage': 'Odoo Server Error',
-            })
+                        "Exception during JSON request handling.", exc_info=True
+                    )
+            error.update(
+                {
+                    "ErrorCode": 500,
+                    "ErrorCategory": "ApplicationError",
+                    "ErrorMessage": "Odoo Server Error",
+                }
+            )
         return self._json_response(error=error)

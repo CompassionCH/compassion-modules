@@ -7,11 +7,13 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
-from odoo.addons.firebase_connector.controllers.firebase_controller \
-    import RestController as Firebase
-
 import logging
+
+from odoo.addons.firebase_connector.controllers.firebase_controller import (
+    RestController as Firebase,
+)
+
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -40,15 +42,15 @@ class GetPartnerMessage(models.Model):
 
         recipient = self
         if "topic" in data:
-            if data['topic'] == "child_notification":
+            if data["topic"] == "child_notification":
                 recipient = self.filtered(lambda reg: reg.receive_child_notification)
 
-            elif data['topic'] == "general_notification":
+            elif data["topic"] == "general_notification":
                 recipient = self.filtered(lambda reg: reg.receive_general_notification)
 
-        return super(GetPartnerMessage, recipient).send_message(message_title,
-                                                                message_body,
-                                                                data)
+        return super(GetPartnerMessage, recipient).send_message(
+            message_title, message_body, data
+        )
 
     @api.model
     def mobile_update_notification_preference(self, json_data, **params):
@@ -63,41 +65,45 @@ class GetPartnerMessage(models.Model):
         }
         :return:
         """
-        firebase_id = json_data.get('firebaseId')
-        partner_id = json_data.get('SupporterId')
-        reg = self.env['firebase.registration'].search([
-            ('registration_id', '=', firebase_id)])
+        firebase_id = json_data.get("firebaseId")
+        partner_id = json_data.get("SupporterId")
+        reg = self.env["firebase.registration"].search(
+            [("registration_id", "=", firebase_id)]
+        )
 
         if firebase_id is None:
             _logger.error(
                 "Received an empty firebase id while updating notification "
-                "preferences from the mobile app")
+                "preferences from the mobile app"
+            )
             return
 
         if len(reg) == 0:
             # id is not yet registered in Odoo
-            _logger.warning("Received a notification preference for a device "
-                            "not yet registered in Odoo. It should not happen "
-                            "in the normal registration flow.")
-            self.mobile_register(json_data, **{
-                'operation': 'Insert',
-                'supId': partner_id,
-                'firebaseId': firebase_id,
-            })
+            _logger.warning(
+                "Received a notification preference for a device "
+                "not yet registered in Odoo. It should not happen "
+                "in the normal registration flow."
+            )
+            self.mobile_register(
+                json_data,
+                **{
+                    "operation": "Insert",
+                    "supId": partner_id,
+                    "firebaseId": firebase_id,
+                }
+            )
         else:
-            n_child = json_data.get('appchild')
-            n_info = json_data.get('appinfo')
-            reg.receive_child_notification = n_child == '1' or n_child is True
-            reg.receive_general_notification = n_info == '1' or n_info is True
+            n_child = json_data.get("appchild")
+            n_info = json_data.get("appinfo")
+            reg.receive_child_notification = n_child == "1" or n_child is True
+            reg.receive_general_notification = n_info == "1" or n_info is True
 
         return {
             "UpdateRecordingContactResult":
-                "App notification Child And App notification child Info updated "
-                "of Supporter ID : {} ({} {}, {})".format(
-                    partner_id,
-                    firebase_id,
-                    reg.receive_child_notification,
-                    reg.receive_general_notification, )
+                f"App notification Child And App notification child Info updated "
+                f"of Supporter ID : {partner_id} ({firebase_id} "
+                f"{reg.receive_child_notification}, {reg.receive_general_notification})"
         }
 
     @api.model
@@ -116,32 +122,32 @@ class GetPartnerMessage(models.Model):
         :return: the return value of register firebase
         """
 
-        firebase_id = params['firebaseId']
-        operation = params['operation']
-        partner_id = params.get('supId', None)
+        firebase_id = params["firebaseId"]
+        operation = params["operation"]
+        partner_id = params.get("supId", None)
         if partner_id == "":
             partner_id = None
         _logger.debug(
-            operation + "ing a Firebase ID from partner id: " +
-            str(partner_id) + " with value: " + firebase_id)
+            operation
+            + "ing a Firebase ID from partner id: "
+            + str(partner_id)
+            + " with value: "
+            + firebase_id
+        )
 
-        if operation == 'Insert':
+        if operation == "Insert":
             response = Firebase().firebase_register(
-                registration_id=firebase_id,
-                partner_id=partner_id,
+                registration_id=firebase_id, partner_id=partner_id,
             )
-        elif operation == 'Delete':
+        elif operation == "Delete":
             response = Firebase().firebase_unregister(
-                registration_id=firebase_id,
-                partner_id=partner_id
+                registration_id=firebase_id, partner_id=partner_id
             )
         else:
-            raise NotImplemented('Operation %s is not supported by Odoo' %
-                                 operation)
+            raise NotImplemented("Operation %s is not supported by Odoo" % operation)
         try:
             reg_id = int(response.data)
         except TypeError:
-            _logger.error("Invalid response for firebase registration: %s",
-                          response)
+            _logger.error("Invalid response for firebase registration: %s", response)
             reg_id = 0
         return reg_id

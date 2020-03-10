@@ -28,25 +28,22 @@
 
 # pylint: disable=C8101
 {
-    'name': 'Compassion EU Firebase Connector',
-    'version': '11.0.0.0.0',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'https://github.com/CompassionCH/compassion-modules/tree/10.0',
-    'depends': ['sale_management'],
-    'external_dependencies': {
-        'python': ['firebase_admin'],
-    },
-    'data': [
-        'data/ir_cron.xml',
-        'views/firebase_notification.xml',
-        'views/firebase_registration.xml',
-        'security/ir.model.access.csv'
+    "name": "Compassion EU Firebase Connector",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "https://github.com/CompassionCH/compassion-modules/tree/10.0",
+    "depends": ["sale_management"],
+    "external_dependencies": {"python": ["firebase_admin"], },
+    "data": [
+        "data/ir_cron.xml",
+        "views/firebase_notification.xml",
+        "views/firebase_registration.xml",
+        "security/ir.model.access.csv",
     ],
-    'demo': [
-    ],
-    'development_status': 'Beta',
-    'installable': True,
-    'auto_install': False,
+    "demo": [],
+    "development_status": "Beta",
+    "installable": True,
+    "auto_install": False,
 }

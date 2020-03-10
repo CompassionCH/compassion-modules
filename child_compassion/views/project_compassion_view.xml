@@ -219,7 +219,7 @@
                 <field name="last_update_date"/>
                 <filter name="suspended" string="Suspended" domain="[('suspension','=','fund-suspended')]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Last Update" domain="[]" context="{'group_by':'last_update_date'}"/>
+                    <filter string="Last Update" name="last_update" domain="[]" context="{'group_by':'last_update_date'}"/>
                 </group>
             </search>
         </field>

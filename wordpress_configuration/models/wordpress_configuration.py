@@ -1,8 +1,8 @@
-from odoo import api, fields, models, _
-from odoo.tools import config
-
 import logging
+
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
@@ -12,7 +12,9 @@ class WordpressConfiguration(models.Model):
     _description = "Wordpress parameters (host, user, password) for a company"
     _order = "host"
 
-    company_id = fields.Many2one('res.company', 'Company', required=False)
+    company_id = fields.Many2one(
+        "res.company", "Company", required=False, readonly=False
+    )
 
     host = fields.Char(required=True)
     user = fields.Char(required=True)
@@ -41,12 +43,11 @@ class WordpressConfiguration(models.Model):
         """
         Returns the config for the given or current company
         """
-        wp_config = self.search([
-            ('company_id', '=', company_id or self.env.user.company_id.id)
-        ], limit=1)
+        wp_config = self.search(
+            [("company_id", "=", company_id or self.env.user.company_id.id)], limit=1
+        )
         if not wp_config and raise_error:
-            raise UserError(_(
-                "Missing Wordpress configuration for current company"))
+            raise UserError(_("Missing Wordpress configuration for current company"))
         return wp_config
 
     @api.model
@@ -62,21 +63,22 @@ class WordpressConfiguration(models.Model):
         Tries to read wordpress configs from odoo's config file.
         If the configs exists, applies them for the current user's company
         """
-        host = config.get('wordpress_host')
-        user = config.get('wordpress_user')
-        pwd = config.get('wordpress_pwd')
+        host = config.get("wordpress_host")
+        user = config.get("wordpress_user")
+        pwd = config.get("wordpress_pwd")
         if not (host and user and pwd):
             return
 
-        _logger.info(
-            "Wordpress.configuration: using configs found in odoo.conf")
+        _logger.info("Wordpress.configuration: using configs found in odoo.conf")
 
-        self.create({
-            'host': host,
-            'user': user,
-            'password': pwd,
-            'company_id': self.env.user.company_id.id
-        })
+        self.create(
+            {
+                "host": host,
+                "user": user,
+                "password": pwd,
+                "company_id": self.env.user.company_id.id,
+            }
+        )
 
     @api.model
     def _remove_previous_config(self, values):
@@ -84,7 +86,7 @@ class WordpressConfiguration(models.Model):
         ensure a one-to-one relationship (companies have at most one config)
         """
         if "company_id" in values and values["company_id"] is not False:
-            configs = self.search([('company_id', '=', values["company_id"])]) - self
+            configs = self.search([("company_id", "=", values["company_id"])]) - self
             for cfg in configs:
                 cfg.company_id = False
 
@@ -94,5 +96,6 @@ class WordpressConfiguration(models.Model):
         The dependent modules do not expect the http part
         """
         if "host" in values and values.get("host").lower().startswith("http"):
-            raise ValidationError(_(
-                "Hostname should not contain the protocol part ('http://')."))
+            raise ValidationError(
+                _("Hostname should not contain the protocol part ('http://').")
+            )

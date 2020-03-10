@@ -11,27 +11,30 @@
 import logging
 from datetime import datetime
 
+from odoo.addons.queue_job.job import job, related_action
+
 from odoo import api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from odoo.addons.queue_job.job import job, related_action
 from .product_names import GIFT_REF
 
 logger = logging.getLogger(__name__)
 
 
 class ContractGroup(models.Model):
-    _inherit = 'recurring.contract.group'
+    _inherit = "recurring.contract.group"
 
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
 
     contains_sponsorship = fields.Boolean(
-        string='Contains sponsorship', compute='_compute_contains_sponsorship',
-        readonly=True, default=lambda s: s.env.context.get(
-            'default_type', None) and 'S' in s.env.context.get(
-            'default_type', 'O'))
-    change_method = fields.Selection(default='clean_invoices')
+        string="Contains sponsorship",
+        compute="_compute_contains_sponsorship",
+        readonly=True,
+        default=lambda s: s.env.context.get("default_type", None)
+        and "S" in s.env.context.get("default_type", "O"),
+    )
+    change_method = fields.Selection(default="clean_invoices")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -40,14 +43,14 @@ class ContractGroup(models.Model):
     @api.multi
     def _compute_contains_sponsorship(self):
         for group in self:
-            types = group.mapped('contract_ids.type')
-            group.contains_sponsorship = 'S' in types or 'SC' in types
+            types = group.mapped("contract_ids.type")
+            group.contains_sponsorship = "S" in types or "SC" in types
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @job(default_channel='root.recurring_invoicer')
-    @related_action(action='related_action_invoicer')
+    @job(default_channel="root.recurring_invoicer")
+    @related_action(action="related_action_invoicer")
     @api.multi
     def _generate_invoices(self, invoicer=None):
         """ Add birthday gifts generation. """
@@ -62,28 +65,34 @@ class ContractGroup(models.Model):
         logger.info("Automatic Birthday Gift Generation Started.")
 
         if invoicer is None:
-            invoicer = self.env['recurring.invoicer'].with_context(
-                lang='en_US').create({})
+            invoicer = (
+                self.env["recurring.invoicer"].with_context(lang="en_US").create({})
+            )
 
         # Search active Sponsorships with automatic birthday gift
         gen_states = self._get_gen_states()
-        contract_search = [('birthday_invoice', '>', 0.0),
-                           ('state', 'in', gen_states)]
+        contract_search = [("birthday_invoice", ">", 0.0), ("state", "in", gen_states)]
         if self.ids:
-            contract_search.append(('group_id', 'in', self.ids))
-        contract_obj = self.env['recurring.contract']
+            contract_search.append(("group_id", "in", self.ids))
+        contract_obj = self.env["recurring.contract"]
         contracts = contract_obj.search(contract_search)
 
         # Exclude sponsorship if a gift is already open
-        invl_obj = self.env['account.invoice.line']
-        product_id = self.env['product.product'].search([
-            ('default_code', '=', GIFT_REF[0])], limit=1).id
+        invl_obj = self.env["account.invoice.line"]
+        product_id = (
+            self.env["product.product"]
+                .search([("default_code", "=", GIFT_REF[0])], limit=1)
+                .id
+        )
 
         for contract in contracts:
-            invl_ids = invl_obj.search([
-                ('state', '=', 'open'),
-                ('contract_id', '=', contract.id),
-                ('product_id', '=', product_id)])
+            invl_ids = invl_obj.search(
+                [
+                    ("state", "=", "open"),
+                    ("contract_id", "=", contract.id),
+                    ("product_id", "=", product_id),
+                ]
+            )
             if contract.project_id.hold_gifts or invl_ids:
                 contracts -= contract
 
@@ -92,13 +101,19 @@ class ContractGroup(models.Model):
             count = 1
             logger.info(f"Found {total} Birthday Gifts to generate.")
 
-            gift_wizard = self.env['generate.gift.wizard'].with_context(
-                recurring_invoicer_id=invoicer.id).create({
-                    'description': 'Automatic birthday gift',
-                    'origin': 'Automatic birthday gift',
-                    'invoice_date': datetime.today().strftime(DF),
-                    'product_id': product_id,
-                    'amount': 0.0})
+            gift_wizard = (
+                self.env["generate.gift.wizard"]
+                    .with_context(recurring_invoicer_id=invoicer.id)
+                    .create(
+                    {
+                        "description": "Automatic birthday gift",
+                        "origin": "Automatic birthday gift",
+                        "invoice_date": datetime.today().strftime(DF),
+                        "product_id": product_id,
+                        "amount": 0.0,
+                    }
+                )
+            )
 
             # Generate invoices
             for contract in contracts:
@@ -116,7 +131,5 @@ class ContractGroup(models.Model):
         return invoicer
 
     def _generate_birthday_gift(self, gift_wizard, contract):
-        gift_wizard.write({
-            'amount': contract.birthday_invoice})
-        gift_wizard.with_context(
-            active_ids=contract.id).generate_invoice()
+        gift_wizard.write({"amount": contract.birthday_invoice})
+        gift_wizard.with_context(active_ids=contract.id).generate_invoice()

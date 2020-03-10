@@ -11,26 +11,32 @@ class HrWeekdayCoefficient(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(compute='_compute_name')
-    day_of_week = fields.Selection([
-        ('0', 'Monday'),
-        ('1', 'Tuesday'),
-        ('2', 'Wednesday'),
-        ('3', 'Thursday'),
-        ('4', 'Friday'),
-        ('5', 'Saturday'),
-        ('6', 'Sunday'), ], 'Day of Week', required=True, index=True,
-        default='0')
-    category_ids = fields.Many2many('hr.employee.category',
-                                    string='Employee tag')
-    coefficient = fields.Float(
-        help='Multiply the worked hours by the coefficient')
+    name = fields.Char(compute="_compute_name")
+    day_of_week = fields.Selection(
+        [
+            ("0", "Monday"),
+            ("1", "Tuesday"),
+            ("2", "Wednesday"),
+            ("3", "Thursday"),
+            ("4", "Friday"),
+            ("5", "Saturday"),
+            ("6", "Sunday"),
+        ],
+        "Day of Week",
+        required=True,
+        index=True,
+        default="0",
+    )
+    category_ids = fields.Many2many(
+        "hr.employee.category", string="Employee tag", readonly=False
+    )
+    coefficient = fields.Float(help="Multiply the worked hours by the coefficient")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.multi
-    @api.depends('coefficient')
+    @api.depends("coefficient")
     def _compute_name(self):
         for rd in self:
             rd.name = rd.coefficient

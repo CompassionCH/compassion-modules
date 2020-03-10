@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class OmrConfig(models.AbstractModel):
     _name = "partner.communication.orm.config.abstract"
+    _description = "Partner Communication - ORM Config"
 
     omr_enable_marks = fields.Boolean(
         string="Enable OMR",
@@ -56,20 +57,24 @@ class CommunicationDefaults(models.AbstractModel):
     and communication job. """
 
     _name = "partner.communication.defaults"
+    _description = "Partner Communication Defaults"
 
-    user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)])
+    user_id = fields.Many2one(
+        "res.users", "From", domain=[("share", "=", False)], readonly=False
+    )
     need_call = fields.Selection(
         "get_need_call",
         help="Indicates we should have a personal contact with the partner",
     )
     print_if_not_email = fields.Boolean(
         help="Should we print the communication if the sponsor don't have "
-        "an e-mail address"
+             "an e-mail address"
     )
     report_id = fields.Many2one(
         "ir.actions.report",
         "Letter template",
         domain=[("model", "=", "partner.communication.job")],
+        readonly=False,
     )
 
     @api.model
@@ -85,9 +90,13 @@ class CommunicationOmrConfig(models.Model):
     _inherit = "partner.communication.orm.config.abstract"
     _description = "Communication OMR config"
 
-    config_id = fields.Many2one("partner.communication.config", "Communication type")
-    lang_id = fields.Many2one("res.lang", "Language")
-    user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)])
+    config_id = fields.Many2one(
+        "partner.communication.config", "Communication type", readonly=False
+    )
+    lang_id = fields.Many2one("res.lang", "Language", readonly=False)
+    user_id = fields.Many2one(
+        "res.users", "From", domain=[("share", "=", False)], readonly=False
+    )
 
 
 class CommunicationConfig(models.Model):
@@ -104,13 +113,14 @@ class CommunicationConfig(models.Model):
     #                                 FIELDS                                 #
     ##########################################################################
     source_id = fields.Many2one(
-        "utm.source", "UTM Source", required=True, ondelete="restrict"
+        "utm.source", "UTM Source", required=True, ondelete="restrict", readonly=False
     )
     model_id = fields.Many2one(
         "ir.model",
         "Applies to",
         required=True,
         help="The kind of document with this communication can be used",
+        readonly=False,
     )
     model = fields.Char(related="model_id.model", store=True, readonly=True)
     send_mode = fields.Selection("get_send_mode", required=True)
@@ -127,6 +137,7 @@ class CommunicationConfig(models.Model):
             ("model", "=", "partner.communication.job"),
             ("model", "=", "crm.claim"),
         ],
+        readonly=False,
     )
     attachments_function = fields.Char(
         help="Define a function in the communication_job model that will "
@@ -140,6 +151,7 @@ class CommunicationConfig(models.Model):
         comodel_name="partner.communication.omr.config",
         inverse_name="config_id",
         string="OMR Configuration",
+        readonly=False,
     )
     active = fields.Boolean(default=True)
 
@@ -304,7 +316,7 @@ class CommunicationConfig(models.Model):
                 )
                 comm_mode = communication_send_mode.replace("auto_", "")
                 partner_mode = partner_mode.replace("auto_", "")
-                send_mode = send_priority.get(comm_mode, {}).get(partner_mode, 'none')
+                send_mode = send_priority.get(comm_mode, {}).get(partner_mode, "none")
                 digital_only = (
                     "digital_only" in partner_mode or "digital_only" in comm_mode
                 )

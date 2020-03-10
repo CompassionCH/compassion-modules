@@ -7,16 +7,18 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields, _
-from werkzeug.exceptions import NotFound
-from base64 import b64encode
-from werkzeug.utils import escape
 import datetime
+from base64 import b64encode
+
+from werkzeug.exceptions import NotFound
+from werkzeug.utils import escape
+
+from odoo import models, api, fields, _
 
 
 class CompassionCorrespondence(models.Model):
     _name = "correspondence"
-    _inherit = ['correspondence', 'compassion.mapped.model']
+    _inherit = ["correspondence", "compassion.mapped.model"]
 
     @api.multi
     def get_app_json(self, multi=False):
@@ -25,10 +27,10 @@ class CompassionCorrespondence(models.Model):
         :param multi: used to change the wrapper if needed
         :return: dictionary with JSON data of the children
         """
-        child = self.sudo().mapped('child_id')
+        child = self.sudo().mapped("child_id")
         if not self:
             return {}
-        wrapper = 'Letters' if multi else 'Letter'
+        wrapper = "Letters" if multi else "Letter"
         if len(self) == 1:
             data = self.data_to_json("mobile_app_from_letter")
         else:
@@ -37,13 +39,13 @@ class CompassionCorrespondence(models.Model):
                 data.append(letter.data_to_json("mobile_app_from_letter"))
 
         order_date = self.sent_date or self.status_date
-        if self.direction == 'Supporter to beneficiary':
+        if self.direction == "Supporter to beneficiary":
             order_date = self.scanned_date
 
         return {
-            'Child': child.get_app_json_no_wrap(),
+            "Child": child.get_app_json_no_wrap(),
             wrapper: data,
-            'OrderDate': order_date
+            "OrderDate": order_date,
         }
 
     @api.model
@@ -56,18 +58,14 @@ class CompassionCorrespondence(models.Model):
             :return: sample response
         """
         # Validate required parameters
-        self._validate_required_fields([
-            'TemplateID',
-            'Message',
-            'Need',
-            'supporterId',
-            'base64string'
-            ], json_data)
-        mapping = self.env['compassion.mapping'].search([
-            ('name', '=', "mobile_app_correspondence")
-        ])
+        self._validate_required_fields(
+            ["TemplateID", "Message", "Need", "supporterId", "base64string"], json_data
+        )
+        mapping = self.env["compassion.mapping"].search(
+            [("name", "=", "mobile_app_correspondence")]
+        )
         vals = mapping.json_to_data(json_data, "mobile_app_correspondence")
-        letter = self.env['correspondence'].create(vals)
+        letter = self.env["correspondence"].create(vals)
 
         if letter:
             return "Letter Submitted"
@@ -82,24 +80,27 @@ class CompassionCorrespondence(models.Model):
         :param needid: beneficiary id
         :param supgrpid: sponsor id
         """
-        partner_id = self._get_required_param('supgrpid', other_params)
-        child_id = self._get_required_param('needid', other_params)
-        letters = self.search([
-            ('partner_id', '=', int(partner_id)),
-            ('child_id', '=', int(child_id)),
-            ('direction', '=', 'Beneficiary To Supporter')
-        ])
+        partner_id = self._get_required_param("supgrpid", other_params)
+        child_id = self._get_required_param("needid", other_params)
+        letters = self.search(
+            [
+                ("partner_id", "=", int(partner_id)),
+                ("child_id", "=", int(child_id)),
+                ("direction", "=", "Beneficiary To Supporter"),
+            ]
+        )
 
         return [letter.data_to_json("mobile_app_from_letter") for letter in letters]
 
     @api.model
     def mobile_letter_pdf(self, **other_params):
-        host = self.env['ir.config_parameter'].sudo().get_param('web.external.url')
-        letter_id = other_params.get('correspondenceid')
+        host = self.env["ir.config_parameter"].sudo().get_param("web.external.url")
+        letter_id = other_params.get("correspondenceid")
         if letter_id:
             letter = self.browse(int(letter_id))
-            if letter.exists() and (letter.letter_image or not
-                                    letter.store_letter_image):
+            if letter.exists() and (
+                    letter.letter_image or not letter.store_letter_image
+            ):
                 letter.email_read = fields.Datetime.now()
                 return host + "/b2s_image?id=" + letter.uuid
         raise NotFound("Letter with id {} not found".format(letter_id))
@@ -107,12 +108,11 @@ class CompassionCorrespondence(models.Model):
     def _validate_required_fields(self, fields, params):
         missing = [key for key in fields if key not in params]
         if missing:
-            raise ValueError(
-                'Required parameters {}'.format(','.join(missing)))
+            raise ValueError("Required parameters {}".format(",".join(missing)))
 
     def _get_required_param(self, key, params):
         if key not in params:
-            raise ValueError('Required parameter {}'.format(key))
+            raise ValueError("Required parameter {}".format(key))
         return params[key]
 
     def mobile_get_preview(self, *args, **other_params):
@@ -132,50 +132,71 @@ class CompassionCorrespondence(models.Model):
                              - 'file_upl': the image
         :return: An URL pointing to the PDF preview of the generated letter
         """
-        body = self._get_required_param('letter-copy', other_params)
-        selected_child = self._get_required_param(
-            'selected-child', other_params)
+        body = self._get_required_param("letter-copy", other_params)
+        selected_child = self._get_required_param("selected-child", other_params)
         # iOS sends the childID, while Android sends the local_id!
         # We try to convert the integer in case the request is from iOS
         # (which should be much less probable, who has iOS these days?)
         try:
             child_id = int(selected_child)
-            child = self.env['compassion.child'].browse(child_id)
+            child = self.env["compassion.child"].browse(child_id)
             child_local_id = child.local_id
         except ValueError:
             child_local_id = selected_child
-        template_id = self._get_required_param(
-            'selected-letter-id', other_params)
+        template_id = self._get_required_param("selected-letter-id", other_params)
         # Another difference between iOS/Android (string or integer)
-        if template_id == '0' or template_id == 0:
+        if template_id == "0" or template_id == 0:
             # write a card -> default template
-            template_id = self.env['res.config.settings'].sudo().get_param(
-                'default_s2b_template_id')
-        attached_file = other_params.get('file_upl')
+            template_id = (
+                self.env["res.config.settings"]
+                    .sudo()
+                    .get_param("default_s2b_template_id")
+            )
+        attached_file = other_params.get("file_upl")
         datas = False
         if attached_file:
-            datas = [(0, 0, {
-                'datas': b64encode(attached_file.stream.read()),
-                'name': attached_file.filename,
-            })]
-        gen = self.env['correspondence.s2b.generator'].sudo().create({
-            'name': 'app-' + child_local_id,
-            'selection_domain':
-            "[('child_id.local_id', '=', '" + child_local_id + "')]",
-            'body': escape(body),
-            'language_id':  int(self.env['crm.claim'].detect_lang(body)),
-            's2b_template_id': int(template_id),
-            'image_ids': datas,
-            'source': 'app'
-        })
+            datas = [
+                (
+                    0,
+                    0,
+                    {
+                        "datas": b64encode(attached_file.stream.read()),
+                        "name": attached_file.filename,
+                    },
+                )
+            ]
+        gen = (
+            self.env["correspondence.s2b.generator"]
+                .sudo()
+                .create(
+                {
+                    "name": "app-" + child_local_id,
+                    "selection_domain": "[('child_id.local_id', '=', '"
+                                        + child_local_id
+                                        + "')]",
+                    "body": escape(body),
+                    "language_id": int(self.env["crm.claim"].detect_lang(body)),
+                    "s2b_template_id": int(template_id),
+                    "image_ids": datas,
+                    "source": "app",
+                }
+            )
+        )
         gen.onchange_domain()
         # We commit otherwise the generation fails
         self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
-        web_base_url = \
-            self.env['ir.config_parameter'].sudo().get_param('web.external.url')
-        url = web_base_url + "/web/image/" + gen._name + "/" + \
-            str(gen.id) + "/preview_pdf"
+        web_base_url = (
+            self.env["ir.config_parameter"].sudo().get_param("web.external.url")
+        )
+        url = (
+            web_base_url
+            + "/web/image/"
+            + gen._name
+            + "/"
+            + str(gen.id)
+            + "/preview_pdf"
+        )
         return url
 
     @api.multi
@@ -196,9 +217,9 @@ class CompassionCorrespondence(models.Model):
         :return: The ID of the sent letter, never used by the app.
         """
         params = params[0]
-        params['Message'] = escape(params.get('Message', ''))
-        template_id = self._get_required_param('TemplateID', params)
-        if 'DbId' in params:
+        params["Message"] = escape(params.get("Message", ""))
+        template_id = self._get_required_param("TemplateID", params)
+        if "DbId" in params:
             # The letter was submitted on the last api call
             if template_id == "0":
                 return "Letter Submitted "
@@ -206,46 +227,56 @@ class CompassionCorrespondence(models.Model):
         # body = self._get_required_param('Message', params)
         # partner_id = self._get_required_param('SupporterId', params)
         # iOS and Android do not return the same format
-        if template_id == '0' or template_id == 0:
+        if template_id == "0" or template_id == 0:
             # write a card -> default template
-            template_id = self.env['res.config.settings'].sudo().get_param(
-                'default_s2b_template_id')
-        child_id = self._get_required_param('Need', params)
+            template_id = (
+                self.env["res.config.settings"]
+                    .sudo()
+                    .get_param("default_s2b_template_id")
+            )
+        child_id = self._get_required_param("Need", params)
         if isinstance(child_id, list):
             child_id = child_id[0]
-        child = \
-            self.env['compassion.child'].browse(int(child_id))
-        gen = self.env['correspondence.s2b.generator'].sudo().search([
-            ('name', '=', 'app-' + child.local_id),
-            ('sponsorship_ids.child_id', '=', child.id),
-            ('s2b_template_id', '=', int(template_id)),
-            ('state', '=', 'preview')
-        ], limit=1, order='create_date DESC')
+        child = self.env["compassion.child"].browse(int(child_id))
+        gen = (
+            self.env["correspondence.s2b.generator"]
+                .sudo()
+                .search(
+                [
+                    ("name", "=", "app-" + child.local_id),
+                    ("sponsorship_ids.child_id", "=", child.id),
+                    ("s2b_template_id", "=", int(template_id)),
+                    ("state", "=", "preview"),
+                ],
+                limit=1,
+                order="create_date DESC",
+            )
+        )
         gen.generate_letters_job()
-        gen.write({
-            'state': 'done',
-            'date': fields.Datetime.now(),
-        })
+        gen.write(
+            {"state": "done", "date": fields.Datetime.now(), }
+        )
         return {
-            'DbId': gen.letter_ids.mapped('id'),
+            "DbId": gen.letter_ids.mapped("id"),
         }
 
     @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
-        if mapping_name != 'mobile_app_correspondence':
+        if mapping_name != "mobile_app_correspondence":
             return res
 
         # Specific date formats for mobile app
         if not res:
             res = {}
-        res['Type'] = 1
-        if not res['Message']:
-            res['Message'] = _("Physical letters cannot be displayed.")
-        res['Date'] = datetime.datetime.strptime(
-            res['Date'], '%Y-%m-%d %H:%M:%S').strftime('%d-%m-%Y %H:%M:%S')
+        res["Type"] = 1
+        if not res["Message"]:
+            res["Message"] = _("Physical letters cannot be displayed.")
+        res["Date"] = datetime.datetime.strptime(
+            res["Date"], "%Y-%m-%d %H:%M:%S"
+        ).strftime("%d-%m-%Y %H:%M:%S")
         for letter in self:
             if letter.direction == "Supporter To Beneficiary":
-                res['Date'] = res['Date'][:10]
+                res["Date"] = res["Date"][:10]
                 break
         return res

@@ -34,85 +34,95 @@
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
-                    <button name="create_contract" string="Add" type="object" groups="child_compassion.group_sponsorship"/>
-                    <field name="contracts_fully_managed" invisible="True" groups="child_compassion.group_sponsorship"/>
-                    <field name="contracts_paid" invisible="True" groups="child_compassion.group_sponsorship"/>
-                    <field name="contracts_correspondant" invisible="True" groups="child_compassion.group_sponsorship"/>
-                    <div attrs="{'invisible' : [('contracts_paid','=', [])]}" groups="child_compassion.group_sponsorship">
+                    <button name="create_contract" string="Add" type="object"
+                            groups="child_compassion.group_sponsorship"/>
+                    <div groups="child_compassion.group_sponsorship"
+                         attrs="{'invisible' : [('contracts_paid','=', [])]}">
                         <h3>Sponsorships as payer only</h3>
                         <field name="contracts_paid" context="{'default_type': 'S'}">
-                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
-                                <field name="child_id" />
-                                <field name="child_name" />
-                                <field name="preferred_name" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
+                                  decoration-success="state == 'waiting'"
+                                  decoration-muted="state in ('terminated','cancelled')">
+                                <field name="child_id"/>
+                                <field name="child_name"/>
+                                <field name="preferred_name"/>
+                                <field name="create_date"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="payment_mode_id"/>
                                 <field name="group_freq"/>
                                 <field name="last_paid_invoice_date"/>
                                 <field name="months_paid"/>
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <button name="open_contract" type="object" icon="fa-external-link" />
+                                <field name="total_amount"/>
+                                <field name="state"/>
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('contracts_correspondant','=', [])]}" groups="child_compassion.group_sponsorship">
+                    <div groups="child_compassion.group_sponsorship"
+                         attrs="{'invisible' : [('contracts_correspondant','=', [])]}">
                         <h3>Sponsorships as correspondent only</h3>
                         <field name="contracts_correspondant" context="{'default_type': 'S'}">
-                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
-                                <field name="child_id" />
-                                <field name="child_name" />
-                                <field name="preferred_name" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
+                                  decoration-success="state == 'waiting'"
+                                  decoration-muted="state in ('terminated','cancelled')">
+                                <field name="child_id"/>
+                                <field name="child_name"/>
+                                <field name="preferred_name"/>
+                                <field name="create_date"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="payment_mode_id"/>
                                 <field name="group_freq"/>
                                 <field name="last_paid_invoice_date"/>
                                 <field name="months_paid"/>
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <button name="open_contract" type="object" icon="fa-external-link"  />
+                                <field name="total_amount"/>
+                                <field name="state"/>
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('contracts_fully_managed','=', [])]}" groups="child_compassion.group_sponsorship">
+                    <div groups="child_compassion.group_sponsorship"
+                         attrs="{'invisible' : [('contracts_fully_managed','=', [])]}">
                         <h3>Sponsorships fully managed</h3>
                         <field name="contracts_fully_managed" context="{'default_type': 'S'}">
-                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
-                                <field name="child_id" />
-                                <field name="child_name" />
-                                <field name="preferred_name" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
+                                  decoration-success="state == 'waiting'"
+                                  decoration-muted="state in ('terminated','cancelled')">
+                                <field name="child_id"/>
+                                <field name="child_name"/>
+                                <field name="preferred_name"/>
+                                <field name="create_date"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="payment_mode_id"/>
                                 <field name="group_freq"/>
                                 <field name="last_paid_invoice_date"/>
                                 <field name="months_paid"/>
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <button name="open_contract" type="object" icon="fa-external-link"  />
+                                <field name="total_amount"/>
+                                <field name="state"/>
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
-                    <div attrs="{'invisible' : [('other_contract_ids','=', [])]}" groups="child_compassion.group_sponsorship">
+                    <div groups="child_compassion.group_sponsorship"
+                         attrs="{'invisible' : [('other_contract_ids','=', [])]}">
                         <h3>Other contracts</h3>
                         <field name="other_contract_ids" context="{'default_type': 'O'}">
-                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'" decoration-success="state == 'waiting'" decoration-muted="state in ('terminated','cancelled')">
-                                <field name="name" />
-                                <field name="create_date" />
-                                <field name="start_date" />
-                                <field name="end_date" />
-                                <field name="payment_mode_id" />
+                            <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
+                                  decoration-success="state == 'waiting'"
+                                  decoration-muted="state in ('terminated','cancelled')">
+                                <field name="name"/>
+                                <field name="create_date"/>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="payment_mode_id"/>
                                 <field name="group_freq"/>
                                 <field name="last_paid_invoice_date"/>
                                 <field name="months_paid"/>
-                                <field name="total_amount" />
-                                <field name="state" />
-                                <button name="open_contract" type="object" icon="fa-external-link"  />
+                                <field name="total_amount"/>
+                                <field name="state"/>
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>

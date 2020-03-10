@@ -9,6 +9,7 @@
 ##############################################################################
 
 import logging
+
 from odoo import models, fields
 
 logger = logging.getLogger(__name__)
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class GmcMessage(models.Model):
     """ Add child in messages. """
-    _inherit = 'gmc.message'
 
-    child_id = fields.Many2one('compassion.child', 'Child')
+    _inherit = "gmc.message"
+
+    child_id = fields.Many2one("compassion.child", "Child", readonly=False)

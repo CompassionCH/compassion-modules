@@ -14,13 +14,14 @@ from odoo import models, fields, api, _
 
 class ChildNote(models.Model):
     """ A child Note """
-    _name = 'compassion.child.note'
-    _description = 'Child Note'
-    _order = 'id desc'
-    _inherit = ['compassion.mapped.model']
+
+    _name = "compassion.child.note"
+    _description = "Child Note"
+    _order = "id desc"
+    _inherit = ["compassion.mapped.model"]
 
     child_id = fields.Many2one(
-        'compassion.child', 'Child', required=True, ondelete='cascade'
+        "compassion.child", "Child", required=True, ondelete="cascade", readonly=False
     )
     body = fields.Char()
     record_type = fields.Char()
@@ -31,16 +32,14 @@ class ChildNote(models.Model):
     @api.model
     def create(self, vals):
         note = super().create(vals)
-        note.child_id.message_post(
-            note.body, _("New beneficiary notes")
-        )
+        note.child_id.message_post(note.body, _("New beneficiary notes"))
         return note
 
     @api.model
     def process_commkit(self, commkit_data):
 
         note_ids = list()
-        for notes_data in commkit_data.get('GPPublicNotesKit', [commkit_data]):
+        for notes_data in commkit_data.get("GPPublicNotesKit", [commkit_data]):
             vals = self.json_to_data(notes_data)
             child_note = self.create(vals)
             note_ids.append(child_note.id)

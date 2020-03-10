@@ -17,39 +17,39 @@ class InteractionResume(models.TransientModel):
     _description = "Resume of a given partner"
     _order = "communication_date desc"
 
-    partner_id = fields.Many2one("res.partner", "Partner")
+    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
     email = fields.Char()
-    communication_type = fields.Selection([('Paper', "Paper"),
-                                           ("Phone", "Phone"),
-                                           ("SMS", "SMS"),
-                                           ('Email', "Email")])
-    direction = fields.Selection([
-        ('in', 'Incoming'),
-        ('out', 'Outgoing'),
-    ])
+    communication_type = fields.Selection(
+        [("Paper", "Paper"), ("Phone", "Phone"), ("SMS", "SMS"), ("Email", "Email")]
+    )
+    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ])
     # Used to display icons in tree view
-    state = fields.Selection(related='direction')
+    state = fields.Selection(related="direction")
     communication_date = fields.Datetime()
     subject = fields.Text()
-    has_attachment = fields.Boolean(compute='_compute_has_attachment')
+    has_attachment = fields.Boolean(compute="_compute_has_attachment")
     body = fields.Html()
-    phone_id = fields.Many2one("crm.phonecall", "Phonecall")
-    paper_id = fields.Many2one("partner.communication.job", "Communication")
-    email_id = fields.Many2one("mail.mail", "Email")
-    color = fields.Char(compute='_compute_color')
-    message_id = fields.Many2one("mail.message", "Email")
-    tracking_status = fields.Selection([
-        ('error', 'Error'),
-        ('deferred', 'Deferred'),
-        ('sent', 'Sent'),
-        ('delivered', 'Delivered'),
-        ('opened', 'Opened'),
-        ('rejected', 'Rejected'),
-        ('spam', 'Spam'),
-        ('unsub', 'Unsubscribed'),
-        ('bounced', 'Bounced'),
-        ('soft-bounced', 'Soft bounced'),
-    ])
+    phone_id = fields.Many2one("crm.phonecall", "Phonecall", readonly=False)
+    paper_id = fields.Many2one(
+        "partner.communication.job", "Communication", readonly=False
+    )
+    email_id = fields.Many2one("mail.mail", "Email", readonly=False)
+    color = fields.Char(compute="_compute_color")
+    message_id = fields.Many2one("mail.message", "Email", readonly=False)
+    tracking_status = fields.Selection(
+        [
+            ("error", "Error"),
+            ("deferred", "Deferred"),
+            ("sent", "Sent"),
+            ("delivered", "Delivered"),
+            ("opened", "Opened"),
+            ("rejected", "Rejected"),
+            ("spam", "Spam"),
+            ("unsub", "Unsubscribed"),
+            ("bounced", "Bounced"),
+            ("soft-bounced", "Soft bounced"),
+        ]
+    )
 
     @api.model
     def populate_resume(self, partner_id):
@@ -58,15 +58,17 @@ class InteractionResume(models.TransientModel):
         :param partner_id: the partner
         :return: True
         """
-        original_partner = self.env['res.partner'].browse(partner_id)
+        original_partner = self.env["res.partner"].browse(partner_id)
         email_address = original_partner.email
-        partners_with_same_email_ids = self.env['res.partner'].search([
-            ('email', '!=', False),
-            ('email', '=', email_address)
-        ]).ids
+        partners_with_same_email_ids = (
+            self.env["res.partner"]
+                .search([("email", "!=", False), ("email", "=", email_address)])
+                .ids
+        )
 
-        self.search([('partner_id', 'in', partners_with_same_email_ids)]).unlink()
-        self.env.cr.execute("""
+        self.search([("partner_id", "in", partners_with_same_email_ids)]).unlink()
+        self.env.cr.execute(
+            """
                     SELECT
                         'Paper' as communication_type,
                         pcj.sent_date as communication_date,
@@ -164,15 +166,22 @@ class InteractionResume(models.TransientModel):
                         AND m.message_type = 'email'
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         )
-                            """, (partner_id, partner_id, partner_id, partner_id,
-                                  partners_with_same_email_ids,
-                                  partners_with_same_email_ids,
-                                  partners_with_same_email_ids,
-                                  partners_with_same_email_ids))
+                            """,
+            (
+                partner_id,
+                partner_id,
+                partner_id,
+                partner_id,
+                partners_with_same_email_ids,
+                partners_with_same_email_ids,
+                partners_with_same_email_ids,
+                partners_with_same_email_ids,
+            ),
+        )
 
         for row in self.env.cr.dictfetchall():
             # ensure that "Example <ex@exmaple.com>" is correctly printed
-            row['email'] = html_sanitize(row['email'])
+            row["email"] = html_sanitize(row["email"])
             self.create(row)
 
         return True
@@ -192,17 +201,17 @@ class InteractionResume(models.TransientModel):
         at least 1 attachment.
         """
         for row in self:
-            row.has_attachment = row.email_id.attachment_ids or \
-                row.message_id.attachment_ids
+            row.has_attachment = (
+                row.email_id.attachment_ids or row.message_id.attachment_ids
+            )
 
     def _compute_color(self):
         for row in self:
-            if len(html2plaintext(row.body).strip()) < 15 \
-                    and row.direction == 'out':
+            if len(html2plaintext(row.body).strip()) < 15 and row.direction == "out":
                 # mass mailing
-                row.color = 'gray'
-            elif row.direction == 'in':
-                row.color = 'red'
+                row.color = "gray"
+            elif row.direction == "in":
+                row.color = "red"
             else:
                 # outgoing
-                row.color = 'green'
+                row.color = "green"

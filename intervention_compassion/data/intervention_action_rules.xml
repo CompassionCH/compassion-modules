@@ -4,11 +4,11 @@
         <field name="name">Intervention: Make active after start date</field>
         <field name="model_id" ref="model_compassion_intervention"/>
         <field name="trigger">on_time</field>
-        <field name="trg_date_id" ref="field_compassion_intervention_start_date"/>
+        <field name="trg_date_id" ref="field_compassion_intervention__start_date"/>
         <field name="filter_domain">[('state', '=', 'committed')]</field>
         <field name="trg_date_range">0</field>
         <field name="trg_date_range_type">day</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('intervention_active_action')])]"/>
+        <field name="action_server_id" ref="intervention_active_action"/>
     </record>
 
     <!-- Rule for setting Intervention close after end_date -->
@@ -16,10 +16,10 @@
         <field name="name">Intervention: Close after end date</field>
         <field name="model_id" ref="model_compassion_intervention"/>
         <field name="trigger">on_time</field>
-        <field name="trg_date_id" ref="field_compassion_intervention_end_date"/>
+        <field name="trg_date_id" ref="field_compassion_intervention__end_date"/>
         <field name="trg_date_range">0</field>
         <field name="trg_date_range_type">day</field>
-        <field name="server_action_ids" eval="[(6, 0, [ref('intervention_close_action')])]"/>
+        <field name="action_server_id" ref="intervention_close_action"/>
     </record>
 
     <!-- Rule for checking SLA Negociation -->

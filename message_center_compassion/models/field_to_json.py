@@ -20,28 +20,37 @@ class FieldToJson(models.Model):
     """ This model is used to make a link between odoo
         field and GMC Connect Json field name for the compassion mapping
     """
+
     _name = "compassion.field.to.json"
     _description = "Field to GMC Json"
 
     mapping_id = fields.Many2one(
-        'compassion.mapping', index=True, required=True,
-        ondelete='cascade'
+        "compassion.mapping",
+        index=True,
+        required=True,
+        ondelete="cascade",
+        readonly=False,
     )
-    model = fields.Char(related='mapping_id.model_id.model', readonly=True)
+    model = fields.Char(related="mapping_id.model_id.model", readonly=True)
     field_id = fields.Many2one(
-        'ir.model.fields', 'Odoo field', index=True,
+        "ir.model.fields",
+        "Odoo field",
+        index=True,
         help="Set in which field the Odoo value will be retrieved/stored. "
              "If not set, the JSON value won't be converted into Odoo data."
              "In case of sub mapping, this should only be a relational field "
              "that will be used to compute the sub values. If empty, the sub "
              "values will be determined from the same record as the parent.",
-        ondelete='cascade'
+        ondelete="cascade",
+        readonly=False,
     )
     relational_field_id = fields.Many2one(
-        'ir.model.fields', 'Relational field',
+        "ir.model.fields",
+        "Relational field",
         help="In case the JSON value points to relational value, specify "
              "here where is the relation stored.",
-        ondelete='cascade'
+        ondelete="cascade",
+        readonly=False,
     )
     search_relational_record = fields.Boolean(
         help="When converting JSON to data, set to true if you should lookup "
@@ -52,21 +61,25 @@ class FieldToJson(models.Model):
         help="If set to true, new records will be created if no matching "
              "records are found with the given JSON values"
     )
-    field_name = fields.Char(related='field_id.name', readonly=True)
+    field_name = fields.Char(related="field_id.name", readonly=True)
     json_name = fields.Char("Json Field Name", required=True, index=True)
     sub_mapping_id = fields.Many2one(
-        'compassion.mapping', string='Sub mapping',
-        help='This will nest a dictionary in the JSON and use given mapping'
-             'to compute the value.'
+        "compassion.mapping",
+        string="Sub mapping",
+        help="This will nest a dictionary in the JSON and use given mapping"
+             "to compute the value.",
+        readonly=False,
     )
     to_json_conversion = fields.Text(
-        help='Pyhton function that will convert the value for its JSON '
-             'representation. Use `odoo_value` as the raw value of the Odoo'
-             'field. You should return the final JSON value.')
+        help="Pyhton function that will convert the value for its JSON "
+             "representation. Use `odoo_value` as the raw value of the Odoo"
+             "field. You should return the final JSON value."
+    )
     from_json_conversion = fields.Text(
-        help='Pyhton function that will convert the JSON value to its  '
-             'correct value in Odoo. Use `json_value` as the value to be '
-             'processed. You should return the final Odoo value.')
+        help="Pyhton function that will convert the JSON value to its  "
+             "correct value in Odoo. Use `json_value` as the value to be "
+             "processed. You should return the final Odoo value."
+    )
     exclude_from_json = fields.Boolean(
         help="Value won't be converted to JSON if checked (data_to_json)."
              "The JSON value can still be converted into Odoo value "
@@ -74,8 +87,7 @@ class FieldToJson(models.Model):
     )
 
     _sql_constraints = [
-        ('unique', 'unique(mapping_id,json_name)',
-         _('This field is already mapped'))
+        ("unique", "unique(mapping_id,json_name)", _("This field is already mapped"))
     ]
 
     def to_json(self, odoo_value):
@@ -88,11 +100,12 @@ class FieldToJson(models.Model):
         if self.to_json_conversion:
             res[self.json_name] = safe_eval(
                 self.to_json_conversion,
-                locals_dict={'odoo_value': odoo_value, 'self': self},
-                globals_dict={'fields': fields}
+                {"odoo_value": odoo_value, "self": self, "fields": fields},
             )
-        elif self.field_id.ttype not in ('boolean', 'float', 'integer',
-                                         'monetary') and not odoo_value:
+        elif (
+                self.field_id.ttype not in ("boolean", "float", "integer", "monetary")
+                and not odoo_value
+        ):
             # Don't include null fields
             return {}
         return res
@@ -105,12 +118,16 @@ class FieldToJson(models.Model):
         """
         self.ensure_one()
         # Skip empty values
-        if not json_value and not isinstance(json_value, (bool, int,
-                                                          float)):
+        if not json_value and not isinstance(json_value, (bool, int, float)):
             return {}
         # Skip invalid data
         if isinstance(json_value, str) and json_value.lower() in (
-                'null', 'false', 'none', 'other', 'unknown'):
+                "null",
+                "false",
+                "none",
+                "other",
+                "unknown",
+        ):
             return {}
         converted_value = json_value
         field_name = self.field_name
@@ -118,7 +135,8 @@ class FieldToJson(models.Model):
             # Calls a conversion method defined in mapping
             converted_value = safe_eval(
                 self.from_json_conversion,
-                locals_dict={'json_value': json_value, 'self': self})
+                {"json_value": json_value, "self": self},
+            )
         if self.relational_field_id:
             converted_value = self._json_to_relational_value(converted_value)
             field_name = self.relational_field_id.name
@@ -146,9 +164,8 @@ class FieldToJson(models.Model):
             records = relational_model
             values = value if isinstance(value, list) else [value]
             for val in values:
-                records |= relational_model.search([
-                    (self.field_name, '=ilike', val)])
-            if records and field.ttype == 'many2one':
+                records |= relational_model.search([(self.field_name, "=ilike", val)])
+            if records and field.ttype == "many2one":
                 return records[:1].id
             elif records:
                 # Replace relations with the found records
@@ -156,7 +173,7 @@ class FieldToJson(models.Model):
 
         if self.allow_relational_creation:
             # Replace relations with new associated records
-            if field.ttype == 'many2one':
+            if field.ttype == "many2one":
                 # We must create the record and return its id
                 if isinstance(value, dict):
                     return relational_model.create(value).id
@@ -167,25 +184,32 @@ class FieldToJson(models.Model):
             # relations.
             orm_vals = [(5, 0, 0)]
             record_vals = value if isinstance(value, list) else [value]
-            orm_vals.extend([(0, 0, vals) for vals in record_vals
-                             if isinstance(vals, dict)])
+            orm_vals.extend(
+                [(0, 0, vals) for vals in record_vals if isinstance(vals, dict)]
+            )
             return orm_vals
 
-        if not self.search_relational_record and not \
-                self.allow_relational_creation:
+        if not self.search_relational_record and not self.allow_relational_creation:
             # In that case we don't want to search or create, we simply
             # return the raw value
             return value
 
         # No records found given the values, we raise the error
         # to let user verify integrity of the data.
-        _logger.error("Associated object not found using mapping %s, "
-                      "JSON Key %s, JSON value %s",
-                      self.mapping_id.name, self.json_name, value)
-        raise UserError(_(
-            f"Trying to find a {relational_model._description} "
-            f"that has the following values, but nothing was found: "
-            f"\n\n{value}"))
+        _logger.error(
+            "Associated object not found using mapping %s, "
+            "JSON Key %s, JSON value %s",
+            self.mapping_id.name,
+            self.json_name,
+            value,
+        )
+        raise UserError(
+            _(
+                f"Trying to find a {relational_model._description} "
+                f"that has the following values, but nothing was found: "
+                f"\n\n{value}"
+            )
+        )
 
     def _get_relational_creation_values(self, field_values):
         """
@@ -207,10 +231,12 @@ class FieldToJson(models.Model):
                 if isinstance(field_val, list):
                     nb_records = max(nb_records, len(field_val))
                 for i in range(0, nb_records):
-                    record_values.append({
-                        field_name: field_val[i]
-                        if isinstance(field_val, list) and
-                        len(field_val) >= i else field_val
-                        for field_name, field_val in field_values.items()
-                    })
+                    record_values.append(
+                        {
+                            field_name: field_val[i]
+                            if isinstance(field_val, list) and len(field_val) >= i
+                            else field_val
+                            for field_name, field_val in field_values.items()
+                        }
+                    )
         return [(0, 0, values) for values in record_values]

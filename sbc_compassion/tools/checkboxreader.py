@@ -12,6 +12,7 @@ Define the class CheckboxReader that read a checkbox (the input image
 should contains more or less only the box).
 """
 import logging
+
 _logger = logging.getLogger(__name__)
 try:
     import cv2
@@ -20,8 +21,7 @@ try:
     from numpy import logical_or as or2
     import numpy as np
 except ImportError:
-    _logger.warning('Please install cv2 and numpy on your system to use SBC '
-                    'module')
+    _logger.warning("Please install cv2 and numpy on your system to use SBC " "module")
 
 
 class CheckboxReader:
@@ -30,6 +30,7 @@ class CheckboxReader:
     :param img: Image (array or str)
 
     """
+
     histogram = []
 
     ##########################################################################
@@ -62,14 +63,12 @@ class CheckboxReader:
         img = 255 - np.copy(self.img)
 
         # detect the box
-        left, right, top, bottom = self._box_coordinates(
-            img, squarsize=boxsize)
+        left, right, top, bottom = self._box_coordinates(img, squarsize=boxsize)
 
         # Detect the line borders withe Canny Edge
         canny1 = cv2.Canny(img, 20, 20)
         # Detect line itself with Canny Curve
-        canny2 = self._canny_curve_detector(
-            img, low_thresh=20, high_thresh=20)
+        canny2 = self._canny_curve_detector(img, low_thresh=20, high_thresh=20)
         # Merge the two Canny by keeping the maximum for each pixels
         canny = cv2.max(canny1, canny2)
         # Crop around the box
@@ -109,8 +108,8 @@ class CheckboxReader:
         b = [0] * (squarsize - 2 - (linewidth - 1))
         kernel = a + b + a
 
-        sum0 = np.convolve(sum0, kernel, 'valid')
-        sum1 = np.convolve(sum1, kernel, 'valid')
+        sum0 = np.convolve(sum0, kernel, "valid")
+        sum1 = np.convolve(sum1, kernel, "valid")
 
         left = self._findmax(sum0)[1][0]
         top = self._findmax(sum1)[1][0]
@@ -139,14 +138,12 @@ class CheckboxReader:
         kernel1 = np.array([[0, 0, 0], [-1, 1, 0], [0, 0, 0]])
         kernel2 = np.array([[0, 0, 0], [0, 1, -1], [0, 0, 0]])
         localmax_x = filter2D(img, cv2.PARAM_INT, kernel1) > 0
-        localmax_x = and2(
-            localmax_x, filter2D(img, cv2.PARAM_INT, kernel2) > 0)
+        localmax_x = and2(localmax_x, filter2D(img, cv2.PARAM_INT, kernel2) > 0)
 
         kernel1 = kernel1.transpose()
         kernel2 = kernel2.transpose()
         localmax_y = filter2D(img, cv2.PARAM_INT, kernel1) > 0
-        localmax_y = and2(
-            localmax_y, filter2D(img, cv2.PARAM_INT, kernel2) > 0)
+        localmax_y = and2(localmax_y, filter2D(img, cv2.PARAM_INT, kernel2) > 0)
 
         localmax = or2(localmax_x, localmax_y)
 
@@ -156,11 +153,11 @@ class CheckboxReader:
         # We finally take back local max which are not so weak, and which are
         # just next to a string local maxima
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-        strong.dtype = 'uint8'
+        strong.dtype = "uint8"
         touch = cv2.morphologyEx(strong, cv2.MORPH_DILATE, kernel)
-        touch.dtype = 'bool'
+        touch.dtype = "bool"
 
         edge = and2(touch, (low_thresh < img))
         edge = and2(edge, localmax)
-        edge.dtype = 'uint8'
+        edge.dtype = "uint8"
         return edge * 255

@@ -25,7 +25,7 @@
         <field name="name">Payment Transaction: Cancel after 10 minutes</field>
         <field name="model_id" ref="model_payment_transaction"/>
         <field name="trigger">on_time</field>
-        <field name="trg_date_id" ref="payment.field_payment_transaction_create_date"/>
+        <field name="trg_date_id" ref="payment.field_payment_transaction__create_date"/>
         <field name="filter_domain">[('state', 'in', ['draft', 'pending', 'authorized'])]</field>
         <field name="trg_date_range">10</field>
         <field name="trg_date_range_type">minutes</field>

@@ -12,16 +12,16 @@ from odoo import api, models, _
 
 
 class QueueJob(models.Model):
-    _inherit = 'queue.job'
+    _inherit = "queue.job"
 
     @api.multi
     def related_action_child_compassion(self):
         action = {
-            'name': _("Child"),
-            'type': 'ir.actions.act_window',
-            'res_model': 'compassion.child',
-            'domain': [('id', 'in', self.record_ids)],
-            'view_type': 'form',
-            'view_mode': 'tree,form',
+            "name": _("Child"),
+            "type": "ir.actions.act_window",
+            "res_model": "compassion.child",
+            "domain": [("id", "in", self.record_ids)],
+            "view_type": "form",
+            "view_mode": "tree,form",
         }
         return action

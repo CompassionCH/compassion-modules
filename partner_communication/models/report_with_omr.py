@@ -1,5 +1,5 @@
-from io import StringIO
 import logging
+from io import StringIO
 
 from odoo import models, api
 
@@ -12,15 +12,14 @@ except ImportError:
 
 
 class OmrAwareReport(models.Model):
-
-    _inherit = 'ir.actions.report'
+    _inherit = "ir.actions.report"
 
     @api.model
     def render_qweb_pdf(self, docids, data=None):
-        communication_job_model = 'partner.communication.job'
+        communication_job_model = "partner.communication.job"
         if self.model == communication_job_model:
             jobs = self.env[communication_job_model].browse(docids)
-            if jobs.filtered('omr_enable_marks'):
+            if jobs.filtered("omr_enable_marks"):
                 # Add OMR marks on pages of the jobs :
                 # We must reconstruct the PDF job by job.
                 output = PdfFileWriter()
@@ -28,10 +27,9 @@ class OmrAwareReport(models.Model):
                     job_data = super().render_qweb_pdf(job.ids, data=data)
                     if job.omr_enable_marks:
                         is_latest_document = not job.attachment_ids.filtered(
-                            'attachment_id.enable_omr'
+                            "attachment_id.enable_omr"
                         )
-                        job_data = job.add_omr_marks(job_data,
-                                                     is_latest_document)
+                        job_data = job.add_omr_marks(job_data, is_latest_document)
                     pdf_buffer = StringIO()
                     pdf_buffer.write(job_data)
                     job_pdf = PdfFileReader(pdf_buffer)

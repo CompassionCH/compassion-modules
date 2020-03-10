@@ -17,9 +17,9 @@ from . import wizards
 
 
 def load_mappings(cr, registry):
-    path = 'sbc_compassion/static/mappings/'
+    path = "sbc_compassion/static/mappings/"
     files = [
-        'page_mapping.json',
-        'correspondence_mapping.json',
+        "page_mapping.json",
+        "correspondence_mapping.json",
     ]
     load_mapping_files(cr, path, files)

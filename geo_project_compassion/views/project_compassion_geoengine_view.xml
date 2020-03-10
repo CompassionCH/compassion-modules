@@ -23,6 +23,7 @@
             <geoengine>
                 <field name="fcp_id"/>
                 <field name="name" select="1"/>
+                <field name="geo_point"/>
             </geoengine>
         </field>
         <field eval="16" name="priority"/>
@@ -34,8 +35,7 @@
     </record>
 
     <record id="geoengine_vector_layer_compassion_project" model="geoengine.vector.layer">
-        <field name="geo_field_id"
-            ref="field_compassion_project_geo_point"/>
+        <field name="geo_field_id" ref="field_compassion_project__geo_point"/>
         <field name="name">Project location</field>
         <field eval="6" name="sequence"/>
         <field name="view_id" ref="ir_ui_view_geo_project"/>

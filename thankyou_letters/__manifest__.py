@@ -27,40 +27,34 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    'name': 'Thank You Letters',
-    'version': '11.0.0.0.1',
-    'category': 'Other',
-    'author': 'Compassion CH',
-    'license': 'AGPL-3',
-    'website': 'http://www.compassion.ch',
-    'depends': [
-        'partner_communication',            # compassion-modules
-        'advanced_translation',             # compassion-modules
-        'web_widget_digitized_signature',   # oca_addons/web
-        'account'                           # source/addons
+    "name": "Thank You Letters",
+    "version": "12.0.1.0.0",
+    "category": "Other",
+    "author": "Compassion CH",
+    "license": "AGPL-3",
+    "website": "http://www.compassion.ch",
+    "depends": [
+        "partner_communication",  # compassion-modules
+        "advanced_translation",  # compassion-modules
+        "web_widget_digitized_signature",  # oca_addons/web
+        "account",  # source/addons
     ],
-    'external_dependencies': {
-        'python': [
-            'babel',
-        ]
-    },
-    'data': [
-        'security/ir.model.access.csv',
-        'report/donation_report.xml',
-        'data/email_template.xml',
-        'data/communication_config.xml',
-        'data/ir_cron.xml',
-        'views/success_story_view.xml',
-        'views/communication_job_view.xml',
-        'views/account_invoice_view.xml',
-        'views/product_view.xml',
-        'views/res_partner_view.xml',
-        'views/thankyou_config_view.xml',
-        'views/generate_communication_wizard_view.xml',
+    "external_dependencies": {"python": ["babel", ]},
+    "data": [
+        "security/ir.model.access.csv",
+        "report/donation_report.xml",
+        "data/email_template.xml",
+        "data/communication_config.xml",
+        "data/ir_cron.xml",
+        "views/success_story_view.xml",
+        "views/communication_job_view.xml",
+        "views/account_invoice_view.xml",
+        "views/product_view.xml",
+        "views/res_partner_view.xml",
+        "views/thankyou_config_view.xml",
+        "views/generate_communication_wizard_view.xml",
     ],
-    'demo': [
-        'demo/demo_data.xml'
-    ],
-    'installable': True,
-    'auto_install': False,
+    "demo": ["demo/demo_data.xml"],
+    "installable": True,
+    "auto_install": False,
 }

@@ -9,8 +9,9 @@
 ##############################################################################
 from datetime import datetime, timedelta
 
-from odoo import api, models
 from odoo.addons.queue_job.job import job
+
+from odoo import api, models
 
 
 class MatchPartner(models.AbstractModel):
@@ -19,8 +20,9 @@ class MatchPartner(models.AbstractModel):
     Can be extended or inherited to change the behaviour for some particular
     case.
     """
-    _name = 'res.partner.match'
-    _description = 'Match partner'
+
+    _name = "res.partner.match"
+    _description = "Match partner"
 
     @api.model
     def match_partner_to_infos(self, infos, options=None):
@@ -38,26 +40,26 @@ class MatchPartner(models.AbstractModel):
 
         # Default options
         opt = {
-            'skip_create': False,  # When True, do not create a partner and
-                                   # return None if no match is found.
-            'skip_update': False,  # When True, do not use the given infos to
-                                   # update the partner's fields.
+            "skip_create": False,  # When True, do not create a partner and
+            # return None if no match is found.
+            "skip_update": False,  # When True, do not use the given infos to
+            # update the partner's fields.
         }
         opt.update(options)
 
         self.match_process_infos(infos, opt)
 
         new_partner = False
-        partner_obj = self.env['res.partner'].sudo()
+        partner_obj = self.env["res.partner"].sudo()
         partner = False
 
-        partner_id = infos.get('partner_id')
+        partner_id = infos.get("partner_id")
         if partner_id:
             partner = partner_obj.browse(partner_id)
 
         for rule in self._match_get_rules_order():
             if not partner or len(partner) > 1:
-                method = getattr(self, '_match_rule_' + rule)
+                method = getattr(self, "_match_rule_" + rule)
                 try:
                     partner = method(partner_obj, infos, opt)
                 except KeyError:
@@ -68,7 +70,7 @@ class MatchPartner(models.AbstractModel):
 
         if not partner or len(partner) > 1:
             # no match found or not sure which one -> creating a new one.
-            if opt.get('skip_create'):
+            if opt.get("skip_create"):
                 return None
             else:
                 partner = self.match_create(partner_obj, infos, opt)
@@ -81,7 +83,7 @@ class MatchPartner(models.AbstractModel):
     @api.model
     def match_after_match(self, partner, new_partner, infos, opt):
         """Once a match is found or created, this method allows to change it"""
-        if not new_partner and not opt.get('skip_update'):
+        if not new_partner and not opt.get("skip_update"):
             delay = datetime.now() + timedelta(minutes=1)
             self.with_delay(eta=delay).match_update(partner, infos, opt)
         return partner
@@ -90,8 +92,8 @@ class MatchPartner(models.AbstractModel):
     def match_create(self, partner_obj, infos, options=None):
         """Create a new partner from a selection of the given infos."""
         create_infos = self.match_process_create_infos(infos, options)
-        create_infos.setdefault('lang', self.env.lang)
-        create_infos.setdefault('tz', 'Europe/Zurich')
+        create_infos.setdefault("lang", self.env.lang)
+        create_infos.setdefault("tz", "Europe/Zurich")
         return partner_obj.create(create_infos)
 
     @api.model
@@ -118,7 +120,7 @@ class MatchPartner(models.AbstractModel):
     @api.model
     def match_process_infos(self, infos, options=None):
         """Transform, if needed and before matching, the infos received"""
-        if 'church_name' in infos:
+        if "church_name" in infos:
             self._match_church(infos, options)
 
     @api.model
@@ -136,15 +138,18 @@ class MatchPartner(models.AbstractModel):
 
     @api.model
     def _match_church(self, infos, options=None):
-        church_name = infos.pop('church_name')
-        church = self.env['res.partner'].with_context(lang='en_US').search([
-            ('name', 'like', church_name),
-            ('category_id.name', '=', 'Church')
-        ])
+        church_name = infos.pop("church_name")
+        church = (
+            self.env["res.partner"]
+                .with_context(lang="en_US")
+                .search(
+                [("name", "like", church_name), ("category_id.name", "=", "Church")]
+            )
+        )
         if len(church) == 1:
-            infos['church_id'] = church.id
+            infos["church_id"] = church.id
         else:
-            infos['church_unlinked'] = church_name
+            infos["church_unlinked"] = church_name
 
     @api.model
     def _match_get_rules_order(self):
@@ -153,36 +158,72 @@ class MatchPartner(models.AbstractModel):
         Each of the listed method must take a partner_obj and the infos as
         their parameter. They must also return a recordset of partner.
         """
-        return ['email', 'fullname_and_zip']
+        return ["email", "fullname_and_zip"]
 
     @api.model
     def _match_rule_email(self, partner_obj, infos, options=None):
-        email = infos['email'].strip()
-        return partner_obj.search([
-            ('email', '=ilike', email),
-            '|', ('active', '=', True), ('active', '=', False),
-        ])
+        email = infos["email"].strip()
+        return partner_obj.search(
+            [
+                ("email", "=ilike", email),
+                "|",
+                ("active", "=", True),
+                ("active", "=", False),
+            ]
+        )
 
     @api.model
     def _match_rule_fullname_and_zip(self, partner_obj, infos, options=None):
-        return partner_obj.search([
-            ('lastname', 'ilike', infos['lastname']),
-            ('firstname', 'ilike', infos['firstname']),
-            ('zip', '=', infos['zip']),
-            '|', ('active', '=', True), ('active', '=', False),
-        ])
+        return partner_obj.search(
+            [
+                ("lastname", "ilike", infos["lastname"]),
+                ("firstname", "ilike", infos["firstname"]),
+                ("zip", "=", infos["zip"]),
+                "|",
+                ("active", "=", True),
+                ("active", "=", False),
+            ]
+        )
 
     @api.model
     def _match_get_valid_create_fields(self):
         """Return the fields which can be used at creation."""
-        return ['firstname', 'lastname', 'email', 'phone', 'mobile', 'street',
-                'city', 'zip', 'country_id', 'state_id', 'title', 'lang',
-                'birthdate', 'church_unlinked', 'church_id', 'function',
-                'spoken_lang_ids', 'opt_out']
+        return [
+            "firstname",
+            "lastname",
+            "email",
+            "phone",
+            "mobile",
+            "street",
+            "city",
+            "zip",
+            "country_id",
+            "state_id",
+            "title",
+            "lang",
+            "birthdate",
+            "church_unlinked",
+            "church_id",
+            "function",
+            "spoken_lang_ids",
+            "opt_out",
+        ]
 
     @api.model
     def _match_get_valid_update_fields(self):
         """Return the fields which can be used at update."""
-        return ['email', 'phone', 'mobile', 'street', 'city', 'zip',
-                'country_id', 'state_id', 'church_unlinked', 'church_id',
-                'function', 'spoken_lang_ids', 'opt_out']
+        return [
+            "email",
+            "phone",
+            "mobile",
+            "street",
+            "city",
+            "zip",
+            "country_id",
+            "state_id",
+            "church_unlinked",
+            "church_id",
+            "function",
+            "spoken_lang_ids",
+            "opt_out",
+        ]

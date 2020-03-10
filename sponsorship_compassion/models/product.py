@@ -12,8 +12,8 @@ from odoo import models, fields
 
 
 class Product(models.Model):
-    _inherit = 'product.product'
+    _inherit = "product.product"
 
     categ_name = fields.Char(
-        'Product category', related='product_tmpl_id.categ_id.name',
-        store=True)
+        "Product category", related="product_tmpl_id.categ_id.name", store=True
+    )

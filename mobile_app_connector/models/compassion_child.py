@@ -8,8 +8,8 @@
 #
 ##############################################################################
 
-import logging
 import datetime
+import logging
 
 from odoo import models, api
 
@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 
 class CompassionChild(models.Model):
     """ A sponsored child """
+
     _name = "compassion.child"
-    _inherit = ['compassion.child', 'compassion.mapped.model']
+    _inherit = ["compassion.child", "compassion.mapped.model"]
 
     def get_app_json_no_wrap(self):
         """
@@ -44,11 +45,11 @@ class CompassionChild(models.Model):
         :param wrapper: optional custom wrapper key for the dict
         :return: dictionary with JSON data of the children
         """
-        children_pictures = self.sudo().mapped('pictures_ids')
-        project = self.sudo().mapped('project_id')
+        children_pictures = self.sudo().mapped("pictures_ids")
+        project = self.sudo().mapped("project_id")
 
         if not wrapper:
-            wrapper = 'Children' if multi else 'Child'
+            wrapper = "Children" if multi else "Child"
         if not self:
             return {wrapper: []}
 
@@ -60,15 +61,14 @@ class CompassionChild(models.Model):
                 data.append(child.data_to_json("mobile_app_child"))
         return {
             wrapper: data,
-            'Images': children_pictures.filtered('image_url').get_app_json(multi=True),
-            'Location':
-                project.get_location_json(multi=False),
-            'Time': {
-                    "ChildTime": project.get_time()[0],
-                    "ChildTimezone": project[0].timezone,
-                    },
-            'OrderDate': max(self.mapped('sponsorship_ids.create_date')),
-            'Weather': project[0].get_weather_json(multi=False)
+            "Images": children_pictures.filtered("image_url").get_app_json(multi=True),
+            "Location": project.get_location_json(multi=False),
+            "Time": {
+                "ChildTime": project.get_time()[0],
+                "ChildTimezone": project[0].timezone,
+            },
+            "OrderDate": max(self.mapped("sponsorship_ids.create_date")),
+            "Weather": project[0].get_weather_json(multi=False),
         }
 
     @api.model
@@ -81,15 +81,16 @@ class CompassionChild(models.Model):
         :return: JSON list of sponsor children data
         """
         result = []
-        partner_ref = self._get_required_param('userid', other_params)
+        partner_ref = self._get_required_param("userid", other_params)
 
-        sponsor = self.env['res.partner'].search([
-            # TODO change filter, we can directly search for connected user
-            ('ref', '=', partner_ref),
-        ], limit=1)
-        children = self.search([
-            ('partner_id', '=', sponsor.id)
-        ])
+        sponsor = self.env["res.partner"].search(
+            [
+                # TODO change filter, we can directly search for connected user
+                ("ref", "=", partner_ref),
+            ],
+            limit=1,
+        )
+        children = self.search([("partner_id", "=", sponsor.id)])
 
         for child in children:
             result.append(child.data_to_json("mobile_app_child"))
@@ -103,16 +104,17 @@ class CompassionChild(models.Model):
         :param other_params: child's global id
         :return: JSON list of child bio information
         """
-        child = self.env['compassion.child'].search([
-            ('global_id', '=', str(other_params['globalId']))
-        ])
+        child = self.env["compassion.child"].search(
+            [("global_id", "=", str(other_params["globalId"]))]
+        )
 
         household = child.household_id
 
-        guardians = household.member_ids.filtered(lambda x: x['is_caregiver'])\
-            .translate('role')
+        guardians = household.member_ids.filtered(
+            lambda x: x["is_caregiver"]
+        ).translate("role")
 
-        hobbies = child.translate('hobby_ids.value')
+        hobbies = child.translate("hobby_ids.value")
 
         if isinstance(hobbies, str):
             hobbies = [hobbies]
@@ -120,36 +122,31 @@ class CompassionChild(models.Model):
         if isinstance(guardians, str):
             guardians = [guardians]
 
-        at = self.env['ir.advanced.translation'].sudo()
+        at = self.env["ir.advanced.translation"].sudo()
         childBio = {
-            'educationLevel': self._lower(child.translate('education_level')),
-            'academicPerformance': self._lower(child.translate(
-                'academic_performance')),
-            'maleGuardianJob': at.get(
-                household.translate('male_guardian_job')),
-            'femaleGuardianJob': at.get(
-                household.translate('female_guardian_job'), female=True),
-            'maleGuardianJobType': household.translate(
-                'male_guardian_job_type'),
-            'femaleGuardianJobType': household.translate(
-                'female_guardian_job_type'),
-            'hobbies': hobbies,
-            'guardians': guardians,
-            'notEnrolledReason': self._lower((child.not_enrolled_reason or ''))
+            "educationLevel": self._lower(child.translate("education_level")),
+            "academicPerformance": self._lower(child.translate("academic_performance")),
+            "maleGuardianJob": at.get(household.translate("male_guardian_job")),
+            "femaleGuardianJob": at.get(
+                household.translate("female_guardian_job"), female=True
+            ),
+            "maleGuardianJobType": household.translate("male_guardian_job_type"),
+            "femaleGuardianJobType": household.translate("female_guardian_job_type"),
+            "hobbies": hobbies,
+            "guardians": guardians,
+            "notEnrolledReason": self._lower((child.not_enrolled_reason or "")),
         }
 
-        result = {
-            'ChildBioServiceResult': childBio
-        }
+        result = {"ChildBioServiceResult": childBio}
         return result
 
     def _lower(self, value):
         # Lowercase except for German that has Capital letters for words.
-        return value.lower() if self.env.lang != 'de_DE' else value
+        return value.lower() if self.env.lang != "de_DE" else value
 
     def _get_required_param(self, key, params):
         if key not in params:
-            raise ValueError('Required parameter {}'.format(key))
+            raise ValueError("Required parameter {}".format(key))
         return params[key]
 
     @api.multi
@@ -158,15 +155,17 @@ class CompassionChild(models.Model):
         if not res:
             res = {}
         if "FullBodyImageURL" in res.keys():
-            image_url = self.env['child.pictures.download.wizard']\
-                .get_picture_url(res['FullBodyImageURL'], 'headshot', 300, 300)
-            res['ImageUrl'] = image_url
-            res['ImageURL'] = image_url
+            image_url = self.env["child.pictures.download.wizard"].get_picture_url(
+                res["FullBodyImageURL"], "headshot", 300, 300
+            )
+            res["ImageUrl"] = image_url
+            res["ImageURL"] = image_url
         for key, value in list(res.copy().items()):
             if key == "BirthDate":
                 if value:
-                    res[key] = datetime.datetime.strptime(
-                        value, '%Y-%m-%d').strftime('%d/%m/%Y %H:%M:%S')
+                    res[key] = datetime.datetime.strptime(value, "%Y-%m-%d").strftime(
+                        "%d/%m/%Y %H:%M:%S"
+                    )
             if key == "SupporterGroupId":
                 if value:
                     res[key] = int(value)

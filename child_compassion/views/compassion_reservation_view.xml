@@ -96,9 +96,9 @@
                 <separator/>
                 <filter name="my_reservations" string="My Reservations" domain="[('primary_owner', '=', uid)]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Channel" domain="[]" context="{'group_by':'channel'}"/>
-                    <filter string="Owner" domain="[]" context="{'group_by':'primary_owner'}"/>
+                    <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Channel" name="channel" domain="[]" context="{'group_by':'channel'}"/>
+                    <filter string="Owner" name="owner" domain="[]" context="{'group_by':'primary_owner'}"/>
                 </group>
             </search>
         </field>

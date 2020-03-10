@@ -11,18 +11,19 @@ from odoo import models, api, fields
 
 
 class LogInteractionWizard(models.TransientModel):
-    _name = 'partner.log.interaction.wizard'
+    _name = "partner.log.interaction.wizard"
     _description = "Logging wizard for interactions"
 
     partner_id = fields.Many2one(
-        'res.partner', 'Partner', default=lambda s: s._default_partner())
+        "res.partner", "Partner", default=lambda s: s._default_partner(), readonly=False
+    )
     subject = fields.Char()
     body = fields.Html()
 
     @api.model
     def _default_partner(self):
         # Get the partner from context
-        return self.env.context.get('active_id')
+        return self.env.context.get("active_id")
 
     def log_interaction(self):
         """
@@ -30,18 +31,24 @@ class LogInteractionWizard(models.TransientModel):
         in order for it to appear in the interaction.resume view
         :return: True
         """
-        return self.env['mail.mail'].create({
-            'state': 'sent',
-            'recipient_ids': [(4, self.partner_id.id)],
-            'subject': self.subject,
-            'body_html': self.body,
-            'author_id': self.env.user.partner_id.id,
-            'mail_message_id': self.env['mail.message'].create({
-                'model': 'res.partner',
-                'res_id': self.partner_id.id,
-                'body': self.body,
-                'subject': self.subject,
-                'author_id': self.env.user.partner_id.id,
-                'subtype_id': self.env.ref('mail.mt_comment').id
-            }).id
-        })
+        return self.env["mail.mail"].create(
+            {
+                "state": "sent",
+                "recipient_ids": [(4, self.partner_id.id)],
+                "subject": self.subject,
+                "body_html": self.body,
+                "author_id": self.env.user.partner_id.id,
+                "mail_message_id": self.env["mail.message"]
+                .create(
+                    {
+                        "model": "res.partner",
+                        "res_id": self.partner_id.id,
+                        "body": self.body,
+                        "subject": self.subject,
+                        "author_id": self.env.user.partner_id.id,
+                        "subtype_id": self.env.ref("mail.mt_comment").id,
+                    }
+                )
+                .id,
+            }
+        )

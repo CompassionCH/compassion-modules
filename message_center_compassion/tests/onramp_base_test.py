@@ -10,8 +10,8 @@
 from odoo.tests import common
 from odoo.tools import config
 
-HOST = '127.0.0.1'
-PORT = config['http_port']
+HOST = "127.0.0.1"
+PORT = config["http_port"]
 
 
 class TestOnramp(common.HttpCase):
@@ -24,12 +24,12 @@ class TestOnramp(common.HttpCase):
 
         # This is because the request sent is treated as regular http
         # instead of json. TODO find a way for sending proper json request.
-        self.rest_url = '/onramp'
+        self.rest_url = "/onramp"
         headers = {
-            'content-type': 'application/json',
-            'Authorization': 'Bearer fake_token',
+            "content-type": "application/json",
+            "Authorization": "Bearer fake_token",
             "x-cim-MessageType": "http://schemas.ci.org/ci/services/"
-            "communications/2015/09/SBCStructured",
+                                 "communications/2015/09/SBCStructured",
             "x-cim-FromAddress": "CHTest",
             "x-cim-ToAddress": "CH",
         }

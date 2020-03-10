@@ -12,8 +12,9 @@ from odoo import models, api
 
 class CompassionProject(models.Model):
     """A Compassion project """
+
     _name = "compassion.project"
-    _inherit = ['compassion.project', 'compassion.mapped.model']
+    _inherit = ["compassion.project", "compassion.mapped.model"]
 
     @api.multi
     def get_location_json(self, multi=False):
@@ -35,29 +36,29 @@ class CompassionProject(models.Model):
             return {}
         self.update_weather()
         mapping = {
-            'Clear': 'Clear',
-            'Clouds': 'Clouds',
-            'Rain': 'Rainy',
-            'Storm': 'Storm',
-            'Mist': 'Clouds',
-            'Thunderstorm': 'Storm',
-            'Haze': 'Clouds',
-            'Drizzle': 'Clouds',
-            'Snow': 'Rainy',
-            'Smoke': 'Clouds',
-            'Dust': 'Clouds',
-            'Fog': 'Clouds',
-            'Sand': 'Storm',
-            'Ash': 'Storm',
-            'Squall': 'Storm',
-            'Tornado': 'Storm',
+            "Clear": "Clear",
+            "Clouds": "Clouds",
+            "Rain": "Rainy",
+            "Storm": "Storm",
+            "Mist": "Clouds",
+            "Thunderstorm": "Storm",
+            "Haze": "Clouds",
+            "Drizzle": "Clouds",
+            "Snow": "Rainy",
+            "Smoke": "Clouds",
+            "Dust": "Clouds",
+            "Fog": "Clouds",
+            "Sand": "Storm",
+            "Ash": "Storm",
+            "Squall": "Storm",
+            "Tornado": "Storm",
         }
         return {
-            'ChildWeather': mapping[self.current_weather],
-            'ChildTemperature': self.current_temperature,
+            "ChildWeather": mapping[self.current_weather],
+            "ChildTemperature": self.current_temperature,
             # the following fields are not used but prevent app crashes
-            'UserWeather': mapping[self.current_weather],
-            'UserTemperature': self.current_temperature,
+            "UserWeather": mapping[self.current_weather],
+            "UserTemperature": self.current_temperature,
         }
 
     @api.multi
@@ -85,25 +86,21 @@ class CompassionProject(models.Model):
         :param params: all GET parameters
         :return: JSON containing the project
         """
-        result = {
-            'ProjectServiceResult': {
-                'Error': None,
-                'ICPResponseList': []
-            }
-        }
+        result = {"ProjectServiceResult": {"Error": None, "ICPResponseList": []}}
 
-        project = self.search([
-            ('fcp_id', '=', self._get_required_param('IcpId', params))
-        ], limit=1)
+        project = self.search(
+            [("fcp_id", "=", self._get_required_param("IcpId", params))], limit=1
+        )
 
         if project:
-            result['ProjectServiceResult']['ICPResponseList'] = [(
-                project.data_to_json("mobile_app_project"))]
+            result["ProjectServiceResult"]["ICPResponseList"] = [
+                (project.data_to_json("mobile_app_project"))
+            ]
         return result
 
     def _get_required_param(self, key, params):
         if key not in params:
-            raise ValueError('Required parameter {}'.format(key))
+            raise ValueError("Required parameter {}".format(key))
         return params[key]
 
     @api.multi

@@ -22,18 +22,20 @@
  original version on github.com/oostendo/python-zxing
 """
 
-import subprocess
-import re
 import os
-__version__ = '0.5'
+import re
+import subprocess
+
+__version__ = "0.5"
 
 
-class BarCodeTool():
+class BarCodeTool:
     """
     This class needs to use the method decode/encode in order to do something
     At the initialization, the directories names are set up and the
     non-changing (between two utilization) part is written
     """
+
     location = ""
     command = "java"
     libs = ["javase.jar", "core.jar", "jcommander.jar", "jai-imageio-core.jar"]
@@ -46,7 +48,7 @@ class BarCodeTool():
     ##########################################################################
     def __init__(self, loc=""):
         if not len(loc):
-            if ("HOME" in os.environ):
+            if "HOME" in os.environ:
                 loc = os.environ["HOME"] + "/.libZxing"
             else:
                 loc = ".."
@@ -109,7 +111,8 @@ class BarCodeTool():
 
         cmd = [c if c != "LIBS" else os.pathsep.join(libraries) for c in cmd]
         (stdout, stderr) = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
+            cmd, stdout=subprocess.PIPE, universal_newlines=True
+        ).communicate()
         codes = []
         file_results = stdout.split("\nfile:")
         for result in file_results:
@@ -125,8 +128,15 @@ class BarCodeTool():
         else:
             return codes
 
-    def encode(self, file_, text, code_format=None, width=None, height=None,
-               errorcorrection=None):
+    def encode(
+            self,
+            file_,
+            text,
+            code_format=None,
+            width=None,
+            height=None,
+            errorcorrection=None,
+    ):
         """
         Create a Barcode (written in PNG format [the library can accepts JPG,
         GIF as a paramter to the command line])
@@ -164,13 +174,15 @@ class BarCodeTool():
         cmd.append(file_)
 
         (stdout, stderr) = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, universal_newlines=True).communicate()
+            cmd, stdout=subprocess.PIPE, universal_newlines=True
+        ).communicate()
 
 
 class BarCode:
     """
     Class containing all the information about the codebars
     """
+
     format = ""
     points = []
     data = ""
@@ -192,8 +204,12 @@ class BarCode:
                 self.format = m.group(1)
                 continue
 
-            if (not raw_block and not parsed_block and not point_block and
-                    l == "Raw result:"):
+            if (
+                    not raw_block
+                    and not parsed_block
+                    and not point_block
+                    and l == "Raw result:"
+            ):
                 raw_block = True
                 continue
 
@@ -217,7 +233,7 @@ class BarCode:
 
             if point_block:
                 m = re.search(r"Point\s(\d+):\s\(([\d\.]+),([\d\.]+)\)", l)
-                if (m):
+                if m:
                     self.points.append((float(m.group(2)), float(m.group(3))))
 
         return

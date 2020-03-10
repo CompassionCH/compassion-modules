@@ -7,12 +7,13 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, _
 from odoo.addons.queue_job.job import job, related_action
+
+from odoo import api, models, _
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
 
     @api.multi
     def sms_send_step1_confirmation(self, child_request):
@@ -29,13 +30,18 @@ class ResPartner(models.Model):
                 "information and your payment option in the coming days. <br/>"
                 "2. Your sponsorship will be activated when we receive your "
                 "first payment. <br/><br/>Best regards"
-            ) % (child.preferred_name, child.get('he'), child.get('him'),
-                 child_request.full_url),
+            )
+            % (
+                child.preferred_name,
+                child.get("he"),
+                child.get("him"),
+                child_request.full_url,
+            ),
             subject=_("Thank you for your sponsorship!"),
             partner_ids=self.ids,
-            type='comment',
-            subtype='mail.mt_comment',
-            content_subtype='html'
+            type="comment",
+            subtype="mail.mt_comment",
+            content_subtype="html",
         )
         return True
 
@@ -50,16 +56,17 @@ class ResPartner(models.Model):
                 "You will receive more documentation by post in the coming "
                 "days. In the mean time, feel free to reach us if you have "
                 "any question. <br/><br/>"
-            ) % child_request.child_id.preferred_name,
+            )
+            % child_request.child_id.preferred_name,
             subject=_("Thank you for your sponsorship!"),
             partner_ids=self.ids,
-            type='comment',
-            subtype='mail.mt_comment',
-            content_subtype='html'
+            type="comment",
+            subtype="mail.mt_comment",
+            content_subtype="html",
         )
         return True
 
     @job(default_channel="root.res_partner")
-    @related_action(action='related_action_update_partner')
+    @related_action(action="related_action_update_partner")
     def update_partner(self, partner_vals):
         return self.write(partner_vals)

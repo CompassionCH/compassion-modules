@@ -13,11 +13,11 @@ from odoo import api, models, fields, _
 class Contracts(models.Model):
     """ Adds the Salesperson to the contract. """
 
-    _inherit = 'recurring.contract'
+    _inherit = "recurring.contract"
 
-    user_id = fields.Many2one('res.partner', 'Ambassador')
+    user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
 
-    @api.onchange('origin_id')
+    @api.onchange("origin_id")
     def on_change_origin(self):
         origin = self.origin_id
         if origin:
@@ -25,21 +25,23 @@ class Contracts(models.Model):
             if ambassador:
                 self.user_id = ambassador
 
-    @api.onchange('child_id')
+    @api.onchange("child_id")
     def onchange_child_id(self):
         hold = self.hold_id
         origin = hold.origin_id
         if origin:
             self.origin_id = origin
-        if hold.channel and hold.channel == 'web':
-            self.channel = 'internet'
+        if hold.channel and hold.channel == "web":
+            self.channel = "internet"
         if hold.ambassador:
             self.user_id = hold.ambassador
         self.campaign_id = hold.campaign_id
         if hold.comments:
             return {
-                'warning': {'title': _('The child has some comments'),
-                            'message': hold.comments}
+                "warning": {
+                    "title": _("The child has some comments"),
+                    "message": hold.comments,
+                }
             }
 
     def _get_user_from_origin(self, origin):
@@ -54,7 +56,7 @@ class Contracts(models.Model):
 
     def get_inv_lines_data(self):
         res = super().get_inv_lines_data()
-        for i, c_line in enumerate(self.mapped('contract_line_ids')):
+        for i, c_line in enumerate(self.mapped("contract_line_ids")):
             if c_line.contract_id.user_id:
-                res[i]['user_id'] = c_line.contract_id.user_id.id
+                res[i]["user_id"] = c_line.contract_id.user_id.id
         return res

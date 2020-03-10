@@ -8,29 +8,34 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, fields, models
 from datetime import date
+
+from odoo import api, fields, models
 
 
 class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
-    _inherit = 'account.invoice'
 
-    children = fields.Char(
-        'Children', compute='_compute_children')
-    last_payment = fields.Date(compute='_compute_last_payment', store=True)
-    invoice_type = fields.Selection([
-        ('sponsorship', 'Sponsorship'),
-        ('gift', 'Gift'),
-        ('fund', 'Fund donation'),
-        ('other', 'Other'),
-    ], compute='_compute_invoice_type', store=True)
+    _inherit = "account.invoice"
+
+    children = fields.Char("Children", compute="_compute_children")
+    last_payment = fields.Date(compute="_compute_last_payment", store=True)
+    invoice_type = fields.Selection(
+        [
+            ("sponsorship", "Sponsorship"),
+            ("gift", "Gift"),
+            ("fund", "Fund donation"),
+            ("other", "Other"),
+        ],
+        compute="_compute_invoice_type",
+        store=True,
+    )
 
     @api.multi
     def _compute_children(self):
         """ View children contained in invoice. """
         for invoice in self:
-            children = invoice.mapped('invoice_line_ids.contract_id.child_id')
+            children = invoice.mapped("invoice_line_ids.contract_id.child_id")
             if len(children) > 1:
                 num_children = len(children)
                 invoice.children = f"{num_children} children"
@@ -39,62 +44,68 @@ class AccountInvoice(models.Model):
             else:
                 invoice.children = False
 
-    @api.depends('payment_move_line_ids', 'state')
+    @api.depends("payment_move_line_ids", "state")
     @api.multi
     def _compute_last_payment(self):
-        for invoice in self.filtered('payment_move_line_ids'):
-            mv_filter = 'credit' if invoice.type == 'out_invoice' else 'debit'
-            payment_dates = invoice.payment_move_line_ids.filtered(
-                mv_filter).mapped('date')
+        for invoice in self.filtered("payment_move_line_ids"):
+            mv_filter = "credit" if invoice.type == "out_invoice" else "debit"
+            payment_dates = invoice.payment_move_line_ids.filtered(mv_filter).mapped(
+                "date"
+            )
             invoice.last_payment = max(payment_dates or [False])
 
-    @api.depends('invoice_line_ids', 'state')
+    @api.depends("invoice_line_ids", "state")
     @api.multi
     def _compute_invoice_type(self):
         sponsorship_cat = self.env.ref(
-            'sponsorship_compassion.product_category_sponsorship', False)
-        fund_cat = self.env.ref(
-            'sponsorship_compassion.product_category_fund', False)
-        gift_cat = self.env.ref(
-            'sponsorship_compassion.product_category_gift', False)
+            "sponsorship_compassion.product_category_sponsorship", False
+        )
+        fund_cat = self.env.ref("sponsorship_compassion.product_category_fund", False)
+        gift_cat = self.env.ref("sponsorship_compassion.product_category_gift", False)
         # At module installation, the categories are not yet loaded.
         if not sponsorship_cat or not fund_cat or not gift_cat:
             return
-        for invoice in self.filtered(lambda i: i.state in ('open', 'paid')):
+        for invoice in self.filtered(lambda i: i.state in ("open", "paid")):
             # check if child_of Sponsorship category
-            category_lines = self.env['account.invoice.line'].search([
-                ('invoice_id', '=', invoice.id),
-                ('product_id.categ_id', 'child_of', sponsorship_cat.id)
-            ])
+            category_lines = self.env["account.invoice.line"].search(
+                [
+                    ("invoice_id", "=", invoice.id),
+                    ("product_id.categ_id", "child_of", sponsorship_cat.id),
+                ]
+            )
 
             if category_lines:
-                invoice.invoice_type = 'sponsorship'
+                invoice.invoice_type = "sponsorship"
             else:
                 # check if child_of Gift category
-                category_lines = self.env['account.invoice.line'].search([
-                    ('invoice_id', '=', invoice.id),
-                    ('product_id.categ_id', 'child_of', gift_cat.id)
-                ])
+                category_lines = self.env["account.invoice.line"].search(
+                    [
+                        ("invoice_id", "=", invoice.id),
+                        ("product_id.categ_id", "child_of", gift_cat.id),
+                    ]
+                )
                 if category_lines:
-                    invoice.invoice_type = 'gift'
+                    invoice.invoice_type = "gift"
                 else:
                     # check if child_of Fund category
-                    category_lines = self.env['account.invoice.line'].search([
-                        ('invoice_id', '=', invoice.id),
-                        ('product_id.categ_id', 'child_of', fund_cat.id)
-                    ])
+                    category_lines = self.env["account.invoice.line"].search(
+                        [
+                            ("invoice_id", "=", invoice.id),
+                            ("product_id.categ_id", "child_of", fund_cat.id),
+                        ]
+                    )
                     if category_lines:
-                        invoice.invoice_type = 'fund'
+                        invoice.invoice_type = "fund"
                     else:
                         # last choice -> Other category
-                        invoice.invoice_type = 'other'
+                        invoice.invoice_type = "other"
 
     @api.multi
     def action_invoice_paid(self):
         """ Call invoice_paid method on related contracts. """
         res = super().action_invoice_paid()
         for invoice in self:
-            contracts = invoice.mapped('invoice_line_ids.contract_id')
+            contracts = invoice.mapped("invoice_line_ids.contract_id")
             contracts.invoice_paid(invoice)
         return res
 
@@ -103,7 +114,7 @@ class AccountInvoice(models.Model):
         """ Call invoice_unpaid method on related contract. """
         res = super().action_invoice_re_open()
         for invoice in self:
-            contracts = invoice.mapped('invoice_line_ids.contract_id')
+            contracts = invoice.mapped("invoice_line_ids.contract_id")
             contracts.invoice_unpaid(invoice)
         return res
 
@@ -119,30 +130,31 @@ class AccountInvoice(models.Model):
         :return: True
         """
         # At first we open again the cancelled invoices
-        cancel_invoices = self.filtered(lambda i: i.state == 'cancel')
+        cancel_invoices = self.filtered(lambda i: i.state == "cancel")
         cancel_invoices.action_invoice_draft()
         cancel_invoices.action_invoice_open()
         today = date.today()
-        for partner_id in self.mapped('partner_id.id'):
+        for partner_id in self.mapped("partner_id.id"):
             invoices = self.filtered(lambda i: i.partner_id.id == partner_id)
-            past_invoices = invoices.filtered(
-                lambda i: fields.Date.from_string(i.date_invoice) <= today)
+            past_invoices = invoices.filtered(lambda i: i.date_invoice <= today)
             future_invoices = invoices - past_invoices
-            past_amount = sum(past_invoices.mapped('amount_total'))
-            future_amount = sum(future_invoices.mapped('amount_total'))
+            past_amount = sum(past_invoices.mapped("amount_total"))
+            future_amount = sum(future_invoices.mapped("amount_total"))
             is_past_reconciled = not past_invoices
             is_future_reconciled = not future_invoices
 
             # First try to find matching amount payments
-            open_payments = self.env['account.move.line'].search([
-                ('partner_id', '=', partner_id),
-                ('account_id.code', '=', '1050'),
-                ('reconciled', '=', False),
-                ('credit', 'in', [past_amount, future_amount])
-            ])
+            open_payments = self.env["account.move.line"].search(
+                [
+                    ("partner_id", "=", partner_id),
+                    ("account_id.code", "=", "1050"),
+                    ("reconciled", "=", False),
+                    ("credit", "in", [past_amount, future_amount]),
+                ]
+            )
             for payment in open_payments:
                 if not is_past_reconciled and payment.credit == past_amount:
-                    past_invoices.mapped('')
+                    past_invoices.mapped("")
                     is_past_reconciled = True
                 elif not is_future_reconciled:
                     is_future_reconciled = True
@@ -161,25 +173,26 @@ class AccountInvoice(models.Model):
         Find payments to reconcile given invoices and perform reconciliation.
         :return: True
         """
-        partner = self.mapped('partner_id')
+        partner = self.mapped("partner_id")
         partner.ensure_one()
-        reconcile_amount = sum(self.mapped('amount_total'))
-        move_lines = self.mapped('move_id.line_ids').filtered('debit')
+        reconcile_amount = sum(self.mapped("amount_total"))
+        move_lines = self.mapped("move_id.line_ids").filtered("debit")
         payment_search = [
-            ('partner_id', '=', partner.id),
-            ('account_id.code', '=', '1050'),
-            ('reconciled', '=', False),
-            ('credit', '>', 0)
+            ("partner_id", "=", partner.id),
+            ("account_id.code", "=", "1050"),
+            ("reconciled", "=", False),
+            ("credit", ">", 0),
         ]
 
-        line_obj = self.env['account.move.line']
+        line_obj = self.env["account.move.line"]
         payment_greater_than_reconcile = line_obj.search(
-            payment_search + [('credit', '>', reconcile_amount)],
-            order='date asc', limit=1)
+            payment_search + [("credit", ">", reconcile_amount)],
+            order="date asc",
+            limit=1,
+        )
         if payment_greater_than_reconcile:
             # Split the payment move line to isolate reconcile amount
-            (payment_greater_than_reconcile | move_lines) \
-                .split_payment_and_reconcile()
+            (payment_greater_than_reconcile | move_lines).split_payment_and_reconcile()
             return True
         else:
             # Group several payments to match the invoiced amount
@@ -200,8 +213,7 @@ class AccountInvoice(models.Model):
                     return  # if we reach the number why bother to continue
 
                 for i in range(len(numbers)):
-                    ret = find_sum(numbers[i + 1:], target,
-                                   partial + [numbers[i]])
+                    ret = find_sum(numbers[i + 1:], target, partial + [numbers[i]])
                     if ret is not None:
                         return ret
 
@@ -219,7 +231,8 @@ class AccountInvoice(models.Model):
                     if payment_line.credit > missing_amount:
                         # Split last added line amount to perfectly match
                         # the total amount we are looking for
-                        return (open_payments[:index + 1] | move_lines) \
-                            .split_payment_and_reconcile()
+                        return (
+                            open_payments[: index + 1] | move_lines
+                        ).split_payment_and_reconcile()
                     payment_amount += payment_line.credit
                 return (open_payments | move_lines).reconcile()

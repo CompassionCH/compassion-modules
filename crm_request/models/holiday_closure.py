@@ -18,13 +18,12 @@ class HolidayClosure(models.Model):
 
     start_date = fields.Date(string="Start of holiday", required=True)
     end_date = fields.Date(string="End of holiday", required=True)
-    holiday_name = fields.Char(string="Name of holiday", required=True,
-                               translate=True)
+    holiday_name = fields.Char(string="Name of holiday", required=True, translate=True)
 
-    @api.constrains('end_date', 'start_date')
+    @api.constrains("end_date", "start_date")
     def _validate_dates(self):
         for h in self:
             if h.start_date and h.end_date and (h.start_date >= h.end_date):
-                raise ValidationError(_(
-                    "Please choose an end_date greater than the start_date"
-                ))
+                raise ValidationError(
+                    _("Please choose an end_date greater than the start_date")
+                )

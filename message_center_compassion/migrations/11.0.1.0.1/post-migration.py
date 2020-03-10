@@ -14,4 +14,4 @@ def migrate(cr, version):
         return
 
     # Force reloading security groups
-    openupgrade.load_xml(cr, 'message_center_compassion', 'security/gmc_groups.xml')
+    openupgrade.load_xml(cr, "message_center_compassion", "security/gmc_groups.xml")

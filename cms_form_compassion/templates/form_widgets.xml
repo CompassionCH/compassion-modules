@@ -114,7 +114,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         <ul class="list-unstyled">
             <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
                 <li>
-                    <label>
+                    <label for="acquirer_id">
                         <input t-att-value="acquirer.id" type="radio"
                                name="acquirer_id"
                                t-att-checked="widget.w_acquirers[0] == acquirer"/>
@@ -137,7 +137,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         <ul class="list-unstyled" style="display: none">
             <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
                 <li>
-                    <label>
+                    <label for="acquirer_id">
                         <input t-att-value="acquirer.id" type="radio"
                                name="acquirer_id"
                                t-att-checked="widget.w_acquirers[0] == acquirer"/>

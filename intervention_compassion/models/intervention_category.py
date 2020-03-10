@@ -12,21 +12,26 @@ from odoo import models, fields, _
 
 
 class InterventionCategory(models.Model):
-    _name = 'compassion.intervention.category'
-    _description = 'Intervention Category'
+    _name = "compassion.intervention.category"
+    _description = "Intervention Category"
 
     name = fields.Char(required=True, translate=False)
-    type = fields.Selection('get_types', required=True)
+    type = fields.Selection("get_types", required=True)
     subcategory_ids = fields.Many2many(
-        'compassion.intervention.subcategory',
-        'compassion_intervention_cat_subcat_rel',
-        'category_id', 'subcategory_id',
-        'Subcategories'
+        "compassion.intervention.subcategory",
+        "compassion_intervention_cat_subcat_rel",
+        "category_id",
+        "subcategory_id",
+        "Subcategories",
+        readonly=False,
     )
 
     _sql_constraints = [
-        ('unique_name_type', 'unique(name, type)',
-         'Category name and type must be unique!')
+        (
+            "unique_name_type",
+            "unique(name, type)",
+            "Category name and type must be unique!",
+        )
     ]
 
     def get_types(self):

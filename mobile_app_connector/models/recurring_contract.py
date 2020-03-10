@@ -12,13 +12,13 @@ import logging
 
 from odoo import models, api
 
-
 logger = logging.getLogger(__name__)
 
 
 class CompassionRecurringContract(models.Model):
     """ A sponsorship """
-    _inherit = 'recurring.contract'
+
+    _inherit = "recurring.contract"
 
     @api.multi
     def get_app_json(self, multi=False):
@@ -27,5 +27,5 @@ class CompassionRecurringContract(models.Model):
         :param multi: used to change the wrapper if needed
         :return: dictionary with JSON data of the children
         """
-        child = self.sudo().mapped('child_id')
+        child = self.sudo().mapped("child_id")
         return child.get_app_json(multi)

@@ -8,29 +8,30 @@
 #
 ##############################################################################
 import logging
-from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion \
-    import BaseSponsorshipTest
+
+from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
+    BaseSponsorshipTest,
+)
 
 _logger = logging.getLogger(__name__)
 
 
 # todo tests don't work
 class TestMobileAppConnector(BaseSponsorshipTest):
-
     def setUp(self):
         super().setUp()
-        self.partner = self.env.ref('base.res_partner_address_10')
-        self.partner.ref = 'myref'
-        self.child = self.create_child('UG4239181')
-        sp_group = self.create_group({'partner_id': self.partner.id})
+        self.partner = self.env.ref("base.res_partner_address_10")
+        self.partner.ref = "myref"
+        self.child = self.create_child("UG4239181")
+        sp_group = self.create_group({"partner_id": self.partner.id})
         # Associate child and sponsor
         self.create_contract(
             {
-                'partner_id': self.partner.id,
-                'group_id': sp_group.id,
-                'child_id': self.child.id,
+                "partner_id": self.partner.id,
+                "group_id": sp_group.id,
+                "child_id": self.child.id,
             },
-            [{'amount': 50.0}]
+            [{"amount": 50.0}],
         )
 
     def test_sponsor_children(self):
@@ -38,10 +39,11 @@ class TestMobileAppConnector(BaseSponsorshipTest):
         self.assertIsInstance(res, list)
         self.assertEqual(len(res), 1)
         child_data = res[0]
-        self.assertEqual(child_data.get('NeedKey'), 'UG4239181')
+        self.assertEqual(child_data.get("NeedKey"), "UG4239181")
 
     def test_fetch_letters(self):
-        res = self.env['correspondence'].mobile_get_letters(
-            userid=self.partner.ref, supgrpid=12, needid=40)
+        res = self.env["correspondence"].mobile_get_letters(
+            userid=self.partner.ref, supgrpid=12, needid=40
+        )
 
         self.assertEqual(res, [])

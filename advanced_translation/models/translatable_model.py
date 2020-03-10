@@ -1,10 +1,9 @@
-import re
 import logging
+import re
+
 from babel.dates import format_datetime
 
-
 from odoo import models, fields, api, _
-
 
 logger = logging.getLogger(__name__)
 
@@ -13,12 +12,11 @@ class AdvancedTranslatable(models.AbstractModel):
     """ Inherit this class in order to let your model fetch keywords
     based on the source recordset and a gender field in the model.
     """
-    _name = 'translatable.model'
 
-    gender = fields.Selection([
-        ('M', 'Male'),
-        ('F', 'Female'),
-    ], default='M')
+    _name = "translatable.model"
+    _description = "Translatable Model"
+
+    gender = fields.Selection([("M", "Male"), ("F", "Female"), ], default="M")
 
     @api.multi
     def get(self, keyword):
@@ -29,9 +27,9 @@ class AdvancedTranslatable(models.AbstractModel):
         :return: the translation
         """
         plural = len(self) > 1
-        male = self.filtered(lambda c: c.gender == 'M')
-        female = self.filtered(lambda c: c.gender == 'F')
-        advanced_translation = self.env['ir.advanced.translation']
+        male = self.filtered(lambda c: c.gender == "M")
+        female = self.filtered(lambda c: c.gender == "F")
+        advanced_translation = self.env["ir.advanced.translation"]
         if plural and female and not male:
             return advanced_translation.get(keyword, True, True)
         elif plural:
@@ -47,42 +45,42 @@ class AdvancedTranslatable(models.AbstractModel):
         char/selection field by adding a translate function.
         """
         if not self.exists():
-            return ''
+            return ""
         pattern_keyword = re.compile("(\\{)(.*?)(\\})")
 
         def _replace_keyword(match):
             return self.translate(match.group(2))
 
         res = list()
-        field_path = field.split('.')
+        field_path = field.split(".")
         obj = self
         if len(field_path) > 1:
-            field_traversal = '.'.join(field_path[:-1])
+            field_traversal = ".".join(field_path[:-1])
             obj = obj.mapped(field_traversal)
-        definition = obj.fields_get([field_path[-1]]).get(
-            field_path[-1])
+        definition = obj.fields_get([field_path[-1]]).get(field_path[-1])
         if definition:
             for record in self:
                 for raw_value in record.mapped(field):
                     if not raw_value:
                         continue
                     val = False
-                    if definition['type'] in ('char', 'text') or isinstance(
-                            raw_value, str) and definition['type'] !=\
-                            'selection':
+                    if (
+                            definition["type"] in ("char", "text")
+                            or isinstance(raw_value, str)
+                            and definition["type"] != "selection"
+                    ):
                         val = _(raw_value)
-                    elif definition['type'] == 'selection':
-                        val = _(dict(definition['selection'])[raw_value])
+                    elif definition["type"] == "selection":
+                        val = _(dict(definition["selection"])[raw_value])
                     if val:
                         val = pattern_keyword.sub(_replace_keyword, val)
                         res.append(val)
         if len(res) == 1:
             res = res[0]
-        return res or ''
+        return res or ""
 
     @api.multi
-    def get_list(self, field, limit=float("inf"), substitution=None,
-                 translate=True):
+    def get_list(self, field, limit=float("inf"), substitution=None, translate=True):
         """
         Get a list of values, separated with commas. (last separator 'and')
         :param field: the field values to retrieve from the recordset
@@ -104,15 +102,15 @@ class AdvancedTranslatable(models.AbstractModel):
                     return substitution
                 values = values[:limit]
             if len(values) > 1:
-                res_string = ', '.join(values[:-1])
-                res_string += ' ' + _('and') + ' ' + values[-1]
+                res_string = ", ".join(values[:-1])
+                res_string += " " + _("and") + " " + values[-1]
             else:
                 res_string = values and values[0] or ""
             values = res_string
         return values
 
     @api.multi
-    def get_date(self, field, date_type='date_short'):
+    def get_date(self, field, date_type="date_short"):
         """
         Useful to format a date field in a given language
         :param field: the date field inside the model
@@ -121,16 +119,17 @@ class AdvancedTranslatable(models.AbstractModel):
         (one of “full”, “long”, “medium”, or “short”, or a custom date/time pattern)
         :return: the formatted dates
         """
-        _lang = self.env.context.get('lang') or self.env.lang or 'en_US'
-        _format = self.env['ir.advanced.translation'].get(date_type)
-        dates = sorted(set(map(fields.Datetime.from_string,
-                               self.filtered(field).mapped(field))))
+        _lang = self.env.context.get("lang") or self.env.lang or "en_US"
+        _format = self.env["ir.advanced.translation"].get(date_type)
+        dates = sorted(
+            set(map(fields.Datetime.from_string, self.filtered(field).mapped(field)))
+        )
 
         dates = [format_datetime(d, _format, locale=_lang) for d in dates]
 
         if len(dates) > 1:
-            res_string = ', '.join(dates[:-1])
-            res_string += ' ' + _('and') + ' ' + dates[-1]
+            res_string = ", ".join(dates[:-1])
+            res_string += " " + _("and") + " " + dates[-1]
         else:
-            res_string = dates and dates[0] or ''
+            res_string = dates and dates[0] or ""
         return res_string

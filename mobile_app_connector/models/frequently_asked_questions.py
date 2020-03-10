@@ -8,6 +8,7 @@
 ##############################################################################
 
 import logging
+
 from odoo import models
 
 _logger = logging.getLogger(__name__)
@@ -16,7 +17,7 @@ try:
     import requests
     from bs4 import BeautifulSoup
 except ImportError:
-    _logger.warning('Please install bs4 and requests')
+    _logger.warning("Please install bs4 and requests")
 
 
 class FAQ(models.AbstractModel):
@@ -24,8 +25,9 @@ class FAQ(models.AbstractModel):
     This class contains everything that is related to the Frequently Asked
     Questions for the application.
     """
-    _name = 'frequently.asked.questions'
-    _description = 'Mobile App FAQ'
+
+    _name = "frequently.asked.questions"
+    _description = "Mobile App FAQ"
 
     def mobile_get_faq(self, language, **params):
         """
@@ -39,21 +41,21 @@ class FAQ(models.AbstractModel):
         :return: a JSON formatted dictionary containing all the questions and
         answers of the FAQ.
         """
-        if language == 'fr':
-            faq_link = 'https://compassion.ch/questions-frequentes/'
-        elif language == 'it':
-            faq_link = 'https://compassion.ch/it/domande-frequenti/'
+        if language == "fr":
+            faq_link = "https://compassion.ch/questions-frequentes/"
+        elif language == "it":
+            faq_link = "https://compassion.ch/it/domande-frequenti/"
         else:
-            faq_link = 'https://compassion.ch/de/haeufig-gestellte-fragen/'
+            faq_link = "https://compassion.ch/de/haeufig-gestellte-fragen/"
         html = requests.get(faq_link).text
-        soup = BeautifulSoup(html, 'html.parser')
-        questions_list = soup.find_all(class_='accordion-title')
+        soup = BeautifulSoup(html, "html.parser")
+        questions_list = soup.find_all(class_="accordion-title")
         questions = [question.text for question in questions_list]
-        answers_list = soup.find_all(class_='accordion-content')
+        answers_list = soup.find_all(class_="accordion-content")
         answers = [answer.text for answer in answers_list]
 
         faq = []
         for (question, answer) in zip(questions, answers):
-            faq.append({'Question': question, 'Answer': answer})
+            faq.append({"Question": question, "Answer": answer})
 
         return faq

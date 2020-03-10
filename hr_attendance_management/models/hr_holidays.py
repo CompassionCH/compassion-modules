@@ -3,33 +3,38 @@
 from odoo import models, fields, api
 
 
-class HrHolidays(models.Model):
-    _inherit = 'hr.holidays'
+class HrLeave(models.Model):
+    _inherit = "hr.leave"
 
-    attendance_day_ids = fields.Many2many('hr.attendance.day', store=True,
-                                          string='Attendances days',
-                                          compute='_compute_att_day')
+    attendance_day_ids = fields.Many2many(
+        "hr.attendance.day",
+        store=True,
+        string="Attendances days",
+        compute="_compute_att_day",
+        readonly=False,
+    )
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.depends('date_from', 'date_to', 'state')
+    @api.depends("date_from", "date_to", "state")
     @api.multi
     def _compute_att_day(self):
-        att_days = self.env['hr.attendance.day']
+        att_days = self.env["hr.attendance.day"]
         for rd in self:
             # Remove the current leave from the attendance_day.leave_ids in
             # case of the date change
             for att in rd.attendance_day_ids:
                 if self in att.leave_ids:
-                    att.leave_ids = att.leave_ids.filtered(
-                        lambda r: r.id != rd.id)
+                    att.leave_ids = att.leave_ids.filtered(lambda r: r.id != rd.id)
 
-            att_days = att_days.search([
-                ('employee_id', '=', rd.employee_id.id),
-                ('date', '>=', rd.date_from),
-                ('date', '<=', rd.date_to)
-            ])
+            att_days = att_days.search(
+                [
+                    ("employee_id", "=", rd.employee_id.id),
+                    ("date", ">=", rd.date_from),
+                    ("date", "<=", rd.date_to),
+                ]
+            )
 
             rd.attendance_day_ids = att_days
 

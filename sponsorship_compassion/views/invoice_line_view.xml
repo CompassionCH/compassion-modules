@@ -62,12 +62,12 @@
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="group_product" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
                     <filter name="group_contract" string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
-                    <filter string="State" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Last payment" domain="[]" context="{'group_by':'last_payment'}"/>
-                    <filter string="Invoice" domain="[]" context="{'group_by':'invoice_id'}" />
+                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Last payment" name="last_payment" domain="[]" context="{'group_by':'last_payment'}"/>
+                    <filter string="Invoice" name="invoice" domain="[]" context="{'group_by':'invoice_id'}" />
                 </group>
             </search>
         </field>
@@ -90,13 +90,13 @@
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.view_account_invoice_filter"/>
         <field name="arch" type="xml">
-            <field name="journal_id" position="after">
+            <field name="date" position="after">
                 <field name="payment_mode_id"/>
                 <field name="invoice_type"/>
             </field>
             <xpath expr="//group">
                 <separator/>
-                <filter string="Invoice type"
+                <filter string="Invoice type" name="invoice_type"
                         context="{'group_by':'invoice_type'}"/>
             </xpath>
         </field>

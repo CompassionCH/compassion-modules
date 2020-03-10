@@ -7,10 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import logging
 import json
-import requests
+import logging
 from datetime import datetime, timedelta
+
+import requests
 
 from odoo import _
 from odoo.exceptions import UserError
@@ -39,32 +40,30 @@ class OnrampConnector(object):
         """ Inherit method to ensure a single instance exists. """
         if OnrampConnector.__instance is None:
             OnrampConnector.__instance = object.__new__(cls)
-            connect_url = config.get('connect_url')
-            api_key = config.get('connect_api_key')
+            connect_url = config.get("connect_url")
+            api_key = config.get("connect_api_key")
             if connect_url and api_key:
                 OnrampConnector.__instance._connect_url = connect_url
                 OnrampConnector.__instance._api_key = api_key
                 session = requests.Session()
-                session.params.update({
-                    'api_key': api_key,
-                    'gpid': 'CH'
-                })
+                session.params.update({"api_key": api_key, "gpid": "CH"})
                 OnrampConnector.__instance._session = session
             else:
                 raise UserError(
-                    _('Please give connect_url and connect_api_key values '
-                      'in your Odoo configuration file.'))
+                    _(
+                        "Please give connect_url and connect_api_key values "
+                        "in your Odoo configuration file."
+                    )
+                )
         return OnrampConnector.__instance
 
     def __init__(self):
         """ Get a fresh token if needed. """
         now = datetime.now()
-        if not self._token_time or self._token_time + \
-                timedelta(hours=1) <= now:
+        if not self._token_time or self._token_time + timedelta(hours=1) <= now:
             self._retrieve_token()
 
-    def send_message(self, service_name, message_type, body=None,
-                     params=None):
+    def send_message(self, service_name, message_type, body=None, params=None):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
         :param message_type: GET, POST or PUT
@@ -76,35 +75,31 @@ class OnrampConnector(object):
                   {'code': http_status_code, 'content': response,
                    'Error': error_message, 'request_id': request id header}
         """
-        headers = {'Content-type': 'application/json'}
+        headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name
         self.log_message(message_type, url, headers, body, self._session)
-        if message_type == 'GET':
+        if message_type == "GET":
             r = self._session.get(url, headers=headers, params=params)
-        elif message_type == 'POST':
-            r = self._session.post(url, headers=headers, json=body,
-                                   params=params)
-        elif message_type == 'PUT':
-            r = self._session.put(url, headers=headers, json=body,
-                                  params=params)
+        elif message_type == "POST":
+            r = self._session.post(url, headers=headers, json=body, params=params)
+        elif message_type == "PUT":
+            r = self._session.put(url, headers=headers, json=body, params=params)
         else:
-            return {
-                'code': 404,
-                'Error': 'No valid HTTP verb used'
-            }
+            return {"code": 404, "Error": "No valid HTTP verb used"}
         status = r.status_code
         result = {
-            'code': status,
-            'request_id': r.headers.get('x-cim-RequestId'),
+            "code": status,
+            "request_id": r.headers.get("x-cim-RequestId"),
         }
-        self.log_message(status, 'RESULT', message=r.text)
+        self.log_message(status, "RESULT", message=r.text)
         try:
             # Receiving some weird encoded strings
-            result['content'] = json.JSONDecoder(strict=False).decode(
-                r.text.replace('\\\\n', '\n'))
+            result["content"] = json.JSONDecoder(strict=False).decode(
+                r.text.replace("\\\\n", "\n")
+            )
         except ValueError:
             # No json content returned
-            result['content'] = r.text
+            result["content"] = r.text
         return result
 
     def _retrieve_token(self):
@@ -118,35 +113,35 @@ class OnrampConnector(object):
         Class method that fetches a token from GMC OAuth server.
         :return: dict: Authorisation header.
         """
-        client = config.get('connect_client')
-        secret = config.get('connect_secret')
-        provider = config.get('connect_token_server')
+        client = config.get("connect_client")
+        secret = config.get("connect_secret")
+        provider = config.get("connect_token_server")
         if not client or not secret or not provider:
-            raise UserError(_(
-                'Please give connect_client, connect_secret, '
-                'connect_token_server in your Odoo configuration file.'
-            ))
-        params_post = 'grant_type=client_credentials&scope=read+write'
+            raise UserError(
+                _(
+                    "Please give connect_client, connect_secret, "
+                    "connect_token_server in your Odoo configuration file."
+                )
+            )
+        params_post = "grant_type=client_credentials&scope=read+write"
         header_post = {
             "Content-type": "application/x-www-form-urlencoded",
             "Content-Length": "46",
             "Expect": "100-continue",
-            "Connection": "Keep-Alive"}
-        response = requests.post(provider, data=params_post,
-                                 auth=(client, secret), headers=header_post)
+            "Connection": "Keep-Alive",
+        }
+        response = requests.post(
+            provider, data=params_post, auth=(client, secret), headers=header_post
+        )
         try:
             token = response.json()
-            return {
-                'Authorization': '{token_type} {access_token}'.format(**token)
-            }
+            return {"Authorization": "{token_type} {access_token}".format(**token)}
         except (AttributeError, KeyError):
             _logger.error("GMC token retrieval error", exc_info=True)
-            raise UserError(
-                _('Token validation failed.'))
+            raise UserError(_("Token validation failed."))
 
     @classmethod
-    def log_message(cls, req_type, url, headers=None, message=None,
-                    session=None):
+    def log_message(cls, req_type, url, headers=None, message=None, session=None):
         """
         Used to format GMC messages for console log
         :param req_type: type of request (post/get/etc...)
@@ -159,7 +154,7 @@ class OnrampConnector(object):
         if headers is None:
             headers = dict()
         if message is None:
-            message = '{empty}'
+            message = "{empty}"
         if session is not None:
             complete_headers = headers.copy()
             complete_headers.update(session.headers)
@@ -170,4 +165,5 @@ class OnrampConnector(object):
             req_type,
             url,
             [(k, v) for k, v in complete_headers.items()],
-            json.dumps(message))
+            json.dumps(message),
+        )

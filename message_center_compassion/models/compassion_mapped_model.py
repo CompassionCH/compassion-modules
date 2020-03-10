@@ -16,7 +16,9 @@ class CompassionMappedModel(models.AbstractModel):
     This is the abstract model which models will inherit in order to
     define mappings and be converted to JSON for GMC Connect.
     """
+
     _name = "compassion.mapped.model"
+    _description = "Compassion Mapping"
 
     @api.multi
     def data_to_json(self, mapping_name=None):
@@ -29,35 +31,42 @@ class CompassionMappedModel(models.AbstractModel):
                              if not specified.
         :return: A dictionary or list with the json field name and the data.
         """
-        search_criterias = [('model_id.model', '=', self._name)]
+        search_criterias = [("model_id.model", "=", self._name)]
         if mapping_name:
-            search_criterias.append(('name', '=', mapping_name))
-        mapping = self.env['compassion.mapping'].sudo().search(
-            search_criterias, limit=1)
+            search_criterias.append(("name", "=", mapping_name))
+        mapping = (
+            self.env["compassion.mapping"].sudo().search(search_criterias, limit=1)
+        )
         result = list()
         for record in self:
             json = {}
             for json_spec in mapping.json_spec_ids.filtered(
-                    lambda jspec: not jspec.exclude_from_json):
+                    lambda jspec: not jspec.exclude_from_json
+            ):
                 if json_spec.sub_mapping_id:
                     sub_record = record
                     if json_spec.field_name:
                         # Take the relational field as base for mapping
                         # conversion
                         sub_record = record.mapped(json_spec.field_name)
-                        if not hasattr(sub_record, 'data_to_json'):
-                            raise UserError(_(
-                                "Sub mapping field should be a relational "
-                                "field onto a model which supports GMC "
-                                "mappings."))
+                        if not hasattr(sub_record, "data_to_json"):
+                            raise UserError(
+                                _(
+                                    "Sub mapping field should be a relational "
+                                    "field onto a model which supports GMC "
+                                    "mappings."
+                                )
+                            )
                     json[json_spec.json_name] = sub_record.data_to_json(
-                        json_spec.sub_mapping_id.name)
+                        json_spec.sub_mapping_id.name
+                    )
                 else:
                     # Calls the conversion function defined in field_to_json
                     odoo_field = json_spec.field_name
                     if json_spec.relational_field_id:
-                        odoo_field = json_spec.relational_field_id.name + \
-                            '.' + odoo_field
+                        odoo_field = (
+                            json_spec.relational_field_id.name + "." + odoo_field
+                        )
                     value = None
                     if odoo_field:
                         value = record.mapped(odoo_field)
@@ -79,12 +88,11 @@ class CompassionMappedModel(models.AbstractModel):
                              if not specified.
         :return: A list or a dictionary with the odoo field name and the data.
         """
-        search_criterias = [('model_id.model', '=', self._name)]
+        search_criterias = [("model_id.model", "=", self._name)]
         if mapping_name:
-            search_criterias.append(('name', '=', mapping_name))
-        mapping = self.env['compassion.mapping'].search(
-            search_criterias, limit=1)
-        all_fields = mapping.json_spec_ids.filtered('field_id')
+            search_criterias.append(("name", "=", mapping_name))
+        mapping = self.env["compassion.mapping"].search(search_criterias, limit=1)
+        all_fields = mapping.json_spec_ids.filtered("field_id")
         res = []
         if not isinstance(json, list):
             json = [json]
@@ -94,10 +102,10 @@ class CompassionMappedModel(models.AbstractModel):
                 json_value = single_json.get(json_spec.json_name)
                 if json_spec.sub_mapping_id and json_value:
                     # Convert data using sub_mapping
-                    sub_model = self.env[
-                        json_spec.sub_mapping_id.model_id.model]
+                    sub_model = self.env[json_spec.sub_mapping_id.model_id.model]
                     sub_data = sub_model.json_to_data(
-                        json_value, json_spec.sub_mapping_id.name)
+                        json_value, json_spec.sub_mapping_id.name
+                    )
                     data.update(json_spec.from_json(sub_data))
                 else:
                     data.update(json_spec.from_json(json_value))

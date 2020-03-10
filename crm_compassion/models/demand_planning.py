@@ -9,11 +9,12 @@
 ##############################################################################
 
 from datetime import datetime
+
 from odoo import api, models
 
 
 class DemandPlanning(models.Model):
-    _inherit = 'demand.planning'
+    _inherit = "demand.planning"
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -25,36 +26,39 @@ class DemandPlanning(models.Model):
         """
         super().process_weekly_demand()
         today = datetime.today()
-        last_week_demand = self.env['demand.weekly.demand'].search([
-            ('week_end_date', '<', today),
-            ('demand_id.state', '=', 'sent')
-        ], order='week_end_date desc, id desc', limit=1)
+        last_week_demand = self.env["demand.weekly.demand"].search(
+            [("week_end_date", "<", today), ("demand_id.state", "=", "sent")],
+            order="week_end_date desc, id desc",
+            limit=1,
+        )
         if last_week_demand:
-            revision_obj = self.env['demand.weekly.revision']
+            revision_obj = self.env["demand.weekly.revision"]
             for type_tuple in revision_obj.get_revision_types():
                 type_tuple = type_tuple[0]
-                if type_tuple == 'web':
+                if type_tuple == "web":
                     demand = last_week_demand.number_children_website
                     resupply = last_week_demand.average_unsponsored_web
-                elif type_tuple == 'ambassador':
+                elif type_tuple == "ambassador":
                     demand = last_week_demand.number_children_ambassador
                     resupply = last_week_demand.average_unsponsored_ambassador
-                elif type_tuple == 'events':
+                elif type_tuple == "events":
                     demand = last_week_demand.number_children_events
                     resupply = last_week_demand.resupply_events
-                elif type_tuple == 'sub':
+                elif type_tuple == "sub":
                     demand = last_week_demand.number_sub_sponsorship
                     resupply = last_week_demand.resupply_sub
-                elif type_tuple == 'cancel':
+                elif type_tuple == "cancel":
                     demand = 0
                     resupply = last_week_demand.average_cancellation
-                revision_obj.create({
-                    'week_start_date': last_week_demand.week_start_date,
-                    'week_end_date': last_week_demand.week_end_date,
-                    'type': type_tuple,
-                    'demand': demand,
-                    'resupply': resupply,
-                })
+                revision_obj.create(
+                    {
+                        "week_start_date": last_week_demand.week_start_date,
+                        "week_end_date": last_week_demand.week_end_date,
+                        "type": type_tuple,
+                        "demand": demand,
+                        "resupply": resupply,
+                    }
+                )
 
         return True
 
@@ -64,5 +68,5 @@ class DemandPlanning(models.Model):
         All other weeks are computed each time.
         """
         search_filter = super()._search_week(start_date)
-        search_filter.append(('period_locked', '=', True))
+        search_filter.append(("period_locked", "=", True))
         return search_filter

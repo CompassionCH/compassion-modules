@@ -19,7 +19,7 @@
         </record>
 
         <!-- Add group to Administrator -->
-        <record id="base.user_root" model="res.users">
+        <record id="base.user_admin" model="res.users">
             <field name="groups_id" eval="[(4, ref('group_gmc_manager'))]"/>
         </record>
     </data>
