@@ -29,6 +29,7 @@ hr https://github.com/OCA/hr 11.0
 partner-contact
 queue
 report-print-send
+reporting-engine
 # sale-workflow https://github.com/OCA/sale-workflow branchname
 # server-tools
 server-ux

@@ -34,7 +34,11 @@
     "category": "Tools",
     "website": "http://www.serpentcs.com",
     'license': 'AGPL-3',
-    'depends': ['base', 'web'],
+    'depends': [
+        'base',
+        'web',
+        'report_wkhtmltopdf_param'    # OCA/reporting-engine
+    ],
     'data': [
         'views/label_config_view.xml',
         'views/label_print_view.xml',

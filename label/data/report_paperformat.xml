@@ -15,6 +15,10 @@
       <field name="header_spacing">0</field>
       <field name="dpi">96</field>
     </record>
+    <record id="paperformat_label_disable_smart_shrinking" model="report.paperformat.parameter">
+        <field name="paperformat_id" ref="paperformat_label"/>
+        <field name="name">--disable-smart-shrinking</field>
+    </record>
 
     <report id="dynamic_label" string="Qweb Label" model="label.print.wizard" name="label.report_label" report_type="qweb-pdf"/>
 
