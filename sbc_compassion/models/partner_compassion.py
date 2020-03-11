@@ -22,7 +22,6 @@ class ResPartner(models.Model):
     spoken_lang_ids = fields.Many2many(
         "res.lang.compassion",
         string="Spoken languages",
-        groups="child_compassion.group_sponsorship",
         readonly=False,
     )
     translator_email = fields.Char(
