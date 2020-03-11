@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from io import StringIO, BytesIO
+from io import BytesIO
 import logging
 import threading
 from html.parser import HTMLParser
@@ -557,7 +557,7 @@ class CommunicationJob(models.Model):
         #   pypdf-how-to-write-a-pdf-to-memory/
         self.ensure_one()
 
-        pdf_buffer = StringIO()
+        pdf_buffer = BytesIO()
         pdf_buffer.write(pdf_data)
 
         existing_pdf = PdfFileReader(pdf_buffer)
@@ -584,7 +584,7 @@ class CommunicationJob(models.Model):
                 page.mergePage(omr_layer)
             output.addPage(page)
 
-        out_buffer = StringIO()
+        out_buffer = BytesIO()
         output.write(out_buffer)
 
         return out_buffer.getvalue()

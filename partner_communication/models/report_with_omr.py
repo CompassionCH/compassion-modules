@@ -1,4 +1,4 @@
-from io import StringIO
+from io import BytesIO
 import logging
 
 from odoo import models, api
@@ -25,21 +25,21 @@ class OmrAwareReport(models.Model):
                 # We must reconstruct the PDF job by job.
                 output = PdfFileWriter()
                 for job in jobs:
-                    job_data = super().render_qweb_pdf(job.ids, data=data)
+                    job_data = super().render_qweb_pdf(job.ids, data=data)[0]
                     if job.omr_enable_marks:
                         is_latest_document = not job.attachment_ids.filtered(
                             'attachment_id.enable_omr'
                         )
                         job_data = job.add_omr_marks(job_data,
                                                      is_latest_document)
-                    pdf_buffer = StringIO()
+                    pdf_buffer = BytesIO()
                     pdf_buffer.write(job_data)
                     job_pdf = PdfFileReader(pdf_buffer)
                     for i in range(0, job_pdf.getNumPages()):
                         output.addPage(job_pdf.getPage(i))
-                out_buffer = StringIO()
+                out_buffer = BytesIO()
                 output.write(out_buffer)
                 res = out_buffer.getvalue()
-                return res
+                return res, 'pdf'
 
         return super().render_qweb_pdf(docids, data=data)
