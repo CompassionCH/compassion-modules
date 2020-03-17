@@ -48,6 +48,7 @@
         "data/ir.config_parameter.xml",
         "templates/assets.xml",
         "templates/form_widgets.xml",
+        "templates/payment_templates.xml",
         "views/ir_logging.xml",
     ],
     "demo": [],
