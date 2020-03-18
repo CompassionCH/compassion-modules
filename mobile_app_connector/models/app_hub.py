@@ -75,7 +75,6 @@ class AppHub(models.AbstractModel):
         unpaid_amounts = unpaid.mapped('total_amount')
 
         letters = self.env['correspondence'].search([
-            ('partner_id', '=', partner_id),
             ('sponsorship_id', 'in', sponsorships.ids)
         ],
             # Limit letters to avoid memory errors TODO Improve performance
