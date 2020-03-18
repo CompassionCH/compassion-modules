@@ -23,7 +23,7 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
 
     @route(
         ["/compassion/payment/invoice/<int:invoice_id>"],
-        type="http",
+        type="json",
         website=True,
         methods=["GET", "POST"],
         auth="public",
@@ -76,6 +76,12 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
             )
             request.session["compassion_transaction_id"] = transaction.id
 
+        render_values = self._get_shop_payment_values_from_invoice(invoice, **kwargs)
+
+        if render_values['errors']:
+            render_values.pop('acquirers', '')
+            render_values.pop('tokens', '')
+
         # store the new transaction into the transaction list and if there's an old one, we remove it
         # until the day the ecommerce supports multiple orders at the same time
         last_tx_id = request.session.get('__website_sale_last_tx_id')
@@ -84,7 +90,7 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
             PaymentProcessing.remove_payment_transaction(last_tx)
         PaymentProcessing.add_payment_transaction(transaction)
         request.session['__website_sale_last_tx_id'] = transaction.id
-        return transaction.render_sale_button(invoice)
+        return transaction.render_sale_button(invoice, render_values=render_values)
 
     # @route(
     #     ["/compassion/payment/invoice/<int:invoice_id>"],
@@ -334,9 +340,6 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
         return response
 
     def _get_shop_payment_values_from_invoice(self, invoice, **kwargs):
-        shipping_partner_id = False
-        if invoice:
-            shipping_partner_id = invoice.partner_id.id
 
         values = dict(
             website_sale_invoice=invoice,
@@ -344,7 +347,7 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
             partner=invoice.partner_id.id,
             invoice=invoice,
             payment_action_id=request.env.ref('payment.action_payment_acquirer').id,
-            return_url='/shop/payment/validate',
+            return_url='/compassion/payment/invoice/' + str(invoice.id),
             bootstrap_formatting=True
         )
 

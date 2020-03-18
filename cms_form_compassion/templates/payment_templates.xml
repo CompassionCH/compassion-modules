@@ -28,11 +28,11 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
                             </t>
                         </div>
                         <div class="col-12 col-xl order-xl-1 oe_cart">
-                            <div class="card">
-                                <div class="card-body" id="shipping_and_billing">
-                                    <a class='float-right no-decoration' href='/shop/checkout'><i class="fa fa-edit"/> Edit</a>
-                                </div>
-                            </div>
+<!--                            <div class="card">-->
+<!--                                <div class="card-body" id="shipping_and_billing">-->
+<!--                                    <a class='float-right no-decoration' href='/shop/checkout'><i class="fa fa-edit"/> Edit</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
 
                             <div class="oe_structure clearfix mt-3" id="oe_structure_website_sale_payment_1"/>
 
@@ -45,14 +45,15 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
                                     <t t-set="icon_class" t-value="'fa-chevron-right'"/>
                                     <t t-set="submit_class" t-value="'btn btn-primary'"/>
                                     <t t-set="pms" t-value="tokens"/>
-                                    <t t-set="form_action" t-value="'/shop/payment/token'"/>
-                                    <t t-set="prepare_tx_url" t-value="'/shop/payment/transaction/'"/>
+                                    <t t-set="form_action" t-value="'/compassion/payment/token'"/>
+                                    <t t-set="prepare_tx_url" t-value="'/compassion/payment/invoice/' + str(invoice.id)"/>
                                     <t t-set="partner_id" t-value="partner"/>
+                                    <t t-set="invoice_id" t-value="invoice.id"/>
 
                                     <t t-set="back_button_icon_class" t-value="'fa-chevron-left'"/>
                                     <t t-set="back_button_txt">Return to Cart</t>
                                     <t t-set="back_button_class" t-value="'btn btn-secondary'"/>
-                                    <t t-set="back_button_link" t-value="'/shop/cart'"/>
+<!--                                    <t t-set="back_button_link" t-value="'/shop/cart'"/>-->
                                 </t>
                             </div>
 
@@ -64,7 +65,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
                                 </a>
                             </div>
                             <div class="js_payment mt-3" t-if="not website_sale_invoice.amount_total" id="payment_method">
-                                <form target="_self" action="/compassion/payment/validate" method="post" class="float-right">
+                                <form target="_self" t-attf-action="/compassion/payment/invoice/#{invoice.id}" method="post" class="float-right">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                                     <a role="button" class="btn btn-primary a-submit" href="#">
                                         <span t-if="invoice.amount_total &gt; 0">Pay Now <span class="fa fa-chevron-right"></span></span>
