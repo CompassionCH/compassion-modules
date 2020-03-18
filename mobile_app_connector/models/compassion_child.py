@@ -118,9 +118,12 @@ class CompassionChild(models.Model):
 
         hobbies = child.translate('hobby_ids.value')
 
-        familyMembers = household.member_ids.filtered(
-            lambda x: not x.child_id or x.child_id.id != child.id).mapped(
-            lambda x: x.name.split(' ')[0] + ", " + x.translate('role'))
+        family_members = household.member_ids.filtered(
+            lambda x: 'Beneficiary' not in x.role and (
+                    not x.child_id or x.child_id.id != child.id)
+        ).mapped(
+            lambda x: x.name.replace(child.lastname, '').strip().split(' ')[0] + ", "
+            + x.translate('role'))
 
         if isinstance(hobbies, unicode):
             hobbies = [hobbies]
@@ -129,7 +132,7 @@ class CompassionChild(models.Model):
             guardians = [guardians]
 
         at = self.env['ir.advanced.translation'].sudo()
-        childBio = {
+        child_bio = {
             'educationLevel': self._lower(child.translate('education_level')),
             'academicPerformance': self._lower(child.translate(
                 'academic_performance')),
@@ -143,12 +146,12 @@ class CompassionChild(models.Model):
                 'female_guardian_job_type'),
             'hobbies': hobbies,
             'guardians': guardians,
-            'familyMembers': familyMembers,
+            'familyMembers': family_members,
             'notEnrolledReason': self._lower((child.not_enrolled_reason or ''))
         }
 
         result = {
-            'ChildBioServiceResult': childBio
+            'ChildBioServiceResult': child_bio
         }
         return result
 
