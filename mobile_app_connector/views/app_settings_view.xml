@@ -16,8 +16,8 @@
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div class="o_setting_right_pane">
                             <div class="row mt16">
-                                <label class="col-md-5 o_light_label" for="default_s2b_template_id"/>
-                                <field name="default_s2b_template_id"/>
+                                <label class="col-md-5 o_light_label" for="s2b_template_default_id"/>
+                                <field name="s2b_template_default_id"/>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,5 @@
 <odoo>
-    <data>
-        <!-- <data noupdate="1"> -->
+    <data noupdate="1">
         <!-- Create Gift Message -->
         <record id="create_gift" model="gmc.action">
             <field name="direction">out</field>

@@ -14,7 +14,7 @@ from odoo import api, models, fields
 class DemandPlanningSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
-    default_s2b_template_id = fields.Many2one(
+    s2b_template_default_id = fields.Many2one(
         "correspondence.template", "Default S2B template", readonly=False
     )
 
@@ -23,7 +23,7 @@ class DemandPlanningSettings(models.TransientModel):
         super().set_values()
         self.env["ir.config_parameter"].set_param(
             "mobile_app_connector.s2b_template",
-            str(self.default_s2b_template_id.id or 0),
+            str(self.s2b_template_default_id.id or 0),
         )
 
     @api.model
@@ -34,6 +34,6 @@ class DemandPlanningSettings(models.TransientModel):
             param_obj.get_param("mobile_app_connector.s2b_template", "0")
         )
         res.update(
-            {"default_s2b_template_id": s2b_template_id, }
+            {"s2b_template_default_id": s2b_template_id, }
         )
         return res

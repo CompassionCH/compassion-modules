@@ -150,7 +150,7 @@ class CompassionCorrespondence(models.Model):
             template_id = (
                 self.env["res.config.settings"]
                     .sudo()
-                    .get_param("default_s2b_template_id")
+                    .get_param("s2b_template_default_id")
             )
         attached_file = other_params.get("file_upl")
         datas = False
@@ -232,7 +232,7 @@ class CompassionCorrespondence(models.Model):
             template_id = (
                 self.env["res.config.settings"]
                     .sudo()
-                    .get_param("default_s2b_template_id")
+                    .get_param("s2b_template_default_id")
             )
         child_id = self._get_required_param("Need", params)
         if isinstance(child_id, list):
