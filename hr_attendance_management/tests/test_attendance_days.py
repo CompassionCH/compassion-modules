@@ -4,7 +4,6 @@
 import logging
 from datetime import datetime, timedelta
 
-from odoo import tools
 from odoo.tests import SavepointCase
 
 logger = logging.getLogger(__name__)
@@ -382,11 +381,9 @@ class TestAttendanceDays(SavepointCase):
         then we check that the paid hours is correct
         """
 
-        date_format = tools.DEFAULT_SERVER_DATETIME_FORMAT
-
         leave = self.pieter_leave_request
-        date_from = datetime.strptime(leave.date_from, date_format)
-        date_to = datetime.strptime(leave.date_to, date_format)
+        date_from = leave.date_from
+        date_to = leave.date_to
 
         date_data = [
             (True, date_from + timedelta(days=-1)),
@@ -395,11 +392,7 @@ class TestAttendanceDays(SavepointCase):
             (True, date_to),
         ]
 
-        data = {
-            date.strftime("%Y-%m-%d"): (in_leave, date) for in_leave, date in date_data
-        }
-
-        for date in data.keys():
+        for _, date in date_data:
             self.create_attendance_day(date, self.pieter.id)
             # self.env['hr.employee'].\
             #     _cron_create_attendance(
@@ -408,13 +401,13 @@ class TestAttendanceDays(SavepointCase):
 
         self.assertNotEqual(leave.attendance_day_ids, None)
 
-        for date, values in data.items():
+        for in_leave, date in date_data:
             att_day = self.pieter.attendance_days_ids.filtered(
                 lambda rd: rd.date == date
             )
             self.assertNotEqual(att_day, None)
 
-            if values[0]:
+            if in_leave:
                 if att_day.due_hours != 0:
                     self.assertNotEqual(att_day.paid_hours, att_day.due_hours)
             else:

@@ -18,7 +18,6 @@ from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from .product_names import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
 
 logger = logging.getLogger(__name__)
@@ -608,7 +607,7 @@ class SponsorshipContract(models.Model):
         period."""
         ids = str(self.ids)
         logger.info(f"suspension of contracts {ids} called")
-        date_start = datetime.today().strftime(DF)
+        date_start = date.today()
 
         config_obj = self.env["ir.config_parameter"].sudo()
         suspend_config = config_obj.get_param(
@@ -694,7 +693,7 @@ class SponsorshipContract(models.Model):
         or we change open invoices if fund is set to replace sponsorship
         product. We also change attribution of invoices paid in advance.
         """
-        date_start = datetime.today().strftime(DF)
+        date_start = date.today()
         config_obj = self.env["ir.config_parameter"]
         suspend_config = config_obj.get_param(
             "sponsorship_compassion.suspend_product_id"
@@ -1324,9 +1323,8 @@ class SponsorshipContract(models.Model):
         """
         for contract in self:
             if "S" in contract.type:
-                next_date = datetime.strptime(contract.next_invoice_date, DF)
+                next_date = contract.next_invoice_date
                 next_date += relativedelta(months=+1)
-                next_date = next_date.strftime(DF)
             else:
                 next_date = contract._compute_next_invoice_date()
             contract.next_invoice_date = next_date

@@ -92,9 +92,7 @@ class HrEmployeePeriod(models.Model):
     def _compute_display_of_end_date(self):
         for period in self:
             if period.end_date:
-                period.end_date_display = datetime.datetime.strptime(
-                    period.end_date, "%Y-%m-%d"
-                ) - datetime.timedelta(days=1)
+                period.end_date_display =period.end_date - datetime.timedelta(days=1)
 
     @api.depends("previous_period.final_balance")
     def _compute_final_balance(self):
@@ -243,9 +241,7 @@ class HrEmployeePeriod(models.Model):
     def handle_previous_period(
             self, previous_period, previous_overlapping_period, start_date, res
     ):
-        previous_end_date = datetime.datetime.strptime(
-            previous_period.end_date, "%Y-%m-%d"
-        )
+        previous_end_date = previous_period.end_date
         # Periods not overlapping and with the space for a new one
         if (
                 not previous_overlapping_period

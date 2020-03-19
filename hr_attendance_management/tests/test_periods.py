@@ -270,16 +270,10 @@ class TestPeriod(SavepointCase):
 
         previous_period = self.get_previous_period(start_date, self.jack.id)
         next_period = self.get_next_period(end_date, self.jack.id)
-        self.assertEquals(
-            datetime.strptime(previous_period.end_date, "%Y-%m-%d").date(),
-            start_date.date(),
-        )
+        self.assertEquals(previous_period.end_date, start_date.date())
         self.assertEquals(old_surrounding_start_date, previous_period.start_date)
         self.assertEquals(next_period.end_date, old_surrounding_end_date)
-        self.assertEquals(
-            datetime.strptime(next_period.start_date, "%Y-%m-%d").date(),
-            end_date.date(),
-        )
+        self.assertEquals(next_period.start_date, end_date.date())
 
         all_periods.unlink()
 
@@ -320,10 +314,7 @@ class TestPeriod(SavepointCase):
         )
 
         previous_period = self.get_previous_period(start_date, self.jack.id)
-        self.assertEquals(
-            datetime.strptime(previous_period.end_date, "%Y-%m-%d").date(),
-            start_date.date(),
-        )
+        self.assertEquals(previous_period.end_date, start_date.date())
         self.assertEquals(
             old_previous_overlapping_start_date, previous_period.start_date
         )
@@ -361,14 +352,8 @@ class TestPeriod(SavepointCase):
         )
 
         new_previous_period = self.get_previous_period(start_date, self.jack.id)
-        self.assertEquals(
-            datetime.strptime(old_previous_end_date, "%Y-%m-%d").date(),
-            datetime.strptime(new_previous_period.start_date, "%Y-%m-%d").date(),
-        )
-        self.assertEquals(
-            datetime.strptime(new_previous_period.end_date, "%Y-%m-%d").date(),
-            start_date.date(),
-        )
+        self.assertEquals(old_previous_end_date, new_previous_period.start_date)
+        self.assertEquals(new_previous_period.end_date, start_date.date())
 
         all_periods.unlink()
 
@@ -426,14 +411,8 @@ class TestPeriod(SavepointCase):
         self.assertEquals(
             new_previous_period.start_date, old_previous_overlapping_start_date
         )
-        self.assertEquals(
-            datetime.strptime(new_previous_period.end_date, "%Y-%m-%d").date(),
-            start_date.date(),
-        )
-        self.assertEquals(
-            datetime.strptime(new_next_period.start_date, "%Y-%m-%d").date(),
-            end_date.date(),
-        )
+        self.assertEquals(new_previous_period.end_date, start_date)
+        self.assertEquals(new_next_period.start_date, end_date)
         self.assertEquals(new_next_period.end_date, old_next_overlapping_end_date)
 
         all_periods.unlink()

@@ -102,7 +102,7 @@ class ReportDynamicLabel(models.TransientModel):
         return result
 
     @api.multi
-    def get_report_values(self, docids, data=None):
+    def _get_report_values(self, docids, data=None):
         if docids is None:
             docids = data["doc_ids"]
         label_print_records = self.env["label.print.wizard"].browse(docids)

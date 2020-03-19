@@ -14,8 +14,6 @@ from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import
     BaseSponsorshipTest,
 )
 
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
 logger = logging.getLogger(__name__)
 
 
@@ -75,27 +73,23 @@ class TestCrmCompassion(BaseSponsorshipTest):
         event = self._create_event(lead, "sport")
         self.assertEqual(event.calendar_event_id.duration, 9)
 
-        in_two_days = (datetime.today() + timedelta(days=2)).strftime(DF)
-        event.write(
-            {"end_date": in_two_days, }
-        )
+        in_two_days = datetime.today() + timedelta(days=2)
+        event.end_date = in_two_days.date()
         self.assertEqual(event.calendar_event_id.duration, 48)
 
         # The event duration should have a lower bound of 3 hours
-        event.write(
-            {"end_date": datetime.today().strftime(DF), }
-        )
+        event.write.end_date = datetime.today().date()
         self.assertEqual(event.calendar_event_id.duration, 3)
 
     def _create_event(self, lead, event_type):
         event_dico = lead.create_event()
-        now = datetime.today().strftime(DF)
+        now = datetime.today().date()
         event = self.env["crm.event.compassion"].create(
             {
                 "name": event_dico["context"]["default_name"],
                 "type": event_type,
                 "start_date": now,
-                "end_date": now + " 8:43:00",
+                "end_date": datetime.today().replace(hour=8, minute=43),
                 "hold_start_date": now,
                 "hold_end_date": now,
                 "number_allocate_children": 2,

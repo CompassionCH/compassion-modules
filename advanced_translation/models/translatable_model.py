@@ -122,7 +122,7 @@ class AdvancedTranslatable(models.AbstractModel):
         _lang = self.env.context.get("lang") or self.env.lang or "en_US"
         _format = self.env["ir.advanced.translation"].get(date_type)
         dates = sorted(
-            set(map(fields.Datetime.from_string, self.filtered(field).mapped(field)))
+            set(self.filtered(field).mapped(field))
         )
 
         dates = [format_datetime(d, _format, locale=_lang) for d in dates]
