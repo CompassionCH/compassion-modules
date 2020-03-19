@@ -89,7 +89,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         partner = self.partner_ids[0]
         template = email_template_id.with_context(lang=partner.lang)
         model = template.model or comm_model
-        preview_email = template.render_template(
+        preview_email = template._render_template(
             res_preview.body_html, model, res_preview.ids
         )[res_preview.id]
         return preview_email
@@ -259,10 +259,10 @@ class GenerateCommunicationWizard(models.TransientModel):
             template = model.email_template_id.with_context(
                 lang=self.force_language or self.env.context.lang
             )
-            new_subject = template.render_template(
+            new_subject = template._render_template(
                 self.subject, "partner.communication.job", communication.ids
             )
-            new_text = template.render_template(
+            new_text = template._render_template(
                 self.body_html, "partner.communication.job", communication.ids
             )
             communication.body_html = new_text[communication.id]

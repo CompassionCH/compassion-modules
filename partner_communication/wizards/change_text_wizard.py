@@ -48,7 +48,7 @@ class ChangeTextWizard(models.TransientModel):
             raise UserError(
                 _("You can only update text on one communication " "type at time.")
             )
-        new_texts = template.render_template(
+        new_texts = template._render_template(
             self.template_text, template.model, communications.ids
         )
         for comm in communications:
@@ -61,7 +61,7 @@ class ChangeTextWizard(models.TransientModel):
         context = self.env.context
         communication = self.env[context["active_model"]].browse(context["active_id"])
         template = communication.email_template_id
-        self.preview = template.render_template(
+        self.preview = template._render_template(
             self.template_text, template.model, communication.ids
         )[communication.id]
         self.state = "preview"

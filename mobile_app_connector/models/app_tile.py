@@ -196,9 +196,9 @@ class AppTile(models.Model):
             self.ensure_one()
             template_obj = self.env["mail.template"].with_context(objects=records)
             res = {
-                "Title": template_obj.render_template(self.title, self._name, self.id),
-                "Body": template_obj.render_template(self.body, self._name, self.id),
-                "ActionText": template_obj.render_template(
+                "Title": template_obj._render_template(self.title, self._name, self.id),
+                "Body": template_obj._render_template(self.body, self._name, self.id),
+                "ActionText": template_obj._render_template(
                     self.action_text, self._name, self.id
                 ),
                 "SortOrder": self.view_order,
@@ -207,10 +207,10 @@ class AppTile(models.Model):
 
             if self.prayer_title and self.prayer_body:
                 res["PrayerPoint"] = {
-                    "Body": template_obj.render_template(
+                    "Body": template_obj._render_template(
                         self.prayer_body, self._name, self.id
                     ),
-                    "Title": template_obj.render_template(
+                    "Title": template_obj._render_template(
                         self.prayer_title, self._name, self.id
                     ),
                 }

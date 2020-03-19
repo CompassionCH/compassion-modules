@@ -25,7 +25,7 @@ class LastWritingReport(models.Model):
     partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
     child_id = fields.Many2one("compassion.child", "Child", readonly=False)
     sponsorship_type = fields.Selection(related="sponsorship_id.type")
-    activation_date = fields.Date()
+    activation_date = fields.Datetime()
     first_write_date = fields.Date()
     last_write_date = fields.Date()
     time_to_first_writing = fields.Integer(help="In days")
