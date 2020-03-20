@@ -86,11 +86,19 @@ class CommunicationOmrConfig(models.Model):
     _name = 'partner.communication.omr.config'
     _inherit = 'partner.communication.orm.config.abstract'
 
-    config_id = fields.Many2one(
-        'partner.communication.config', 'Communication type')
+    config_id = fields.Many2one('partner.communication.config', 'Communication type')
     lang_id = fields.Many2one('res.lang', 'Language')
-    user_id = fields.Many2one(
-        'res.users', 'From', domain=[('share', '=', False)])
+    user_id = fields.Many2one('res.users', 'From', domain=[('share', '=', False)])
+
+
+class CommunicationPrinterConfig(models.Model):
+    _name = 'partner.communication.printer.config'
+
+    config_id = fields.Many2one('partner.communication.config', 'Communication type')
+    lang_id = fields.Many2one('res.lang', 'Language')
+
+    printer_input_tray_id = fields.Many2one('printing.tray.input', 'Paper Source')
+    printer_output_tray_id = fields.Many2one('printing.tray.output', 'Output Bin')
 
 
 class CommunicationConfig(models.Model):
@@ -134,6 +142,11 @@ class CommunicationConfig(models.Model):
         comodel_name='partner.communication.omr.config',
         inverse_name='config_id',
         string='OMR Configuration'
+    )
+    printer_config_ids = fields.One2many(
+        comodel_name='partner.communication.printer.config',
+        inverse_name='config_id',
+        string='Printer Configuration'
     )
     active = fields.Boolean(default=True)
 
@@ -183,11 +196,17 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     @api.multi
     def get_config_for_lang(self, lang):
+        omr_config = self.omr_config_ids.filtered(lambda c: not c.lang_id)[:1]
         for config in self.omr_config_ids:
             if config.lang_id == lang:
-                return config
+                omr_config = config
 
-        return self.omr_config_ids.filtered(lambda c: not c.lang_id)
+        printer_config = self.printer_config_ids.filtered(lambda c: not c.lang_id)[:1]
+        for config in self.printer_config_ids:
+            if config.lang_id == lang:
+                printer_config = config
+
+        return omr_config, printer_config
 
     @api.model
     def get_send_mode(self):

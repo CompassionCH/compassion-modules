@@ -36,7 +36,8 @@
     'website': 'http://www.compassion.ch',
     'license': 'AGPL-3',
     'depends': [
-        'base_report_to_printer'
+        'base_report_to_printer',
+        'printer_tray'
     ],
     'data': [
         'views/printing_printer.xml',

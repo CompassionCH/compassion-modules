@@ -71,7 +71,7 @@ class CommunicationAttachment(models.Model):
         return res
 
     @api.multi
-    def print_attachments(self):
+    def print_attachments(self, printer_output_tray_id=None):
         report_obj = self.env['report']
         total_attachment_with_omr = len(self.filtered(
             'attachment_id.enable_omr'
@@ -96,8 +96,8 @@ class CommunicationAttachment(models.Model):
             printer = behaviour['printer']
             if behaviour['action'] != 'client' and printer:
                 printer.with_context(
-                    print_name=self.env.user.firstname[:3] + ' ' +
-                    attachment.name
+                    print_name=self.env.user.firstname[:3] + ' ' + attachment.name,
+                    printer_output_tray_id=printer_output_tray_id
                 ).print_document(
                     attachment.report_name, to_print, report.report_type)
         return True
