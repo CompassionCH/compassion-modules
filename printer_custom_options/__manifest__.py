@@ -30,7 +30,7 @@
 # pylint: disable=C8101
 {
     'name': 'Report to printer - Custom Printer Options',
-    'version': '10.0.1.0.0',
+    'version': '10.0.1.0.1',
     'category': 'Printer',
     'author': 'Compassion CH',
     'website': 'http://www.compassion.ch',
