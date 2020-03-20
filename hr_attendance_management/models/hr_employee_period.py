@@ -92,7 +92,7 @@ class HrEmployeePeriod(models.Model):
     def _compute_display_of_end_date(self):
         for period in self:
             if period.end_date:
-                period.end_date_display =period.end_date - datetime.timedelta(days=1)
+                period.end_date_display = period.end_date - datetime.timedelta(days=1)
 
     @api.depends("previous_period.final_balance")
     def _compute_final_balance(self):
