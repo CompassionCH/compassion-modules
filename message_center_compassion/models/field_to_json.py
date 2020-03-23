@@ -108,6 +108,11 @@ class FieldToJson(models.Model):
         ):
             # Don't include null fields
             return {}
+        elif self.field_id.ttype == "datetime":
+            res[self.json_name] = fields.Datetime.to_string(odoo_value)
+        elif self.field_id.ttype == "date":
+            res[self.json_name] = fields.Date.to_string(odoo_value)
+
         return res
 
     def from_json(self, json_value):

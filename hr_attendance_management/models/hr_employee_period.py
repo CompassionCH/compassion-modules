@@ -241,9 +241,7 @@ class HrEmployeePeriod(models.Model):
     def handle_previous_period(
             self, previous_period, previous_overlapping_period, start_date, res
     ):
-        previous_end_date = datetime.datetime.strptime(
-            previous_period.end_date, "%Y-%m-%d"
-        )
+        previous_end_date = previous_period.end_date
         # Periods not overlapping and with the space for a new one
         if (
                 not previous_overlapping_period

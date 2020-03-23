@@ -415,6 +415,7 @@ class GmcMessage(models.Model):
             getattr(data_object, action.success_method)(answer_data)
             self.state = "success"
         except Exception as e:
+            logger.error(traceback.format_exc())
             self.env.cr.rollback()
             self.env.clear()
             if action.failure_method:

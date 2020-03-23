@@ -24,22 +24,18 @@ class BalanceEvolutionReport(models.TransientModel):
         last_history_entry = self.env["hr.employee.period"].search(
             [
                 ("employee_id", "=", employee.id),
-                ("end_date", "<=", str(datetime.date.today())),
+                ("end_date", "<=", datetime.date.today()),
             ],
             order="end_date desc",
             limit=1,
         )
 
-        start_date = None
         end_date = datetime.date.today()
-        balance = None
 
         if last_history_entry:
             # One day after last period
-            end_date = datetime.datetime.strptime(
-                last_history_entry.end_date, "%Y-%m-%d"
-            )
-            start_date = (end_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            end_date = last_history_entry.end_date
+            start_date = end_date + datetime.timedelta(days=1)
             balance = last_history_entry.balance
         else:
             config = self.env["res.config.settings"].create({})

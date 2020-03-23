@@ -8,13 +8,11 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime
+from datetime import date
 
 from odoo.addons.recurring_contract.tests.test_recurring_contract import (
     BaseContractTest,
 )
-
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 logger = logging.getLogger(__name__)
 
@@ -181,9 +179,9 @@ class TestContractCompassion(BaseContractCompassionTest):
             other_vals={"recurring_value": 1, "recurring_unit": "month"},
         )
         contract = self.create_contract(
-            datetime.today().strftime(DF),
+            date.today(),
             contract_group,
-            datetime.today().strftime(DF),
+            date.today(),
             other_vals={"type": "O"},
         )
         contract_group.write({"partner_id": self.partners.ids[1]})

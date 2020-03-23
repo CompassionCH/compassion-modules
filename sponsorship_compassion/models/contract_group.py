@@ -14,7 +14,6 @@ from datetime import datetime
 from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, fields, models
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from .product_names import GIFT_REF
 
 logger = logging.getLogger(__name__)
@@ -108,7 +107,7 @@ class ContractGroup(models.Model):
                     {
                         "description": "Automatic birthday gift",
                         "origin": "Automatic birthday gift",
-                        "invoice_date": datetime.today().strftime(DF),
+                        "invoice_date": datetime.today().date(),
                         "product_id": product_id,
                         "amount": 0.0,
                     }
