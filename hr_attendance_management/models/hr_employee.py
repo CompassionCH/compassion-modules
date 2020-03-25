@@ -3,11 +3,15 @@
 
 import datetime
 import logging
+import threading
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
+
+mutex = threading.Lock()
+cond = threading.Condition(mutex)
 
 
 class HrEmployee(models.Model):
@@ -53,6 +57,8 @@ class HrEmployee(models.Model):
                                  string='History Periods', readonly=True,
                                  compute="_compute_periods")
 
+    periods_computed = fields.Boolean(False)
+    updating_periods = fields.Boolean(False)
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -93,8 +99,12 @@ class HrEmployee(models.Model):
             employee.period_ids = self.env['hr.employee.period'].search([
                 ('employee_id', '=', employee.id)
             ], order="start_date asc")
+
             if len(employee.period_ids) != 0:
+                employee.updating_periods = True
                 employee.period_ids[0].update_period()
+                employee.updating_periods = False
+            employee.periods_computed = True
 
     @api.multi
     @api.depends('initial_balance', 'attendance_days_ids.paid_hours')
@@ -115,22 +125,28 @@ class HrEmployee(models.Model):
             end_date = fields.Date.today()
             final_balance = None
 
-            if employee.period_ids:
-                employee_history_sorted = \
-                    employee.period_ids.sorted(key=lambda r: r.end_date)
-                start_date = \
-                    fields.Date.from_string(employee_history_sorted[-1].end_date)
-                # If there is an history for this employee, take values of last
-                # period
-                if start_date < fields.Date.from_string(end_date):
-                    balance = employee_history_sorted[-1].final_balance
-                # If last period goes to today.
-                elif start_date == fields.Date.from_string(end_date):
-                    final_balance = employee_history_sorted[-1].final_balance
-                # If the period goes to today, recompute from 01.01.2018
-                else:
-                    start_date = config.\
-                        get_beginning_date_for_balance_computation()
+            with cond:
+                # _logger.info("waiting predicate")
+                cond.wait_for(employee.condition())
+                employee.periods_computed = False
+                # _logger.info("Condition passed")
+
+                if employee.period_ids:
+                    employee_history_sorted = \
+                        employee.period_ids.sorted(key=lambda r: r.end_date)
+                    start_date = \
+                        fields.Date.from_string(employee_history_sorted[-1].end_date)
+                    # If there is an history for this employee, take values of last
+                    # period
+                    if start_date < fields.Date.from_string(end_date):
+                        balance = employee_history_sorted[-1].final_balance
+                    # If last period goes to today.
+                    elif start_date == fields.Date.from_string(end_date):
+                        final_balance = employee_history_sorted[-1].final_balance
+                    # If the period goes to today, recompute from 01.01.2018
+                    else:
+                        start_date = config.\
+                            get_beginning_date_for_balance_computation()
 
             extra = None
             lost = None
@@ -141,7 +157,7 @@ class HrEmployee(models.Model):
             # it means there is a period with end_date == today
             # so we just assign the value. The cap is taken in consideration
             # here.
-            elif final_balance:
+            elif final_balance is not None:
                 max_extra_hours = self.env['res.config.settings'].create({}) \
                     .get_max_extra_hours()
                 bal = min(max_extra_hours, final_balance)
@@ -172,6 +188,18 @@ class HrEmployee(models.Model):
                                    previous_period_id,
                                    lost,
                                    employee.extra_hours_continuous_cap)
+        return True
+
+    def condition(self):
+        def predicate():
+            return self.periods_computed
+        if not predicate():
+            if not self.updating_periods:
+                # _logger.info("Computing periods")
+                self._compute_periods()
+        # _logger.info("Condition notified")
+        cond.notify(1)
+        return predicate
 
     def create_period(self, employee_id, start_date, end_date, balance,
                       previous_period, lost_hours, continuous_cap):
@@ -320,6 +348,7 @@ class HrEmployee(models.Model):
         """
         employees = self.search([])
         for employee in employees:
+            # if employee.id != 8:
             employee._compute_balance(store=True)
 
     @api.multi
