@@ -192,7 +192,7 @@ class RecurringContract(models.Model):
     def _set_next_invoice_date_sms(self):
         """ Just compute the default next_invoice_date for new sponsorship. """
         self.ensure_one()
-        current_date = datetime.today()
+        current_date = datetime.date.today()
         if self.group_id:
             contract_group = self.group_id
             if contract_group.next_invoice_date:
