@@ -114,8 +114,6 @@ class AccountInvoice(models.Model):
                 line._onchange_product_id()
                 line.price_unit = bckp_price
 
-            invoice.action_invoice_open()
-
         result['Donation'].append(invoice.id)
         return result
 
