@@ -120,10 +120,10 @@ class CompassionChild(models.Model):
 
         family_members = household.member_ids.filtered(
             lambda x: 'Beneficiary' not in x.role and (
-                not x.child_id or x.child_id.id != child.id)
-        ).mapped(
-            lambda x: x.name.replace(child.lastname, '').strip().split(' ')[0] + ", "
-            + x.translate('role'))
+                not x.child_id or x.child_id.id != child.id)).mapped(
+            lambda x: x.name.replace(
+                child.lastname, '').strip().split(
+                ' ')[0] + ", " + x.translate('role'))
 
         if isinstance(hobbies, unicode):
             hobbies = [hobbies]

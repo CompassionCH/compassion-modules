@@ -121,6 +121,9 @@ class CommunicationJob(models.Model):
                                          compute='_compute_void',
                                          inverse='_inverse_ir_attachment_tmp')
 
+    printer_output_tray_id = fields.Many2one('printing.tray.output',
+                                             'Printer Output Bin')
+
     def _compute_ir_attachments(self):
         for job in self:
             job.ir_attachment_ids = job.mapped('attachment_ids.attachment_id')
@@ -289,7 +292,7 @@ class CommunicationJob(models.Model):
             lang=lang_of_partner.code)
 
         # Determine user by default : take in config or employee
-        omr_config = config.get_config_for_lang(lang_of_partner)[:1]
+        omr_config, printer_config = config.get_config_for_lang(lang_of_partner)
         if not vals.get('user_id'):
             # responsible for the communication is user specified in the omr_config
             # or user specified in the config itself
@@ -300,6 +303,11 @@ class CommunicationJob(models.Model):
             elif config.user_id:
                 user_id = config.user_id.id
             vals['user_id'] = user_id
+
+        if not vals.get('printer_output_tray_id'):
+            if printer_config.printer_output_tray_id:
+                vals['printer_output_tray_id'] = \
+                    printer_config.printer_output_tray_id.id
 
         # Check all default_vals fields
         for default_val in default_vals:
@@ -706,14 +714,17 @@ class CommunicationJob(models.Model):
             # Print letter
             report = job.report_id
             behaviour = report.behaviour()[report.id]
-            printer = behaviour['printer'] \
-                .with_context(lang=job.partner_id.lang)
+            printer = behaviour['printer'].with_context(
+                lang=job.partner_id.lang,
+                printer_output_tray_id=self.printer_output_tray_id,
+            )
             if behaviour['action'] != 'client' and printer:
                 printer.print_document(
                     report.report_name, to_print, report.report_type)
 
             # Print attachments
-            job.attachment_ids.print_attachments()
+            job.attachment_ids.print_attachments(
+                printer_output_tray_id=self.printer_output_tray_id)
             job.write({
                 'state': 'call' if job.need_call == 'after_sending'
                 else 'done',
