@@ -716,7 +716,7 @@ class CommunicationJob(models.Model):
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer'].with_context(
                 lang=job.partner_id.lang,
-                printer_output_tray_id=self.printer_output_tray_id,
+                printer_output_tray_id=job.printer_output_tray_id,
             )
             if behaviour['action'] != 'client' and printer:
                 printer.print_document(
@@ -724,7 +724,7 @@ class CommunicationJob(models.Model):
 
             # Print attachments
             job.attachment_ids.print_attachments(
-                printer_output_tray_id=self.printer_output_tray_id)
+                printer_output_tray_id=job.printer_output_tray_id)
             job.write({
                 'state': 'call' if job.need_call == 'after_sending'
                 else 'done',
