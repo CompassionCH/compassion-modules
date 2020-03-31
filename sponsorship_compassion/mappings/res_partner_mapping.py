@@ -12,6 +12,27 @@ from odoo.addons.message_center_compassion.mappings.base_mapping import \
     OnrampMapping
 
 
+def _gender_mapping(res_title):
+    male = 'Male'
+    female = 'Female'
+    unknown = 'Unkown'
+    unset = 'Not Applicable'
+    title_mapping = {
+        'Mister': male,
+        'Madam': female,
+        'Miss': female,
+        'Doctor': unknown,
+        'Professor': unknown,
+        'Misters': male,
+        'Ladies': female,
+        'Mister and Madam': unset,
+        'Friends of Compassion': unset,
+        'Family': unset,
+    }
+    title = res_title.with_context(lang='en_US').name
+    return title_mapping.get(title, unknown)
+
+
 class ResPartnerMapping(OnrampMapping):
     """ This class contains the mapping between Odoo fields and GMC field
     names for the model Res Partner.
@@ -32,9 +53,7 @@ class ResPartnerMapping(OnrampMapping):
     }
 
     FIELDS_TO_SUBMIT = {
-        'Gender': lambda title:
-            title.gender if title.with_context(lang='en_US').name in
-            ['Mister', 'Madam', 'Misters', 'Ladies'] else None,
+        'Gender': lambda title: _gender_mapping(title),
         'MandatoryReviewRequired': None,
         'PreferredName': None,
         'CorrespondenceDeliveryPreference':
