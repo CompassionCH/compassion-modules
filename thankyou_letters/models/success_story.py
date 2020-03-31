@@ -27,7 +27,7 @@ class SuccessStory(models.Model):
     type = fields.Selection(
         [("story", "Story"), ("sentence", "Sentence")], default="story", required=True
     )
-    body = fields.Html(translate=True)
+    body = fields.Html(translate=True, sanitize=False)
     body_text = fields.Text(translate=True)
     date_start = fields.Date(
         readonly=True, states={"new": [("readonly", False)]}, copy=False
