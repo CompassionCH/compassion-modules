@@ -9,7 +9,7 @@
 
 import logging
 
-from odoo import api, models, fields
+from odoo import api, models, fields, _
 
 _logger = logging.getLogger(__name__)
 
@@ -70,6 +70,22 @@ class PaymentTransaction(models.Model):
                     transaction, invoice_vals, journal_id, method_id, auto_post
                 )
         return True
+
+    def render_sale_button(self, invoice, submit_txt=None, render_values=None):
+        values = {
+            "partner_id": self.partner_id.id,
+            "billing_partner_id": self.partner_id.id,
+        }
+        if render_values:
+            values.update(render_values)
+        # Not very elegant to do that here but no choice regarding the design.
+        self._log_payment_transaction_sent()
+        return self.acquirer_id.with_context(submit_class='btn btn-primary', submit_txt=submit_txt or _('Pay Now')).sudo().render(
+            self.reference,
+            invoice.amount_total,
+            invoice.company_id.currency_id.id,
+            values=values,
+        )
 
     def _get_payment_invoice_vals(self):
         # Can be overridden to add information from transaction into invoice.

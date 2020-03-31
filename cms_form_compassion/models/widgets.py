@@ -22,7 +22,7 @@ class PaymentAcquirer(models.AbstractModel):
         """ Form must have field amount and currency_id. """
         widget = super().widget_init(form, fname, field, **kw)
         widget.w_acquirers = self.env["payment.acquirer"].search(
-            [("is_published", "=", True)]
+            [("website_published", "=", True)]
         )
         return widget
 
