@@ -33,3 +33,10 @@ class PaymentTransaction(models.Model):
         """
         self.cancel_mobile_transaction()
         return super(PaymentTransaction, self).cancel_transaction_on_update()
+
+    def _get_payment_invoice_vals(self):
+        # For mobile invoices, push the reference of transaction into invoice.
+        vals = super(PaymentTransaction, self)._get_payment_invoice_vals()
+        if self.invoice_id.origin in ["ios", "android"]:
+            vals["name"] = self.reference
+        return vals

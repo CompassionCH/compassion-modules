@@ -25,14 +25,23 @@
                             <field name="report_id"/>
                             <field name="attachments_function"/>
                         </group>
-                        <field name="omr_config_ids" context="{'default_config_id': active_id}" nolabel="1">
+                        <field name="printer_config_ids" context="{'default_config_id': active_id}">
                             <tree>
-                                <field name="config_id"/>
+                                <field name="lang_id"/>
+                                <field name="printer_input_tray_id"/>
+                                <field name="printer_output_tray_id"/>
+                            </tree>
+                        </field>
+                        <field name="omr_config_ids" context="{'default_config_id': active_id}">
+                            <tree>
                                 <field name="lang_id"/>
                                 <field name="omr_enable_marks"/>
-                                <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                                <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                                <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                                <field name="omr_should_close_envelope"
+                                       attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                                <field name="omr_add_attachment_tray_1"
+                                       attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                                <field name="omr_add_attachment_tray_2"
+                                       attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
                             </tree>
                         </field>
                     </group>

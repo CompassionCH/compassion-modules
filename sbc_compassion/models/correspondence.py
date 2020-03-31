@@ -71,7 +71,7 @@ class Correspondence(models.Model):
     )
     name = fields.Char(compute="_compute_name")
     partner_id = fields.Many2one(
-        related="sponsorship_id.correspondent_id", store=True, readonly=False
+        "res.partner", "Partner", readonly=True, ondelete="restrict"
     )
     child_id = fields.Many2one(
         related="sponsorship_id.child_id", store=True, readonly=False
@@ -482,6 +482,10 @@ class Correspondence(models.Model):
 
         if vals.get("store_letter_image", True) is False:
             vals["letter_image"] = False
+
+        if "partner_id" not in vals:
+            sp = self.env["recurring.contract"].browse(vals["sponsorship_id"])
+            vals["partner_id"] = sp.correspondent_id.id
 
         type_ = ".pdf"
         letter_data = False
