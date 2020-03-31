@@ -13,7 +13,7 @@ regex
 simplejson
 detectlanguage
 timezonefinder==3.4.2
-firebase-admin
+firebase-admin==3.2.1
 pytz
 pyzbar
 pillow
