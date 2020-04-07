@@ -107,11 +107,6 @@ if not testing:
             )
             return statement.text
 
-        @property
-        def form_msg_success_updated(self):
-            # override to remove text saying item updated after registration
-            return
-
         # Form submission
         #################
         def form_before_create_or_update(self, values, extra_values):

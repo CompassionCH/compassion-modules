@@ -40,6 +40,16 @@ if not testing:
         def _payment_error_redirect(self):
             return ""
 
+        @property
+        def form_msg_success_updated(self):
+            # override to remove text saying item updated.
+            return
+
+        @property
+        def form_msg_success_created(self):
+            # override to remove text saying item created.
+            return
+
         def form_next_url(self, main_object=None):
             # Redirect to payment controller
             return (
