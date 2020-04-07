@@ -1,9 +1,10 @@
 # Copyright 2017 Simone Orsi
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-
+import base64
 from datetime import datetime
 
 from odoo import models
+from odoo.tools import pycompat
 
 
 class HiddenWidget(models.AbstractModel):
@@ -46,6 +47,22 @@ class SimpleImage(models.AbstractModel):
     _inherit = "cms.form.widget.image"
     _w_template = "cms_form_compassion.field_widget_image_simple"
 
+    def w_extract(self, **req_values):
+        """
+        - Save uploaded picture in storage to reload it in case of
+        validation error (to avoid the user to have to re-upload it).
+        - Set keepcheck to no, allows to override existing image in any case. """
+        req_values.setdefault(self.w_fname + "_keepcheck", "no")
+        value = req_values.get(self.w_fname)
+        if hasattr(value, "seek"):
+            value.seek(0)
+        if value:
+            value = self.form_to_binary(value, **req_values)
+            self.w_form.request.session[self.w_fname] = value
+        else:
+            value = self.w_form.request.session.get(self.w_fname)
+        return value
+
 
 class SimpleImageRequired(models.AbstractModel):
     _name = "cms_form_compassion.form.widget.simple.image.required"
@@ -55,16 +72,8 @@ class SimpleImageRequired(models.AbstractModel):
 
 class Document(models.AbstractModel):
     _name = "cms_form_compassion.form.widget.document"
-    _inherit = "cms.form.widget.binary.mixin"
+    _inherit = "cms_form_compassion.form.widget.simple.image"
     _w_template = "cms_form_compassion.field_widget_document"
-
-    def w_extract(self, **req_values):
-        req_values.setdefault(self.w_fname + "_keepcheck", "no")
-        value = req_values.get(self.w_fname)
-        if hasattr(value, "seek"):
-            value.seek(0)
-
-        return self.form_to_binary(value, **req_values)
 
 
 class ReadonlyWidget(models.AbstractModel):
