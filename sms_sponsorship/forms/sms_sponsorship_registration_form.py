@@ -36,13 +36,19 @@ if not testing:
 
         @property
         def _payment_accept_redirect(self):
-            return "/sms_sponsorship/step2/" + str(self.main_object.id) + "/confirm"
+            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
+                   "/confirm?payment=success"
+
+        @property
+        def _payment_error_redirect(self):
+            return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
+                   "/confirm?payment=error"
 
         @property
         def form_title(self):
             return (
-                _("Confirm your sponsorship for %s ")
-                % self.main_object.sudo().child_id.preferred_name
+                    _("Confirm your sponsorship for %s ")
+                    % self.main_object.sudo().child_id.preferred_name
             )
 
         @property
@@ -77,8 +83,7 @@ if not testing:
             fieldset.append(
                 {
                     "id": "payment",
-                    "title": _("Payment Method"),
-                    "fields": ["payment_mode_id", "gtc_accept", "amount"],
+                    "fields": ["gtc_accept"],
                 }
             )
             return fieldset
@@ -89,17 +94,11 @@ if not testing:
             res = super().form_widgets
             res.update(
                 {
-                    "amount": "cms_form_compassion.form.widget.hidden",
-                    "acquirer_ids": "cms_form_compassion.form.widget.payment.hidden",
                     "gtc_accept": "cms_form_compassion.form.widget.terms",
                     "partner_birthdate": "cms.form.widget.date.ch",
                 }
             )
             return res
-
-        @property
-        def _default_amount(self):
-            return self.main_object.total_amount
 
         @property
         def gtc(self):
@@ -126,14 +125,13 @@ if not testing:
             return True
 
         def form_after_create_or_update(self, values, extra_values):
-            delay = datetime.now() + timedelta(seconds=3)
             sponsorship = self.main_object.sudo()
             pay_first_month_ebanking = extra_values.get("pay_first_month_ebanking")
-            sponsorship.with_delay(eta=delay).finalize_form(
+            sponsorship.with_delay().finalize_form(
                 pay_first_month_ebanking, values["payment_mode_id"]
             )
             if pay_first_month_ebanking and sponsorship.sms_request_id.new_partner:
-                delay = datetime.now() + timedelta(seconds=5)
+                delay = datetime.now() + timedelta(milliseconds=10)
                 sponsorship.with_delay(eta=delay).create_first_sms_invoice()
             message_post_values = self._get_post_message_values(extra_values)
             if message_post_values:
@@ -148,6 +146,11 @@ if not testing:
                 sponsorship.with_delay().post_message_from_step2(body)
             # Store payment setting for redirection
             self.pay_first_month_ebanking = pay_first_month_ebanking
+            super().form_after_create_or_update(values, extra_values)
+
+        def generate_invoice(self):
+            # Return a sponsorship invoice
+            return self.main_object.sudo().invoice_line_ids.mapped('invoice_id')[0:]
 
         def form_next_url(self, main_object=None):
             if self.pay_first_month_ebanking:

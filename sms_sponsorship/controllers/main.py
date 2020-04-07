@@ -208,7 +208,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             raise NotFound()
 
     @route(
-        "/sms_sponsorship/step2/<int:sponsorship_id>/" "confirm",
+        "/sms_sponsorship/step2/<int:sponsorship_id>/confirm",
         type="http",
         auth="public",
         methods=["GET"],
@@ -227,22 +227,17 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         """
         sponsorship = request.env["recurring.contract"].sudo().browse(sponsorship_id)
         values = {"sponsorship": sponsorship}
-        try:
-            tx = (
-                request.env["payment.transaction"]
-                .sudo()
-                ._ogone_form_get_tx_from_data(post)
-            )
-        except ValidationError:
-            tx = None
-
-        if tx and tx.state != "done" or post.get("error"):
-            request.website.add_status_message(
-                _(
-                    "The payment was not successful, but your sponsorship has "
-                    "still been activated! You will be able to pay later using "
-                    "your selected payment method."
-                ),
-                type_="danger",
-            )
+        web_payment = post.get("payment")
+        if web_payment:
+            if web_payment == "success":
+                sponsorship.sms_request_id.complete_step2()
+            else:
+                request.website.add_status_message(
+                    _(
+                        "The payment was not successful, but your sponsorship has "
+                        "still been activated! You will be able to pay later using "
+                        "your selected payment method."
+                    ),
+                    type_="danger",
+                )
         return request.render("sms_sponsorship.sms_registration_confirmation", values)
