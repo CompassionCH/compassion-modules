@@ -47,8 +47,8 @@ if not testing:
         @property
         def form_title(self):
             return (
-                    _("Confirm your sponsorship for %s ")
-                    % self.main_object.sudo().child_id.preferred_name
+                _("Confirm your sponsorship for %s ")
+                % self.main_object.sudo().child_id.preferred_name
             )
 
         @property

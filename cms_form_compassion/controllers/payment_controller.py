@@ -8,18 +8,13 @@
 ##############################################################################
 import json
 
-from odoo.addons.cms_form.controllers.main import FormControllerMixin
-from odoo.addons.portal.controllers.portal import CustomerPortal
 from werkzeug.exceptions import NotFound
-from odoo.addons.payment.controllers.portal import PaymentProcessing
 
-from odoo import _
 from odoo.exceptions import MissingError
-from odoo.http import request, route, Response
-from odoo.osv import expression
+from odoo.http import request, route, Response, Controller
 
 
-class PaymentFormController(CustomerPortal, FormControllerMixin):
+class PaymentFormController(Controller):
 
     @route(
         ["/compassion/payment/invoice/<int:invoice_id>"],

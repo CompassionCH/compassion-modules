@@ -16,7 +16,6 @@ from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from werkzeug.exceptions import NotFound
 
 from odoo import _
-from odoo.exceptions import ValidationError
 from odoo.http import request, route, Controller
 
 _logger = logging.getLogger(__name__)
