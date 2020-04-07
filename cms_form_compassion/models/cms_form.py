@@ -27,6 +27,21 @@ class CMSForm(models.AbstractModel):
 
     _form_validators = {"date": _form_validate_date_fields}
 
+    @property
+    def submit_icon(self):
+        return ""
+
+    @property
+    def submit_text(self):
+        return _("Submit")
+
+    def form_make_field_wrapper_klass(self, fname, field, **kw):
+        """ Allow to hide fields. """
+        res = super().form_make_field_wrapper_klass(fname, field, **kw)
+        if "field-hidden" in field["widget"]._w_css_klass:
+            res += " field-hidden"
+        return res
+
     #######################################################################
     #                          Errors logging                             #
     #######################################################################

@@ -1,10 +1,7 @@
 # Copyright 2017 Simone Orsi
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-import base64
 from datetime import datetime
-
 from odoo import models
-from odoo.tools import pycompat
 
 
 class HiddenWidget(models.AbstractModel):
