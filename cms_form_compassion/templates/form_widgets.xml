@@ -5,21 +5,18 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 <odoo>
     <!-- Display a form in modal popup -->
     <template id="modal_form" name="CMS Modal Form">
-        <div t-att-id="form.form_id" class="modal fade cms_modal_form"
-             tabindex="-1" role="dialog" aria-labelledby="donation_modal_label"
-             aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
+        <div t-att-id="form.form_id" class="modal fade cms_modal_form" tabindex="-1" role="dialog" aria-labelledby="donation_modal_label" aria-hidden="true">
+            <!-- TODO Replace by modal-xl when Bootstrap 4.2 is supported by Odoo -->
+            <div class="modal-dialog modal-lg" role="document">
                 <div t-attf-class="modal-content {{form.form_wrapper_css_klass}}">
                     <div class="modal-body">
                         <t t-if="form.form_title">
                             <h2>
-                                <span class="form_title"
-                                      t-esc="form.form_title"/>
+                                <span class="form_title" t-esc="form.form_title"/>
                             </h2>
                         </t>
                         <t t-if="form.form_description">
-                            <p class="form_description"
-                               t-esc="form.form_description"/>
+                            <p class="form_description" t-esc="form.form_description"/>
                         </t>
                         <t t-raw="form.form_render()"/>
                     </div>
@@ -34,6 +31,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
             <div class="col-sm-9 col-sm-offset-3">
                 <a class="btn btn-default" data-dismiss="modal">Cancel</a>
                 <button type="submit" class="btn btn-primary">
+                    <i t-attf-class="fa {{form.submit_icon}}"/>
                     <t t-esc="form.submit_text"/>
                 </button>
             </div>

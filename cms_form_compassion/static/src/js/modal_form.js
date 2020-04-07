@@ -2,6 +2,8 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
     "use strict";
     var PaymentForm = require('payment.payment_form');
     var Widget = require("web.Widget");
+    var core = require('web.core');
+    var _t = core._t;
 
     var ModalForm = Widget.extend({
         events: {
@@ -13,14 +15,17 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
             var modal = this.$el;
             var modal_form = modal.find("form");
             var form_id = modal.attr('id');
+            var button = $(event.target).find('button[type="submit"]').first();
+            var fa_class = button.children('.fa').attr("class");
+            if (fa_class) {
+                fa_class = fa_class.split(/\s+/)[1]
+            } else {
+                fa_class = "";
+            }
             // Prevent direct submission
             event.preventDefault();
             // Show spinner
-            var btn = $(event.target).find('button[type="submit"]').first();
-            btn.attr('data-loading-text',
-                '<i class="fa fa-circle-o-notch fa-spin" ' +
-                'style="margin-right: 5px;"></i>'+btn.text());
-            btn.button('loading');
+            self.disableButton(button, fa_class);
             // Send form in ajax (remove translation url)
             var post_url = window.location.pathname;
             var form_data = new FormData(modal_form[0]);
@@ -64,6 +69,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                         self.on_receive_back_html_result(data);
                         btn.button('reset');
                     }
+                    self.enableButton(button, fa_class);
                 },
                 error: function (data) {
                     // HTML page is sent back as error
@@ -89,11 +95,10 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                         var token_regex = /csrf_token: "(.*)"/;
                         var match = token_regex.exec(data.responseText);
                         if (match !== null) {
-                            token = match[1];
-                            $('input[name=\'csrf_token\']').val(token);
+                            $('input[name=\'csrf_token\']').val(match[1]);
                         }
                     }
-                    btn.button('reset');
+                    self.enableButton(button, fa_class);
                 }
              });
         },
@@ -130,7 +135,19 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                     modal.find('.modal-body form').replaceWith(content.html());
                 }
             }
-        }
+        },
+
+        disableButton: function (button, fa_class) {
+            $(button).attr('disabled', true);
+            $(button).children('.fa').removeClass(fa_class);
+            $(button).prepend('<span class="o_loader"><i class="fa fa-refresh fa-spin"></i>&nbsp;</span>');
+        },
+
+        enableButton: function (button, fa_class) {
+            $(button).attr('disabled', false);
+            $(button).children('.fa').addClass(fa_class);
+            $(button).find('span.o_loader').remove();
+        },
     });
 
     $(function () {

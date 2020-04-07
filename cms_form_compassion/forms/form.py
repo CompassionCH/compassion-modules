@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from odoo import models, tools
+from odoo import models, tools, _
 
 testing = tools.config.get("test_enable")
 
@@ -17,6 +17,14 @@ if not testing:
 
     class Form(models.AbstractModel):
         _inherit = "cms.form"
+
+        @property
+        def submit_icon(self):
+            return ""
+
+        @property
+        def submit_text(self):
+            return _("Save")
 
         def form_make_field_wrapper_klass(self, fname, field, **kw):
             """ Allow to hide fields. """
