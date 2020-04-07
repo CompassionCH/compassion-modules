@@ -1,82 +1,62 @@
-
-    <!--
-Copyright 2019 Emanuel Cino
+<!--
+Copyright 2020 Emanuel Cino
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 -->
 <odoo>
-    <template id="new_payment" name="Payment">
+    <!-- Called if loaded invoice has already been paid -->
+    <template id="payment_already_done" name="Invoice already paid">
         <t t-call="website.layout">
-            <t t-set="additional_title">Shop - Select Payment Acquirer</t>
-            <t t-set="no_footer">1</t>
-
             <div id="wrap">
-                <div class="container oe_website_sale py-2">
-                    <div class="row">
-                        <div class='col-12'>
-                            <t t-call="website_sale.wizard_checkout">
-                                <t t-set="step" t-value="40" />
-                            </t>
-                        </div>
-                        <div class="col-12" t-if="errors">
-                            <t t-foreach="errors" t-as="error">
-                                <div class="alert alert-danger" t-if="error" role="alert">
-                                    <h4>
-                                        <t t-esc="error[0]" />
-                                    </h4>
-                                    <t t-esc="error[1]" />
-                                </div>
-                            </t>
-                        </div>
-                        <div class="col-12 col-xl order-xl-1 oe_cart">
-<!--                            <div class="card">-->
-<!--                                <div class="card-body" id="shipping_and_billing">-->
-<!--                                    <a class='float-right no-decoration' href='/shop/checkout'><i class="fa fa-edit"/> Edit</a>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                <div class="container">
+                    <div class="text-center">
+                        <p>This invoice has already been paid.</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 
-                            <div class="oe_structure clearfix mt-3" id="oe_structure_website_sale_payment_1"/>
-
-                            <div id="payment_method" class="mt-3" t-if="(acquirers or tokens) and website_sale_invoice.amount_total">
-                                <h3 class="mb24">Pay with </h3>
+    <!-- Called after submission of form, display form for redirecting to Payment Provider -->
+    <template id="modal_payment_submit" name="Payment form redirection page">
+        <div class="text-center">
+            <p>Thank you for your submission. Please select the payment method and you will be redirected securely to
+                the payment provider.
+            </p>
+            <t t-set="tx_ids"
+               t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('authorized', 'done'))"/>
+            <div t-if="not tx_ids and invoice.state == 'open' and invoice.amount_total" id="payment_compassion">
+                <div t-if="pms or acquirers" id="payment_method">
+                    <!-- Portal payment code from account_payment.portal_invoice_payment -->
+                    <div class="row" id="portal_pay">
+                        <div id="pay_with">
+                            <h3 class="modal-title">Pay with</h3>
+                            <div t-if="pms or acquirers" id="payment_method" class="text-left col-md-13">
                                 <t t-call="payment.payment_tokens_list">
                                     <t t-set="mode" t-value="'payment'"/>
+                                    <t t-set="partner_id"
+                                       t-value="invoice.partner_id.id if request.env.user._is_public() else request.env.user.partner_id.id"/>
+                                    <t t-set="callback_method" t-value="''"/> <!-- TODO -->
+                                    <t t-set="form_action"
+                                       t-value="'/invoice/pay/' + str(invoice.id) + '/s2s_token_tx/'"/>
+                                    <t t-set="prepare_tx_url"
+                                       t-value="'/invoice/pay/' + str(invoice.id) + '/form_tx/'"/>
                                     <t t-set="submit_txt">Pay Now</t>
-                                    <t t-set="icon_right" t-value="1"/>
-                                    <t t-set="icon_class" t-value="'fa-chevron-right'"/>
-                                    <t t-set="submit_class" t-value="'btn btn-primary'"/>
-                                    <t t-set="pms" t-value="tokens"/>
-                                    <t t-set="form_action" t-value="'/compassion/payment/token'"/>
-                                    <t t-set="prepare_tx_url" t-value="'/compassion/payment/invoice/' + str(invoice.id)"/>
-                                    <t t-set="partner_id" t-value="partner"/>
-                                    <t t-set="invoice_id" t-value="invoice.id"/>
-
-                                    <t t-set="back_button_icon_class" t-value="'fa-chevron-left'"/>
-                                    <t t-set="back_button_txt">Return to Cart</t>
-                                    <t t-set="back_button_class" t-value="'btn btn-secondary'"/>
-<!--                                    <t t-set="back_button_link" t-value="'/shop/cart'"/>-->
+                                    <t t-set="icon_class" t-value="'fa-lock'"/>
                                 </t>
-                            </div>
-
-                            <div t-if="not acquirers" class="mt-2">
-                                <a role="button" class="btn-link"
-                                    groups="base.group_system"
-                                    t-attf-href="/web#return_label=Website&amp;action=#{payment_action_id}">
-                                        <i class="fa fa-arrow-right"></i> Add payment acquirers
-                                </a>
-                            </div>
-                            <div class="js_payment mt-3" t-if="not website_sale_invoice.amount_total" id="payment_method">
-                                <form target="_self" t-attf-action="/compassion/payment/invoice/#{invoice.id}" method="post" class="float-right">
-                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-                                    <a role="button" class="btn btn-primary a-submit" href="#">
-                                        <span t-if="invoice.amount_total &gt; 0">Pay Now <span class="fa fa-chevron-right"></span></span>
-                                        <span t-if="invoice.amount_total == 0">Confirm Order <span class="fa fa-chevron-right"></span></span>
-                                    </a>
-                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="oe_structure" id="oe_structure_website_sale_payment_2"/>
+            </div>
+        </div>
+    </template>
+
+    <template id="payment_submit_full" name="Payment redirection page">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <t t-call="cms_form_compassion.modal_payment_submit"/>
+                </div>
             </div>
         </t>
     </template>

@@ -159,6 +159,10 @@ if not testing:
 
             values["partner_id"] = partner.id
 
+        def form_after_create_or_update(self, values, extra_values):
+            self.partner_id = values.get("partner_id")
+            super().form_after_create_or_update(values, extra_values)
+
         #######################################################################
         #                         PRIVATE METHODS                             #
         #######################################################################

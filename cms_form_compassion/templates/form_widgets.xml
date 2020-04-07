@@ -8,8 +8,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
         <div t-att-id="form.form_id" class="modal fade cms_modal_form"
              tabindex="-1" role="dialog" aria-labelledby="donation_modal_label"
              aria-hidden="true">
-            <!-- TODO: When upgrading to Bootstrap 4.2 or higher, use class="modal-dialog modal-xl" -->
-            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-dialog modal-xl" role="document">
                 <div t-attf-class="modal-content {{form.form_wrapper_css_klass}}">
                     <div class="modal-body">
                         <t t-if="form.form_title">
@@ -106,92 +105,6 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
                     class="form-control"
             />
         </div>
-    </template>
-
-    <!-- Payment acquirer in form -->
-    <template id="widget_payment" name="CMS Widget Payment Acquirer">
-        <!-- Select payment acquirer -->
-        <ul class="list-unstyled">
-            <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
-                <li>
-                    <label for="acquirer_id">
-                        <input t-att-value="acquirer.id" type="radio"
-                               name="acquirer_id"
-                               t-att-checked="widget.w_acquirers[0] == acquirer"/>
-                        <span t-field="acquirer.image_small"
-                              t-att-title="acquirer.name"
-                              t-field-options='{"widget": "image", "style":"max-width: 60px; display: inline-block"}'/>
-                        <span t-field="acquirer.name"/>
-                        <span t-if="acquirer.fees_active">(processing fees
-                            apply)
-                        </span>
-                    </label>
-                    <span t-field="acquirer.pre_msg"/>
-                </li>
-            </t>
-        </ul>
-    </template>
-    <template id="widget_payment_hidden"
-              name="CMS Widget Hidden Payment Acquirer">
-        <!-- Select payment acquirer -->
-        <ul class="list-unstyled" style="display: none">
-            <t t-foreach="widget.w_acquirers or []" t-as="acquirer">
-                <li>
-                    <label for="acquirer_id">
-                        <input t-att-value="acquirer.id" type="radio"
-                               name="acquirer_id"
-                               t-att-checked="widget.w_acquirers[0] == acquirer"/>
-                        <span t-field="acquirer.image_small"
-                              t-att-title="acquirer.name"
-                              t-field-options='{"widget": "image", "style":"max-width: 60px; display: inline-block"}'/>
-                        <span t-field="acquirer.name"/>
-                        <span t-if="acquirer.fees_active">(processing fees
-                            apply)
-                        </span>
-                    </label>
-                    <span t-field="acquirer.pre_msg"/>
-                </li>
-            </t>
-        </ul>
-    </template>
-
-    <!-- Called if loaded invoice has already been paid -->
-    <template id="payment_already_done" name="Invoice already paid">
-        <t t-call="website.layout">
-            <div id="wrap">
-                <div class="container">
-                    <div class="text-center">
-                        <p>This invoice has already been paid.</p>
-                    </div>
-                </div>
-            </div>
-        </t>
-    </template>
-
-    <!-- Called after submission of form, display form for redirecting to Payment Provider -->
-    <template id="modal_payment_submit" name="Payment redirection page">
-        <div class="text-center">
-            <p>Thank you for your submission. You will be redirected to the
-                payment website.
-                Please don't quit or refresh this page. If the redirection
-                doesn't work, please click here.
-            </p>
-            <div id="payment_compassion" t-att-data-id="acquirer.id"
-                 class="oe_sale_acquirer_button"
-                 t-att-data-invoice="invoice.id">
-                <t t-raw="acquirer.button"/>
-            </div>
-        </div>
-    </template>
-
-    <template id="payment_submit_full" name="Payment redirection page">
-        <t t-call="website.layout">
-            <div id="wrap">
-                <div class="container">
-                    <t t-call="cms_form_compassion.modal_payment_submit"/>
-                </div>
-            </div>
-        </t>
     </template>
 
     <!-- Useful for displaying a readonly field value -->
