@@ -10,7 +10,7 @@
 ##############################################################################
 import logging
 
-import simplejson
+import json
 import werkzeug
 # Monkeypatch type of request root to use MobileAppJsonRequest
 from odoo.addons.message_center_compassion.controllers.json_request import (
@@ -18,6 +18,7 @@ from odoo.addons.message_center_compassion.controllers.json_request import (
 )
 
 from odoo.http import JsonRequest, Root, SessionExpiredException
+from odoo.tools import date_utils
 
 _logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ class MobileAppJsonRequest(JsonRequest):
     def _json_response(self, result=None, error=None):
         odoo_result = super()._json_response(result, error)
         if result is not None and error is None:
-            odoo_result.data = simplejson.dumps(result)
+            odoo_result.data = json.dumps(result, default=date_utils.json_default)
         return odoo_result
 
     def _handle_exception(self, exception):
