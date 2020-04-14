@@ -8,11 +8,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import random
 import string
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.addons.queue_job.job import job
+
+_logger = logging.getLogger(__name__)
 
 
 # For more flexibility we have split "res.partner" by functionality
@@ -408,3 +412,23 @@ class ResPartner(models.Model):
             ('state', 'not in', ['cancelled', 'terminated']),
             ('child_id', '!=', False)
         ]
+
+    # TODO remove me after migration
+    @job
+    @api.multi
+    def migrate_10_1_1_1(self):
+        upsert_action = self.env.ref('sponsorship_compassion.upsert_partner')
+        # Disable autoprocess
+        upsert_action.auto_process = False
+        batch_size = 80
+        _logger.info("%s partners to migrate", len(self))
+        for i in xrange(0, len(self), batch_size):
+            upsert = self[i:i + batch_size].upsert_constituent().with_context(
+                async_mode=True)
+            _logger.info("Created %s jobs for updating partner gender to GMC",
+                         i + batch_size)
+            upsert.process_messages()
+
+        # Enable auto_process back
+        upsert_action.auto_process = True
+        return True

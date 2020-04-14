@@ -71,7 +71,8 @@ class PaymentTransaction(models.Model):
     def _get_payment_invoice_vals(self):
         # Can be overridden to add information from transaction into invoice.
         return {
-            'payment_mode_id': self.payment_mode_id.id
+            'payment_mode_id': self.payment_mode_id.id,
+            'transaction_id': self.acquirer_reference
         }
 
     def _get_payment_journal_id(self):

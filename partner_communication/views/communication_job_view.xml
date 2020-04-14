@@ -38,6 +38,7 @@
                     <group>
                         <group>
                             <field name="subject"/>
+                            <field name="printer_output_tray_id" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
                         </group>
                         <group>
                             <field name="omr_enable_marks"/>
