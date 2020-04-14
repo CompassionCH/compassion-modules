@@ -45,15 +45,6 @@ class CommunicationJob(models.Model):
 
         return super(CommunicationJob, self)._get_default_vals(vals, default_vals)
 
-    @api.model
-    def create(self, vals):
-        res = super(CommunicationJob, self).create(vals)
-
-        if res.config_id and res.config_id.mobile_notification_send:
-            res['mobile_notification_send'] = True
-
-        return res
-
     @api.multi
     def send(self):
         """ Create a mobile notification when requested """
