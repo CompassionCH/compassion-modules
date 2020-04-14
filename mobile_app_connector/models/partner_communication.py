@@ -56,7 +56,7 @@ class CommunicationJob(models.Model):
         for job in jobs:
             # For notifications, we take only the first related object (no multi-mode)
             # to render the notification text.
-            object = self.get_objects()[:1]
+            object = job.get_objects()[:1]
             template = job.email_template_id.with_context(lang=job.partner_id.lang)
             mobile_notif = job.env["firebase.notification"].create({
                 'title': template.render_template(
