@@ -19,22 +19,9 @@ def migrate(env, version):
     if not version:
         return
 
-    upsert_action = env.ref('sponsorship_compassion.upsert_partner')
-    # Disable autoprocess
-    upsert_action.auto_process = False
     # Update all sponsor genders
     sponsors = env['res.partner'].search([
         ('has_sponsorships', '=', True)
     ])
-    batch_size = 80
-    _logger.info("%s partners to migrate", len(sponsors))
-    for i in xrange(0, len(sponsors), batch_size):
-        upsert = sponsors[i:i+batch_size].upsert_constituent().with_context(
-            async_mode=True)
-        _logger.info("Created %s jobs for updating partner gender to GMC",
-                     i + batch_size)
-        upsert.process_messages()
-
-    # Enable auto_process back
-    upsert_action.auto_process = True
+    sponsors.with_delay().migrate_10_1_1_1()
     return True
