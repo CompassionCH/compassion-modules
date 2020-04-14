@@ -7,6 +7,5 @@
 #
 ##############################################################################
 
-from . import form
 from . import payment_form
 from . import match_partner_form

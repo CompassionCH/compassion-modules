@@ -37,6 +37,7 @@
     "depends": [
         "cms_form",  # oca_addons/website_cms
         "website_payment",  # source/addons
+        "account_payment",  # source/addons
         "website_no_index",  # website (OCA)
         "portal",  # source/addons
         "queue_job",  # oca_addons/queue
@@ -44,10 +45,10 @@
         "link_tracker",  # source/addons
     ],
     "data": [
-        "data/transaction_server_actions.xml",
         "data/ir.config_parameter.xml",
         "templates/assets.xml",
         "templates/form_widgets.xml",
+        "templates/payment_templates.xml",
         "views/ir_logging.xml",
     ],
     "demo": [],

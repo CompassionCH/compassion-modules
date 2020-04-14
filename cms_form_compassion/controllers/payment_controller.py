@@ -8,16 +8,14 @@
 ##############################################################################
 import json
 
-from odoo.addons.cms_form.controllers.main import FormControllerMixin
-from odoo.addons.portal.controllers.portal import CustomerPortal
 from werkzeug.exceptions import NotFound
 
-from odoo import _
 from odoo.exceptions import MissingError
-from odoo.http import request, route, Response
+from odoo.http import request, route, Response, Controller
 
 
-class PaymentFormController(CustomerPortal, FormControllerMixin):
+class PaymentFormController(Controller):
+
     @route(
         ["/compassion/payment/invoice/<int:invoice_id>"],
         type="http",
@@ -25,11 +23,23 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
         methods=["GET", "POST"],
         auth="public",
         noindex=["header", "meta", "robots"],
+        sitemap=False
     )
-    def payment_invoice(self, invoice_id, **kwargs):
-        """ Controller for redirecting to the payment submission of an invoice.
-
-        :param invoice_id: account.invoice record created previously.
+    def payment_transaction(self, invoice_id, success_url=None, error_url=None,
+                            display_type="full", **kwargs):
+        """
+        Payment route in order to pay an invoice, without using the default
+        template showing the invoice. This is useful for donations or to be called
+        from a cms.form where we don't need a recap on what the user will pay for.
+        :param invoice_id:      id of the invoice to pay
+        :param success_url:     return page for success. If not provided, it will
+                                redirect to the default portal invoice view.
+        :param error_url:       return page for error. If not provided, it will
+                                redirect to the default portal invoice view.
+        :param display_type:    full/modal (useful for embedding the view in a modal
+                                form)
+        :param kwargs:          All other request parameters
+        :return: Renders the page
         """
         try:
             invoice = request.env["account.invoice"].sudo().browse(invoice_id)
@@ -40,175 +50,25 @@ class PaymentFormController(CustomerPortal, FormControllerMixin):
         if not invoice.exists():
             raise NotFound()
 
-        acquirer = request.env["payment.acquirer"].search(
-            [("is_published", "=", True), ("company_id", "=", invoice.company_id.id)],
-            limit=1,
-        )
-        if not acquirer:
-            raise Exception("There is no configured acquirer!")
-
-        transaction = self.get_transaction(invoice_id)
-
-        if not transaction or (
-                transaction.state != "draft" and transaction.state != "pending"
-        ):
-            transaction = request.env["payment.transaction"].sudo()
-            reference = transaction.get_next_reference(invoice.origin or "WEB")
-            transaction = transaction.create(
-                {
-                    "acquirer_id": acquirer.id,
-                    "type": "form",
-                    "amount": invoice.amount_total,
-                    "currency_id": invoice.currency_id.id,
-                    "partner_id": invoice.partner_id.id,
-                    "reference": reference,
-                    "invoice_id": invoice_id,
-                    "accept_url": kwargs.get("accept_url", invoice.accept_url),
-                    "decline_url": kwargs.get("decline_url", invoice.decline_url),
-                }
-            )
-            request.session["compassion_transaction_id"] = transaction.id
-
-        acquirer_button = (
-            acquirer.with_context(
-                submit_class="btn btn-primary", submit_txt=_("Pay Now")
-            )
-            .sudo()
-            .render(
-                transaction.reference,
-                transaction.amount,
-                transaction.currency_id.id,
-                values={
-                    "return_url": kwargs.get(
-                        "redirect_url", "/compassion/payment/validate"
-                    ),
-                    "partner_id": transaction.partner_id.id,
-                    "billing_partner_id": transaction.partner_id.id,
-                },
-            )
-        )
-        acquirer.button = acquirer_button
-        values = {"acquirer": acquirer, "invoice": invoice}
-
-        template = (
-            "cms_form_compassion.modal_payment_submit"
-            if kwargs.get("display_type") == "modal"
-            else "cms_form_compassion.payment_submit_full"
-        )
-        return request.render(template, values)
-
-    @route(
-        ["/compassion/payment/<int:transaction_id>"],
-        auth="public",
-        website=True,
-        noindex=["robots", "meta", "header"],
-    )
-    def payment(self, transaction_id, **kwargs):
-        """ Controller for redirecting to the payment submission, using
-        an existing transaction.
-
-        :param int transaction_id: id of a payment.transaction record.
-        """
-        transaction = self.get_transaction()
-        if transaction.invoice_id:
-            return self.payment_invoice(transaction.invoice_id.id, **kwargs)
-        else:
-            raise ValueError(_("Missing invoice"))
-
-    @route(
-        "/compassion/payment/validate",
-        type="http",
-        auth="public",
-        website=True,
-        noindex=["header", "meta", "robots"],
-    )
-    def payment_validate(self, transaction_id=None, **post):
-        payment_ok = True
-        if transaction_id is None:
-            tx = self.get_transaction()
-        else:
-            tx = request.env["payment.transaction"].sudo().browse(transaction_id)
-
-        if not tx.invoice_id or tx.state not in ("done", "authorized"):
-            payment_ok = False
-
-        if payment_ok and tx.accept_url:
-            return request.redirect(tx.accept_url)
-        if not payment_ok and tx.decline_url:
-            return request.redirect(tx.decline_url)
-
-        # If no redirection is set, use the default template
-        return request.render(
-            "invoice_postfinance_payment_controller.payment_redirect",
-            {"payment_ok": payment_ok, "tx": tx, },
-        )
-
-    @route(["/compassion/payment/stripe/create_charge"], type="json", auth="public")
-    def stripe_create_charge(self, **post):
-        """ Create a payment transaction for stripe
-
-        Expects the result from the user input from checkout.js popup"""
-        tx = (
-            request.env["payment.transaction"]
-            .sudo()
-            .browse(
-                int(
-                    request.session.get("compassion_transaction_id")
-                    or request.session.get("sale_transaction_id")
-                    or request.session.get("website_payment_tx_id", False)
-                )
-            )
-        )
-        response = tx._create_stripe_charge(
-            tokenid=post["tokenid"], email=post["email"]
-        )
-
-        if response:
-            request.env["payment.transaction"].sudo().with_context(
-                lang=None
-            ).form_feedback(response, "stripe")
-        return post.pop("return_url", "/")
-
-    def get_transaction(self, invoice_id=None):
-        if invoice_id:
-            transaction = (
-                request.env["payment.transaction"]
-                .sudo()
-                .search([("invoice_id", "=", invoice_id)], limit=1, order="id DESC")
-            )
-            if transaction:
-                return transaction
-
-        tx_id = request.session.get("compassion_transaction_id")
-        if tx_id:
-            try:
-                transaction = (
-                    request.env["payment.transaction"].sudo().browse(tx_id).exists()
-                )
-                if transaction:
-                    return transaction
-                else:
-                    request.session["compassion_transaction_id"] = False
-            except MissingError:
-                request.session["compassion_transaction_id"] = False
-        return False
-
-    def compassion_payment_validate(
-            self, transaction, success_template, fail_template, **kwargs
-    ):
-        """
-        Common payment validate method: checks state of transaction and
-        pay related invoice if everything is fine. Redirects to given urls.
-        :param transaction: payment.transaction record
-        :param success_template: payment success redirect url
-        :param fail_template: payment failure redirect url
-        :param kwargs: post data
-        :return: web page
-        """
-        if transaction.state == "done":
-            return request.render(success_template, kwargs)
-        else:
-            return request.render(fail_template, kwargs)
+        acquirers = request.env["payment.acquirer"].search([
+            ("website_published", "=", True),
+            ("company_id", "=", invoice.company_id.id)
+        ])
+        invoice_url = invoice.get_portal_url()
+        values = {
+            "invoice": invoice,
+            # Taken from /website_payment/pay route
+            "acquirers": [acq for acq in acquirers
+                          if acq.payment_flow in ['form', 's2s']],
+            "pms": request.env['payment.token'].search([
+                ('acquirer_id', 'in', acquirers.filtered(
+                    lambda x: x.payment_flow == 's2s').ids)]),
+            "success_url": success_url or invoice_url,
+            "error_url": error_url or invoice_url,
+        }
+        template = "payment_submit_full" if display_type == "full" else \
+            "modal_payment_submit"
+        return request.render(f"cms_form_compassion.{template}", values)
 
     def _form_redirect(self, response, full_page=False):
         """

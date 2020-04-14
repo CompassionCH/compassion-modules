@@ -22,7 +22,7 @@ from odoo.http import (
     SessionExpiredException,
     AuthenticationError,
 )
-from odoo.tools import config
+from odoo.tools import config, date_utils
 
 _logger = logging.getLogger(__name__)
 
@@ -109,7 +109,7 @@ Sample Unsuccessful Response
             response = result
 
         mime = "application/json"
-        body = json.dumps(response)
+        body = json.dumps(response, default=date_utils.json_default)
         headers = [
             ("Content-Type", mime),
             ("Content-Length", len(body)),

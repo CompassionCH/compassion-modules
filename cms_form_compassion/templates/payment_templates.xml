@@ -1,0 +1,63 @@
+<!--
+Copyright 2020 Emanuel Cino
+License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+-->
+<odoo>
+    <!-- Called if loaded invoice has already been paid -->
+    <template id="payment_already_done" name="Invoice already paid">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <div class="text-center">
+                        <p>This invoice has already been paid.</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Called after submission of form, display form for redirecting to Payment Provider -->
+    <template id="modal_payment_submit" name="Payment form redirection page">
+        <div class="text-center">
+            <p>Thank you for your submission. Please select the payment method and you will be redirected securely to
+                the payment provider.
+            </p>
+            <t t-set="tx_ids"
+               t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('authorized', 'done'))"/>
+            <div t-if="not tx_ids and invoice.state == 'open' and invoice.amount_total" id="payment_compassion">
+                <div t-if="pms or acquirers" id="payment_method">
+                    <!-- Portal payment code from account_payment.portal_invoice_payment -->
+                    <div class="row" id="portal_pay">
+                        <div id="pay_with">
+                            <h3 class="modal-title">Pay with</h3>
+                            <div t-if="pms or acquirers" id="payment_method" class="text-left col-md-13">
+                                <t t-call="payment.payment_tokens_list">
+                                    <t t-set="mode" t-value="'payment'"/>
+                                    <t t-set="partner_id"
+                                       t-value="invoice.partner_id.id if request.env.user._is_public() else request.env.user.partner_id.id"/>
+                                    <t t-set="callback_method" t-value="''"/> <!-- TODO -->
+                                    <t t-set="form_action"
+                                       t-value="'/invoice/pay/' + str(invoice.id) + '/s2s_token_tx/'"/>
+                                    <t t-set="prepare_tx_url"
+                                       t-value="'/invoice/pay/' + str(invoice.id) + '/form_tx/'"/>
+                                    <t t-set="submit_txt">Pay Now</t>
+                                    <t t-set="icon_class" t-value="'fa-lock'"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="payment_submit_full" name="Payment redirection page">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <t t-call="cms_form_compassion.modal_payment_submit"/>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
