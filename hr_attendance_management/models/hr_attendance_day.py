@@ -123,8 +123,11 @@ class HrAttendanceDay(models.Model):
             if schedule:
                 # if there is more than one resource.calendar take one...
                 schedule = schedule[0]
-            else:
-                # take the resource.calendar of employee
+            elif att_day.employee_id.contract_id.resource_calendar_id:
+                # if active contract with schedule take it
+                schedule = att_day.employee_id.contract_id.resource_calendar_id
+            elif att_day.employee_id.calendar_ids:
+                # Else take the resource.calendar of the employee
                 schedule = att_day.employee_id.calendar_ids[0].calendar_id
             att_day.working_schedule_id = schedule.id
 
@@ -196,7 +199,7 @@ class HrAttendanceDay(models.Model):
     @api.depends("working_day")
     def _compute_name(self):
         for rd in self:
-            rd.name = rd.working_day + " " + rd.date
+            rd.name = rd.working_day + rd.date.strftime(" %Y-%d-%m")
 
     @api.multi
     @api.depends("leave_ids", "public_holiday_id")
@@ -409,7 +412,6 @@ class HrAttendanceDay(models.Model):
         rd.leave_ids = self.env["hr.leave"].search(
             [
                 ("employee_id", "=", rd.employee_id.id),
-                ("type", "=", "remove"),
                 ("date_from", "<=", date_str),
                 ("date_to", ">=", date_str),
             ]

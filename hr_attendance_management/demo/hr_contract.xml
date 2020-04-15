@@ -20,7 +20,7 @@
         <field name="type_id" ref="hr_contract.hr_contract_type_emp"/>
         <field name="date_start" eval="'1962-08-15 08:00:00'"/>
         <field name="wage">8400.00</field>
-        <field name="employee_id" ref="hr.employee_root"/>
+        <field name="employee_id" ref="hr.employee_al"/>
     </record>
     <record id="hr_contract_04" model="hr.contract">
         <field name="name">Michael Hawkins</field>

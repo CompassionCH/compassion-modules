@@ -36,8 +36,6 @@
         "hr_holidays_public",  # hr
         "hr_contract",  # source/addons
         "hr_employee_calendar_planning",  # hr
-        "child_compassion",  # compassion-modules
-        "thankyou_letters",  # compassion-modules
     ],
     "version": "12.0.1.0.0",
     "auto_install": False,

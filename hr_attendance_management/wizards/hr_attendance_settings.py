@@ -89,13 +89,13 @@ class HrAttendanceSettings(models.TransientModel):
     def set_values(self):
         super().set_values()
         self.env["ir.config_parameter"].sudo().set_param(
-            "free_break", self.set_free_break
+            "free_break", self.set_free_break()
         )
         self.env["ir.config_parameter"].sudo().set_param(
-            "max_extra_hours", self.set_max_extra_hours
+            "max_extra_hours", self.set_max_extra_hours()
         )
         self.env["ir.config_parameter"].sudo().set_param(
-            "beginning_date_for_balance_computation", self.set_beginning_date
+            "beginning_date_for_balance_computation", self.set_beginning_date()
         )
 
 
