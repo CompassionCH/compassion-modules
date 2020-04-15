@@ -321,6 +321,8 @@ class HrEmployee(models.Model):
 
     @api.model
     def _cron_create_attendance(self, domain=None, day=None):
+        """Create attendance day for the given day, only if the employee has active contract
+        this day"""
         att_day = self.env["hr.attendance.day"]
         employees = self.search(domain or [])
         if day is None:

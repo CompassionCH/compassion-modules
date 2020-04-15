@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import logging
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from odoo.tests import SavepointCase
 
@@ -19,14 +19,14 @@ class TestPeriod(SavepointCase):
         cls.gilles.calendar_id = 1
         cls.gilles.initial_balance = 0
 
-        cls.start_date_1 = datetime.today().replace(year=2018, month=2, day=1)
-        cls.end_date_1 = datetime.today().replace(year=2018, month=5, day=31)
+        cls.start_date_1 = date.today().replace(year=2018, month=2, day=1)
+        cls.end_date_1 = date.today().replace(year=2018, month=5, day=31)
 
-        cls.start_date_2 = datetime.today().replace(year=2018, month=6, day=1)
-        cls.end_date_2 = datetime.today().replace(year=2018, month=12, day=31)
+        cls.start_date_2 = date.today().replace(year=2018, month=6, day=1)
+        cls.end_date_2 = date.today().replace(year=2018, month=12, day=31)
 
-        cls.start_date_3 = datetime.today().replace(year=2019, month=2, day=1)
-        cls.end_date_3 = datetime.today().replace(year=2019, month=6, day=1)
+        cls.start_date_3 = date.today().replace(year=2019, month=2, day=1)
+        cls.end_date_3 = date.today().replace(year=2019, month=6, day=1)
 
         cls.env["hr.employee.period"].search(
             [("employee_id", "=", cls.jack.id)]
@@ -69,11 +69,12 @@ class TestPeriod(SavepointCase):
         )
 
     def create_att_day_for_date_with_supp_hours(self, date, employee_id, hours=0):
-        start_01 = date.replace(hour=8, minute=0, second=0)
-        stop_01 = date.replace(hour=12, minute=0, second=0)
+        day = datetime(date.year, date.month, date.day)
+        start_01 = day.replace(hour=8, minute=0, second=0)
+        stop_01 = day.replace(hour=12, minute=0, second=0)
         # 4h in the morning
-        start_02 = date.replace(hour=13, minute=00, second=0)
-        stop_02 = date.replace(hour=17 + hours, minute=00, second=0)
+        start_02 = day.replace(hour=13, minute=00, second=0)
+        stop_02 = day.replace(hour=17 + hours, minute=00, second=0)
         # 4h + hours in the afternoon
 
         self.env["hr.attendance"].create(
@@ -169,8 +170,8 @@ class TestPeriod(SavepointCase):
         self.assertEquals(self.gilles.period_ids[0].final_balance, 3)
         self.assertEquals(self.gilles.balance, 3)
 
-        start_date = datetime.today().replace(year=2019, month=1, day=1)
-        end_date = datetime.today()
+        start_date = date.today().replace(year=2019, month=1, day=1)
+        end_date = date.today()
         # Create new period beginning in 01.01.2019,
         # 1 more period should be created before
         new_period = self.create_period(
@@ -239,8 +240,8 @@ class TestPeriod(SavepointCase):
     # Add a period "inside" another one.
     # 1 more periods should be created (after) and 1 should be modified
     def test_create_in_surrounding_period(self):
-        start_date = datetime.today().replace(year=2019, month=2, day=2)
-        end_date = datetime.today().replace(year=2019, month=3, day=3)
+        start_date = date.today().replace(year=2019, month=2, day=2)
+        end_date = date.today().replace(year=2019, month=3, day=3)
 
         old_surrounding_period = self.env["hr.employee.period"].search(
             [("employee_id", "=", self.jack.id), ("start_date", "<", start_date)],
@@ -270,18 +271,18 @@ class TestPeriod(SavepointCase):
 
         previous_period = self.get_previous_period(start_date, self.jack.id)
         next_period = self.get_next_period(end_date, self.jack.id)
-        self.assertEquals(previous_period.end_date, start_date.date())
+        self.assertEquals(previous_period.end_date, start_date)
         self.assertEquals(old_surrounding_start_date, previous_period.start_date)
         self.assertEquals(next_period.end_date, old_surrounding_end_date)
-        self.assertEquals(next_period.start_date, end_date.date())
+        self.assertEquals(next_period.start_date, end_date)
 
         all_periods.unlink()
 
     # Add a period with the previous one finishing in the bounds of the new one.
     # The previous overlapping should be modified
     def test_create_with_previous_overlapping(self):
-        start_date = datetime.today().replace(year=2019, month=5, day=1)
-        end_date = datetime.today().replace(year=2019, month=8, day=1)
+        start_date = date.today().replace(year=2019, month=5, day=1)
+        end_date = date.today().replace(year=2019, month=8, day=1)
 
         old_previous_overlapping = self.env["hr.employee.period"].search(
             [
@@ -314,7 +315,7 @@ class TestPeriod(SavepointCase):
         )
 
         previous_period = self.get_previous_period(start_date, self.jack.id)
-        self.assertEquals(previous_period.end_date, start_date.date())
+        self.assertEquals(previous_period.end_date, start_date)
         self.assertEquals(
             old_previous_overlapping_start_date, previous_period.start_date
         )
@@ -327,8 +328,8 @@ class TestPeriod(SavepointCase):
     # Add a period more than 1 day after the last one.
     # 1 more period should be added between the last one and the new one
     def test_create_with_previous_non_overlapping(self):
-        start_date = datetime.today().replace(year=2019, month=10, day=5)
-        end_date = datetime.today().replace(year=2019, month=11, day=1)
+        start_date = date.today().replace(year=2019, month=10, day=5)
+        end_date = date.today().replace(year=2019, month=11, day=1)
 
         old_previous_period = self.get_previous_period(start_date, self.jack.id)
         old_previous_end_date = old_previous_period.end_date
@@ -353,7 +354,7 @@ class TestPeriod(SavepointCase):
 
         new_previous_period = self.get_previous_period(start_date, self.jack.id)
         self.assertEquals(old_previous_end_date, new_previous_period.start_date)
-        self.assertEquals(new_previous_period.end_date, start_date.date())
+        self.assertEquals(new_previous_period.end_date, start_date)
 
         all_periods.unlink()
 
@@ -361,8 +362,8 @@ class TestPeriod(SavepointCase):
     # the next one also beginning in the bounds of the new one.
     # The 2 overlapping periods should be modified
     def test_create_with_previous_and_next_overlapping(self):
-        start_date = datetime.today().replace(year=2018, month=10, day=1)
-        end_date = datetime.today().replace(year=2019, month=3, day=1)
+        start_date = date.today().replace(year=2018, month=10, day=1)
+        end_date = date.today().replace(year=2019, month=3, day=1)
 
         old_previous_overlapping = self.env["hr.employee.period"].search(
             [

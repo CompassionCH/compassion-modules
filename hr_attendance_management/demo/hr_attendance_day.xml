@@ -4,7 +4,7 @@
         <record id="hr_attendance_day_root1" model="hr.attendance.day">
             <field name="date"
                    eval="(datetime.now()+relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
-            <field name="employee_id" ref="hr.employee_root"/>
+            <field name="employee_id" ref="hr.employee_al"/>
             <field name="attendance_ids" eval="[(4, ref('hr_attendance.attendance_root1')), (4, ref('hr_attendance.attendance_root2')), ]"/>
         </record>
 
