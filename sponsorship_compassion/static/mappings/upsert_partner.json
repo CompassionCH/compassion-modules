@@ -10,8 +10,7 @@
       "to_json_conversion": "'65-' + odoo_value"
     },
     "Gender": {
-      "field": "title.name",
-      "search_relational_record": true
+      "field": "gmc_gender"
     },
     "MandatoryReviewRequired": {
       "field": "mandatory_review"

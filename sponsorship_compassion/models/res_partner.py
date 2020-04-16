@@ -103,6 +103,7 @@ class ResPartner(models.Model):
     church_id = fields.Many2one(
         "res.partner", "Church", domain=[("is_church", "=", True)], readonly=False
     )
+    gmc_gender = fields.Char(compute='_compute_gmc_gender')
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -222,6 +223,28 @@ class ResPartner(models.Model):
 
             record.church_member_count = len(record.member_ids)
             record.is_church = is_church
+
+    @api.multi
+    def _compute_gmc_gender(self):
+        male = 'Male'
+        female = 'Female'
+        unknown = 'Unkown'
+        unset = 'Not Applicable'
+        title_mapping = {
+            'Mister': male,
+            'Madam': female,
+            'Miss': female,
+            'Doctor': unknown,
+            'Professor': unknown,
+            'Misters': male,
+            'Ladies': female,
+            'Mister and Madam': unset,
+            'Friends of Compassion': unset,
+            'Family': unset,
+        }
+        for partner in self:
+            title = partner.with_context(lang='en_US').name
+            partner.gmc_gender = title_mapping.get(title, unknown)
 
     ##########################################################################
     #                              ORM METHODS                               #

@@ -91,10 +91,10 @@ class CrmClaim(models.Model):
             alias_partner = self._get_partner_alias(
                 original_partner, parseaddr(self.email_from)[1]
             )
-            partner = alias_partner
             if alias_partner == original_partner:
                 partner = original_partner
-            self.partner_id = partner
+            else:
+                partner = alias_partner
             ctx["default_partner_ids"] = [partner.id]
 
             messages = self.mapped("message_ids").filtered(
