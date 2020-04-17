@@ -93,7 +93,8 @@ class LabelPrintWizard(models.TransientModel):
     @api.multi
     def print_report(self):
         data = self.get_report_data()
-        return self.env.ref("label.dynamic_label").report_action(self.ids, data=data)
+        return self.env.ref("label.dynamic_label").report_action(
+            self.ids, data=data, config=False)
 
     @api.model
     def barcode(self, barcode_type, value, width, height):
