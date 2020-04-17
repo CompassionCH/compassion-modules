@@ -283,7 +283,7 @@ class CompassionChild(models.Model):
         "child_id",
         "Child pictures",
         track_visibility="onchange",
-        readonly=True,
+        readonly=False,
     )
     household_id = fields.Many2one("compassion.household", "Household", readonly=True)
     portrait = fields.Binary(related="pictures_ids.headshot")
@@ -706,8 +706,8 @@ class CompassionChild(models.Model):
         if pictures:
             # Add a note in child
             self.message_post(
-                _("The picture has been updated."),
-                _("Picture update"),
+                body=_("The picture has been updated."),
+                subject=_("Picture update"),
                 message_type="comment",
             )
 

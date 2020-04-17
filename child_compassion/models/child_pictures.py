@@ -40,7 +40,7 @@ class ChildPictures(models.Model):
     ##########################################################################
     def _compute_filename(self):
         for pictures in self:
-            date = pictures.date
+            date = fields.Date.to_string(pictures.date)
             code = pictures.child_id.local_id
             pictures.fname = code + " " + date + " fullshot.jpg"
             pictures.hname = code + " " + date + " headshot.jpg"
@@ -60,7 +60,7 @@ class ChildPictures(models.Model):
         same_url = pictures._find_same_picture_by_url()
         if same_url:
             pictures.child_id.message_post(
-                _("The picture was the same"), _("Picture update")
+                body=_("The picture was the same"), subject=_("Picture update")
             )
             pictures.unlink()
             return False
