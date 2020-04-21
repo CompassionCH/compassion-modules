@@ -88,12 +88,26 @@ class TimeWidget(models.AbstractModel):
 class CHDateWidget(models.AbstractModel):
     _name = "cms.form.widget.date.ch"
     _inherit = "cms.form.widget.date"
-    _w_template = "cms_form_compassion.field_widget_date_ch"
-    w_date_format = "DD.MM.YYYY"
+    w_date_format = "dd.mm.yyyy"
+    w_date_week_start_day = "1"
 
-    def w_extract(self, **req_values):
-        value = super().w_extract(**req_values)
-        if value:
-            # Convert the date to ORM format
-            value = datetime.strptime(value, "%d.%m.%Y").date()
-        return value
+    def get_placeholder(self):
+        # Get correct placeholder depending on language
+        placeholders = {
+            "fr_CH": "JJ.MM.AA",
+            "de_DE": "TT.MM.JJ",
+            "it_IT": "GG.MM.AA",
+            "en_US": "DD.MM.YY",
+        }
+        return placeholders.get(self.env.lang)
+
+    def widget_init(self, form, fname, field, **kw):
+        widget = super().widget_init(form, fname, field, **kw)
+        if not widget.w_data['dp']:
+            widget.w_data['dp'] = {}
+        widget.w_data['dp'].update({
+            'weekStartDay': widget.w_date_week_start_day,
+            'locale': '-'.join([self.env.lang[:2]] * 2)
+        })
+        widget.w_placeholder = widget.get_placeholder()
+        return widget

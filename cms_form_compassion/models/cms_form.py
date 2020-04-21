@@ -9,23 +9,12 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 _logger = logging.getLogger(__name__)
 
 
-def _form_validate_date_fields(value, **req_values):
-    try:
-        if value:
-            datetime.strptime(value, "%d.%m.%Y")
-    except ValueError:
-        return "date", _('Dates should follow the format "dd.mm.yyyy"')
-    return 0, 0
-
-
 class CMSForm(models.AbstractModel):
     _inherit = "cms.form"
 
     #######################################################################
     #                         Field validation                            #
     #######################################################################
-
-    _form_validators = {"date": _form_validate_date_fields}
 
     @property
     def submit_icon(self):

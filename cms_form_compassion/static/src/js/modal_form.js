@@ -1,6 +1,7 @@
 odoo.define('cms_form_compassion.modal_form', function (require) {
     "use strict";
     var PaymentForm = require('payment.payment_form');
+    var DateWidget = require('cms_form.date_widget');
     var Widget = require("web.Widget");
     var core = require('web.core');
     var _t = core._t;
@@ -63,11 +64,9 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                             } else {
                                 self.on_receive_back_html_result(result_html.html());
                             }
-                            btn.button('reset');
                         });
                     } else {
                         self.on_receive_back_html_result(data);
-                        btn.button('reset');
                     }
                     self.enableButton(button, fa_class);
                 },
@@ -112,9 +111,25 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
             if (new_form.length) {
                 // The same page is returned, we must determine if we close
                 // the modal or not, based on errors.
-                if (new_form.find('.alert.alert-danger.error-msg').length) {
+                // TODO date pickers stop working after form error. This is not a blocking issue but could be fixed.
+                // The commented code below doesn't work (attempt to load js for input)
+//                var date_fields = new_form.find('.cms_form_wrapper form input.js_datepicker');
+//                if (date_fields.length) {
+//                    // we load payment JS otherwise the date widgets are not working.
+//                    date_fields.each(function () {
+//                        var $elem = $(this);
+//                        var date_widget = new DateWidget(null, $elem.data());
+//                        date_widget.attachTo($elem);
+//                    });
+//                }
+                var error_div = $(render_result).find('.alert.alert-danger');
+                if (error_div.length) {
                     // We should replace the form content without closing
-                    // the modal.
+                    // the modal and check if the errors are visible inside the form.
+                    var modal_errors = new_form.find('.alert.alert-danger.error-msg');
+                    if (!modal_errors.length) {
+                        new_form.find("div.form-controls").before(error_div.parent())
+                    }
                     new_form.submit(self.formEvent);
                     modal_form.html(new_form);
                 } else {
