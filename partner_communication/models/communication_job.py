@@ -766,18 +766,16 @@ class CommunicationJob(models.Model):
             job = job.with_context(lang=job.partner_id.lang)
             report = job.report_id
             behaviour = report.behaviour()
-            printer = behaviour["printer"].with_context(
-                lang=job.partner_id.lang,
-                printer_output_tray_id=job.printer_output_tray_id,
-            )
+            printer = behaviour["printer"].with_context(lang=job.partner_id.lang)
             if behaviour["action"] != "client" and printer:
                 printer.print_document(
-                    report.report_name, to_print[0], format=report.report_type
+                    report.report_name, to_print[0], format=report.report_type,
+                    output_tray=job.printer_output_tray_id.system_name
                 )
 
             # Print attachments
             job.attachment_ids.print_attachments(
-                printer_output_tray_id=job.printer_output_tray_id
+                output_tray=job.printer_output_tray_id.system_name,
             )
             origin = self.env.context.get("origin")
             state = "done"
