@@ -712,6 +712,7 @@ class CommunicationJob(models.Model):
             ).get_pdf(job.ids, job.report_id.report_name)
 
             # Print letter
+            job = job.with_context(lang=job.partner_id.lang)
             report = job.report_id
             behaviour = report.behaviour()[report.id]
             printer = behaviour['printer'].with_context(
