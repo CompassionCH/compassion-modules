@@ -104,9 +104,12 @@ class CHDateWidget(models.AbstractModel):
         widget = super().widget_init(form, fname, field, **kw)
         if not widget.w_data['dp']:
             widget.w_data['dp'] = {}
+        # locale is either en-us, fr-fr, de-de or it-it
+        locale = 'en-us' if self.env.lang == 'en_US' else '-'.join(
+            [self.env.lang[:2]] * 2)
         widget.w_data['dp'].update({
             'weekStartDay': widget.w_date_week_start_day,
-            'locale': '-'.join([self.env.lang[:2]] * 2)
+            'locale': locale
         })
         widget.w_placeholder = widget.get_placeholder()
         return widget
