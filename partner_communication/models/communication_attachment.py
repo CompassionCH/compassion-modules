@@ -104,7 +104,8 @@ class CommunicationAttachment(models.Model):
 
             report = self.env["ir.actions.report"]._get_report_from_name(
                 attachment.report_name
-            )
+            ).with_context(
+                lang=attachment.communication_id.partner_id.lang)
             behaviour = report.behaviour()
             printer = behaviour["printer"]
             if behaviour["action"] != "client" and printer:

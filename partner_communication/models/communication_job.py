@@ -763,6 +763,7 @@ class CommunicationJob(models.Model):
             to_print = report.render_qweb_pdf(job.ids)
 
             # Print letter
+            job = job.with_context(lang=job.partner_id.lang)
             report = job.report_id
             behaviour = report.behaviour()
             printer = behaviour["printer"].with_context(
