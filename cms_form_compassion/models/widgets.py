@@ -113,3 +113,14 @@ class CHDateWidget(models.AbstractModel):
         })
         widget.w_placeholder = widget.get_placeholder()
         return widget
+
+
+class PublicM2OWidget(models.AbstractModel):
+    _inherit = 'cms.form.widget.many2one'
+    _name = 'cms.form.widget.many2one.public'
+
+    def widget_init(self, form, fname, field, **kw):
+        # Bypass security access to related model in order to display records.
+        widget = super().widget_init(form, fname, field, **kw)
+        widget.w_comodel = widget.w_comodel.sudo()
+        return widget
