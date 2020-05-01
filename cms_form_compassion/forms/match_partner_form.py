@@ -148,13 +148,8 @@ class PartnerMatchform(models.AbstractModel):
             "skip_create": extra_values.get("skip_create"),
         }
 
-        partner = self.match_partner_to_infos(source_vals, options)
-
-        values["partner_id"] = partner.id
-
-    def form_after_create_or_update(self, values, extra_values):
-        self.partner_id = values.get("partner_id")
-        super().form_after_create_or_update(values, extra_values)
+        self.partner_id = self.match_partner_to_infos(source_vals, options)
+        values["partner_id"] = self.partner_id.id
 
     #######################################################################
     #                         PRIVATE METHODS                             #
