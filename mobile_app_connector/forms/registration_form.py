@@ -138,18 +138,8 @@ class UserRegistrationForm(models.AbstractModel):
             self._reactivate_users(existing_users)
             self.main_object = existing_users[:1]
         else:
-            wizard = (
-                self.env["portal.wizard"]
-                    .sudo()
-                    .create(
-                    {
-                        "portal_id": self.env["res.groups"]
-                        .sudo()
-                        .search([("is_portal", "=", True)], limit=1)
-                        .id
-                    }
-                )
-            )
+            wizard = self.env["portal.wizard"].sudo().create({})
+
             portal_user = (
                 self.env["portal.wizard.user"]
                     .sudo()
