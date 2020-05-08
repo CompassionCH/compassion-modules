@@ -20,9 +20,9 @@ class ProductTemplate(models.Model):
     _name = "product.template"
     _inherit = ["product.template", "compassion.mapped.model"]
 
-    mobile_app = fields.Boolean("Show in Mobile App", index=True)
+    mobile_app = fields.Boolean("Show in Mobile App", index=True, copy=False)
     image_icon = fields.Char(
-        "Icon Mobile App", help="See https://fontawesome.com to " "find code icon."
+        "Icon Mobile App", help="See https://fontawesome.com to find code icon."
     )
 
     @api.model
