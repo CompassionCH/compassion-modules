@@ -117,7 +117,7 @@ class ContractOrigin(models.Model):
             res = super().create(vals)
         except IntegrityError as error:
             # Find the origin
-            logger.error(error.message)
+            logger.error(str(error))
             self.env.cr.rollback()
             self.env.clear()
             origin = self._find_same_origin(vals)
