@@ -170,9 +170,3 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
         if origin:
             values["Origin"] = origin
         return values
-
-    def _get_partner_keys(self):
-        res = super()._get_partner_keys()
-        res.extend(["lang"])
-        res.remove("state_id")
-        return res
