@@ -155,28 +155,14 @@ class PartnerMatchform(models.AbstractModel):
     #                         PRIVATE METHODS                             #
     #######################################################################
     def _get_partner_vals(self, values, extra_values):
-        keys = self._get_partner_keys()
+        all_values = values.copy()
+        all_values.update(extra_values)
+        prefix = "partner_"
         vals = {
-            key: extra_values.get("partner_" + key, values.get("partner_" + key))
-            for key in keys
+            key.replace(prefix, ""): val
+            for key, val in all_values.items()
+            if key.startswith(prefix) and val
         }
         # Make active any partner that is matched
         vals["active"] = True
         return vals
-
-    def _get_partner_keys(self):
-        # Returns the partner fields used by the form
-        return [
-            "firstname",
-            "lastname",
-            "email",
-            "phone",
-            "street",
-            "city",
-            "zip",
-            "country_id",
-            "state_id",
-            "title",
-            "opt_out",
-            "birthdate",
-        ]

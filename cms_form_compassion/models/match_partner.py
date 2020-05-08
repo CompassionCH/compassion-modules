@@ -207,6 +207,7 @@ class MatchPartner(models.AbstractModel):
             "function",
             "spoken_lang_ids",
             "opt_out",
+            "image"
         ]
 
     @api.model
@@ -226,4 +227,5 @@ class MatchPartner(models.AbstractModel):
             "function",
             "spoken_lang_ids",
             "opt_out",
+            "image"
         ]
