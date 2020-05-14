@@ -17,6 +17,7 @@ class WordpressConfiguration(models.Model):
     )
 
     host = fields.Char(required=True)
+    sponsorship_url = fields.Char(translate=True)
     user = fields.Char(required=True)
     password = fields.Char(required=True)
 
