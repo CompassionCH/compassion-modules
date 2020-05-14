@@ -53,5 +53,12 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem name="Generate Communications" parent="menu_communication" id="menu_communication_generate" sequence="2" action="action_generate_communication"/>
+    <menuitem name="Generate Communications" parent="menu_communication" id="menu_communication_generate" sequence="2"
+              action="action_generate_communication"/>
+
+    <!-- Add action in partners to generate communications -->
+    <act_window id="action_generate_communication" key2="client_action_multi" name="Generate Communications"
+                res_model="partner.communication.generate.wizard" src_model="res.partner"
+                view_mode="form" target="new" view_type="form"
+    />
 </odoo>
