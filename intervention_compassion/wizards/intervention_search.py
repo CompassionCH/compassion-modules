@@ -176,7 +176,7 @@ class InterventionSearch(models.TransientModel):
         elif self.remaining_amount_greater or self.remaining_amount_lower:
             between_id = self.env.ref("message_center_compassion.between").id
             min_cost = self.remaining_amount_greater or 0
-            max_cost = self.remaining_amount_lower or sys.maxint
+            max_cost = self.remaining_amount_lower or sys.maxsize
             new_filters.append(
                 _get_filter(
                     "remaining_amount_to_raise",
