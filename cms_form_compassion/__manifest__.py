@@ -43,9 +43,11 @@
         "queue_job",  # oca_addons/queue
         "base_automation",  # source/addons
         "link_tracker",  # source/addons
+        "base_location"
     ],
     "data": [
         "data/ir.config_parameter.xml",
+        "security/ir.model.access.csv",
         "templates/assets.xml",
         "templates/form_widgets.xml",
         "templates/payment_templates.xml",

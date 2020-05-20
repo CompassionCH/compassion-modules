@@ -31,8 +31,11 @@ class PartnerMatchform(models.AbstractModel):
     partner_email = fields.Char("Email", required=True)
     partner_phone = fields.Char("Phone", required=True)
     partner_street = fields.Char("Street", required=True)
-    partner_zip = fields.Char("Zip", required=True)
-    partner_city = fields.Char("City", required=True)
+
+    partner_zip_id = fields.Many2one(
+        'res.city.zip',
+        string='ZIP Location',
+    )
     partner_country_id = fields.Many2one(
         "res.country", "Country", required=True, readonly=False
     )
@@ -68,12 +71,6 @@ class PartnerMatchform(models.AbstractModel):
         return value or self._load_partner_field(fname, **req_values)
 
     def _form_load_partner_street(self, fname, field, value, **req_values):
-        return value or self._load_partner_field(fname, **req_values)
-
-    def _form_load_partner_zip(self, fname, field, value, **req_values):
-        return value or self._load_partner_field(fname, **req_values)
-
-    def _form_load_partner_city(self, fname, field, value, **req_values):
         return value or self._load_partner_field(fname, **req_values)
 
     def _form_load_partner_country_id(self, fname, field, value, **req_values):
@@ -118,9 +115,6 @@ class PartnerMatchform(models.AbstractModel):
 
     def _form_validate_partner_street(self, value, **req_values):
         return self._form_validate_alpha_field("street", value)
-
-    def _form_validate_partner_city(self, value, **req_values):
-        return self._form_validate_alpha_field("city", value)
 
     def _form_validate_alpha_field(self, field, value):
         if value and not re.match(r"^[\w\s'-/]+$", value, re.UNICODE):
