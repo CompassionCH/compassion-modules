@@ -65,6 +65,17 @@ class CompassionCorrespondence(models.Model):
             [("name", "=", "mobile_app_correspondence")]
         )
         vals = mapping.json_to_data(json_data, "mobile_app_correspondence")
+
+        # "search_relational_record" in json_to_data() returns the wrong sponsorship_id
+        # when a child has had several sponsorship. Here we replace with the correct one
+        sponsorship = self.env["recurring.contract"].search(
+            [
+                ("correspondent_id", "=", vals.get("partner_id")),
+                ("child_id", "=", vals.get("child_id")),
+            ]
+        )
+        vals["sponsorship_id"] = sponsorship[:1].id
+
         letter = self.env["correspondence"].create(vals)
 
         if letter:
