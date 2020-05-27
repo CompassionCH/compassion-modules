@@ -33,6 +33,10 @@ class PartnerMatchform(models.AbstractModel):
     partner_street = fields.Char("Street", required=True)
     partner_zip = fields.Char("Zip", required=True)
     partner_city = fields.Char("City", required=True)
+    partner_zip_id = fields.Many2one(
+        'res.city.zip',
+        string='ZIP Location',
+    )
     partner_country_id = fields.Many2one(
         "res.country", "Country", required=True, readonly=False
     )
@@ -116,11 +120,11 @@ class PartnerMatchform(models.AbstractModel):
     def _form_validate_partner_firstname(self, value, **req_values):
         return self._form_validate_alpha_field("first_name", value)
 
-    def _form_validate_partner_street(self, value, **req_values):
-        return self._form_validate_alpha_field("street", value)
-
     def _form_validate_partner_city(self, value, **req_values):
         return self._form_validate_alpha_field("city", value)
+
+    def _form_validate_partner_street(self, value, **req_values):
+        return self._form_validate_alpha_field("street", value)
 
     def _form_validate_alpha_field(self, field, value):
         if value and not re.match(r"^[\w\s'-/]+$", value, re.UNICODE):
