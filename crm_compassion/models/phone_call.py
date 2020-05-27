@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields
 
 
 class Partner(models.Model):
