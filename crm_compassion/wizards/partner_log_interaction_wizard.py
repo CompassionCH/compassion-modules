@@ -38,6 +38,7 @@ class LogInteractionWizard(models.TransientModel):
                 "subject": self.subject,
                 "body_html": self.body,
                 "author_id": self.env.user.partner_id.id,
+                "is_from_employee": True,
                 "mail_message_id": self.env["mail.message"]
                 .create(
                     {
