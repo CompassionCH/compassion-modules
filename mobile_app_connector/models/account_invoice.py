@@ -17,6 +17,8 @@ _logger = logging.getLogger(__name__)
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
+    no_notifications = fields.Boolean(default=True)
+
     @api.model
     def mobile_post_invoice(self, json_data, **parameters):
         """
@@ -136,14 +138,14 @@ class AccountInvoice(models.Model):
         """
         res = super(AccountInvoice, self).action_invoice_paid()
         # TODO Activate this when we can filter invoices that must not be notified
-        # (See CO-3068)
-        # for invoice in self:
-        #     partner = invoice.partner_id
-        #     has_app = self.env['firebase.registration'].search_count([
-        #         ('partner_id', '=', partner.id)
-        #     ])
-        #     if invoice.invoice_type in ('gift', 'fund') and has_app:
-        #         invoice.send_mobile_notification()
+        for invoice in self:
+            partner = invoice.partner_id
+            has_app = self.env['firebase.registration'].search_count([
+                ('partner_id', '=', partner.id)
+            ])
+            if invoice.invoice_type in ('gift', 'fund') and has_app \
+                    and not invoice.no_notifications:
+                invoice.send_mobile_notification()
         return res
 
     def _after_transaction_invoice_paid(self, transaction):
@@ -174,6 +176,7 @@ class AccountInvoice(models.Model):
                 for_text = children.get_number()
             else:
                 for_text = children.preferred_name
+
         notification = self.env["firebase.notification"].create(
             {
                 "topic": "spam",  # to ensure he will receive the notification
