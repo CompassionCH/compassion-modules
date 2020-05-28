@@ -358,7 +358,7 @@ class RegistrationSupporterForm(models.AbstractModel):
             partner = matching_partner.filtered(
                 lambda partner: self.env["recurring.contract"].search_count(
                     [
-                        "|", 
+                        "|",
                         ("partner_id", "=", partner.id),
                         ("correspondent_id", "=", partner.id),
                         ("state", "not in", ["cancelled", "terminated"]),
