@@ -358,11 +358,12 @@ class RegistrationSupporterForm(models.AbstractModel):
             partner = matching_partner.filtered(
                 lambda partner: self.env["recurring.contract"].search_count(
                     [
+                        "|", 
                         ("partner_id", "=", partner.id),
+                        ("correspondent_id", "=", partner.id),
                         ("state", "not in", ["cancelled", "terminated"]),
                     ]
                 )
-                > 0
             )
 
             # partner has already an user linked, add skip user creation
