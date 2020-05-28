@@ -31,13 +31,14 @@ class LogInteractionWizard(models.TransientModel):
         in order for it to appear in the interaction.resume view
         :return: True
         """
-        return self.env["mail.mail"].create(
+        mail = self.env["mail.mail"].create(
             {
                 "state": "sent",
                 "recipient_ids": [(4, self.partner_id.id)],
                 "subject": self.subject,
                 "body_html": self.body,
                 "author_id": self.env.user.partner_id.id,
+                "is_from_employee": True,
                 "mail_message_id": self.env["mail.message"]
                 .create(
                     {
@@ -52,3 +53,14 @@ class LogInteractionWizard(models.TransientModel):
                 .id,
             }
         )
+        # Create the mail.tracking.email object in the case of a manually logged email
+        email = mail._send_prepare_values(partner=self.partner_id)
+        vals = mail._tracking_email_prepare(self.partner_id, email)
+        vals.update({
+            "state": "sent"
+        })
+        mail_tracking_obj = self.env['mail.tracking.email']
+        mail_tracking_obj.search([
+            ('mail_id', '=', mail.id)
+        ]).unlink()
+        mail_tracking_obj.sudo().create(vals)

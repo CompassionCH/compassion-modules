@@ -36,6 +36,7 @@ class InteractionResume(models.TransientModel):
     email_id = fields.Many2one("mail.mail", "Email", readonly=False)
     color = fields.Char(compute="_compute_color")
     message_id = fields.Many2one("mail.message", "Email", readonly=False)
+    is_from_employee = fields.Boolean(default=False)
     tracking_status = fields.Selection(
         [
             ("error", "Error"),
@@ -80,6 +81,7 @@ class InteractionResume(models.TransientModel):
                         0 as phone_id,
                         0 as email_id,
                         0 as message_id,
+                        false as is_from_employee,
                         pcj.id as paper_id,
                         NULL as tracking_status
                         FROM "partner_communication_job" as pcj
@@ -108,6 +110,7 @@ class InteractionResume(models.TransientModel):
                         crmpc.id as phone_id,
                         0 as email_id,
                         0 as message_id,
+                        crmpc.is_from_employee as is_from_employee,
                         0 as paper_id,
                         NULL as tracking_status
                         FROM "crm_phonecall" as crmpc
@@ -127,6 +130,7 @@ class InteractionResume(models.TransientModel):
                         0 as phone_id,
                         mail.id as email_id,
                         0 as message_id,
+                        mail.is_from_employee as is_from_employee,
                         job.id as paper_id,
                         COALESCE(mt.state, 'error') as tracking_status
                         FROM "mail_mail" as mail
@@ -158,6 +162,7 @@ class InteractionResume(models.TransientModel):
                         0 as phone_id,
                         0 as email_id,
                         m.id as message_id,
+                        false as is_from_employee,
                         0 as paper_id,
                         NULL as tracking_status
                         FROM "mail_message" as m

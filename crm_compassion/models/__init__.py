@@ -21,3 +21,5 @@ from . import weekly_demand
 from . import weekly_revision
 from . import compassion_hold
 from . import interaction_resume
+from . import mail_mail
+from . import phone_call
