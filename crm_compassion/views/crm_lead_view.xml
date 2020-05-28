@@ -56,15 +56,21 @@
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="priority">25</field>
         <field name="arch" type="xml">
-            <field name="planned_revenue" position="before">
-                <field name="planned_sponsorships" sum="Expected Sponsorships"/>
-            </field>
-            <field name="company_currency" position="after">
+		<xpath expr="//field[@name='planned_revenue']" position="replace">
+                  <field name="planned_sponsorships" sum="Expected Sponsorships"/>
+                </xpath>
+                <xpath expr="//progressbar" position="replace">
+                   <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="planned_sponsorships" help="."/>
+                </xpath>
+		<field name="company_currency" position="after">
                 <field name="event_ids"/>
             </field>
             <xpath expr="//div[hasclass('dropdown-menu')]/t/a[@type='delete']" position="after">
                 <a role="menuitem" name="create_event" type="object" class="dropdown-item">Create event</a>
             </xpath>
-        </field>
+	    <xpath expr="//div[hasclass('o_kanban_record_subtitle')]/t" position="replace">
+		    <t t-if="record.planned_sponsorships.raw_value"><field name="planned_sponsorships" /> sponsorships</t>
+	    </xpath>
+	 </field>
     </record>
 </odoo>
