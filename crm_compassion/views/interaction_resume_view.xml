@@ -7,7 +7,7 @@
             <tree decoration-danger="tracking_status == 'error'"
                   decoration-success="tracking_status == 'opened'" decoration-muted="tracking_status == 'canceled'"
                   decoration-primary="tracking_status == False and is_from_employee == True"
-                  decoration-info="tracking_status == True and is_from_employee == True"
+                  decoration-info="tracking_status != False and is_from_employee == True"
                   edit="0" create="0" delete="0">
                 <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
                 <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
