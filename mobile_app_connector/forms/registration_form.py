@@ -346,14 +346,22 @@ class RegistrationSupporterForm(models.AbstractModel):
         if self.form_next_url() == "/registration/confirm":
             # form submitted
             partner_email = self._sanitize_email(extra_values["partner_email"])
+
             # Find sponsor given the e-mail
-            partner = (
+            matching_partner = (
                 self.env["res.partner"]
                 .sudo()
-                .search(
+                .search([("email", "ilike", partner_email)])
+            )
+
+            # Filter to partner that have sponsorships active or in creation
+            partner = matching_partner.filtered(
+                lambda partner: self.env["recurring.contract"].search_count(
                     [
-                        ("email", "ilike", partner_email),
-                        ("has_sponsorships", "=", True),
+                        "|",
+                        ("partner_id", "=", partner.id),
+                        ("correspondent_id", "=", partner.id),
+                        ("state", "not in", ["cancelled", "terminated"]),
                     ]
                 )
             )
