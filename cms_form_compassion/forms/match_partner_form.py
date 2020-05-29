@@ -33,10 +33,6 @@ class PartnerMatchform(models.AbstractModel):
     partner_street = fields.Char("Street", required=True)
     partner_zip = fields.Char("Zip", required=True)
     partner_city = fields.Char("City", required=True)
-    partner_zip_id = fields.Many2one(
-        'res.city.zip',
-        string='ZIP Location',
-    )
     partner_country_id = fields.Many2one(
         "res.country", "Country", required=True, readonly=False
     )
@@ -151,6 +147,24 @@ class PartnerMatchform(models.AbstractModel):
             "skip_update": extra_values.get("skip_update"),
             "skip_create": extra_values.get("skip_create"),
         }
+
+        # Try to find a res.city.zip location for given data
+        res_city_zip_obj = self.env["res.city.zip"]
+        partner_location = res_city_zip_obj.search([
+            ("name", '=', extra_values.get("partner_zip", None)),
+            ("city_id.name", '=ilike', extra_values.get("partner_city"))
+        ], limit=1)
+        if not partner_location:
+            partner_location = res_city_zip_obj.search([
+                ("name", '=', extra_values.get('partner_zip', None))
+            ])
+        if len(partner_location) == 1:
+            source_vals.update({
+                "zip_id": partner_location.id,
+                "city": partner_location.city_id.name,
+                "city_id": partner_location.city_id.id,
+                "state_id": partner_location.city_id.state_id.id,
+            })
 
         self.partner_id = self.match_partner_to_infos(source_vals, options)
         values["partner_id"] = self.partner_id.id
