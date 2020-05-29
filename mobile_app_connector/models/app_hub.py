@@ -290,7 +290,8 @@ class AppHub(models.AbstractModel):
         rest_of_tiles_order = fixed_content_order + category_length + gap  # = 4000
 
         to_order = [m for m in messages if m["IsAutomaticOrdering"]]
-        to_order.sort(key=lambda m: m["OrderDate"], reverse=True)
+        to_order.sort(
+            key=lambda m: fields.Datetime.from_string(m["OrderDate"]), reverse=True)
 
         letters = {"tiles": [], "max_number_tile": 1}
         prayers = {"tiles": [], "max_number_tile": 0}
@@ -366,7 +367,8 @@ class AppHub(models.AbstractModel):
             tile["SortOrder"] = fixed_content_order
             fixed_content_order += category_length // len(fixed_group)
 
-        rest_group.sort(key=lambda x: x["OrderDate"], reverse=True)
+        rest_group.sort(key=lambda x: fields.Datetime.from_string(x["OrderDate"]),
+                        reverse=True)
 
         for tile in rest_group:
             tile["SortOrder"] = rest_of_tiles_order

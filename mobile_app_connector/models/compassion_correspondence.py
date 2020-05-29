@@ -49,41 +49,6 @@ class CompassionCorrespondence(models.Model):
         }
 
     @api.model
-    def mobile_post_letter(self, json_data, **parameters):
-        """
-            Mobile app method:
-            POST a letter between a child and a sponsor
-
-            :param parameters: all request parameters
-            :return: sample response
-        """
-        # Validate required parameters
-        self._validate_required_fields(
-            ["TemplateID", "Message", "Need", "supporterId", "base64string"], json_data
-        )
-        mapping = self.env["compassion.mapping"].search(
-            [("name", "=", "mobile_app_correspondence")]
-        )
-        vals = mapping.json_to_data(json_data, "mobile_app_correspondence")
-
-        # "search_relational_record" in json_to_data() returns the wrong sponsorship_id
-        # when a child has had several sponsorship. Here we replace with the correct one
-        sponsorship = self.env["recurring.contract"].search(
-            [
-                ("correspondent_id", "=", vals.get("partner_id")),
-                ("child_id", "=", vals.get("child_id")),
-            ]
-        )
-        vals["sponsorship_id"] = sponsorship[:1].id
-
-        letter = self.env["correspondence"].create(vals)
-
-        if letter:
-            return "Letter Submitted"
-        else:
-            return "Letter could not be created and was not submitted"
-
-    @api.model
     def mobile_get_letters(self, **other_params):
         """
         Mobile app method:
@@ -176,23 +141,16 @@ class CompassionCorrespondence(models.Model):
                     },
                 )
             ]
-        gen = (
-            self.env["correspondence.s2b.generator"]
-                .sudo()
-                .create(
-                {
-                    "name": "app-" + child_local_id,
-                    "selection_domain": "[('child_id.local_id', '=', '"
-                                        + child_local_id
-                                        + "')]",
-                    "body": escape(body),
-                    "language_id": int(self.env["crm.claim"].detect_lang(body)),
-                    "s2b_template_id": int(template_id),
-                    "image_ids": datas,
-                    "source": "app",
-                }
-            )
-        )
+        gen = self.env["correspondence.s2b.generator"].sudo().create({
+            "name": "app-" + child_local_id,
+            "selection_domain": f"[('child_id.local_id', '=', '{child_local_id}'),"
+                                f"('state', 'not in', ['terminated','cancelled'])]",
+            "body": escape(body),
+            "language_id": int(self.env["crm.claim"].detect_lang(body)),
+            "s2b_template_id": int(template_id),
+            "image_ids": datas,
+            "source": "app",
+        })
         gen.onchange_domain()
         # We commit otherwise the generation fails
         self.env.cr.commit()  # pylint: disable=invalid-commit
@@ -201,8 +159,8 @@ class CompassionCorrespondence(models.Model):
             self.env["ir.config_parameter"].sudo().get_param("web.external.url")
         )
         url = (
-            web_base_url
-            + "/web/image/"
+                web_base_url
+                + "/web/image/"
             + gen._name
             + "/"
             + str(gen.id)
