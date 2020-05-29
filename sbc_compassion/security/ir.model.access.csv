@@ -6,7 +6,7 @@ access_admin_correspondence_lang_checkbox,Full access on correspondence_checkbox
 access_correspondence_template,Read access on correspondence_template,model_correspondence_template,child_compassion.group_sponsorship,1,0,0,0
 access_correspondence_template_page,Read access on correspondence_template_page,model_correspondence_template_page,child_compassion.group_sponsorship,1,0,0,0
 access_correspondence_page,Access on correspondence_page,model_correspondence_page,child_compassion.group_sponsorship,1,1,1,1
-access_correspondence_type               ,Read access on correspondence_type         ,model_correspondence_type               ,                                  ,1        ,0         ,0          ,0
+access_correspondence_type,Read access on correspondence_type,model_correspondence_type,,1,0,0,0
 access_correspondence_lang_checkbox,Read access on correspondence_checkbox,model_correspondence_lang_checkbox,child_compassion.group_sponsorship,1,0,0,0
 access_import_letters_history,Access on import_letters_history,model_import_letters_history,child_compassion.group_sponsorship,1,1,1,1
 access_import_letter_config,Access on import_letter_config,model_import_letter_config,child_compassion.group_sponsorship,1,1,1,0

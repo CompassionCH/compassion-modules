@@ -55,7 +55,7 @@ access_fo_disaster_update,Full access on Field Office Disaster Update,model_fo_d
 access_fo_disaster_update_spo,User access on Field Office Disaster Update,model_fo_disaster_update,group_sponsorship,1,0,0,0
 access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc_user,1,1,1,1
 access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
-access_res_lang_compassion        ,Read only access on res_lang_compassion    ,model_res_lang_compassion                               ,                                        ,1        ,0         ,0          ,0
+access_res_lang_compassion,Read only access on res_lang_compassion,model_res_lang_compassion,,1,0,0,0
 access_gmc_message,Access gmc.message,message_center_compassion.model_gmc_message,group_sponsorship,1,1,1,0
 access_gmc_mapping,Access compassion.mapping,message_center_compassion.model_compassion_mapping,group_sponsorship,1,0,0,0
 access_gmc_field_to_json,Access field.to.json,message_center_compassion.model_compassion_field_to_json,group_sponsorship,1,0,0,0

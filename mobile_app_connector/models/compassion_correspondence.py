@@ -158,15 +158,7 @@ class CompassionCorrespondence(models.Model):
         web_base_url = (
             self.env["ir.config_parameter"].sudo().get_param("web.external.url")
         )
-        url = (
-                web_base_url
-                + "/web/image/"
-            + gen._name
-            + "/"
-            + str(gen.id)
-            + "/preview_pdf"
-        )
-        return url
+        return f"{web_base_url}/web/image/{gen._name}/{gen.id}/preview_pdf"
 
     @api.multi
     def mobile_send_letter(self, *params, **parameters):
