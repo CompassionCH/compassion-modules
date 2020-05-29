@@ -864,6 +864,14 @@ class SponsorshipContract(models.Model):
                     analytic = a_default and a_default.analytic_id
                 if analytic:
                     invl_data.update({"account_analytic_id": analytic.id})
+                    a_default = self.env["account.analytic.default"].account_get(
+                        product_id, partner_id, date=fields.Date.today()
+                    )
+
+                tags = a_default and a_default.analytic_tag_ids
+                if tags:
+                    invl_data.update({"analytic_tag_ids": [(6,0,tags.ids)]})
+                    logger.info("tag:" + str(tags.ids))
 
             # Append the invoice lines.
             res.extend(invl_datas)
