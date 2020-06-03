@@ -333,7 +333,8 @@ class CompassionChild(models.Model):
     @api.depends("birthdate")
     def _compute_birthday_month(self):
         for child in self.filtered("birthdate"):
-            child.birthday_month = child.with_context(lang="en_US").get_date("birthdate", "MMMM")
+            child.birthday_month = \
+                child.with_context(lang="en_US").get_date("birthdate", "MMMM")
             child.birthday_dm = child.get_date("birthdate", "MM-dd")
 
     @api.constrains("state", "hold_type")
