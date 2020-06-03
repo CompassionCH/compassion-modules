@@ -85,7 +85,8 @@ class CompassionChild(models.Model):
     non_latin_name = fields.Char()
     birthday_dm = fields.Char("Birthday", compute="_compute_birthday_month", store=True)
     birthday_month = fields.Selection(
-        "_get_months", compute="_compute_birthday_month", store=True
+        compute="_compute_birthday_month",
+        selection="_get_months", store=True
     )
 
     # Hold Information
@@ -332,7 +333,7 @@ class CompassionChild(models.Model):
     @api.depends("birthdate")
     def _compute_birthday_month(self):
         for child in self.filtered("birthdate"):
-            child.birthday_month = child.get_date("birthdate", "MMMM")
+            child.birthday_month = child.with_context(lang="en_US").get_date("birthdate", "MMMM")
             child.birthday_dm = child.get_date("birthdate", "MM-dd")
 
     @api.constrains("state", "hold_type")
