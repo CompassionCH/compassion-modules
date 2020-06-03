@@ -116,6 +116,7 @@ class Partner(models.Model):
                 "default_partner_id": self.id,
                 "default_partner_mobile": self.mobile,
                 "default_partner_phone": self.phone,
+                "origin": "employee"
             }
         )
         domain = [("partner_id", "=", self.id)]

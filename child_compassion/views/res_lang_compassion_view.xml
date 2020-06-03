@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-     <record id="lang_compassion_view_tree" model="ir.ui.view">
+    <record id="lang_compassion_view_tree" model="ir.ui.view">
         <field name="name">Compassion languages</field>
         <field name="model">res.lang.compassion</field>
         <field name="arch" type="xml">
@@ -9,6 +9,22 @@
                 <field name="code_iso"/>
                 <field name="translatable"/>
             </tree>
+        </field>
+    </record>
+    <record id="lang_compassion_view_form" model="ir.ui.view">
+        <field name="name">Compassion language</field>
+        <field name="model">res.lang.compassion</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="lang_id"/>
+                        <field name="code_iso"/>
+                        <field name="translatable"/>
+                    </group>
+                </sheet>
+            </form>
         </field>
     </record>
     <record id="action_lang_compassion_view" model="ir.actions.act_window">

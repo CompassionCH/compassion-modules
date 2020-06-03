@@ -4,13 +4,18 @@
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="state == 'failed'" decoration-success="state == 'reached'" decoration-muted="state == 'canceled'" edit="0" create="0" delete="0">
+            <tree decoration-danger="tracking_status == 'error'"
+                  decoration-success="tracking_status == 'opened'" decoration-muted="tracking_status == 'canceled'"
+                  decoration-primary="tracking_status == False and is_from_employee == True"
+                  decoration-info="tracking_status != False and is_from_employee == True"
+                  edit="0" create="0" delete="0">
                 <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
                 <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
                 <field name="communication_date"/>
                 <field name="communication_type"/>
                 <field name="state" invisible="1"/>
                 <field name="color" invisible="1"/>
+                <field name="is_from_employee" invisible="1"/>
                 <field name="email"/>
                 <field name="tracking_status"/>
                 <field name="subject"/>

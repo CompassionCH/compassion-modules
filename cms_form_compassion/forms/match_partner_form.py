@@ -116,11 +116,11 @@ class PartnerMatchform(models.AbstractModel):
     def _form_validate_partner_firstname(self, value, **req_values):
         return self._form_validate_alpha_field("first_name", value)
 
-    def _form_validate_partner_street(self, value, **req_values):
-        return self._form_validate_alpha_field("street", value)
-
     def _form_validate_partner_city(self, value, **req_values):
         return self._form_validate_alpha_field("city", value)
+
+    def _form_validate_partner_street(self, value, **req_values):
+        return self._form_validate_alpha_field("street", value)
 
     def _form_validate_alpha_field(self, field, value):
         if value and not re.match(r"^[\w\s'-/]+$", value, re.UNICODE):
@@ -147,6 +147,24 @@ class PartnerMatchform(models.AbstractModel):
             "skip_update": extra_values.get("skip_update"),
             "skip_create": extra_values.get("skip_create"),
         }
+
+        # Try to find a res.city.zip location for given data
+        res_city_zip_obj = self.env["res.city.zip"]
+        partner_location = res_city_zip_obj.search([
+            ("name", '=', extra_values.get("partner_zip", None)),
+            ("city_id.name", '=ilike', extra_values.get("partner_city"))
+        ], limit=1)
+        if not partner_location:
+            partner_location = res_city_zip_obj.search([
+                ("name", '=', extra_values.get('partner_zip', None))
+            ])
+        if len(partner_location) == 1:
+            source_vals.update({
+                "zip_id": partner_location.id,
+                "city": partner_location.city_id.name,
+                "city_id": partner_location.city_id.id,
+                "state_id": partner_location.city_id.state_id.id,
+            })
 
         self.partner_id = self.match_partner_to_infos(source_vals, options)
         values["partner_id"] = self.partner_id.id
