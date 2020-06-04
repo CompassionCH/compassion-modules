@@ -266,7 +266,7 @@ class SponsorshipGift(models.Model):
                 ("sponsorship_id", "=", vals["sponsorship_id"]),
                 ("gift_type", "=", vals["gift_type"]),
                 ("attribution", "=", vals["attribution"]),
-                ("gift_date", "like", gift_date[:4]),
+                ("gift_date", "like", str(gift_date)[:4]),
                 ("sponsorship_gift_type", "=", vals.get("sponsorship_gift_type")),
                 ("state", "in", ["draft", "verify", "error"]),
             ],
@@ -404,7 +404,7 @@ class SponsorshipGift(models.Model):
                 next_year = fields.Date.to_string(
                     (date.today() + timedelta(days=365)).replace(month=1, day=1)
                 )
-                firstJanuaryOfThisYear = fields.Date.today()[0:4] + "-01-01"
+                firstJanuaryOfThisYear = fields.Date.today().replace(day=1, month=1)
 
                 other_gifts = self.search(
                     [
