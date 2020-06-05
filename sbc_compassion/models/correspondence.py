@@ -730,7 +730,7 @@ class Correspondence(models.Model):
         if not self.store_letter_image:
             return self.generate_original_pdf()
 
-        return base64.b64decode(self.letter_image)
+        return base64.b64decode(self.letter_image) if self.letter_image else False
 
     def generate_original_pdf(self):
         """
