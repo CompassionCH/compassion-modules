@@ -423,7 +423,8 @@ class Correspondence(models.Model):
     @api.multi
     def _compute_b64_image(self):
         for letter in self:
-            letter.b64image = base64.b64encode(letter.get_image())
+            letter_image = letter.get_image()
+            letter.b64image = base64.b64encode(letter_image) if letter_image else False
 
     ##########################################################################
     #                              ORM METHODS                               #
