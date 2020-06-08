@@ -28,7 +28,7 @@
         <field name="model_id" ref="model_compassion_intervention"/>
         <field name="trigger">on_create_or_write</field>
         <field name="filter_domain">[('state', 'in', ['on_hold', 'sla'])]</field>
-        <field name="server_action_id" ref="intervention_sla_done_action"/>
+        <field name="action_server_id" ref="intervention_sla_done_action"/>
     </record>
 
     <record id="intervention_sla_check_wait" model="base.automation">
@@ -36,6 +36,6 @@
         <field name="model_id" ref="model_compassion_intervention"/>
         <field name="trigger">on_create_or_write</field>
         <field name="filter_domain">[('state', 'in', ['on_hold', 'sla'])]</field>
-        <field name="server_action_id" ref="intervention_sla_wait_action"/>
+        <field name="action_server_id" ref="intervention_sla_wait_action"/>
     </record>
 </odoo>
