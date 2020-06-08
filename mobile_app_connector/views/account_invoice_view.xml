@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_invoice_no_notifications" model="ir.ui.view">
+        <field name="name">account.invoice.attribution.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form" />
+        <field name="arch" type="xml">
+            <field name="date_due" position="after">
+                <label for="avoid_mobile_donation_notification"/>
+                <field name="avoid_mobile_donation_notification"/>
+            </field>
+        </field>
+    </record>
+</odoo>
