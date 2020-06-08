@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="account.invoice_form" />
         <field name="arch" type="xml">
             <field name="returned_payment" position="after">
-                <label for="no_notifications"/>
-                <field name="no_notifications"/>
+                <label for="avoid_mobile_donation_notification"/>
+                <field name="avoid_mobile_donation_notification"/>
             </field>
         </field>
     </record>
