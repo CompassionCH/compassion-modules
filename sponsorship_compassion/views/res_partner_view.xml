@@ -179,16 +179,4 @@
             </xpath>
         </field>
     </record>
-
-    <record id="compassion_partner_view_buttons2" model="ir.ui.view">
-        <field name="name">compassion.partner.view.buttons2</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="account.partner_view_buttons" />
-        <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_view_partner_invoices']" position="attributes">
-                <attribute name="name">%(account.action_invoice_tree)d</attribute>
-                <attribute name="type">action</attribute>
-            </xpath>
-        </field>
-    </record>
 </odoo>
