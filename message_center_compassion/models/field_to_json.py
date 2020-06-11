@@ -16,6 +16,11 @@ from odoo.tools import safe_eval
 _logger = logging.getLogger(__name__)
 
 
+class RelationNotFound(UserError):
+    def __init__(self, msg):
+        super().__init__(msg)
+
+
 class FieldToJson(models.Model):
     """ This model is used to make a link between odoo
         field and GMC Connect Json field name for the compassion mapping
@@ -208,11 +213,10 @@ class FieldToJson(models.Model):
             self.json_name,
             value,
         )
-        raise UserError(
+        raise RelationNotFound(
             _(
                 f"Trying to find a {relational_model._description} "
-                f"that has the following values, but nothing was found: "
-                f"\n\n{value}"
+                f"that has the following values, but nothing was found: {value}"
             )
         )
 

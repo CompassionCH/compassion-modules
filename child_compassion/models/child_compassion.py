@@ -12,6 +12,8 @@ import logging
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
+
+from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 from odoo.addons.queue_job.job import job, related_action
 
@@ -493,7 +495,12 @@ class CompassionChild(models.Model):
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
-        data = super().json_to_data(json, mapping_name)
+        try:
+            data = super().json_to_data(json, mapping_name)
+        except RelationNotFound:
+            raise
+            self.fetch_missing_relational_records()
+            data = super().json_to_data(json, mapping_name)
         child = self.search([("global_id", "=", data.get("global_id"))])
         # Remove old revision fields before creating new ones
         revised_values = data.get("revised_value_ids")
