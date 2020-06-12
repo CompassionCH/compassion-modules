@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import datetime
+from datetime import date
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
@@ -41,7 +41,7 @@ class ChildHoldWizard(models.TransientModel):
                 self.env.context.get("contract_id")
             )
             # Prevent choosing child completing in less than 2 years
-            in_two_years = datetime.today() + relativedelta(years=2)
+            in_two_years = date.today() + relativedelta(years=2)
             child = holds[0].child_id
             if child.completion_date and child.completion_date < in_two_years:
                 raise UserError(

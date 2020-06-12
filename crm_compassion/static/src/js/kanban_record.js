@@ -1,7 +1,7 @@
 odoo.define('crm_compassion_web_kanban.Record', function (require) {
     "use strict";
 
-    var KanbanRecord = require('web_kanban.Record');
+    var KanbanRecord = require('web.KanbanRecord');
 
     // Overriding 'kanban_getcolor' in web_kanban/static/js/kanban_record.js
     var KanbanRecordUpdated = KanbanRecord.include({

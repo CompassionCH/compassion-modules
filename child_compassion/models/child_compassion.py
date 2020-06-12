@@ -501,11 +501,6 @@ class CompassionChild(models.Model):
             raise
             self.fetch_missing_relational_records()
             data = super().json_to_data(json, mapping_name)
-        child = self.search([("global_id", "=", data.get("global_id"))])
-        # Remove old revision fields before creating new ones
-        revised_values = data.get("revised_value_ids")
-        if revised_values:
-            child.revised_value_ids.unlink()
 
         # Update household
         household_data = data.pop("household_id", {})
@@ -727,5 +722,7 @@ class CompassionChild(models.Model):
             :param vals: Record values received from connect
         """
         self.ensure_one()
+        # First write revised values, then everything else
+        self.write({"revised_value_ids": vals.pop("revised_value_ids")})
         self.write(vals)
         self.get_infos()

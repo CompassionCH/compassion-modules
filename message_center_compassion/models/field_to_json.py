@@ -194,8 +194,14 @@ class FieldToJson(models.Model):
             # relations.
             orm_vals = [(5, 0, 0)]
             record_vals = value if isinstance(value, list) else [value]
+            # Use dictionary values to create related record
             orm_vals.extend(
                 [(0, 0, vals) for vals in record_vals if isinstance(vals, dict)]
+            )
+            # Use simple field to create related record
+            orm_vals.extend(
+                [(0, 0, {self.field_name: vals}) for vals in record_vals
+                 if not isinstance(vals, dict)]
             )
             return orm_vals
 
