@@ -462,7 +462,7 @@ class CompassionIntervention(models.Model):
                 intervention_local_ids.append(intervention.id)
                 intervention.with_context(hold_update=False).write(vals)
                 intervention.message_post(
-                    _("The information of this " "intervention have been updated"),
+                    body=_("The information of this intervention have been updated"),
                     subject=(_(intervention.name + "got an Update")),
                     message_type="email",
                     subtype="mail.mt_comment",
@@ -531,7 +531,7 @@ class CompassionIntervention(models.Model):
         if intervention:
             intervention.commited_percentage = json_data.get("CommittedPercent", 100)
             intervention.message_post(
-                _("The commitment percentage has changed."),
+                body=_("The commitment percentage has changed."),
                 message_type="email",
                 subtype="mail.mt_comment",
             )
@@ -771,7 +771,7 @@ class CompassionIntervention(models.Model):
                         f'target="_blank">{milestone_url}</a>.'
                     )
                 intervention.message_post(
-                    body,
+                    body=body,
                     subject=(_(intervention.name + ": New milestone " "received.")),
                     message_type="email",
                     subtype="mail.mt_comment",
@@ -821,7 +821,7 @@ class CompassionIntervention(models.Model):
             body += f"<li>Amendment Amount: {amendment_amount}</li>"
             body += f"<li>Hold ID: {interventionamendment['HoldID']}</li></ul>"
             intervention.message_post(
-                body,
+                body=body,
                 subject=_(intervention.name + ": Amendment received"),
                 message_type="email",
                 subtype="mail.mt_comment",

@@ -620,23 +620,23 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.fcp_id
             contract.message_post(
-                _(
+                body=_(
                     f"The project {project_code} was suspended "
                     f"and funds are retained."
                     f"<br/>Invoices due in the suspension period "
                     f"are automatically cancelled."
                 ),
-                _("Project Suspended"),
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
             contract.partner_id.message_post(
-                _(
+                body=_(
                     f"The project {project_code} was suspended and"
                     f" funds are retained for child {contract.child_code}. <b>"
                     f"<br/>Invoices due in the suspension period "
                     f"are automatically cancelled."
                 ),
-                _("Project Suspended"),
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
 
@@ -760,13 +760,13 @@ class SponsorshipContract(models.Model):
         # Log a note in the contracts
         for contract in contracts:
             contract.message_post(
-                _(
+                body=_(
                     "The project was reactivated."
                     "<br/>Invoices due in the suspension period "
                     "are automatically reverted."
                 ),
-                _("Project Reactivated"),
-                _("comment"),
+                subject=_("Project Reactivated"),
+                type="comment",
             )
 
     def commitment_sent(self, vals):
@@ -1186,7 +1186,8 @@ class SponsorshipContract(models.Model):
         for i in range(0, len(messages)):
             if not messages[i].state == "success":
                 self[i].message_post(
-                    messages[i].failure_reason, _("The sponsorship is no more active!")
+                    body=messages[i].failure_reason,
+                    subject=_("The sponsorship is no more active!")
                 )
 
     @api.multi

@@ -74,7 +74,8 @@ class ChildPictures(models.Model):
 
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
-            pictures.child_id.message_post(_(pictures._error_msg), _("Picture update"))
+            pictures.child_id.message_post(
+                body=_(pictures._error_msg), subject=_("Picture update"))
             pictures.unlink()
             return False
 
@@ -84,7 +85,7 @@ class ChildPictures(models.Model):
             # That case is not likely to happens, it means that the url has
             #  changed, while the picture stay unchanged.
             pictures.child_id.message_post(
-                _("The picture was the same"), _("Picture update")
+                body=_("The picture was the same"), subject=_("Picture update")
             )
             pictures.unlink()
             return False
