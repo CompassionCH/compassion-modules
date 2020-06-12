@@ -21,7 +21,6 @@
     "ParentsTogether": "parents_together",
     "RevisedValues": {
       "field": "revised_value_ids.name",
-      "search_relational_record": true,
       "allow_relational_creation": true
     }
   }

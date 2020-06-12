@@ -316,17 +316,3 @@ class FieldOfficeDisasterAlert(models.Model):
             fo_disaster = self.create(vals)
             fo_ids.append(fo_disaster.id)
         return fo_ids
-
-    @api.model
-    def json_to_data(self, json, mapping_name=None):
-        odoo_data = super().json_to_data(json, mapping_name)
-        disaster = self.env[self.ODOO_MODEL].search(
-            [("disaster_id", "=", odoo_data["disaster_id"])]
-        )
-
-        # Remove old impacts
-        if "child_disaster_impact_ids" in odoo_data:
-            disaster.child_disaster_impact_ids.unlink()
-        if "fcp_disaster_impact_ids" in odoo_data:
-            disaster.fcp_disaster_impact_ids.unlink()
-        return odoo_data
