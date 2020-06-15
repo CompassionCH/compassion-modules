@@ -1,5 +1,5 @@
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Letter Messages -->
         <record id="update_letter" model="gmc.action">
             <field name="name">UpdateLetter</field>
