@@ -132,6 +132,7 @@ class SponsorshipContract(models.Model):
         "recurring.contract", "sub sponsorship", readonly=True, copy=False, index=True
     )
     name = fields.Char(compute="_compute_name", store=True)
+    display_name = fields.Char(related="name")
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
