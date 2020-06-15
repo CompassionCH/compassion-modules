@@ -418,7 +418,7 @@ class SponsorshipContract(models.Model):
                 contract.contract_duration = 0
             else:
                 contract_start_date = contract.activation_date
-                end_date = contract.end_date if contract.end_date else date.today()
+                end_date = contract.end_date if contract.end_date else datetime.now()
                 contract.contract_duration = (end_date - contract_start_date).days
 
     @api.constrains("parent_id")
@@ -1265,7 +1265,7 @@ class SponsorshipContract(models.Model):
                 if contract.state == "cancelled":
                     raise UserError(f"The contract {contract.name} is not active.")
                 if contract.state == "terminated" and contract.end_date:
-                    limit = date.today() - relativedelta(days=180)
+                    limit = datetime.now() - relativedelta(days=180)
                     ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(f"The contract {contract.name} is not active.")
