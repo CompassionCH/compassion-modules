@@ -1,5 +1,5 @@
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
         <record id="upsert_partner" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">UpsertPartner</field>
