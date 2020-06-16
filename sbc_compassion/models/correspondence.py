@@ -908,6 +908,11 @@ class Correspondence(models.Model):
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
+        english_text = json_data["Pages"]["EnglishTranslatedText"]
+        translated_text = json_data["Pages"]["TranslatedText"]
+        if "".join(english_text) == "" and "".join(translated_text) != "":
+            json_data["Pages"]["EnglishTranslatedText"] = translated_text
+
         return json_data
 
     @api.model
