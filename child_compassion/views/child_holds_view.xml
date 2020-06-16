@@ -89,6 +89,29 @@
         </field>
     </record>
 
+    <record id="view_compassion_holds_kanban" model="ir.ui.view">
+        <field name="name">compassion.hold.kanban</field>
+        <field name="model">compassion.hold</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="state" group_edit="false">
+                <field name="expiration_date"/>
+                <field name="hold_id"/>
+                <field name="child_id"/>
+                <field name="type"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div><strong><field name="expiration_date"/></strong></div>
+                            <div><field name="child_id"/></div>
+                            <div><field name="hold_id"/></div>
+                            <div><field name="type"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="open_view_holds" model="ir.actions.act_window">
         <field name="name">Holds Management</field>
         <field name="res_model">compassion.hold</field>
