@@ -49,7 +49,7 @@ class CompassionChild(models.Model):
     estimated_birthdate = fields.Boolean(readonly=True)
     cognitive_age_group = fields.Char(readonly=True)
     cdsp_type = fields.Selection(
-        [("Home Based", "Home based"), ("Center Based", "Center based"), ],
+        [("Home Based", "Home based"), ("Center Based", "Center based")],
         track_visibility="onchange",
         readonly=True,
     )
@@ -87,8 +87,7 @@ class CompassionChild(models.Model):
     non_latin_name = fields.Char()
     birthday_dm = fields.Char("Birthday", compute="_compute_birthday_month", store=True)
     birthday_month = fields.Selection(
-        compute="_compute_birthday_month",
-        selection="_get_months", store=True
+        compute="_compute_birthday_month", selection="_get_months", store=True
     )
 
     # Hold Information
@@ -335,8 +334,9 @@ class CompassionChild(models.Model):
     @api.depends("birthdate")
     def _compute_birthday_month(self):
         for child in self.filtered("birthdate"):
-            child.birthday_month = \
-                child.with_context(lang="en_US").get_date("birthdate", "MMMM")
+            child.birthday_month = child.with_context(lang="en_US").get_date(
+                "birthdate", "MMMM"
+            )
             child.birthday_dm = child.get_date("birthdate", "MM-dd")
 
     @api.constrains("state", "hold_type")
@@ -361,7 +361,7 @@ class CompassionChild(models.Model):
             ],
             "I": consignment_holds,
             "P": no_hold
-            + [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value, ],
+            + [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value],
             "F": no_hold,
             "R": no_hold,
             "S": consignment_holds,
@@ -426,7 +426,7 @@ class CompassionChild(models.Model):
         """ Called when a MajorRevision Kit is received. """
         child_ids = list()
         for child_data in commkit_data.get(
-                "BeneficiaryMajorRevisionList", [commkit_data]
+            "BeneficiaryMajorRevisionList", [commkit_data]
         ):
             global_id = child_data.get("Beneficiary_GlobalID")
             child = self.search([("global_id", "=", global_id)])
@@ -456,7 +456,7 @@ class CompassionChild(models.Model):
         """
         self.ensure_one()
         if self.us_grade_level and (
-                not self.education_level or self.education_level == "Not Enrolled"
+            not self.education_level or self.education_level == "Not Enrolled"
         ):
             grade_mapping = {
                 "P": "Preschool",
@@ -500,8 +500,9 @@ class CompassionChild(models.Model):
                 data = super().json_to_data(json, mapping_name)
                 break
             except RelationNotFound as e:
-                self.fetch_missing_relational_records(e.field_relation, e.value,
-                                                      e.json_name)
+                self.fetch_missing_relational_records(
+                    e.field_relation, e.value, e.json_name
+                )
 
         # Update household
         household_data = data.pop("household_id", {})
@@ -534,36 +535,41 @@ class CompassionChild(models.Model):
         """
         onramp = OnrampConnector()
         endpoint = "beneficiaries/{0}/details?FinalLanguage={1}"
-        languages_map = {'English': 'en_US', 'French': 'fr_CH', 'German': 'de_DE',
-                         'Italian': 'it_IT'}
+        languages_map = {
+            "English": "en_US",
+            "French": "fr_CH",
+            "German": "de_DE",
+            "Italian": "it_IT",
+        }
         # go over all missing values, keep count of index to know which translation
         # to take from onramp result
         for i, value in enumerate(values):
             # check if hobby/household duty, etc... exists in our database
-            search_count = self.env[field_relation].search(['|',
-                                                            ('name', '=', value),
-                                                            ('value', '=', value)],
-                                                           count=True, limit=1)
+            search_count = self.env[field_relation].search(
+                ["|", ("name", "=", value), ("value", "=", value)], count=True, limit=1
+            )
             # if not exist, then create it
             if search_count == 0:
-                value_record = self.env[field_relation].create({'name': value,
-                                                                'value': value
-                                                                })
+                value_record = (
+                    self.env[field_relation]
+                    .sudo()
+                    .create({"name": value, "value": value})
+                )
                 # fetch translation
                 for lang_literal, lang_context in languages_map.items():
-                    result = onramp.send_message(endpoint.format(self[0].global_id,
-                                                                 lang_literal),
-                                                 'GET')
-                    if 'BeneficiaryResponseList' in result.get('content', {}):
-                        content = result.get("content", {})['BeneficiaryResponseList'][
-                            0]
+                    result = onramp.send_message(
+                        endpoint.format(self[0].global_id, lang_literal), "GET"
+                    )
+                    if "BeneficiaryResponseList" in result.get("content", {}):
+                        content = result["content"]["BeneficiaryResponseList"][0]
                         if json_name in content:
                             content_values = content[json_name]
                             if not isinstance(content_values, list):
                                 content_values = list(content_values)
                             translation = content_values[i]
-                            value_record.with_context(lang=lang_context).value \
-                                = translation
+                            value_record.with_context(
+                                lang=lang_context
+                            ).value = translation
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -609,7 +615,7 @@ class CompassionChild(models.Model):
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
                 if (diff_pic.months > 6 or diff_pic.years > 0) and (
-                        diff_today.months <= 6 and diff_today.years == 0
+                    diff_today.months <= 6 and diff_today.years == 0
                 ):
                     child.new_photo()
         return res
@@ -657,8 +663,8 @@ class CompassionChild(models.Model):
         # Cancel planned deletion
         jobs = (
             self.env["queue.job"]
-                .sudo()
-                .search(
+            .sudo()
+            .search(
                 [
                     ("name", "=", "Job for deleting released children."),
                     ("func_string", "like", self.ids),

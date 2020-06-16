@@ -45,7 +45,13 @@ class MajorRevision(models.Model):
 
     @api.model
     def create(self, vals):
-        major_field = super().create(vals)
+        try:
+            major_field = super().create(vals)
+        except ValueError:
+            if vals["name"] == "RevisedValuesToUpdate":
+                # Nothing to do in this case
+                return self
+            raise
         major_field.old_value = major_field.get_field_value()
         return major_field
 
