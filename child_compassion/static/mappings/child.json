@@ -109,15 +109,15 @@
     "SponsoredStatus": "sponsorship_status",
     "ThingsILike": {
       "field": "hobby_ids.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "ThingsILikeAge1To2": {
       "field": "hobby_ids.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "ThingsILikeToDoAge3Plus": {
       "field": "hobby_ids.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "TypeOfVocationalEducation": "vocational_training_type",
     "USEquivalentGradeLevel": "us_grade_level",
