@@ -115,12 +115,12 @@ class AccountInvoice(models.Model):
                     self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
                 )
                 invoice.message_post(
-                    _(
+                    body=_(
                         "This invoice created from the app needs to be manually "
                         "processed. You may want to cancel another sponsorship invoice "
                         "to avoid creating an overdue for the supporter."
                     ),
-                    _("Sponsorship paid from the app"),
+                    subject=_("Sponsorship paid from the app"),
                     message_type="email",
                     partner_ids=partner_ids,
                 )

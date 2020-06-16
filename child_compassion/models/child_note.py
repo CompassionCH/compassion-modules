@@ -32,7 +32,7 @@ class ChildNote(models.Model):
     @api.model
     def create(self, vals):
         note = super().create(vals)
-        note.child_id.message_post(note.body, _("New beneficiary notes"))
+        note.child_id.message_post(body=note.body, subject=_("New beneficiary notes"))
         return note
 
     @api.model

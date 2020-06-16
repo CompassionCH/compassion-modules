@@ -461,8 +461,8 @@ class CompassionProject(models.Model):
         """
         for project in self:
             project.message_post(
-                _("The project was suspended and funds are retained."),
-                _("Project Suspended"),
+                body=_("The project was suspended and funds are retained."),
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
         return True
@@ -623,8 +623,8 @@ class CompassionProject(models.Model):
         """ To perform some actions when project is reactivated """
         for project in self:
             project.message_post(
-                _("The project is reactivated."),
-                _("Project Reactivation"),
+                body=_("The project is reactivated."),
+                subject=_("Project Reactivation"),
                 message_type="comment",
             )
         return True

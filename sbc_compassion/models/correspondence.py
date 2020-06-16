@@ -573,8 +573,9 @@ class Correspondence(models.Model):
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = "Exception"
                     letter.message_post(
-                        _("Letter was put on hold because the project is " "suspended"),
-                        _("Project suspended"),
+                        body=_("Letter was put on hold because the project is "
+                              "suspended"),
+                        subject=_("Project suspended"),
                     )
         return True
 
@@ -813,7 +814,7 @@ class Correspondence(models.Model):
         """ Prevents to send S2B letters to GMC. """
         self.write({"state": "Exception"})
         for letter in self:
-            letter.message_post(_("Letter was put on hold"), message)
+            letter.message_post(body=_("Letter was put on hold"), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
         gmc_messages = self.env["gmc.message"].search(
             [
@@ -828,7 +829,7 @@ class Correspondence(models.Model):
         """ Release the hold on S2B letters. """
         self.write({"state": "Received in the system"})
         for letter in self:
-            letter.message_post(_("The letter can now be sent."), message)
+            letter.message_post(body=_("The letter can now be sent."), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
         gmc_messages = self.env["gmc.message"].search(
             [
