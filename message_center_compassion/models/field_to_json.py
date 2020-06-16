@@ -16,6 +16,14 @@ from odoo.tools import safe_eval
 _logger = logging.getLogger(__name__)
 
 
+class RelationNotFound(UserError):
+    def __init__(self, msg, **kwargs):
+        super().__init__(msg)
+        self.field_relation = kwargs['field_relation']
+        self.value = kwargs['value']
+        self.json_name = kwargs['json_name']
+
+
 class FieldToJson(models.Model):
     """ This model is used to make a link between odoo
         field and GMC Connect Json field name for the compassion mapping
@@ -169,7 +177,13 @@ class FieldToJson(models.Model):
             records = relational_model
             values = value if isinstance(value, list) else [value]
             for val in values:
-                records |= relational_model.search([(self.field_name, "=ilike", val)])
+                relational_record = relational_model.search([
+                    (self.field_name, "=ilike", val)])
+                if not relational_record and not self.allow_relational_creation:
+                    # Break to raise error in case we don't find the relation
+                    records = relational_model
+                    break
+                records |= relational_record
             if records and field.ttype == "many2one":
                 return records[:1].id
             elif records:
@@ -214,12 +228,14 @@ class FieldToJson(models.Model):
             self.json_name,
             value,
         )
-        raise UserError(
+        raise RelationNotFound(
             _(
                 f"Trying to find a {relational_model._description} "
-                f"that has the following values, but nothing was found: "
-                f"\n\n{value}"
-            )
+                f"that has the following values, but nothing was found: {value}"
+            ),
+            field_relation=field.relation,
+            value=value,
+            json_name=self.json_name
         )
 
     def _get_relational_creation_values(self, field_values):
