@@ -76,6 +76,11 @@ class GmcAction(models.Model):
     request_type = fields.Selection(
         [("GET", "GET"), ("POST", "POST"), ("PUT", "PUT"), ])
 
+    def write(self, vals):
+        # prevent writing direction which should not be changed and is performance heavy
+        vals.pop("direction", False)
+        return super().write(vals)
+
     @api.multi
     @api.constrains(
         "mapping_id", "direction", "incoming_method", "success_method", "failure_method"

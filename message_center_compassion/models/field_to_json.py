@@ -69,6 +69,10 @@ class FieldToJson(models.Model):
         help="If set to true, new records will be created if no matching "
              "records are found with the given JSON values"
     )
+    relational_raise_if_not_found = fields.Boolean(
+        default=True,
+        help="Set to false if you don't care finding the relational field."
+    )
     field_name = fields.Char(related="field_id.name", readonly=True)
     json_name = fields.Char("Json Field Name", required=True, index=True)
     sub_mapping_id = fields.Many2one(
@@ -195,9 +199,9 @@ class FieldToJson(models.Model):
             if field.ttype == "many2one":
                 # We must create the record and return its id
                 if isinstance(value, dict):
-                    return relational_model.create(value).id
+                    return relational_model.sudo().create(value).id
                 else:
-                    return relational_model.create({self.field_name: value}).id
+                    return relational_model.sudo().create({self.field_name: value}).id
 
             # In that case we are in many2many or one2many and will replace
             # relations.
@@ -228,15 +232,17 @@ class FieldToJson(models.Model):
             self.json_name,
             value,
         )
-        raise RelationNotFound(
-            _(
-                f"Trying to find a {relational_model._description} "
-                f"that has the following values, but nothing was found: {value}"
-            ),
-            field_relation=field.relation,
-            value=value,
-            json_name=self.json_name
-        )
+        if self.relational_raise_if_not_found:
+            raise RelationNotFound(
+                _(
+                    f"Trying to find a {relational_model._description} "
+                    f"that has the following values, but nothing was found: {value}"
+                ),
+                field_relation=field.relation,
+                value=value,
+                json_name=self.json_name
+            )
+        return False
 
     def _get_relational_creation_values(self, field_values):
         """
