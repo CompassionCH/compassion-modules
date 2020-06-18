@@ -369,10 +369,8 @@ class CompassionChild(models.Model):
         for child in self:
             if child.hold_type not in valid_states[child.state]:
                 raise ValidationError(
-                    _(
-                        f"Child {child.local_id} has invalid state {child.state} "
-                        f"for hold type {child.hold_type}"
-                    )
+                    _("Child %s has invalid state %s for hold type %s")
+                    % (child.local_id, child.state, child.hold_type)
                 )
 
     ##########################################################################
@@ -651,7 +649,8 @@ class CompassionChild(models.Model):
         if self.mapped("hold_id"):
             local_ids = self.filtered("hold_id").mapped("local_id")
             raise UserError(
-                _(f"Children {local_ids} have a hold that should not " f"be removed.")
+                _("Children %s have a hold that should not be removed.")
+                % ",".join(local_ids)
             )
         self.write({"state": "W", "sponsor_id": False})
         return True
@@ -683,9 +682,8 @@ class CompassionChild(models.Model):
         if self.state in ("W", "F", "R"):
             raise UserError(
                 _(
-                    f"[{self.local_id}] This child has not a valid hold and "
-                    f"cannot be sponsored."
-                )
+                    "[%s] This child has not a valid hold and cannot be sponsored."
+                ) % self.local_id
             )
         hold = self.hold_id
         if hold.type != HoldType.SUB_CHILD_HOLD.value:

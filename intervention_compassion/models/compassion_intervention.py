@@ -497,9 +497,8 @@ class CompassionIntervention(models.Model):
         )
         self.message_post(
             body=_(
-                f"The hold of {self.name} ({self.intervention_id}) "
-                f"was just cancelled."
-            ),
+                "The hold of %s (%s) was just cancelled."
+            ) % (self.name, self.intervention_id),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             type="comment",

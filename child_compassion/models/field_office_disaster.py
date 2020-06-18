@@ -102,9 +102,8 @@ class ChildDisasterImpact(models.Model):
         if impact.child_id:
             impact.child_id.message_post(
                 body=_(
-                    f"Child was affected by the natural disaster "
-                    f"{impact.disaster_id.name}"
-                ),
+                    "Child was affected by the natural disaster %s"
+                ) % impact.disaster_id.name,
                 subject=_("Disaster Alert"),
             )
         return impact

@@ -75,7 +75,7 @@ class SBCConnector(OnrampConnector):
         if status == 201:
             letter_url = r.text
         else:
-            raise UserError(_(f"[{r.status_code}] {r.text}"))
+            raise UserError(_("[%s] %s") % (str(r.status_code), r.text))
         return letter_url
 
     def get_letter_image(self, letter_url, img_type="jpeg", pages=0, dpi=96):

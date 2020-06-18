@@ -235,9 +235,9 @@ class FieldToJson(models.Model):
         if self.relational_raise_if_not_found:
             raise RelationNotFound(
                 _(
-                    f"Trying to find a {relational_model._description} "
-                    f"that has the following values, but nothing was found: {value}"
-                ),
+                    "Trying to find a %s "
+                    "that has the following values, but nothing was found: %s"
+                ) % (relational_model._description, value),
                 field_relation=field.relation,
                 value=value,
                 json_name=self.json_name

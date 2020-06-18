@@ -622,21 +622,20 @@ class SponsorshipContract(models.Model):
             project_code = contract.project_id.fcp_id
             contract.message_post(
                 body=_(
-                    f"The project {project_code} was suspended "
-                    f"and funds are retained."
-                    f"<br/>Invoices due in the suspension period "
-                    f"are automatically cancelled."
-                ),
+                    "The project %s was suspended and funds are retained."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled."
+                ) % project_code,
                 subject=_("Project Suspended"),
                 message_type="comment",
             )
             contract.partner_id.message_post(
                 body=_(
-                    f"The project {project_code} was suspended and"
-                    f" funds are retained for child {contract.child_code}. <b>"
-                    f"<br/>Invoices due in the suspension period "
-                    f"are automatically cancelled."
-                ),
+                    "The project %s was suspended and"
+                    " funds are retained for child %s. <b>"
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled."
+                ) % (project_code, contract.child_code),
                 subject=_("Project Suspended"),
                 message_type="comment",
             )

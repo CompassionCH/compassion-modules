@@ -755,9 +755,8 @@ class Correspondence(models.Model):
             if image_data is None:
                 raise UserError(
                     _(
-                        f"Image of letter {letter.kit_identifier} "
-                        f"was not found remotely."
-                    )
+                        "Image of letter %s was not found remotely."
+                    ) % letter.kit_identifier
                 )
             letter.write(
                 {"file_name": letter._get_file_name(), "letter_image": image_data}

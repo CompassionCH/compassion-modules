@@ -339,7 +339,7 @@ class CompassionHold(models.Model):
                 body=_(
                     "A new hold has been created because of an existing reservation."
                 ),
-                subject=_(f"{child.local_id} - Reservation converted to hold"),
+                subject=_("%s - Reservation converted to hold") % child.local_id,
                 partner_ids=hold.primary_owner.partner_id.ids,
                 type="comment",
                 subtype="mail.mt_comment",

@@ -99,5 +99,6 @@ class GmcAction(models.Model):
 
             if not valid:
                 raise ValidationError(
-                    _(f"Invalid action ({action.direction}, {action.model}).")
+                    _("Invalid action (%s, %s).")
+                    % (action.direction, action.model)
                 )
