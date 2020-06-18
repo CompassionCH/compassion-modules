@@ -39,7 +39,6 @@
         "views/sub_sponsorship_wizard_view.xml",
         "views/contract_view.xml",
         "views/settings_view.xml",
-        "data/sponsorship_server_actions.xml",
         "data/sponsorship_action_rules.xml",
         "data/install.xml",
     ],
