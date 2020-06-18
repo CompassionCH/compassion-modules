@@ -215,6 +215,7 @@ class InterventionSearch(models.TransientModel):
     @api.multi
     def data_to_json(self, mapping_name=None):
         data = super().data_to_json(mapping_name)
+        del data["InterventionQueryResponseList"]
         return {"InterventionQuery": data}
 
     @api.model
