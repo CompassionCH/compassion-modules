@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-19 07:16+0000\n"
-"PO-Revision-Date: 2020-06-19 09:26+0200\n"
+"PO-Revision-Date: 2020-06-19 09:32+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
-"Language: de\n"
+"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_widget_gtc
 msgid "<b>general terms and conditions</b>"
-msgstr "<b>Datenschutz und die allgemeinen Geschäftsbedingungen</b>"
+msgstr "<b>conditions générales et traitement des données personnelles</b>"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_ir_logging__context_data
@@ -30,7 +30,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_amount
 msgid "Amount"
-msgstr "Betrag"
+msgstr "Montant"
 
 #. module: cms_form_compassion
 #. openerp-web
@@ -40,8 +40,8 @@ msgid ""
 "An error occurred during form submission. Please verify your submission or "
 "contact us in case of trouble."
 msgstr ""
-"Bei der Einreichung des Formulars ist ein Fehler aufgetreten. Bitte "
-"überprüfen Sie Ihre Eingabe oder kontaktieren Sie uns."
+"Une erreur est survenue lors de l'envoi du formulaire, merci de vérifier tes "
+"entrées et nous contacter en cas de problèmes."
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_birthdate
@@ -54,19 +54,19 @@ msgstr ""
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_birthdate
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_birthdate
 msgid "Birthdate"
-msgstr "Geburtsdatum"
+msgstr "Date de naissance"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_widget_gtc
 msgid ""
 "By submitting this form, I confirm the\n"
 "            acceptance of the"
-msgstr "mit dem Absenden dieses Formulars stimme ich den"
+msgstr "En soumettant ce formulaire, je confirme accepter les"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_form_buttons
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Annuler"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_city
@@ -79,7 +79,7 @@ msgstr "Abbrechen"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_city
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_city
 msgid "City"
-msgstr "Stadt"
+msgstr "Ville"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_country_id
@@ -92,7 +92,7 @@ msgstr "Stadt"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_country_id
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_country_id
 msgid "Country"
-msgstr "Land"
+msgstr "Pays"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_compassion_form_widget_document__display_name
@@ -110,7 +110,7 @@ msgstr "Land"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_widget_time__display_name
 #: model:ir.model.fields,field_description:cms_form_compassion.field_res_partner_match__display_name
 msgid "Display Name"
-msgstr "Anzeigename"
+msgstr "Nom affiché"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_email
@@ -123,7 +123,7 @@ msgstr "Anzeigename"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_email
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_email
 msgid "Email"
-msgstr "E-Mail"
+msgstr "Courriel"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_firstname
@@ -137,7 +137,7 @@ msgstr "E-Mail"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_firstname
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_firstname
 msgid "First Name"
-msgstr "Vorname"
+msgstr "Prénom"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_cms_form_match_partner
@@ -170,12 +170,12 @@ msgstr ""
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_account_invoice
 msgid "Invoice"
-msgstr ""
+msgstr "Facture"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_payment__invoice_id
 msgid "Invoice for payment"
-msgstr ""
+msgstr "Facture pour paiement"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_lang
@@ -188,7 +188,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_lang
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_lang
 msgid "Language"
-msgstr "Sprache"
+msgstr "Langue"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_compassion_form_widget_document____last_update
@@ -206,7 +206,7 @@ msgstr "Sprache"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_widget_time____last_update
 #: model:ir.model.fields,field_description:cms_form_compassion.field_res_partner_match____last_update
 msgid "Last Modified on"
-msgstr "Zuletzt geändert am"
+msgstr "Dernière Modification le"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_lastname
@@ -220,7 +220,7 @@ msgstr "Zuletzt geändert am"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_lastname
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_lastname
 msgid "Last Name"
-msgstr "Nachname"
+msgstr "Nom de famille"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_link_tracker
@@ -254,17 +254,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_id
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_id
 msgid "Partner"
-msgstr ""
+msgstr "Partenaire"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
 msgid "Pay Now"
-msgstr "Jetzt Spenden"
+msgstr "Payer maintenant"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
 msgid "Pay with"
-msgstr "Bezahlen mit"
+msgstr "Payer avec"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_cms_form_payment
@@ -274,7 +274,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_payment_transaction
 msgid "Payment Transaction"
-msgstr "Zahlungstransaktion"
+msgstr "Transaction"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_phone
@@ -287,24 +287,24 @@ msgstr "Zahlungstransaktion"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_phone
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_phone
 msgid "Phone"
-msgstr "Telefon"
+msgstr "Téléphone"
 
 #. module: cms_form_compassion
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:127
 #, python-format
 msgid "Please avoid any special characters"
-msgstr "Bitte keine Sonderzeichen verwenden"
+msgstr "Merci d’éviter les caractères spéciaux"
 
 #. module: cms_form_compassion
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:103
 #, python-format
 msgid "Please enter a valid phone number"
-msgstr "Bitte füge eine korrekte Telefonnummer ein"
+msgstr "Merci d'indiquer un numéro de téléphone valide"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_queue_job
 msgid "Queue Job"
-msgstr "Aufgabe in Warteschlange einreihen"
+msgstr "Queue de jobs"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_state_id
@@ -317,7 +317,7 @@ msgstr "Aufgabe in Warteschlange einreihen"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_state_id
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_state_id
 msgid "State"
-msgstr "Bundesland"
+msgstr "État"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_street
@@ -330,13 +330,13 @@ msgstr "Bundesland"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_street
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_street
 msgid "Street"
-msgstr "Strasse"
+msgstr "Rue"
 
 #. module: cms_form_compassion
 #: code:addons/cms_form_compassion/models/cms_form.py:25
 #, python-format
 msgid "Submit"
-msgstr "Senden"
+msgstr "Confirmer"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
@@ -345,13 +345,13 @@ msgid ""
 "be redirected securely to\n"
 "                the payment provider."
 msgstr ""
-"Vielen Dank für deine Einreichung. Bitte wähle deine Zahlungsmethode und du "
-"wirst sicher weitergeleitet zu den Zahlungsanbieter."
+"Merci pour votre soumission. Veuillez sélectionner le mode de paiement et "
+"vous serez redirigé en toute sécurité vers  le prestataire de paiement."
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.payment_already_done
 msgid "This invoice has already been paid."
-msgstr "Diese Rechnung wurde bereits bezahlt."
+msgstr "Cette facture est déjà payée."
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_title
@@ -364,13 +364,13 @@ msgstr "Diese Rechnung wurde bereits bezahlt."
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_title
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_title
 msgid "Title"
-msgstr "Anrede"
+msgstr "Titre"
 
 #. module: cms_form_compassion
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:109
 #, python-format
 msgid "Verify your e-mail address"
-msgstr "Bitte bestätige deine E-Mailadresse"
+msgstr "Vérifier l'adresse email"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_zip
@@ -383,7 +383,7 @@ msgstr "Bitte bestätige deine E-Mailadresse"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_zip
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_zip
 msgid "Zip"
-msgstr "PLZ"
+msgstr "Code postal"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_cms_form
