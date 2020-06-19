@@ -65,4 +65,6 @@ class PaymentForm(models.AbstractModel):
         invoice = self.generate_invoice()
         self.invoice_id = invoice
         if invoice.state == 'draft':
+            for line in invoice.invoice_line_ids:
+                line._onchange_product_id()
             invoice.action_invoice_open()
