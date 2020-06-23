@@ -66,5 +66,7 @@ class PaymentForm(models.AbstractModel):
         self.invoice_id = invoice
         if invoice.state == 'draft':
             for line in invoice.invoice_line_ids.sudo():
+                line_vals = line.read(['price_unit', 'quantity', 'price_subtotal'])[0]
                 line._onchange_product_id()
+                line.write(line_vals)
             invoice.action_invoice_open()
