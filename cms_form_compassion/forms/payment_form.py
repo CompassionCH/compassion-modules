@@ -62,9 +62,9 @@ class PaymentForm(models.AbstractModel):
         """ Dismiss status message, as the client will be redirected
         to payment."""
         super().form_after_create_or_update(values, extra_values)
-        invoice = self.generate_invoice()
+        invoice = self.generate_invoice().sudo()
         self.invoice_id = invoice
         if invoice.state == 'draft':
-            for line in invoice.invoice_line_ids:
+            for line in invoice.invoice_line_ids.sudo():
                 line._onchange_product_id()
             invoice.action_invoice_open()
