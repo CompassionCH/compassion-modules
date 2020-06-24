@@ -10,7 +10,7 @@
 import logging
 import threading
 from html.parser import HTMLParser
-from io import StringIO, BytesIO
+from io import BytesIO
 
 from reportlab.lib.colors import white
 from reportlab.lib.units import mm
@@ -610,7 +610,7 @@ class CommunicationJob(models.Model):
         #   pypdf-how-to-write-a-pdf-to-memory/
         self.ensure_one()
 
-        pdf_buffer = StringIO()
+        pdf_buffer = BytesIO()
         pdf_buffer.write(pdf_data)
 
         existing_pdf = PdfFileReader(pdf_buffer)
@@ -636,7 +636,7 @@ class CommunicationJob(models.Model):
                 page.mergePage(omr_layer)
             output.addPage(page)
 
-        out_buffer = StringIO()
+        out_buffer = BytesIO()
         output.write(out_buffer)
 
         return out_buffer.getvalue()
@@ -695,7 +695,7 @@ class CommunicationJob(models.Model):
         omr_canvas.showPage()
         omr_canvas.save()
 
-        # move to the beginning of the StringIO buffer
+        # move to the beginning of the BytesIO buffer
         omr_buffer.seek(0)
         omr_pdf = PdfFileReader(omr_buffer)
 
@@ -781,8 +781,6 @@ class CommunicationJob(models.Model):
             state = "done"
             if job.need_call == "after_sending":
                 state = "call"
-            elif origin == "both_print":
-                state = "pending"
             job.write({"state": state, "sent_date": fields.Datetime.now()})
             if not testing:
                 # Commit to avoid invalid state if process fails
