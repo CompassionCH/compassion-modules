@@ -29,12 +29,6 @@ class CrmClaim(models.Model):
         readonly=False,
     )
     code = fields.Char(string="Number")
-    claim_category = fields.Many2one(
-        "crm.claim.category",
-        string="Category",
-        compute="_compute_category",
-        readonly=False,
-    )
     user_id = fields.Many2one(string="Assign to", readonly=False)
     stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
     ref = fields.Char(related="partner_id.ref")
@@ -61,10 +55,6 @@ class CrmClaim(models.Model):
         langs = self.env["res.lang"].search([])
         return [(l.code, l.name) for l in langs]
 
-    def _compute_category(self):
-        for request in self:
-            request.claim_category = self.env.ref("crm_request.stage_undefined").id
-
     @api.multi
     def action_reply(self):
         """
@@ -76,7 +66,7 @@ class CrmClaim(models.Model):
         if not original_partner:
             raise exceptions.UserError(_("You can only reply if you set the partner."))
 
-        template_id = self.claim_category.template_id.id
+        template_id = self.categ_id.template_id.id
         ctx = {
             "default_model": "crm.claim",
             "default_res_id": self.id,
@@ -181,7 +171,7 @@ class CrmClaim(models.Model):
         defaults = {
             "date": msg.get("date"),  # Get the time of the sending of the mail
             "alias_id": alias.id,
-            "claim_category": category_id,
+            "categ_id": category_id,
             "subject": subject,
             "email_origin": msg.get("from"),
         }

@@ -98,7 +98,7 @@
                         <group>
                             <field name="team_id"/>
                             <field name="user_id" domain="[('share', '!=', True)]"/>
-                            <field name="claim_category" string="Category" options="{'no_create': True}"/>
+                            <field name="categ_id" string="Category" options="{'no_create': True}"/>
                             <field name="alias_id" groups="base.group_no_one"/>
                         </group>
                         <group>
