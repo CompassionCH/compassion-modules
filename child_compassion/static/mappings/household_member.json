@@ -4,11 +4,13 @@
   "mapping": {
     "GlobalID": {
       "field": "child_id.global_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": true
     },
     "Beneficiary_GlobalID": {
       "field": "child_id.global_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": true
     },
     "LocalID": "beneficiary_local_id",
     "HouseholdMemberRole": "role",
