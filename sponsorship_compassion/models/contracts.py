@@ -132,6 +132,7 @@ class SponsorshipContract(models.Model):
         "recurring.contract", "sub sponsorship", readonly=True, copy=False, index=True
     )
     name = fields.Char(compute="_compute_name", store=True)
+    display_name = fields.Char(related="name")
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
@@ -418,7 +419,7 @@ class SponsorshipContract(models.Model):
                 contract.contract_duration = 0
             else:
                 contract_start_date = contract.activation_date
-                end_date = contract.end_date if contract.end_date else date.today()
+                end_date = contract.end_date if contract.end_date else datetime.now()
                 contract.contract_duration = (end_date - contract_start_date).days
 
     @api.constrains("parent_id")
@@ -620,23 +621,22 @@ class SponsorshipContract(models.Model):
             # Add a note in the contract and in the partner.
             project_code = contract.project_id.fcp_id
             contract.message_post(
-                _(
-                    f"The project {project_code} was suspended "
-                    f"and funds are retained."
-                    f"<br/>Invoices due in the suspension period "
-                    f"are automatically cancelled."
-                ),
-                _("Project Suspended"),
+                body=_(
+                    "The project %s was suspended and funds are retained."
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled."
+                ) % project_code,
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
             contract.partner_id.message_post(
-                _(
-                    f"The project {project_code} was suspended and"
-                    f" funds are retained for child {contract.child_code}. <b>"
-                    f"<br/>Invoices due in the suspension period "
-                    f"are automatically cancelled."
-                ),
-                _("Project Suspended"),
+                body=_(
+                    "The project %s was suspended and"
+                    " funds are retained for child %s. <b>"
+                    "<br/>Invoices due in the suspension period "
+                    "are automatically cancelled."
+                ) % (project_code, contract.child_code),
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
 
@@ -760,13 +760,13 @@ class SponsorshipContract(models.Model):
         # Log a note in the contracts
         for contract in contracts:
             contract.message_post(
-                _(
+                body=_(
                     "The project was reactivated."
                     "<br/>Invoices due in the suspension period "
                     "are automatically reverted."
                 ),
-                _("Project Reactivated"),
-                _("comment"),
+                subject=_("Project Reactivated"),
+                type="comment",
             )
 
     def commitment_sent(self, vals):
@@ -1186,7 +1186,8 @@ class SponsorshipContract(models.Model):
         for i in range(0, len(messages)):
             if not messages[i].state == "success":
                 self[i].message_post(
-                    messages[i].failure_reason, _("The sponsorship is no more active!")
+                    body=messages[i].failure_reason,
+                    subject=_("The sponsorship is no more active!")
                 )
 
     @api.multi
@@ -1264,7 +1265,7 @@ class SponsorshipContract(models.Model):
                 if contract.state == "cancelled":
                     raise UserError(f"The contract {contract.name} is not active.")
                 if contract.state == "terminated" and contract.end_date:
-                    limit = date.today() - relativedelta(days=180)
+                    limit = datetime.now() - relativedelta(days=180)
                     ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(f"The contract {contract.name} is not active.")

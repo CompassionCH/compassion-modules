@@ -17,6 +17,7 @@
         <field name="filter_domain">[('sds_state', '=', 'sub')]</field>
         <field name="trg_date_range">50</field>
         <field name="trg_date_range_type">day</field>
-        <field name="action_server_id" ref="sub_check_action"/>
+        <field name="state">code</field>
+        <field name="code">records.check_sub_state()</field>
     </record>
 </odoo>

@@ -137,7 +137,7 @@ class CrmClaim(models.Model):
                 if partner_alias.email == email:
                     return partner_alias
             # No match is found
-            raise exceptions.Warning(_(f"No partner aliases match: {email} !"))
+            raise exceptions.Warning(_("No partner aliases match: %s !") % email)
         else:
             return partner
 

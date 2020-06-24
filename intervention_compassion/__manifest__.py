@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Interventions",
-    "version": "12.0.1.0.1",
+    "version": "12.0.1.0.5",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -37,14 +37,13 @@
     "depends": [
         "child_compassion",  # modules/child_compassion
         "base_automation",
-    ],  # source/addons
+    ],
     "external_dependencies": {},
     "data": [
         "data/compassion.intervention.category.csv",
         "data/compassion.intervention.subcategory.csv",
         "data/compassion.intervention.deliverable.csv",
         "data/install_category_rel.xml",
-        "data/intervention_server_actions.xml",
         "data/intervention_action_rules.xml",
         "data/compassion_mapping.xml",
         "data/gmc_action.xml",

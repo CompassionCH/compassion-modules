@@ -39,12 +39,14 @@
     "CompassID": "compass_id",
     "CorrespondenceLanguage": {
       "field": "correspondence_language_id.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": true
     },
     "CurrentUniversityYearOfStudy": "university_year",
     "FavoriteProjectActivity": {
       "field": "project_activity_ids.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": true
     },
     "FavoriteSchoolSubject": {
       "field": "subject_ids.name",
@@ -101,7 +103,6 @@
     "PreferredName": "preferred_name",
     "RevisedValues": {
       "field": "revised_value_ids.name",
-      "search_relational_record": true,
       "allow_relational_creation": true
     },
     "SponsorshipStatus": "sponsorship_status",

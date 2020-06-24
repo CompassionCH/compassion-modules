@@ -70,7 +70,7 @@ class AccountInvoice(models.Model):
             category_lines = self.env["account.invoice.line"].search(
                 [
                     ("invoice_id", "=", invoice.id),
-                    ("product_id.categ_id", "child_of", sponsorship_cat.id),
+                    ("product_id.categ_id", "=", sponsorship_cat.id),
                 ]
             )
 
@@ -81,7 +81,7 @@ class AccountInvoice(models.Model):
                 category_lines = self.env["account.invoice.line"].search(
                     [
                         ("invoice_id", "=", invoice.id),
-                        ("product_id.categ_id", "child_of", gift_cat.id),
+                        ("product_id.categ_id", "=", gift_cat.id),
                     ]
                 )
                 if category_lines:
@@ -91,7 +91,7 @@ class AccountInvoice(models.Model):
                     category_lines = self.env["account.invoice.line"].search(
                         [
                             ("invoice_id", "=", invoice.id),
-                            ("product_id.categ_id", "child_of", fund_cat.id),
+                            ("product_id.categ_id", "=", fund_cat.id),
                         ]
                     )
                     if category_lines:

@@ -16,6 +16,14 @@ from odoo.tools import safe_eval
 _logger = logging.getLogger(__name__)
 
 
+class RelationNotFound(UserError):
+    def __init__(self, msg, **kwargs):
+        super().__init__(msg)
+        self.field_relation = kwargs['field_relation']
+        self.value = kwargs['value']
+        self.json_name = kwargs['json_name']
+
+
 class FieldToJson(models.Model):
     """ This model is used to make a link between odoo
         field and GMC Connect Json field name for the compassion mapping
@@ -60,6 +68,10 @@ class FieldToJson(models.Model):
     allow_relational_creation = fields.Boolean(
         help="If set to true, new records will be created if no matching "
              "records are found with the given JSON values"
+    )
+    relational_raise_if_not_found = fields.Boolean(
+        default=True,
+        help="Set to false if you don't care finding the relational field."
     )
     field_name = fields.Char(related="field_id.name", readonly=True)
     json_name = fields.Char("Json Field Name", required=True, index=True)
@@ -169,7 +181,13 @@ class FieldToJson(models.Model):
             records = relational_model
             values = value if isinstance(value, list) else [value]
             for val in values:
-                records |= relational_model.search([(self.field_name, "=ilike", val)])
+                relational_record = relational_model.search([
+                    (self.field_name, "=ilike", val)])
+                if not relational_record and not self.allow_relational_creation:
+                    # Break to raise error in case we don't find the relation
+                    records = relational_model
+                    break
+                records |= relational_record
             if records and field.ttype == "many2one":
                 return records[:1].id
             elif records:
@@ -181,16 +199,22 @@ class FieldToJson(models.Model):
             if field.ttype == "many2one":
                 # We must create the record and return its id
                 if isinstance(value, dict):
-                    return relational_model.create(value).id
+                    return relational_model.sudo().create(value).id
                 else:
-                    return relational_model.create({self.field_name: value}).id
+                    return relational_model.sudo().create({self.field_name: value}).id
 
             # In that case we are in many2many or one2many and will replace
             # relations.
             orm_vals = [(5, 0, 0)]
             record_vals = value if isinstance(value, list) else [value]
+            # Use dictionary values to create related record
             orm_vals.extend(
                 [(0, 0, vals) for vals in record_vals if isinstance(vals, dict)]
+            )
+            # Use simple field to create related record
+            orm_vals.extend(
+                [(0, 0, {self.field_name: vals}) for vals in record_vals
+                 if not isinstance(vals, dict)]
             )
             return orm_vals
 
@@ -208,13 +232,17 @@ class FieldToJson(models.Model):
             self.json_name,
             value,
         )
-        raise UserError(
-            _(
-                f"Trying to find a {relational_model._description} "
-                f"that has the following values, but nothing was found: "
-                f"\n\n{value}"
+        if self.relational_raise_if_not_found:
+            raise RelationNotFound(
+                _(
+                    "Trying to find a %s "
+                    "that has the following values, but nothing was found: %s"
+                ) % (relational_model._description, value),
+                field_relation=field.relation,
+                value=value,
+                json_name=self.json_name
             )
-        )
+        return False
 
     def _get_relational_creation_values(self, field_values):
         """

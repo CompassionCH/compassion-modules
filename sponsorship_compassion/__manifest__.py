@@ -45,7 +45,6 @@
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
         "account_analytic_default",
-        "web_timeline",  # oca_addons/web
     ],
     "data": [
         "views/sponsorship_contract_view.xml",

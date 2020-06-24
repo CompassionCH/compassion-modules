@@ -41,7 +41,7 @@ class CompassionMapping(models.Model):
         self._validate_data(json)
         model = self.env["ir.model"].search([("model", "=", json["model"])])
         if not model:
-            raise UserError(_(f"Model does not exist : {json['model']}"))
+            raise UserError(_("Model does not exist : %s") % json['model'])
         mapping = self.search(
             [("name", "=", json["name"]), ("model_id", "=", model.id)]
         )
@@ -63,9 +63,9 @@ class CompassionMapping(models.Model):
             if not isinstance(odoo_spec, (str, dict)):
                 raise UserError(
                     _(
-                        f"Invalid data for JSON field {json_name}. "
-                        f"Expected a dictionary or a string."
-                    )
+                        "Invalid data for JSON field %s. "
+                        "Expected a dictionary or a string."
+                    ) % json_name
                 )
             short_spec = isinstance(odoo_spec, str)
             field_spec_vals = {
@@ -79,9 +79,10 @@ class CompassionMapping(models.Model):
                     # We search for a mapping with given name
                     sub_mapping_record = self.search([("name", "=", sub_mapping)])
                     if not sub_mapping_record:
-                        raise UserError(_(f"No mapping found with name {sub_mapping}"))
+                        raise UserError(
+                            _("No mapping found with name %s") % sub_mapping)
                     if len(sub_mapping_record) > 1:
-                        raise UserError(_(f"Ambiguous mapping name {sub_mapping}"))
+                        raise UserError(_("Ambiguous mapping name %s") % sub_mapping)
                     field_spec_vals["sub_mapping_id"] = sub_mapping_record.id
                 if isinstance(sub_mapping, dict):
                     # In this case we create a sub_mapping
@@ -95,10 +96,10 @@ class CompassionMapping(models.Model):
                 if relational_count > 1:
                     raise UserError(
                         _(
-                            f"Mapping supports only direct relations. You cannot "
-                            f"link a value to further relational fields like you "
-                            f"did for field {json_name}: {field_name}"
-                        )
+                            "Mapping supports only direct relations. You cannot "
+                            "link a value to further relational fields like you "
+                            "did for field %s: %s"
+                        ) % (json_name, field_name)
                     )
                 if relational_count:
                     # Relational field
@@ -147,9 +148,8 @@ class CompassionMapping(models.Model):
                     )
                     raise UserError(
                         _(
-                            f"[{self.name}] Invalid mapping: field {field} "
-                            f"in {model} doesn't exist"
-                        )
+                            "[%s] Invalid mapping: field %s in %s doesn't exist"
+                        ) % (self.name, field, model)
                     )
                 field_spec_vals["field_id"] = field.id
             if not short_spec:
@@ -180,8 +180,8 @@ class CompassionMapping(models.Model):
             if not hasattr(model, "data_to_json") or not hasattr(model, "json_to_data"):
                 raise ValidationError(
                     _(
-                        f"You can only add mapping to models that inherit "
-                        f"compassion.mapped.model\n"
-                        f"{model._name} doesn't support mappings."
-                    )
+                        "You can only add mapping to models that inherit "
+                        "compassion.mapped.model\n"
+                        "%s doesn't support mappings."
+                    ) % model._name
                 )

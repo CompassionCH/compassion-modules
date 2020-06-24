@@ -5,11 +5,11 @@
     </record>
     <record id="mapping_global_intervention" model="compassion.mapping">
         <field name="model_id" ref="model_compassion_global_intervention"/>
-        <field name="name">Global Intervention</field>
+        <field name="name">Compassion Global Intervention</field>
     </record>
     <record id="mapping_global_intervention_search" model="compassion.mapping">
         <field name="model_id" ref="model_compassion_global_intervention"/>
-        <field name="name">Global Intervention Search</field>
+        <field name="name">Compassion Global Intervention Search</field>
     </record>
     <record id="mapping_intervention" model="compassion.mapping">
         <field name="model_id" ref="model_compassion_intervention"/>

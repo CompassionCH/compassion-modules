@@ -368,7 +368,7 @@ class ResPartner(models.Model):
             "type": "ir.actions.act_window",
             "name": "Contracts",
             "res_model": "recurring.contract",
-            "views": [[False, "tree"], [False, "form"], [False, "timeline"]],
+            "views": [[False, "tree"], [False, "form"]],
             "domain": self._get_active_sponsorships_domain(),
         }
 

@@ -7,7 +7,7 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.queue_job.job import job, related_action
@@ -122,8 +122,8 @@ class RecurringContract(models.Model):
         )
         intro = _("Please verify the following information given by the sponsor:")
         return self.message_post(
-            intro + message,
-            _("New SMS sponsorship information"),
+            body=intro + message,
+            subject=_("New SMS sponsorship information"),
             partner_ids=notify_ids,
             type="comment",
             subtype="mail.mt_comment",
@@ -192,7 +192,7 @@ class RecurringContract(models.Model):
     def _set_next_invoice_date_sms(self):
         """ Just compute the default next_invoice_date for new sponsorship. """
         self.ensure_one()
-        current_date = datetime.date.today()
+        current_date = date.today()
         if self.group_id:
             contract_group = self.group_id
             if contract_group.next_invoice_date:

@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+from datetime import date
 
 from odoo import api, models, fields
 
@@ -45,7 +45,13 @@ class MajorRevision(models.Model):
 
     @api.model
     def create(self, vals):
-        major_field = super().create(vals)
+        try:
+            major_field = super().create(vals)
+        except ValueError:
+            if vals["name"] == "RevisedValuesToUpdate":
+                # Nothing to do in this case
+                return self
+            raise
         major_field.old_value = major_field.get_field_value()
         return major_field
 
@@ -88,9 +94,12 @@ class MajorRevision(models.Model):
             child_field_mapping = revision.get_child_field_mapping()
             child_res_object = revision.child_id
             if child_res_object and revision.name in child_field_mapping:
-                values.extend(
-                    child_res_object.mapped(child_field_mapping[revision.name])
-                )
+                vals_list = child_res_object.mapped(child_field_mapping[revision.name])
+                values.extend(map(
+                    lambda val: fields.Date.to_string(val) if isinstance(val, date)
+                    else val,
+                    vals_list
+                ))
             else:
                 field_mapping = revision.get_field_mapping()
                 household_res_object = revision.household_id

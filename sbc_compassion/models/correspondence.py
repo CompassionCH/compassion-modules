@@ -573,8 +573,9 @@ class Correspondence(models.Model):
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = "Exception"
                     letter.message_post(
-                        _("Letter was put on hold because the project is " "suspended"),
-                        _("Project suspended"),
+                        body=_(
+                            "Letter was put on hold because the project is suspended"),
+                        subject=_("Project suspended"),
                     )
         return True
 
@@ -754,9 +755,8 @@ class Correspondence(models.Model):
             if image_data is None:
                 raise UserError(
                     _(
-                        f"Image of letter {letter.kit_identifier} "
-                        f"was not found remotely."
-                    )
+                        "Image of letter %s was not found remotely."
+                    ) % letter.kit_identifier
                 )
             letter.write(
                 {"file_name": letter._get_file_name(), "letter_image": image_data}
@@ -813,7 +813,7 @@ class Correspondence(models.Model):
         """ Prevents to send S2B letters to GMC. """
         self.write({"state": "Exception"})
         for letter in self:
-            letter.message_post(_("Letter was put on hold"), message)
+            letter.message_post(body=_("Letter was put on hold"), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
         gmc_messages = self.env["gmc.message"].search(
             [
@@ -828,7 +828,7 @@ class Correspondence(models.Model):
         """ Release the hold on S2B letters. """
         self.write({"state": "Received in the system"})
         for letter in self:
-            letter.message_post(_("The letter can now be sent."), message)
+            letter.message_post(body=_("The letter can now be sent."), subject=message)
         gmc_action = self.env.ref("sbc_compassion.create_letter")
         gmc_messages = self.env["gmc.message"].search(
             [
@@ -879,7 +879,7 @@ class Correspondence(models.Model):
             name = (
                 self.communication_type_ids[0]
                 .with_context(lang=self.partner_id.lang)
-                    .name
+                .name
                 + " "
             )
         name += self.child_id.local_id
@@ -906,6 +906,11 @@ class Correspondence(models.Model):
 
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
+
+        english_text = json_data["Pages"]["EnglishTranslatedText"]
+        translated_text = json_data["Pages"]["TranslatedText"]
+        if "".join(english_text) == "" and "".join(translated_text) != "":
+            json_data["Pages"]["EnglishTranslatedText"] = translated_text
 
         return json_data
 

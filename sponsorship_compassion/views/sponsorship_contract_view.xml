@@ -233,23 +233,6 @@
         <field name="context">{'default_type':'S'}</field>
     </record>
 
-    <!-- Add timelineview use with the partner link  -->
-    <record id="view_partner_sponsorship_timeline_view" model="ir.ui.view">
-        <field name="name">Timeline</field>
-        <field name="model">recurring.contract</field>
-        <field name="type">timeline</field>
-        <field name="arch" type="xml">
-            <timeline date_start="activation_date"
-                      date_stop="last_paid_invoice_date"
-                      default_group_by="partner_id"
-                      string="Name"
-                      zoomKey="ctrlKey"
-                      colors="#A4A4A4:state=='terminated';">
-                <field name="state" invisible="1"/>
-            </timeline>
-        </field>
-    </record>
-
     <!--pylint:disable=dangerous-view-replace-wo-priority-->
     <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
         <field name="name">sponsorship.compassion.select</field>

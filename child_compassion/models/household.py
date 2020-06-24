@@ -212,16 +212,11 @@ class Household(models.Model):
             if household:
                 household_ids.append(household.id)
                 household_vals = self.json_to_data(household_data)
+                # First write revision values
+                household.write({
+                    "revised_value_ids" : household_vals.pop("revised_value_ids")})
                 household.write(household_vals)
         return household_ids
-
-    @api.model
-    def json_to_data(self, json, mapping_name=None):
-        data = super().json_to_data(json, mapping_name)
-        household = self.search([("household_id", "=", data.get("household_id"))])
-        # Delete old household members
-        household.member_ids.unlink()
-        return data
 
     ##########################################################################
     #                             ORM METHODS                                #

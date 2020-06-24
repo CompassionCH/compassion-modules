@@ -154,8 +154,10 @@ class GenerateGiftWizard(models.TransientModel):
         analytic = self.env["account.analytic.default"].account_get(
             product.id, contract.partner_id.id, date=fields.Date.today()
         )
-        if analytic and analytic.analytic_id:
+        if analytic.analytic_id:
             inv_line_data["account_analytic_id"] = analytic.analytic_id.id
+        if analytic.analytic_tag_ids:
+            inv_line_data["analytic_tag_ids"] = [(6, 0, analytic.analytic_tag_ids.ids)]
 
         return inv_line_data
 

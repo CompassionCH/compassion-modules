@@ -76,9 +76,8 @@ class ProjectDescription(models.TransientModel):
                 and project.country_id != project.field_office_id.country_id
         ):
             desc(".project_country")[0].text = _(
-                f"The project is located in {project.country_id.name}, "
-                f"close to the border."
-            )
+                "The project is located in %s, close to the border."
+            ) % project.country_id.name
         else:
             desc("#project_country").remove()
 

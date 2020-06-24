@@ -184,9 +184,8 @@ class CommunicationConfig(models.Model):
             if not valid:
                 raise ValidationError(
                     _(
-                        f"Following field does not exist in res.partner: "
-                        f"{config.send_mode_pref_field}."
-                    )
+                        "Following field does not exist in res.partner: %s."
+                    ) % config.send_mode_pref_field
                 )
 
     @api.constrains("report_id")

@@ -156,7 +156,7 @@ class ImportLettersHistory(models.Model):
 
                 letter.nber_letters = tmp
             else:
-                raise UserError(_(f"State: '{letter.state}' not implemented"))
+                raise UserError(_("State: '%s' not implemented") % letter.state)
 
     ##########################################################################
     #                              ORM METHODS                               #

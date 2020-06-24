@@ -446,10 +446,20 @@ class CompassionProject(models.Model):
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
-    def create(self, vals):
-        project = super().create(vals)
-        project.with_context(async_mode=True).update_informations()
-        return project
+    def create(self, vals_list):
+        """ Avoid creating an already existing FCP. """
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+
+        result = self
+        for vals in vals_list:
+            fcp_id = vals.get("fcp_id")
+            project = self.search([("fcp_id", "=", fcp_id)])
+            if not project:
+                project = super().create(vals)
+            result += project
+        result.with_context(async_mode=True).update_informations()
+        return result
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -461,8 +471,8 @@ class CompassionProject(models.Model):
         """
         for project in self:
             project.message_post(
-                _("The project was suspended and funds are retained."),
-                _("Project Suspended"),
+                body=_("The project was suspended and funds are retained."),
+                subject=_("Project Suspended"),
                 message_type="comment",
             )
         return True
@@ -623,8 +633,8 @@ class CompassionProject(models.Model):
         """ To perform some actions when project is reactivated """
         for project in self:
             project.message_post(
-                _("The project is reactivated."),
-                _("Project Reactivation"),
+                body=_("The project is reactivated."),
+                subject=_("Project Reactivation"),
                 message_type="comment",
             )
         return True

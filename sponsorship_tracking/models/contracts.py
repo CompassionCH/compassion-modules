@@ -142,7 +142,7 @@ class RecurringContract(models.Model):
         sub_reject = self.env.ref("sponsorship_compassion.end_reason_subreject")
         for contract in self:
             contract.partner_id.message_post(
-                subject=_(f"{contract.child_code} - SUB Reject"),
+                subject=_("%s - SUB Reject") % contract.child_code,
                 body=_("The sponsor doesn't want a new child."),
             )
             sub = contract.sub_sponsorship_id
