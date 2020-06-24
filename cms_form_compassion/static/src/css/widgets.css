@@ -26,3 +26,8 @@
 .form-field input[type=file].form-control {
     height: initial !important;
 }
+
+/* Hide payment icons in payment method selection page */
+.o_payment_form .payment_icon_list {
+	display: none;
+}
