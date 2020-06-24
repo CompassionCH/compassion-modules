@@ -37,7 +37,7 @@ class MailMessage(models.Model):
             + "</b>:"
             + str(html.escape(email_from).encode("ascii", "xmlcharrefreplace"))
         )
-        mail_date = "<b>Date</b>:" + self.date
+        mail_date = "<b>Date</b>:" + str(self.date)
         body = ""
         if self.body and self.body != u"":
             body = self.body.replace("#1f497d", "#500050") + "</div>"
