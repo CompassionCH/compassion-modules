@@ -156,7 +156,7 @@
                     <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
                     <filter string="Gift Type" name="gift_type"
                             domain="[]"
-                            context="{'group_by': ['gift_type','sponsorship_gift_type']}"/>
+                            context="{'group_by': 'gift_type'}"/>
                     <filter name='group_by_date' string="Gift Date" domain="[]" context="{'group_by': 'gift_date'}"/>
                 </group>
             </search>
