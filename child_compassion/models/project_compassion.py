@@ -603,8 +603,7 @@ class CompassionProject(models.Model):
 
     def fetch_missing_relational_records(self, field_relation, values, json_name):
         onramp = OnrampConnector()
-        # endpoint = "churchpartners/{0}/kits/icpkit/details?FinalLanguage={1}"
-        endpoint = "churchpartners/{0}/kits/icpkit"
+        endpoint = "churchpartners/{0}/kits/icpkit?FinalLanguage={1}"
         languages_map = {
             "English": "en_US",
             "French": "fr_CH",
@@ -628,10 +627,7 @@ class CompassionProject(models.Model):
                 # fetch translation
                 for lang_literal, lang_context in languages_map.items():
                     result = onramp.send_message(
-                        endpoint.format(self[0].fcp_id,
-                                        # lang_context
-                                        ),
-                        "GET"
+                        endpoint.format(self[0].fcp_id, lang_literal), "GET"
                     )
                     if "ICPResponseList" in result.get("content", {}):
                         content = result["content"]["ICPResponseList"][0]
