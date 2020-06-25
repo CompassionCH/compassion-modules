@@ -13,6 +13,7 @@ import re
 from datetime import datetime, timedelta
 
 import requests
+from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from odoo import models, fields, api, tools, _
@@ -554,9 +555,17 @@ class CompassionProject(models.Model):
                 projects += self.create(vals)
         return projects.ids
 
-    @api.model
+    @api.multi
     def json_to_data(self, json, mapping_name=None):
-        odoo_data = super().json_to_data(json, mapping_name)
+        while True:  # catch more than one relation not found
+            try:
+                odoo_data = super().json_to_data(json, mapping_name)
+                break
+            except RelationNotFound as e:
+                self.fetch_missing_relational_records(
+                    e.field_relation, e.value, e.json_name
+                )
+
         status = odoo_data.get("status")
         if status:
             status_mapping = {
@@ -591,6 +600,45 @@ class CompassionProject(models.Model):
                 # Weird value received, we prefer to ignore it.
                 del odoo_data["monthly_income"]
         return odoo_data
+
+    def fetch_missing_relational_records(self, field_relation, values, json_name):
+        onramp = OnrampConnector()
+        endpoint = "churchpartners/{0}/kits/icpkit?FinalLanguage={1}"
+        languages_map = {
+            "English": "en_US",
+            "French": "fr_CH",
+            "German": "de_DE",
+            "Italian": "it_IT",
+        }
+        # go over all missing values, keep count of index to know which translation
+        # to take from onramp result
+        for i, value in enumerate(values):
+            # check if hobby/household duty, etc... exists in our database
+            search_count = self.env[field_relation].search(
+                ["|", ("name", "=", value), ("value", "=", value)], count=True, limit=1
+            )
+            # if not exist, then create it
+            if search_count == 0:
+                value_record = (
+                    self.env[field_relation]
+                        .sudo()
+                        .create({"name": value, "value": value})
+                )
+                # fetch translation
+                for lang_literal, lang_context in languages_map.items():
+                    result = onramp.send_message(
+                        endpoint.format(self[0].fcp_id, lang_literal), "GET"
+                    )
+                    if "ICPResponseList" in result.get("content", {}):
+                        content = result["content"]["ICPResponseList"][0]
+                        if json_name in content:
+                            content_values = content[json_name]
+                            if not isinstance(content_values, list):
+                                content_values = list(content_values)
+                            translation = content_values[i]
+                            value_record.with_context(
+                                lang=lang_context
+                            ).value = translation
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
