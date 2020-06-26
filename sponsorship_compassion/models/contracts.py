@@ -526,13 +526,18 @@ class SponsorshipContract(models.Model):
             for child in self.mapped("child_id"):
                 child.child_sponsored(vals["correspondent_id"])
 
+        # Change the sub_sponsorship_id value in the previous parent_id
+        if "parent_id" in vals:
+            self.mapped("parent_id").write({"sub_sponsorship_id": False})
+
         super().write(vals)
 
         try:
-            with self.env.cr.savepoint():
-                if updated_correspondents:
-                    updated_correspondents._on_correspondant_changed()
+            self.env.cr.commit()
+            if updated_correspondents:
+                updated_correspondents._on_correspondant_changed()
         except:
+            # TODO CO-3293 create activity to warn someone
             logger.error(
                 "Error while changing correspondant at GMC. "
                 "The sponsorship is no longer active at GMC side. "
@@ -560,13 +565,6 @@ class SponsorshipContract(models.Model):
             self.mapped("correspondent_id").update_number_sponsorships()
             old_correspondents.update_number_sponsorships()
 
-        # Change the sub_sponsorship_id value in the previous parent_id
-        if "parent_id" in vals:
-            self.mapped("parent_id").write({"sub_sponsorship_id": False})
-
-        # Write the changes
-        res = super().write(vals)
-
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
             for sponsorship in self.filtered("parent_id"):
@@ -577,7 +575,7 @@ class SponsorshipContract(models.Model):
         if "group_id" in vals or "partner_id" in vals:
             self._on_group_id_changed()
 
-        return res
+        return True
 
     @api.multi
     def unlink(self):
