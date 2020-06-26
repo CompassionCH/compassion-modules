@@ -908,11 +908,16 @@ class Correspondence(models.Model):
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
         pages = json_data["Pages"]
-        english_text = ["".join(page["EnglishTranslatedText"]) for page in pages if
-                        page]
-        translated_text = ["".join(page["TranslatedText"]) for page in pages if page]
-        if "".join(english_text) == "" and "".join(translated_text) != "":
-            json_data["Pages"]["EnglishTranslatedText"] = translated_text
+        if not isinstance(pages, list):
+            pages = [pages]
+        english_text = ""
+        translated_text = ""
+        for page in pages:
+            english_text += "".join(page["EnglishTranslatedText"])
+            translated_text += "".join(page["TranslatedText"])
+        if english_text == "" and translated_text != "":
+            for page in pages:
+                page["EnglishTranslatedText"] = page["TranslatedText"]
 
         return json_data
 
