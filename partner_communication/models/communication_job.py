@@ -781,6 +781,8 @@ class CommunicationJob(models.Model):
             state = "done"
             if job.need_call == "after_sending":
                 state = "call"
+            elif origin == "both_print":
+                state = "pending"
             job.write({"state": state, "sent_date": fields.Datetime.now()})
             if not testing:
                 # Commit to avoid invalid state if process fails
