@@ -49,7 +49,7 @@ class CorrespondenceS2bGenerator(models.Model):
     )
     background = fields.Binary(related="s2b_template_id.template_image")
     selection_domain = fields.Char(
-        default="[('state', '=', 'active'), ('child_id', '!=', False)]"
+        default=[('state', '=', 'active'), ('child_id', '!=', False)]
     )
     sponsorship_ids = fields.Many2many(
         "recurring.contract", string="Sponsorships", required=True, readonly=False

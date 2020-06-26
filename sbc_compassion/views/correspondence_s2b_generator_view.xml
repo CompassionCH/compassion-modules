@@ -25,7 +25,7 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="selection_domain" widget="char_domain" options="{'model': 'recurring.contract'}" string="Sponsorships" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="selection_domain" widget="domain" options="{'model': 'recurring.contract'}" string="Sponsorships" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="sponsorship_ids" widget="many2many_tags" invisible="1"/>
                             <field name="s2b_template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="language_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
