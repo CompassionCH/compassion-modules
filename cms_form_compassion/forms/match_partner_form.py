@@ -152,11 +152,13 @@ class PartnerMatchform(models.AbstractModel):
         res_city_zip_obj = self.env["res.city.zip"]
         partner_location = res_city_zip_obj.search([
             ("name", '=', extra_values.get("partner_zip", None)),
-            ("city_id.name", '=ilike', extra_values.get("partner_city"))
+            ("city_id.name", '=ilike', extra_values.get("partner_city")),
+            ("city_id.country_id", "=", extra_values.get("partner_country_id"))
         ], limit=1)
         if not partner_location:
             partner_location = res_city_zip_obj.search([
-                ("name", '=', extra_values.get('partner_zip', None))
+                ("name", '=', extra_values.get('partner_zip', None)),
+                ("city_id.country_id", "=", extra_values.get("partner_country_id"))
             ])
         if len(partner_location) == 1:
             source_vals.update({
