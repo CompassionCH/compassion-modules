@@ -131,8 +131,7 @@ class SponsorshipContract(models.Model):
     sub_sponsorship_id = fields.Many2one(
         "recurring.contract", "sub sponsorship", readonly=True, copy=False, index=True
     )
-    name = fields.Char(compute="_compute_name", store=True)
-    display_name = fields.Char(related="name")
+    name = fields.Char(store=True)
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
@@ -338,8 +337,9 @@ class SponsorshipContract(models.Model):
     @api.depends(
         "correspondent_id", "correspondent_id.ref", "child_id", "child_id.local_id"
     )
-    def _compute_name(self):
+    def name_get(self):
         """ Gives a friendly name for a sponsorship """
+        result = []
         for contract in self:
             if contract.correspondent_id.ref or contract.reference:
                 name = contract.correspondent_id.ref or contract.reference
@@ -348,6 +348,8 @@ class SponsorshipContract(models.Model):
                 elif contract.contract_line_ids:
                     name += " - " + contract.contract_line_ids[0].product_id.name
                 contract.name = name
+                result.append((contract.id, name))
+        return result
 
     @api.multi
     @api.depends("activation_date", "state")
