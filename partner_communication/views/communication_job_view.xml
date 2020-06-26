@@ -7,7 +7,7 @@
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="call,pending,done"/>
                     <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'physical'),('state', 'not in', 'pending')]}" context="{'origin': 'both_email'}"/>
-                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'digital'),('state', 'not in', 'pending')]}" context="{'origin': 'both_print'}"/>
+                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'digital'),('state', 'not in', 'pending')]}"/>
                     <button name="log_call" string="Log call" icon="fa-phone" type="object" states='call,pending'/>
                     <button name="reset" string="Retry" type="object" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" states='call,pending'/>
