@@ -907,8 +907,10 @@ class Correspondence(models.Model):
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
-        english_text = json_data.get("Pages", {}).get("EnglishTranslatedText", "")
-        translated_text = json_data.get("Pages", {}).get("TranslatedText", "")
+        pages = json_data["Pages"]
+        english_text = ["".join(page["EnglishTranslatedText"]) for page in pages if
+                        page]
+        translated_text = ["".join(page["TranslatedText"]) for page in pages if page]
         if "".join(english_text) == "" and "".join(translated_text) != "":
             json_data["Pages"]["EnglishTranslatedText"] = translated_text
 
