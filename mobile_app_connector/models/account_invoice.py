@@ -113,17 +113,22 @@ class AccountInvoice(models.Model):
                 # delays in his due months.
                 partner_ids = (
                     self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
-                )
-                invoice.message_post(
-                    body=_(
-                        "This invoice created from the app needs to be manually "
-                        "processed. You may want to cancel another sponsorship invoice "
-                        "to avoid creating an overdue for the supporter."
-                    ),
-                    subject=_("Sponsorship paid from the app"),
-                    message_type="email",
-                    partner_ids=partner_ids,
-                )
+                )[0][2]
+                if partner_ids:
+                    activity_values = {
+                        "user_id": self.env["res.partner"].sudo().browse(
+                            partner_ids[0]).user_ids[:1].id
+                    }
+                    invoice.activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=_("Sponsorship paid from the app"),
+                        note=_(
+                            "This invoice created from the app needs to be manually "
+                            "processed. You may want to cancel another sponsorship "
+                            "invoice to avoid creating an overdue for the supporter."
+                        ),
+                        **activity_values
+                    )
 
         if not existing_invoice:
             for line in invoice.invoice_line_ids:
@@ -131,6 +136,7 @@ class AccountInvoice(models.Model):
                 line._onchange_product_id()
                 line.price_unit = bckp_price
 
+        invoice.action_invoice_open()
         result["Donation"].append(invoice.id)
         return result
 
@@ -140,7 +146,6 @@ class AccountInvoice(models.Model):
         :return:
         """
         res = super(AccountInvoice, self).action_invoice_paid()
-        # TODO Activate this when we can filter invoices that must not be notified
         for invoice in self:
             partner = invoice.partner_id
             has_app = self.env['firebase.registration'].search_count([
@@ -150,16 +155,6 @@ class AccountInvoice(models.Model):
                     and not invoice.avoid_mobile_donation_notification:
                 invoice.send_mobile_notification()
         return res
-
-    def _after_transaction_invoice_paid(self, transaction):
-        """
-        This will ensure we notify every payment made from the app, even if it's
-        for a sponsorship payment.
-        :param transaction: payment.transaction record
-        :return: None
-        """
-        super(AccountInvoice, self)._after_transaction_invoice_paid(transaction)
-        self.send_mobile_notification()
 
     def send_mobile_notification(self):
         self.ensure_one()
