@@ -907,7 +907,7 @@ class Correspondence(models.Model):
         if "GlobalPartner" in json_data:
             json_data["GlobalPartner"] = {"Id": json_data["GlobalPartner"]}
 
-        pages = json_data["Pages"]
+        pages = json_data.get("Pages", [])
         if not isinstance(pages, list):
             pages = [pages]
         english_text = ""
