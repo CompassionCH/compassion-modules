@@ -36,6 +36,9 @@
     },
     "base64string": {
       "field": "b64image"
+    },
+    "Type": {
+      "to_json_conversion": 1
     }
   }
 }
