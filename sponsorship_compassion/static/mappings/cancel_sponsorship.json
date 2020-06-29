@@ -50,7 +50,7 @@
     },
     "HoldExpirationDate": {
       "field": "hold_expiration_date",
-      "to_json_conversion": "odoo_value.replace(' ', 'T') + 'Z'"
+      "to_json_conversion": "str(odoo_value).replace(' ', 'T') + 'Z'"
     },
     "Channel_Name": {
       "field": null
