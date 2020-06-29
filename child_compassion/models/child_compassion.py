@@ -543,11 +543,14 @@ class CompassionChild(models.Model):
         # to take from onramp result
         for i, value in enumerate(values):
             # check if hobby/household duty, etc... exists in our database
-            search_count = self.env[field_relation].search(
-                ["|", ("name", "=", value), ("value", "=", value)], count=True, limit=1
-            )
+            search_vals = [("name", "=", value)]
+            relation_obj = self.env[field_relation]
+            if hasattr(relation_obj, "value"):
+                search_vals.insert(0, "|")
+                search_vals.append(("value", "=", value))
+            search_count = relation_obj.search_count(search_vals)
             # if not exist, then create it
-            if search_count == 0:
+            if not search_count:
                 value_record = (
                     self.env[field_relation]
                     .sudo()
