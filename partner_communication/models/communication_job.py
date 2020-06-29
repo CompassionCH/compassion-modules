@@ -769,8 +769,11 @@ class CommunicationJob(models.Model):
             printer = behaviour["printer"].with_context(lang=job.partner_id.lang)
             if behaviour["action"] != "client" and printer:
                 printer.print_document(
-                    report.report_name, to_print[0], format=report.report_type,
-                    output_tray=job.printer_output_tray_id.system_name
+                    report.report_name, to_print[0],
+                    doc_format=report.report_type,
+                    action=behaviour['action'],
+                    input_tray=behaviour['input_tray'],
+                    output_tray=behaviour['output_tray']
                 )
 
             # Print attachments
