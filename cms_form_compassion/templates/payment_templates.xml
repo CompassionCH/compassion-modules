@@ -18,7 +18,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
     <!-- Called after submission of form, display form for redirecting to Payment Provider -->
     <template id="modal_payment_submit" name="Payment form redirection page">
-        <div class="text-center">
+        <div class="text-center" style="margin-top: 50px;">
             <p>Thank you for your submission. Please select the payment method and you will be redirected securely to
                 the payment provider.
             </p>
@@ -40,7 +40,7 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
                                        t-value="'/invoice/pay/' + str(invoice.id) + '/s2s_token_tx/'"/>
                                     <t t-set="prepare_tx_url"
                                        t-value="'/invoice/pay/' + str(invoice.id) + '/form_tx/'"/>
-                                    <t t-set="submit_txt">Pay Now</t>
+                                    <t t-set="submit_txt">Next</t>
                                     <t t-set="icon_class" t-value="'fa-lock'"/>
                                 </t>
                             </div>
