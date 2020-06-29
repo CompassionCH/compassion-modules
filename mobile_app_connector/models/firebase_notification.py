@@ -51,12 +51,12 @@ class FirebaseNotification(models.Model):
         data = kwargs.get("data", {})
 
         for notif in self:
-            data = {
+            data.update({
                 "topic": notif.topic,
                 "destination": notif.destination or "",
                 "fund_type_id": str(notif.fundType.id),
-            }
-            super(FirebaseNotification, notif).send(data)
+            })
+            super(FirebaseNotification, notif).send(**data)
 
     def duplicate_to_unread(self):
         res = super().duplicate_to_unread()
