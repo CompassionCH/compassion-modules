@@ -235,7 +235,8 @@ class CommunicationRevision(models.Model):
         Update revision date and number depending on edit mode.
         """
         if "correction_user_id" in vals:
-            self.message_subscribe_users([vals["correction_user_id"]])
+            user = self.env["res.users"].browse(vals["correction_user_id"])
+            self.message_subscribe(user.partner_id.ids)
 
         if "simplified_text" not in vals or self.env.context.get("no_update"):
             return super().write(vals)
