@@ -615,7 +615,7 @@ class CompassionProject(models.Model):
         for i, value in enumerate(values):
             # check if hobby/household duty, etc... exists in our database
             search_vals = [("name", "=", value)]
-            relation_obj = self.env[field_relation]
+            relation_obj = self.env[field_relation].sudo()
             if hasattr(relation_obj, "value"):
                 search_vals.insert(0, "|")
                 search_vals.append(("value", "=", value))
@@ -623,9 +623,7 @@ class CompassionProject(models.Model):
             # if not exist, then create it
             if not search_count:
                 value_record = (
-                    self.env[field_relation]
-                        .sudo()
-                        .create({"name": value, "value": value})
+                    relation_obj.create({"name": value, "value": value})
                 )
                 # fetch translation
                 for lang_literal, lang_context in languages_map.items():
