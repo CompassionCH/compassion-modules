@@ -41,9 +41,6 @@ class CrmLead(models.Model):
                 "default_user_id": self.user_id.id,
                 "default_planned_sponsorships": self.planned_sponsorships,
                 "default_lead_id": self.id,
-                "default_project_id": self.event_ids
-                and self.event_ids[-1].project_id.id
-                or False,
             }
         ).env.context
         # Open the create form...
