@@ -475,7 +475,7 @@ class SponsorshipContract(models.Model):
         child = self.env["compassion.child"].browse(vals.get("child_id"))
         sponsor_id = vals.get("correspondent_id", vals.get("partner_id"))
         if "S" in vals.get("type", "") and child and sponsor_id:
-            child.child_sponsored(sponsor_id)
+            child.with_context({}).child_sponsored(sponsor_id)
 
         # Generates commitment number for contracts BVRs
         if "commitment_number" not in vals:
