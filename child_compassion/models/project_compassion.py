@@ -610,6 +610,9 @@ class CompassionProject(models.Model):
             "German": "de_DE",
             "Italian": "it_IT",
         }
+        # transform values to list first
+        if not isinstance(values, list):
+            values = [values]
         # go over all missing values, keep count of index to know which translation
         # to take from onramp result
         for i, value in enumerate(values):
@@ -637,7 +640,7 @@ class CompassionProject(models.Model):
                         if json_name in content:
                             content_values = content[json_name]
                             if not isinstance(content_values, list):
-                                content_values = list(content_values)
+                                content_values = [content_values]
                             translation = content_values[i]
                             value_record.with_context(
                                 lang=lang_context
