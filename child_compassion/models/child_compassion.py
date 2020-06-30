@@ -514,6 +514,12 @@ class CompassionChild(models.Model):
             data["household_id"] = household.create(household_data).id
         return data
 
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        if self.env.context.get("no_data"):
+            return {}
+        return super().data_to_json(mapping_name)
+
     def fetch_missing_relational_records(self, field_relation, values, json_name):
         """ Fetch missing relational records in various languages.
 
@@ -588,7 +594,9 @@ class CompassionChild(models.Model):
                 "object_id": child.id,
                 "child_id": child.id,
             }
-            message = message_obj.create(message_vals)
+            # CO-3310 Trick to avoid sending data to GMC otherwise message fails.
+            # The message mapping is still needed for processing the answer
+            message = message_obj.with_context(no_data=True).create(message_vals)
             if message.state == "failure" and not self.env.context.get("async_mode"):
                 raise UserError(message.failure_reason)
         return True
