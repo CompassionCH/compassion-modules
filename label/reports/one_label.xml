@@ -15,7 +15,6 @@
 
                     <td style="vertical-align: middle; height: 100%;">
                         <div class="o_label_div_cell">
-
                             <table class="o_label_text_table">
                                 <t t-foreach="col" t-as="val">
                                     <t t-if="(val['type'] != 'barcode')">
@@ -29,9 +28,7 @@
                                     </t>
                                 </t>
                             </table>
-
                         </div>
-
                     </td>
                 </tr>
             </table>

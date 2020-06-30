@@ -3,9 +3,9 @@
         <link rel="stylesheet" href="/label/static/src/css/label.css"/>
         <t t-call="web.basic_layout">
             <t t-foreach="docs" t-as="o">
-                <div class="page">
-                    <t t-foreach="label_data" t-as="data_page">
-                        <div t-attf-style="position: absolute; left: {{ o.config_id.left_margin}}mm; top: {{(o.config_id.top_margin)}}mm; height: {{(297 - o.config_id.top_margin - o.config_id.bottom_margin)}}mm; width: {{(210 - o.config_id.left_margin - o.config_id.right_margin)}}mm;">
+                <t t-foreach="label_data" t-as="data_page">
+                    <div class="page">
+                        <div t-attf-style="position: absolute; left: {{ o.config_id.left_margin}}mm; top: {{(o.config_id.top_margin + data_page_index * 297)}}mm; height: {{(297 - o.config_id.top_margin - o.config_id.bottom_margin)}}mm; width: {{(210 - o.config_id.left_margin - o.config_id.right_margin)}}mm;">
                             <!-- Start page -->
                             <table class="o_label_page_table" t-attf-style="border-space: {{o.config_id.cell_spacing}}mm;">
                                 <t t-foreach="data_page" t-as="row">
@@ -20,8 +20,9 @@
                                 </t>
                             </table>
                         </div>
-                    </t>
-                </div>
+                        <p style="page-break-after:always;"/>
+                    </div>
+                </t>
             </t>
         </t>
     </template>
