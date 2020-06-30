@@ -585,10 +585,12 @@ class SponsorshipContract(models.Model):
             # We can only delete draft sponsorships.
             if "S" in contract.type and contract.state != "draft":
                 raise UserError(_("You cannot delete a validated sponsorship."))
-            # Remove sponsor of child
+            # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    contract.child_id.child_unsponsored()
+                    child = contract.child_id.with_context({})
+                    child.child_unsponsored()
+                    child.child_released()
         return super().unlink()
 
     ##########################################################################
