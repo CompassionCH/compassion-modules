@@ -180,7 +180,10 @@ class CompassionHold(models.Model):
     primary_owner = fields.Many2one(track_visibility="onchange", readonly=False)
     type = fields.Selection(track_visibility="onchange")
     channel = fields.Selection(track_visibility="onchange")
-    expiration_date = fields.Datetime(track_visibility="onchange")
+    expiration_date = fields.Datetime(track_visibility="onchange",
+                                      required=False,
+                                      default=datetime.now() + timedelta(days=60)
+                                      )
 
     _sql_constraints = [
         ("hold_id", "unique(hold_id)", "The hold already exists in database."),
