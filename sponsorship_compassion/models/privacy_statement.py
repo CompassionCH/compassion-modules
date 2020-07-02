@@ -45,13 +45,6 @@ class PrivacyStatement(models.Model):
 class PrivacyStatementAgreement(models.Model):
     _name = "privacy.statement.agreement"
     _description = "Privacy Statement Agreement"
-    _sql_constraints = [
-        (
-            "unique_privacy_agreement",
-            "unique(partner_id,privacy_statement_id)",
-            "This partner has already accepted this privacy " "statement",
-        )
-    ]
 
     ##########################################################################
     #                                 FIELDS                                 #
