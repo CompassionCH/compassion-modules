@@ -599,6 +599,9 @@ class CommunicationRevision(models.Model):
             simplified_text, keywords = self._replace_if(
                 simplified_text, nested_position, if_keyword_index
             )
+            if not keywords:
+                # Trouble finding the if
+                break
             found_keywords |= keywords
             if_keywords = keywords.filtered(lambda k: k.type == "if")
             if_keyword_index += len(if_keywords)
@@ -609,6 +612,9 @@ class CommunicationRevision(models.Model):
             simplified_text, keywords = self._replace_for(
                 simplified_text, nested_position, for_keyword_index
             )
+            if not keywords:
+                # Trouble finding the for
+                break
             found_keywords |= keywords
             for_keyword_index += len(keywords)
             nested_position += 1
