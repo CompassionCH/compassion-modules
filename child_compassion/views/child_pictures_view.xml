@@ -11,7 +11,7 @@
                     <field name="hname" invisible="1"/>
                     <group>
                         <group>
-                            <field name="image_url"/>
+                            <field name="image_url_compassion"/>
                             <field name="date"/>
                             <field name="child_id"/>
                         </group>
@@ -31,7 +31,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="date"/>
-                    <field name="image_url"/>
+                    <field name="image_url_compassion"/>
                 </tree>
             </field>
         </record>
