@@ -22,6 +22,7 @@ class RelationNotFound(UserError):
         self.field_relation = kwargs['field_relation']
         self.value = kwargs['value']
         self.json_name = kwargs['json_name']
+        self.field_name = kwargs['field_name']
 
 
 class FieldToJson(models.Model):
@@ -240,7 +241,8 @@ class FieldToJson(models.Model):
                 ) % (relational_model._description, value),
                 field_relation=field.relation,
                 value=value,
-                json_name=self.json_name
+                json_name=self.json_name,
+                field_name=self.field_name
             )
         return False
 

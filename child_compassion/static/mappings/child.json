@@ -50,7 +50,8 @@
     },
     "FavoriteSchoolSubject": {
       "field": "subject_ids.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": true
     },
     "FirstName": "firstname",
     "FormalEducationLevel": "education_level",
