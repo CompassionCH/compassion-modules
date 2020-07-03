@@ -60,6 +60,7 @@
         "views/child_pictures_view.xml",
         "views/demand_planning.xml",
         "views/res_lang_compassion_view.xml",
+        "views/child_or_fcp_property_view.xml",
         "data/validity_checks_cron.xml",
         "data/child.hobby.csv",
         "data/child.household.duty.csv",

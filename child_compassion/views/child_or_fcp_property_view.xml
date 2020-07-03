@@ -1,0 +1,104 @@
+<odoo>
+    <record id="view_child_property_form" model="ir.ui.view">
+        <field name="name">child.property.form</field>
+        <field name="model">child.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="value"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_household_duty_form" model="ir.ui.view">
+        <field name="name">household.duty.form</field>
+        <field name="model">child.household.duty</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_child_hobby_form" model="ir.ui.view">
+        <field name="name">child.hobby.form</field>
+        <field name="model">child.hobby</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_child_christian_activity_form" model="ir.ui.view">
+        <field name="name">child.christian.activity.form</field>
+        <field name="model">child.christian.activity</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_spiritual_activity_form" model="ir.ui.view">
+        <field name="name">fcp.spiritual.activity.form</field>
+        <field name="model">fcp.spiritual.activity</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_cognitive_activity_form" model="ir.ui.view">
+        <field name="name">fcp.cognitive.activity.form</field>
+        <field name="model">fcp.cognitive.activity</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_physical_activity_form" model="ir.ui.view">
+        <field name="name">fcp.physical.activity.form</field>
+        <field name="model">fcp.physical.activity</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_sociological_activity_form" model="ir.ui.view">
+        <field name="name">fcp.sociological.activity.form</field>
+        <field name="model">fcp.sociological.activity</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_community_occupation_form" model="ir.ui.view">
+        <field name="name">fcp.community.occupation.form</field>
+        <field name="model">fcp.community.occupation</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+    <record id="view_project_diet_form" model="ir.ui.view">
+        <field name="name">fcp.diet.form</field>
+        <field name="model">fcp.diet</field>
+        <field name="inherit_id" ref="view_child_property_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form/>
+        </field>
+    </record>
+
+</odoo>
