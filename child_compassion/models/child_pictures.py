@@ -30,6 +30,7 @@ class ChildPictures(models.Model):
     fullshot = fields.Binary(attachment=True)
     headshot = fields.Binary(attachment=True)
     image_url = fields.Char()
+    image_url_compassion = fields.Char(compute="_compute_image_url_compassion")
     date = fields.Date("Date of pictures", default=fields.Date.today)
     fname = fields.Char(compute="_compute_filename")
     hname = fields.Char(compute="_compute_filename")
@@ -44,6 +45,13 @@ class ChildPictures(models.Model):
             code = pictures.child_id.local_id
             pictures.fname = code + " " + date + " fullshot.jpg"
             pictures.hname = code + " " + date + " headshot.jpg"
+
+    @api.multi
+    def _compute_image_url_compassion(self):
+        for image in self:
+            base_url = self.env["ir.config_parameter"].sudo().get_param("web.external.url")
+            endpoint = base_url + "/web/image/compassion.child.pictures"
+            image.image_url_compassion = f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
 
     ##########################################################################
     #                              ORM METHODS                               #
