@@ -790,7 +790,7 @@ class CommunicationJob(models.Model):
             if not testing:
                 # Commit to avoid invalid state if process fails
                 self.env.cr.commit()  # pylint: disable=invalid-commit
-                return True
+        return True
 
     @api.model
     def _needaction_domain_get(self):
