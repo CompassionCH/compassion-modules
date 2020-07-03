@@ -724,18 +724,24 @@ class CompassionChild(models.Model):
                     values["state"] = "N" if child.hold_id else "R"
             child.write(values)
             if update_hold:
-                child.hold_id.write(
-                    {
-                        "type": HoldType.CONSIGNMENT_HOLD.value,
-                        "expiration_date": child.hold_id.get_default_hold_expiration(
-                            HoldType.CONSIGNMENT_HOLD
-                        ),
-                    }
-                )
+                try:
+                    child.hold_id.write(
+                        {
+                            "type": HoldType.CONSIGNMENT_HOLD.value,
+                            "expiration_date":
+                            child.hold_id.get_default_hold_expiration(
+                                HoldType.CONSIGNMENT_HOLD
+                            ),
+                        }
+                    )
+                except:
+                    # If the hold cannot be changed it means it's no more valid
+                    child.env.clear()
+                    child.hold_id = False
+                    self.env.clear()
 
         # Retrieve livecycle events to have the info when setting up a new sponsorship
         self.get_lifecycle_event()
-
         return True
 
     @api.multi
