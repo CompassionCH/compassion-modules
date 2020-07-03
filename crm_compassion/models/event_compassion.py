@@ -228,6 +228,8 @@ class EventCompassion(models.Model):
         - Create an origin for sponsorships.
         """
         # Avoid putting twice the date in linked objects name
+        if vals.get("start_date") and isinstance(vals["start_date"], str):
+            vals["start_date"] = fields.Date.from_string(vals["start_date"])
         event_year = str(vals.get("start_date", datetime.today()).year)
         event_name = vals.get("name", "0000")
         if event_name[-4:] == event_year:
