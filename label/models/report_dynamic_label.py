@@ -19,14 +19,14 @@ class ReportDynamicLabel(models.TransientModel):
     _name = "report.label.report_label"
     _description = "Construct report from page"
 
-    def get_data(self, row, columns, records, nber_labels):
+    def get_data(self, rows, columns, records, nber_labels):
         """
         Function called in the xml in order to get the datas for one page
         (in dynamic_label.xml).
         If multiple ids are given, the labels will be grouped by ids (therefore
         N Bob, then N Will, ...).
 
-        :param int row: Number of row for one page of labels
+        :param int rows: Number of rows for one page of labels
         :param int columns: Number of columns of labels
         :param records: recordset used for the labels
         :param int nber_labels: Number of labels of each ids
@@ -38,14 +38,14 @@ class ReportDynamicLabel(models.TransientModel):
         label_print_data = label_print_obj.browse(self.env.context.get("label_print"))
 
         tot = nber_labels * len(records)
-        tot_page = int(ceil(float(ceil(tot) // (columns * row))))
+        tot_page = int(ceil(tot / (columns * rows)))
         # return value
         result = []
         for i in range(tot_page):
             result.append(
                 [
                     [[{"type": "", "style": "", "value": ""}] for i in range(columns)]
-                    for j in range(row)
+                    for j in range(rows)
                 ]
             )
         # current indices
@@ -96,7 +96,7 @@ class ReportDynamicLabel(models.TransientModel):
                 if cur_col >= columns:
                     cur_col = 0
                     cur_row += 1
-                if cur_row >= row:
+                if cur_row >= rows:
                     cur_page += 1
                     cur_row = 0
         return result

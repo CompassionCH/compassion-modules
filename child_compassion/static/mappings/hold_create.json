@@ -14,6 +14,11 @@
     },
     "HoldID": "hold_id",
     "HoldYieldRate": "yield_rate",
+    "ReservationHoldType": "type",
+    "ReservationID": {
+      "field": "reservation_id.reservation_id",
+      "search_relational_record": true
+    },
     "SecondaryHoldOwner": "secondary_owner",
     "SourceCode": {
       "field": "source_code",
