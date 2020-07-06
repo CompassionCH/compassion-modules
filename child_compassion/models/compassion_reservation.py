@@ -228,7 +228,7 @@ class CompassionReservation(models.Model):
                 .get_param("reservation_hold_duration")
         )
         dt = timedelta(days=days_on_hold)
-        self.expiration_date = expiration + dt
+        self.expiration_date = fields.Datetime.to_datetime(expiration + dt)
 
     ##########################################################################
     #                              Mapping METHOD                            #
