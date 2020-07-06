@@ -20,9 +20,6 @@ class AssignRequestWizard(models.TransientModel):
         model_id = self.env.context.get("active_id")
         request = self.env[model].browse(model_id)
         request.user_id = self.user_id
-        request.stage_id = self.env["ir.model.data"].get_object_reference(
-            "crm_request", "stage_wait_support"
-        )[1]
         if self.intern_note:
             request.message_post(
                 subject="Message for " + self.user_id.name, body=self.intern_note
