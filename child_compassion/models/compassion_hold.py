@@ -223,10 +223,6 @@ class CompassionHold(models.Model):
         active_holds = self.filtered(lambda h: h.state == "active")
         active_holds.release_hold()
         inactive_holds = self - active_holds
-        inactive_children = inactive_holds.mapped("child_id").filtered(
-            lambda c: not c.hold_id
-        )
-        inactive_children.child_released()
         super(CompassionHold, inactive_holds).unlink()
         return True
 
@@ -369,16 +365,17 @@ class CompassionHold(models.Model):
 
         for hold in self:
             messages += messages.create({"action_id": action_id, "object_id": hold.id})
-        messages.process_messages()
         try:
-            with self.env.cr.savepoint():
-                fail = messages.filtered("failure_reason").mapped("failure_reason")
-                if fail:
-                    logger.error("\n".join(fail))
-                    # Force hold removal
-                    self.hold_released()
+            messages.process_messages()
+            self.hold_released()
         except:
+            self.env.clear()
+            messages.env.clear()
             logger.error("Some holds couldn't be released.")
+            messages.write({"state": "failure"})
+            # Force hold removal on our side without releasing the child
+            self.write({"state": "expired"})
+            self.mapped("child_id").write({"hold_id": False})
         return True
 
     @api.multi
