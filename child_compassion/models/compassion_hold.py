@@ -315,7 +315,7 @@ class CompassionHold(models.Model):
         if child_global_id:
             child = self.env["compassion.child"].create({"global_id": child_global_id})
             hold = self.env["compassion.hold"].create(
-                self.json_to_data(hold_data, "reservation_to_hold")
+                self.json_to_data(hold_data)
             )
             hold.write(
                 {
