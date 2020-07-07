@@ -56,7 +56,8 @@ class Contracts(models.Model):
 
     def get_inv_lines_data(self):
         res = super().get_inv_lines_data()
-        for i, c_line in enumerate(self.mapped("contract_line_ids")):
-            if c_line.contract_id.user_id:
-                res[i]["user_id"] = c_line.contract_id.user_id.id
+        if res:
+            for i, c_line in enumerate(self.mapped("contract_line_ids")):
+                if c_line.contract_id.user_id:
+                    res[i]["user_id"] = c_line.contract_id.user_id.id
         return res
