@@ -27,7 +27,3 @@ class ResLang(models.Model):
     code_iso = fields.Char(size=128)
     lang_id = fields.Many2one("res.lang", readonly=False)
     translatable = fields.Boolean(help="Can be translated by GP")
-
-    _sql_constraints = [
-        ("lang_id", "unique(lang_id)", "The lang already exists in database."),
-    ]
