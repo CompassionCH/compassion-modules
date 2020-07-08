@@ -3,7 +3,7 @@
     <record id="demand_settings_form" model="ir.ui.view">
         <field name="name">demand.planning.settings.form</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="child_compassion.compassion_settings"/>
+        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']" position='inside'>
                 <h2>Demand Planning</h2>

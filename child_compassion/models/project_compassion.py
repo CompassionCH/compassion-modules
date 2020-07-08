@@ -563,7 +563,7 @@ class CompassionProject(models.Model):
                 break
             except RelationNotFound as e:
                 self.fetch_missing_relational_records(
-                    e.field_relation, e.value, e.json_name
+                    e.field_relation, e.field_name, e.value, e.json_name
                 )
 
         status = odoo_data.get("status")
@@ -601,7 +601,8 @@ class CompassionProject(models.Model):
                 del odoo_data["monthly_income"]
         return odoo_data
 
-    def fetch_missing_relational_records(self, field_relation, values, json_name):
+    def fetch_missing_relational_records(self, field_relation,
+                                         field_name, values, json_name):
         onramp = OnrampConnector()
         endpoint = "churchpartners/{0}/kits/icpkit?FinalLanguage={1}"
         languages_map = {
@@ -617,18 +618,22 @@ class CompassionProject(models.Model):
         # to take from onramp result
         for i, value in enumerate(values):
             # check if hobby/household duty, etc... exists in our database
-            search_vals = [("name", "=", value)]
+            search_vals = [(field_name, "=", value)]
             relation_obj = self.env[field_relation].sudo()
             if hasattr(relation_obj, "value"):
+                # Useful for connect.multipicklist objects
                 search_vals.insert(0, "|")
                 search_vals.append(("value", "=", value))
             search_count = relation_obj.search_count(search_vals)
             # if not exist, then create it
             if not search_count:
                 value_record = (
-                    relation_obj.create({"name": value, "value": value})
+                    relation_obj.create({field_name: value, "value": value})
                 )
-                # fetch translation
+                if not hasattr(relation_obj, "value"):
+                    return
+                # fetch translations for connect.multipicklist values
+                must_manually_translate = False
                 for lang_literal, lang_context in languages_map.items():
                     result = onramp.send_message(
                         endpoint.format(self[0].fcp_id, lang_literal), "GET"
@@ -640,9 +645,13 @@ class CompassionProject(models.Model):
                             if not isinstance(content_values, list):
                                 content_values = [content_values]
                             translation = content_values[i]
+                            if translation == value_record.value:
+                                must_manually_translate = True
                             value_record.with_context(
                                 lang=lang_context
                             ).value = translation
+                if must_manually_translate:
+                    value_record.assign_translation()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

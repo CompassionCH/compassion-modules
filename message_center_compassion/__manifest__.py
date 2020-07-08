@@ -40,11 +40,12 @@
     "data": [
         "security/gmc_groups.xml",
         "security/ir.model.access.csv",
+        "data/query_operators.xml",
         "views/gmc_message_view.xml",
         "views/advanced_query_view.xml",
-        "data/query_operators.xml",
         "views/compassion_mapping_view.xml",
         "views/import_json_mapping_view.xml",
+        "views/compassion_settings_view.xml",
     ],
     "demo": ["demo/res_users.xml"],
     "installable": True,
