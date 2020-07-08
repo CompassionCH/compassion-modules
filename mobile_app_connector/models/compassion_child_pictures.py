@@ -11,7 +11,7 @@
 import datetime
 import logging
 
-from odoo import models, api
+from odoo import models, api, fields
 
 logger = logging.getLogger(__name__)
 
@@ -21,15 +21,6 @@ class CompassionChildPictures(models.Model):
 
     _name = "compassion.child.pictures"
     _inherit = ["compassion.child.pictures", "compassion.mapped.model"]
-
-    @property
-    def image_url_compassion(self, type="fullshot"):
-        if type.lower() not in ["headshot", "fullshot"]:
-            raise ValueError("Expected argument 'type' to be 'headshot' or 'fullshot'")
-
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.external.url")
-        endpoint = base_url + "/web/image/compassion.child.pictures"
-        return f"{endpoint}/{self.id}/{type}/" f"{self.date}_{self.child_id.id}.jpg"
 
     @api.multi
     def get_app_json(self, multi=False):

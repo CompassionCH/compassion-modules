@@ -6,7 +6,7 @@
       "field": "date"
     },
     "Url": {
-      "field": "image_url"
+      "field": "image_url_compassion"
     },
     "OrderDate": {
       "field": "date"
