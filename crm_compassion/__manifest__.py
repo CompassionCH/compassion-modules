@@ -64,6 +64,7 @@
         "views/mail_message_view.xml",
         "views/partner_log_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
+        "views/sponsorship_view.xml",
         "views/web_kanban_colorpicker_template.xml",
     ],
     "qweb": ["static/src/xml/web_kanban_colorpicker.xml", ],
