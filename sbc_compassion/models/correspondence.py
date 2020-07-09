@@ -913,6 +913,9 @@ class Correspondence(models.Model):
         if "".join(english_text) == "" and "".join(translated_text) != "":
             json_data["Pages"]["EnglishTranslatedText"] = translated_text
 
+        if "LocalId" in json_data:
+            json_data["LocalId"] = json_data["LocalId"] + self.resubmit_id
+
         return json_data
 
     @api.model
@@ -966,18 +969,14 @@ class Correspondence(models.Model):
                 pages.append(orm_tuple)
             odoo_data["page_ids"] = pages or False
 
-        # Concatenate the local_id and the current resubmit_id
-        if "local_id" in odoo_data:
-            odoo_data["local_id"] = odoo_data["local_id"] + self.resubmit_id
-
         return odoo_data
 
     @api.multi
-    def resubmit_letter_translation(self):
+    def resubmit_letter(self):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
                 raise UserError(_("Letter must be in state 'Translation check unsuccessful'"))
 
             letter.kit_identifier = None
-            letter.send_local_translate()
             letter.resubmit_id += 1
+            letter.create_commkit()
