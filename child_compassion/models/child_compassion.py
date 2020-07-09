@@ -366,7 +366,7 @@ class CompassionChild(models.Model):
             "R": no_hold,
             "S": consignment_holds,
         }
-        for child in self:
+        for child in self.filtered("hold_id"):
             if child.hold_type not in valid_states[child.state]:
                 raise ValidationError(
                     _("Child %s has invalid state %s for hold type %s")
@@ -726,12 +726,11 @@ class CompassionChild(models.Model):
         for child in self:
             values = {"sponsor_id": False}
             update_hold = False
-            if child.sponsor_id:
-                if child.hold_id.type == HoldType.NO_MONEY_HOLD.value:
-                    update_hold = True
-                    values["state"] = "N"
-                else:
-                    values["state"] = "N" if child.hold_id else "R"
+            if child.hold_id.type == HoldType.NO_MONEY_HOLD.value:
+                update_hold = True
+                values["state"] = "N"
+            else:
+                values["state"] = "N" if child.hold_id else "R"
             child.write(values)
             if update_hold:
                 try:

@@ -79,7 +79,7 @@ class SmsChildRequest(models.Model):
         "select_lang", required=True, default=lambda s: s.env.lang
     )
     source = fields.Selection(
-        [("SMS", "SMS"), ("IOS", "iOS"), ("Android", "Android"), ],
+        [("SMS", "SMS"), ("IOS", "iOS"), ("Android", "Android"), ("QR", "QR-code")],
         default="SMS",
         required=True,
     )
