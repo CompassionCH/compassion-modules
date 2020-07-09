@@ -32,12 +32,12 @@
         </field>
     </record>
 
-    <!-- Resubmit letter translation mass action-->
-    <record id="resubmit_letter_translation_action" model="ir.actions.server">
-        <field name="name">Resubmit letter translation</field>
+    <!-- Resubmit letter to GMC mass action-->
+    <record id="resubmit_letter_action" model="ir.actions.server">
+        <field name="name">Resubmit letter</field>
         <field name="model_id" ref="sbc_compassion.model_correspondence"/>
         <field name="state">code</field>
-        <field name="code">records.resubmit_letter_translation()</field>
+        <field name="code">records.resubmit_letter()</field>
     </record>
 
     <record id="view_correspondence_form" model="ir.ui.view">
@@ -60,8 +60,8 @@
                     <button name="download_pdf" type="object"
                             string="Download PDF"
                             attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"/>
-                    <button name="resubmit_letter_translation" type="object"
-                            string="Resubmit Letter Translation"
+                    <button name="resubmit_letter" type="object"
+                            string="Resubmit Letter"
                             attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
                 </header>
                 <sheet>
