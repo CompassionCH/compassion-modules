@@ -305,7 +305,7 @@ class HrEmployee(models.Model):
             self, start_date=None, end_date=None, existing_balance=0
     ):
         """
-        Compute the balance of extra and lost horus at end_date.
+        Compute the balance of extra and lost hours at end_date.
         :param start_date: Start date of the computation
         :param end_date: Date of desired data
         :param existing_balance: Existing extra hours balance at start_date
@@ -379,7 +379,7 @@ class HrEmployee(models.Model):
         for employee in self:
             if employee.balance < 0:
                 employee.time_warning_balance = "red"
-            elif max_extra_hours and employee.balance >= max_extra_hours * 2 // 3:
+            elif max_extra_hours and employee.balance >= max_extra_hours * 2 / 3:
                 employee.time_warning_balance = "orange"
             else:
                 employee.time_warning_balance = "green"
@@ -434,7 +434,7 @@ class HrEmployee(models.Model):
                 worked_hours += attendance.worked_hours
             else:
                 delta = datetime.datetime.now() - attendance.check_in
-                worked_hours += delta.total_seconds() // 3600.0
+                worked_hours += delta.total_seconds() / 3600.0
         return worked_hours
 
     def open_balance_graph(self):
