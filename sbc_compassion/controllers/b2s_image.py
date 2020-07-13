@@ -42,7 +42,7 @@ class RestController(http.Controller):
         correspondence.email_read = datetime.now()
         headers = Headers()
         if correspondence.letter_format == "zip":
-            fname = fields.Date.today() + " letters.zip"
+            fname = fields.Date.today().strftime("%d-%m-%Y") + " letters.zip"
             headers.add("Content-Disposition", "attachment", filename=fname)
             response = Response(data, content_type="application/zip", headers=headers)
         else:
