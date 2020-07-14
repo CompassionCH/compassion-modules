@@ -6,7 +6,6 @@ odoo.define('hr_attendance_management.attendance', function (require) {
     var hr_attendance = require('hr_attendance.my_attendances');
     var greeting_message = require('hr_attendance.greeting_message');
     var session = require('web.session');
-    window.asdf = session
     var rpc = require('web.rpc');
 
     var QWeb = core.qweb;
