@@ -74,7 +74,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             var interval_id = setInterval(
                 function() {
                     if ($('#state').text() === 'checked in') {
-                        var start_time = window.localStorage.getItem('start_time')
+                        var start_time = window.localStorage.getItem('start_time');
 
                         ['worked_today', 'balance_today'].forEach(
                             function (el) {
