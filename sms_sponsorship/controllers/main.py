@@ -84,7 +84,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         child = sms_child_request.child_id
         if not child and not sms_child_request.is_trying_to_fetch_child:
             sms_child_request.is_trying_to_fetch_child = True
-            if not sms_child_request.reserve_child():
+            if not sms_child_request.reserve_child() and not sms_child_request.\
+                    event_id.disable_childpool_search:
                 sms_child_request.is_trying_to_fetch_child = True
                 sms_child_request.take_child_from_childpool()
         if child:
