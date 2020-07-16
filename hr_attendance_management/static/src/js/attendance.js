@@ -5,7 +5,6 @@ odoo.define('hr_attendance_management.attendance', function (require) {
 
     var hr_attendance = require('hr_attendance.my_attendances');
     var greeting_message = require('hr_attendance.greeting_message');
-    var session = require('web.session');
     var rpc = require('web.rpc');
 
     var QWeb = core.qweb;
@@ -128,7 +127,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             // We don't want to clear interval because we stay on the same page
             window.localStorage.setItem('trigger_source', 'from_update_attendance');
             var loc_id = parseInt($('#location').val(), 10);
-            session.user_context['default_location_id'] = loc_id;
+            this.getSession().user_context.default_location_id = loc_id;
             this._super();
         },
     });
