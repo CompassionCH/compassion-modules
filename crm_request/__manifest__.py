@@ -12,7 +12,6 @@
     "external_dependencies": {"python": ["detectlanguage"]},
     # any module necessary for this one to work correctly
     "depends": [
-        "crm_claim",  # oca_addons/crm
         "crm_claim_code",  # oca_addons/crm
         "mail",
         "partner_contact_in_several_companies",  # oca_addons/partner-contact
