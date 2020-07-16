@@ -1,19 +1,67 @@
 odoo.define('hr_attendance_management.attendance', function (require) {
     "use strict";
 
-    var core = require('web.core');
-
     var hr_attendance = require('hr_attendance.my_attendances');
     var greeting_message = require('hr_attendance.greeting_message');
     var session = require('web.session');
     var rpc = require('web.rpc');
 
+    var core = require('web.core');
     var QWeb = core.qweb;
     var _t = core._t;
 
-    window.localStorage.setItem('trigger_source', 'other');
-    // We look for URL changes, corresponding we leave the actual page
-    window.addEventListener('popstate', function (event) {
+    var start_dynamic_hours = function() {
+        var interval_id = setInterval(
+            function() {
+                if ($('#state').text() === 'checked in') {
+                    var start_time = window.localStorage.getItem('start_time');
+
+                    ['worked_today', 'balance_today'].forEach(
+                        function (el) {
+                            var diff_minutes =
+                                moment().diff(moment(start_time), 'minutes');
+                            var matches = $('#' + el)
+                                .text().match(/^-?(\d{2}):(\d{2})$/);
+
+                            if (matches !== null && diff_minutes >= 1) {
+                                var hours = parseInt(matches[1]);
+                                var minutes = parseInt(matches[2]);
+
+                                var total_minutes = (minutes +
+                                    (hours * 60)) *
+                                    (matches[0].substring(0, 1) ===
+                                     '-' ? -1 : 1);
+                                var negative = total_minutes +
+                                    diff_minutes < 0;
+
+                                var new_total = Math.abs(total_minutes +
+                                    diff_minutes);
+                                var new_hours =
+                                    ('0' + Math.trunc(new_total / 60))
+                                        .slice(-2);
+                                var new_minutes =
+                                    ('0' + (new_total % 60)).slice(-2);
+
+                                $('#' + el).text((negative ? '-' : '') +
+                                    new_hours + ':' + new_minutes);
+
+                                if (el !== 'worked_today') {
+                                    $('#' + el).parent()
+                                        .get(0).style.color =
+                                    negative ? 'red' : 'green';
+                                }
+                                // We update the time for the next time difference
+                                window.localStorage.setItem('start_time', new Date())
+                            }
+                        }
+                    );
+                }
+            }, 5000
+        );
+        return interval_id;
+    }
+
+    var stop_dynamic_hours = function() {
         var interval_id = window.localStorage.getItem('interval_id');
         var trigger_source = window.localStorage.getItem('trigger_source');
 
@@ -30,7 +78,18 @@ odoo.define('hr_attendance_management.attendance', function (require) {
         } else if (trigger_source === 'back_from_update') {
             window.localStorage.setItem('trigger_source', 'other');
         }
+    }
+
+    window.localStorage.setItem('trigger_source', 'other');
+    // We look for URL changes, corresponding we leave the actual page
+    window.addEventListener('popstate', function (event) {
+        stop_dynamic_hours();
     });
+    // We look for focus on page, we want to retrigger the function
+    window.onfocus = function() {
+        stop_dynamic_hours();
+        start_dynamic_hours();
+    }
 
 
     hr_attendance.include({
@@ -68,56 +127,11 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                             {widget: self}));
                     });
                 });
-            })
+            });
 
-            // Update worked hours dynamically
-            var interval_id = setInterval(
-                function() {
-                    if ($('#state').text() === 'checked in') {
-                        var start_time = window.localStorage.getItem('start_time');
-
-                        ['worked_today', 'balance_today'].forEach(
-                            function (el) {
-                                var diff_minutes =
-                                    moment().diff(moment(start_time), 'minutes');
-                                var matches = $('#' + el)
-                                    .text().match(/^-?(\d{2}):(\d{2})$/);
-
-                                if (matches !== null && diff_minutes >= 1) {
-                                    var hours = parseInt(matches[1]);
-                                    var minutes = parseInt(matches[2]);
-
-                                    var total_minutes = (minutes +
-                                        (hours * 60)) *
-                                        (matches[0].substring(0, 1) ===
-                                         '-' ? -1 : 1);
-                                    var negative = total_minutes +
-                                        diff_minutes < 0;
-
-                                    var new_total = Math.abs(total_minutes +
-                                        diff_minutes);
-                                    var new_hours =
-                                        ('0' + Math.trunc(new_total / 60))
-                                            .slice(-2);
-                                    var new_minutes =
-                                        ('0' + (new_total % 60)).slice(-2);
-
-                                    $('#' + el).text((negative ? '-' : '') +
-                                        new_hours + ':' + new_minutes);
-
-                                    if (el !== 'worked_today') {
-                                        $('#' + el).parent()
-                                            .get(0).style.color =
-                                        negative ? 'red' : 'green';
-                                    }
-                                    // We update the time for the next time difference
-                                    window.localStorage.setItem('start_time', new Date())
-                                }
-                            }
-                        );
-                    }
-                }, 5000
-            )
+            // We make sure to remove any existing interval
+            stop_dynamic_hours();
+            var interval_id = start_dynamic_hours();
             window.localStorage.setItem('interval_id', interval_id);
             // We save the time at which the widget was created
             window.localStorage.setItem('start_time', new Date());
