@@ -6,6 +6,9 @@
        <field name="inherit_id" ref="crm_compassion.view_events_form"/>
        <field name="arch" type="xml">
            <xpath expr="//field[@name='planned_sponsorships']" position="after">
+               <field name="disable_childpool_search"/>
+           </xpath>
+           <xpath expr="//field[@name='planned_sponsorships']" position="after">
                <field name="accepts_sms_booking"/>
            </xpath>
        </field>

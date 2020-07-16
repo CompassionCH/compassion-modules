@@ -216,7 +216,7 @@ class SmsChildRequest(models.Model):
         child_fetched = False
         if self.event_id:
             child_fetched = self._take_child_from_event()
-        if not child_fetched:
+        if not child_fetched and not self.event_id.disable_childpool_search:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
         return child_fetched
