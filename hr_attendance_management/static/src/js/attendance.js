@@ -128,7 +128,21 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             window.localStorage.setItem('trigger_source', 'from_update_attendance');
             var loc_id = parseInt($('#location').val(), 10);
             this.getSession().user_context.default_location_id = loc_id;
-            this._super();
+            var self = this;
+            // We bypass parent method in order to add context in the request
+            this._rpc({
+                model: 'hr.employee',
+                method: 'attendance_manual',
+                args: [[self.employee.id], 'hr_attendance.hr_attendance_action_my_attendances'],
+                context: this.getSession().user_context
+            })
+            .then(function(result) {
+                if (result.action) {
+                    self.do_action(result.action);
+                } else if (result.warning) {
+                    self.do_warn(result.warning);
+                }
+            });
         },
     });
 
