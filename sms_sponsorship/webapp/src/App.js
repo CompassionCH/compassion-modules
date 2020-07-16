@@ -120,6 +120,14 @@ class Main extends React.Component {
     changeLanguage = () => {
         let form = document.forms.lang_form;
         let lang = form.lang.value;
+
+        let requestId = getRequestId();
+        let url = "/sms_sponsorship/step1/" + requestId + "/change_language";
+        let data = {
+            lang: lang,
+        };
+        jsonRPC(url, data);
+
         i18n.changeLanguage(lang);
         this.setState({
             langDialog: false,

@@ -14,6 +14,7 @@ import logging
 import werkzeug.utils
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from werkzeug.exceptions import NotFound
+from mobile_app_connector.controllers.mobile_app_controller import _get_lang
 
 from odoo import _
 from odoo.http import request, route, Controller
@@ -240,3 +241,26 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                     type_="danger",
                 )
         return request.render("sms_sponsorship.sms_registration_confirmation", values)
+
+    @route(
+        "/sms_sponsorship/step1/<int:child_request_id>/change_language",
+        type="json",
+        auth="public",
+        methods=["POST"],
+        csrf=False,
+        noindex=["robots", "meta", "header"],
+    )
+    def sms_change_language(self, child_request_id):
+        """
+        Route called by REACT app for changing language.
+        :param child_request_id: id of sms_child_request22682
+        :return: None, REACT page will be refreshed after this call.
+        """
+        body = request.jsonrequest
+        sms_child_request = get_child_request(child_request_id)
+        # get correct language format
+        tw = dict()  # to write
+        if body["lang"]:
+            tw["lang_code"] = _get_lang(request, dict(language=body["lang"]))
+        if tw:
+            sms_child_request.write(tw)
