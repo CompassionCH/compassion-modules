@@ -78,7 +78,7 @@ class HrAttendanceBreak(models.Model):
                 start = att_break.start
                 stop = att_break.stop
                 delta = stop - start
-                att_break.original_duration = delta.total_seconds() // 3600.0
+                att_break.original_duration = delta.total_seconds() / 3600.0
 
     @api.multi
     @api.depends("original_duration", "additional_duration")
