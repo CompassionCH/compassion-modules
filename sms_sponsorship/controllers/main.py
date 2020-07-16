@@ -14,7 +14,7 @@ import logging
 import werkzeug.utils
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from werkzeug.exceptions import NotFound
-from mobile_app_connector.controllers.mobile_app_controller import _get_lang
+from odoo.addons.mobile_app_connector.controllers.mobile_app_controller import _get_lang
 
 from odoo import _
 from odoo.http import request, route, Controller
