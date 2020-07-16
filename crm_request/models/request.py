@@ -109,9 +109,6 @@ class CrmClaim(models.Model):
         else:
             ctx["claim_no_partner"] = True
 
-        # Assign current user to request
-        self.user_id = self.env.uid
-
         return {
             "type": "ir.actions.act_window",
             "view_type": "form",
@@ -250,12 +247,18 @@ class CrmClaim(models.Model):
         the current user.
         - Push partner to associated mail messages
         """
-        super().write(values)
 
-        if values.get("stage_id") == self.env.ref("crm_request.stage_wait_support").id:
+        if values.get("user_id"):
+            values["stage_id"] = self.env.ref("crm_request.stage_wait_support").id
+
+        if not values.get("user_id") and values.get("stage_id") in (
+                self.env.ref("crm_request.stage_wait_support").id,
+                self.env.ref("crm_claim.stage_claim2").id):
             for request in self:
                 if not request.user_id:
-                    request.user_id = self.env.uid
+                    values["user_id"] = self.env.uid
+
+        super().write(values)
 
         if values.get("partner_id"):
             for request in self:
