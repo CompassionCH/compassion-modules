@@ -32,6 +32,11 @@ class EventCompassion(models.Model):
         help="If checked, children will be allocated especially for "
              "sponsorships made with SMS requests.",
     )
+    disable_childpool_search = fields.Boolean(
+        "Disable Childpool Search",
+        help="If checked, new children will not be added from the global to the event "
+             "childpool when a child is allocated."
+    )
     sms_number_hold_target = fields.Integer(compute="_compute_sms_number_hold_target")
     initial_sms_allocation_done = fields.Boolean()
 
@@ -66,30 +71,35 @@ class EventCompassion(models.Model):
         :return: True
         """
         for event in self:
-            _logger.info(
-                "Starting to put children on hold for event {}".format(event.name)
-            )
-            take = force_hold_number or event.sms_number_hold_target
-            childpool_search = self.env["compassion.childpool.search"].create(
-                {"take": take, "max_age": DEFAULT_MAX_AGE}
-            )
-            childpool_search.with_context(skip_value=1000).do_search()
-            expiration = event.end_date + relativedelta(days=2)
-            self.env["child.hold.wizard"].with_context(
-                active_id=childpool_search.id
-            ).create(
-                {
-                    "type": HoldType.CONSIGNMENT_HOLD.value,
-                    "expiration_date": expiration,
-                    "primary_owner": self.env.uid,
-                    "event_id": event.id,
-                    "campaign_id": event.campaign_id.id,
-                    "ambassador": event.user_id.partner_id.id
-                    or self.env.user.partner_id.id,
-                    "channel": "sms",
-                    "source_code": "automatic_sms_reservation_for_event",
-                    "return_action": "view_holds",
-                }
-            ).send()
-            _logger.info("{} children put back in event sms pool".format(take))
+            if not event.disable_childpool_search:
+                _logger.info(
+                    "Starting to put children on hold for event {}".format(event.name)
+                )
+                take = force_hold_number or event.sms_number_hold_target
+                childpool_search = self.env["compassion.childpool.search"].create(
+                    {"take": take, "max_age": DEFAULT_MAX_AGE}
+                )
+                childpool_search.with_context(skip_value=1000).do_search()
+                expiration = event.end_date + relativedelta(days=2)
+                self.env["child.hold.wizard"].with_context(
+                    active_id=childpool_search.id
+                ).create(
+                    {
+                        "type": HoldType.CONSIGNMENT_HOLD.value,
+                        "expiration_date": expiration,
+                        "primary_owner": self.env.uid,
+                        "event_id": event.id,
+                        "campaign_id": event.campaign_id.id,
+                        "ambassador": event.user_id.partner_id.id
+                        or self.env.user.partner_id.id,
+                        "channel": "sms",
+                        "source_code": "automatic_sms_reservation_for_event",
+                        "return_action": "view_holds",
+                    }
+                ).send()
+                _logger.info("{} children put back in event sms pool".format(take))
+            else:
+                _logger.info(
+                    "Childpool search is disabled for event {}".format(event.name)
+                )
         return True

@@ -204,7 +204,7 @@ class RestController(http.Controller):
         :return: Redirect to sms_sponsorship form
         """
         values = {
-            "lang_code": _get_lang(request, parameters),
+            "lang_code": "de_DE",  # german by default, temporary solution
             "source": parameters.get("source"),
             "partner_id": parameters.get("partner_id"),
         }

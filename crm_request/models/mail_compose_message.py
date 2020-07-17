@@ -27,6 +27,12 @@ class MailComposer(models.TransientModel):
                 {"partner_id": gen_mail.recipient_ids[:1].id}
             )
 
+        # Assign current user to request
+        if self.model == "crm.claim":
+            self.env["crm.claim"].browse(self.res_id).write(
+                {"user_id": self.env.uid}
+            )
+
         return res
 
     @api.multi
