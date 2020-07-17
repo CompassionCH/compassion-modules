@@ -115,7 +115,7 @@ class InteractionResume(models.TransientModel):
                         NULL as tracking_status
                         FROM "crm_phonecall" as crmpc
                         JOIN res_partner p ON crmpc.partner_id = p.id
-                        WHERE (p.contact_id = %s OR p.id = %s)
+                        WHERE (p.contact_id = %s OR p.id = %s) AND crmpc.state = 'done'
                         )
             -- outgoing e-mails
                     UNION (
