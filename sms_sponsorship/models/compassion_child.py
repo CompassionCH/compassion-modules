@@ -31,17 +31,32 @@ class CompassionHold(models.Model):
                 "age",
             ]
         )[0]
+        # Get crm.event from child
+        hold_event = self.hold_event
+        # Get set of countries of all field offices
+        countries = self.field_office_id.search(
+            [
+                ("available_on_childpool", "=", True)
+            ]
+        ).mapped("country_id")
+        event_countries = False
+        # Get set of countries of field offices in the event
+        if hold_event and hold_event.disable_childpool_search:
+            event_countries = hold_event.allocate_child_ids.\
+                mapped("field_office_id.country_id")
+        # Intersect countries
+        if event_countries:
+            countries &= event_countries
+        # Create dictionary of countries with value and text keys
+        countries = countries.mapped(lambda country: {"value": country.code,
+                                                      "text": country.name})
+        # Update result
         result.update(
             {
                 "has_a_child": True,
                 "invalid_sms_child_request": False,
                 "country": self.field_office_id.country_id.name,
-                "countries": self.field_office_id.search(
-                    [("available_on_childpool", "=", True)]
-                )
-                .mapped("country_id")
-                .mapped(
-                    lambda country: {"value": country.code, "text": country.name}),
+                "countries": countries,
                 "description": result["desc_en"],
             }
         )
