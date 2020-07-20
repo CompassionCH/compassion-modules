@@ -59,5 +59,5 @@ class ThankYouConfig(models.Model):
             partner,
             self.send_mode,
             print_if_not_email=print_if_not_email,
-            send_mode_pref_field=None,
+            send_mode_pref_field="thankyou_preference",
         )
