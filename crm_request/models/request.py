@@ -248,9 +248,6 @@ class CrmClaim(models.Model):
         - Push partner to associated mail messages
         """
 
-        if values.get("user_id"):
-            values["stage_id"] = self.env.ref("crm_request.stage_wait_support").id
-
         if not values.get("user_id") and values.get("stage_id") in (
                 self.env.ref("crm_request.stage_wait_support").id,
                 self.env.ref("crm_claim.stage_claim2").id):
