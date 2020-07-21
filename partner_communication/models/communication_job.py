@@ -99,7 +99,6 @@ class CommunicationJob(models.Model):
     sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection(
         [
-            # ("call", _("Call partner")),
             ("pending", _("Pending")),
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
@@ -247,7 +246,6 @@ class CommunicationJob(models.Model):
                                   self.env.ref(
                                       "partner_communication.default_communication").id,
                               ),
-                              # ("state", "in", ("call", "pending")),
                               ("state", "=", "pending"),
                           ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search)
@@ -731,8 +729,8 @@ class CommunicationJob(models.Model):
 
             email = (
                 self.env["mail.compose.message"]
-                    .with_context(lang=partner.lang)
-                    .create_emails(self.email_template_id, [self.id], email_vals)
+                .with_context(lang=partner.lang)
+                .create_emails(self.email_template_id, [self.id], email_vals)
             )
             self.email_id = email
             email.send()
@@ -808,5 +806,5 @@ class CommunicationJob(models.Model):
         Used to display a count icon in the menu
         :return: domain of jobs counted
         """
-        # return [("state", "in", ("call", "pending"))]
+
         return [("state", "=", "pending")]
