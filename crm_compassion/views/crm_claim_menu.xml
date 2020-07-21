@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Remove unused "After Sale" menu from base crm_claim module-->
+    <delete model="ir.ui.menu" id="crm_claim.menu_aftersale"/>
+    <delete model="ir.ui.menu" id="crm_claim.menu_crm_case_claims"/>
+</odoo>
