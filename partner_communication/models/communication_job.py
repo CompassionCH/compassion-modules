@@ -99,7 +99,7 @@ class CommunicationJob(models.Model):
     sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection(
         [
-            ("call", _("Call partner")),
+            # ("call", _("Call partner")),
             ("pending", _("Pending")),
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
@@ -239,16 +239,17 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = str(vals["partner_id"])
 
         same_job_search = [
-            ("partner_id", "=", vals.get("partner_id")),
-            ("config_id", "=", vals.get("config_id")),
-            (
-                "config_id",
-                "!=",
-                self.env.ref(
-                    "partner_communication.default_communication").id,
-            ),
-            ("state", "in", ("call", "pending")),
-        ] + self.env.context.get("same_job_search", [])
+                              ("partner_id", "=", vals.get("partner_id")),
+                              ("config_id", "=", vals.get("config_id")),
+                              (
+                                  "config_id",
+                                  "!=",
+                                  self.env.ref(
+                                      "partner_communication.default_communication").id,
+                              ),
+                              # ("state", "in", ("call", "pending")),
+                              ("state", "=", "pending"),
+                          ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
@@ -270,13 +271,6 @@ class CommunicationJob(models.Model):
             job.refresh_text()
         else:
             job.set_attachments()
-
-        # Check if phonecall is needed
-        if (
-                job.need_call == "before_sending"
-                or job.config_id.need_call == "before_sending"
-        ):
-            job.state = "call"
 
         if job.body_html or job.send_mode == "physical":
             job.count_pdf_page()
@@ -378,6 +372,25 @@ class CommunicationJob(models.Model):
         if vals.get("body_html") or vals.get("send_mode") == "physical":
             self.count_pdf_page()
 
+        # if the call must be done after the sending, we unlink all activities
+        # associated with the job (as for the moment, there is only one activity type)
+        if self.need_call == "after_sending" and self.state == "pending":
+            for activity in self.activity_ids:
+                activity.unlink()
+
+        # if the call must be done before the sending, and if there isn't an activity
+        # already scheduled, we schedule a new activity
+        # (there's only one activity type associated with the communication job)
+        if ((self.need_call == "before_sending"
+             and self.state == "pending")
+                and not self.activity_ids):
+            self.activity_schedule('mail.mail_activity_data_call',
+                                   summary="call_" + self.need_call,
+                                   user_id=self.user_id.id,
+                                   note="Call {} at (phone) {}"
+                                   .format(self.partner_id.name,
+                                           self.partner_phone))
+
         return True
 
     ##########################################################################
@@ -408,19 +421,16 @@ class CommunicationJob(models.Model):
                 job.send_mode = "physical"
                 job.refresh_text()
 
+        # if the call must be done after the sending, an activity is scheduled
+        if self.need_call == "after_sending":
+            self.activity_schedule('mail.mail_activity_data_call',
+                                   summary="call_" + self.need_call,
+                                   user_id=self.user_id.id,
+                                   note="Call {} at (phone) {}"
+                                   .format(self.partner_id.name,
+                                           self.partner_phone))
         if to_print:
             return to_print._print_report()
-        return True
-
-    @api.multi
-    def cancel(self):
-        to_call = self.filtered(lambda j: j.state == "call")
-        for job in to_call:
-            state = "pending"
-            if job.need_call == "after_sending" and job.sent_date:
-                state = "done"
-            to_call.write({"state": state, "need_call": False})
-        (self - to_call).write({"state": "cancel"})
         return True
 
     @api.multi
@@ -488,18 +498,6 @@ class CommunicationJob(models.Model):
                 if key.endswith("_id"):
                     val = getattr(self, key).browse(val)
                 setattr(self, key, val)
-
-    @api.onchange("need_call")
-    def onchange_need_call(self):
-        if self.need_call == "before_sending" and self.state == "pending":
-            self.state = "call"
-        if self.need_call == "after_sending":
-            if self.state == "done":
-                self.state = "call"
-            elif self.state == "call" and not self.sent_date:
-                self.state = "pending"
-        if not self.need_call and self.state == "call":
-            self.state = "pending" if not self.sent_date else "done"
 
     @api.multi
     def open_related(self):
@@ -733,8 +731,8 @@ class CommunicationJob(models.Model):
 
             email = (
                 self.env["mail.compose.message"]
-                .with_context(lang=partner.lang)
-                .create_emails(self.email_template_id, [self.id], email_vals)
+                    .with_context(lang=partner.lang)
+                    .create_emails(self.email_template_id, [self.id], email_vals)
             )
             self.email_id = email
             email.send()
@@ -745,7 +743,13 @@ class CommunicationJob(models.Model):
         final_state = "pending"
         if email.state == "sent":
             if self.need_call == "after_sending":
-                final_state = "call"
+                # same as in the send method
+                self.activity_schedule('mail.mail_activity_data_call',
+                                       summary="call_" + self.need_call,
+                                       user_id=self.user_id.id,
+                                       note="Call {} at (phone) {}"
+                                       .format(partner.name,
+                                               partner.phone))
             else:
                 final_state = "done"
         return final_state
@@ -783,7 +787,13 @@ class CommunicationJob(models.Model):
             origin = self.env.context.get("origin")
             state = "done"
             if job.need_call == "after_sending":
-                state = "call"
+                # same as in the send method
+                job.activity_schedule('mail.mail_activity_data_call',
+                                      summary="call_" + job.need_call,
+                                      user_id=job.user_id.id,
+                                      note="Call {} at (phone) {}"
+                                      .format(job.partner_id.name,
+                                              job.partner_id.phone))
             elif origin == "both_print":
                 state = "pending"
             job.write({"state": state, "sent_date": fields.Datetime.now()})
@@ -798,4 +808,5 @@ class CommunicationJob(models.Model):
         Used to display a count icon in the menu
         :return: domain of jobs counted
         """
-        return [("state", "in", ("call", "pending"))]
+        # return [("state", "in", ("call", "pending"))]
+        return [("state", "=", "pending")]
