@@ -183,7 +183,8 @@ class FieldToJson(models.Model):
             values = value if isinstance(value, list) else [value]
             for val in values:
                 relational_record = relational_model.search([
-                    (self.field_name, "=ilike", val)])
+                    "|", (self.field_name, "=ilike", val), (self.field_name, "=", val)
+                ])
                 if not relational_record and not self.allow_relational_creation:
                     # Break to raise error in case we don't find the relation
                     records = relational_model

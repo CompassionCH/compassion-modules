@@ -828,7 +828,7 @@ class CompassionIntervention(models.Model):
 
         return intervention_local_ids
 
-    @api.model
+    @api.multi
     def json_to_data(self, json, mapping_name=None):
         if "ICP" in json:
             json["ICP"] = json["ICP"].split("; ")
