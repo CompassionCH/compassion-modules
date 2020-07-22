@@ -30,14 +30,14 @@ class SponsorshipGift(models.Model):
     # Related records
     #################
     sponsorship_id = fields.Many2one(
-        "recurring.contract", "Sponsorship", required=True, readonly=False
+        "recurring.contract", "Sponsorship", readonly=False
     )
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
         related="sponsorship_id.correspondent_id",
         store=True,
-        readonly=True,
+        readonly=False,
     )
     project_id = fields.Many2one(
         "compassion.project",
@@ -206,7 +206,15 @@ class SponsorshipGift(models.Model):
                 name = gift.translate("gift_type")
             else:
                 name = gift.translate("sponsorship_gift_type") + " " + _("Gift")
-            name += " [" + gift.sponsorship_id.name + "]"
+
+            if gift.sponsorship_id:
+                name += " [" + gift.sponsorship_id.name + "]"
+            elif gift.partner_id:
+                name += " [" + gift.partner_id.name + "]"
+            elif gift.child_id:
+                name += " [" + gift.child_id.name + "]"
+            elif gift.project_id:
+                name += " [" + gift.project_id.name + "]"
             gift.name = name
 
     def _compute_usd(self):
@@ -324,8 +332,11 @@ class SponsorshipGift(models.Model):
         json_data = super().data_to_json(mapping_name)
         if json_data.get("RecipientType") == "Project Gift":
             del json_data["Beneficiary_GlobalID"]
-            json_data["RecipientId"] = json_data["RecipientID"][:6]
-            del json_data["RecipientID"]
+            if json_data.get("RecipientID"):
+                json_data["RecipientId"] = json_data["RecipientID"][:6]
+                del json_data["RecipientID"]
+            else:
+                json_data["RecipientId"] = self.project_id.fcp_id
         return json_data
 
     @api.model
