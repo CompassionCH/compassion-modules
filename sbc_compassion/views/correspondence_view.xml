@@ -93,8 +93,8 @@
                             <field name="physical_attachments"/>
                             <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
                             <field name="marked_for_rework" invisible="1"/>
-                            <field name="rework_reason" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
-                            <field name="rework_comments" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
+                            <field name="rework_reason" attrs="{'invisible': [('rework_reason', '=', False)]}"/>
+                            <field name="rework_comments" attrs="{'invisible': [('rework_comments', '=', False)]}"/>
                         </group>
                         <group string="Supporter">
                             <field name="partner_id"/>
