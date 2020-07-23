@@ -27,6 +27,7 @@ class CompassionIntervention(models.Model):
         "compassion.generic.intervention",
         "mail.thread",
         "compassion.mapped.model",
+        "mail.activity.mixin"
     ]
     _name = "compassion.intervention"
     _description = "Intervention"
@@ -429,6 +430,20 @@ class CompassionIntervention(models.Model):
             # By default we want to opt-in for next years
             vals["next_year_opt_in"] = True
             intervention = self.create(vals)
+
+            # Once the intervention is created, send task for the primary owner
+            if intervention:
+                for user in intervention.user_id:
+                    intervention.activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=_("Set an expiration date and service level"),
+                        note=_("You have been assigned to the Intervention {}. "
+                               "Please update the intervention by setting an "
+                               "expiration date and service level.".
+                               format(intervention.intervention_id)
+                               ),
+                        user_id=user.id
+                    )
 
         return intervention.ids
 
