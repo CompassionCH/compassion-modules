@@ -404,15 +404,15 @@ class CompassionIntervention(models.Model):
         )
         intervention = self
         if intervention_details_request:
-            vals = self.json_to_data(commkit_data)
+            vals = self.json_to_data(intervention_details_request)
 
             vals["total_cost"] = vals["hold_amount"] = float(
                 vals["hold_amount"].replace("'", "").replace(",", "")
             )
-            if not vals["secondary_owner"]:
+            if "secondary_owner" in vals and not vals["secondary_owner"]:
                 del vals["secondary_owner"]
 
-            if "service_level" not in vals:
+            if "service_level" not in vals or not vals.get("service_level"):
                 vals["service_level"] = "Level 1"
 
             intervention_name = vals["name"]
