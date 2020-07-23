@@ -35,7 +35,7 @@ class DownloadLetters(models.TransientModel):
     @api.multi
     def _compute_filename(self):
         self.fname = fields.Date.context_today(self).strftime("%d-%m-%Y") \
-                     + _("_letters.zip")
+            + _("_letters.zip")
 
     @api.multi
     def _compute_data(self):

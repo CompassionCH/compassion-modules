@@ -32,6 +32,17 @@
         </field>
     </record>
 
+    <!-- Resubmit letter to GMC mass action-->
+    <record id="resubmit_letter_action" model="ir.actions.server">
+        <field name="name">Resubmit letter</field>
+        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="state">code</field>
+        <field name="code">records.resubmit_letter()</field>
+        <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="binding_type">action</field>
+    </record>
+
+
     <record id="view_correspondence_form" model="ir.ui.view">
         <field name="name">correspondence.form</field>
         <field name="model">correspondence</field>
@@ -52,6 +63,9 @@
                     <button name="download_pdf" type="object"
                             string="Download PDF"
                             attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"/>
+                    <button name="resubmit_letter" type="object"
+                            string="Resubmit Letter"
+                            attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
                 </header>
                 <sheet>
                     <h1>
@@ -79,8 +93,8 @@
                             <field name="physical_attachments"/>
                             <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
                             <field name="marked_for_rework" invisible="1"/>
-                            <field name="rework_reason" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
-                            <field name="rework_comments" attrs="{'invisible': [('marked_for_rework', '=', False)]}"/>
+                            <field name="rework_reason" attrs="{'invisible': [('rework_reason', '=', False)]}"/>
+                            <field name="rework_comments" attrs="{'invisible': [('rework_comments', '=', False)]}"/>
                         </group>
                         <group string="Supporter">
                             <field name="partner_id"/>

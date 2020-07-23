@@ -27,6 +27,7 @@ class CompassionIntervention(models.Model):
         "compassion.generic.intervention",
         "mail.thread",
         "compassion.mapped.model",
+        "mail.activity.mixin"
     ]
     _name = "compassion.intervention"
     _description = "Intervention"
@@ -404,15 +405,15 @@ class CompassionIntervention(models.Model):
         )
         intervention = self
         if intervention_details_request:
-            vals = self.json_to_data(commkit_data)
+            vals = self.json_to_data(intervention_details_request)
 
             vals["total_cost"] = vals["hold_amount"] = float(
                 vals["hold_amount"].replace("'", "").replace(",", "")
             )
-            if not vals["secondary_owner"]:
+            if "secondary_owner" in vals and not vals["secondary_owner"]:
                 del vals["secondary_owner"]
 
-            if "service_level" not in vals:
+            if "service_level" not in vals or not vals.get("service_level"):
                 vals["service_level"] = "Level 1"
 
             intervention_name = vals["name"]
@@ -429,6 +430,20 @@ class CompassionIntervention(models.Model):
             # By default we want to opt-in for next years
             vals["next_year_opt_in"] = True
             intervention = self.create(vals)
+
+            # Once the intervention is created, send task for the primary owner
+            if intervention:
+                for user in intervention.user_id:
+                    intervention.activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=_("Set an expiration date and service level"),
+                        note=_("You have been assigned to the Intervention {}. "
+                               "Please update the intervention by setting an "
+                               "expiration date and service level.".
+                               format(intervention.intervention_id)
+                               ),
+                        user_id=user.id
+                    )
 
         return intervention.ids
 
@@ -828,7 +843,7 @@ class CompassionIntervention(models.Model):
 
         return intervention_local_ids
 
-    @api.model
+    @api.multi
     def json_to_data(self, json, mapping_name=None):
         if "ICP" in json:
             json["ICP"] = json["ICP"].split("; ")

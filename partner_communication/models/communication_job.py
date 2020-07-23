@@ -763,22 +763,48 @@ class CommunicationJob(models.Model):
             to_print = report.render_qweb_pdf(job.ids)
 
             # Print letter
-            job = job.with_context(lang=job.partner_id.lang)
+            lang = job.partner_id.lang
+            job = job.with_context(lang=lang)
             report = job.report_id
             behaviour = report.behaviour()
-            printer = behaviour["printer"].with_context(lang=job.partner_id.lang)
+            printer = behaviour["printer"].with_context(lang=lang)
+
+            # Get communication config of language
+            printer_configs = job.mapped("config_id.printer_config_ids")
+            config_lang = printer_configs.filtered(lambda c: c.lang_id.code == lang)
+
+            # The trays are defined at 3 places, get options in order of priority
+            # Output tray - partner.communication.job
+            if job.printer_output_tray_id.system_name:
+                output_tray = job.printer_output_tray_id.system_name
+            # Output tray - partner.communication.config
+            elif config_lang.printer_output_tray_id.system_name:
+                output_tray = config_lang.printer_output_tray_id.system_name
+            # Output tray - ir.actions.report
+            elif report.printer_output_tray_id.system_name:
+                output_tray = report.printer_output_tray_id.system_name
+            else:
+                output_tray = False
+            # Handle input tray similarly to output tray
+            if config_lang.printer_input_tray_id.system_name:
+                input_tray = config_lang.printer_input_tray_id.system_name
+            elif report.printer_input_tray_id.system_name:
+                input_tray = report.printer_input_tray_id.system_name
+            else:
+                input_tray = False
+
             if behaviour["action"] != "client" and printer:
                 printer.print_document(
                     report.report_name, to_print[0],
                     doc_format=report.report_type,
                     action=behaviour['action'],
-                    input_tray=behaviour['input_tray'],
-                    output_tray=behaviour['output_tray']
+                    input_tray=input_tray,
+                    output_tray=output_tray
                 )
 
             # Print attachments
             job.attachment_ids.print_attachments(
-                output_tray=job.printer_output_tray_id.system_name,
+                output_tray=output_tray,
             )
             origin = self.env.context.get("origin")
             state = "done"

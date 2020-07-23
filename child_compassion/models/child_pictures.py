@@ -49,9 +49,11 @@ class ChildPictures(models.Model):
     @api.multi
     def _compute_image_url_compassion(self):
         for image in self:
-            base_url = self.env["ir.config_parameter"].sudo().get_param("web.external.url")
+            base_url = self.env["ir.config_parameter"].sudo().get_param(
+                "web.external.url")
             endpoint = base_url + "/web/image/compassion.child.pictures"
-            image.image_url_compassion = f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
+            image.image_url_compassion =\
+                f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
 
     ##########################################################################
     #                              ORM METHODS                               #
