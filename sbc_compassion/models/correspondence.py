@@ -77,7 +77,8 @@ class Correspondence(models.Model):
         related="sponsorship_id.child_id", store=True, readonly=False
     )
     # Field used for identifying correspondence by GMC
-    kit_identifier = fields.Char("Kit id", copy=False, readonly=True, track_visibility="onchange")
+    kit_identifier = fields.Char(
+        "Kit id", copy=False, readonly=True, track_visibility="onchange")
     direction = fields.Selection(
         selection=[
             ("Supporter To Beneficiary", _("Supporter to beneficiary")),
@@ -982,7 +983,8 @@ class Correspondence(models.Model):
     def resubmit_letter(self):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
-                raise UserError(_("Letter must be in state 'Translation check unsuccessful'"))
+                raise UserError(
+                    _("Letter must be in state 'Translation check unsuccessful'"))
 
             letter.kit_identifier = None
             letter.resubmit_id += 1
