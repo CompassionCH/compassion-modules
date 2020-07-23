@@ -986,6 +986,9 @@ class Correspondence(models.Model):
                 raise UserError(
                     _("Letter must be in state 'Translation check unsuccessful'"))
 
-            letter.kit_identifier = None
-            letter.resubmit_id += 1
+            letter.write({
+                "kit_identifier": False,
+                "resubmit_id": letter.resubmit_id + 1,
+                "state": "Received in the system"
+            })
             letter.create_commkit()

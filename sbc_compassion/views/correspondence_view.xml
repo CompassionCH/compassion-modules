@@ -38,7 +38,10 @@
         <field name="model_id" ref="sbc_compassion.model_correspondence"/>
         <field name="state">code</field>
         <field name="code">records.resubmit_letter()</field>
+        <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="binding_type">action</field>
     </record>
+
 
     <record id="view_correspondence_form" model="ir.ui.view">
         <field name="name">correspondence.form</field>
