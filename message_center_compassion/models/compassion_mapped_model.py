@@ -107,7 +107,7 @@ class CompassionMappedModel(models.AbstractModel):
         for single_json in json:
             data = {}
             for json_spec in all_fields:
-                for _ in range(10):  # try x attempts, avoid while loop
+                for attempt in range(10):  # try x attempts, avoid while loop
                     try:
                         json_value = single_json.get(json_spec.json_name)
                         if json_spec.sub_mapping_id and json_value:

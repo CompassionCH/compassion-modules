@@ -13,7 +13,6 @@ import re
 from datetime import datetime, timedelta
 
 import requests
-from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from odoo import models, fields, api, tools, _

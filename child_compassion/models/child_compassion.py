@@ -13,7 +13,6 @@ from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 
-from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 from odoo.addons.queue_job.job import job, related_action
 

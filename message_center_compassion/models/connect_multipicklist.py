@@ -64,7 +64,7 @@ class ConnectMultipicklist(models.AbstractModel):
         )
         # Remove previous todos
         self.activity_unlink("mail.mail_activity_data_todo")
-        if notify_ids: #  check if not False
+        if notify_ids:  # check if not False
             for user_id in notify_ids[0][2]:
                 act_vals = {
                     "user_id": user_id
