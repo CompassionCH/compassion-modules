@@ -508,7 +508,7 @@ class SponsorshipGift(models.Model):
         account_credit = self.env["account.account"].search([("code", "=", "2002")])
         account_debit = self.env["account.account"].search([("code", "=", "5003")])
         journal = self.env["account.journal"].search([("code", "=", "OD")])
-        maturity = self.date_sent or fields.Date.today()
+        maturity = self.date_sent.date() or fields.Date.today()
         move_data = {
             "journal_id": journal.id,
             "ref": "Gift payment to GMC",
@@ -518,6 +518,8 @@ class SponsorshipGift(models.Model):
         analytic = self.env["account.analytic.account"].search(
             [("code", "=", "ATT_CD")]
         )
+        analytic_tag = self.env["account.analytic.tag"].search(
+            [("name", "=", "CD pgm")], limit=1)
         # Create the debit lines from the Gift Account
         invoiced_amount = sum(self.invoice_line_ids.mapped("price_subtotal") or [0])
         if invoiced_amount:
@@ -534,6 +536,7 @@ class SponsorshipGift(models.Model):
                         "date_maturity": maturity,
                         "currency_id": self.currency_usd.id,
                         "amount_currency": invl.price_subtotal * exchange_rate,
+                        "analytic_tag_ids": [(4, analytic_tag.id)]
                     }
                 )
         if invoiced_amount < self.amount:
@@ -550,6 +553,7 @@ class SponsorshipGift(models.Model):
                     "date_maturity": maturity,
                     "currency_id": self.currency_usd.id,
                     "amount_currency": amount * exchange_rate,
+                    "analytic_tag_ids": [(4, analytic_tag.id)]
                 }
             )
 
