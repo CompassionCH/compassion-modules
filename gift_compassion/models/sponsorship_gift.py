@@ -508,7 +508,7 @@ class SponsorshipGift(models.Model):
         account_credit = self.env["account.account"].search([("code", "=", "2002")])
         account_debit = self.env["account.account"].search([("code", "=", "5003")])
         journal = self.env["account.journal"].search([("code", "=", "OD")])
-        maturity = self.date_sent.date() or fields.Date.today()
+        maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
         move_data = {
             "journal_id": journal.id,
             "ref": "Gift payment to GMC",
