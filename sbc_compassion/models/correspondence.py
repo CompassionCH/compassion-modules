@@ -921,8 +921,9 @@ class Correspondence(models.Model):
             for page in pages:
                 page["EnglishTranslatedText"] = page["TranslatedText"]
 
-        if "LocalId" in json_data:
-            json_data["LocalId"] = json_data["LocalId"] + self.resubmit_id
+        if "GlobalPartnerSBCId" in json_data:
+            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + \
+                str(self.resubmit_id)
 
         return json_data
 
