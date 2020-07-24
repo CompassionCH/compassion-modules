@@ -19,13 +19,11 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
     <!-- Called after submission of form, display form for redirecting to Payment Provider -->
     <template id="modal_payment_submit" name="Payment form redirection page">
         <div class="text-center" style="margin-top: 50px;">
-            <p>Thank you for your submission. Please select the payment method and you will be redirected securely to
-                the payment provider.
-            </p>
+            <p>Thank you for your submission. If you are not automatically redirected to the payment page, please click on the Next button.</p>
             <t t-set="tx_ids"
                t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('authorized', 'done'))"/>
             <div t-if="not tx_ids and invoice.state == 'open' and invoice.amount_total" id="payment_compassion">
-                <div t-if="pms or acquirers" id="payment_method">
+                <div t-if="pms or acquirers">
                     <!-- Portal payment code from account_payment.portal_invoice_payment -->
                     <div class="row" id="portal_pay">
                         <div id="pay_with">
