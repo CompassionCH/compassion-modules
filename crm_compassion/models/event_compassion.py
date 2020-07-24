@@ -114,7 +114,7 @@ class EventCompassion(models.Model):
         default=0,
     )
     planned_sponsorships = fields.Integer(
-        "Expected sponsorships", track_visibility="onchange", required=True
+        "Expected sponsorships", track_visibility="onchange", required=True, default=0
     )
     lead_id = fields.Many2one(
         "crm.lead", "Opportunity", track_visibility="onchange", readonly=False
@@ -209,6 +209,10 @@ class EventCompassion(models.Model):
                     _("The hold start date must " "be before the event starting date !")
                 )
 
+    def compute_hold_start_date(self, start=None):
+        delta = self.env["res.config.settings"].sudo().get_param("days_allocate_before_event")
+        return (start if start else self.start_date.date()) - timedelta(days=delta)
+
     @api.multi
     @api.depends("staff_ids")
     def _compute_users(self):
@@ -237,6 +241,11 @@ class EventCompassion(models.Model):
         elif event_name[-2:] == event_year[-2:]:
             vals["name"] = event_name[:-2]
 
+        # Compute hold_start_date from vals if it hasn't been set
+        if not vals.get("hold_start_date"):
+            hold_start_date = self.compute_hold_start_date(start=vals["start_date"])
+            vals["hold_start_date"] = hold_start_date
+
         event = super().create(vals)
 
         # Analytic account and Origin linked to this event
@@ -252,8 +261,13 @@ class EventCompassion(models.Model):
             {"origin_id": origin_id, "analytic_id": analytic_id, }
         )
 
+        # Workaround, default_start_date must be removed from context, details in commit
+        context = dict(self._context)
+        context.pop("default_start_date", None)
+        calendar_obj = self.env["calendar.event"].with_context({}, context)
+
         # Add calendar event
-        calendar_event = self.env["calendar.event"].create(event._get_calendar_vals())
+        calendar_event = calendar_obj.create(event._get_calendar_vals())
         event.with_context(no_calendar=True).calendar_event_id = calendar_event
 
         return event
@@ -396,14 +410,9 @@ class EventCompassion(models.Model):
     @api.onchange("start_date")
     @api.multi
     def onchange_start_date(self):
-        """ Update end_date and hold_start_date as soon as start_date is
-        changed """
-        days_allocate_before_event = self.env["res.config.settings"].get_param(
-            "days_allocate_before_event"
-        )
-        dt = timedelta(days=days_allocate_before_event)
+        """ Update end_date and hold_start_date as soon as start_date is changed """
         for event in self.filtered("start_date"):
-            event.hold_start_date = (event.start_date - dt).date()
+            event.hold_start_date = event.compute_hold_start_date()
             if not event.end_date or event.end_date < event.start_date:
                 event.end_date = event.start_date
 
