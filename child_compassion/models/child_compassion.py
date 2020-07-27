@@ -515,6 +515,7 @@ class CompassionChild(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.multi
+    @job(default_channel="root.child_compassion")
     def get_infos(self):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
@@ -617,7 +618,7 @@ class CompassionChild(models.Model):
         )
         jobs.button_done()
         jobs.unlink()
-        self.get_infos()
+        self.with_delay().get_infos()
         return True
 
     @api.multi
