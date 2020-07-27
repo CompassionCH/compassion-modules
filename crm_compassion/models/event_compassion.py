@@ -210,7 +210,8 @@ class EventCompassion(models.Model):
                 )
 
     def compute_hold_start_date(self, start=None):
-        delta = self.env["res.config.settings"].sudo().get_param("days_allocate_before_event")
+        delta = self.env["res.config.settings"].sudo().get_param(
+            "days_allocate_before_event")
         return (start if start else self.start_date.date()) - timedelta(days=delta)
 
     @api.multi
