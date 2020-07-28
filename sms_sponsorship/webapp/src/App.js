@@ -86,8 +86,6 @@ class Main extends React.Component {
                 child: child,
                 partner: partner,
             });
-            // Set the language as the request
-            i18n.changeLanguage(child.lang);
         });
     };
 
