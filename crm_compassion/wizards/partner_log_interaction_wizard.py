@@ -19,6 +19,7 @@ class LogInteractionWizard(models.TransientModel):
     )
     subject = fields.Char()
     body = fields.Html()
+    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ])
 
     @api.model
     def _default_partner(self):
@@ -39,6 +40,7 @@ class LogInteractionWizard(models.TransientModel):
                 "body_html": self.body,
                 "author_id": self.env.user.partner_id.id,
                 "is_from_employee": True,
+                "direction": self.direction,
                 "mail_message_id": self.env["mail.message"]
                 .create(
                     {

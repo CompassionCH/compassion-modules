@@ -34,6 +34,8 @@ class InteractionResume(models.TransientModel):
         "partner.communication.job", "Communication", readonly=False
     )
     email_id = fields.Many2one("mail.mail", "Email", readonly=False)
+    mass_mailing = fields.Many2one(related="email_id.mailing_id")
+    logged_mail_direction = fields.Selection(related="email_id.direction")
     color = fields.Char(compute="_compute_color")
     message_id = fields.Many2one("mail.message", "Email", readonly=False)
     is_from_employee = fields.Boolean(default=False)

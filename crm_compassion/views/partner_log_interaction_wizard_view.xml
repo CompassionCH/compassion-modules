@@ -11,6 +11,7 @@
                     <p>Log an e-mail that you sent personally to the partner</p>
                     <group>
                         <field name="subject"/>
+                        <field name="direction"/>
                         <field name="body" required="1"/>
                     </group>
                 </sheet>
