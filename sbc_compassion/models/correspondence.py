@@ -532,12 +532,12 @@ class Correspondence(models.Model):
                 # previous user_id.
                 if "user_id" in vals:
                     for c in self:
-                        self.make_activity(c, vals["state"], vals["user_id"])
+                        self._make_activity(c, vals["state"], vals["user_id"])
                 # If only the state is specified, we create an activity_schedule with
                 # the previous user_id.
                 else:
                     for c in self:
-                        self.make_activity(c, vals["state"], c.user_id.id)
+                        self._make_activity(c, vals["state"], c.user_id.id)
             else:
                 self.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
@@ -1015,7 +1015,7 @@ class Correspondence(models.Model):
     #                            PRIVATE METHODS                             #
     ##########################################################################
 
-    def make_activity(self, correspondence, state, user_id):
+    def _make_activity(self, correspondence, state, user_id):
         correspondence.activity_schedule('mail.mail_activity_data_call',
                                          summary=state,
                                          user_id=user_id,
