@@ -59,6 +59,7 @@
                     </h1>
                     <group>
                         <group>
+                            <field name="user_id"/>
                             <field name="scanned_date"/>
                             <field name="sponsorship_id" options="{
                                     'create_edit':false,'field_color': 'state', 'search_more':true,

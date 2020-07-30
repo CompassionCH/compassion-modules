@@ -76,6 +76,14 @@ class Correspondence(models.Model):
     child_id = fields.Many2one(
         related="sponsorship_id.child_id", store=True, readonly=False
     )
+    user_id = fields.Many2one(
+        "res.users",
+        string="Assigned to",
+        default=lambda self: self.env.user,
+        domain=[("share", "=", False)],
+        readonly=False,
+        required=True
+    )
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, readonly=True)
     direction = fields.Selection(
@@ -302,12 +310,12 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = (
-                    letter.communication_type_ids[0].name
-                    + " ("
-                    + letter.sponsorship_id.partner_id.ref
-                    + " - "
-                    + letter.child_id.local_id
-                    + ")"
+                        letter.communication_type_ids[0].name
+                        + " ("
+                        + letter.sponsorship_id.partner_id.ref
+                        + " - "
+                        + letter.child_id.local_id
+                        + ")"
                 )
             else:
                 letter.name = _("New correspondence")
@@ -442,8 +450,8 @@ class Correspondence(models.Model):
     def _compute_is_final_letter(self):
         for letter in self:
             letter.is_final_letter = (
-                "Final Letter" in letter.communication_type_ids.mapped("name")
-                or letter.sponsorship_state != "active"
+                    "Final Letter" in letter.communication_type_ids.mapped("name")
+                    or letter.sponsorship_state != "active"
             )
 
     @api.multi
@@ -517,11 +525,40 @@ class Correspondence(models.Model):
     def write(self, vals):
         """ Keep track of state changes. """
         if "state" in vals:
+            if vals["state"] == "Translation check unsuccessful":
+                # We have to check whether the user_id is specified or not.
+                # If both parameters are specified, we create an activity_schedule
+                # with them.  Otherwise, the user_id will not change as it will take the
+                # previous user_id.
+                if "user_id" in vals:
+                    for c in self:
+                        self.make_activity(c, vals["state"], vals["user_id"])
+                # If only the state is specified, we create an activity_schedule with
+                # the previous user_id.
+                else:
+                    for c in self:
+                        self.make_activity(c, vals["state"], c.user_id.id)
+            else:
+                self.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
+        # In case the state is not changed, we "reschedule" with the new user_id.
+        # TODO : lookup how to use activity_reschedule
+        # I wasn't able to use activity_reschedule, even though I specified every
+        # parameters.
+        elif "user_id" in vals:
+            for c in self:
+                summary = c.activity_ids.summary
+                note = c.activity_ids.note
+                c.activity_ids.unlink()
+                c.activity_schedule('mail.mail_activity_data_call',
+                                    summary=summary,
+                                    user_id=vals["user_id"],
+                                    note=note)
         if "translator_id" in vals:
             vals["translate_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:
             vals["letter_image"] = False
+
         return super().write(vals)
 
     @api.multi
@@ -877,10 +914,10 @@ class Correspondence(models.Model):
         name = ""
         if self.communication_type_ids.ids:
             name = (
-                self.communication_type_ids[0]
-                .with_context(lang=self.partner_id.lang)
-                .name
-                + " "
+                    self.communication_type_ids[0]
+                    .with_context(lang=self.partner_id.lang)
+                    .name
+                    + " "
             )
         name += self.child_id.local_id
         if self.kit_identifier:
@@ -960,8 +997,8 @@ class Correspondence(models.Model):
                     continue
                 page_id = (
                     self.env["correspondence.page"]
-                    .search([("original_page_url", "=", page_url)], limit=1)
-                    .id
+                        .search([("original_page_url", "=", page_url)], limit=1)
+                        .id
                 )
                 # if page_url already exist update it
                 if page_id:
@@ -973,3 +1010,14 @@ class Correspondence(models.Model):
             odoo_data["page_ids"] = pages or False
 
         return odoo_data
+
+    ##########################################################################
+    #                            PRIVATE METHODS                             #
+    ##########################################################################
+
+    def make_activity(self, correspondence, state, user_id):
+        correspondence.activity_schedule('mail.mail_activity_data_call',
+                                         summary=state,
+                                         user_id=user_id,
+                                         note="{} has state {}"
+                                         .format(correspondence.name, state))
