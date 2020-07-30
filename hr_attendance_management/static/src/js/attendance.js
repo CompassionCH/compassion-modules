@@ -13,11 +13,15 @@ odoo.define('hr_attendance_management.attendance', function (require) {
         var compute_diff_minutes = function() {
             var init_hours = window.localStorage.getItem('initial_hours');
             var init_minutes = window.localStorage.getItem('initial_minutes');
+            var init_seconds = window.localStorage.getItem('initial_seconds');
             var now = new Date();
             var now_hours = now.getHours();
             var now_minutes = now.getMinutes();
+            var now_seconds = now.getSeconds();
 
-            return now_minutes - init_minutes + (now_hours - init_hours) * 60;
+            return Math.trunc(((now_seconds - init_seconds) +
+                (now_minutes - init_minutes) * 60 +
+                (now_hours - init_hours) * 3600) / 60);
         }
 
         var displayed_time = window.localStorage.getItem(item_name);
@@ -63,7 +67,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                     compute_hours('worked_today');
                     compute_hours('balance_today');
                 }
-            }, 5000
+            }, 1000
         );
         window.localStorage.setItem('interval_id', interval_id);
     }
@@ -141,6 +145,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                 var now = new Date();
                 window.localStorage.setItem('initial_hours', now.getHours());
                 window.localStorage.setItem('initial_minutes', now.getMinutes());
+                window.localStorage.setItem('initial_seconds', now.getSeconds());
             }
             var loc_id = parseInt($('#location').val(), 10);
             this.getSession().user_context.default_location_id = loc_id;
