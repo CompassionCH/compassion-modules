@@ -196,9 +196,11 @@ class Correspondence(models.Model):
     ###########################
     status_date = fields.Datetime(default=fields.Datetime.now)
     scanned_date = fields.Date(default=fields.Date.today)
-    relationship = fields.Selection(
-        [("Sponsor", _("Sponsor")), ("Encourager", _("Encourager"))], default="Sponsor"
-    )
+    relationship = fields.Selection([
+        ("Sponsor", _("Sponsor")),
+        ("Encourager", _("Encourager")),
+        ("Correspondent", _("Correspondent"))
+    ], default="Sponsor")
     is_first_letter = fields.Boolean(
         compute="_compute_is_first",
         store=True,
