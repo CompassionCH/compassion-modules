@@ -731,6 +731,9 @@ class Correspondence(models.Model):
                     "probably because the sponsorship is not known."
                 )
             )
+        # Avoid overriding the template of the letter
+        if "template_id" in vals:
+            del vals["template_id"]
         return self.write(vals)
 
     def process_letter(self):

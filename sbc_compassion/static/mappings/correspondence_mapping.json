@@ -62,7 +62,8 @@
     },
     "SBCTypes": {
       "field": "communication_type_ids.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "relational_raise_if_not_found": false
     },
     "CompassionSBCId": {
       "field": "kit_identifier"
