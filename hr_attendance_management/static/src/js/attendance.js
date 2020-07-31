@@ -9,6 +9,18 @@ odoo.define('hr_attendance_management.attendance', function (require) {
     var QWeb = core.qweb;
     var _t = core._t;
 
+    var initialize_storage = function() {
+        // Store balance when we check in
+        window.localStorage.setItem('worked_today', $('#worked_today').text());
+        window.localStorage.setItem('balance_today', $('#balance_today').text());
+
+        // We store the time of the check in
+        var now = new Date();
+        window.localStorage.setItem('initial_hours', now.getHours());
+        window.localStorage.setItem('initial_minutes', now.getMinutes());
+        window.localStorage.setItem('initial_seconds', now.getSeconds());
+    }
+
     var compute_hours = function(item_name) {
         var compute_diff_minutes = function() {
             var init_hours = window.localStorage.getItem('initial_hours');
@@ -24,6 +36,10 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                 (now_hours - init_hours) * 3600) / 60);
         }
 
+        // Handling case where we leave session while still logged in
+        if (window.localStorage.getItem(item_name) == null) {
+            initialize_storage();
+        }
         var displayed_time = window.localStorage.getItem(item_name);
         var matches = displayed_time.match(/^-?(\d{2}):(\d{2})$/);
 
@@ -57,11 +73,7 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             function() {
                 if ($('#state').text() === 'checked in') {
                     if (window.localStorage.getItem('check_in') === 'true') {
-                        // Store balance when we check in
-                        window.localStorage.setItem('worked_today', $('#worked_today').text());
-                        window.localStorage.setItem('balance_today', $('#balance_today').text());
-
-                        // We don't want to update until next check in
+                        initialize_storage();
                         window.localStorage.setItem('check_in', false);
                     }
                     compute_hours('worked_today');
@@ -136,16 +148,9 @@ odoo.define('hr_attendance_management.attendance', function (require) {
             return result;
         },
         update_attendance: function () {
-            // We don't want to clear interval because we stay on the same page
             if ($('#state').text() === 'checked out') {
                 // This event corresponds to a check in
                 window.localStorage.setItem('check_in', true);
-
-                // We store the time of the check in
-                var now = new Date();
-                window.localStorage.setItem('initial_hours', now.getHours());
-                window.localStorage.setItem('initial_minutes', now.getMinutes());
-                window.localStorage.setItem('initial_seconds', now.getSeconds());
             }
             var loc_id = parseInt($('#location').val(), 10);
             this.getSession().user_context.default_location_id = loc_id;
