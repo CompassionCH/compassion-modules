@@ -280,6 +280,7 @@ class GmcMessage(models.Model):
         if hasattr(data_objects, "on_send_to_connect"):
             data_objects.on_send_to_connect()
 
+        message_data = {}
         if action.connect_outgoing_wrapper:
             # Object is wrapped in a tag. ("MessageTag": [objects_to_send])
             if action.batch_send:
@@ -292,23 +293,29 @@ class GmcMessage(models.Model):
                     i = j * split
                     message_data = {action.connect_outgoing_wrapper: list()}
                     for data_object in data_objects[i: i + split]:
-                        message_data[action.connect_outgoing_wrapper].append(
-                            data_object.data_to_json(action.mapping_id.name)
-                        )
+                        if not action.no_outgoing_data:
+                            message_data[action.connect_outgoing_wrapper].append(
+                                data_object.data_to_json(action.mapping_id.name)
+                            )
+                        else:
+                            message_data[action.connect_outgoing_wrapper].append({})
                     to_send[i: i + split]._send_message(message_data)
             else:
                 # Send individual message for each object
-                message_data = dict()
                 for i in range(0, len(data_objects)):
-                    message_data[action.connect_outgoing_wrapper] = [
-                        data_objects[i].data_to_json(action.mapping_id.name)
-                    ]
+                    if not action.no_outgoing_data:
+                        message_data[action.connect_outgoing_wrapper] = [
+                            data_objects[i].data_to_json(action.mapping_id.name)
+                        ]
+                    else:
+                        message_data[action.connect_outgoing_wrapper] = {}
                     to_send[i]._send_message(message_data)
 
         else:
             # Send individual message for each object without Wrapper
             for i in range(0, len(data_objects)):
-                message_data = data_objects[i].data_to_json(action.mapping_id.name)
+                if not action.no_outgoing_data:
+                    message_data = data_objects[i].data_to_json(action.mapping_id.name)
                 to_send[i]._send_message(message_data)
 
     def _send_message(self, message_data):

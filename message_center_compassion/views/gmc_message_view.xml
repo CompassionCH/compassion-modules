@@ -102,6 +102,9 @@
                             <field name="description"/>
                             <field name="connect_service"/>
                             <field name="request_type"/>
+                            <field name="batch_send"/>
+                            <field name="auto_process"/>
+                            <field name="no_outgoing_data"/>
                         </group>
                         <group>
                             <field name="mapping_id"/>
@@ -109,8 +112,6 @@
                             <field name="connect_answer_wrapper"/>
                             <field name="success_method"/>
                             <field name="failure_method"/>
-                            <field name="batch_send"/>
-                            <field name="auto_process"/>
                         </group>
                     </group>
                 </sheet>
