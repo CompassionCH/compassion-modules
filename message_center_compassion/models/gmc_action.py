@@ -75,6 +75,9 @@ class GmcAction(models.Model):
     )
     request_type = fields.Selection(
         [("GET", "GET"), ("POST", "POST"), ("PUT", "PUT"), ])
+    no_outgoing_data = fields.Boolean(
+        help="Put to true to force sending empty message"
+    )
 
     def write(self, vals):
         # prevent writing direction which should not be changed and is performance heavy
