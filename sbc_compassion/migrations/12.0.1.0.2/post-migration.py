@@ -1,5 +1,3 @@
-import json
-
 from openupgradelib import openupgrade
 
 
