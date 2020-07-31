@@ -39,7 +39,6 @@
         "mail_tracking",  # social/mail_tracking
         "message_center_compassion",
         "advanced_translation",
-        "thankyou_letters",
     ],
     "external_dependencies": {"python": ["pyquery", "pytz", "timezonefinder", ]},
     "data": [
