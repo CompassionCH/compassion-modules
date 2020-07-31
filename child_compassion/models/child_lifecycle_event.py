@@ -357,8 +357,6 @@ class ChildLifecycleEvent(models.Model):
             # Process lifecycle event
             if "Exit" in lifecycle.type:
                 child.child_departed()
-            elif lifecycle.type == "Reinstatement":
-                child.child_consigned()
             else:
                 lifecycle.child_id.with_context(async_mode=False).get_infos()
         return lifecycle
