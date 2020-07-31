@@ -19,7 +19,9 @@ class LogInteractionWizard(models.TransientModel):
     )
     subject = fields.Char()
     body = fields.Html()
-    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ])
+    direction = fields.Selection(
+        [("in", "Incoming"), ("out", "Outgoing"), ], default='out', required=True
+    )
 
     @api.model
     def _default_partner(self):
