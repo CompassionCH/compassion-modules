@@ -34,6 +34,7 @@ class ContractOrigin(models.Model):
              " * Event : sponsorship was made during an event"
              " * Marketing campaign : sponsorship was made after specific "
              "campaign (magazine, ad, etc..)"
+             " * Crowdfunding : sponsorship obtained from a crowdunfding project"
              " * Transfer : sponsorship transferred from another country."
              " * Other : select only if none other type matches.",
         required=True,
@@ -76,6 +77,8 @@ class ContractOrigin(models.Model):
                 name += origin.partner_id.name or _("Contact with Sponsor/Ambassador")
             elif origin.type in ("event", "marketing"):
                 name = origin.analytic_id.name
+            elif origin.type == "crowdfunding":
+                name = origin.event_id.name
             elif origin.type == "transfer":
                 if origin.country_id:
                     name = _("Transfer from ") + origin.country_id.name
@@ -91,6 +94,7 @@ class ContractOrigin(models.Model):
             ("partner", _("Contact with sponsor/ambassador")),
             ("event", _("Event")),
             ("marketing", _("Marketing campaign")),
+            ("crowdfunding", _("Crowdfunding")),
             ("transfer", _("Transfer")),
             ("other", _("Other")),
         ]

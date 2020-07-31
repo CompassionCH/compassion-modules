@@ -27,5 +27,23 @@
                 </div>
             </field>
         </record>
+        <record id="volunteer_email_template" model="mail.template">
+            <field name="name">Volunteer - Default</field>
+            <field name="model_id" ref="model_crm_claim"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="email_to">${object.email_from}</field>
+            <field name="lang">${object.language}</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="subject">Volunteer</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set claim = object
+                </div>
+                <div>
+                    <!-- TODO replace me here -->
+                    TODO replace me
+                </div>
+            </field>
+        </record>
     </data>
 </odoo>

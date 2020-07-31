@@ -1,16 +1,4 @@
 <odoo>
-    <!-- Add letter delivery preference and ambassador quote -->
-    <record id="view_partner_donation" model="ir.ui.view">
-        <field name="name">res.partner.donation</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
-            <field name="email" position="after">
-                <field name="thankyou_preference"/>
-            </field>
-        </field>
-    </record>
-
     <!-- Add company address_name field in view -->
     <record id="view_company_form_address_name" model="ir.ui.view">
         <field name="name">res.company.form.address.name</field>

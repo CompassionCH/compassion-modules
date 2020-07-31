@@ -69,4 +69,5 @@ class PaymentForm(models.AbstractModel):
                 line_vals = line.read(['price_unit', 'quantity', 'price_subtotal'])[0]
                 line._onchange_product_id()
                 line.write(line_vals)
-            invoice.action_invoice_open()
+            if "skip_invoice_validation" not in extra_values:
+                invoice.action_invoice_open()

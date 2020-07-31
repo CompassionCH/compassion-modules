@@ -81,7 +81,8 @@ class EventCompassion(models.Model):
     )
     description = fields.Text()
     analytic_id = fields.Many2one(
-        "account.analytic.account", "Analytic Account", copy=False, readonly=False
+        "account.analytic.account", "Analytic Account",
+        copy=False, readonly=False
     )
     origin_id = fields.Many2one(
         "recurring.contract.origin", "Origin", copy=False, readonly=False
@@ -104,9 +105,12 @@ class EventCompassion(models.Model):
         string="Income",
         readonly=False,
     )
-    total_expense = fields.Float(compute="_compute_expense", readonly=True, store=True)
-    total_income = fields.Float(compute="_compute_income", readonly=True, store=True)
-    balance = fields.Float(compute="_compute_balance", readonly=True, store=True)
+    total_expense = fields.Float(
+        compute="_compute_expense", readonly=True, store=True)
+    total_income = fields.Float(
+        compute="_compute_income", readonly=True, store=True)
+    balance = fields.Float(
+        compute="_compute_balance", readonly=True, store=True)
     number_allocate_children = fields.Integer(
         "Number of children to allocate",
         track_visibility="onchange",
@@ -114,13 +118,16 @@ class EventCompassion(models.Model):
         default=0,
     )
     planned_sponsorships = fields.Integer(
-        "Expected sponsorships", track_visibility="onchange", required=True, default=0
+        "Expected sponsorships", track_visibility="onchange",
+        required=True, default=0
     )
     lead_id = fields.Many2one(
         "crm.lead", "Opportunity", track_visibility="onchange", readonly=False
     )
-    won_sponsorships = fields.Integer(related="origin_id.won_sponsorships", store=True)
-    conversion_rate = fields.Float(related="origin_id.conversion_rate", store=True)
+    won_sponsorships = fields.Integer(
+        related="origin_id.won_sponsorships", store=True)
+    conversion_rate = fields.Float(
+        related="origin_id.conversion_rate", store=True)
     calendar_event_id = fields.Many2one("calendar.event", readonly=False)
     hold_start_date = fields.Date(required=True)
     hold_end_date = fields.Date()
@@ -187,7 +194,8 @@ class EventCompassion(models.Model):
     @api.multi
     def _compute_full_name(self):
         for event in self:
-            event.full_name = event.type.title() + " " + event.name + " " + event.year
+            event.full_name = \
+                event.type.title() + " " + event.name + " " + event.year
 
     @api.multi
     @api.depends("hold_ids")
@@ -206,13 +214,15 @@ class EventCompassion(models.Model):
         for event in self:
             if event.hold_start_date > event.start_date.date():
                 raise ValidationError(
-                    _("The hold start date must " "be before the event starting date !")
+                    _("The hold start date must "
+                      "be before the event starting date !")
                 )
 
     def compute_hold_start_date(self, start=None):
         delta = self.env["res.config.settings"].sudo().get_param(
             "days_allocate_before_event")
-        return (start if start else self.start_date.date()) - timedelta(days=delta)
+        return (start if start else self.start_date.date()) - \
+            timedelta(days=delta)
 
     @api.multi
     @api.depends("staff_ids")
@@ -244,14 +254,16 @@ class EventCompassion(models.Model):
 
         # Compute hold_start_date from vals if it hasn't been set
         if not vals.get("hold_start_date"):
-            hold_start_date = self.compute_hold_start_date(start=vals["start_date"])
+            hold_start_date = \
+                self.compute_hold_start_date(start=vals["start_date"])
             vals["hold_start_date"] = hold_start_date
 
         event = super().create(vals)
 
         # Analytic account and Origin linked to this event
         analytic_id = (
-            self.env["account.analytic.account"].create(event._get_analytic_vals()).id
+            self.env["account.analytic.account"].create(
+                event._get_analytic_vals()).id
         )
         origin_id = (
             self.env["recurring.contract.origin"]
@@ -262,7 +274,8 @@ class EventCompassion(models.Model):
             {"origin_id": origin_id, "analytic_id": analytic_id, }
         )
 
-        # Workaround, default_start_date must be removed from context, details in commit
+        # Workaround, default_start_date must be removed from context,
+        # details in commit
         context = dict(self._context)
         context.pop("default_start_date", None)
         calendar_obj = self.env["calendar.event"].with_context({}, context)
@@ -353,7 +366,8 @@ class EventCompassion(models.Model):
             "view_type": "form",
             "res_model": "recurring.contract",
             "src_model": "crm.event.compassion",
-            "context": self.with_context(default_type="S", group_by=False).env.context,
+            "context": self.with_context(
+                default_type="S", group_by=False).env.context,
             "domain": [("id", "in", self.origin_id.contract_ids.ids)],
         }
 
@@ -367,7 +381,8 @@ class EventCompassion(models.Model):
             "view_type": "form",
             "res_model": "account.analytic.line",
             "src_model": "crm.event.compassion",
-            "context": self.with_context(group_by="general_account_id").env.context,
+            "context": self.with_context(
+                group_by="general_account_id").env.context,
             "domain": [("id", "in", self.expense_line_ids.ids)],
         }
 
@@ -393,7 +408,8 @@ class EventCompassion(models.Model):
             "view_type": "form",
             "res_model": "compassion.child",
             "src_model": "crm.event.compassion",
-            "context": self.with_context(search_default_available=1).env.context,
+            "context": self.with_context(
+                search_default_available=1).env.context,
             "domain": [("id", "in", self.allocate_child_ids.ids)],
         }
 
@@ -411,7 +427,9 @@ class EventCompassion(models.Model):
     @api.onchange("start_date")
     @api.multi
     def onchange_start_date(self):
-        """ Update end_date and hold_start_date as soon as start_date is changed """
+        """
+        Update end_date and hold_start_date as soon as start_date is changed
+        """
         for event in self.filtered("start_date"):
             event.hold_start_date = event.compute_hold_start_date()
             if not event.end_date or event.end_date < event.start_date:
@@ -420,9 +438,11 @@ class EventCompassion(models.Model):
     @api.onchange("end_date")
     @api.multi
     def onchange_end_date(self):
-        days_after = self.env["res.config.settings"].get_param("days_hold_after_event")
+        days_after = self.env["res.config.settings"].get_param(
+            "days_hold_after_event")
         for event in self.filtered("end_date"):
-            event.hold_end_date = (event.end_date + timedelta(days=days_after)).date()
+            event.hold_end_date = \
+                (event.end_date + timedelta(days=days_after)).date()
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -430,7 +450,8 @@ class EventCompassion(models.Model):
     def _get_analytic_vals(self):
         name = self.name
         tag_ids = (
-            self.env["account.analytic.tag"].search([("name", "ilike", self.type)]).ids
+            self.env["account.analytic.tag"].search(
+                [("name", "ilike", self.type)]).ids
         )
         if self.city:
             name += " " + self.city
@@ -463,17 +484,20 @@ class EventCompassion(models.Model):
         calendar_vals = {
             "name": self.name,
             "compassion_event_id": self.id,
-            "categ_ids": [(6, 0, [self.env.ref("crm_compassion.calendar_event").id])],
+            "categ_ids":
+                [(6, 0, [self.env.ref("crm_compassion.calendar_event").id])],
             "duration": max(duration_in_hours, 3),
             "description": self.description,
             "location": self.city,
             "user_id": self.user_id.id,
             "partner_ids": [
-                (6, 0, (self.staff_ids | self.partner_id | self.user_id.partner_id).ids)
-            ],
+                (6, 0, (self.staff_ids |
+                        self.partner_id |
+                        self.user_id.partner_id).ids)],
             "start": self.start_date,
             "stop": self.end_date or self.start_date,
-            "allday": self.end_date and self.start_date.date() != self.end_date.date(),
+            "allday": self.end_date and
+                self.start_date.date() != self.end_date.date(),
             "state": "open",  # to block that meeting date in the calendar
         }
         return calendar_vals
@@ -481,12 +505,14 @@ class EventCompassion(models.Model):
     @api.multi
     def allocate_children(self):
         no_money_yield = float(self.planned_sponsorships)
-        yield_rate = float(self.number_allocate_children - self.planned_sponsorships)
+        yield_rate = \
+            float(self.number_allocate_children - self.planned_sponsorships)
         if self.number_allocate_children > 1:
             no_money_yield /= self.number_allocate_children
             yield_rate /= self.number_allocate_children
         expiration_date = self.end_date + timedelta(
-            days=self.env["res.config.settings"].get_param("days_hold_after_event")
+            days=self.env["res.config.settings"].get_param(
+                "days_hold_after_event")
         )
         return {
             "name": _("Global Childpool"),
