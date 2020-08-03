@@ -124,7 +124,7 @@ Make a donation]]></field>
         <field name="view_order">5</field>
         <field name="default_model_id" ref="model_recurring_contract"/>
         <field name="default_title">${ctx['objects'].sudo().child_id.preferred_name}</field>
-        <field name="default_records_filter">lambda c: (c.state in ['draft', 'waiting']) and not c.parent_id</field>
+        <field name="default_records_filter">lambda c: (c.state in ['draft', 'waiting']) and not c.parent_id and c.child_id</field>
         <field name="default_body">You have not yet paid your sponsorship</field>
        <field name="default_action_text">Pay now</field>
        <field name="default_action_destination">Give overlay</field>
