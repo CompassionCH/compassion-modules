@@ -937,16 +937,12 @@ class Correspondence(models.Model):
         template_name = json.pop("Template", "CH-A-6S11-1")
         odoo_data = super().json_to_data(json, mapping_name)
 
-        if template_name.startswith("CH"):
-            template = self.env["correspondence.template"].search(
-                [("layout", "like", template_name)], limit=1
-            )
-        else:
+        if not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(
                 [("name", "like", "L" + template_name[5]), ("name", "like", "B2S")],
                 limit=1,
             )
-        odoo_data["template_id"] = template.id
+            odoo_data["template_id"] = template.id
 
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.pop("partner_id")
