@@ -28,7 +28,8 @@
     "ExpectedArrivalDate": "transfer_arrival_date",
     "NewBeneficiaryLocalNumber": {
       "field": "child_id.local_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "relational_raise_if_not_found": false
     },
     "NewICPID": "new_project",
     "OtherReasonForTransfer": "other_transfer_reason",
