@@ -238,16 +238,16 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = str(vals["partner_id"])
 
         same_job_search = [
-                              ("partner_id", "=", vals.get("partner_id")),
-                              ("config_id", "=", vals.get("config_id")),
-                              (
-                                  "config_id",
-                                  "!=",
-                                  self.env.ref(
-                                      "partner_communication.default_communication").id,
-                              ),
-                              ("state", "=", "pending"),
-                          ] + self.env.context.get("same_job_search", [])
+            ("partner_id", "=", vals.get("partner_id")),
+            ("config_id", "=", vals.get("config_id")),
+            (
+              "config_id",
+              "!=",
+              self.env.ref(
+                  "partner_communication.default_communication").id,
+            ),
+            ("state", "=", "pending"),
+        ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
