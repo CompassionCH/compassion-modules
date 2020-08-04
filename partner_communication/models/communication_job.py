@@ -238,16 +238,16 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = str(vals["partner_id"])
 
         same_job_search = [
-            ("partner_id", "=", vals.get("partner_id")),
-            ("config_id", "=", vals.get("config_id")),
-            (
-              "config_id",
-              "!=",
-              self.env.ref(
-                  "partner_communication.default_communication").id,
-            ),
-            ("state", "=", "pending"),
-        ] + self.env.context.get("same_job_search", [])
+                              ("partner_id", "=", vals.get("partner_id")),
+                              ("config_id", "=", vals.get("config_id")),
+                              (
+                                  "config_id",
+                                  "!=",
+                                  self.env.ref(
+                                      "partner_communication.default_communication").id,
+                              ),
+                              ("state", "=", "pending"),
+                          ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
@@ -370,23 +370,27 @@ class CommunicationJob(models.Model):
         if vals.get("body_html") or vals.get("send_mode") == "physical":
             self.count_pdf_page()
 
-        # if the call must be done after the sending, we unlink all activities
-        # associated with the job (as for the moment, there is only one activity type)
-        if self.need_call == "after_sending" and self.state == "pending":
-            self.activity_ids.unlink()
+        if "need_call" in vals or "state" in vals:
+            for job in self:
 
-        # if the call must be done before the sending, and if there isn't an activity
-        # already scheduled, we schedule a new activity
-        # (there's only one activity type associated with the communication job)
-        if ((self.need_call == "before_sending"
-             and self.state == "pending")
-                and not self.activity_ids):
-            self.activity_schedule('mail.mail_activity_data_call',
-                                   summary="call_" + self.need_call,
-                                   user_id=self.user_id.id,
-                                   note="Call {} at (phone) {}"
-                                   .format(self.partner_id.name,
-                                           self.partner_phone))
+                # if the call must be done after the sending, we unlink all activities
+                # associated with the job (as for the moment, there is only one activity
+                # type)
+                if job.need_call == "after_sending" and job.state == "pending":
+                    job.activity_ids.unlink()
+
+                # if the call must be done before the sending, and if there isn't an
+                # activity already scheduled, we schedule a new activity
+                # (there's only one activity type associated with the communication job)
+                if ((job.need_call == "before_sending"
+                     and job.state == "pending")
+                        and not job.activity_ids):
+                    job.activity_schedule('mail.mail_activity_data_call',
+                                          summary="call_" + job.need_call,
+                                          user_id=job.user_id.id,
+                                          note="Call {} at (phone) {}"
+                                          .format(job.partner_id.name,
+                                                  job.partner_phone))
 
         return True
 
@@ -737,11 +741,7 @@ class CommunicationJob(models.Model):
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)
 
-        final_state = "pending"
-        if email.state == "sent":
-            if self.need_call == "before_sending":
-                final_state = "done"
-        return final_state
+        return "done"
 
     def _print_report(self):
         name = self.env.user.firstname or self.env.user.name
