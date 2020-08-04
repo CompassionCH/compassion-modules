@@ -665,7 +665,7 @@ class SponsorshipGift(models.Model):
         """ Cancel Invoices and delete Gifts. """
         invoices = self.mapped("invoice_line_ids.invoice_id")
         invoices.mapped(
-            "payment_ids.move_line_ids.full_reconcile_id." "reconciled_line_ids"
+            "payment_ids.move_line_ids.full_reconcile_id.reconciled_line_ids"
         ).remove_move_reconcile()
         invoices.action_invoice_cancel()
         self.mapped("message_id").unlink()
@@ -738,6 +738,8 @@ class SponsorshipGift(models.Model):
         analytic = self.env["account.analytic.account"].search(
             [("code", "=", "ATT_CD")]
         )
+        analytic_tag = self.env["account.analytic.tag"].search(
+            [("name", "=", "CD pgm")], limit=1)
         for gift in self.filtered("payment_id"):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({"date": fields.Date.today()})
@@ -755,6 +757,7 @@ class SponsorshipGift(models.Model):
                         {
                             "account_id": inverse_credit_account.id,
                             "analytic_account_id": analytic.id,
+                            "analytic_tag_ids": [(4, analytic_tag.id)]
                         }
                     )
             inverse_move.post()
