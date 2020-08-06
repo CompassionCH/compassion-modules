@@ -47,7 +47,7 @@ class MailComposer(models.TransientModel):
             template_id, composition_mode, model, res_id
         )
 
-        # Add reply qyote
+        # Add reply quote
         reply_quote = self.env.context.get("reply_quote")
         if reply_quote:
             result["value"]["body"] = append_content_to_html(
