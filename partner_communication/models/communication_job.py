@@ -385,12 +385,7 @@ class CommunicationJob(models.Model):
                 if ((job.need_call == "before_sending"
                      and job.state == "pending")
                         and not job.activity_ids):
-                    job.activity_schedule('mail.mail_activity_data_call',
-                                          summary="call_" + job.need_call,
-                                          user_id=job.user_id.id,
-                                          note="Call {} at (phone) {}"
-                                          .format(job.partner_id.name,
-                                                  job.partner_phone))
+                    job.schedule_call()
 
         return True
 
@@ -400,7 +395,10 @@ class CommunicationJob(models.Model):
     @api.multi
     def send(self):
         """ Executes the job. """
-        todo = self.filtered(lambda j: j.state == "pending")
+        todo = self.filtered(
+            lambda j: j.state == "pending" and not (
+                    j.need_call == "before_sending" and j.activity_ids)
+        )
         to_print = todo.filtered(lambda j: j.send_mode == "physical")
         for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
             origin = self.env.context.get("origin")
@@ -424,20 +422,31 @@ class CommunicationJob(models.Model):
 
             # if the call must be done after the sending, an activity is scheduled
             if job.need_call == "after_sending":
-                job.activity_schedule('mail.mail_activity_data_call',
-                                      summary="call_" + job.need_call,
-                                      user_id=job.user_id.id,
-                                      note="Call {} at (phone) {}"
-                                      .format(job.partner_id.name,
-                                              job.partner_phone))
+                job.schedule_call()
         if to_print:
             return to_print._print_report()
         return True
 
+    def schedule_call(self):
+        self.ensure_one()
+        self.activity_schedule(
+            'mail.mail_activity_data_call',
+            summary="Call " + self.partner_id.name,
+            user_id=self.user_id.id,
+            note=f"Call {self.partner_id.name} at (phone) "
+                 f"{self.partner_phone or self.partner_mobile} regarding "
+                 f"the communication."
+        )
+
+    @api.multi
+    def cancel(self):
+        self.mapped("activity_ids").unlink()
+        return self.write({"state": "cancel"})
+
     @api.multi
     def reset(self):
         self.write(
-            {"state": "pending", "date_sent": False, "email_id": False, }
+            {"state": "pending", "sent_date": False, "email_id": False, }
         )
         return True
 

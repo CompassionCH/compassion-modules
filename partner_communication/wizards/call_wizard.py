@@ -32,8 +32,7 @@ class CallWizard(models.TransientModel):
             self.env.context.get("click2dial_id")
         )
         communication.message_post(
-            subject=_("Phone attempt"),
-            body=self.comments or _("Partner did not answer"),
+            body=_("Phone attempt: ") + (self.comments or _("Partner did not answer")),
         )
         return self.call_log(state)
 
@@ -54,6 +53,8 @@ class CallWizard(models.TransientModel):
             "communication_id": communication_id,
             "partner_id": communication.partner_id.id,
         }
+        if state == "done":
+            communication.activity_ids.action_feedback(self.comments)
         try:
             parsed_num = phonenumbers.parse(self.env.context.get("phone_number"))
             number_type = phonenumbers.number_type(parsed_num)

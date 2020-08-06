@@ -31,20 +31,6 @@ class Phonecall(models.Model):
             # communication call wizard.
             communication = phonecall.communication_id
             communication.phonecall_id = phonecall
-            if communication.state == "call":
-                # Unlock the need call state
-                state = "pending"
-                if (
-                        communication.need_call == "after_sending"
-                        and communication.sent_date
-                ):
-                    state = "done"
-                communication.write(
-                    {"need_call": False, "state": state, "phonecall_id": phonecall.id}
-                )
-            communication.message_post(
-                subject=_("Phone call with sponsor"), body=phonecall.description
-            )
         elif not phonecall.communication_id:
             # Phone call was made outside from communication call wizard.
             # Create a communication to log the call.
