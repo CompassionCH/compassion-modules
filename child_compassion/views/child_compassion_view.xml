@@ -318,6 +318,7 @@
                     <group>
                         <field name="date"/>
                         <field name="type"/>
+                        <field name="education_plan"/>
                         <field name="request_reason"/>
                         <!--<field name="comments"/>-->
                         <field name="status"/>
