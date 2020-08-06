@@ -76,14 +76,6 @@ class Correspondence(models.Model):
     child_id = fields.Many2one(
         related="sponsorship_id.child_id", store=True, readonly=False
     )
-    user_id = fields.Many2one(
-        "res.users",
-        string="Assigned to",
-        default=lambda self: self.env.user,
-        domain=[("share", "=", False)],
-        readonly=False,
-        required=True
-    )
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char("Kit id", copy=False, readonly=True)
     direction = fields.Selection(
@@ -526,34 +518,17 @@ class Correspondence(models.Model):
         """ Keep track of state changes. """
         if "state" in vals:
             if vals["state"] == "Translation check unsuccessful":
-                # We have to check whether the user_id is specified or not.
-                # If both parameters are specified, we create an activity_schedule
-                # with them.  Otherwise, the user_id will not change as it will take the
-                # previous user_id.
-                if "user_id" in vals:
-                    for c in self:
-                        self._make_activity(c, vals["state"], vals["user_id"])
-                # If only the state is specified, we create an activity_schedule with
-                # the previous user_id.
-                else:
-                    for c in self:
-                        self._make_activity(c, vals["state"], c.user_id.id)
-            else:
-                self.activity_ids.unlink()
+                settings_config = self.env["res.config.settings"].create({})
+                for c in self:
+                    self._make_activity(c, vals["state"],
+                                        settings_config.letter_responsible.id)
+
+            elif "state" in vals:
+                for c in self.filtered(
+                        lambda c: c.state == "Translation check unsuccessful"):
+                    c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
-        # In case the state is not changed, we "reschedule" with the new user_id.
-        # TODO : lookup how to use activity_reschedule
-        # I wasn't able to use activity_reschedule, even though I specified every
-        # parameters.
-        elif "user_id" in vals:
-            for c in self:
-                summary = c.activity_ids.summary
-                note = c.activity_ids.note
-                c.activity_ids.unlink()
-                c.activity_schedule('mail.mail_activity_data_call',
-                                    summary=summary,
-                                    user_id=vals["user_id"],
-                                    note=note)
+
         if "translator_id" in vals:
             vals["translate_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:

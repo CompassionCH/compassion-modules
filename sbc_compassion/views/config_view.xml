@@ -43,6 +43,20 @@
                         </div>
                     </div>
                 </div>
+
+                <h2>Letter check responsible</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-md-12 o_setting_box">
+                        <div class="o_setting_right_pane">
+                            <div class="row mt16">
+                                <label class="col-md-6 o_light_label"
+                                       for="letter_responsible"/>
+                                <field class="col-md-6"
+                                       name="letter_responsible"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>
