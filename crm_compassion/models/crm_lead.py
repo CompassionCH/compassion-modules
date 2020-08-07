@@ -11,13 +11,14 @@
 from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
 
 from odoo import api, models, fields
-
+import datetime
 
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
     planned_sponsorships = fields.Integer(
         "Expected new sponsorships", track_visibility="onchange"
+        ,compute="_compute_planned_sponsorship"
     )
     event_ids = fields.One2many(
         "crm.event.compassion", "lead_id", "Events", readonly=False
@@ -53,6 +54,16 @@ class CrmLead(models.Model):
             "target": "current",
             "context": context,
         }
+
+    @api.multi
+    @api.depends("event_ids")
+    def _compute_planned_sponsorship(self):
+        for lead in self:
+            future_planned_sponsorships=0
+            for e in lead.event_ids:
+                if e.start_date > datetime.datetime.now():
+                    future_planned_sponsorships+=e.planned_sponsorships
+            lead.planned_sponsorships=future_planned_sponsorships
 
     @api.multi
     def _merge_data(self, fields):
