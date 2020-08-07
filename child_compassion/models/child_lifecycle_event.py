@@ -39,8 +39,10 @@ class ChildLifecycleEvent(models.Model):
     education_plan = fields.Selection(
         [
             ("Continuing In Formal Education", "Continuing In Formal Education"),
-            ("Continuing In Tech / Vocational Training", "Continuing In Tech / Vocational Training"),
-            ("Not Continuing Education At This Time", "Not Continuing Education At This Time"),
+            ("Continuing In Tech / Vocational Training",
+             "Continuing In Tech / Vocational Training"),
+            ("Not Continuing Education At This Time",
+             "Not Continuing Education At This Time"),
             ("Entering Military Service", "Entering Military Service"),
             ("Will Be Working", "Will Be Working"),
             ("Data Unavailable/Not Applicable", "Data Unavailable/Not Applicable"),

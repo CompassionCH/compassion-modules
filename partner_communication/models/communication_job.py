@@ -240,12 +240,8 @@ class CommunicationJob(models.Model):
         same_job_search = [
             ("partner_id", "=", vals.get("partner_id")),
             ("config_id", "=", vals.get("config_id")),
-            (
-              "config_id",
-              "!=",
-              self.env.ref(
-                  "partner_communication.default_communication").id,
-            ),
+            ("config_id", "!=", self.env.ref(
+                "partner_communication.default_communication").id),
             ("state", "=", "pending"),
         ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search)
@@ -739,11 +735,9 @@ class CommunicationJob(models.Model):
             if "default_email_vals" in self.env.context:
                 email_vals.update(self.env.context["default_email_vals"])
 
-            email = (
-                self.env["mail.compose.message"]
-                    .with_context(lang=partner.lang)
-                    .create_emails(self.email_template_id, [self.id], email_vals)
-            )
+            email = self.env["mail.compose.message"] \
+                .with_context(lang=partner.lang) \
+                .create_emails(self.email_template_id, [self.id], email_vals)
             self.email_id = email
             email.send()
             # Subscribe author to thread, so that the reply
