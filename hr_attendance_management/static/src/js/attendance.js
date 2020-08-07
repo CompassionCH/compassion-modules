@@ -19,6 +19,10 @@ odoo.define('hr_attendance_management.attendance', function (require) {
         window.localStorage.setItem('initial_hours', now.getHours());
         window.localStorage.setItem('initial_minutes', now.getMinutes());
         window.localStorage.setItem('initial_seconds', now.getSeconds());
+
+        // We may end up here before initialization of the variables, because of
+        // asynchronous calls to method of the server
+        return window.localStorage.getItem('worked_today') === "";
     }
 
     var compute_hours = function(item_name) {
@@ -36,10 +40,6 @@ odoo.define('hr_attendance_management.attendance', function (require) {
                 (now_hours - init_hours) * 3600) / 60);
         }
 
-        // Handling case where we leave session while still logged in
-        if (window.localStorage.getItem(item_name) == null) {
-            initialize_storage();
-        }
         var displayed_time = window.localStorage.getItem(item_name);
         var matches = displayed_time.match(/^-?(\d{2}):(\d{2})$/);
 
@@ -71,11 +71,11 @@ odoo.define('hr_attendance_management.attendance', function (require) {
     var start_dynamic_hours = function() {
         var interval_id = setInterval(
             function() {
+                if (window.localStorage.getItem('init_time') === 'true') {
+                    var still_need_init = initialize_storage();
+                    window.localStorage.setItem('init_time', still_need_init);
+                }
                 if ($('#state').text() === 'checked in') {
-                    if (window.localStorage.getItem('check_in') === 'true') {
-                        initialize_storage();
-                        window.localStorage.setItem('check_in', false);
-                    }
                     compute_hours('worked_today');
                     compute_hours('balance_today');
                 }
@@ -143,15 +143,13 @@ odoo.define('hr_attendance_management.attendance', function (require) {
 
             // We make sure to remove any existing interval
             stop_dynamic_hours();
+            window.localStorage.setItem('init_time', true);
             start_dynamic_hours();
 
             return result;
         },
         update_attendance: function () {
-            if ($('#state').text() === 'checked out') {
-                // This event corresponds to a check in
-                window.localStorage.setItem('check_in', true);
-            }
+            window.localStorage.setItem('init_time', true);
             var loc_id = parseInt($('#location').val(), 10);
             this.getSession().user_context.default_location_id = loc_id;
             var self = this;
