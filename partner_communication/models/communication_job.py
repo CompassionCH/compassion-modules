@@ -575,17 +575,18 @@ class CommunicationJob(models.Model):
                 binaries = getattr(
                     job.with_context(lang=job.partner_id.lang),
                     job.config_id.attachments_function,
-                    dict(),
+                    dict,
                 )()
-                for name, data in list(binaries.items()):
-                    attachment_obj.create(
-                        {
-                            "name": name,
-                            "communication_id": job.id,
-                            "report_name": data[0],
-                            "data": data[1],
-                        }
-                    )
+                if binaries and isinstance(binaries, dict):
+                    for name, data in list(binaries.items()):
+                        attachment_obj.create(
+                            {
+                                "name": name,
+                                "communication_id": job.id,
+                                "report_name": data[0],
+                                "data": data[1],
+                            }
+                        )
 
     @api.multi
     def preview_pdf(self):

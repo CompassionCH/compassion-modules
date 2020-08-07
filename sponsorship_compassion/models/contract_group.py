@@ -106,7 +106,6 @@ class ContractGroup(models.Model):
                     .create(
                     {
                         "description": "Automatic birthday gift",
-                        "origin": "Automatic birthday gift",
                         "invoice_date": datetime.today().date(),
                         "product_id": product_id,
                         "amount": 0.0,
@@ -123,8 +122,6 @@ class ContractGroup(models.Model):
                     logger.error("Gift generation failed")
                 finally:
                     count += 1
-
-            gift_wizard.unlink()
 
         logger.info("Automatic Birthday Gift Generation Finished !!")
         return invoicer
