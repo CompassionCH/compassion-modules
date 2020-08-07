@@ -393,7 +393,7 @@ class CommunicationJob(models.Model):
         """ Executes the job. """
         todo = self.filtered(
             lambda j: j.state == "pending" and not (
-                    j.need_call == "before_sending" and j.activity_ids)
+            j.need_call == "before_sending" and j.activity_ids)
         )
         to_print = todo.filtered(lambda j: j.send_mode == "physical")
         for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
