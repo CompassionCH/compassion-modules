@@ -34,32 +34,35 @@ class LogInteractionWizard(models.TransientModel):
         in order for it to appear in the interaction.resume view
         :return: True
         """
+        user = self.env.user
+        partner = self.partner_id
         mail = self.env["mail.mail"].create(
             {
                 "state": "sent",
-                "recipient_ids": [(4, self.partner_id.id)],
+                "recipient_ids": [(4, partner.id)],
                 "subject": self.subject,
                 "body_html": self.body,
-                "author_id": self.env.user.partner_id.id,
-                "is_from_employee": True,
+                "author_id": user.partner_id.id
+                if self.direction == "out" else partner.id,
+                "is_from_employee": self.direction == "out",
                 "direction": self.direction,
                 "mail_message_id": self.env["mail.message"]
-                .create(
-                    {
-                        "model": "res.partner",
-                        "res_id": self.partner_id.id,
-                        "body": self.body,
-                        "subject": self.subject,
-                        "author_id": self.env.user.partner_id.id,
-                        "subtype_id": self.env.ref("mail.mt_comment").id,
-                    }
-                )
-                .id,
+                .create({
+                    "model": "res.partner",
+                    "res_id": partner.id,
+                    "body": self.body,
+                    "subject": self.subject,
+                    "author_id": user.partner_id.id
+                    if self.direction == "out" else partner.id,
+                    "subtype_id": self.env.ref("mail.mt_comment").id,
+                    "email_from": user.email if self.direction == "out" else
+                    partner.email,
+                }).id,
             }
         )
         # Create the mail.tracking.email object in the case of a manually logged email
-        email = mail._send_prepare_values(partner=self.partner_id)
-        vals = mail._tracking_email_prepare(self.partner_id, email)
+        email = mail._send_prepare_values(partner=partner)
+        vals = mail._tracking_email_prepare(partner, email)
         vals.update({
             "state": "sent"
         })

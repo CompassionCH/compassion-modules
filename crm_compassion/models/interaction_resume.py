@@ -8,7 +8,6 @@
 #
 ##############################################################################
 from odoo import models, fields, api
-from odoo.tools.mail import html2plaintext, html_sanitize
 
 
 class InteractionResume(models.TransientModel):
@@ -36,7 +35,6 @@ class InteractionResume(models.TransientModel):
     email_id = fields.Many2one("mail.mail", "Email", readonly=False)
     mass_mailing = fields.Many2one(related="email_id.mailing_id")
     logged_mail_direction = fields.Selection(related="email_id.direction")
-    color = fields.Char(compute="_compute_color")
     message_id = fields.Many2one("mail.message", "Email", readonly=False)
     is_from_employee = fields.Boolean(default=False)
     tracking_status = fields.Selection(
@@ -150,6 +148,7 @@ class InteractionResume(models.TransientModel):
                             AND source.name != 'Default communication'
                         WHERE mail.state = ANY (ARRAY ['sent', 'received'])
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
+                        AND (mail.direction = 'out' OR mail.direction IS NULL)
                         )
             -- incoming messages from partners
                     UNION (
@@ -186,12 +185,7 @@ class InteractionResume(models.TransientModel):
             ),
         )
 
-        for row in self.env.cr.dictfetchall():
-            # ensure that "Example <ex@exmaple.com>" is correctly printed
-            row["email"] = html_sanitize(row["email"])
-            self.create(row)
-
-        return True
+        return self.create(self.env.cr.dictfetchall())
 
     def open_object(self):
         """
@@ -211,14 +205,3 @@ class InteractionResume(models.TransientModel):
             row.has_attachment = (
                 row.email_id.attachment_ids or row.message_id.attachment_ids
             )
-
-    def _compute_color(self):
-        for row in self:
-            if len(html2plaintext(row.body).strip()) < 15 and row.direction == "out":
-                # mass mailing
-                row.color = "gray"
-            elif row.direction == "in":
-                row.color = "red"
-            else:
-                # outgoing
-                row.color = "green"
