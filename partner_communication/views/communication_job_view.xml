@@ -8,7 +8,7 @@
                     <field name="state" widget="statusbar" statusbar_visible="call,pending,done"/>
                     <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'physical'),('state', 'not in', 'pending')]}" context="{'origin': 'both_email'}"/>
                     <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '=', 'digital'),('state', 'not in', 'pending')]}"/>
-                    <button name="log_call" string="Log call" icon="fa-phone" type="object" states='call,pending'/>
+                    <button name="log_call" string="Log call" icon="fa-phone" type="object" attrs="{'invisible': ['|', ('phonecall_id', '!=', False), ('need_call', '=', False)]}"/>
                     <button name="reset" string="Retry" type="object" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" states='call,pending'/>
                 </header>
@@ -77,7 +77,7 @@
         <field name="arch" type="xml">
             <tree decoration-primary="state == 'pending'"
                   decoration-muted="state in ('done', 'cancel')"
-                  decoration-danger="state == 'call'">
+                  decoration-danger="need_call!=False and len(activity_ids)">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
@@ -86,7 +86,9 @@
                 <field name="subject"/>
                 <field name="user_id"/>
                 <field name="state"/>
+                <field name="need_call"/>
                 <field name="sent_date"/>
+                <field name="activity_ids" invisible="1"/>
                 <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
                 <button name="call" string="Call" type="object" icon="fa-phone" states='call,pending'/>
                 <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>

@@ -39,7 +39,8 @@
         "base_location",  # oca_addons/partner_contact
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
-        "mail_tracking",
+        "mail_tracking",  # oca_addons/social
+        "mass_mailing",
         "base_automation",
     ],
     "data": [

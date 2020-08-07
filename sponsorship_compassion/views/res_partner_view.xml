@@ -19,18 +19,20 @@
             </field>
 
             <!-- Redefine how contracts are shown. -->
-            <xpath expr="//div[@name='button_box']" position="inside">
+            <xpath expr="//div[@name='button_box']/button[@name='%(partner_communication.action_communication_job_partner)d']" position="after">
                 <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book" groups="child_compassion.group_sponsorship">
                     <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
                 </button>
-                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
-                    <field string="Sponsored children" name="number_children" widget="statinfo"/>
-                </button>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_inline oe_stat_button" string="Forget me" groups="child_compassion.group_sponsorship" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
                 <button class="oe_inline oe_stat_button" type="object"
                         string="Sponsorship impact"
                         groups="child_compassion.group_sponsorship"
                         name="open_sponsorship_report" icon="fa-file-text-o "/>
+                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
+                    <field string="Sponsored children" name="number_children" widget="statinfo"/>
+                </button>
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
@@ -167,7 +169,7 @@
         <field name="inherit_id" ref="sale.res_partner_view_buttons" />
         <field name="arch" type="xml">
             <!-- to change icone of smart button, you can find tag here:http://fortawesome.github.io/Font-Awesome/icons/ -->
-            <xpath expr="//button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace">
+            <xpath expr="//div[@name='button_box']/button[1]" position="before">
                 <button name="unreconciled_transaction_items" type='object' groups="account.group_account_user" class="oe_inline oe_stat_button"
                         icon="fa-exchange">
                     <field name="unrec_items" string="Unreconciled Items" widget="statinfo"/>
@@ -177,6 +179,8 @@
                     <field name="receivable_items" string="1050 Items" widget="statinfo"/>
                 </button>
             </xpath>
+            <!-- We want to hide the Sales menu in this context -->
+            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>
         </field>
     </record>
 </odoo>
