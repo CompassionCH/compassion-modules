@@ -56,7 +56,7 @@ class CrmLead(models.Model):
         }
 
     @api.multi
-    @api.depends("event_ids")
+    @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
         for lead in self:
             future_planned_sponsorships = 0
