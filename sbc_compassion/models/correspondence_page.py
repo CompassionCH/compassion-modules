@@ -58,6 +58,8 @@ class CorrespondencePage(models.Model):
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)
         odoo_fields = ("original_text", "english_text", "translated_text")
+        if isinstance(odoo_data, dict):
+            odoo_data = [odoo_data]
         for field in odoo_fields:
             for page_data in odoo_data:
                 if field in page_data:

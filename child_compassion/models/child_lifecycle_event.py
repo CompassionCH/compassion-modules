@@ -36,6 +36,19 @@ class ChildLifecycleEvent(models.Model):
         ],
         readonly=True,
     )
+    education_plan = fields.Selection(
+        [
+            ("Continuing In Formal Education", "Continuing In Formal Education"),
+            ("Continuing In Tech / Vocational Training",
+             "Continuing In Tech / Vocational Training"),
+            ("Not Continuing Education At This Time",
+             "Not Continuing Education At This Time"),
+            ("Entering Military Service", "Entering Military Service"),
+            ("Will Be Working", "Will Be Working"),
+            ("Data Unavailable/Not Applicable", "Data Unavailable/Not Applicable"),
+        ],
+        readonly=True,
+    )
     gender = fields.Selection(related="child_id.gender")
 
     # All reasons for all request types
@@ -357,8 +370,6 @@ class ChildLifecycleEvent(models.Model):
             # Process lifecycle event
             if "Exit" in lifecycle.type:
                 child.child_departed()
-            elif lifecycle.type == "Reinstatement":
-                child.child_consigned()
             else:
                 lifecycle.child_id.with_context(async_mode=False).get_infos()
         return lifecycle

@@ -37,6 +37,7 @@
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="success_method">details_answer</field>
+            <field name="no_outgoing_data" eval="True"/>
         </record>
         <!-- Get ICP details -->
         <record id="icp_details" model="gmc.action">

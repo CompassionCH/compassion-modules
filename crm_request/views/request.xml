@@ -11,8 +11,8 @@
                 <attribute name="name">unassigned</attribute>
             </xpath>
             <field name="partner_id" position="before">
-                <filter string="Assign to me" name="responsible"
-                        domain="[('user_id','=',uid)]"/>
+                <field name="categ_id"/>
+                <filter string="Assigned to me" name="assigned_to_me" domain="[('user_id','=',uid)]"/>
             </field>
             <field name="user_id" position="after">
                 <separator/>
@@ -173,7 +173,7 @@
     (0, 0, {'view_mode': 'kanban', 'view_id': ref('crm_request.crm_request_kanban_view')}),
     (0, 0, {'view_mode': 'tree', 'view_id': ref('crm_claim.crm_case_claims_tree_view')}),
     (0, 0, {'view_mode': 'form', 'view_id': ref('crm_request.crm_request_form_view_id')})]"/>
-        <field name="context">{"search_default_responsible":1, "search_default_stage_open":1, "stage_type":'claim'}</field>
+        <field name="context">{"search_default_assigned_to_me":1, "search_default_stage_open":1, "stage_type":'claim'}</field>
         <field name="search_view_id" ref="crm_claim.view_crm_case_claims_filter"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">

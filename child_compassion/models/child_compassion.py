@@ -13,7 +13,6 @@ from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 
-from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 from odoo.addons.queue_job.job import job, related_action
 
@@ -493,15 +492,7 @@ class CompassionChild(models.Model):
 
     @api.multi
     def json_to_data(self, json, mapping_name=None):
-        while True:  # catch more than one relation not found
-            try:
-                data = super().json_to_data(json, mapping_name)
-                break
-            except RelationNotFound as e:
-                self.fetch_missing_relational_records(
-                    e.field_relation, e.field_name, e.value, e.json_name
-                )
-
+        data = super().json_to_data(json, mapping_name)
         # Update household
         household_data = data.pop("household_id", {})
         household_id = household_data.get("household_id")
@@ -513,81 +504,6 @@ class CompassionChild(models.Model):
         elif household_data:
             data["household_id"] = household.create(household_data).id
         return data
-
-    @api.multi
-    def data_to_json(self, mapping_name=None):
-        if self.env.context.get("no_data"):
-            return {}
-        return super().data_to_json(mapping_name)
-
-    def fetch_missing_relational_records(self, field_relation,
-                                         field_name, values, json_name):
-        """ Fetch missing relational records in various languages.
-
-        Method used to catch missing values for household duties, hobbies,
-        and Christian activities of compassion.child and write them onto
-        the database.
-
-        :param field_relation: relation
-        :param field_name: name of field in the relation
-        :param values: missing relational values
-        :param json_name: key name in content
-        :type field_relation: str
-        :type values: str or list of str
-        :type json_name: str
-
-        TODO: check if value already exists in another form (spaces, with regex...)
-
-        """
-        onramp = OnrampConnector()
-        endpoint = "beneficiaries/{0}/details?FinalLanguage={1}"
-        languages_map = {
-            "English": "en_US",
-            "French": "fr_CH",
-            "German": "de_DE",
-            "Italian": "it_IT",
-        }
-        # transform values to list first
-        if not isinstance(values, list):
-            values = [values]
-        # go over all missing values, keep count of index to know which translation
-        # to take from onramp result
-        for i, value in enumerate(values):
-            # check if hobby/household duty, etc... exists in our database
-            search_vals = [(field_name, "=", value)]
-            relation_obj = self.env[field_relation].sudo()
-            if hasattr(relation_obj, "value"):
-                # Useful for connect.multipicklist objects
-                search_vals.insert(0, "|")
-                search_vals.append(("value", "=", value))
-            search_count = relation_obj.search_count(search_vals)
-            # if not exist, then create it
-            if not search_count:
-                value_record = (
-                    relation_obj.create({field_name: value, "value": value})
-                )
-                if not hasattr(relation_obj, "value"):
-                    return
-                # fetch translations for connect.multipicklist values
-                must_manually_translate = False
-                for lang_literal, lang_context in languages_map.items():
-                    result = onramp.send_message(
-                        endpoint.format(self[0].global_id, lang_literal), "GET"
-                    )
-                    if "BeneficiaryResponseList" in result.get("content", {}):
-                        content = result["content"]["BeneficiaryResponseList"][0]
-                        if json_name in content:
-                            content_values = content[json_name]
-                            if not isinstance(content_values, list):
-                                content_values = [content_values]
-                            translation = content_values[i]
-                            if translation == value_record.value:
-                                must_manually_translate = True
-                            value_record.with_context(
-                                lang=lang_context
-                            ).value = translation
-                if must_manually_translate:
-                    value_record.assign_translation()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -605,9 +521,7 @@ class CompassionChild(models.Model):
                 "object_id": child.id,
                 "child_id": child.id,
             }
-            # CO-3310 Trick to avoid sending data to GMC otherwise message fails.
-            # The message mapping is still needed for processing the answer
-            message = message_obj.with_context(no_data=True).create(message_vals)
+            message = message_obj.create(message_vals)
             if message.state == "failure" and not self.env.context.get("async_mode"):
                 raise UserError(message.failure_reason)
         return True

@@ -30,14 +30,14 @@ class SponsorshipGift(models.Model):
     # Related records
     #################
     sponsorship_id = fields.Many2one(
-        "recurring.contract", "Sponsorship", required=True, readonly=False
+        "recurring.contract", "Sponsorship", readonly=False
     )
     partner_id = fields.Many2one(
         "res.partner",
         "Partner",
         related="sponsorship_id.correspondent_id",
         store=True,
-        readonly=True,
+        readonly=False,
     )
     project_id = fields.Many2one(
         "compassion.project",
@@ -206,7 +206,15 @@ class SponsorshipGift(models.Model):
                 name = gift.translate("gift_type")
             else:
                 name = gift.translate("sponsorship_gift_type") + " " + _("Gift")
-            name += " [" + gift.sponsorship_id.name + "]"
+
+            if gift.sponsorship_id:
+                name += " [" + gift.sponsorship_id.name + "]"
+            elif gift.partner_id:
+                name += " [" + gift.partner_id.name + "]"
+            elif gift.child_id:
+                name += " [" + gift.child_id.name + "]"
+            elif gift.project_id:
+                name += " [" + gift.project_id.name + "]"
             gift.name = name
 
     def _compute_usd(self):
@@ -324,8 +332,11 @@ class SponsorshipGift(models.Model):
         json_data = super().data_to_json(mapping_name)
         if json_data.get("RecipientType") == "Project Gift":
             del json_data["Beneficiary_GlobalID"]
-            json_data["RecipientId"] = json_data["RecipientID"][:6]
-            del json_data["RecipientID"]
+            if json_data.get("RecipientID"):
+                json_data["RecipientId"] = json_data["RecipientID"][:6]
+                del json_data["RecipientID"]
+            else:
+                json_data["RecipientId"] = self.project_id.fcp_id
         return json_data
 
     @api.model
@@ -497,7 +508,7 @@ class SponsorshipGift(models.Model):
         account_credit = self.env["account.account"].search([("code", "=", "2002")])
         account_debit = self.env["account.account"].search([("code", "=", "5003")])
         journal = self.env["account.journal"].search([("code", "=", "OD")])
-        maturity = self.date_sent or fields.Date.today()
+        maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
         move_data = {
             "journal_id": journal.id,
             "ref": "Gift payment to GMC",
@@ -507,6 +518,8 @@ class SponsorshipGift(models.Model):
         analytic = self.env["account.analytic.account"].search(
             [("code", "=", "ATT_CD")]
         )
+        analytic_tag = self.env["account.analytic.tag"].search(
+            [("name", "=", "CD pgm")], limit=1)
         # Create the debit lines from the Gift Account
         invoiced_amount = sum(self.invoice_line_ids.mapped("price_subtotal") or [0])
         if invoiced_amount:
@@ -523,6 +536,7 @@ class SponsorshipGift(models.Model):
                         "date_maturity": maturity,
                         "currency_id": self.currency_usd.id,
                         "amount_currency": invl.price_subtotal * exchange_rate,
+                        "analytic_tag_ids": [(4, analytic_tag.id)]
                     }
                 )
         if invoiced_amount < self.amount:
@@ -539,6 +553,7 @@ class SponsorshipGift(models.Model):
                     "date_maturity": maturity,
                     "currency_id": self.currency_usd.id,
                     "amount_currency": amount * exchange_rate,
+                    "analytic_tag_ids": [(4, analytic_tag.id)]
                 }
             )
 
@@ -650,7 +665,7 @@ class SponsorshipGift(models.Model):
         """ Cancel Invoices and delete Gifts. """
         invoices = self.mapped("invoice_line_ids.invoice_id")
         invoices.mapped(
-            "payment_ids.move_line_ids.full_reconcile_id." "reconciled_line_ids"
+            "payment_ids.move_line_ids.full_reconcile_id.reconciled_line_ids"
         ).remove_move_reconcile()
         invoices.action_invoice_cancel()
         self.mapped("message_id").unlink()
@@ -723,6 +738,8 @@ class SponsorshipGift(models.Model):
         analytic = self.env["account.analytic.account"].search(
             [("code", "=", "ATT_CD")]
         )
+        analytic_tag = self.env["account.analytic.tag"].search(
+            [("name", "=", "CD pgm")], limit=1)
         for gift in self.filtered("payment_id"):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({"date": fields.Date.today()})
@@ -740,6 +757,7 @@ class SponsorshipGift(models.Model):
                         {
                             "account_id": inverse_credit_account.id,
                             "analytic_account_id": analytic.id,
+                            "analytic_tag_ids": [(4, analytic_tag.id)]
                         }
                     )
             inverse_move.post()

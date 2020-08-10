@@ -132,7 +132,7 @@ class MatchPartner(models.AbstractModel):
         valid = self._match_get_valid_update_fields()
         update_infos = {}
         for key, value in infos.items():
-            if key in valid:
+            if key in valid and value:
                 update_infos[key] = value
         return update_infos
 

@@ -77,7 +77,8 @@ class Correspondence(models.Model):
         related="sponsorship_id.child_id", store=True, readonly=False
     )
     # Field used for identifying correspondence by GMC
-    kit_identifier = fields.Char("Kit id", copy=False, readonly=True)
+    kit_identifier = fields.Char(
+        "Kit id", copy=False, readonly=True, track_visibility="onchange")
     direction = fields.Selection(
         selection=[
             ("Supporter To Beneficiary", _("Supporter to beneficiary")),
@@ -195,9 +196,11 @@ class Correspondence(models.Model):
     ###########################
     status_date = fields.Datetime(default=fields.Datetime.now)
     scanned_date = fields.Date(default=fields.Date.today)
-    relationship = fields.Selection(
-        [("Sponsor", _("Sponsor")), ("Encourager", _("Encourager"))], default="Sponsor"
-    )
+    relationship = fields.Selection([
+        ("Sponsor", _("Sponsor")),
+        ("Encourager", _("Encourager")),
+        ("Correspondent", _("Correspondent"))
+    ], default="Sponsor")
     is_first_letter = fields.Boolean(
         compute="_compute_is_first",
         store=True,
@@ -226,6 +229,7 @@ class Correspondence(models.Model):
     )
     is_final_letter = fields.Boolean(compute="_compute_is_final_letter")
     generator_id = fields.Many2one("correspondence.s2b.generator", readonly=False)
+    resubmit_id = fields.Integer(default=1)
 
     # Letter remote access
     ######################
@@ -741,6 +745,9 @@ class Correspondence(models.Model):
                     "probably because the sponsorship is not known."
                 )
             )
+        # Avoid overriding the template of the letter
+        if "template_id" in vals:
+            del vals["template_id"]
         return self.write(vals)
 
     def process_letter(self):
@@ -931,6 +938,10 @@ class Correspondence(models.Model):
             for page in pages:
                 page["EnglishTranslatedText"] = page["TranslatedText"]
 
+        if "GlobalPartnerSBCId" in json_data:
+            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + \
+                str(self.resubmit_id)
+
         return json_data
 
     @api.model
@@ -938,16 +949,12 @@ class Correspondence(models.Model):
         template_name = json.pop("Template", "CH-A-6S11-1")
         odoo_data = super().json_to_data(json, mapping_name)
 
-        if template_name.startswith("CH"):
-            template = self.env["correspondence.template"].search(
-                [("layout", "like", template_name)], limit=1
-            )
-        else:
+        if not template_name.startswith("CH"):
             template = self.env["correspondence.template"].search(
                 [("name", "like", "L" + template_name[5]), ("name", "like", "B2S")],
                 limit=1,
             )
-        odoo_data["template_id"] = template.id
+            odoo_data["template_id"] = template.id
 
         if "child_id" in odoo_data and "partner_id" in odoo_data:
             partner = odoo_data.pop("partner_id")
@@ -985,6 +992,20 @@ class Correspondence(models.Model):
             odoo_data["page_ids"] = pages or False
 
         return odoo_data
+
+    @api.multi
+    def resubmit_letter(self):
+        for letter in self:
+            if letter.state != "Translation check unsuccessful":
+                raise UserError(
+                    _("Letter must be in state 'Translation check unsuccessful'"))
+
+            letter.write({
+                "kit_identifier": False,
+                "resubmit_id": letter.resubmit_id + 1,
+                "state": "Received in the system"
+            })
+            letter.create_commkit()
 
     ##########################################################################
     #                            PRIVATE METHODS                             #

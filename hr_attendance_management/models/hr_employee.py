@@ -53,8 +53,7 @@ class HrEmployee(models.Model):
 
     work_location_id = fields.Many2one(
         "hr.attendance.location",
-        string="Work Location",
-        compute="_compute_work_location",
+        string="Default Work Location",
         readonly=False,
     )
 
@@ -92,15 +91,14 @@ class HrEmployee(models.Model):
     @api.multi
     def _compute_work_location(self):
         for employee in self:
-            actual_location = self.env["hr.attendance"].search(
+            current_attendance = self.env["hr.attendance"].search(
                 [("employee_id", "=", employee.id), ("check_out", "=", False)], limit=1
             )
-            employee.work_location = actual_location.location_id.name
-            hr_location_obj = self.env["hr.attendance.location"]
-            if employee.work_location:
-                employee.work_location_id = actual_location.location_id
-            elif len(hr_location_obj.search([])) > 0:
-                employee.work_location_id = hr_location_obj.search([])[0]
+            if current_attendance.location_id:
+                employee.work_location = current_attendance.location_id.name
+            else:
+                employee.work_location = self.env[
+                    "hr.attendance.location"].search([], limit=1).name
 
     @api.multi
     @api.depends('initial_balance', 'attendance_days_ids.paid_hours')
@@ -143,14 +141,13 @@ class HrEmployee(models.Model):
                 if employee.period_ids:
                     employee_history_sorted = \
                         employee.period_ids.sorted(key=lambda r: r.end_date)
-                    start_date = \
-                        fields.Date.from_string(employee_history_sorted[-1].end_date)
+                    start_date = employee_history_sorted[-1].end_date
                     # If there is an history for this employee, take values of last
                     # period
-                    if start_date < fields.Date.from_string(end_date):
+                    if start_date < end_date:
                         balance = employee_history_sorted[-1].final_balance
                     # If last period goes to today.
-                    elif start_date == fields.Date.from_string(end_date):
+                    elif start_date == end_date:
                         final_balance = employee_history_sorted[-1].final_balance
                     # If the period goes to today, recompute from 01.01.2018
                     else:
@@ -305,7 +302,7 @@ class HrEmployee(models.Model):
             self, start_date=None, end_date=None, existing_balance=0
     ):
         """
-        Compute the balance of extra and lost horus at end_date.
+        Compute the balance of extra and lost hours at end_date.
         :param start_date: Start date of the computation
         :param end_date: Date of desired data
         :param existing_balance: Existing extra hours balance at start_date
@@ -379,7 +376,7 @@ class HrEmployee(models.Model):
         for employee in self:
             if employee.balance < 0:
                 employee.time_warning_balance = "red"
-            elif max_extra_hours and employee.balance >= max_extra_hours * 2 // 3:
+            elif max_extra_hours and employee.balance >= max_extra_hours * 2 / 3:
                 employee.time_warning_balance = "orange"
             else:
                 employee.time_warning_balance = "green"
@@ -434,7 +431,7 @@ class HrEmployee(models.Model):
                 worked_hours += attendance.worked_hours
             else:
                 delta = datetime.datetime.now() - attendance.check_in
-                worked_hours += delta.total_seconds() // 3600.0
+                worked_hours += delta.total_seconds() / 3600.0
         return worked_hours
 
     def open_balance_graph(self):

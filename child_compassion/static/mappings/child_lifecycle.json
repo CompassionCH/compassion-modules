@@ -5,6 +5,7 @@
     "DateOfDeath": "child_death_date",
     "DeathCategory": "child_death_category",
     "DeathSubcategory": "child_death_subcategory",
+    "EducationPlan": "education_plan",
     "FamilyImpact": "family_impact",
     "FutureHopes": {
       "field": "future_hope_ids.name",
@@ -28,7 +29,8 @@
     "ExpectedArrivalDate": "transfer_arrival_date",
     "NewBeneficiaryLocalNumber": {
       "field": "child_id.local_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "relational_raise_if_not_found": false
     },
     "NewICPID": "new_project",
     "OtherReasonForTransfer": "other_transfer_reason",

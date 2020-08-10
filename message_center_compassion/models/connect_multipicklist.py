@@ -64,15 +64,16 @@ class ConnectMultipicklist(models.AbstractModel):
         )
         # Remove previous todos
         self.activity_unlink("mail.mail_activity_data_todo")
-        for user_id in notify_ids[0][2]:
-            act_vals = {
-                "user_id": user_id
-            }
-            self.activity_schedule(
-                "mail.mail_activity_data_todo",
-                summary=_("A new value needs translation"),
-                note=_(
-                    "This is a new value that needs translation "
-                    "for printing the child dossier."),
-                **act_vals
-            )
+        if notify_ids:  # check if not False
+            for user_id in notify_ids[0][2]:
+                act_vals = {
+                    "user_id": user_id
+                }
+                self.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    summary=_("A new value needs translation"),
+                    note=_(
+                        "This is a new value that needs translation "
+                        "for printing the child dossier."),
+                    **act_vals
+                )

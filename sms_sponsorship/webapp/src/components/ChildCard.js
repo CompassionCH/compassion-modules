@@ -55,13 +55,13 @@ function SimpleMediaCard(props) {
             <Card className={cardClass}>
                 <CardHeader title={t("cardTitle")}/>
                 <Avatar
-                    alt={props.preferred_name}
+                    alt={props.preferredName}
                     src={image_url}
                     className={classNames(classes.avatar, classes.bigAvatar)}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="title" align="center">
-                        {props.name}
+                        {props.preferredName}
                     </Typography>
                     <Typography variant="subheading" align="center" style={{color: '#0054A6'}}>
                         {props.age}, {props.country}, {t(props.gender)}

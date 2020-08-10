@@ -85,6 +85,9 @@ class Contracts(models.Model):
     def _compute_write_for_birthday_alert(self):
         today = date.today()
         for contract in self:
+            if not contract.child_id.birthdate:
+                contract.write_for_birthday_alert = False
+                continue
             next_birthday = contract.child_id.birthdate.replace(year=today.year)
 
             # take next year birthday

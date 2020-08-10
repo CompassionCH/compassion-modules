@@ -14,6 +14,7 @@ import logging
 import werkzeug.utils
 from odoo.addons.cms_form.controllers.main import FormControllerMixin
 from werkzeug.exceptions import NotFound
+from odoo.addons.mobile_app_connector.controllers.mobile_app_controller import _get_lang
 
 from odoo import _
 from odoo.http import request, route, Controller
@@ -83,7 +84,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         child = sms_child_request.child_id
         if not child and not sms_child_request.is_trying_to_fetch_child:
             sms_child_request.is_trying_to_fetch_child = True
-            if not sms_child_request.reserve_child():
+            if not sms_child_request.reserve_child() and not sms_child_request.\
+                    event_id.disable_childpool_search:
                 sms_child_request.is_trying_to_fetch_child = True
                 sms_child_request.take_child_from_childpool()
         if child:
@@ -240,3 +242,26 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
                     type_="danger",
                 )
         return request.render("sms_sponsorship.sms_registration_confirmation", values)
+
+    @route(
+        "/sms_sponsorship/step1/<int:child_request_id>/change_language",
+        type="json",
+        auth="public",
+        methods=["POST"],
+        csrf=False,
+        noindex=["robots", "meta", "header"],
+    )
+    def sms_change_language(self, child_request_id):
+        """
+        Route called by REACT app for changing language.
+        :param child_request_id: id of sms_child_request22682
+        :return: None, REACT page will be refreshed after this call.
+        """
+        body = request.jsonrequest
+        sms_child_request = get_child_request(child_request_id)
+        # get correct language format
+        tw = dict()  # to write
+        if body["lang"]:
+            tw["lang_code"] = _get_lang(request, dict(language=body["lang"]))
+        if tw:
+            sms_child_request.write(tw)

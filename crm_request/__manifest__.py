@@ -21,9 +21,9 @@
     # always loaded
     "data": [
         # 'security/ir.model.access.csv',
-        "data/request_sequence.xml",
+        "data/request_email_template.xml",
         "data/crm_request_data.xml",
-        "data/holiday_closure_email_template.xml",
+        "data/request_sequence.xml",
         "views/request.xml",
         "views/request_category.xml",
         "views/holiday_automated_response_view.xml",

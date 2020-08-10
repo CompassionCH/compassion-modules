@@ -5,7 +5,7 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <div name="button_box" position="inside">
+            <xpath expr="//div[@name='button_box']/button[1]" position="before">
                 <button name="%(partner_communication.action_communication_job_partner)d"
                         context="{'default_partner_id': active_id, 'search_default_partner_id': active_id, 'search_default_pending': 1}"
                         type="action"
@@ -16,7 +16,7 @@
                            widget="statinfo"
                            string="Communications"/>
                 </button>
-            </div>
+            </xpath>
         </field>
     </record>
 </odoo>

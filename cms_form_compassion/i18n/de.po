@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-19 07:16+0000\n"
-"PO-Revision-Date: 2020-06-19 09:26+0200\n"
+"POT-Creation-Date: 2020-07-24 10:14+0000\n"
+"PO-Revision-Date: 2020-07-24 12:21+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_widget_gtc
 msgid "<b>general terms and conditions</b>"
-msgstr "<b>Datenschutz und die allgemeinen Geschäftsbedingungen</b>"
+msgstr "<b>Bedingungen zu</b>"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_ir_logging__context_data
@@ -40,8 +40,8 @@ msgid ""
 "An error occurred during form submission. Please verify your submission or "
 "contact us in case of trouble."
 msgstr ""
-"Bei der Einreichung des Formulars ist ein Fehler aufgetreten. Bitte "
-"überprüfen Sie Ihre Eingabe oder kontaktieren Sie uns."
+"Bei der Formularübertragung ist ein Fehler aufgetreten. Bitte überprüfen "
+"oder kontaktiere uns bei Schwierigkeiten."
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_birthdate
@@ -61,7 +61,7 @@ msgstr "Geburtsdatum"
 msgid ""
 "By submitting this form, I confirm the\n"
 "            acceptance of the"
-msgstr "mit dem Absenden dieses Formulars stimme ich den"
+msgstr "Mit dem Absenden dieses Formulars stimme ich den"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_form_buttons
@@ -147,7 +147,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_time
 msgid "HH:MM"
-msgstr "HH:MM"
+msgstr ""
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_compassion_form_widget_document_id
@@ -206,7 +206,7 @@ msgstr "Sprache"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_widget_time____last_update
 #: model:ir.model.fields,field_description:cms_form_compassion.field_res_partner_match____last_update
 msgid "Last Modified on"
-msgstr "Zuletzt geändert am"
+msgstr "Zuletzt verändert am"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_lastname
@@ -244,6 +244,11 @@ msgid "Muskathlon invoice"
 msgstr ""
 
 #. module: cms_form_compassion
+#: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
+msgid "Next"
+msgstr "Weiter"
+
+#. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_id
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_registration_muskathlon_partner_id
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_registration_partner_id
@@ -255,11 +260,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_id
 msgid "Partner"
 msgstr ""
-
-#. module: cms_form_compassion
-#: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
-msgid "Pay Now"
-msgstr "Jetzt Spenden"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
@@ -341,12 +341,9 @@ msgstr "Senden"
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
 msgid ""
-"Thank you for your submission. Please select the payment method and you will "
-"be redirected securely to\n"
-"                the payment provider."
-msgstr ""
-"Vielen Dank für deine Einreichung. Bitte wähle deine Zahlungsmethode und du "
-"wirst sicher weitergeleitet zu den Zahlungsanbieter."
+"Thank you for your submission. If you are not automatically redirected to "
+"the payment page, please click on the Next button."
+msgstr "Wenn du nicht automatisch weitergeleitet wirst, bitte klicken."
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.payment_already_done
@@ -370,7 +367,7 @@ msgstr "Anrede"
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:109
 #, python-format
 msgid "Verify your e-mail address"
-msgstr "Bitte bestätige deine E-Mailadresse"
+msgstr "Bestätige deine E-Mailadresse"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_zip
@@ -444,3 +441,11 @@ msgstr ""
 #: model:ir.model,name:cms_form_compassion.model_cms_form_compassion_form_widget_terms
 msgid "cms_form_compassion.form.widget.terms"
 msgstr ""
+
+#~ msgid ""
+#~ "Thank you for your submission. Please select the payment method and you "
+#~ "will be redirected securely to\n"
+#~ "                the payment provider."
+#~ msgstr ""
+#~ "Vielen Dank für deine Einreichung. Bitte wähle deine Zahlungsmethode und "
+#~ "du wirst sicher weitergeleitet zu den Zahlungsanbieter."

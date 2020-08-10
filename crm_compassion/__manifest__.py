@@ -39,7 +39,8 @@
         "base_location",  # oca_addons/partner_contact
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
-        "mail_tracking",
+        "mail_tracking",  # oca_addons/social
+        "mass_mailing",
         "base_automation",
     ],
     "data": [
@@ -52,6 +53,7 @@
         "views/calendar_event_view.xml",
         "views/calendar_view.xml",
         "views/contract_origin_view.xml",
+        "views/crm_claim_menu.xml",
         "views/crm_lead_view.xml",
         "views/demand_planning_settings.xml",
         "views/demand_planning.xml",

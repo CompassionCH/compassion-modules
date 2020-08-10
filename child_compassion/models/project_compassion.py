@@ -13,7 +13,6 @@ import re
 from datetime import datetime, timedelta
 
 import requests
-from odoo.addons.message_center_compassion.models.field_to_json import RelationNotFound
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from odoo import models, fields, api, tools, _
@@ -557,15 +556,7 @@ class CompassionProject(models.Model):
 
     @api.multi
     def json_to_data(self, json, mapping_name=None):
-        while True:  # catch more than one relation not found
-            try:
-                odoo_data = super().json_to_data(json, mapping_name)
-                break
-            except RelationNotFound as e:
-                self.fetch_missing_relational_records(
-                    e.field_relation, e.field_name, e.value, e.json_name
-                )
-
+        odoo_data = super().json_to_data(json, mapping_name)
         status = odoo_data.get("status")
         if status:
             status_mapping = {
@@ -600,58 +591,6 @@ class CompassionProject(models.Model):
                 # Weird value received, we prefer to ignore it.
                 del odoo_data["monthly_income"]
         return odoo_data
-
-    def fetch_missing_relational_records(self, field_relation,
-                                         field_name, values, json_name):
-        onramp = OnrampConnector()
-        endpoint = "churchpartners/{0}/kits/icpkit?FinalLanguage={1}"
-        languages_map = {
-            "English": "en_US",
-            "French": "fr_CH",
-            "German": "de_DE",
-            "Italian": "it_IT",
-        }
-        # transform values to list first
-        if not isinstance(values, list):
-            values = [values]
-        # go over all missing values, keep count of index to know which translation
-        # to take from onramp result
-        for i, value in enumerate(values):
-            # check if hobby/household duty, etc... exists in our database
-            search_vals = [(field_name, "=", value)]
-            relation_obj = self.env[field_relation].sudo()
-            if hasattr(relation_obj, "value"):
-                # Useful for connect.multipicklist objects
-                search_vals.insert(0, "|")
-                search_vals.append(("value", "=", value))
-            search_count = relation_obj.search_count(search_vals)
-            # if not exist, then create it
-            if not search_count:
-                value_record = (
-                    relation_obj.create({field_name: value, "value": value})
-                )
-                if not hasattr(relation_obj, "value"):
-                    return
-                # fetch translations for connect.multipicklist values
-                must_manually_translate = False
-                for lang_literal, lang_context in languages_map.items():
-                    result = onramp.send_message(
-                        endpoint.format(self[0].fcp_id, lang_literal), "GET"
-                    )
-                    if "ICPResponseList" in result.get("content", {}):
-                        content = result["content"]["ICPResponseList"][0]
-                        if json_name in content:
-                            content_values = content[json_name]
-                            if not isinstance(content_values, list):
-                                content_values = [content_values]
-                            translation = content_values[i]
-                            if translation == value_record.value:
-                                must_manually_translate = True
-                            value_record.with_context(
-                                lang=lang_context
-                            ).value = translation
-                if must_manually_translate:
-                    value_record.assign_translation()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

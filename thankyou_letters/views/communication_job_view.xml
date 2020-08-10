@@ -31,8 +31,8 @@
         <field name="name">communication.job.tree.thankyou.donation.amount</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state=='pending'" decoration-primary="state in ('done','cancel')"
-                  decoration-danger="state=='call'" default_order="amount, date desc">
+            <tree decoration-primary="state=='pending'" decoration-muted="state in ('done','cancel')"
+                  decoration-danger="need_call!=False and len(activity_ids)" default_order="amount, date desc">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
@@ -44,11 +44,13 @@
                 <field name="amount"/>
                 <field name="user_id"/>
                 <field name="state"/>
+                <field name="need_call"/>
+                <field name="activity_ids" invisible="1"/>
                 <field name="sent_date"/>
                 <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
-                <button name="call" string="Call" type="object" icon="fa-phone" states='call,pending'/>
+                <button name="call" string="Call" type="object" icon="fa-phone" states='pending'/>
                 <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
-                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='call,pending'/>
+                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='pending'/>
             </tree>
         </field>
     </record>

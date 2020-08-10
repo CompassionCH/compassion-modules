@@ -27,7 +27,11 @@
     height: initial !important;
 }
 
-/* Hide payment icons in payment method selection page */
-.o_payment_form .payment_icon_list {
+/* Hide payment method in payment method since we use only one */
+#payment_compassion #payment_method .card {
+	display: none;
+}
+
+#payment_compassion #pay_with h3 {
 	display: none;
 }

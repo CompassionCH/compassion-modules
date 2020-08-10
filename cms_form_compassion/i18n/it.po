@@ -1,24 +1,26 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* cms_form_compassion
+# 	* cms_form_compassion
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-02 08:51+0000\n"
-"PO-Revision-Date: 2020-07-02 08:51+0000\n"
+"POT-Creation-Date: 2020-07-24 10:14+0000\n"
+"PO-Revision-Date: 2020-07-24 12:22+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 2.3.1\n"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_widget_gtc
 msgid "<b>general terms and conditions</b>"
-msgstr ""
+msgstr "<b>politica sulla protezione dei dati</b>"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_ir_logging__context_data
@@ -32,11 +34,12 @@ msgstr "Importo"
 
 #. module: cms_form_compassion
 #. openerp-web
-#: code:addons/addons/compassion-modules/cms_form_compassion/static/src/js/modal_form.js:79
 #: code:addons/cms_form_compassion/static/src/js/modal_form.js:79
 #, python-format
-msgid "An error occurred during form submission. Please verify your submission or contact us in case of trouble."
-msgstr "Si è verificato un errore durante l'invio del modulo. Si prega di verificare il vostro invio o contattarci in caso di problemi."
+msgid ""
+"An error occurred during form submission. Please verify your submission or "
+"contact us in case of trouble."
+msgstr ""
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_birthdate
@@ -53,7 +56,8 @@ msgstr "Data di nascita"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.field_widget_gtc
-msgid "By submitting this form, I confirm the\n"
+msgid ""
+"By submitting this form, I confirm the\n"
 "            acceptance of the"
 msgstr "Si, sono a conoscenza della vostra"
 
@@ -117,7 +121,7 @@ msgstr "Visualizza Nome"
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_not_supporter_partner_email
 #: model:ir.model.fields,field_description:cms_form_compassion.field_registration_supporter_form_partner_email
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_firstname
@@ -232,7 +236,6 @@ msgid "Match partner"
 msgstr ""
 
 #. module: cms_form_compassion
-#: code:addons/addons/compassion-modules/cms_form_compassion/models/queue_job.py:21
 #: code:addons/cms_form_compassion/models/queue_job.py:21
 #, python-format
 msgid "Muskathlon invoice"
@@ -259,7 +262,7 @@ msgstr ""
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
 msgid "Pay with"
-msgstr "Paga con"
+msgstr "Pagare con"
 
 #. module: cms_form_compassion
 #: model:ir.model,name:cms_form_compassion.model_cms_form_payment
@@ -285,14 +288,12 @@ msgid "Phone"
 msgstr "Telefono"
 
 #. module: cms_form_compassion
-#: code:addons/addons/compassion-modules/cms_form_compassion/forms/match_partner_form.py:127
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:127
 #, python-format
 msgid "Please avoid any special characters"
 msgstr "Grazie di evitare caratteri speciali"
 
 #. module: cms_form_compassion
-#: code:addons/addons/compassion-modules/cms_form_compassion/forms/match_partner_form.py:103
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:103
 #, python-format
 msgid "Please enter a valid phone number"
@@ -330,7 +331,6 @@ msgid "Street"
 msgstr "Indirizzo"
 
 #. module: cms_form_compassion
-#: code:addons/addons/compassion-modules/cms_form_compassion/models/cms_form.py:25
 #: code:addons/cms_form_compassion/models/cms_form.py:25
 #, python-format
 msgid "Submit"
@@ -338,9 +338,14 @@ msgstr "Inviare"
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.modal_payment_submit
-msgid "Thank you for your submission. Please select the payment method and you will be redirected securely to\n"
-"                the payment provider."
-msgstr "Grazie per la tua generosità. Seleziona il metodo di pagamento (NEXT) e verrai reindirizzato in modo sicuro al pagamento."
+msgid ""
+"Thank you for your submission. If you are not automatically redirected to "
+"the payment page, please click on the Next button."
+msgstr ""
+"Grazie per il vostro intervento. Verrai reindirizzato al sito web di "
+"pagamento.\n"
+"                Si prega di non uscire o aggiornare questa pagina. Se il "
+"reindirizzamento non funziona, clicca qui."
 
 #. module: cms_form_compassion
 #: model_terms:ir.ui.view,arch_db:cms_form_compassion.payment_already_done
@@ -361,11 +366,10 @@ msgid "Title"
 msgstr "Qualifica"
 
 #. module: cms_form_compassion
-#: code:addons/addons/compassion-modules/cms_form_compassion/forms/match_partner_form.py:109
 #: code:addons/cms_form_compassion/forms/match_partner_form.py:109
 #, python-format
 msgid "Verify your e-mail address"
-msgstr "Grazie di verificare il tuo indirizzo email"
+msgstr ""
 
 #. module: cms_form_compassion
 #: model:ir.model.fields,field_description:cms_form_compassion.field_cms_form_event_donation_partner_zip
@@ -440,3 +444,10 @@ msgstr ""
 msgid "cms_form_compassion.form.widget.terms"
 msgstr ""
 
+#~ msgid ""
+#~ "Thank you for your submission. Please select the payment method and you "
+#~ "will be redirected securely to\n"
+#~ "                the payment provider."
+#~ msgstr ""
+#~ "Grazie per la tua presentazione. Selezioni il metodo di pagamento e verrà "
+#~ "reindirizzato in modo sicuro al pagamento."

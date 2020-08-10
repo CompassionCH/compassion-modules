@@ -14,10 +14,18 @@
         <field name="claim_common" eval="True"/>
     </record>
 
-    <record model="crm.claim.category" id="stage_undefined">
+    <record model="crm.claim.category" id="category_undefined">
         <field name="name">Undefined</field>
         <field name="sequence">9</field>
         <field name="case_default" eval="True"/>
         <field name="claim_common" eval="True"/>
+    </record>
+
+    <record model="crm.claim.category" id="category_volunteer">
+        <field name="name">Volunteer</field>
+        <field name="template_id" ref="volunteer_email_template"/>
+        <field name="sequence">20</field>
+        <field name="case_default" eval="False"/>
+        <field name="claim_common" eval="False"/>
     </record>
 </odoo>

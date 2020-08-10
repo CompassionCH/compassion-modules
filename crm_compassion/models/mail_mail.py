@@ -15,3 +15,4 @@ class Partner(models.Model):
     _inherit = "mail.mail"
 
     is_from_employee = fields.Boolean(default=False)
+    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ])
