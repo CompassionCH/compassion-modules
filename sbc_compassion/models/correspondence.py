@@ -302,12 +302,12 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = (
-                    letter.communication_type_ids[0].name
-                    + " ("
-                    + letter.sponsorship_id.partner_id.ref
-                    + " - "
-                    + letter.child_id.local_id
-                    + ")"
+                        letter.communication_type_ids[0].name
+                        + " ("
+                        + letter.sponsorship_id.partner_id.ref
+                        + " - "
+                        + letter.child_id.local_id
+                        + ")"
                 )
             else:
                 letter.name = _("New correspondence")
@@ -442,8 +442,8 @@ class Correspondence(models.Model):
     def _compute_is_final_letter(self):
         for letter in self:
             letter.is_final_letter = (
-                "Final Letter" in letter.communication_type_ids.mapped("name")
-                or letter.sponsorship_state != "active"
+                    "Final Letter" in letter.communication_type_ids.mapped("name")
+                    or letter.sponsorship_state != "active"
             )
 
     @api.multi
@@ -518,14 +518,14 @@ class Correspondence(models.Model):
         """ Keep track of state changes. """
         if "state" in vals:
             if vals["state"] == "Translation check unsuccessful":
-                settings_config = self.env["res.config.settings"].create({})
+                settings_config = self.env["res.config.settings"]
                 for c in self:
-                    self._make_activity(c, vals["state"],
-                                        settings_config.letter_responsible.id)
+                    c._make_activity(
+                        vals["state"], settings_config.get_param("letter_responsible"))
 
             elif "state" in vals:
                 for c in self.filtered(
-                        lambda c: c.state == "Translation check unsuccessful"):
+                        lambda o: o.state == "Translation check unsuccessful"):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
 
@@ -889,10 +889,10 @@ class Correspondence(models.Model):
         name = ""
         if self.communication_type_ids.ids:
             name = (
-                self.communication_type_ids[0]
-                .with_context(lang=self.partner_id.lang)
-                .name
-                + " "
+                    self.communication_type_ids[0]
+                    .with_context(lang=self.partner_id.lang)
+                    .name
+                    + " "
             )
         name += self.child_id.local_id
         if self.kit_identifier:
@@ -972,8 +972,8 @@ class Correspondence(models.Model):
                     continue
                 page_id = (
                     self.env["correspondence.page"]
-                    .search([("original_page_url", "=", page_url)], limit=1)
-                    .id
+                        .search([("original_page_url", "=", page_url)], limit=1)
+                        .id
                 )
                 # if page_url already exist update it
                 if page_id:
@@ -990,9 +990,9 @@ class Correspondence(models.Model):
     #                            PRIVATE METHODS                             #
     ##########################################################################
 
-    def _make_activity(self, correspondence, state, user_id):
-        correspondence.activity_schedule('mail.mail_activity_data_call',
-                                         summary=state,
-                                         user_id=user_id,
-                                         note="{} has state {}"
-                                         .format(correspondence.name, state))
+    def _make_activity(self, state, user_id):
+        self.ensure_one()
+        self.activity_schedule('mail.mail_activity_data_todo',
+                               summary=state,
+                               user_id=user_id,
+                               note=f"Letter has {state}")
