@@ -59,11 +59,11 @@ class CrmLead(models.Model):
     @api.depends("event_ids")
     def _compute_planned_sponsorship(self):
         for lead in self:
-            future_planned_sponsorships=0
+            future_planned_sponsorships = 0
             for e in lead.event_ids:
                 if e.start_date > datetime.datetime.now():
-                    future_planned_sponsorships+=e.planned_sponsorships
-            lead.planned_sponsorships=future_planned_sponsorships
+                    future_planned_sponsorships += e.planned_sponsorships
+            lead.planned_sponsorships = future_planned_sponsorships
 
     @api.multi
     def _merge_data(self, fields):
