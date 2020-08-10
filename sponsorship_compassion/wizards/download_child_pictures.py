@@ -46,7 +46,7 @@ class DownloadChildPictures(models.TransientModel):
     ##########################################################################
     @api.model
     def get_file_name(self):
-        return fields.Date.context_today(self) + "_child_pictures.zip"
+        return str(fields.Date.context_today(self)) + "_child_pictures.zip"
 
     @api.multi
     def get_picture_url(self, raw_url, pic_type, width, height):
