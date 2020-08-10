@@ -302,12 +302,12 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = (
-                        letter.communication_type_ids[0].name
-                        + " ("
-                        + letter.sponsorship_id.partner_id.ref
-                        + " - "
-                        + letter.child_id.local_id
-                        + ")"
+                    letter.communication_type_ids[0].name
+                    + " ("
+                    + letter.sponsorship_id.partner_id.ref
+                    + " - "
+                    + letter.child_id.local_id
+                    + ")"
                 )
             else:
                 letter.name = _("New correspondence")
@@ -442,8 +442,8 @@ class Correspondence(models.Model):
     def _compute_is_final_letter(self):
         for letter in self:
             letter.is_final_letter = (
-                    "Final Letter" in letter.communication_type_ids.mapped("name")
-                    or letter.sponsorship_state != "active"
+                "Final Letter" in letter.communication_type_ids.mapped("name")
+                or letter.sponsorship_state != "active"
             )
 
     @api.multi
@@ -889,10 +889,10 @@ class Correspondence(models.Model):
         name = ""
         if self.communication_type_ids.ids:
             name = (
-                    self.communication_type_ids[0]
-                    .with_context(lang=self.partner_id.lang)
-                    .name
-                    + " "
+                self.communication_type_ids[0]
+                .with_context(lang=self.partner_id.lang)
+                .name
+                + " "
             )
         name += self.child_id.local_id
         if self.kit_identifier:
@@ -972,8 +972,8 @@ class Correspondence(models.Model):
                     continue
                 page_id = (
                     self.env["correspondence.page"]
-                        .search([("original_page_url", "=", page_url)], limit=1)
-                        .id
+                    .search([("original_page_url", "=", page_url)], limit=1)
+                    .id
                 )
                 # if page_url already exist update it
                 if page_id:
