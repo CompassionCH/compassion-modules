@@ -18,7 +18,7 @@ class CrmLead(models.Model):
 
     planned_sponsorships = fields.Integer(
         "Expected new sponsorships", track_visibility="onchange"
-        ,compute="_compute_planned_sponsorship"
+        ,compute="_compute_planned_sponsorship", store=True
     )
     event_ids = fields.One2many(
         "crm.event.compassion", "lead_id", "Events", readonly=False
