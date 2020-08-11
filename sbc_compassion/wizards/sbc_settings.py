@@ -49,6 +49,6 @@ class SBCSettings(models.TransientModel):
 
         res["additional_b2s_translation"] = b2s_add_page.background
         res["letter_responsible"] = int(
-            config.get_param("sbc_compassion.letter_responsible", self.env.uid)
+            config.get_param("sbc_compassion.letter_responsible", 0)
         )
         return res

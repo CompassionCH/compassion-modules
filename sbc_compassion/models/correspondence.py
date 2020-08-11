@@ -522,10 +522,11 @@ class Correspondence(models.Model):
         """ Keep track of state changes. """
         if "state" in vals:
             if vals["state"] == "Translation check unsuccessful":
-                settings_config = self.env["res.config.settings"]
-                for c in self:
-                    c._make_activity(
-                        vals["state"], settings_config.get_param("letter_responsible"))
+                responsible = self.env["res.config.settings"].get_param(
+                    "letter_responsible")
+                if responsible:
+                    for c in self:
+                        c._make_activity(vals["state"], responsible)
 
             elif "state" in vals:
                 for c in self.filtered(
