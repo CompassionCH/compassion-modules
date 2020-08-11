@@ -13,12 +13,13 @@ from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
 from odoo import api, models, fields
 import datetime
 
+
 class CrmLead(models.Model):
     _inherit = "crm.lead"
 
     planned_sponsorships = fields.Integer(
-        "Expected new sponsorships", track_visibility="onchange"
-        ,compute="_compute_planned_sponsorship", store=True
+        "Expected new sponsorships", track_visibility="onchange",
+        compute="_compute_planned_sponsorship", store=True
     )
     event_ids = fields.One2many(
         "crm.event.compassion", "lead_id", "Events", readonly=False
