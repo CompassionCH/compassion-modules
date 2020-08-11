@@ -56,6 +56,11 @@ class CrmLead(models.Model):
             "context": context,
         }
 
+    @api.model
+    def migrate_planned_sponsorships(self):
+        self.search([])._compute_planned_sponsorship()
+        return True
+
     @api.multi
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
