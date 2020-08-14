@@ -89,7 +89,7 @@ class OnrampConnector(object):
         status = r.status_code
         result = {
             "code": status,
-            "request_id": r.headers.get("x-cim-RequestId"),
+            "request_id": r.headers.get("cf-request-id"),
         }
         self.log_message(status, "RESULT", message=r.text)
         try:

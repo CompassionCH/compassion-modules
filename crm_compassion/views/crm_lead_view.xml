@@ -29,7 +29,21 @@
             <xpath expr="//page[1]" position="before">
                 <page string="Events">
                     <button string="Create Event" name="create_event" type="object"/>
-                    <field name="event_ids"/>
+                    <field name="event_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="start_date"/>
+                            <field name="partner_id"/>
+                            <field name="city"/>
+                            <field name="user_id"/>
+                            <field name="total_income" sum="Total"/>
+                            <field name="total_expense" sum="Total"/>
+                            <field name="planned_sponsorships" sum="Total"/>
+                            <field name="won_sponsorships" sum="Total"/>
+                            <field name="conversion_rate" avg="Avg"/>
+                        </tree>
+                    </field>
                 </page>
             </xpath>
         </field>

@@ -521,11 +521,24 @@ class Correspondence(models.Model):
     def write(self, vals):
         """ Keep track of state changes. """
         if "state" in vals:
+            if vals["state"] == "Translation check unsuccessful":
+                responsible = self.env["res.config.settings"].get_param(
+                    "letter_responsible")
+                if responsible:
+                    for c in self:
+                        c._make_activity(vals["state"], responsible)
+
+            elif "state" in vals:
+                for c in self.filtered(
+                        lambda o: o.state == "Translation check unsuccessful"):
+                    c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
+
         if "translator_id" in vals:
             vals["translate_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:
             vals["letter_image"] = False
+
         return super().write(vals)
 
     @api.multi
@@ -994,3 +1007,14 @@ class Correspondence(models.Model):
                 "state": "Received in the system"
             })
             letter.create_commkit()
+
+    ##########################################################################
+    #                            PRIVATE METHODS                             #
+    ##########################################################################
+
+    def _make_activity(self, state, user_id):
+        self.ensure_one()
+        self.activity_schedule('mail.mail_activity_data_todo',
+                               summary=state,
+                               user_id=user_id,
+                               note=f"Letter has {state}")

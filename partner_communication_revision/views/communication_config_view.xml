@@ -13,9 +13,9 @@
             <button name="toggle_active" position="before">
                 <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit raw translations" type="object" groups="base.group_system"/>
             </button>
-            <xpath expr="//sheet">
+            <group name="printer_config" position="before">
                 <group string="Revisions">
-                    <group colspan="2">
+                    <group colspan="4">
                         <field name="revision_number"/>
                         <field name="revision_date"/>
                         <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
@@ -38,7 +38,7 @@
                         </field>
                     </group>
                 </group>
-            </xpath>
+            </group>
         </field>
     </record>
 

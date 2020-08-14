@@ -257,6 +257,18 @@ class CommunicationRevision(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
+    def start_single_revision(self):
+        """
+        Useful to just edit one language regardless of other translations
+        """
+        self.write({
+            "state": "pending",
+            "user_id": self.env.uid,
+            "correction_user_id": False,
+            "is_master_version": False
+        })
+
+    @api.multi
     def edit_revision(self):
         """
         View helper to open a revision in edit mode.
