@@ -1008,6 +1008,12 @@ class Correspondence(models.Model):
             })
             letter.create_commkit()
 
+    @api.multi
+    def quality_check_failed(self):
+        return self.write({
+            "state": "Quality check unsuccessful",
+        })
+
     ##########################################################################
     #                            PRIVATE METHODS                             #
     ##########################################################################
