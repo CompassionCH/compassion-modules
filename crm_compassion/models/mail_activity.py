@@ -7,9 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import datetime
-
-from addons import crm
 from odoo import models, fields, api
 
 
@@ -19,39 +16,44 @@ class MailActivity(models.Model):
     phonecall_id = fields.Many2one("crm.phonecall", "Phonecall")
 
     @api.model
-    def create(self, vals):
-        if "activity_type_id" in vals:
-            if vals["activity_type_id"] == \
-                    self.env.ref("mail.mail_activity_data_call").id:
-                if vals["res_model_id"] == self.env["ir.model"].search([(
-                    "model", "=", "res.partner"
-                )]).id:
-                    vals["phonecall_id"] = self.env["crm.phonecall"].create({
-                        "date": vals["date_deadline"],
-                        "name": vals["summary"],
-                        "partner_id": vals["res_id"],
-                        "user_id": vals["user_id"],
-                        "direction": "outbound",
-                        "state": "open"
-                    }).id
+    def create(self, vals_list):
+        """
+        Links mail activities on crm.phonecall
+        """
+        if isinstance(vals_list, dict):
+            vals_list = [vals_list]
+        call_activity_id = self.env.ref("mail.mail_activity_data_call").id
+        partner_model_id = self.env.ref("base.model_res_partner").id
+        lead_model_id = self.env.ref("crm.model_crm_lead").id
+        for vals in vals_list:
+            if vals.get("activity_type_id") == call_activity_id:
+                phonecall_vals = {
+                    "date": vals["date_deadline"],
+                    "name": vals.get("summary", "Phonecall"),
+                    "user_id": vals["user_id"],
+                    "direction": "outbound",
+                    "state": "open"
+                }
+                if vals["res_model_id"] == partner_model_id:
+                    phonecall_vals["partner_id"] = vals["res_id"]
 
-                if vals["res_model_id"] == self.env["ir.model"].search([(
-                    "model", "=", "crm.lead"
-                )]).id:
-                    vals["phonecall_ids"] = self.env["crm.phonecall"].create({
-                        "date": vals["date_deadline"],
-                        "name": vals["summary"],
+                elif vals["res_model_id"] == lead_model_id:
+                    phonecall_vals.update({
                         "opportunity_id": vals["res_id"],
-                        "partner_id":
-                            self.env["crm.lead"].browse(vals["res_id"]).partner_id.id,
-                        "user_id": vals["user_id"],
-                        "direction": "outbound",
-                        "state": "open"
-                    }).id
-        return super(MailActivity, self.sudo()).create(vals)
+                        "partner_id": self.env["crm.lead"].browse(
+                            vals["res_id"]).partner_id.id,
+                    })
+                else:
+                    model = self.env["ir.model"].browse(vals["res_model_id"]).model
+                    if hasattr(self.env[model], "partner_id"):
+                        phonecall_vals["partner_id"] = self.env[model].browse(
+                            vals["res_id"]).partner_id.id
+                vals["phonecall_id"] = self.env["crm.phonecall"].create(
+                    phonecall_vals).id
+        return super().create(vals_list)
 
     def action_feedback(self, feedback=False):
         self.mapped("phonecall_id").write({
             "state": "done"
         })
-        return super(MailActivity, self).action_feedback(feedback)
+        return super().action_feedback(feedback)
