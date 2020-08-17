@@ -16,7 +16,7 @@ from odoo import models, fields, api
 class MailActivity(models.Model):
     _inherit = "mail.activity"
 
-    phonecall_ids = fields.Many2one("crm.phonecall")
+    phonecall_id = fields.Many2one("crm.phonecall", "Phonecall")
 
     @api.model
     def create(self, vals):
@@ -26,7 +26,7 @@ class MailActivity(models.Model):
                 if vals["res_model_id"] == self.env["ir.model"].search([(
                     "model", "=", "res.partner"
                 )]).id:
-                    vals["phonecall_ids"] = self.env["crm.phonecall"].create({
+                    vals["phonecall_id"] = self.env["crm.phonecall"].create({
                         "date": vals["date_deadline"],
                         "name": vals["summary"],
                         "partner_id": vals["res_id"],
@@ -42,9 +42,8 @@ class MailActivity(models.Model):
                         "date": vals["date_deadline"],
                         "name": vals["summary"],
                         "opportunity_id": vals["res_id"],
-                        "partner_id": self.env["crm.lead"].search([(
-                            "id", "=", vals["res_id"]
-                        )]).partner_id.id,
+                        "partner_id":
+                            self.env["crm.lead"].browse(vals["res_id"]).partner_id.id,
                         "user_id": vals["user_id"],
                         "direction": "outbound",
                         "state": "open"
@@ -52,10 +51,7 @@ class MailActivity(models.Model):
         return super(MailActivity, self.sudo()).create(vals)
 
     def action_feedback(self, feedback=False):
-        phonecall = self.env["crm.phonecall"].search([(
-            "id", "=", self.phonecall_ids.id
-        )])
-        phonecall.write({
+        self.mapped("phonecall_id").write({
             "state": "done"
         })
         return super(MailActivity, self).action_feedback(feedback)
