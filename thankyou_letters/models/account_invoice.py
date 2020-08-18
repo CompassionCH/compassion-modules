@@ -28,6 +28,9 @@ class AccountInvoice(models.Model):
         readonly=True,
         copy=False,
     )
+    avoid_thankyou_letter = fields.Boolean(
+        help="Check to disable thank you letter for donation",
+    )
 
     @api.multi
     def action_invoice_paid(self):
@@ -150,6 +153,7 @@ class AccountInvoice(models.Model):
         """
         return self.filtered(
             lambda i: i.type == "out_invoice"
+            and not i.avoid_thankyou_letter
             and (
                 not i.communication_id
                 or i.communication_id.state in ("call", "pending")
