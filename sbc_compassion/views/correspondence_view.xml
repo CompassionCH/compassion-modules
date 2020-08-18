@@ -34,7 +34,7 @@
 
     <!-- Resubmit letter to GMC mass action-->
     <record id="resubmit_letter_action" model="ir.actions.server">
-        <field name="name">Resubmit letter</field>
+        <field name="name">Resubmit to GMC</field>
         <field name="model_id" ref="sbc_compassion.model_correspondence"/>
         <field name="state">code</field>
         <field name="code">records.resubmit_letter()</field>
@@ -66,6 +66,9 @@
                     <button name="resubmit_letter" type="object"
                             string="Resubmit Letter"
                             attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+                    <button name="quality_check_failed" type="object"
+                            string="Quality Check Failed"
+                            attrs="{'invisible': ['|', ('state', 'in', ['Printed and sent to ICP', 'Quality check unsuccessful']), ('direction', '=', 'Beneficiary To Supporter')]}"/>
                 </header>
                 <sheet>
                     <h1>
