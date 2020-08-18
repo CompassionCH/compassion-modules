@@ -351,12 +351,21 @@ class RegistrationSupporterForm(models.AbstractModel):
             matching_partner = (
                 self.env["res.partner"]
                 .sudo()
-                .search([("email", "ilike", partner_email)])
+                .search([
+                    "&",
+                    ("email", "=ilike", partner_email),
+                    "|", ("active", "=", True),
+                         ("active", "=", False)
+                     ])
             )
+
+            if not matching_partner.active:
+                matching_partner.write({"email": matching_partner.contact_id.email})
+                matching_partner = matching_partner.contact_id
 
             # Filter to partner that have sponsorships active or in creation
             partner = matching_partner.filtered(
-                lambda partner: self.env["recurring.contract"].search_count(
+                lambda partner: self.env["recurring.contract"].sudo().search_count(
                     [
                         "|",
                         ("partner_id", "=", partner.id),
