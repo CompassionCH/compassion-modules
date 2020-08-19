@@ -12,7 +12,6 @@ import logging
 import re
 import threading
 import uuid
-from datetime import datetime
 from io import BytesIO
 
 from odoo import fields, models, api, _
@@ -489,7 +488,8 @@ class Correspondence(models.Model):
             vals["letter_image"] = False
 
         contract = self.env["recurring.contract"].browse(vals["sponsorship_id"])
-        contract.last_sponsor_letter = datetime.now()
+        if vals.get("direction") == "Supporter To Beneficiary":
+            contract.last_sponsor_letter = fields.Date.today()
 
         if "partner_id" not in vals:
             vals["partner_id"] = contract.correspondent_id.id
