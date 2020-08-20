@@ -50,7 +50,7 @@ class GmcMessage(models.Model):
     res_name = fields.Char(compute="_compute_res_name", store=True)
     partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
 
-    request_id = fields.Char("Unique request ID", readonly=True)
+    request_id = fields.Char("Request ID", readonly=True)
     date = fields.Datetime("Message Date", required=True, default=fields.Datetime.now)
     action_id = fields.Many2one(
         "gmc.action", "GMC Message", ondelete="restrict", required=False, readonly=True
@@ -73,14 +73,6 @@ class GmcMessage(models.Model):
     headers = fields.Text(readonly=True)
     content = fields.Text()
     answer = fields.Text(readonly=True)
-
-    _sql_constraints = [
-        (
-            "request_id_uniq",
-            "UNIQUE(request_id)",
-            _("You cannot have two requests with same id."),
-        )
-    ]
 
     ##########################################################################
     #                             FIELDS METHODS                             #
