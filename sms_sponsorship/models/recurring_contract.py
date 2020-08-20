@@ -123,7 +123,7 @@ class RecurringContract(models.Model):
         intro = _("Please verify the following information given by the sponsor:")
         return self.message_post(
             body=intro + message,
-            subject=_("New SMS sponsorship information"),
+            subject=_("New sponsorship information"),
             partner_ids=notify_ids,
             type="comment",
             subtype="mail.mt_comment",

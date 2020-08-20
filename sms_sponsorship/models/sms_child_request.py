@@ -291,7 +291,7 @@ class SmsChildRequest(models.Model):
                         "event_id": self.event_id.id,
                         "campaign_id": self.event_id.campaign_id.id,
                         "ambassador": self.event_id.user_id.partner_id.id
-                        or self.env.uid,
+                        or self.env.user.partner_id.id,
                         "channel": "sms",
                         "source_code": "sms_sponsorship",
                         "return_action": "view_holds",
