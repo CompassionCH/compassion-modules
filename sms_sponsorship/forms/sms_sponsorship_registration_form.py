@@ -51,39 +51,30 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
 
     @property
     def _form_fieldsets(self):
-        fieldset = [
-            {
-                "id": "partner",
-                "title": _("Your personal data"),
-                "fields": [
-                    "partner_title",
-                    "partner_firstname",
-                    "partner_lastname",
-                    "partner_lang",
-                    "partner_email",
-                    "partner_phone",
-                    "partner_street",
-                    "partner_zip",
-                    "partner_city",
-                    "partner_country_id",
-                    "partner_birthdate",
-                ],
-            },
-        ]
-        if not self.main_object.sudo().origin_id:
-            fieldset.append(
-                {
-                    "id": "origin",
-                    "title": _("How did you hear about Compassion?"),
-                    "fields": ["origin_text"],
-                }
-            )
-        fieldset.append(
-            {
-                "id": "payment",
-                "fields": ["gtc_accept"],
-            }
-        )
+        fieldset = [{
+            "id": "partner",
+            "title": _("Your personal data"),
+            "fields": [
+                "partner_title",
+                "partner_firstname",
+                "partner_lastname",
+                "partner_lang",
+                "partner_email",
+                "partner_phone",
+                "partner_street",
+                "partner_zip",
+                "partner_city",
+                "partner_country_id",
+                "partner_birthdate",
+            ],
+        }, {
+            "id": "origin",
+            "title": _("How did you hear about Compassion?"),
+            "fields": ["origin_text"],
+        }, {
+            "id": "payment",
+            "fields": ["gtc_accept", "payment_mode_id"],
+        }]
         return fieldset
 
     @property
