@@ -62,9 +62,7 @@ class ResPartner(models.Model):
         compute="_compute_count_items", groups="child_compassion.group_sponsorship"
     )
     has_sponsorships = fields.Boolean(
-        compute="_compute_has_sponsorships",
-        store=True,
-        groups="child_compassion.group_sponsorship",
+        groups="child_compassion.group_sponsorship"
     )
     number_sponsorships = fields.Integer(copy=False)
     send_original = fields.Boolean(
@@ -196,13 +194,8 @@ class ResPartner(models.Model):
             partner.number_sponsorships = self.env["recurring.contract"].search_count(
                 partner._get_active_sponsorships_domain()
             )
+            partner.has_sponsorships = partner.number_sponsorships
         return True
-
-    @api.multi
-    @api.depends("number_sponsorships")
-    def _compute_has_sponsorships(self):
-        for partner in self:
-            partner.has_sponsorships = partner.number_sponsorships > 0
 
     @api.multi
     @api.depends("category_id", "member_ids")
