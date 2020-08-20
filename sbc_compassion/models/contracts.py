@@ -44,6 +44,9 @@ class Contracts(models.Model):
     last_letter = fields.Integer(
         "Days since sponsor wrote", compute="_compute_last_letter"
     )
+    last_sponsor_letter = fields.Date(
+        "Date of last sponsor letter"
+    )
     write_for_birthday_alert = fields.Boolean(
         help="True when child will have birthday in less than 3 months and"
              "sponsor has not written in this period.",
