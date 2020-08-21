@@ -24,29 +24,42 @@ class Phonecall(models.Model):
     )
 
     @api.model
-    def create(self, vals):
-        phonecall = super().create(vals)
-        if phonecall.communication_id and phonecall.state == "done":
-            # Mark communication done when phonecall log created from
-            # communication call wizard.
-            communication = phonecall.communication_id
-            communication.phonecall_id = phonecall
-        elif not phonecall.communication_id:
-            # Phone call was made outside from communication call wizard.
-            # Create a communication to log the call.
-            config = self.env.ref("partner_communication.phonecall_communication")
-            phonecall.communication_id = self.env["partner.communication.job"].create(
-                {
-                    "config_id": config.id,
-                    "partner_id": phonecall.partner_id.id,
-                    "user_id": self.env.uid,
-                    "object_ids": phonecall.partner_id.ids,
-                    "state": "done",
-                    "phonecall_id": phonecall.id,
-                    "sent_date": vals.get("date", fields.Datetime.now()),
-                    "body_html": phonecall.name,
-                    "subject": phonecall.name,
-                    "auto_send": False,
-                }
-            )
-        return phonecall
+    def create(self, vals_list):
+        phonecalls = super().create(vals_list)
+        for phonecall in phonecalls:
+            if phonecall.communication_id and phonecall.state == "done":
+                # Link phonecall to communication when log created from
+                # communication call wizard.
+                communication = phonecall.communication_id
+                communication.phonecall_id = phonecall
+            else:
+                phonecall.log_partner_communication()
+        return phonecalls
+
+    def write(self, values):
+        super().write(values)
+        if values.get("state") == "done":
+            self.log_partner_communication()
+        return True
+
+    def log_partner_communication(self):
+        config = self.env.ref("partner_communication.phonecall_communication")
+        for phonecall in self:
+            if phonecall.state == "done" and phonecall.partner_id \
+                    and not phonecall.communication_id:
+                # Phone call was made outside from communication call wizard.
+                # Create a communication to log the call.
+                phonecall.communication_id = \
+                    self.env["partner.communication.job"].create({
+                        "config_id": config.id,
+                        "partner_id": phonecall.partner_id.id,
+                        "user_id": self.env.uid,
+                        "object_ids": phonecall.partner_id.ids,
+                        "state": "done",
+                        "phonecall_id": phonecall.id,
+                        "sent_date": phonecall.date or fields.Datetime.now(),
+                        "body_html": phonecall.name,
+                        "subject": phonecall.name,
+                        "auto_send": False,
+                    })
+        return True

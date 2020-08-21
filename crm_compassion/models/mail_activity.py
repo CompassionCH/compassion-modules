@@ -29,7 +29,7 @@ class MailActivity(models.Model):
             if vals.get("activity_type_id") == call_activity_id:
                 phonecall_vals = {
                     "date": vals["date_deadline"],
-                    "name": vals.get("summary", "Phonecall"),
+                    "name": vals.get("summary") or "Phonecall",
                     "user_id": vals["user_id"],
                     "direction": "outbound",
                     "state": "open"
@@ -53,7 +53,8 @@ class MailActivity(models.Model):
         return super().create(vals_list)
 
     def action_feedback(self, feedback=False):
-        self.mapped("phonecall_id").write({
-            "state": "done"
-        })
+        vals = {"state": "done"}
+        if feedback:
+            vals["description"] = feedback
+        self.mapped("phonecall_id").with_context(from_activity=True).write(vals)
         return super().action_feedback(feedback)
