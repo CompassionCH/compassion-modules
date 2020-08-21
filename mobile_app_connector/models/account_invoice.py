@@ -17,11 +17,6 @@ _logger = logging.getLogger(__name__)
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
-    avoid_mobile_donation_notification = fields.Boolean(
-        default=True,
-        help='Uncheck to send a mobile notification for donation confirmation'
-    )
-
     @api.model
     def mobile_post_invoice(self, json_data, **parameters):
         """
@@ -152,7 +147,7 @@ class AccountInvoice(models.Model):
                 ('partner_id', '=', partner.id)
             ])
             if invoice.invoice_type in ('gift', 'fund') and has_app \
-                    and not invoice.avoid_mobile_donation_notification:
+                    and not invoice.avoid_thankyou_letter:
                 invoice.send_mobile_notification()
         return res
 

@@ -11,7 +11,7 @@
 from odoo import api, models, fields
 
 
-class Partner(models.Model):
+class PhoneCall(models.Model):
     _inherit = "crm.phonecall"
 
     is_from_employee = fields.Boolean(default=False)
@@ -23,3 +23,14 @@ class Partner(models.Model):
                 self._context.get('origin') == 'employee':
             res.is_from_employee = True
         return res
+
+    @api.multi
+    def write(self, values):
+        """ Mark any linked activities as done. """
+        super().write(values)
+        if values.get("state") == "done" and not self.env.context.get("from_activity"):
+            for phonecall in self:
+                self.env["mail.activity"].search([
+                    ("phonecall_id", "=", phonecall.id)
+                ]).action_feedback(feedback=phonecall.description)
+        return True

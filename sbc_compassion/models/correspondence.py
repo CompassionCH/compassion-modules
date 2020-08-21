@@ -487,9 +487,12 @@ class Correspondence(models.Model):
         if vals.get("store_letter_image", True) is False:
             vals["letter_image"] = False
 
+        contract = self.env["recurring.contract"].browse(vals["sponsorship_id"])
+        if vals.get("direction") == "Supporter To Beneficiary":
+            contract.last_sponsor_letter = fields.Date.today()
+
         if "partner_id" not in vals:
-            sp = self.env["recurring.contract"].browse(vals["sponsorship_id"])
-            vals["partner_id"] = sp.correspondent_id.id
+            vals["partner_id"] = contract.correspondent_id.id
 
         type_ = ".pdf"
         letter_data = False

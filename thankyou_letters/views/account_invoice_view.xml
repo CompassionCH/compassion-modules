@@ -8,6 +8,9 @@
             <field name="payment_term_id" position="before">
                 <field name="communication_id"/>
             </field>
+            <field name="date_due" position="after">
+                <field name="avoid_thankyou_letter"/>
+            </field>
         </field>
     </record>
 </odoo>

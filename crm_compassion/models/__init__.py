@@ -23,3 +23,4 @@ from . import compassion_hold
 from . import interaction_resume
 from . import mail_mail
 from . import phone_call
+from . import mail_activity
