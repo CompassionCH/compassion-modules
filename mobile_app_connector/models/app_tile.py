@@ -7,6 +7,7 @@
 #
 ##############################################################################
 import logging
+import random
 
 from odoo import api, models, fields
 from odoo.tools.safe_eval import safe_eval
@@ -135,6 +136,10 @@ class AppTile(models.Model):
         :return: Tiles for mobile app (list of dict)
         """
         res = []
+        prayed_child = []
+        if "compassion.child" in tile_data:
+            num_children = len(tile_data["compassion.child"])
+            num_prayers = len(self.filtered(lambda t: t.code == "PR1"))
         if tile_data is None:
             tile_data = {}
         for tile in self:
@@ -148,11 +153,27 @@ class AppTile(models.Model):
                         tile_json.update(text_data)
                         res.append(tile_json)
                 elif tile.mode == "many":
-                    for record in records:
-                        text_data = tile._render_single_tile(record)
+                    if tile.code == "PR1":
+                        to_pray_children = records.filtered(
+                            lambda rec: rec.id not in prayed_child
+                        )
+                        # We drop tiles with expectation equal 1 tile / child
+                        if not to_pray_children or random.uniform(0, 1) > \
+                                num_children / num_prayers:
+                            continue
+                        child = random.choice(to_pray_children)
+                        text_data = tile._render_single_tile(child)
                         if text_data:
                             tile_json.update(text_data)
                             res.append(tile_json.copy())
+                            prayed_child.append(child.id)
+                    else:
+                        for record in records:
+                            text_data = tile._render_single_tile(record)
+                            if text_data:
+                                tile_json.update(text_data)
+                                res.append(tile_json.copy())
+
             else:
                 # Some tiles shouldn't rendered when no records are associated
                 module = "mobile_app_connector.%s"
