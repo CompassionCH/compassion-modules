@@ -82,6 +82,8 @@ class CommunicationJob(models.Model):
                     "destination": job.mobile_notification_destination,
                     "topic": job.mobile_notification_topic,
                     "partner_ids": [(4, job.partner_id.id)],
+                    "res_model": self._name,
+                    "res_id": job.id
                 }
             )
             job.mobile_notification_id = mobile_notif

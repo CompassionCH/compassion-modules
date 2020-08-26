@@ -146,6 +146,7 @@ class AccountInvoice(models.Model):
             has_app = self.env['firebase.registration'].search_count([
                 ('partner_id', '=', partner.id)
             ])
+
             if invoice.invoice_type in ('gift', 'fund') and has_app \
                     and not invoice.avoid_thankyou_letter:
                 invoice.send_mobile_notification()
@@ -178,6 +179,8 @@ class AccountInvoice(models.Model):
                 "partner_ids": [(6, 0, partner.ids)],
                 "title": _("You gave CHF %s.- for %s") % (amount, for_text),
                 "body": _("Thank you for your generosity!"),
+                "res_model": self._name,
+                "res_id": self.id
             }
         )
         _logger.info("Send notification of invoice paid to %s", partner.name)
