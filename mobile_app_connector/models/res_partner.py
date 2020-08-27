@@ -27,9 +27,24 @@ class GetPartnerMessage(models.Model):
         required=True,
     )
 
+    app_messages = fields.Many2one(
+        "mobile.app.messages", "Mobile app messages"
+    )
+
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model_create_multi
+    def create(self, vals_list):
+        partners = super().create(vals_list)
+
+        for partner_id in partners:
+            app_messages = self.env["mobile.app.messages"].create({
+                "partner_id": partner_id.id
+            })
+            partner_id.app_messages = app_messages
+
+        return partners
 
     @api.model
     def mobile_get_all_correspondence(self, **other_params):
