@@ -68,7 +68,7 @@ class RecurringContract(models.Model):
             "android"
             if sms_child_request.source == "Android"
             else "ios"
-            if sms_child_request.source == "iOS"
+            if sms_child_request.source == "IOS"
             else "sms"
         )
 
