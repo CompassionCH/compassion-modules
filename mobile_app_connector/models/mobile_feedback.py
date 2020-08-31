@@ -80,13 +80,15 @@ class MobileFeedback(models.Model):
 
     @api.multi
     def create_crm_claim(self):
+        self.ensure_one()
+        return self.with_context(lang=self.language)._create_claim()
+
+    def _create_claim(self):
         def html_paragraph(text):
             return f"<p>{text}</p>"
 
         def html_bold(text):
             return f"<p><b>{text}</b></p>"
-
-        self.ensure_one()
 
         body = html_bold(_("Your feedback from the app"))
         if self.name:
@@ -100,8 +102,7 @@ class MobileFeedback(models.Model):
         claim = self.env["crm.claim"].create(
             {
                 "email_from": self.partner_id.email,
-                "subject": "Mobile App Feedback",
-                "code": self.env.ref("sequence_claim_app")._next(),
+                "subject": _("Mobile App Feedback"),
                 "name": body,
                 "categ_id": self.env["crm.claim.category"]
                     .search([("name", "=", self.source)])
@@ -112,6 +113,7 @@ class MobileFeedback(models.Model):
                 "partner_id": partner.id,
                 "language": self.language,
                 "date": self.create_date,
+                "description": body
             }
         )
         claim.message_post(
