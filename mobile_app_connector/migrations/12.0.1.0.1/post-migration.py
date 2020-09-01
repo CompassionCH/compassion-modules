@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
 #    Copyright (C) 2020 Compassion CH (http://www.compassion.ch)
@@ -8,16 +7,17 @@
 #
 ##############################################################################
 
-from openupgradelib import openupgrade
 
-
-@openupgrade.migrate(use_env=True)
-def migrate(env, version):
+def migrate(cr, version):
     if not version:
         return
 
-    for partner_id in env["res.partner"].search([]):
-        app_messages = env["mobile.app.messages"].create({
-            "partner_id": partner_id.id
-        })
-        partner_id.app_messages = app_messages
+    cr.execute("""
+        INSERT INTO mobile_app_messages(partner_id)
+        SELECT id FROM res_partner;
+        UPDATE res_partner p
+        SET app_messages = (
+            SELECT id FROM mobile_app_messages
+            WHERE partner_id = p.id
+        );
+    """)
