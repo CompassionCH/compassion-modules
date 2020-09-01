@@ -81,23 +81,24 @@ class FirebaseNotification(models.Model):
         )
 
         dt = fields.Datetime.now()
+        # Logged out notifications
+        notifications = self.search(
+            [
+                ("send_to_logged_out_devices", "=", True),
+                ("send_date", "<", dt),
+                ("sent", "=", True),
+            ]
+        )
         if reg.partner_id:
-            notifications = self.search(
+            # Logged in notifications
+            notifications += self.search(
                 [
                     ("partner_ids", "=", reg.partner_id.id),
                     ("send_date", "<", dt),
                     ("sent", "=", True),
                 ]
             )
-        else:
-            # Logged out users
-            notifications = self.search(
-                [
-                    ("send_to_logged_out_devices", "=", True),
-                    ("send_date", "<", dt),
-                    ("sent", "=", True),
-                ]
-            )
+
         messages = []
         for notif in notifications:
             is_read = (
