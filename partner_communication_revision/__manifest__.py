@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Partner Communication Revisions",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -46,6 +46,7 @@
         "views/communication_config_view.xml",
         "views/revision_preview_view.xml",
         "views/communication_revision_view.xml",
+        "views/communication_revision_history_view.xml",
         "views/communication_keyword_view.xml",
         "views/cancel_revision_wizard_view.xml",
         "views/submit_revision_wizard_view.xml",

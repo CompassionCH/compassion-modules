@@ -21,19 +21,21 @@
                         <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
                             <tree
                                     decoration-primary="state in ('pending','submit','corrected')"
-                                    decoration-success="state=='approved'">
+                                    decoration-success="state=='approved'"
+                                    editable="top">
                                 <field name="config_id" invisible="1"/>
-                                <field name="lang"/>
-                                <field name="user_id"/>
-                                <field name="correction_user_id"/>
+                                <field name="lang" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                                <field name="correction_user_id" readonly="1"/>
                                 <button name="edit_proposition" type="object" icon="fa-file" context="{'config_id': config_id}" string="Show/Edit revision text"/>
-                                <field name="revision_number"/>
-                                <field name="revision_date"/>
-                                <field name="update_user_id"/>
+                                <field name="active_rev_history_id"/>
+                                <field name="revision_date" readonly="1"/>
+                                <field name="update_user_id" readonly="1"/>
                                 <button name="show_revision" type="object" icon="fa-eye" string="Show active text"/>
                                 <button name="edit_revision" type="object" icon="fa-edit" string="Correct active text"/>
                                 <button name="new_revision" type="object" icon="fa-plus-square" states="approved" groups="base.group_erp_manager"/>
-                                <field name="state"/>
+                                <field name="state" readonly="1"/>
+                                <button name="save_current_revision" type="object" icon="fa-save" string="Create backup of actual revision" attrs="{'invisible': ['|', ('state', '!=', 'active'), ('active_rev_history_id', '!=', False)]}"/>
                             </tree>
                         </field>
                     </group>
