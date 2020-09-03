@@ -29,3 +29,19 @@ class CompassionRecurringContract(models.Model):
         """
         child = self.sudo().mapped("child_id")
         return child.get_app_json(multi)
+
+    @api.model
+    def create(self, vals):
+        contract = super().create(vals)
+        sponsors = self.mapped("partner_id") + self.mapped("correspondent_id")
+        sponsors.mapped("app_messages").write({
+            "force_refresh": True
+        })
+        return contract
+
+    def contract_active(self):
+        sponsors = self.mapped("partner_id") + self.mapped("correspondent_id")
+        sponsors.mapped("app_messages").write({
+            "force_refresh": True
+        })
+        return super().contract_active()

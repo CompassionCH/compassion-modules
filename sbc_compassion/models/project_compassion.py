@@ -18,7 +18,7 @@ class ProjectCompassion(models.Model):
         letters = self.env["correspondence"].search(
             [
                 ("child_id.code", "like", self.fcp_id),
-                ("direction", "=", "Supporter to Beneficiary"),
+                ("direction", "=", "Supporter To Beneficiary"),
                 ("kit_identifier", "=", False),
             ]
         )
@@ -28,7 +28,7 @@ class ProjectCompassion(models.Model):
         letters = self.env["correspondence"].search(
             [
                 ("child_id.code", "like", self.fcp_id),
-                ("direction", "=", "Supporter to Beneficiary"),
+                ("direction", "=", "Supporter To Beneficiary"),
                 ("kit_identifier", "=", False),
             ]
         )
