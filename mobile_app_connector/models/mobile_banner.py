@@ -105,4 +105,6 @@ class AppBanner(models.Model):
         for key, value in list(res.items()):
             if not value:
                 res[key] = None
+        if self.destination_type == "External":
+            res["HERO_CTA_DESTINATION"] = self.external_url
         return res
