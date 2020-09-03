@@ -14,7 +14,7 @@ class AppMessages(models.Model):
     _name = "mobile.app.messages"
 
     partner_id = fields.Many2one(
-        "res.partner", "Partner", readonly=True, required=True
+        "res.partner", "Partner", readonly=True, required=True, ondelete="cascade"
     )
     json_messages = fields.Char()
     last_refresh_date = fields.Date()

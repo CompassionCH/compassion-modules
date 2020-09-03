@@ -12,7 +12,6 @@ import json
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
-import datetime
 
 from odoo import api, models, fields
 
