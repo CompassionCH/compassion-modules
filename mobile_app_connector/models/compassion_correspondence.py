@@ -241,3 +241,18 @@ class CompassionCorrespondence(models.Model):
                 res["Date"] = res["Date"][:10]
                 break
         return res
+
+    def process_letter(self):
+        self.mapped("partner_id.app_messages").write({
+            "force_refresh": True
+        })
+        return super().process_letter()
+
+    @api.model
+    def create(self, vals):
+        letter = super().create(vals)
+        if vals.get("direction") == "Supporter To Beneficiary":
+            letter.mapped("partner_id.app_messages").write({
+                "force_refresh": True
+            })
+        return letter

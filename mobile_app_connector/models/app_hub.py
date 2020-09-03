@@ -104,8 +104,11 @@ class AppHub(models.AbstractModel):
         app_messages = partner.app_messages
 
         start = int(pagination.get("start", 0))
-        limit = int(pagination.get("limit", 10))
-        if start != 0:
+        limit = int(pagination.get("limit", 100))
+        force_refresh = pagination.get("force_refresh")
+
+        # No need to regenerate if sponsor is looking for old tiles or if hub is recent
+        if not force_refresh and start != 0 or not app_messages.needs_refresh:
             json_messages = json.loads(app_messages.json_messages)
             messages = json_messages[start:start+limit]
             for message in messages:
@@ -138,7 +141,7 @@ class AppHub(models.AbstractModel):
             _logger.info("END SORTING MESSAGES")
 
             app_messages.json_messages = json.dumps(messages, default=str)
-            app_messages.last_refresh_date = fields.Date.today()
+            app_messages.last_refresh_date = fields.Datetime.now()
 
             messages = messages[0:limit]
 
