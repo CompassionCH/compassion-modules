@@ -35,3 +35,4 @@ from . import compassion_field_office
 from . import partner_communication
 from . import communication_config
 from . import payment_transaction
+from . import app_messages

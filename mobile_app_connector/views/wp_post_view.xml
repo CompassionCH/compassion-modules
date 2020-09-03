@@ -74,7 +74,6 @@
                 <group expand="0" string="Group By">
                     <filter string="Lang" name="group_lang" domain="[]" context="{'group_by':'lang'}"/>
                     <filter string="Type" name="group_type" domain="[]" context="{'group_by':'post_type'}"/>
-                    <filter string="Category" name="group_category" domain="[]" context="{'group_by':'category_id'}"/>
                 </group>
             </search>
         </field>

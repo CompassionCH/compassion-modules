@@ -9,6 +9,8 @@ read_access_contract,Recurring contract read access,sponsorship_compassion.model
 write_access_user_correspondence,Correspondence write user access,sbc_compassion.model_correspondence,base.group_user,1,1,0,0
 read_access_user_correspondence_page,Correspondence page read user access,sbc_compassion.model_correspondence_page,base.group_user,1,0,0,0
 write_access_correspondence,Correspondence write access,sbc_compassion.model_correspondence,base.group_portal,1,1,0,0
+write_mobile_app_messages,Mobile app messages access,model_mobile_app_messages,base.group_portal,1,1,0,0
+full_mobile_app_messages,Mobile app messages full access,model_mobile_app_messages,base.group_user,1,1,1,1
 read_access_correspondence_page,Correspondence page read access,sbc_compassion.model_correspondence_page,base.group_portal,1,0,0,0
 read_access_correspondence_template_page,Correspondence template page read access,sbc_compassion.model_correspondence_template_page,,1,0,0,0
 read_access_product_template,Product template read access,model_product_template,base.group_portal,1,0,0,0

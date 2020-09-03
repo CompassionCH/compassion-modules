@@ -8,8 +8,10 @@
 ##############################################################################
 import logging
 import random
+import json
 from collections import defaultdict
 from dateutil.relativedelta import relativedelta
+from dateutil.parser import parse
 
 from odoo import api, models, fields
 
@@ -98,29 +100,51 @@ class AppHub(models.AbstractModel):
             "correspondence": letters,
         }
         unpaid_data = {"recurring.contract": unpaid}
-        # TODO handle pagination properly
-        limit = int(pagination.get("limit", 1000))
-        _logger.info("BEGIN RENDER TILES")
-        messages = available_tiles[:limit].render_tile(tile_data)
-        _logger.info("END RENDER TILES")
 
-        # GI7 is treated separately because it needs unpaid sponsorships
-        msg_tmp = (
-            self.env["mobile.app.tile"]
-            .search(
-                [
-                    (
-                        "subtype_id",
-                        "=",
-                        self.env.ref("mobile_app_connector.tile_subtype_gi7").id,
-                    ),
-                    ("create_date", "!=", False),
-                ]
+        app_messages = partner.app_messages
+
+        start = int(pagination.get("start", 0))
+        limit = int(pagination.get("limit", 100))
+        force_refresh = pagination.get("force_refresh")
+
+        # No need to regenerate if sponsor is looking for old tiles or if hub is recent
+        if not force_refresh and start != 0 or not app_messages.needs_refresh:
+            json_messages = json.loads(app_messages.json_messages)
+            messages = json_messages[start:start+limit]
+            for message in messages:
+                message["OrderDate"] = parse(message["OrderDate"])
+        else:
+            _logger.info("BEGIN RENDER TILES")
+            messages = available_tiles.render_tile(tile_data)
+
+            # GI7 is treated separately because it needs unpaid sponsorships
+            msg_tmp = (
+                self.env["mobile.app.tile"]
+                .search(
+                    [
+                        (
+                            "subtype_id",
+                            "=",
+                            self.env.ref("mobile_app_connector.tile_subtype_gi7").id,
+                        ),
+                        ("create_date", "!=", False),
+                    ]
+                )
+                .render_tile(unpaid_data)
             )
-            .render_tile(unpaid_data)
-        )
-        messages.extend(msg_tmp)
-        messages.extend(self._fetch_wordpress_tiles(**pagination))
+            messages.extend(msg_tmp)
+            messages.extend(self._fetch_wordpress_tiles())
+            _logger.info("END RENDER TILES")
+
+            _logger.info("START SORTING MESSAGES")
+            self._assign_order(messages)
+            _logger.info("END SORTING MESSAGES")
+
+            app_messages.json_messages = json.dumps(messages, default=str)
+            app_messages.last_refresh_date = fields.Datetime.now()
+
+            messages = messages[0:limit]
+
         res = self._construct_hub_message(partner_id, messages, children, **pagination)
 
         # Amount for monthly sponsorship
@@ -166,19 +190,21 @@ class AppHub(models.AbstractModel):
             self.env["product.product"].sudo().search([("mobile_app", "=", True)])
         )
         if available_tiles:
-            start = int(pagination.get("start", 0))
-            number_mess = int(pagination.get("limit", 1000))
-            offset = (start % number_mess) * self.LIMIT_PUBLIC_TILES
             tiles.extend(
-                available_tiles[offset: self.LIMIT_PUBLIC_TILES].render_tile(
+                available_tiles[0:self.LIMIT_PUBLIC_TILES].render_tile(
                     {"product.product": products}
                 )
             )
         # Fetch tiles from Wordpress
-        tiles.extend(self._fetch_wordpress_tiles(**pagination))
+        tiles.extend(self._fetch_wordpress_tiles())
+
+        start = int(pagination.get("start", 0))
+        limit = int(pagination.get("limit", 10))
+        tiles = tiles[start:start+limit]
+
         return self._construct_hub_message(0, tiles, **pagination)
 
-    def _fetch_wordpress_tiles(self, **pagination):
+    def _fetch_wordpress_tiles(self):
         """
         Gets the cached wordpress posts
         :return: List of JSON messages for use in the hub.
@@ -192,10 +218,7 @@ class AppHub(models.AbstractModel):
         )
         messages = []
         if available_posts:
-            start = int(pagination.get("start", 0))
-            number_mess = int(pagination.get("limit", 1000))
-            offset = (start % number_mess) * self.LIMIT_WORDPRESS_TILES
-            for post in available_posts[offset: self.LIMIT_WORDPRESS_TILES]:
+            for post in available_posts[0:self.LIMIT_WORDPRESS_TILES]:
                 messages.append(post.data_to_json("mobile_app_wp_post"))
         return messages
 
@@ -219,7 +242,6 @@ class AppHub(models.AbstractModel):
             + "/mobile-app-api"
         )
         hub_endpoint = "/hub/{}?start={}&limit={}"
-        self._assign_order(messages)
         if children is None:
             children = self.env["compassion.child"]
         result = children.get_app_json(multi=True)
@@ -236,7 +258,7 @@ class AppHub(models.AbstractModel):
                     ),
                     "Self": base_url + hub_endpoint.format(partner_id, start, limit),
                 },
-                "Messages": messages[int(start): min(len(messages), int(limit))],
+                "Messages": messages,
             }
         )
         return result

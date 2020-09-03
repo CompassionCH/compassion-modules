@@ -83,7 +83,7 @@
         <field name="inherit_id" ref="child_compassion.view_compassion_global_child_attributes_form"/>
         <field name="arch" type="xml">
             <field name="channel" position="before">
-                <field name="campaign_id"/>
+                <field name="campaign_id" options="{'create': false, 'create_edit': false}"/>
                 <field name="event_id" invisible="1"/>
             </field>
         </field>

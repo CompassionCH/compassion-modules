@@ -348,15 +348,23 @@ class RegistrationSupporterForm(models.AbstractModel):
             partner_email = self._sanitize_email(extra_values["partner_email"])
 
             # Find sponsor given the e-mail
-            matching_partner = (
-                self.env["res.partner"]
-                .sudo()
-                .search([("email", "ilike", partner_email)])
-            )
+            matching_partner = self.env["res.partner"].sudo().search([
+                "&",
+                ("email", "=ilike", partner_email),
+                "|",
+                ("active", "=", True), ("active", "=", False)
+            ])
+            if len(matching_partner) > 1:
+                matching_partner = matching_partner.filtered("active")
+
+            # Swap linked partner and main contact email addresses if needed
+            if len(matching_partner) == 1 and not matching_partner.active:
+                matching_partner.write({"email": matching_partner.contact_id.email})
+                matching_partner = matching_partner.contact_id
 
             # Filter to partner that have sponsorships active or in creation
             partner = matching_partner.filtered(
-                lambda partner: self.env["recurring.contract"].search_count(
+                lambda partner: self.env["recurring.contract"].sudo().search_count(
                     [
                         "|",
                         ("partner_id", "=", partner.id),
@@ -377,7 +385,7 @@ class RegistrationSupporterForm(models.AbstractModel):
                 email_template = self.env.ref(
                     "mobile_app_connector.email_template_user_not_found"
                 ).sudo()
-                link_text = _("Click here to send the template email " "request.")
+                link_text = _("Click here to send the template email request.")
                 to = email_template.email_to
                 subject = email_template.subject
                 body = email_template.body_html.replace(

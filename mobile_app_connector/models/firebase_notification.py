@@ -39,7 +39,6 @@ class FirebaseNotification(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
     @api.multi
     def send(self, **kwargs):
         """
@@ -81,23 +80,24 @@ class FirebaseNotification(models.Model):
         )
 
         dt = fields.Datetime.now()
+        # Logged out notifications
+        notifications = self.search(
+            [
+                ("send_to_logged_out_devices", "=", True),
+                ("send_date", "<", dt),
+                ("sent", "=", True),
+            ]
+        )
         if reg.partner_id:
-            notifications = self.search(
+            # Logged in notifications
+            notifications += self.search(
                 [
                     ("partner_ids", "=", reg.partner_id.id),
                     ("send_date", "<", dt),
                     ("sent", "=", True),
                 ]
             )
-        else:
-            # Logged out users
-            notifications = self.search(
-                [
-                    ("send_to_logged_out_devices", "=", True),
-                    ("send_date", "<", dt),
-                    ("sent", "=", True),
-                ]
-            )
+
         messages = []
         for notif in notifications:
             is_read = (
@@ -152,7 +152,6 @@ class FirebaseNotificationPartnerRead(models.Model):
         notif = self.env["firebase.notification.partner.read"].search(
             [
                 ("notification_id", "=", int(notif_id)),
-                ("partner_id", "=", self.env.user.partner_id.id),
             ]
         )
         notif.opened = True

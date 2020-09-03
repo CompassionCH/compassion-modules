@@ -182,3 +182,9 @@ class CompassionChild(models.Model):
             if not value:
                 res[key] = None
         return res
+
+    def details_answer(self, vals):
+        self.mapped("sponsor_id.app_messages").write({
+            "force_refresh": True
+        })
+        return super().details_answer(vals)
