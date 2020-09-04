@@ -38,17 +38,18 @@ class FirebaseNotification(models.Model):
         string="Partner read status of the notification",
         readonly=True,
     )
-    res_model = fields.Char(required=True)
-    res_id = fields.Integer(required=True)
+    res_model = fields.Char()
+    res_id = fields.Integer()
 
     @api.model
     def create(self, vals):
-        previous_notification = self.env["firebase.notification"].search([
-            ("res_model", "=", vals["res_model"]),
-            ("res_id", "=", vals["res_id"])
-        ])
-        if previous_notification:
-            return previous_notification
+        if "res_id" in vals and "res_model" in vals:
+            previous_notification = self.env["firebase.notification"].search([
+                ("res_model", "=", vals["res_model"]),
+                ("res_id", "=", vals["res_id"])
+            ])
+            if previous_notification:
+                return previous_notification
         return super(FirebaseNotification, self).create(vals)
 
     @api.constrains("send_date")
