@@ -179,6 +179,13 @@ class RecurringContract(models.Model):
         self._post_payment_first_month()
         return True
 
+    @api.multi
+    def contract_active(self):
+        super().contract_active()
+        if self.sms_request_id:
+            self.sms_request_id.state = "step2"
+        return True
+
     def _post_payment_first_month(self):
         for contract in self.filtered("invoice_line_ids"):
             invoices = contract.invoice_line_ids.mapped("invoice_id")
