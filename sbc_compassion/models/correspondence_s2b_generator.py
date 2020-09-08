@@ -238,8 +238,8 @@ class CorrespondenceS2bGenerator(models.Model):
         text = self._get_text(sponsorship)
 
         header = (
-            f"{sponsor.global_id} - {sponsor.name} - \n"
-            f"{child.local_id} - {child.lastname + ' ' + child.firstname}"
+            f"{sponsor.global_id} - {sponsor.preferred_name} - \n"
+            f"{child.local_id} - {child.preferred_name}"
             f" - {'Female' if child.gender == 'F' else 'Male'}"
             f" - {str(child.age)}"
         )
