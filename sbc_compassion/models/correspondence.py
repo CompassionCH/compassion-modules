@@ -810,7 +810,7 @@ class Correspondence(models.Model):
         pdf_name = self.name
 
         header = (
-            f"{sponsor.global_id} - {sponsor.name}\n"
+            f"{sponsor.global_id} - {sponsor.preferred_name}\n"
             f"{child.local_id} - {child.preferred_name} - "
             f"{child.gender == 'F' and 'Female' or 'Male'} - {child.age}"
         )
