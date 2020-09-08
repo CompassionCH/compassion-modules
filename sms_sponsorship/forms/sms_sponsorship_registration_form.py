@@ -26,6 +26,11 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
 
     origin_text = fields.Char("I have heard of Compassion through")
 
+    # Make address fields mandatory
+    partner_street = fields.Char(required=True)
+    partner_zip = fields.Char(required=True)
+    partner_city = fields.Char(required=True)
+
     # These two fields are not used for now but we let them in case
     # we would like to revert the functionality
     pay_first_month_ebanking = fields.Boolean("Pay first month now")
