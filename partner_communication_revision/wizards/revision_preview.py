@@ -105,11 +105,11 @@ class RevisionPreview(models.TransientModel):
         if config.report_id:
             # Create a PDF preview
             pdf_data = (
-                self.env["report"]
-                    .with_context(must_skip_send_to_printer=True)
-                    .get_pdf(self.preview_job_id.ids, config.report_id.report_name)
-            )
-            pdf = PdfFileReader(io.StringIO(pdf_data))
+                config.report_id
+                .with_context(must_skip_send_to_printer=True)
+                .render_qweb_pdf(self.preview_job_id.ids)
+            )[0]
+            pdf = PdfFileReader(io.BytesIO(pdf_data))
             self.write(
                 {
                     "pdf_data": base64.b64encode(pdf_data),
