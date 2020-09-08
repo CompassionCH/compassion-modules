@@ -242,15 +242,13 @@ class CommunicationRevision(models.Model):
         if "active_rev_history_id" in vals and self.active_rev_history_id:
             self.active_rev_history_id.save_revision_state()
             backup = self.env["partner.communication.revision.history"]\
-                .sudo().browse(vals["active_rev_history_id"])
+                .browse(vals["active_rev_history_id"])
             if backup:
                 # Restore all fields from the backup
-                self.revision_number = backup.revision_number
-                self.revision_date = backup.revision_date
-                self.lang = backup.lang
-                self.subject = backup.subject
-                self.simplified_text = backup.simplified_text
-                self.body_html = backup.body_html
+                self.write(backup.read([
+                    "revision_number", "revision_date", "lang", "subject",
+                    "simplified_text", "body_html"
+                ])[0])
 
         if "correction_user_id" in vals:
             user = self.env["res.users"].browse(vals["correction_user_id"])
@@ -585,13 +583,10 @@ class CommunicationRevision(models.Model):
         backup = self._get_backup(backup_revision_number)
         if backup:
             # Restore all fields from the backup
-            self.revision_number = backup.revision_number
-            self.revision_date = backup.revision_date
-            self.lang = backup.lang
-            self.subject = backup.subject
-            self.simplified_text = backup.simplified_text
-            self.body_html = backup.body_html
-            self.active_rev_history_id = backup.id
+            self.write(backup.read([
+                "revision_number", "revision_date", "lang", "subject",
+                "simplified_text", "body_html"
+            ])[0])
         else:
             # Create new backup since none exist for this revision number
             self.active_rev_history_id =\

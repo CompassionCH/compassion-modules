@@ -39,12 +39,10 @@ class CommunicationRevisionHistory(models.Model):
 
     def save_revision_state(self):
         self.ensure_one()
-        self.revision_number = self.linked_revision_id.revision_number
-        self.revision_date = self.linked_revision_id.revision_date
-        self.lang = self.linked_revision_id.lang
-        self.subject = self.linked_revision_id.subject
-        self.simplified_text = self.linked_revision_id.simplified_text
-        self.body_html = self.linked_revision_id.body_html
+        self.write(self.linked_revision_id.read([
+            "revision_number", "revision_date", "lang", "subject",
+            "simplified_text", "body_html"
+        ])[0])
 
     @api.multi
     def set_as_default_revision(self):
