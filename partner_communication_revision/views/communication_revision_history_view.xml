@@ -12,13 +12,11 @@
         <field name="model">partner.communication.revision.history</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <button name="set_as_default_revision" string="Use as default" type="object"/>
-                </header>
                 <group>
                     <field name="linked_revision_id"/>
                     <field name="revision_number"/>
-                    <field name="lang"/>
+                    <field name="raw_subject"/>
+                    <field name="proposition_text"/>
                     <field name="body_html"/>
                 </group>
             </form>

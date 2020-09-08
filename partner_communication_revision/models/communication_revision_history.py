@@ -14,20 +14,26 @@ class CommunicationRevisionHistory(models.Model):
     _name = "partner.communication.revision.history"
     _rec_name = "revision_number"
     _description = "Communication template revision history"
+    _order = "linked_revision_id desc,revision_number desc"
 
-    revision_number = fields.Float(required=True)
+    revision_number = fields.Float(required=True, index=True)
     revision_date = fields.Date(required=True)
-    lang = fields.Selection(
-        lambda self: self.env["res.lang"].sudo().get_installed(),
-        "Language", required=True
-    )
     subject = fields.Char()
-    simplified_text = fields.Html(sanitize=False)
-    body_html = fields.Html()
+    raw_subject = fields.Char()
+    body_html = fields.Html(sanitize=False)
     linked_revision_id = fields.Many2one(
         comodel_name="partner.communication.revision",
-        string="Revision history"
+        string="Revision history",
+        required=True,
+        index=True,
+        ondelete="cascade"
     )
+    proposition_text = fields.Html()
+
+    _sql_constraints = [
+        ("unique_version", "unique(linked_revision_id,revision_number)",
+         "This version is already existing!")
+    ]
 
     @api.multi
     def name_get(self):
@@ -37,13 +43,19 @@ class CommunicationRevisionHistory(models.Model):
             names.append((backup.id, name))
         return names
 
+    @api.multi
     def save_revision_state(self):
-        self.ensure_one()
-        self.write(self.linked_revision_id.read([
-            "revision_number", "revision_date", "lang", "subject",
-            "simplified_text", "body_html"
-        ])[0])
+        for revision in self:
+            revision.write(revision.linked_revision_id.read([
+                "revision_number", "revision_date", "subject",
+                "body_html", "proposition_text", "raw_subject"
+            ])[0])
 
     @api.multi
-    def set_as_default_revision(self):
-        self.linked_revision_id.restore_backup(self.revision_number)
+    def get_vals(self):
+        vals = self.read([
+            "revision_number", "revision_date", "subject",
+            "body_html", "proposition_text", "raw_subject"
+        ])[0]
+        vals.pop("id")
+        return vals

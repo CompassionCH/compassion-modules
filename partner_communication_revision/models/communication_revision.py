@@ -81,7 +81,9 @@ class CommunicationRevision(models.Model):
     raw_subject = fields.Char(
         compute="_compute_raw_subject", inverse="_inverse_raw_subject"
     )
-    body_html = fields.Html(related="config_id.email_template_id.body_html")
+    body_html = fields.Html(
+        compute="_compute_body_html", inverse="_inverse_body_html"
+    )
     raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
     user_id = fields.Many2one(
@@ -133,10 +135,11 @@ class CommunicationRevision(models.Model):
     is_proposer = fields.Boolean(compute="_compute_allowed")
     is_corrector = fields.Boolean(compute="_compute_allowed")
     display_name = fields.Char(compute="_compute_display_name")
-    active_rev_history_id = fields.Many2one(
+    active_revision_id = fields.Many2one(
         comodel_name="partner.communication.revision.history",
-        string="Active revision history",
-        domain="[('linked_revision_id.id', '=', id), ('linked_revision_id.lang', '=', lang)]"
+        string="Active version",
+        domain="[('linked_revision_id.id', '=', id), "
+               "('linked_revision_id.lang', '=', lang)]",
     )
 
     _sql_constraints = [
@@ -171,19 +174,17 @@ class CommunicationRevision(models.Model):
         for revision in self:
             revision.edit_keyword_ids = revision.keyword_ids.filtered(
                 lambda k: (
-                                  (revision.show_all_keywords and k.type in (
-                                      "code", "var"))
-                                  or k.type == "code"
-                          )
-                          and (revision.show_all_keywords or k.is_visible)
+                    (revision.show_all_keywords and k.type in ("code", "var"))
+                    or k.type == "code"
+                ) and (revision.show_all_keywords or k.is_visible)
             )
             revision.if_keyword_ids = revision.keyword_ids.filtered(
                 lambda k: k.type == "if"
-                          and (revision.show_all_keywords or k.is_visible)
+                and (revision.show_all_keywords or k.is_visible)
             )
             revision.for_keyword_ids = revision.keyword_ids.filtered(
                 lambda k: "for" in k.type
-                          and (revision.show_all_keywords or k.is_visible)
+                and (revision.show_all_keywords or k.is_visible)
             )
 
     @api.multi
@@ -230,6 +231,21 @@ class CommunicationRevision(models.Model):
                     lang=revision.lang
                 ).subject = revision.raw_subject
 
+    @api.multi
+    def _compute_body_html(self):
+        for revision in self:
+            revision.body_html = revision.config_id.email_template_id.with_context(
+                lang=revision.lang
+            ).body_html
+
+    @api.multi
+    def _inverse_body_html(self):
+        for revision in self:
+            if revision.body_html:
+                revision.config_id.email_template_id.with_context(
+                    lang=revision.lang
+                ).body_html = revision.body_html
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -239,16 +255,18 @@ class CommunicationRevision(models.Model):
         Push back the enhanced text in translation of the mail.template.
         Update revision date and number depending on edit mode.
         """
-        if "active_rev_history_id" in vals and self.active_rev_history_id:
-            self.active_rev_history_id.save_revision_state()
+        if "active_revision_id" in vals:
+            # Change the revision (only one at a time is possible)
+            self.ensure_one()
+            if self.active_revision_id:
+                self.save_current_revision()
             backup = self.env["partner.communication.revision.history"]\
-                .browse(vals["active_rev_history_id"])
+                .browse(vals["active_revision_id"])
             if backup:
                 # Restore all fields from the backup
-                self.write(backup.read([
-                    "revision_number", "revision_date", "lang", "subject",
-                    "simplified_text", "body_html"
-                ])[0])
+                vals.update(backup.get_vals())
+            super().write(vals)
+            return True
 
         if "correction_user_id" in vals:
             user = self.env["res.users"].browse(vals["correction_user_id"])
@@ -259,14 +277,12 @@ class CommunicationRevision(models.Model):
 
         for revision in self.filtered("simplified_text"):
             vals["update_user_id"] = self.env.uid
-            super().write(vals)
+            super(CommunicationRevision, revision).write(vals)
 
             # 2. Push back the template text
             # Set the conditionals texts
             revision.save_text()
-            revision.config_id.email_template_id.with_context(
-                lang=revision.lang
-            ).body_html = revision._enhance_text()
+            revision.body_html = revision._enhance_text()
         return True
 
     ##########################################################################
@@ -277,12 +293,15 @@ class CommunicationRevision(models.Model):
         """
         Useful to just edit one language regardless of other translations
         """
+        # Enable revision editing mode
         self.write({
             "state": "pending",
             "user_id": self.env.uid,
             "correction_user_id": False,
-            "is_master_version": False
+            "is_master_version": False,
+            "active_revision_id": self.get_latest_revision().id
         })
+        return True
 
     @api.multi
     def edit_revision(self):
@@ -294,9 +313,7 @@ class CommunicationRevision(models.Model):
         """
         self.ensure_one()
         new_revision_number = self.revision_number + 0.01
-
-        self.change_backup_version(new_revision_number)
-
+        self._create_backup(new_revision_number)
         self.revision_number = new_revision_number
         self.revision_date = fields.Date.today()
         return self._open_revision()
@@ -310,14 +327,14 @@ class CommunicationRevision(models.Model):
         :return: action window
         """
         self.ensure_one()
-        this_revision_number = self.revision_number + 1.0
+        this_revision_number = int(self.revision_number + 1.0)
         current_revision_number = self.config_id.revision_number
         new_revision_number = max([this_revision_number, current_revision_number])
 
-        self.change_backup_version(new_revision_number)
+        self._create_backup(new_revision_number)
 
         revision_vals = {
-            "revision_number": int(new_revision_number),
+            "revision_number": new_revision_number,
             "revision_date": fields.Date.today(),
             "state": "active",
         }
@@ -336,6 +353,13 @@ class CommunicationRevision(models.Model):
     def show_revision(self):
         self.ensure_one()
         return self._open_revision(form_view_mode="readonly")
+
+    @api.multi
+    def get_latest_revision(self):
+        self.ensure_one()
+        return self.env["partner.communication.revision.history"].search([
+            ("linked_revision_id", "=", self.id)
+        ], order="revision_number desc", limit=1)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -532,12 +556,9 @@ class CommunicationRevision(models.Model):
     @api.multi
     def reload_text(self):
         self.keyword_ids.unlink()
-        text = self.with_context(lang=self.lang).body_html
         self.raw_template_edit_mode = False
-        if text:
-            self.with_context(no_update=True).simplified_text = self._simplify_text(
-                text
-            )
+        if self.body_html:
+            self.with_context(no_update=True).simplified_text = self._simplify_text()
 
     @api.multi
     def toggle_all_keywords(self):
@@ -564,33 +585,13 @@ class CommunicationRevision(models.Model):
             )
         return True
 
-    @api.multi
-    def change_backup_version(self, new_revision_number):
-        self.ensure_one()
-        self.save_current_revision()
-        self.restore_backup(new_revision_number)
-
     def save_current_revision(self):
-        self.ensure_one()
-        if not self.active_rev_history_id:
-            self.active_rev_history_id =\
-                self._create_backup(self.revision_number)
-        else:
-            self.active_rev_history_id.save_revision_state()
-
-    def restore_backup(self, backup_revision_number):
-        self.ensure_one()
-        backup = self._get_backup(backup_revision_number)
-        if backup:
-            # Restore all fields from the backup
-            self.write(backup.read([
-                "revision_number", "revision_date", "lang", "subject",
-                "simplified_text", "body_html"
-            ])[0])
-        else:
-            # Create new backup since none exist for this revision number
-            self.active_rev_history_id =\
-                self._create_backup(backup_revision_number)
+        for revision in self:
+            if not revision.active_revision_id:
+                revision._create_backup(revision.revision_number)
+            else:
+                revision.active_revision_id.save_revision_state()
+        return True
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
@@ -637,7 +638,7 @@ class CommunicationRevision(models.Model):
         }
 
     @api.multi
-    def _simplify_text(self, text):
+    def _simplify_text(self):
         """
         Converts the mail_template raw text to a simplified version,
         readable to any user.
@@ -646,7 +647,7 @@ class CommunicationRevision(models.Model):
         self.ensure_one()
         previous_keywords = self.keyword_ids
         found_keywords = self.env["partner.communication.keyword"]
-        simplified_text, keywords = self._replace_setters(text)
+        simplified_text, keywords = self._replace_setters(self.body_html)
         found_keywords |= keywords
         simplified_text, keywords = self._replace_inline_code(simplified_text)
         found_keywords |= keywords
@@ -724,7 +725,7 @@ class CommunicationRevision(models.Model):
                 continue
             keyword = self.keyword_ids.filtered(
                 lambda k: k.raw_code == raw_code
-                          and (k.index == keyword_number if kw_type == "var" else 1)
+                and (k.index == keyword_number if kw_type == "var" else 1)
             )
             if not keyword:
                 vals = {
@@ -856,8 +857,8 @@ class CommunicationRevision(models.Model):
                 continue
             keyword = self.keyword_ids.filtered(
                 lambda k: k.raw_code == raw_code
-                          and k.index == keyword_number
-                          and k.type == for_type
+                and k.index == keyword_number
+                and k.type == for_type
             )
             if not keyword:
                 # Create a new keyword object by extracting the text
@@ -922,19 +923,21 @@ class CommunicationRevision(models.Model):
         return final_text("body").html()
 
     def _get_backup(self, revision_number):
+        self.ensure_one()
         return self.env["partner.communication.revision.history"].search([
             ("revision_number", "=", revision_number),
-            ("lang", "=", self.lang),
             ("linked_revision_id", "=", self.id),
         ])
 
     def _create_backup(self, backup_revision_number):
-        return self.env["partner.communication.revision.history"].create({
-            "revision_number": backup_revision_number,
-            "revision_date": self.revision_date,
-            "lang": self.lang,
-            "subject": self.subject,
-            "simplified_text": self.simplified_text,
-            "body_html": self.body_html,
-            "linked_revision_id": self.id,
-        }).id
+        self.ensure_one()
+        self.active_revision_id = self.env["partner.communication.revision.history"]\
+            .create({
+                "revision_number": backup_revision_number,
+                "revision_date": self.revision_date,
+                "subject": self.subject,
+                "body_html": self.body_html,
+                "linked_revision_id": self.id,
+                "proposition_text": self.proposition_text,
+                "raw_subject": self.raw_subject,
+            })
