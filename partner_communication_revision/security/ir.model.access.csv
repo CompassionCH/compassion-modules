@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_communication_revision,Full access on communication revision,model_partner_communication_revision,base.group_user,1,1,1,1
+access_communication_revision_history,Full access on communication revision history,model_partner_communication_revision_history,base.group_user,1,1,1,1
 access_communication_keyword,Full access on communication keywords,model_partner_communication_keyword,base.group_user,1,1,1,1

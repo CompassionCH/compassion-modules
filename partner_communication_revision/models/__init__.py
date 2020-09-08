@@ -11,3 +11,4 @@
 from . import communication_revision
 from . import communication_config
 from . import communication_keyword
+from . import communication_revision_history
