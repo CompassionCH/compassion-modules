@@ -21,13 +21,6 @@ class Contracts(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
-    writing_language = fields.Many2one(
-        "res.lang.compassion",
-        related="reading_language",
-        help="By now equals to reading language. Could be used in the future",
-        readonly=False,
-    )
     child_letter_ids = fields.Many2many(
         "correspondence",
         string="Child letters",
@@ -105,6 +98,32 @@ class Contracts(models.Model):
             )
 
     ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+
+    @api.model
+    def create(self, vals):
+        sponsorship = super().create(vals)
+
+        # Set reading language by default for new sponsorships
+        correspondent_lang_id = False
+        for lang in sponsorship.correspondent_id.spoken_lang_ids:
+            if sponsorship.child_id.correspondence_language_id.id == lang.id:
+                self._update_reading_language(
+                    sponsorship.id,
+                    lang.id
+                )
+            if sponsorship.correspondent_id.lang == lang.lang_id.code:
+                correspondent_lang_id = lang.id
+        if not sponsorship.reading_language and correspondent_lang_id:
+            self._update_reading_language(
+                sponsorship.id,
+                correspondent_lang_id
+            )
+
+        return sponsorship
+
+    ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     @api.onchange("correspondent_id", "child_id")
@@ -161,3 +180,13 @@ class Contracts(models.Model):
                 lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
         ):
             contract.sponsor_letter_ids.reactivate_letters("Sponsorship activated")
+
+    ##########################################################################
+    #                            PRIVATE METHODS                             #
+    ##########################################################################
+    def _update_reading_language(self, sponsorship_id, lang):
+        self.env.cr.execute(
+            "UPDATE recurring_contract "
+            "SET reading_language = %s "
+            "WHERE id = %s" % (lang, sponsorship_id)
+        )
