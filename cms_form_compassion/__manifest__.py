@@ -43,7 +43,8 @@
         "queue_job",  # oca_addons/queue
         "base_automation",  # source/addons
         "link_tracker",  # source/addons
-        "base_location"  # oca_addons/partner-contact
+        "base_location",  # oca_addons/partner-contact
+        "message_center_compassion"
     ],
     "data": [
         "data/ir.config_parameter.xml",
@@ -51,6 +52,7 @@
         "templates/assets.xml",
         "templates/form_widgets.xml",
         "templates/payment_templates.xml",
+        "views/config_view.xml",
         "views/ir_logging.xml",
     ],
     "demo": [],

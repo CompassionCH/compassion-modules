@@ -94,7 +94,16 @@ class MatchPartner(models.AbstractModel):
         create_infos = self.match_process_create_infos(infos, options)
         create_infos.setdefault("lang", self.env.lang)
         create_infos.setdefault("tz", "Europe/Zurich")
-        return partner_obj.create(create_infos)
+        partner = partner_obj.create(create_infos)
+        partner.activity_schedule(
+            'mail.mail_activity_data_todo',
+            date_deadline=datetime.date(datetime.today() + timedelta(weeks=1)),
+            summary="Verify new partner",
+            note="Please verify that this partner doesn't already exist",
+            user_id=self.env["ir.config_parameter"].sudo().get_param(
+                "cms_form_compassion.match_validation_responsible")
+        )
+        return partner
 
     @api.model
     def match_process_create_infos(self, infos, options=None):

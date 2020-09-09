@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Match partner validation -->
+    <record id="view_cms_form_settings_form" model="ir.ui.view">
+        <field name="name">cms.form.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='compassion_settings']" position='inside'>
+                <h2>Match partner validation check responsible</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-md-12 o_setting_box">
+                        <div name="view_cms_form_settings_form">
+                            <div class="o_setting_right_pane">
+                                <div class="row mt16">
+                                    <label class="col-md-6 o_light_label"
+                                           for="match_validation_responsible"/>
+                                    <field class="col-md-6"
+                                           name="match_validation_responsible"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
