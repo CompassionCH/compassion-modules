@@ -4,9 +4,9 @@
     <record id="view_cms_form_settings_form" model="ir.ui.view">
         <field name="name">cms.form.settings.form</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='compassion_settings']" position='inside'>
+            <xpath expr="//div[hasclass('app_settings_block')][@data-key='general_settings']" position='inside'>
                 <h2>Match partner validation check responsible</h2>
                 <div class="row mt16 o_settings_container">
                     <div class="col-md-12 o_setting_box">
