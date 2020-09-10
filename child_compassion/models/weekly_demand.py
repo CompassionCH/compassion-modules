@@ -41,7 +41,7 @@ class WeeklyDemand(models.Model):
         for week in self:
             date_week = week.week_start_date
             if date_week:
-                week.period_locked = date_week <= (
+                week.period_locked = date_week <= datetime.date(
                     datetime.today() + timedelta(weeks=8)
                 )
 
