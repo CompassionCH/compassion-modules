@@ -42,7 +42,7 @@ def migrate(env, version):
                 correspondent_lang_id
             )
 
-        if correspondent_lang_id:
+        if sponsorship.reading_language:
             message_obj.create({
                 "partner_id": sponsorship.correspondent_id.id,
                 "child_id": sponsorship.child_id.id,
