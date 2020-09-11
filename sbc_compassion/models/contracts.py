@@ -103,25 +103,20 @@ class Contracts(models.Model):
 
     @api.model
     def create(self, vals):
-        sponsorship = super().create(vals)
+        if "child_id" in vals and "correspondent_id" in vals and "reading_language" not in vals:
+            child = self.env["compassion.child"].browse(vals["child_id"])
+            correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
+            correspondent_lang_id = False
+            for lang in correspondent.spoken_lang_ids:
+                if child.correspondence_language_id == lang:
+                    vals["reading_language"] = lang.id
+                    break
+                if correspondent.lang == lang.lang_id.code:
+                    correspondent_lang_id = lang.id
+            else:
+                vals["reading_language"] = correspondent_lang_id
 
-        # Set reading language by default for new sponsorships
-        correspondent_lang_id = False
-        for lang in sponsorship.correspondent_id.spoken_lang_ids:
-            if sponsorship.child_id.correspondence_language_id.id == lang.id:
-                self._update_reading_language(
-                    sponsorship.id,
-                    lang.id
-                )
-            if sponsorship.correspondent_id.lang == lang.lang_id.code:
-                correspondent_lang_id = lang.id
-        if not sponsorship.reading_language and correspondent_lang_id:
-            self._update_reading_language(
-                sponsorship.id,
-                correspondent_lang_id
-            )
-
-        return sponsorship
+        return super().create(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -180,13 +175,3 @@ class Contracts(models.Model):
                 lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
         ):
             contract.sponsor_letter_ids.reactivate_letters("Sponsorship activated")
-
-    ##########################################################################
-    #                            PRIVATE METHODS                             #
-    ##########################################################################
-    def _update_reading_language(self, sponsorship_id, lang):
-        self.env.cr.execute(
-            "UPDATE recurring_contract "
-            "SET reading_language = %s "
-            "WHERE id = %s" % (lang, sponsorship_id)
-        )

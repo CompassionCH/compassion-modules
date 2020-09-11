@@ -5,7 +5,7 @@ def _update_reading_language(cr, sponsorship_id, lang):
     cr.execute(
         "UPDATE recurring_contract "
         "SET reading_language = %s "
-        "WHERE id = %s" % (lang, sponsorship_id)
+        "WHERE id = %s", [lang, sponsorship_id]
     )
 
 
@@ -15,7 +15,9 @@ def migrate(env, version):
         return
 
     sponsorships_to_fill = env["recurring.contract"].search([
-        ("reading_language", "=", False)
+        ("reading_language", "=", False),
+        ("child_id", "!=", False),
+        ("state", "not in", ["terminated", "cancelled"])
     ])
 
     message_obj = env["gmc.message"]
@@ -40,9 +42,10 @@ def migrate(env, version):
                 correspondent_lang_id
             )
 
-        message_obj.create({
-            "partner_id": sponsorship.correspondent_id.id,
-            "child_id": sponsorship.child_id.id,
-            "action_id": action_id,
-            "object_id": sponsorship.id,
-        }).process_messages()
+        if correspondent_lang_id:
+            message_obj.create({
+                "partner_id": sponsorship.correspondent_id.id,
+                "child_id": sponsorship.child_id.id,
+                "action_id": action_id,
+                "object_id": sponsorship.id,
+            }).process_messages()
