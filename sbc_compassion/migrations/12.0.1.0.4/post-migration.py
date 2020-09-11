@@ -1,4 +1,7 @@
+import logging
 from openupgradelib import openupgrade
+
+_logger = logging.getLogger(__name__)
 
 
 def _update_reading_language(cr, sponsorship_id, lang):
@@ -19,33 +22,19 @@ def migrate(env, version):
         ("child_id", "!=", False),
         ("state", "not in", ["terminated", "cancelled"])
     ])
+    english = env.ref("child_compassion.lang_compassion_english")
 
-    message_obj = env["gmc.message"]
-    action_id = env.ref("sponsorship_compassion.create_sponsorship").id
-
-    for sponsorship in sponsorships_to_fill:
-        correspondent_lang_id = False
-        for lang in sponsorship.correspondent_id.spoken_lang_ids:
-            if sponsorship.child_id.correspondence_language_id.id == lang.id:
-                _update_reading_language(
-                    env.cr,
-                    sponsorship.id,
-                    lang.id
-                )
-                continue
-            if sponsorship.correspondent_id.lang == lang.lang_id.code:
-                correspondent_lang_id = lang.id
-        if not sponsorship.reading_language and correspondent_lang_id:
+    for i, sponsorship in enumerate(sponsorships_to_fill):
+        _logger.info("Migrating sponsorship %s/%s", i, len(sponsorships_to_fill))
+        spoken_langs = sponsorship.correspondent_id.spoken_lang_ids
+        reading_lang = (spoken_langs &
+                        sponsorship.child_id.correspondence_language_id) or (
+            spoken_langs & english) or \
+            spoken_langs.filtered(lambda l: l.lang_id.code ==
+                                  sponsorship.correspondent_id.lang)
+        if reading_lang:
             _update_reading_language(
                 env.cr,
                 sponsorship.id,
-                correspondent_lang_id
+                reading_lang.id
             )
-
-        if sponsorship.reading_language:
-            message_obj.create({
-                "partner_id": sponsorship.correspondent_id.id,
-                "child_id": sponsorship.child_id.id,
-                "action_id": action_id,
-                "object_id": sponsorship.id,
-            }).process_messages()

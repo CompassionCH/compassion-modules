@@ -28,7 +28,7 @@
 # pylint: disable=C8101
 {
     "name": "Sponsor to beneficiary communication",
-    "version": "12.0.1.0.3",
+    "version": "12.0.1.0.4",
     "category": "Other",
     "summary": "SBC - Supporter to Beneficiary Communication",
     "sequence": 150,
