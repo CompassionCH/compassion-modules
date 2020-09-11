@@ -124,7 +124,7 @@ class MatchPartner(models.AbstractModel):
     def match_update(self, partner, infos, options=None):
         """Update the matched partner with a selection of the given infos."""
         update_infos = self.match_process_update_infos(infos, options)
-        partner.write(update_infos)
+        partner.with_context({"skip_check_zip": True}).write(update_infos)
 
     @api.model
     def match_process_infos(self, infos, options=None):
