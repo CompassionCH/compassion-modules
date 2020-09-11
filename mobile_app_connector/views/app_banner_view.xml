@@ -24,6 +24,7 @@
                     </group>
                     <group>
                         <field name="body"/>
+                        <field name="fund_type"/>
                         <field name="button_text"/>
                         <field name="image_url"/>
                     </group>

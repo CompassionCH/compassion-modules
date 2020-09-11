@@ -41,6 +41,7 @@ class AppBanner(models.Model):
     )
     button_text = fields.Char(translate=True)
     body = fields.Text(translate=True)
+    fund_type = fields.Many2one("product.product", "Fund product", readonly=False)
     image_url = fields.Char(translate=True)
     external_url = fields.Char(translate=True)
     date_start = fields.Date(readonly=True, states={"new": [("readonly", False)]})
@@ -102,6 +103,9 @@ class AppBanner(models.Model):
             res = {}
         res["IS_DELETED"] = "0"
         res["BLOG_DISPLAY_TYPE"] = "Tile"
+        if self.fund_type and self.fund_type.product_tmpl_id:
+            res["POST_TITLE"] = self.fund_type.name
+            res["POST_ID"] = self.fund_type.product_tmpl_id.id
         for key, value in list(res.items()):
             if not value:
                 res[key] = None
