@@ -33,7 +33,10 @@ class FirebaseNotification(models.Model):
         required=True,
     )
 
-    fundType = fields.Many2one("product.product", "Fund product", readonly=False)
+    fundType = fields.Many2one(
+        "product.product", "Fund product", readonly=False,
+        domain=[("mobile_app", "=", True)]
+    )
     child_id = fields.Many2one("compassion.child", "Child", readonly=False)
 
     ##########################################################################

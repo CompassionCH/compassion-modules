@@ -41,7 +41,10 @@ class AppBanner(models.Model):
     )
     button_text = fields.Char(translate=True)
     body = fields.Text(translate=True)
-    fund_type = fields.Many2one("product.product", "Fund product", readonly=False)
+    fund_type = fields.Many2one(
+        "product.product", "Fund product", readonly=False,
+        domain=[("mobile_app", "=", True)]
+    )
     image_url = fields.Char(translate=True)
     external_url = fields.Char(translate=True)
     date_start = fields.Date(readonly=True, states={"new": [("readonly", False)]})
