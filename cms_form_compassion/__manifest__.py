@@ -51,6 +51,7 @@
         "templates/assets.xml",
         "templates/form_widgets.xml",
         "templates/payment_templates.xml",
+        "views/config_view.xml",
         "views/ir_logging.xml",
     ],
     "demo": [],
