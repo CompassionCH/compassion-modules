@@ -133,7 +133,8 @@ class FirebaseNotification(models.Model):
                     "UPDATED_ON": notif.send_date,
                     "USER_ID": "",
                     "IS_READ": is_read,
-                    "POST_TITLE": str(notif.fundType.id),
+                    "POST_TITLE": notif.fundType.name,
+                    "POST_ID": notif.fundType.product_tmpl_id.id,
                 }
             )
 
