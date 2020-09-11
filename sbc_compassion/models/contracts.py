@@ -21,13 +21,6 @@ class Contracts(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
-    writing_language = fields.Many2one(
-        "res.lang.compassion",
-        related="reading_language",
-        help="By now equals to reading language. Could be used in the future",
-        readonly=False,
-    )
     child_letter_ids = fields.Many2many(
         "correspondence",
         string="Child letters",
@@ -103,6 +96,27 @@ class Contracts(models.Model):
                 contract.last_letter == -1
                 or contract.last_letter > 90 - days_until_birthday
             )
+
+    ##########################################################################
+    #                              ORM METHODS                               #
+    ##########################################################################
+
+    @api.model
+    def create(self, vals):
+        if "child_id" in vals and "correspondent_id" in vals and "reading_language" not in vals:
+            child = self.env["compassion.child"].browse(vals["child_id"])
+            correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
+            correspondent_lang_id = False
+            for lang in correspondent.spoken_lang_ids:
+                if child.correspondence_language_id == lang:
+                    vals["reading_language"] = lang.id
+                    break
+                if correspondent.lang == lang.lang_id.code:
+                    correspondent_lang_id = lang.id
+            else:
+                vals["reading_language"] = correspondent_lang_id
+
+        return super().create(vals)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
