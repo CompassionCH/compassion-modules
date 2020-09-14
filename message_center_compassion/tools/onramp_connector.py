@@ -10,6 +10,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
+from json.decoder import JSONDecodeError
 
 import requests
 
@@ -136,8 +137,9 @@ class OnrampConnector(object):
         try:
             token = response.json()
             return {"Authorization": "{token_type} {access_token}".format(**token)}
-        except (AttributeError, KeyError):
-            _logger.error("GMC token retrieval error", exc_info=True)
+        except (AttributeError, KeyError, JSONDecodeError):
+            _logger.error("GMC token retrieval error: %s",
+                          response.text, exc_info=True)
             raise UserError(_("Token validation failed."))
 
     @classmethod
