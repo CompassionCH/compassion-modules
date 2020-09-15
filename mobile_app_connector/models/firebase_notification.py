@@ -158,6 +158,8 @@ class FirebaseNotificationPartnerRead(models.Model):
                 ("notification_id", "=", int(notif_id)),
             ]
         )
-        notif.opened = True
-        notif.read_date = fields.Datetime.now()
+        notif.write({
+            "opened": True,
+            "read_date": fields.Datetime.now(),
+        })
         return 1
