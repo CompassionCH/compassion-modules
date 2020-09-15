@@ -138,18 +138,6 @@ class RestController(http.Controller):
             raise MethodNotAllowed("Only POST and GET methods are supported")
 
     @http.route(
-        [
-            "/mobile-app-api/<string:model>/<string:method>",
-            "/mobile-app-api/<string:model>/<string:method>/<request_code>",
-        ],
-        type="http",
-        auth="user",
-        methods=["GET", "POST"],
-    )
-    def mobile_app_http_handler(self, model, method, **parameters):
-        return self.mobile_app_handler(model, method, **parameters)
-
-    @http.route(
         ["/no_json/correspondence/get_preview"],
         auth="user",
         methods=["POST"],

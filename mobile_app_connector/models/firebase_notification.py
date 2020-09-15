@@ -79,7 +79,8 @@ class FirebaseNotification(models.Model):
         """
         firebase_id = params.get("firebase_id")
         reg = self.env["firebase.registration"].search(
-            [("registration_id", "=", firebase_id)]
+            [("registration_id", "=", firebase_id)],
+            limit=1
         )
 
         dt = fields.Datetime.now()

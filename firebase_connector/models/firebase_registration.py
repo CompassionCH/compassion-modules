@@ -43,6 +43,7 @@ class FirebaseRegistration(models.Model):
     _name = "firebase.registration"
     _description = "Device registered with Firebase Cloud Messaging"
     _rec_name = "registration_id"
+    _order = "id desc"
 
     registration_id = fields.Char(required=True, string="Firebase Registration ID")
     partner_id = fields.Many2one("res.partner", string="Partner", readonly=False)
