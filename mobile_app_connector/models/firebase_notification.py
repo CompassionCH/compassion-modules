@@ -108,7 +108,7 @@ class FirebaseNotification(models.Model):
                 "1"
                 if notif.read_ids.filtered(
                     lambda r: r.partner_id == reg.partner_id
-                ).opened
+                ).filtered("opened")
                 else "0"
             )
 
