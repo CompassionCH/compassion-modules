@@ -28,7 +28,8 @@ class CMSFormSettings(models.TransientModel):
         # This is stored in page template for additional B2S pages
         config = self.env["ir.config_parameter"].sudo()
         config.set_param(
-            "cms_form_compassion.match_validation_responsible", str(self.match_validation_responsible.id or 0)
+            "cms_form_compassion.match_validation_responsible", str(
+                self.match_validation_responsible.id or 0)
         )
 
     @api.model
