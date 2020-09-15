@@ -43,7 +43,7 @@ class FirebaseNotification(models.Model):
 
     @api.model
     def create(self, vals):
-        if "res_id" in vals and "res_model" in vals:
+        if vals.get("res_id") and vals.get("res_model"):
             previous_notification = self.env["firebase.notification"].search([
                 ("res_model", "=", vals["res_model"]),
                 ("res_id", "=", vals["res_id"])
