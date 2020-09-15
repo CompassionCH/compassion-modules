@@ -27,7 +27,7 @@ class FirebaseNotification(models.Model):
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
-    send_date = fields.Datetime()
+    send_date = fields.Datetime(copy=False)
     sent = fields.Boolean(readonly=True)
     send_to_logged_out_devices = fields.Boolean(
         default=False, string="Send to devices without logged users."
