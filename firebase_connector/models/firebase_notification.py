@@ -28,7 +28,7 @@ class FirebaseNotification(models.Model):
     title = fields.Char(required=True)
     body = fields.Char(required=True)
     send_date = fields.Datetime(copy=False)
-    sent = fields.Boolean(readonly=True)
+    sent = fields.Boolean(readonly=True, copy=False)
     send_to_logged_out_devices = fields.Boolean(
         default=False, string="Send to devices without logged users."
     )
