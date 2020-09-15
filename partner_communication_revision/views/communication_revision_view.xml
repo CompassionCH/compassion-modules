@@ -127,12 +127,10 @@
                     </div>
                     <group>
                         <group>
-                            <field name="lang" invisible="1"/>
                             <field name="user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group>
                             <field name="correction_user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': [('is_proposer', '=', False)]}"/>
-                            <field name="active_revision_id"/>
                         </group>
                     </group>
                     <group>
