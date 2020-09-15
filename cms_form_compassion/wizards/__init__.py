@@ -1,15 +1,10 @@
 ##############################################################################
 #
 #    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
-#    Releasing children from poverty in Jesus' name
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    @author: Théo Nikles <theo.nikles@gmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-from . import models
-from . import forms
-from . import controllers
-from . import tools
-from . import wizards
+from . import cms_form_settings

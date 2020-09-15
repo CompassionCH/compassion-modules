@@ -105,7 +105,7 @@ class RestController(http.Controller):
     @http.route(
         [
             "/mobile-app-api/<string:model>/<string:method>",
-            "/mobile-app-api/<string:model>/<string:method>/" "<request_code>",
+            "/mobile-app-api/<string:model>/<string:method>/<request_code>",
         ],
         type="json",
         auth="user",

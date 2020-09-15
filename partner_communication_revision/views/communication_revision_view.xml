@@ -9,6 +9,7 @@
                     <field name="lang"/>
                     <field name="config_id" invisible="1"/>
                     <field name="state" invisible="1"/>
+                    <field name="active_revision_id"/>
                 </group>
             </form>
         </field>
@@ -27,6 +28,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="lang" invisible="1"/>
                             <field name="subject"/>
                         </group>
                         <group>
@@ -70,6 +72,7 @@
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
                     </div>
                     <group>
+                        <field name="lang" invisible="1"/>
                         <field name="raw_subject"/>
                     </group>
                     <field name="simplified_text" widget="html" readonly="1"/>
@@ -124,10 +127,12 @@
                     </div>
                     <group>
                         <group>
+                            <field name="lang" invisible="1"/>
                             <field name="user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group>
                             <field name="correction_user_id" attrs="{'required': [('state', '=', 'pending')], 'readonly': [('is_proposer', '=', False)]}"/>
+                            <field name="active_revision_id"/>
                         </group>
                     </group>
                     <group>

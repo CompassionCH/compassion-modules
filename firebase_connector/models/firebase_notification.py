@@ -27,8 +27,8 @@ class FirebaseNotification(models.Model):
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
-    send_date = fields.Datetime()
-    sent = fields.Boolean(readonly=True)
+    send_date = fields.Datetime(copy=False)
+    sent = fields.Boolean(readonly=True, copy=False)
     send_to_logged_out_devices = fields.Boolean(
         default=False, string="Send to devices without logged users."
     )
@@ -38,17 +38,18 @@ class FirebaseNotification(models.Model):
         string="Partner read status of the notification",
         readonly=True,
     )
-    res_model = fields.Char(required=True)
-    res_id = fields.Integer(required=True)
+    res_model = fields.Char()
+    res_id = fields.Integer()
 
     @api.model
     def create(self, vals):
-        previous_notification = self.env["firebase.notification"].search([
-            ("res_model", "=", vals["res_model"]),
-            ("res_id", "=", vals["res_id"])
-        ])
-        if previous_notification:
-            return previous_notification
+        if vals.get("res_id") and vals.get("res_model"):
+            previous_notification = self.env["firebase.notification"].search([
+                ("res_model", "=", vals["res_model"]),
+                ("res_id", "=", vals["res_id"])
+            ])
+            if previous_notification:
+                return previous_notification
         return super(FirebaseNotification, self).create(vals)
 
     @api.constrains("send_date")

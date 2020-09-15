@@ -33,7 +33,10 @@ class FirebaseNotification(models.Model):
         required=True,
     )
 
-    fundType = fields.Many2one("product.product", "Fund product", readonly=False)
+    fundType = fields.Many2one(
+        "product.product", "Fund product", readonly=False,
+        domain=[("mobile_app", "=", True)]
+    )
     child_id = fields.Many2one("compassion.child", "Child", readonly=False)
 
     ##########################################################################
@@ -76,7 +79,8 @@ class FirebaseNotification(models.Model):
         """
         firebase_id = params.get("firebase_id")
         reg = self.env["firebase.registration"].search(
-            [("registration_id", "=", firebase_id)]
+            [("registration_id", "=", firebase_id)],
+            limit=1
         )
 
         dt = fields.Datetime.now()
@@ -104,7 +108,7 @@ class FirebaseNotification(models.Model):
                 "1"
                 if notif.read_ids.filtered(
                     lambda r: r.partner_id == reg.partner_id
-                ).opened
+                ).filtered("opened")
                 else "0"
             )
 
@@ -133,7 +137,8 @@ class FirebaseNotification(models.Model):
                     "UPDATED_ON": notif.send_date,
                     "USER_ID": "",
                     "IS_READ": is_read,
-                    "POST_TITLE": str(notif.fundType.id),
+                    "POST_TITLE": notif.sudo().fundType.name or '',
+                    "POST_ID": notif.sudo().fundType.product_tmpl_id.id or 0,
                 }
             )
 
@@ -154,6 +159,8 @@ class FirebaseNotificationPartnerRead(models.Model):
                 ("notification_id", "=", int(notif_id)),
             ]
         )
-        notif.opened = True
-        notif.read_date = fields.Datetime.now()
+        notif.write({
+            "opened": True,
+            "read_date": fields.Datetime.now(),
+        })
         return 1

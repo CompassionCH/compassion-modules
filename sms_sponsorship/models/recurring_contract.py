@@ -177,6 +177,7 @@ class RecurringContract(models.Model):
         """
         super().contract_waiting()
         self._post_payment_first_month()
+        self.mapped("sms_request_id").write({"state": "step2"})
         return True
 
     def _post_payment_first_month(self):
