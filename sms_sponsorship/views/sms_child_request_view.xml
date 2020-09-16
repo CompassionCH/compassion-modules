@@ -69,14 +69,15 @@
                 <field name="partner_id"/>
                 <field name="child_id"/>
                 <field name="state"/>
-                <filter name="active_filter" string="Active" domain="[('state', 'not in', ('step2', 'expired'))]"/>
                 <field name="source"/>
+                <field name="type"/>
+                <filter name="active_filter" string="Active SMS Request" domain="['&amp;', ('state', 'not in', ('step2', 'expired')), ('type', '=', 'sms')]"/>
             </search>
         </field>
     </record>
 
     <record id="action_sms_request" model="ir.actions.act_window">
-        <field name="name">SMS Requests</field>
+        <field name="name">Mobile Requests</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sms.child.request</field>
         <field name="view_type">form</field>
@@ -84,5 +85,5 @@
         <field name="context">{'search_default_active_filter': 1}</field>
     </record>
 
-    <menuitem id="menu_sms_request" name="SMS Requests" parent="child_compassion.menu_sponsorship_section" sequence="2" action="action_sms_request"/>
+    <menuitem id="menu_sms_request" name="Mobile Requests" parent="child_compassion.menu_sponsorship_section" sequence="2" action="action_sms_request"/>
 </odoo>
