@@ -15,5 +15,5 @@ def is_expired(obj):
     This function is used by confirmation endpoints to check if they have
     expired.
     """
-    expire = obj.create_date + timedelta(days=1)
+    expire = obj.sudo().create_date + timedelta(days=1)
     return expire < datetime.now()
