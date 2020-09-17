@@ -51,7 +51,7 @@ class CMSForm(models.AbstractModel):
                 elif isinstance(v, str):
                     params[k] = len(v) > length and v[:length] + "... [TRUNCATED]" or v
 
-        _logger.info(
+        _logger.warning(
             "Exception occurred during form submission. Creating log "
             "entry in database."
         )

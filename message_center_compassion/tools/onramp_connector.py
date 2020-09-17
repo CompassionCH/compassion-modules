@@ -162,7 +162,7 @@ class OnrampConnector(object):
             complete_headers.update(session.headers)
         else:
             complete_headers = headers
-        _logger.info(
+        _logger.debug(
             "[%s] %s %s %s",
             req_type,
             url,

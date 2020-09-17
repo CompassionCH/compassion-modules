@@ -396,11 +396,11 @@ def find_template(img, templates, resize_ratio=1.0):
     tic = time() - tic
     _logger.debug("\t\t\tTemplates scores:\t" + "\t".join(score))
     if matching_template:
-        _logger.info(
+        _logger.debug(
             "\t\t\tTemplate '"
             + matching_template.name
             + f"' matched with {nb_keypoints} keypoints in {tic:.3} seconds"
         )
     else:
-        _logger.info("\t\t\tNo template found.")
+        _logger.warning("\t\t\tNo template found.")
     return matching_template, keyPointCenter(key_img)

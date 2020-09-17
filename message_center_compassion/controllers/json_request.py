@@ -88,7 +88,7 @@ Sample Unsuccessful Response
 
     def dispatch(self):
         """ Log the received message before processing it. """
-        _logger.info(
+        _logger.debug(
             "[%s] %s %s %s",
             self.httprequest.environ["REQUEST_METHOD"],
             self.httprequest.url,
@@ -117,7 +117,7 @@ Sample Unsuccessful Response
         ]
 
         http_response = Response(body, headers=headers, status=status)
-        _logger.info('[SEND] %s %s "%s"', status, headers, response)
+        _logger.debug('[SEND] %s %s "%s"', status, headers, response)
         return http_response
 
     def _handle_exception(self, exception):

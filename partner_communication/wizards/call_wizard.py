@@ -63,5 +63,5 @@ class CallWizard(models.TransientModel):
             else:
                 call_vals["partner_phone"] = self.env.context.get("phone_number")
         except TypeError:
-            _logger.info("Partner has no phone number")
+            _logger.warning("Partner has no phone number")
         return self.env["crm.phonecall"].create(call_vals)

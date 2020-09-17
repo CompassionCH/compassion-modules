@@ -121,9 +121,9 @@ class WordpressPost(models.Model):
                     params["lang"] = lang.code[:2]
                     wp_posts = requests.get(wp_api_url, params=params).json()
 
-                    _logger.info("Processing posts in %s", lang.name)
+                    _logger.debug("Processing posts in %s", lang.name)
                     for i, post_data in enumerate(wp_posts):
-                        _logger.info(
+                        _logger.debug(
                             "...processing post " f"{str(i + 1)}/{str(len(wp_posts))}"
                         )
                         post_id = post_data["id"]
@@ -226,7 +226,7 @@ class WordpressPost(models.Model):
                     category = category_obj.create({"name": c["name"]})
                 categories_id.append(category.id)
         except (IndexError, KeyError):
-            _logger.info("WP Post ID %s has no category.", str(post_data["id"]))
+            _logger.warning("WP Post ID %s has no category.", str(post_data["id"]))
         return categories_id
 
     def update_display_on_hub(self):

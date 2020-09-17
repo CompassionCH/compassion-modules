@@ -114,7 +114,7 @@ class AppHub(models.AbstractModel):
             for message in messages:
                 message["OrderDate"] = parse(message["OrderDate"])
         else:
-            _logger.info("BEGIN RENDER TILES")
+            _logger.debug("BEGIN RENDER TILES")
             messages = available_tiles.render_tile(tile_data)
 
             # GI7 is treated separately because it needs unpaid sponsorships
@@ -134,11 +134,11 @@ class AppHub(models.AbstractModel):
             )
             messages.extend(msg_tmp)
             messages.extend(self._fetch_wordpress_tiles())
-            _logger.info("END RENDER TILES")
+            _logger.debug("END RENDER TILES")
 
-            _logger.info("START SORTING MESSAGES")
+            _logger.debug("START SORTING MESSAGES")
             self._assign_order(messages)
-            _logger.info("END SORTING MESSAGES")
+            _logger.debug("END SORTING MESSAGES")
 
             app_messages.json_messages = json.dumps(messages, default=str)
             app_messages.last_refresh_date = fields.Datetime.now()

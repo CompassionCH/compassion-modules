@@ -70,8 +70,6 @@ class WordpressConfiguration(models.Model):
         if not (host and user and pwd):
             return
 
-        _logger.info("Wordpress.configuration: using configs found in odoo.conf")
-
         self.create(
             {
                 "host": host,

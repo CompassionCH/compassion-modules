@@ -52,7 +52,7 @@ class ChildHoldWizard(models.TransientModel):
         )
         chunk_size = 10
         for i in range(0, len(child_search), chunk_size):
-            _logger.info(f"Processing chunk {i} for sending hold requests")
+            _logger.debug(f"Processing chunk {i} for sending hold requests")
             try:
                 messages = self.env["gmc.message"]
                 for child in child_search[i: i + chunk_size]:

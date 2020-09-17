@@ -103,9 +103,9 @@ def analyze_attachment(env, file_data, file_name, force_template):
         if letter_vals["template_id"] != env.ref("sbc_compassion.default_template").id:
             tic = time()
             _find_languages(env, imgs[i], letter_vals, resize_ratio)
-            _logger.info(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
+            _logger.debug(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
         else:
-            _logger.info("\t\tAnalysis failed")
+            _logger.warning("\t\tAnalysis failed")
             letter_vals["letter_language_id"] = False
 
     return line_vals
@@ -132,7 +132,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     page_imgs = list()
 
     previous_qrcode = ""
-    _logger.info(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
+    _logger.debug(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
     for i in range(inputpdf.numPages):
         tic = time()
         output = PdfFileWriter()
@@ -160,13 +160,13 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 "child_id": child_id,
                 "letter_image_preview": preview_data,
             }
-            _logger.info(
+            _logger.debug(
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened and QRCode "
                 f"analyzed in {time() - tic:.2} sec"
             )
             line_vals.append(values)
         else:
-            _logger.info(
+            _logger.debug(
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened, "
                 f"no QRCode on this page. {time() - tic:.2} sec"
             )
@@ -200,7 +200,7 @@ def _decode_page(env, page_data):
             page_data, dst_folder=os.getcwd(), dst_name="page"
         )
         img_url = img_url[0]
-        _logger.info(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
+        _logger.debug(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
         # its time to remove the temporary PDF file
         os.remove(tmp_url)
     else:
@@ -219,7 +219,7 @@ def _decode_page(env, page_data):
         img_url = os.getcwd() + "/page.jpg"
         cv2.imwrite(img_url, img)
 
-        _logger.info(f"\t\tPDF opened with wand.image in {time() - tic:.3} sec")
+        _logger.debug(f"\t\tPDF opened with wand.image in {time() - tic:.3} sec")
 
     tic = time()
 

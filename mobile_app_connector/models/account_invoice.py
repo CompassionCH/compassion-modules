@@ -183,7 +183,6 @@ class AccountInvoice(models.Model):
                 "res_id": self.id
             }
         )
-        _logger.info("Send notification of invoice paid to %s", partner.name)
         notification.send()
         payment_moves.write({"mobile_notification_id": notification.id})
         return True

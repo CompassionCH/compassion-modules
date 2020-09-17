@@ -310,7 +310,7 @@ class SmsChildRequest(models.Model):
                 _logger.info("SMS child directly taken from global pool")
                 return True
             else:
-                _logger.error("SMS child couldn't be put on hold from global " "pool")
+                _logger.error("SMS child couldn't be put on hold from global pool")
                 return False
         except:
             _logger.error("Error during SMS child reservation", exc_info=True)

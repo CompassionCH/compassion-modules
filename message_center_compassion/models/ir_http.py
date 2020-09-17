@@ -44,7 +44,7 @@ class IrHTTP(models.AbstractModel):
         try:
             token_data = request.httprequest.headers.get("Authorization")
             access_token = token_data.split()[1]
-            _logger.info("Received access token: %s", access_token)
+            _logger.debug("Received access token: %s", access_token)
             cert = requests.get(cert_url)
             key_json = cert.json()["keys"][0]
         except (ValueError, AttributeError):
@@ -63,7 +63,7 @@ class IrHTTP(models.AbstractModel):
         if scope and mode not in scope:
             raise Unauthorized()
         client_id = jwt_decoded.get("client_id") or jwt_decoded.get("ClientID")
-        _logger.info("TOKEN CLIENT IS -----------------> " + client_id)
+        _logger.debug("TOKEN CLIENT IS -----------------> " + client_id)
         return client_id
 
     @classmethod
