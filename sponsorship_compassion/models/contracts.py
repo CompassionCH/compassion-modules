@@ -609,7 +609,6 @@ class SponsorshipContract(models.Model):
         from a given date. This is useful to suspend a contract for a given
         period."""
         ids = str(self.ids)
-        logger.info(f"suspension of contracts {ids} called")
         date_start = date.today()
 
         config_obj = self.env["ir.config_parameter"].sudo()
@@ -873,7 +872,6 @@ class SponsorshipContract(models.Model):
                 tags = a_default and a_default.analytic_tag_ids
                 if tags:
                     invl_data.update({"analytic_tag_ids": [(6, 0, tags.ids)]})
-                    logger.info("tag:" + str(tags.ids))
 
             # Append the invoice lines.
             res.extend(invl_datas)

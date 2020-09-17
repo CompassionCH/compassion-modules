@@ -669,7 +669,7 @@ class CommunicationJob(models.Model):
         mark_width = 6.5 * mm
         marks_height = (len(marks) - 1) * mark_y_spacing
 
-        logger.info(
+        logger.debug(
             "Mailer DS-75i OMR Settings: 1=%s 2=%s",
             str((297 * mm - top_mark_y) / mm),
             str((top_mark_x + mark_width / 2) / mm + 0.5),

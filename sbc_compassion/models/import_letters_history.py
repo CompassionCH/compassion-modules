@@ -262,12 +262,12 @@ class ImportLettersHistory(models.Model):
                     zip_file = BytesIO(file_data)
                     zip_ = zipfile.ZipFile(zip_file, "r")
                     for f in zip_.namelist():
-                        logger.info(f"Analyzing file {progress}/{self.nber_letters}")
+                        logger.debug(f"Analyzing file {progress}/{self.nber_letters}")
                         self._analyze_attachment(zip_.read(f), f)
                         progress += 1
                 # case with normal format (PDF,TIFF)
                 elif func.check_file(attachment.name) == 1:
-                    logger.info(f"Analyzing file {progress}/{self.nber_letters}")
+                    logger.debug(f"Analyzing file {progress}/{self.nber_letters}")
                     self._analyze_attachment(file_data, attachment.name)
                     progress += 1
                 else:

@@ -61,7 +61,7 @@ class ContractGroup(models.Model):
     def _generate_birthday_gifts(self, invoicer=None):
         """ Creates the annual birthday gift for sponsorships that
         have set the option for automatic birthday gift creation. """
-        logger.info("Automatic Birthday Gift Generation Started.")
+        logger.debug("Automatic Birthday Gift Generation Started.")
 
         if invoicer is None:
             invoicer = (
@@ -98,7 +98,7 @@ class ContractGroup(models.Model):
         if contracts:
             total = str(len(contracts))
             count = 1
-            logger.info(f"Found {total} Birthday Gifts to generate.")
+            logger.debug(f"Found {total} Birthday Gifts to generate.")
 
             gift_wizard = (
                 self.env["generate.gift.wizard"]
@@ -115,7 +115,7 @@ class ContractGroup(models.Model):
 
             # Generate invoices
             for contract in contracts:
-                logger.info(f"Birthday Gift Generation: {count}/{total} ")
+                logger.debug(f"Birthday Gift Generation: {count}/{total} ")
                 try:
                     self._generate_birthday_gift(gift_wizard, contract)
                 except:
@@ -123,7 +123,7 @@ class ContractGroup(models.Model):
                 finally:
                     count += 1
 
-        logger.info("Automatic Birthday Gift Generation Finished !!")
+        logger.debug("Automatic Birthday Gift Generation Finished !!")
         return invoicer
 
     def _generate_birthday_gift(self, gift_wizard, contract):
