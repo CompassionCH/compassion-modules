@@ -10,7 +10,6 @@ require('src/pdfcreator.php');
 
 $pdf_name = $argv[1];
 $parameters = json_decode($argv[2], true);
-echo var_export($parameters) . "\n";
 $pdfCreator = new PDFCreator($parameters);
 $pdfCreator->createPDF($pdf_name);
 ?>
