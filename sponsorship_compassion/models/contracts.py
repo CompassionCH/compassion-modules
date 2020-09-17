@@ -608,7 +608,6 @@ class SponsorshipContract(models.Model):
         Otherwise, Cancel the number of invoices specified starting
         from a given date. This is useful to suspend a contract for a given
         period."""
-        ids = str(self.ids)
         date_start = date.today()
 
         config_obj = self.env["ir.config_parameter"].sudo()
