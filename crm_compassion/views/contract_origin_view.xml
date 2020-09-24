@@ -21,8 +21,7 @@
         <field name="arch" type="xml">
             <field name="analytic_id" position="replace">
                 <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
-                                                              'required': [('type', '=', 'marketing')]}"
-                       domain="[('tag_ids.name','=','Campaign')]"/>
+                                                              'required': [('type', '=', 'marketing')]}"/>
             </field>
             <field name="partner_id" position="after">
                 <field name="event_id" attrs="{'invisible': [('type', '!=', 'event')],
