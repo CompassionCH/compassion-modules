@@ -50,15 +50,16 @@ class FirebaseNotification(models.Model):
         :param data:
         :return:
         """
-        data = kwargs.get("data", {})
+        if kwargs is None:
+            kwargs = {}
 
         for notif in self:
-            data.update({
+            kwargs.update({
                 "topic": notif.topic,
                 "destination": notif.destination or "",
                 "fund_type_id": str(notif.fundType.id),
             })
-            super(FirebaseNotification, notif).send(**data)
+            super(FirebaseNotification, notif).send(**kwargs)
 
     def duplicate_to_unread(self):
         res = super().duplicate_to_unread()
