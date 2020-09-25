@@ -118,7 +118,8 @@ class CommunicationKeyword(models.Model):
                     # shortcode
                     match = re.search(r"(get|get_list|mapped)\('(.*?)'", raw)
                     if match:
-                        keyword.short_code = match.group(2).split(".")[-1].replace(" ", "_")
+                        keyword.short_code = match.group(2).split(".")[-1]\
+                            .replace(" ", "_")
                 else:
                     if "if" in raw:
                         # Takes one of the side of the clause
