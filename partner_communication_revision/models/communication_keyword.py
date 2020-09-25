@@ -117,7 +117,8 @@ class CommunicationKeyword(models.Model):
                     # Methods taking a field as parameter, we use the field as
                     # shortcode
                     match = re.search(r"(get|get_list|mapped)\('(.*?)'", raw)
-                    keyword.short_code = match.group(2).split(".")[-1].replace(" ", "_")
+                    if match:
+                        keyword.short_code = match.group(2).split(".")[-1].replace(" ", "_")
                 else:
                     if "if" in raw:
                         # Takes one of the side of the clause
