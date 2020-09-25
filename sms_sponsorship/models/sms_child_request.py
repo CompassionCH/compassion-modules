@@ -98,6 +98,20 @@ class SmsChildRequest(models.Model):
     )
     sms_reminder_sent = fields.Boolean(default=False, readonly=True)
     has_filter = fields.Boolean(compute="_compute_has_filter")
+    type = fields.Selection(
+        [("mobile", "App Mobile"), ("sms", "SMS")],
+        compute="_compute_type",
+        store=True
+    )
+
+    @api.multi
+    @api.depends("source")
+    def _compute_type(self):
+        for request in self:
+            if request.source in ["IOS", "Android"]:
+                request.type = "mobile"
+            elif request.source in ["SMS", "QR"]:
+                request.type = "sms"
 
     @api.multi
     def _compute_full_url(self):
@@ -366,17 +380,6 @@ class SmsChildRequest(models.Model):
         """ Can be extended to use a SMS API and send a reminder to user. """
         self.ensure_one()
         self.write({"sms_reminder_sent": True})
-
-    @api.model
-    def _needaction_domain_get(self):
-        """
-        Used to display a count icon in the menu
-        :return: domain of jobs counted
-        """
-        return [
-            ("state", "in", ["new", "child_reserved", "step1"]),
-            ("source", "=", "SMS"),
-        ]
 
     @api.model
     def sms_reminder_cron(self):
