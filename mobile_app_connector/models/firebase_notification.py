@@ -33,8 +33,8 @@ class FirebaseNotification(models.Model):
         required=True,
     )
 
-    fundType = fields.Many2one(
-        "product.product", "Fund product", readonly=False,
+    product_template_id = fields.Many2one(
+        "product.template", "Fund product", readonly=False,
         domain=[("mobile_app", "=", True)]
     )
     child_id = fields.Many2one("compassion.child", "Child", readonly=False)
@@ -57,7 +57,7 @@ class FirebaseNotification(models.Model):
             kwargs.update({
                 "topic": notif.topic,
                 "destination": notif.destination or "",
-                "fund_type_id": str(notif.fundType.id),
+                "fund_type_id": str(notif.product_template_id.id),
             })
             super(FirebaseNotification, notif).send(**kwargs)
 
@@ -65,7 +65,7 @@ class FirebaseNotification(models.Model):
         res = super().duplicate_to_unread()
         new = self.browse(res["res_id"])
         new.destination = self.destination
-        new.fundType = self.fundType
+        new.product_template_id = self.product_template_id
         return res
 
     @api.model
@@ -138,8 +138,8 @@ class FirebaseNotification(models.Model):
                     "UPDATED_ON": notif.send_date,
                     "USER_ID": "",
                     "IS_READ": is_read,
-                    "POST_TITLE": notif.sudo().fundType.name or '',
-                    "POST_ID": notif.sudo().fundType.product_tmpl_id.id or 0,
+                    "POST_TITLE": notif.sudo().product_template_id.name or '',
+                    "POST_ID": notif.sudo().product_template_id.id or 0,
                 }
             )
 

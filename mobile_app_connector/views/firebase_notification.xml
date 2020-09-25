@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <field name="send_date" position="after">
                 <field name="destination" attrs="{'readonly': [('sent', '=', True)]}"/>
-                <field name="fundType" attrs="{'readonly': [('sent', '=', True)], 'invisible': [('destination', 'not in', ['Donation'])]}"/>
+                <field name="product_template_id" attrs="{'readonly': [('sent', '=', True)], 'invisible': [('destination', 'not in', ['Donation'])]}"/>
                 <field name="topic" attrs="{'readonly': [('sent', '=', True)]}" />
             </field>
         </field>
