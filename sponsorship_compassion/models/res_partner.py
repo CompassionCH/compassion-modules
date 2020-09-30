@@ -64,7 +64,9 @@ class ResPartner(models.Model):
     has_sponsorships = fields.Boolean(
         groups="child_compassion.group_sponsorship"
     )
-    number_sponsorships = fields.Integer(copy=False)
+    number_sponsorships = fields.Integer(
+        string="Number of sponsorships", copy=False
+    )
     send_original = fields.Boolean(
         help="Indicates that we request the original letters for this sponsor",
         groups="child_compassion.group_sponsorship",
@@ -78,7 +80,8 @@ class ResPartner(models.Model):
         readonly=False,
     )
     number_children = fields.Integer(
-        related="number_sponsorships", groups="child_compassion.group_sponsorship"
+        string="Number of children", related="number_sponsorships",
+        groups="child_compassion.group_sponsorship"
     )
     privacy_statement_ids = fields.One2many(
         "privacy.statement.agreement",
