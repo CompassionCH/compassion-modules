@@ -91,8 +91,7 @@ class InteractionResume(models.TransientModel):
                         FULL OUTER JOIN utm_source source
                             ON c.source_id = source.id
                             AND source.name != 'Default communication'
-                        WHERE pcj.state = 'done'
-                        AND pcj.send_mode = 'physical'
+                        WHERE pcj.sent_date IS NOT NULL
                         AND (p.contact_id = %s OR p.id = %s)
             -- phonecalls
                     UNION (
