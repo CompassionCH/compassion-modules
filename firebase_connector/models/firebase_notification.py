@@ -22,7 +22,7 @@ class FirebaseNotification(models.Model):
 
     _name = "firebase.notification"
     _description = "Notification to send to Firebase Cloud Messaging"
-    _order = "send_date desc"
+    _order = "send_date desc, id desc"
 
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
