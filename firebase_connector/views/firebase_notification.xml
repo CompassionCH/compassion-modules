@@ -29,7 +29,7 @@
         <field name="name">firebase.notification.tree</field>
         <field name="model">firebase.notification</field>
         <field name="arch" type="xml">
-            <tree default_order="send_date">
+            <tree>
                 <field name="send_date"/>
                 <field name="title"/>
                 <field name="body"/>
@@ -41,7 +41,7 @@
         <field name="name">firebase.notification.partner.read.tree</field>
         <field name="model">firebase.notification.partner.read</field>
         <field name="arch" type="xml">
-            <tree default_order="read_date">
+            <tree>
                 <field name="opened"/>
                 <field name="read_date"/>
                 <field name="partner_id"/>
@@ -68,14 +68,14 @@
 
     <menuitem id="menu_firebase_notification"
         name="Notifications"
-        parent="sale.sale_menu_root"
-        groups="sales_team.group_sale_manager"
+        parent="mass_mailing.mass_mailing_menu_root"
+        groups="mass_mailing.group_mass_mailing_user"
         sequence="2"/>
 
     <menuitem id="menu_firebase_send"
               name="Send"
               parent="firebase_connector.menu_firebase_notification"
               action="firebase_connector.action_firebase_notification"
-              groups="sales_team.group_sale_manager"/>
+              groups="mass_mailing.group_mass_mailing_user"/>
 
 </odoo>

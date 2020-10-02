@@ -26,7 +26,7 @@
         <field name="name">firebase.registration.tree</field>
         <field name="model">firebase.registration</field>
         <field name="arch" type="xml">
-            <tree default_order="partner_name">
+            <tree>
                 <field name="partner_name"/>
                 <field name="registration_id"/>
             </tree>

@@ -34,7 +34,7 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://github.com/CompassionCH/compassion-modules/tree/10.0",
-    "depends": ["sale_management"],
+    "depends": ["mass_mailing"],
     "external_dependencies": {"python": ["firebase_admin"], },
     "data": [
         "data/ir_cron.xml",

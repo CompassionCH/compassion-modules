@@ -1,8 +1,8 @@
 <odoo>
-    <!-- Add Top menu in Sales Module -->
+    <!-- Add Top menu in Website Module -->
     <menuitem id="menu_mobile_app"
               name="Mobile App"
-              parent="sale.sale_menu_root"
+              parent="website.menu_website_configuration"
               sequence="2"/>
     <menuitem id="menu_mobile_app_hub"
               name="Hub"
