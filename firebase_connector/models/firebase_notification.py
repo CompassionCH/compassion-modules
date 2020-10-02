@@ -73,8 +73,8 @@ class FirebaseNotification(models.Model):
         :param data:
         :return:
         """
-        data = kwargs.get("data", {})
-
+        if kwargs is None:
+            kwargs = {}
         for notif in self:
             registration_ids = self.env["firebase.registration"].search(
                 [("partner_id", "in", notif.partner_ids.ids)]
@@ -84,11 +84,11 @@ class FirebaseNotification(models.Model):
                     [("partner_id", "=", False)]
                 )
 
-            data.update(
+            kwargs.update(
                 {"notification_id": str(notif.id), }
             )
 
-            notif.sent = registration_ids.send_message(notif.title, notif.body, data)
+            notif.sent = registration_ids.send_message(notif.title, notif.body, kwargs)
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
                 for partner in notif.partner_ids:

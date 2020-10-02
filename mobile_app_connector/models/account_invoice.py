@@ -175,7 +175,7 @@ class AccountInvoice(models.Model):
             {
                 "topic": "spam",  # to ensure he will receive the notification
                 "destination": "Donation",  # to put the gift icon
-                "fundType": lines.mapped("product_id")[:1].id,
+                "fund_type_id": lines.mapped("product_id.product_tmpl_id")[:1].id,
                 "partner_ids": [(6, 0, partner.ids)],
                 "title": _("You gave CHF %s.- for %s") % (amount, for_text),
                 "body": _("Thank you for your generosity!"),
