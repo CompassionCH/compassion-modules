@@ -12,6 +12,7 @@ import logging
 from urllib.request import urlopen
 
 from odoo import models, fields, api, _
+from odoo.http import request
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +50,11 @@ class ChildPictures(models.Model):
     @api.multi
     def _compute_image_url_compassion(self):
         for image in self:
-            base_url = self.env["ir.config_parameter"].sudo().get_param(
-                "web.external.url")
+            try:
+                base_url = request.website.domain
+            except AttributeError:
+                base_url = self.env["ir.config_parameter"].sudo().get_param(
+                    "web.external.url")
             endpoint = base_url + "/web/image/compassion.child.pictures"
             image.image_url_compassion =\
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
