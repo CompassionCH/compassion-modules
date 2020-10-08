@@ -4,10 +4,10 @@
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="'in' in [direction, logged_mail_direction] and not mass_mailing"
-                  decoration-success="'out' in [direction, logged_mail_direction] and not mass_mailing"
+            <tree decoration-danger="'in' in [direction, logged_mail_direction] and not mass_mailing_id"
+                  decoration-success="'out' in [direction, logged_mail_direction] and not mass_mailing_id"
                   decoration-info="phone_id"
-                  decoration-muted="mass_mailing"
+                  decoration-muted="mass_mailing_id"
                   edit="0" create="0" delete="0">
                 <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
                 <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
@@ -16,7 +16,7 @@
                 <field name="state" invisible="1"/>
                 <field name="phone_id" invisible="1"/>
                 <field name="direction" invisible="1"/>
-                <field name="mass_mailing" invisible="1"/>
+                <field name="mass_mailing_id" invisible="1"/>
                 <field name="logged_mail_direction" invisible="1"/>
                 <field name="is_from_employee" invisible="1"/>
                 <field name="email"/>
