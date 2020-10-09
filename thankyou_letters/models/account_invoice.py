@@ -50,10 +50,12 @@ class AccountInvoice(models.Model):
             for invoice in self.filtered(
                     lambda i: i.state == "paid"
                     and i.communication_id
-                    and i.communication_id.state in ("call", "pending")
+                    and i.communication_id.state == "pending"
             ):
                 comm = invoice.communication_id
                 object_ids = comm.object_ids
+                comm.unlink()
+                # Check if the communication needs to be refreshed.
                 for line in invoice.invoice_line_ids:
                     object_ids = (
                         object_ids.replace(str(line.id), "")
@@ -62,24 +64,9 @@ class AccountInvoice(models.Model):
                     )
                 if object_ids:
                     # Refresh donation receipt
-                    config = (
-                        self.env["account.invoice.line"]
-                            .browse([int(i) for i in object_ids.split(",")])
-                            .get_default_thankyou_config()
-                    )
-                    send_mode = config.get_inform_mode(comm.partner_id)
-                    comm.write(
-                        {
-                            "config_id": config.id,
-                            "object_ids": object_ids,
-                            "send_mode": send_mode[0],
-                            "auto_send": send_mode[1],
-                            "need_call": config.need_call,
-                        }
-                    )
-                    comm.refresh_text()
-                else:
-                    comm.unlink()
+                    remaining_lines = self.env["account.invoice.line"].browse(
+                        [int(i) for i in object_ids.split(",")])
+                    remaining_lines.generate_thank_you()
         return super().write(vals)
 
     @api.multi

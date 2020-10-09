@@ -46,17 +46,20 @@ class AccountInvoiceLine(models.Model):
             # Avoid generating thank you if no valid invoice lines are present
             return
 
-        communication_configs = invoice_lines.mapped(
-            "product_id.partner_communication_config"
-        )
-        if len(communication_configs) == 1:
-            communication_config = communication_configs[0]
-        else:
-            _logger.warning(
-                f"{len(communication_configs)} thank you config found, "
-                f"falling back to the default"
+        communication_config = self.env.context.get("default_communication_config")
+        if not communication_config:
+            product_configs = invoice_lines.mapped(
+                "product_id.partner_communication_config"
             )
-            communication_config = invoice_lines.get_default_thankyou_config()
+            if len(product_configs) == 1:
+                communication_config = product_configs[0]
+            else:
+                _logger.warning(
+                    f"{len(product_configs)} product thank you config found, "
+                    f"falling back to the default"
+                )
+                communication_config = self.env.ref(
+                    "thankyou_letters.config_thankyou_standard")
 
         partner = self.mapped("partner_id")
         partner.ensure_one()
@@ -102,12 +105,3 @@ class AccountInvoiceLine(models.Model):
         else:
             existing_comm = existing_comm.create(comm_vals)
         self.mapped("invoice_id").write({"communication_id": existing_comm.id})
-
-    @api.multi
-    def get_default_thankyou_config(self):
-        """
-        Returns the default communication configuration regardless of
-        the donation amount.
-        :return: partner.communication.config record
-        """
-        return self.env.ref("thankyou_letters.config_thankyou_standard")
