@@ -73,12 +73,12 @@ class TestCrmCompassion(BaseSponsorshipTest):
         event = self._create_event(lead, "sport")
         self.assertEqual(event.calendar_event_id.duration, 9)
 
-        in_two_days = datetime.today() + timedelta(days=2)
-        event.end_date = in_two_days.date()
+        in_two_days = datetime.today().date() + timedelta(days=2)
+        event.end_date = datetime.combine(in_two_days, datetime.min.time())
         self.assertEqual(event.calendar_event_id.duration, 48)
 
         # The event duration should have a lower bound of 3 hours
-        event.write.end_date = datetime.today().date()
+        event.end_date = datetime.combine(datetime.today(), datetime.min.time())
         self.assertEqual(event.calendar_event_id.duration, 3)
 
     def _create_event(self, lead, event_type):

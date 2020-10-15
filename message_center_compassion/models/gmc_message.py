@@ -15,11 +15,12 @@ from datetime import datetime
 
 from odoo.addons.queue_job.job import job, related_action
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields, tools, _
 from odoo.exceptions import UserError
 from ..tools.onramp_connector import OnrampConnector
 
 logger = logging.getLogger(__name__)
+testing = tools.config.get("test_enable")
 
 
 class GmcMessage(models.Model):
@@ -367,7 +368,8 @@ class GmcMessage(models.Model):
                             "answer": json.dumps(result, indent=4, sort_keys=True),
                         }
                     )
-                    self.env.cr.commit()  # pylint:disable=invalid-commit
+                    if not testing:
+                        self.env.cr.commit()  # pylint:disable=invalid-commit
                     self[i]._process_single_answer(data_objects[i], result)
                 elif isinstance(result, dict):
                     if action.failure_method:
