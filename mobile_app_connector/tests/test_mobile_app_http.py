@@ -42,7 +42,8 @@ class TestMobileAppHttp(HttpCase):
         response = self.url_open(url.format(self.admin_username, self.admin_password))
         self.assertEqual(response.status_code, 200)
         json_data = simplejson.loads(response.content)
-        self.assertEqual(json_data["userid"], "1")
+        self.assertEqual(json_data["userid"],
+                         str(self.env.ref("base.user_admin").id))
 
     @patch(mock_oauth)
     def test_hub_authentication(self, oauth_patch):
@@ -59,11 +60,11 @@ class TestMobileAppHttp(HttpCase):
         json_data = simplejson.loads(response.content)
         self.assertIn("Messages", json_data)
         # Private messages without login should fail
-        response = self.url_open(url + str(self.env.ref("base.partner_root").id))
+        response = self.url_open(url + str(self.env.ref("base.partner_admin").id))
         self.assertEqual(response.status_code, 401)
         # Private message while authenticated should work
         self.authenticate(self.admin_username, self.admin_password)
-        response = self.url_open(url + str(self.env.ref("base.partner_root").id))
+        response = self.url_open(url + str(self.env.ref("base.partner_admin").id))
         self.assertEqual(response.status_code, 200)
         json_data = simplejson.loads(response.content)
         self.assertIn("Messages", json_data)
@@ -83,7 +84,7 @@ class TestMobileAppHttp(HttpCase):
         url = self.root_url + "hub/0"
         response = self.url_open(url)
         self.assertEqual(response.status_code, 200)
-        url = self.root_url + "hub/" + str(self.env.ref("base.partner_root").id)
+        url = self.root_url + "hub/" + str(self.env.ref("base.partner_admin").id)
         response = self.url_open(url)
         self.assertEqual(response.status_code, 401)
         self.authenticate(self.admin_username, self.admin_password)

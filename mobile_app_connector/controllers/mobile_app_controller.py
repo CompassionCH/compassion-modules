@@ -10,6 +10,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
 import html
 
 import werkzeug
@@ -18,6 +19,8 @@ from werkzeug.exceptions import NotFound, MethodNotAllowed, Unauthorized
 from odoo import http, _
 from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 from odoo.http import request
+
+_logger = logging.getLogger(__name__)
 
 
 def _get_lang(req, params):
@@ -39,8 +42,13 @@ class RestController(http.Controller):
         :param view: mobile app view from which the request was made
         :return: json user data
         """
-        request.session.authenticate(request.session.db, username, password)
-        return request.env.user.data_to_json("mobile_app_login")
+        try:
+            request.session.authenticate(request.session.db, username, password)
+            user = request.env.user
+        except:
+            _logger.warning("Wrong login attempt from the app for user %s", username)
+            user = request.env["res.users"]
+        return user.data_to_json("mobile_app_login")
 
     @http.route(
         "/mobile-app-api/firebase.registration/register",

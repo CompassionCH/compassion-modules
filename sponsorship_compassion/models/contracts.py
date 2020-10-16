@@ -16,12 +16,13 @@ from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo.addons.queue_job.job import job, related_action
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 from .product_names import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
+testing = tools.config.get("test_enable")
 
 
 class SponsorshipContract(models.Model):
@@ -535,7 +536,8 @@ class SponsorshipContract(models.Model):
         super().write(vals)
 
         try:
-            self.env.cr.commit()
+            if not testing:
+                self.env.cr.commit()
             if updated_correspondents:
                 updated_correspondents._on_correspondant_changed()
         except:
