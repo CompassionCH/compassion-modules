@@ -42,9 +42,9 @@
                 <field name="contract_id" />
                 <field name="due_date" />
                 <field name="last_payment" />
-                <field name="quantity" />
+                <field name="quantity" sum="Total"/>
                 <field name="price_unit" />
-                <field name="price_subtotal" />
+                <field name="price_subtotal" sum="Total"/>
                 <field name="state" />
             </tree>
         </field>
