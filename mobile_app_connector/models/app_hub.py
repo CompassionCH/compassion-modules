@@ -63,7 +63,8 @@ class AppHub(models.AbstractModel):
         # show active sponsorships and sponsorships that ended less than 2 months ago.
         date_limit = fields.Datetime.now() - relativedelta(months=2)
         sponsorships = sponsorships.filtered(
-            lambda sp: sp.is_active or sp.end_date and sp.end_date > date_limit)
+            lambda sp: sp.is_active or (sp.state == "terminated" and
+                                        sp.end_date and sp.end_date > date_limit))
 
         unpaid = unpaid.filtered(
             lambda c: not c.is_active
