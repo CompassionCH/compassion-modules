@@ -101,7 +101,7 @@ class MatchPartner(models.AbstractModel):
             summary="Verify new partner",
             note="Please verify that this partner doesn't already exist",
             user_id=self.env["ir.config_parameter"].sudo().get_param(
-                "cms_form_compassion.match_validation_responsible")
+                "cms_form_compassion.match_validation_responsible", self.env.uid)
         )
         return partner
 

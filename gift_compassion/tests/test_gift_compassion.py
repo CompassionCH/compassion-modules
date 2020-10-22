@@ -9,6 +9,7 @@
 import logging
 from datetime import date
 
+from odoo import fields
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
     BaseSponsorshipTest,
 )
@@ -42,9 +43,8 @@ class TestGifts(BaseSponsorshipTest):
         self.assertFalse(gift.is_eligible())
 
         # tests for gift types changes
-        product = self.env["product.product"].create(
-            {"name": "Birthday Gift", "default_code": "gift_birthday"}
-        )
+        product = self.env.ref(
+            "sponsorship_compassion.product_template_gift_birthday").product_variant_id
         self.assertEqual(
             gift.get_gift_types(product),
             {
@@ -77,13 +77,8 @@ class TestGifts(BaseSponsorshipTest):
 
     def test_gift_creation_with_account_invoice_line(self):
         """ Data creation """
-        product = self.env["product.product"].create(
-            {
-                "name": "Birthday Gift",
-                "categ_name": "Sponsor gifts",
-                "default_code": "gift_birthday",
-            }
-        )
+        product = self.env.ref(
+            "sponsorship_compassion.product_template_gift_birthday").product_variant_id
 
         sponsorship = self.sponsorship
 
@@ -151,7 +146,8 @@ class TestGifts(BaseSponsorshipTest):
         # gift information
         self.assertEqual(gift.name, "Birthday Gift [" + gift.sponsorship_id.name + "]")
         # it's a birthday gift, so due_date is 2 month before the birthday
-        self.assertEqual(gift.gift_date, "%s-11-28" % str(today.year))
+        self.assertEqual(fields.Date.to_string(gift.gift_date),
+                         "%s-11-28" % str(today.year))
         self.assertEqual(gift.amount, 50)
         self.assertEqual(gift.gift_type, "Beneficiary Gift")
         self.assertEqual(gift.state, "verify")

@@ -53,7 +53,7 @@ class AccountInvoice(models.Model):
                     and i.communication_id.state == "pending"
             ):
                 comm = invoice.communication_id
-                object_ids = comm.object_ids
+                object_ids = comm.object_ids or ""
                 comm.unlink()
                 # Check if the communication needs to be refreshed.
                 for line in invoice.invoice_line_ids:

@@ -16,7 +16,7 @@ class InteractionResume(models.TransientModel):
     _description = "Resume of a given partner"
     _order = "communication_date desc"
 
-    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
+    partner_id = fields.Many2one("res.partner", "Partner")
     email = fields.Char()
     communication_type = fields.Selection(
         [("Paper", "Paper"), ("Phone", "Phone"), ("SMS", "SMS"), ("Email", "Email")]
@@ -28,14 +28,14 @@ class InteractionResume(models.TransientModel):
     subject = fields.Text()
     has_attachment = fields.Boolean(compute="_compute_has_attachment")
     body = fields.Html()
-    phone_id = fields.Many2one("crm.phonecall", "Phonecall", readonly=False)
+    phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one(
-        "partner.communication.job", "Communication", readonly=False
+        "partner.communication.job", "Communication"
     )
-    email_id = fields.Many2one("mail.mail", "Email", readonly=False)
-    mass_mailing = fields.Many2one(related="email_id.mailing_id")
+    email_id = fields.Many2one("mail.mail", "Email")
+    mass_mailing_id = fields.Many2one()
     logged_mail_direction = fields.Selection(related="email_id.direction")
-    message_id = fields.Many2one("mail.message", "Email", readonly=False)
+    message_id = fields.Many2one("mail.message", "Email")
     is_from_employee = fields.Boolean(default=False)
     tracking_status = fields.Selection(
         [
@@ -83,7 +83,8 @@ class InteractionResume(models.TransientModel):
                         0 as message_id,
                         false as is_from_employee,
                         pcj.id as paper_id,
-                        NULL as tracking_status
+                        NULL as tracking_status,
+                        0 as mass_mailing_id
                         FROM "partner_communication_job" as pcj
                         JOIN res_partner p ON pcj.partner_id = p.id
                         FULL OUTER JOIN partner_communication_config c
@@ -112,7 +113,8 @@ class InteractionResume(models.TransientModel):
                         0 as message_id,
                         crmpc.is_from_employee as is_from_employee,
                         0 as paper_id,
-                        NULL as tracking_status
+                        NULL as tracking_status,
+                        0 as mass_mailing_id
                         FROM "crm_phonecall" as crmpc
                         JOIN res_partner p ON crmpc.partner_id = p.id
                         WHERE (p.contact_id = %s OR p.id = %s) AND crmpc.state = 'done'
@@ -132,7 +134,8 @@ class InteractionResume(models.TransientModel):
                         0 as message_id,
                         mail.is_from_employee as is_from_employee,
                         job.id as paper_id,
-                        COALESCE(mt.state, 'error') as tracking_status
+                        COALESCE(mt.state, 'error') as tracking_status,
+                        mt.mass_mailing_id as mass_mailing_id
                         FROM "mail_mail" as mail
                         JOIN mail_message m ON mail.mail_message_id = m.id
                         JOIN mail_mail_res_partner_rel rel
@@ -150,6 +153,39 @@ class InteractionResume(models.TransientModel):
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         AND (mail.direction = 'out' OR mail.direction IS NULL)
                         )
+
+            -- mass mailings sent from mailchimp (no associated email)
+                    UNION (
+                      SELECT DISTINCT
+                        'Email' as communication_type,
+                        mail.sent as communication_date,
+                        COALESCE(tracking.partner_id, p.contact_id, p.id) AS partner_id,
+                        mail.email as email,
+                        source.name as subject,
+                        NULL AS body,
+                        'out' AS direction,
+                        0 as phone_id,
+                        0 as email_id,
+                        0 as message_id,
+                        true as is_from_employee,
+                        0 as paper_id,
+                        CASE
+                            WHEN mail.opened IS NOT NULL THEN 'opened'
+                            WHEN mail.exception IS NOT NULL THEN 'error'
+                            WHEN mail.bounced IS NOT NULL THEN 'bounced'
+                        ELSE 'sent'
+                        END tracking_status,
+                        mm.id as mass_mailing_id
+                        FROM "mail_mail_statistics" as mail
+                        FULL OUTER JOIN mail_tracking_email tracking
+                            ON mail.mail_tracking_id = tracking.id
+                        JOIN res_partner p ON p.email = mail.email
+                        JOIN mail_mass_mailing mm ON mail.mass_mailing_id = mm.id
+                        JOIN utm_source source ON mm.source_id = source.id
+                        WHERE mail.sent IS NOT NULL
+                        AND tracking.mail_id IS NULL  -- skip if it's already in mail
+                        AND mail.email = %s
+                        )
             -- incoming messages from partners
                     UNION (
                       SELECT
@@ -165,13 +201,16 @@ class InteractionResume(models.TransientModel):
                         m.id as message_id,
                         false as is_from_employee,
                         0 as paper_id,
-                        NULL as tracking_status
+                        NULL as tracking_status,
+                        0 as mass_mailing_id
                         FROM "mail_message" as m
                         JOIN res_partner p ON m.author_id = p.id
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         )
+            ORDER BY communication_date desc
+            LIMIT 240
                             """,
             (
                 partner_id,
@@ -180,6 +219,7 @@ class InteractionResume(models.TransientModel):
                 partner_id,
                 partners_with_same_email_ids,
                 partners_with_same_email_ids,
+                email_address,
                 partners_with_same_email_ids,
                 partners_with_same_email_ids,
             ),
