@@ -219,7 +219,7 @@ class InteractionResume(models.TransientModel):
                 partner_id,
                 partners_with_same_email_ids,
                 partners_with_same_email_ids,
-                email_address,
+                email_address or "",
                 partners_with_same_email_ids,
                 partners_with_same_email_ids,
             ),
