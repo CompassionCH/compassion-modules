@@ -143,7 +143,7 @@ class AppHub(models.AbstractModel):
             _logger.debug("END SORTING MESSAGES")
 
             if not app_messages:
-                app_messages = app_messages.create({
+                app_messages = app_messages.sudo().create({
                     "partner_id": partner.id
                 })
                 partner.app_messages = app_messages
