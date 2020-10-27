@@ -1280,8 +1280,12 @@ class SponsorshipContract(models.Model):
                 if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
                     payment_allowed = (
                         not project.hold_cdsp_funds
-                        or invl.due_date
-                        < project.lifecycle_ids[:1].suspension_start_date
+                        or (
+                            invl.due_date
+                            < project.lifecycle_ids[:1].suspension_start_date
+                            if project.lifecycle_ids[:1].suspension_start_date 
+                            else True
+                        )
                     )
                 if not payment_allowed:
                     raise UserError(
