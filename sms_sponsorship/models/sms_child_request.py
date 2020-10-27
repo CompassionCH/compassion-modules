@@ -13,8 +13,7 @@ from random import randint
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, api, fields, _
-from odoo.tools import config
+from odoo import models, api, fields
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo.addons.queue_job.job import job, related_action
 from odoo.tools import config
