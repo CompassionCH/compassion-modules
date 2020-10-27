@@ -338,8 +338,8 @@ class SmsChildRequest(models.Model):
         """
         available_children = self.event_id.hold_ids.filtered(
             lambda h: h.state == "active"
-            and h.channel == "sms"
             and not h.sms_request_id
+            and not h.child_id.sponsor_id
         ).mapped("child_id")
         selected_children = available_children - self.child_id
         if self.has_filter:
