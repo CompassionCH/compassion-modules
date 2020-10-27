@@ -28,8 +28,8 @@
         <field name="arch"
                type="xml">
             <kanban>
+                <field name="pictures_ids"/>
                 <field name="state"/>
-                <field name="portrait"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_vignette">
@@ -37,13 +37,13 @@
                             <div class="oe_kanban_details">
                                 <!-- Title and data -->
                                 <div class="oe_product_desc">
-                                    <img class="oe_kanban_image" alt="child"
-                                         t-att-src="kanban_image('compassion.child', 'portrait', record.id.raw_value)"/>
-                                    <h4>
-                                        <a type="open">
+                                    <a type="open">
+                                        <img class="oe_kanban_image" alt="child"
+                                             t-att-src="kanban_image('compassion.child', 'headshot', record.pictures_ids.raw_value)"/>
+                                        <h4>
                                             <field name="name"/>
-                                        </a>
-                                    </h4>
+                                        </h4>
+                                    </a>
                                     <strong>
                                         <field name="local_id"/>
                                     </strong>
