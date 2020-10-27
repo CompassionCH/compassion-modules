@@ -24,19 +24,5 @@
             <field name="state">code</field>
             <field name="code">model.sms_reminder_cron()</field>
         </record>
-
-        <!-- Notify the staff of the unfinished sms sponsorship -->
-        <record id="sms_unfinished_cron" model="ir.cron">
-            <field name="name">SMS Sponsorship Unfinished Notification</field>
-            <field name="active" eval="True" />
-            <field name="user_id" ref="base.user_admin"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">weeks</field>
-            <field name="nextcall" eval="(DateTime.now() + timedelta(days=((0-DateTime.now().weekday()+7)%7))).strftime('%Y-%m-%d 12:00:00')" />
-            <field name="numbercall">-1</field>
-            <field name="model_id" ref="model_sms_child_request" />
-            <field name="state">code</field>
-            <field name="code">model.sms_notification_unfinished_cron()</field>
-        </record>
     </data>
 </odoo>
