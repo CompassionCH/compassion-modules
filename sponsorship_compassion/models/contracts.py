@@ -1024,7 +1024,8 @@ class SponsorshipContract(models.Model):
     @api.multi
     def contract_waiting(self):
         contracts = self.filtered(lambda c: c.type == "O")
-        super(SponsorshipContract, contracts).contract_waiting()
+        if contracts:
+            super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
@@ -1032,6 +1033,7 @@ class SponsorshipContract(models.Model):
                     sponsorship = line.sponsorship_id
                     if sponsorship.state == "active":
                         contract.contract_active()
+                contract.group_id.generate_invoices()
             if contract.type == "S":
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
@@ -1049,6 +1051,7 @@ class SponsorshipContract(models.Model):
                 contract.write(
                     {"state": "waiting", "start_date": fields.Datetime.now()}
                 )
+                contract.group_id.generate_invoices()
             if contract.type == "SC":
                 # Activate directly correspondence sponsorships
                 contract.contract_active()
