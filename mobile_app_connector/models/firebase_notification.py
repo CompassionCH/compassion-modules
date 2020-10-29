@@ -158,6 +158,7 @@ class FirebaseNotificationPartnerRead(models.Model):
         notif = self.env["firebase.notification.partner.read"].search(
             [
                 ("notification_id", "=", int(notif_id)),
+                ("partner_id", "=", self.env.user.partner_id.id)
             ]
         )
         notif.write({
