@@ -756,12 +756,14 @@ class Correspondence(models.Model):
 
     def process_letter(self):
         """ Method called when new B2S letter is Published. """
+        base_url = self.env["ir.config_parameter"].sudo().get_param(
+            "web.external.url", "")
         self.download_attach_letter_image(letter_type="original_letter_url")
         res = True
         for letter in self:
             if letter.original_language_id not in letter.supporter_languages_ids:
                 res = res and letter.compose_letter_image()
-            letter.read_url = f"/b2s_image?id={letter.uuid}"
+            letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
         return res
 
     @api.multi
