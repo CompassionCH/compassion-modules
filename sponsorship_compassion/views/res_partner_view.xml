@@ -174,7 +174,7 @@
                         icon="fa-exchange">
                     <field name="unrec_items" string="Unreconciled Items" widget="statinfo"/>
                 </button>
-                <button name="receivable_transaction_items" type='object'
+                <button name="receivable_transaction_items" type='object' groups="account.group_account_user"
                         class="oe_inline oe_stat_button" icon="fa-exchange">
                     <field name="receivable_items" string="1050 Items" widget="statinfo"/>
                 </button>
