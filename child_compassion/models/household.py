@@ -214,7 +214,7 @@ class Household(models.Model):
                 household_vals = self.json_to_data(household_data)
                 # First write revision values
                 household.write({
-                    "revised_value_ids" : household_vals.pop("revised_value_ids")})
+                    "revised_value_ids": household_vals.pop("revised_value_ids")})
                 household.write(household_vals)
         return household_ids
 

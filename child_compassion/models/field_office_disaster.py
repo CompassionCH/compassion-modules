@@ -108,6 +108,21 @@ class ChildDisasterImpact(models.Model):
             )
         return impact
 
+    def json_to_data(self, json, mapping_name=None):
+        """ Loss may contain empty values as 'None' and we need to filter them. """
+        res = super().json_to_data(json, mapping_name)
+        if not isinstance(res, list):
+            res = [res]
+        for vals in res:
+            filtered_loss = []
+            for loss_data in vals.get("loss_ids", []):
+                if isinstance(loss_data[2], dict):
+                    if loss_data[2]["name"] == "None":
+                        continue
+                filtered_loss.append(loss_data)
+            vals["loss_ids"] = filtered_loss
+        return res
+
 
 class DisasterLoss(models.Model):
     _inherit = "connect.multipicklist"
@@ -311,7 +326,7 @@ class FieldOfficeDisasterAlert(models.Model):
     def process_commkit(self, commkit_data):
         fo_ids = list()
         for single_data in commkit_data.get("DisasterResponseList", [commkit_data]):
-            vals = self.json_to_data(single_data, "field_office_disaster")
+            vals = self.json_to_data(single_data)
             fo_disaster = self.create(vals)
             fo_ids.append(fo_disaster.id)
         return fo_ids

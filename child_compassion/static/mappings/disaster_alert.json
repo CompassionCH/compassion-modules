@@ -4,7 +4,6 @@
   "mapping": {
     "ICPDisasterImpacts": {
       "field": "fcp_disaster_impact_ids",
-      "search_relational_record": true,
       "allow_relational_creation": true,
       "sub_mapping": {
         "name": "FCPDisasterImpactMapping",
@@ -16,14 +15,13 @@
           "ICP_ID": {
             "field": "project_id.fcp_id",
             "search_relational_record": true,
-            "allow_relational_creation": true
+            "relational_raise_if_not_found": false
           }
         }
       }
     },
     "BeneficiaryDisasterImpacts": {
       "field": "child_disaster_impact_ids",
-      "search_relational_record": true,
       "allow_relational_creation": true,
       "sub_mapping": {
         "name": "ChildDisasterImpact",
@@ -43,7 +41,8 @@
           "SiblingsSeriouslyInjuredNumber": "siblings_seriously_injured_number",
           "Beneficiary_GlobalID": {
             "field": "child_id.global_id",
-            "search_relational_record": true
+            "search_relational_record": true,
+            "relational_raise_if_not_found": false
           },
           "SponsorshipStatus": "sponsorship_status",
           "Beneficiary_FullName": "name"
@@ -52,7 +51,6 @@
     },
     "DisasterCommunicationUpdates": {
       "field": "fo_disaster_update_ids",
-      "search_relational_record": true,
       "allow_relational_creation": true,
       "sub_mapping": {
         "name": "FieldOfficeDisasterUpdate",
@@ -61,8 +59,7 @@
           "DisasterCommunicationUpdate_ID": "fodu_id",
           "DisasterCommunicationUpdate_Name": "name",
           "DisasterCommunicationUpdate_Summary": {
-            "field": "summary",
-            "from_json_conversion": "json_value.replace('\\r', '\n').replace('\\n', '\n').replace('\\t', '\t')"
+            "field": "summary"
           },
           "FieldOffice_Name": {
             "field": "fo_id.name",
@@ -108,7 +105,8 @@
     "SeverityLevel": "severity_level",
     "FieldOffice_Name": {
       "field": "field_office_id.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "relational_raise_if_not_found": false
     },
     "SourceKitName": "source_kit_name"
   }
