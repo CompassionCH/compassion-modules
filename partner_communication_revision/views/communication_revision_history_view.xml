@@ -22,7 +22,4 @@
             </form>
         </field>
     </record>
-
-    <menuitem name="My revision history" id="revision_history_base_menu" />
-    <menuitem name="Revision history" id="revision_history_menu" parent="revision_history_base_menu" action="revision_history_action"/>
 </odoo>
