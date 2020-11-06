@@ -51,6 +51,11 @@ class AccountInvoice(models.Model):
             wrapper.child_gifts + wrapper.fund_donations + wrapper.sponsorships_payments
         )
 
+        if wrapper.source == 'android':
+            utc_medium = self.env.ref("sms_sponsorship.utm_medium_android")
+        else:
+            utc_medium = self.env.ref("sms_sponsorship.utm_medium_ios")
+
         invoice_lines_values = []
         for payment in payments:
             l_vals = {
@@ -59,6 +64,7 @@ class AccountInvoice(models.Model):
                 "quantity": 1,
                 "price_unit": payment["amount"],
                 "name": payment["product_id"].name,
+                "medium_id": utc_medium.id,
             }
             if "contract_id" in payment:
                 l_vals["contract_id"] = payment["contract_id"].id
