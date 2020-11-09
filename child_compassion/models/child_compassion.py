@@ -501,6 +501,7 @@ class CompassionChild(models.Model):
         )
         if household:
             household.write(household_data)
+            data["household_id"] = household.id
         elif household_data:
             data["household_id"] = household.create(household_data).id
         return data
