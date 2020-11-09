@@ -36,9 +36,6 @@
     },
     "pathextension": {
       "field": "letter_format"
-    },
-    "base64string": {
-      "field": "b64image"
     }
   }
 }
