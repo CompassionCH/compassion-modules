@@ -171,4 +171,5 @@ class Contracts(models.Model):
         for contract in self.filtered(
                 lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
         ):
-            contract.sponsor_letter_ids.reactivate_letters("Sponsorship activated")
+            contract.sponsor_letter_ids.filtered(lambda c: not c.kit_identifier)\
+                .reactivate_letters("Sponsorship activated")
