@@ -8,7 +8,7 @@
 
             <!-- Hide reference -->
             <field name="reference" position="replace">
-                <field name="name"/>
+                <field name="name" readonly="True"/>
             </field>
 
             <field name="last_paid_invoice_date" position="before">

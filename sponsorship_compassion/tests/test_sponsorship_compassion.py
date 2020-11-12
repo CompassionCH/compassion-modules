@@ -135,7 +135,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return update_hold
 
     def pay_sponsorship(self, sponsorship):
-        invoices = sponsorship.button_generate_invoices().invoice_ids
+        invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
+        if not invoices:
+            invoices = sponsorship.button_generate_invoices().invoice_ids
         self.assertEqual(len(invoices), 2)
         for invoice in reversed(invoices):
             self.assertEqual(invoices[0].state, "open")
@@ -174,7 +176,9 @@ class TestSponsorship(BaseSponsorshipTest):
         hold = child.hold_id
         self.assertEqual(hold.type, "No Money Hold")
 
-        invoices = sponsorship.button_generate_invoices().invoice_ids
+        invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
+        if not invoices:
+            invoices = sponsorship.button_generate_invoices().invoice_ids
         self.assertEqual(len(invoices), 2)
         invoice = self.env["account.invoice"].browse(invoices[1].id)
         self.assertEqual(invoice.state, "open")

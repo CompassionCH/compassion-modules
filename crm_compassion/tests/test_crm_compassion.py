@@ -57,8 +57,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
         sponsorship.write({"origin_id": mark_origin.id})
         sponsorship.on_change_origin()
         self.validate_sponsorship(sponsorship)
-        invoicer_id = sponsorship.button_generate_invoices()
-        invoices = invoicer_id.invoice_ids
+        invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, "open")
         self.assertEqual(invoices[0].invoice_line_ids[0].user_id, sponsorship.user_id)

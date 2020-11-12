@@ -60,8 +60,7 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
         for sponsorship in sponsorship_ids:
             self.validate_sponsorship(sponsorship)
 
-        invoices1 = sponsorship_ids[0].button_generate_invoices().invoice_ids
-
+        invoices1 = sponsorship[0].invoice_line_ids.mapped("invoice_id")
         invoice1 = self.env["account.invoice"].browse(invoices1[1].id)
 
         self._pay_invoice(invoice1)
@@ -78,7 +77,8 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
                 "%Y-%m-%d"
             )
 
-        self.assertEqual(sponsorship_ids[0].state, "active")
+        active_spons = invoice1.mapped("invoice_line_ids.contract_id")[:1]
+        self.assertEqual(active_spons.state, "active")
         self.assertEqual(partner.sr_sponsorship, 3)
 
         self.assertEqual(partner.sr_nb_girl, 1)
