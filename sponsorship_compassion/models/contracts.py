@@ -1283,7 +1283,7 @@ class SponsorshipContract(models.Model):
                         or (
                             invl.due_date
                             < project.lifecycle_ids[:1].suspension_start_date
-                            if project.lifecycle_ids[:1].suspension_start_date 
+                            if project.lifecycle_ids[:1].suspension_start_date
                             else True
                         )
                     )
