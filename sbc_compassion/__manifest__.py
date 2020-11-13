@@ -46,6 +46,8 @@
             "matplotlib",
             "PyPDF2",
             "openupgradelib",
+            "PyMuPDF",
+            "boxdetect",
         ]
     },
     "data": [

@@ -13,6 +13,7 @@ Defines a few functions useful in ../models/import_letters_history.py
 import base64
 import logging
 import os
+import fitz
 from io import BytesIO
 from time import time
 
@@ -21,7 +22,6 @@ from . import (
     zbar_wrapper,
     patternrecognition as pr,
     checkboxreader as cbr,
-    sniffpdf,
 )
 
 _logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
 
     pdf_in_buffer = BytesIO(file_data)
     inputpdf = PdfFileReader(pdf_in_buffer)
-    letter_indexes, imgs = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
+    letter_indexes, imgs, lang = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
     _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
 
     # Construct the data for each detected letter: store as PDF
@@ -100,13 +100,10 @@ def analyze_attachment(env, file_data, file_name, force_template):
         else:
             # use pattern recognition to find the template
             _find_template(env, imgs[i], letter_vals, resize_ratio)
-        if letter_vals["template_id"] != env.ref("sbc_compassion.default_template").id:
             tic = time()
-            _find_languages(env, imgs[i], letter_vals, resize_ratio)
+            if lang:
+                letter_vals["letter_language_id"] = lang.id
             _logger.debug(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
-        else:
-            _logger.warning("\t\tAnalysis failed")
-            letter_vals["letter_language_id"] = False
 
     return line_vals
 
@@ -133,7 +130,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
 
     previous_qrcode = ""
     _logger.debug(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
-    for i in range(inputpdf.numPages):
+    # only on the first page there is a QR Code
+    for i in range(1):
         tic = time()
         output = PdfFileWriter()
         output.addPage(inputpdf.getPage(i))
@@ -143,7 +141,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
 
         # read the qrcode on the current page
         qrcode, img_path = _decode_page(env, page_buffer.read())
-
+        lang = pr.find_languages_area(env, img_path)
         if (qrcode and qrcode["data"] != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode["data"]
             letter_indexes.append(i)
@@ -174,7 +172,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         os.remove(img_path)
     letter_indexes.append(i + 1)
 
-    return letter_indexes, page_imgs
+    return letter_indexes, page_imgs, lang
 
 
 def _decode_page(env, page_data):
@@ -187,48 +185,23 @@ def _decode_page(env, page_data):
     :rtype: str, binary
     """
     tic = time()
-    #  write a pdf file of the pdf data (which allows to perfom some
-    # operations on it)
-    tmp_url = sniffpdf.data2pdf(page_data)
-    # Get the tree layout structure of the temporary PDF
-    layouts = sniffpdf.get_layout(tmp_url)
 
-    # The temporary PDF should only contain a single image
-    if len(layouts) == 1 and sniffpdf.contains_a_single_image(layouts[0]):
-        # extract jpg images from page_data en save them.
-        img_url = sniffpdf.get_images(
-            page_data, dst_folder=os.getcwd(), dst_name="page"
-        )
-        img_url = img_url[0]
-        _logger.debug(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
-        # its time to remove the temporary PDF file
-        os.remove(tmp_url)
-    else:
-        # It occurs that the page is not suitable to be simply opened as a
-        # jpg image. This is why we have to convert it using a slower but
-        # safer method
+    doc = fitz.open("pdf", page_data)
+    for page in doc:  # iterate through the pages
+        zoom_x = 5.0  # horizontal zoom
+        zomm_y = 5.0  # vertical zoom
 
-        # Slowly convert from vectorial to image data
-        with WandImage(blob=page_data, resolution=300) as page_image:
-            # Convert from image data to an array
-            page_data = np.asarray(bytearray(page_image.make_blob("jpg")))
-            # And we finally obtain our cv image
-        img = cv2.imdecode(page_data, 1)  # Read in color
-        if img is None:
-            return None, None, None
-        img_url = os.getcwd() + "/page.jpg"
-        cv2.imwrite(img_url, img)
+        mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor in each dimension
+        pix = page.getPixmap(matrix=mat, alpha=0)  # use 'mat' instead of the identity matrix
+        pix.writePNG("page%i.png" % page.number)  # store image as a PNG
 
-        _logger.debug(f"\t\tPDF opened with wand.image in {time() - tic:.3} sec")
-
-    tic = time()
-
+    img_url = os.getcwd() + "/page0.png" # there is only one image
     decoder_lib = "zbar"
     if decoder_lib == "zxing":
-        qrdata = zxing_wrapper.scan_qrcode(img_url)
+        qrdata = zxing_wrapper.scan_qrcode(img_url, page)
         _logger.debug(f"\t\tQRCode decoded using ZXing in {time() - tic:.3} sec")
     elif decoder_lib == "zbar":
-        qrdata = zbar_wrapper.scan_qrcode(img_url)
+        qrdata = zbar_wrapper.scan_qrcode(img_url, page)
         _logger.debug(f"\t\tQRCode decoded using ZBar in {time() - tic:.3} sec")
 
     return qrdata, img_url
