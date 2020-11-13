@@ -22,6 +22,11 @@ from time import time
 
 from odoo import _
 from odoo.exceptions import UserError
+# from boxdetect import config
+# from boxdetect.pipelines import get_boxes
+from boxdetect.pipelines import get_checkboxes
+# import matplotlib.pyplot as plt
+from boxdetect import config
 
 _logger = logging.getLogger(__name__)
 
@@ -367,13 +372,19 @@ def find_template(img, templates, resize_ratio=1.0):
             temp_image = cv2.imread(
                 temp.name, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH
             )
-        temp_image = cv2.resize(
-            temp_image,
-            None,
-            fx=resize_ratio,
-            fy=resize_ratio,
-            interpolation=cv2.INTER_CUBIC,
-        )
+        # temp_image = cv2.resize(
+        #     temp_image,
+        #     None,
+        #     fx=resize_ratio,
+        #     fy=resize_ratio,
+        #     interpolation=cv2.INTER_CUBIC,
+        # )
+
+        # plt.imshow(img1)
+        # plt.show()
+        #
+        # plt.imshow(temp_image)
+        # plt.show()
 
         # try to recognize the pattern
         res = patternRecognition(img1, temp_image)
@@ -404,3 +415,73 @@ def find_template(img, templates, resize_ratio=1.0):
     else:
         _logger.warning("\t\t\tNo template found.")
     return matching_template, keyPointCenter(key_img)
+
+
+def find_languages_area(env, filename):
+    try:
+        cfg = config.PipelinesConfig()
+
+        # important to adjust these values to match the size of boxes on your image
+        cfg.width_range = (50, 60)
+        cfg.height_range = (50, 60)
+
+        # the more scaling factors the more accurate the results but also it takes more time to processing
+        # too small scaling factor may cause false positives
+        # too big scaling factor will take a lot of processing time
+        cfg.scaling_factors = [0.5]
+
+        # w/h ratio range for boxes/rectangles filtering
+        cfg.wh_ratio_range = (0.5, 1.7)
+
+        # group_size_range starting from 2 will skip all the groups
+        # with a single box detected inside (like checkboxes)
+        cfg.group_size_range = (2, 100)
+
+        # num of iterations when running dilation tranformation (to engance the image)
+        cfg.dilation_iterations = 0
+
+        # rects, grouping_rects, image, output_image = get_boxes(
+        #     filename, cfg=cfg, plot=False)
+        # print(grouping_rects)
+
+        # plt.figure(figsize=(20, 20))
+        # plt.imshow(output_image)
+        # plt.show()
+
+        # limit down the grouping algorithm to just singular boxes (e.g. checkboxes)
+        cfg.group_size_range = (1, 1)
+
+        checkboxes = get_checkboxes(
+            filename, cfg=cfg, px_threshold=0.1, plot=False, verbose=True)
+
+        # print("Output object type: ", type(checkboxes))
+        lang = None
+        for checkbox in checkboxes:
+            # print("Checkbox bounding rectangle (x,y,width,height): ", checkbox[0])
+            # print("Result of `contains_pixels` for the checkbox: ", checkbox[1])
+            # print("Display the cropout of checkbox:")
+            # plt.figure(figsize=(1, 1))
+            # plt.imshow(checkbox[2])
+            # plt.show()
+
+            if checkbox[1] and 1800 < checkbox[0][0] < 2000 and 250 < checkbox[0][1] < 280:
+                lang = env['res.lang.compassion'].search([
+                    ('name', '=', 'Spanish')])
+            elif checkbox[1] and 1100 < checkbox[0][0] < 1300 and 80 < checkbox[0][1] < 110:
+                lang = env['res.lang.compassion'].search([
+                    ('name', '=', 'French')])
+            elif checkbox[1] and 1800 < checkbox[0][0] < 2000 and 80 < checkbox[0][1] < 130:
+                lang = env['res.lang.compassion'].search([
+                    ('name', '=', 'English')])
+            elif checkbox[1] and 1100 < checkbox[0][0] < 1300 and 240 < checkbox[0][1] < 270:
+                lang = env['res.lang.compassion'].search([
+                    ('name', '=', 'German')])
+            elif checkbox[1] and 1100 < checkbox[0][0] < 1300 and 390 < checkbox[0][1] < 430:
+                lang = env['res.lang.compassion'].search([
+                    ('name', '=', 'Italian')])
+
+        return lang
+
+    except Exception as err:
+        exception_type = type(err).__name__
+        print(exception_type)
