@@ -53,7 +53,6 @@
         "views/config_view.xml",
         "views/contracts_view.xml",
         "views/partner_compassion_view.xml",
-        "views/lang_compassion_view.xml",
         "views/correspondence_view.xml",
         "views/import_letters_history_view.xml",
         "views/correspondence_template_view.xml",

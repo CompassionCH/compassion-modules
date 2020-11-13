@@ -8,6 +8,7 @@
                 <field name="name"/>
                 <field name="code_iso"/>
                 <field name="translatable"/>
+                <field name="lang_id"/>
             </tree>
         </field>
     </record>
@@ -27,12 +28,24 @@
             </form>
         </field>
     </record>
+    <record id="view_spoken_langs_origin_search" model="ir.ui.view">
+        <field name="name">res.lang.compassion.search</field>
+        <field name="model">res.lang.compassion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code_iso" string="Iso code"/>
+                <field name="translatable"/>
+                <field name="lang_id"/>
+            </search>
+        </field>
+    </record>
     <record id="action_lang_compassion_view" model="ir.actions.act_window">
         <field name="name">Compassion languages</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.lang.compassion</field>
         <field name="view_type">form</field>
-        <field name="view_mode">tree, form</field>
+        <field name="view_mode">tree,form</field>
     </record>
-    <menuitem action="action_lang_compassion_view" id="menu_lang_compassion" parent="base.menu_translation"/>
+    <menuitem name="Compassion langugages" action="action_lang_compassion_view" id="menu_lang_compassion" parent="base.menu_translation"/>
 </odoo>
