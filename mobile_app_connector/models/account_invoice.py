@@ -136,7 +136,8 @@ class AccountInvoice(models.Model):
                 invoice.send_mobile_notification()
 
             # when a contract exist before than this invoice created, so the invoice.origin contains sponsorship
-            if invoice.invoice_type == 'sponsorship' and 'sponsorship' not in invoice.origin:
+            if invoice.invoice_type == 'sponsorship' and 'sponsorship' not in invoice.origin and \
+                    ('android' in invoice.origin or 'ios' in invoice.origin):
                 # we will create a new invoice but notify a staff
                 # member that it needs to be processed manually, to avoid creating
                 # delays in his due months.
