@@ -12,24 +12,15 @@
 ZBar is detected, it apply a few filter on the input image and try the
 scanning again. This technique reduces the number of false negative."""
 import logging
-import fitz
-
-import numpy
-import zbar
-import io
-
-from kraken import binarization
 from PIL import Image
-from . import (
-    patternrecognition as pr,
-)
 
 _logger = logging.getLogger(__name__)
 try:
     from pyzbar import pyzbar
     import cv2  # we use openCV to repair broken QRCodes.
+    import fitz
 except ImportError:
-    _logger.warning("SBC module needs pyzbar and cv2 to work.")
+    _logger.warning("SBC module needs pyzbar, cv2 and PyMuPDF to work.")
 
 
 def scan_qrcode(filename, page):
@@ -44,7 +35,7 @@ def scan_qrcode(filename, page):
     return qrdata
 
 
-def _scan(img, scanner=None):
+def _scan(img):
     # convert cv image to raw data
     pil = Image.fromarray(img)
     # extract results
@@ -64,52 +55,20 @@ def _decode(filename, page):
         zoom_x = 10.0  # horizontal zoom
         zomm_y = 10.0  # vertical zoom
         mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor 2 in each dimension
-        pix = page.getPixmap(matrix=mat, alpha=0)  # use 'mat' instead of the identity matrix
+        # use 'mat' instead of the identity matrix
+        pix = page.getPixmap(matrix=mat, alpha=0)
         pix.writePNG("page%i.png" % page.number)  # store image as a PNG
         # No QR found, so we try to again after an opening operation
         img = cv2.imread(filename, 0)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
         imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
         qrcode = _scan(imgage)
-        if not qrcode:
+        zoom_factors = [0.4, 0.3, 0.2, 0.6, 0.7, 0.8, 0.9, 1.0]
+        tries = 0
+        while not qrcode and tries < len(zoom_factors):
             # No QR found, so we try to again after an opening operation
-            im = cv2.resize(img, None, fx=0.4, fy=0.4)
+            im = cv2.resize(img, None, fx=zoom_factors[tries], fy=zoom_factors[tries])
             imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
             qrcode = _scan(imgage)
-            if not qrcode:
-                # No QR found, so we try to again after an opening operation
-                im = cv2.resize(img, None, fx=0.3, fy=0.3)
-                imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                qrcode = _scan(imgage)
-                if not qrcode:
-                    # No QR found, so we try to again after an opening operation
-                    im = cv2.resize(img, None, fx=0.2, fy=0.2)
-                    imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                    qrcode = _scan(imgage)
-                    if not qrcode:
-                        # No QR found, so we try to again after an opening operation
-                        im = cv2.resize(img, None, fx=0.6, fy=0.6)
-                        imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                        qrcode = _scan(imgage)
-                        if not qrcode:
-                            # No QR found, so we try to again after an opening operation
-                            im = cv2.resize(img, None, fx=0.7, fy=0.7)
-                            imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                            qrcode = _scan(imgage)
-                            if not qrcode:
-                                # No QR found, so we try to again after an opening operation
-                                im = cv2.resize(img, None, fx=0.8, fy=0.8)
-                                imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                                qrcode = _scan(imgage)
-                                if not qrcode:
-                                    # No QR found, so we try to again after an opening operation
-                                    im = cv2.resize(img, None, fx=0.9, fy=0.9)
-                                    imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                                    qrcode = _scan(imgage)
-                                    if not qrcode:
-                                        # No QR found, so we try to again after an opening operation
-                                        im = cv2.resize(img, None, fx=1.0, fy=1.0)
-                                        imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                                        qrcode = _scan(imgage)
-
+            tries += 1
     return qrcode

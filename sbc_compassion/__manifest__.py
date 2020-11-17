@@ -46,7 +46,7 @@
             "matplotlib",
             "PyPDF2",
             "openupgradelib",
-            "PyMuPDF",
+            "fitz",  # PyMuPDF
             "boxdetect",
         ]
     },
