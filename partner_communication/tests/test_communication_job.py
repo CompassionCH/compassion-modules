@@ -72,9 +72,6 @@ class TestCommunicationJob(TransactionCase):
         self.partner.global_communication_delivery_preference = "auto_digital"
         self.assertEqual(self.config.get_inform_mode(self.partner), ("digital", True))
 
-        self.partner.global_communication_delivery_preference = "auto_physical"
-        self.assertEqual(self.config.get_inform_mode(self.partner), ("physical", True))
-
         self.partner.global_communication_delivery_preference = "digital"
         self.assertEqual(self.config.get_inform_mode(self.partner), ("digital", False))
 
