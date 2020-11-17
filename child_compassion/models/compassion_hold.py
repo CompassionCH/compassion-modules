@@ -450,36 +450,25 @@ class CompassionHold(models.Model):
         settings = self.env["res.config.settings"].sudo()
         first_extension = settings.get_param("no_money_hold_duration")
         second_extension = settings.get_param("no_money_hold_extension")
-        body_extension = (
+        body = (
             "The no money hold for child {local_id} was expiring on "
             "{old_expiration} and was extended to {new_expiration}."
             "{additional_text}"
-        )
-        body_expiration = (
-            "The no money hold for child {local_id} will expire on "
-            "{old_expiration}. The sponsorship will be cancelled on that "
-            "date.{additional_text}"
         )
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
             hold_extension = (
                 first_extension if not hold.no_money_extension else second_extension
             )
             new_hold_date = hold.expiration_date + timedelta(days=hold_extension)
-            is_extended = hold.no_money_extension < 2
             next_extension = hold.no_money_extension
             if hold.type == HoldType.NO_MONEY_HOLD.value:
                 next_extension += 1
             hold_vals = {
                 "no_money_extension": next_extension,
             }
-            if is_extended:
-                hold_vals["expiration_date"] = new_hold_date
+            hold_vals["expiration_date"] = new_hold_date
             old_date = hold.expiration_date
             hold.write(hold_vals)
-            subject = (
-                "No money hold extension" if is_extended else "No money hold expiration"
-            )
-            body = body_extension if is_extended else body_expiration
             values = {
                 "local_id": hold.child_id.local_id,
                 "old_expiration": old_date,
@@ -487,7 +476,8 @@ class CompassionHold(models.Model):
                 "additional_text": additional_text or "",
             }
             hold.message_post(
-                body=_(body.format(**values)), subject=_(subject), type="comment",
+                body=_(body.format(**values)),
+                subject=_("No money hold extension"), type="comment",
             )
             # Commit after hold is updated
             if not test_mode:
