@@ -51,7 +51,7 @@ class AccountInvoice(models.Model):
             wrapper.child_gifts + wrapper.fund_donations + wrapper.sponsorships_payments
         )
 
-        if wrapper.source == 'android':
+        if 'android' in wrapper.source:
             utc_medium = self.env.ref("sms_sponsorship.utm_medium_android")
         else:
             utc_medium = self.env.ref("sms_sponsorship.utm_medium_ios")
@@ -108,28 +108,6 @@ class AccountInvoice(models.Model):
                 invoice = sponsorship_invoice
                 invoice.origin = wrapper.source + " sponsorship payment"
                 existing_invoice = True
-            else:
-                # we will create a new invoice but notify a staff
-                # member that it needs to be processed manually, to avoid creating
-                # delays in his due months.
-                partner_ids = (
-                    self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
-                )[0][2]
-                if partner_ids:
-                    activity_values = {
-                        "user_id": self.env["res.partner"].sudo().browse(
-                            partner_ids[0]).user_ids[:1].id
-                    }
-                    invoice.activity_schedule(
-                        "mail.mail_activity_data_todo",
-                        summary=_("Sponsorship paid from the app"),
-                        note=_(
-                            "This invoice created from the app needs to be manually "
-                            "processed. You may want to cancel another sponsorship "
-                            "invoice to avoid creating an overdue for the supporter."
-                        ),
-                        **activity_values
-                    )
 
         if not existing_invoice:
             for line in invoice.invoice_line_ids:
@@ -156,6 +134,33 @@ class AccountInvoice(models.Model):
             if invoice.invoice_type in ('gift', 'fund') and has_app \
                     and not invoice.avoid_thankyou_letter:
                 invoice.send_mobile_notification()
+
+            # when a contract exist before than this invoice created, so the
+            # invoice.origin contains sponsorship
+            if invoice.invoice_type == 'sponsorship' and 'sponsorship' not in \
+                    invoice.origin and \
+                    ('android' in invoice.origin or 'ios' in invoice.origin):
+                # we will create a new invoice but notify a staff
+                # member that it needs to be processed manually, to avoid creating
+                # delays in his due months.
+                partner_ids = (
+                    self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
+                )[0][2]
+                if partner_ids:
+                    activity_values = {
+                        "user_id": self.env["res.partner"].sudo().browse(
+                            partner_ids[0]).user_ids[:1].id
+                    }
+                    invoice.activity_schedule(
+                        "mail.mail_activity_data_todo",
+                        summary=_("Sponsorship paid from the app"),
+                        note=_(
+                            "This invoice created from the app needs to be manually "
+                            "processed. You may want to cancel another sponsorship "
+                            "invoice to avoid creating an overdue for the supporter."
+                        ),
+                        **activity_values
+                    )
         return res
 
     def send_mobile_notification(self):

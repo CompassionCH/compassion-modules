@@ -21,18 +21,16 @@ from . import (
     zbar_wrapper,
     patternrecognition as pr,
     checkboxreader as cbr,
-    sniffpdf,
 )
 
 _logger = logging.getLogger(__name__)
 
 try:
-    import numpy as np
     import cv2
+    import fitz
     from PyPDF2 import PdfFileWriter, PdfFileReader
-    from wand.image import Image as WandImage
 except ImportError:
-    _logger.warning("Please install numpy, cv2, PyPDF2 and wand to use SBC " "module")
+    _logger.warning("Please install PyMuPDF, cv2 and PyPDF2 to use SBC module")
 
 ##########################################################################
 #                           GENERAL METHODS                              #
@@ -65,7 +63,7 @@ def analyze_attachment(env, file_data, file_name, force_template):
 
     pdf_in_buffer = BytesIO(file_data)
     inputpdf = PdfFileReader(pdf_in_buffer)
-    letter_indexes, imgs = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
+    letter_indexes, imgs, lang = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
     _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
 
     # Construct the data for each detected letter: store as PDF
@@ -100,13 +98,10 @@ def analyze_attachment(env, file_data, file_name, force_template):
         else:
             # use pattern recognition to find the template
             _find_template(env, imgs[i], letter_vals, resize_ratio)
-        if letter_vals["template_id"] != env.ref("sbc_compassion.default_template").id:
             tic = time()
-            _find_languages(env, imgs[i], letter_vals, resize_ratio)
+            if lang:
+                letter_vals["letter_language_id"] = lang.id
             _logger.debug(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
-        else:
-            _logger.warning("\t\tAnalysis failed")
-            letter_vals["letter_language_id"] = False
 
     return line_vals
 
@@ -133,7 +128,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
 
     previous_qrcode = ""
     _logger.debug(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
-    for i in range(inputpdf.numPages):
+    # only on the first page there is a QR Code
+    for i in range(1):
         tic = time()
         output = PdfFileWriter()
         output.addPage(inputpdf.getPage(i))
@@ -142,8 +138,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         page_buffer.seek(0)
 
         # read the qrcode on the current page
-        qrcode, img_path = _decode_page(env, page_buffer.read())
-
+        qrcode, img_path = _decode_page(page_buffer.read())
+        lang = cbr.find_languages_area(env, img_path)
         if (qrcode and qrcode["data"] != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode["data"]
             letter_indexes.append(i)
@@ -174,10 +170,10 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         os.remove(img_path)
     letter_indexes.append(i + 1)
 
-    return letter_indexes, page_imgs
+    return letter_indexes, page_imgs, lang
 
 
-def _decode_page(env, page_data):
+def _decode_page(page_data):
     """
     Read the image and try to find the QR codes.
 
@@ -187,48 +183,24 @@ def _decode_page(env, page_data):
     :rtype: str, binary
     """
     tic = time()
-    #  write a pdf file of the pdf data (which allows to perfom some
-    # operations on it)
-    tmp_url = sniffpdf.data2pdf(page_data)
-    # Get the tree layout structure of the temporary PDF
-    layouts = sniffpdf.get_layout(tmp_url)
 
-    # The temporary PDF should only contain a single image
-    if len(layouts) == 1 and sniffpdf.contains_a_single_image(layouts[0]):
-        # extract jpg images from page_data en save them.
-        img_url = sniffpdf.get_images(
-            page_data, dst_folder=os.getcwd(), dst_name="page"
-        )
-        img_url = img_url[0]
-        _logger.debug(f"\t\tPDF opened with sniffpdf in { time() - tic:.3} sec")
-        # its time to remove the temporary PDF file
-        os.remove(tmp_url)
-    else:
-        # It occurs that the page is not suitable to be simply opened as a
-        # jpg image. This is why we have to convert it using a slower but
-        # safer method
+    doc = fitz.open("pdf", page_data)
+    for page in doc:  # iterate through the pages
+        zoom_x = 5.0  # horizontal zoom
+        zomm_y = 5.0  # vertical zoom
 
-        # Slowly convert from vectorial to image data
-        with WandImage(blob=page_data, resolution=300) as page_image:
-            # Convert from image data to an array
-            page_data = np.asarray(bytearray(page_image.make_blob("jpg")))
-            # And we finally obtain our cv image
-        img = cv2.imdecode(page_data, 1)  # Read in color
-        if img is None:
-            return None, None, None
-        img_url = os.getcwd() + "/page.jpg"
-        cv2.imwrite(img_url, img)
+        mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor in each dimension
+        # use 'mat' instead of the identity matrix
+        pix = page.getPixmap(matrix=mat, alpha=0)
+        pix.writePNG("page%i.png" % page.number)  # store image as a PNG
 
-        _logger.debug(f"\t\tPDF opened with wand.image in {time() - tic:.3} sec")
-
-    tic = time()
-
+    img_url = os.getcwd() + "/page0.png"  # there is only one image
     decoder_lib = "zbar"
     if decoder_lib == "zxing":
-        qrdata = zxing_wrapper.scan_qrcode(img_url)
+        qrdata = zxing_wrapper.scan_qrcode(img_url, page)
         _logger.debug(f"\t\tQRCode decoded using ZXing in {time() - tic:.3} sec")
     elif decoder_lib == "zbar":
-        qrdata = zbar_wrapper.scan_qrcode(img_url)
+        qrdata = zbar_wrapper.scan_qrcode(img_url, page)
         _logger.debug(f"\t\tQRCode decoded using ZBar in {time() - tic:.3} sec")
 
     return qrdata, img_url
@@ -288,56 +260,6 @@ def _find_template(env, img, line_vals, resize_ratio):
         template = env.ref("sbc_compassion.default_template")
 
     line_vals["template_id"] = template.id
-
-
-def _find_languages(env, img, line_vals, resize_ratio=1.0):
-    """
-    Crop a small part
-    of the original picture around the position of each language
-    check box.
-
-    This analysis should be quite fast due to the small size of the
-    pictures to analyze (should be a square of about 20-30 pixels large).
-
-    Algorithm for finding the checked language is the following:
-    1. Detect the box coordinates
-    2. Compute Canny edges with two different approach and merge them
-    3. Depending on the number of detected edges and a decision threshold
-    we classe each box to True or False
-    4. If 0 or more tha 1 box is checked, we don't return any result
-
-    :param env env: Odoo variable env
-    :param img: Image to analyze
-    :param dict line_vals: Dictonnary containing the data for a line\
-        (and the template)
-    :returns: None
-    """
-    line_vals["letter_language_id"] = False
-    template = env["correspondence.template"].browse(line_vals["template_id"])
-    if not template:
-        return
-
-    h, w = img.shape[:2]
-    checked = []
-    checkbox_list = []
-    for checkbox in template.checkbox_ids:
-        a = int(checkbox.y_min * resize_ratio)
-        b = int(checkbox.y_max * resize_ratio)
-        c = int(checkbox.x_min * resize_ratio)
-        d = int(checkbox.x_max * resize_ratio)
-        if not (0 < a < b < h and 0 < c < d < w):
-            continue
-        checkbox_image = cbr.CheckboxReader(img[a: b + 1, c: d + 1])
-
-        score = checkbox_image.compute_boxscore(boxsize=17)
-        checkbox_list.append(checkbox)
-        checked.append(checkbox_image.decision_threshold < score)
-
-    checked_ind = [i for i, val in enumerate(checked) if val]
-    lang = list([checkbox_list[ind] for ind in checked_ind])
-    if len(lang) == 1:
-        lang = lang[0].language_id
-        line_vals["letter_language_id"] = lang.id
 
 
 def check_file(name):

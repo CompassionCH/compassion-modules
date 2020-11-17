@@ -29,7 +29,8 @@ try:
     import cv2
     import numpy as np
 except ImportError:
-    _logger.warning("Please install cv2 and numpy on your system to use SBC " "module")
+    _logger.warning(
+        "Please install cv2 and numpy on your system to use SBC module")
 
 
 ##########################################################################
@@ -367,13 +368,19 @@ def find_template(img, templates, resize_ratio=1.0):
             temp_image = cv2.imread(
                 temp.name, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH
             )
-        temp_image = cv2.resize(
-            temp_image,
-            None,
-            fx=resize_ratio,
-            fy=resize_ratio,
-            interpolation=cv2.INTER_CUBIC,
-        )
+        # temp_image = cv2.resize(
+        #     temp_image,
+        #     None,
+        #     fx=resize_ratio,
+        #     fy=resize_ratio,
+        #     interpolation=cv2.INTER_CUBIC,
+        # )
+
+        # plt.imshow(img1)
+        # plt.show()
+        #
+        # plt.imshow(temp_image)
+        # plt.show()
 
         # try to recognize the pattern
         res = patternRecognition(img1, temp_image)
