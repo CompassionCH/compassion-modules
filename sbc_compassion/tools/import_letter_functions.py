@@ -13,7 +13,6 @@ Defines a few functions useful in ../models/import_letters_history.py
 import base64
 import logging
 import os
-import fitz
 from io import BytesIO
 from time import time
 
@@ -27,12 +26,11 @@ from . import (
 _logger = logging.getLogger(__name__)
 
 try:
-    import numpy as np
     import cv2
+    import fitz
     from PyPDF2 import PdfFileWriter, PdfFileReader
-    from wand.image import Image as WandImage
 except ImportError:
-    _logger.warning("Please install numpy, cv2, PyPDF2 and wand to use SBC " "module")
+    _logger.warning("Please install PyMuPDF, cv2 and PyPDF2 to use SBC module")
 
 ##########################################################################
 #                           GENERAL METHODS                              #
@@ -140,8 +138,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         page_buffer.seek(0)
 
         # read the qrcode on the current page
-        qrcode, img_path = _decode_page(env, page_buffer.read())
-        lang = pr.find_languages_area(env, img_path)
+        qrcode, img_path = _decode_page(page_buffer.read())
+        lang = cbr.find_languages_area(env, img_path)
         if (qrcode and qrcode["data"] != previous_qrcode) or i == 0:
             previous_qrcode = qrcode and qrcode["data"]
             letter_indexes.append(i)
@@ -175,7 +173,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     return letter_indexes, page_imgs, lang
 
 
-def _decode_page(env, page_data):
+def _decode_page(page_data):
     """
     Read the image and try to find the QR codes.
 
@@ -192,10 +190,11 @@ def _decode_page(env, page_data):
         zomm_y = 5.0  # vertical zoom
 
         mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor in each dimension
-        pix = page.getPixmap(matrix=mat, alpha=0)  # use 'mat' instead of the identity matrix
+        # use 'mat' instead of the identity matrix
+        pix = page.getPixmap(matrix=mat, alpha=0)
         pix.writePNG("page%i.png" % page.number)  # store image as a PNG
 
-    img_url = os.getcwd() + "/page0.png" # there is only one image
+    img_url = os.getcwd() + "/page0.png"  # there is only one image
     decoder_lib = "zbar"
     if decoder_lib == "zxing":
         qrdata = zxing_wrapper.scan_qrcode(img_url, page)
@@ -261,56 +260,6 @@ def _find_template(env, img, line_vals, resize_ratio):
         template = env.ref("sbc_compassion.default_template")
 
     line_vals["template_id"] = template.id
-
-
-def _find_languages(env, img, line_vals, resize_ratio=1.0):
-    """
-    Crop a small part
-    of the original picture around the position of each language
-    check box.
-
-    This analysis should be quite fast due to the small size of the
-    pictures to analyze (should be a square of about 20-30 pixels large).
-
-    Algorithm for finding the checked language is the following:
-    1. Detect the box coordinates
-    2. Compute Canny edges with two different approach and merge them
-    3. Depending on the number of detected edges and a decision threshold
-    we classe each box to True or False
-    4. If 0 or more tha 1 box is checked, we don't return any result
-
-    :param env env: Odoo variable env
-    :param img: Image to analyze
-    :param dict line_vals: Dictonnary containing the data for a line\
-        (and the template)
-    :returns: None
-    """
-    line_vals["letter_language_id"] = False
-    template = env["correspondence.template"].browse(line_vals["template_id"])
-    if not template:
-        return
-
-    h, w = img.shape[:2]
-    checked = []
-    checkbox_list = []
-    for checkbox in template.checkbox_ids:
-        a = int(checkbox.y_min * resize_ratio)
-        b = int(checkbox.y_max * resize_ratio)
-        c = int(checkbox.x_min * resize_ratio)
-        d = int(checkbox.x_max * resize_ratio)
-        if not (0 < a < b < h and 0 < c < d < w):
-            continue
-        checkbox_image = cbr.CheckboxReader(img[a: b + 1, c: d + 1])
-
-        score = checkbox_image.compute_boxscore(boxsize=17)
-        checkbox_list.append(checkbox)
-        checked.append(checkbox_image.decision_threshold < score)
-
-    checked_ind = [i for i, val in enumerate(checked) if val]
-    lang = list([checkbox_list[ind] for ind in checked_ind])
-    if len(lang) == 1:
-        lang = lang[0].language_id
-        line_vals["letter_language_id"] = lang.id
 
 
 def check_file(name):
