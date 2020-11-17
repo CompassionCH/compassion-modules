@@ -284,25 +284,22 @@ class ResPartner(models.Model):
     ##########################################################################
     @api.multi
     def show_lines(self):
-        try:
-            ir_model_data = self.env["ir.model.data"]
-            view_id = ir_model_data.get_object_reference(
-                "recurring.contract", "view_invoice_line_partner_tree"
-            )[1]
-        except ValueError:
-            view_id = False
         action = {
             "name": _("Related invoice lines"),
             "type": "ir.actions.act_window",
             "view_type": "form",
             "view_mode": "tree,form",
+            "views": [
+                (self.env.ref(
+                    "sponsorship_compassion.view_invoice_line_partner_tree").id,
+                 "tree"),
+                (False, "form")],
             "res_model": "account.invoice.line",
-            "view_id": view_id,
-            "views": [(view_id, "tree"), (False, "form")],
             "target": "current",
             "context": self.with_context(
                 search_default_partner_id=self.ids
             ).env.context,
+            "domain": self.env.context.get("domain", [])
         }
 
         return action

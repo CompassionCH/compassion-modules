@@ -242,10 +242,9 @@ class CommunicationConfig(models.Model):
             ("auto_digital_only", _("only by e-mail (send automatically)")),
             ("digital_only", _("only by e-mail (send manually)")),
             ("auto_digital", _("Send e-mail automatically")),
-            ("digital", _("Prepare e-mail (sent manually)")),
-            ("auto_physical", _("Print letter automatically")),
-            ("physical", _("Prepare report (print manually)")),
-            ("both", _("Send e-mail + prepare report (print manually)")),
+            ("digital", _("Send e-mail manually")),
+            ("physical", _("Print letter")),
+            ("both", _("Send e-mail + print letter")),
         ]
 
     def get_inform_mode(self, partner):
