@@ -141,6 +141,9 @@ class RestController(http.Controller):
         if request.httprequest.method == "GET":
             return handler(**parameters)
         elif request.httprequest.method == "POST":
+            key = "file_upl"
+            if key in request.httprequest.files and key not in parameters:
+                parameters[key] = request.httprequest.files[key]
             return handler(request.jsonrequest, **parameters)
         else:
             raise MethodNotAllowed("Only POST and GET methods are supported")
