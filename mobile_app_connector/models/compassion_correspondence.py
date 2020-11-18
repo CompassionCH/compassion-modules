@@ -149,7 +149,7 @@ class CompassionCorrespondence(models.Model):
             "language_id": int(self.env["crm.claim"].detect_lang(body)),
             "s2b_template_id": int(template_id),
             "image_ids": datas,
-            "source": "app",
+            "source": other_params.get("source", "app"),
         })
         gen.onchange_domain()
         # We commit otherwise the generation fails
