@@ -137,9 +137,9 @@ class AccountInvoice(models.Model):
 
             # when a contract exist before than this invoice created, so the
             # invoice.origin contains sponsorship
+            origin = invoice.origin or ""
             if invoice.invoice_type == 'sponsorship' and 'sponsorship' not in \
-                    invoice.origin and \
-                    ('android' in invoice.origin or 'ios' in invoice.origin):
+                    origin and ('android' in origin or 'ios' in origin):
                 # we will create a new invoice but notify a staff
                 # member that it needs to be processed manually, to avoid creating
                 # delays in his due months.
