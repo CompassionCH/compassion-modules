@@ -128,8 +128,8 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
 
     previous_qrcode = ""
     _logger.debug(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
-    # only on the first page there is a QR Code
-    for i in range(1):
+
+    for i in range(inputpdf.numPages):
         tic = time()
         output = PdfFileWriter()
         output.addPage(inputpdf.getPage(i))
