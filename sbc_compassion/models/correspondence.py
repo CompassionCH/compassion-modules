@@ -183,9 +183,10 @@ class Correspondence(models.Model):
         domain=[("res_model", "=", _name)],
         ondelete="cascade",
         string="Attached images",
+        copy=True
     )
     page_ids = fields.One2many(
-        "correspondence.page", "correspondence_id", readonly=False
+        "correspondence.page", "correspondence_id", readonly=False, copy=True
     )
     nbr_pages = fields.Integer(
         string="Number of pages", compute="_compute_nbr_pages", store=True
