@@ -8,10 +8,6 @@
 ##############################################################################
 
 import logging
-import numpy as np
-
-from sympy import exp
-
 
 from odoo import api, models, fields, SUPERUSER_ID
 from odoo.tools import config

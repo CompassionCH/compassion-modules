@@ -9,10 +9,7 @@
 
 import logging
 
-from sympy import exp
-
-from odoo import api, models, fields
-from odoo.tools import config
+from odoo import models, fields
 
 _logger = logging.getLogger(__name__)
 
