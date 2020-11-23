@@ -273,7 +273,7 @@ class CompassionHold(models.Model):
         in_90_days = datetime.now() + timedelta(days=90)
 
         hold_data = commkit_data.get("ReinstatementHoldNotification", commkit_data)
-        vals = self.json_to_data(hold_data, "new_reinstatement_notification")
+        vals = self.json_to_data(hold_data)
         child_id = vals.get("child_id")
         if not child_id:
             raise ValueError("No child found")
