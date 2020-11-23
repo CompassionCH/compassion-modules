@@ -4,11 +4,49 @@
         <field name="model">firebase.notification</field>
         <field name="inherit_id" ref="firebase_connector.firebase_notification_form"/>
         <field name="arch" type="xml">
-            <field name="send_date" position="after">
+           <xpath expr="//field[@name='body']" position="after">
+               <field name="send_date"/>
                 <field name="destination" attrs="{'readonly': [('sent', '=', True)]}"/>
                 <field name="product_template_id" attrs="{'readonly': [('sent', '=', True)], 'invisible': [('destination', 'not in', ['Donation'])]}"/>
                 <field name="topic" attrs="{'readonly': [('sent', '=', True)]}" />
-            </field>
+           </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mobile_app_firebase_notification_kanban">
+        <field name="name">mobile.app.firebase.notification.form</field>
+        <field name="model">firebase.notification</field>
+        <field name="inherit_id" ref="firebase_connector.view_firebase_notification__kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='o_kanban_record_subtitle']" position="after">
+                <div>
+                    <h4>
+                       <span class="badge badge-dark" attrs="{'readonly': [('sent', '=', True)]}">
+                          <field name="destination" />
+                       </span>
+                       <span class="badge badge-dark" attrs="{'readonly': [('sent', '=', True)]}">
+                            <field name="topic"/>
+                       </span>
+                    </h4>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mobile_app_firebase_notification_search">
+        <field name="name">mobile.app.firebase.notification.search</field>
+        <field name="model">firebase.notification</field>
+        <field name="inherit_id" ref="firebase_connector.firebase_notification_search"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="topic"/>
+                <group expand="0" string="Group By">
+                    <filter string="Topic" name="group_topic"
+                        context="{'group_by': 'topic'}"/>
+                </group>
+                <group expand="0" string="Group By">
+                    <filter string="Destination" name="group_destination"
+                        context="{'group_by': 'destination'}"/>
+                </group>
+            </search>
         </field>
     </record>
 </odoo>
