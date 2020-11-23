@@ -9,5 +9,7 @@
 ##############################################################################
 
 from . import firebase_registration
+from . import firebase_notification_stage
+from . import firebase_notification_statistics
 from . import firebase_notification
 from . import res_partner
