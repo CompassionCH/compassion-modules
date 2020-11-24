@@ -282,13 +282,13 @@ class CrmClaim(models.Model):
             code_lang = detectlanguage.simple_detect(text)
         except (IndexError, detectlanguage.DetectLanguageError):
             # Language could not be detected
-            return False
+            return self.env["res.lang.compassion"]
         for lang in langs:
             if lang.get("code") == code_lang:
                 language_name = lang.get("name")
                 break
         if not language_name:
-            return False
+            return self.env["res.lang.compassion"]
 
         return (
             self.env["res.lang.compassion"]
