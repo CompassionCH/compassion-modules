@@ -9,28 +9,9 @@
 
 import logging
 
-from odoo import api, models, fields
-from odoo.tools import config
+from odoo import models, fields
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import firebase_admin
-    from firebase_admin import credentials
-    from firebase_admin import messaging
-except ImportError as e:
-    _logger.warning("Please install the PIP package firebase_admin")
-
-try:
-    firebase_credentials = credentials.Certificate(
-        config.get("google_application_credentials")
-    )
-    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
-except (KeyError, ValueError) as e:
-    firebase_app = None
-    _logger.warning(
-        "google_application_credentials is not correctly configured " "in odoo.conf"
-    )
 
 
 class FirebaseRegistration(models.Model):
@@ -45,8 +26,8 @@ class FirebaseRegistration(models.Model):
     _rec_name = "registration_id"
     _order = "id desc"
 
-    registration_id = fields.Char(required=True, string="Firebase Registration ID")
-    partner_id = fields.Many2one("res.partner", string="Partner", readonly=False)
+    registration_id = fields.Char("Firebase Registration ID", required=True, index=True)
+    partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
     partner_name = fields.Char(related="partner_id.name", readonly=True)
 
     _sql_constraints = [
@@ -67,61 +48,3 @@ class FirebaseRegistration(models.Model):
         self.send_message(
             self.env.context.get("message_title"), self.env.context.get("message_body")
         )
-
-    @api.multi
-    def send_message(self, message_title, message_body, data=None):
-        """
-        Send a notification to the device registered with this firebase id.
-        If the firebase id is not in use anymore, we remove the registration
-        from the database.
-        :param message_title: Title of the notification
-        :param message_body: Content of the notification
-        :param data: Data segment of a Firebase message (see the docs)
-        :return: None
-        """
-        if data is None:
-            data = {}
-
-        if not firebase_app:
-            _logger.error(
-                "google_application_credentials is not correctly "
-                "configured in odoo.conf or invalid. Skipping "
-                "sending notifications"
-            )
-            return False
-
-        notif = messaging.Notification(title=message_title, body=message_body)
-
-        for firebase_id in self:
-            data.update({"title": message_title, "body": message_body})
-
-            message = messaging.Message(
-                notification=notif, data=data, token=firebase_id.registration_id
-            )
-            try:
-                messaging.send(message=message)
-            except (
-                    messaging.QuotaExceededError,
-                    messaging.SenderIdMismatchError,
-                    messaging.ThirdPartyAuthError,
-                    messaging.UnregisteredError,
-            ) as ex:
-                _logger.error(ex)
-                # Save error in ir.logging to allow tracking of errors
-                self.env["ir.logging"].create(
-                    {
-                        "name": "Firebase " + ex.__class__.__name__,
-                        "type": "server",
-                        "message": ex,
-                        "path": "/firebase_connector/models/firebase_regitration.py",
-                        "line": "100",
-                        "func": "send_message",
-                    }
-                )
-                if ex.code == "NOT_FOUND":
-                    _logger.debug(
-                        "A device is not reachable from Firebase, unlinking."
-                        "Firebase ID: %s" % firebase_id
-                    )
-                    firebase_id.unlink()
-        return True

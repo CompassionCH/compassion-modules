@@ -9,10 +9,30 @@
 
 import logging
 
-from odoo import api, models, fields, _
+from odoo import api, models, fields, SUPERUSER_ID, _
+from odoo.tools import config
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
+try:
+    import firebase_admin
+    from firebase_admin import credentials
+    from firebase_admin import messaging
+    from firebase_admin import exceptions
+except ImportError as e:
+    _logger.warning("Please install the PIP package firebase_admin")
+
+try:
+    firebase_credentials = credentials.Certificate(
+        config.get("google_application_credentials")
+    )
+    firebase_app = firebase_admin.initialize_app(credential=firebase_credentials)
+except (KeyError, ValueError) as e:
+    firebase_app = None
+    _logger.warning(
+        "google_application_credentials is not correctly configured " "in odoo.conf"
+    )
 
 
 class FirebaseNotification(models.Model):
@@ -21,9 +41,16 @@ class FirebaseNotification(models.Model):
     """
 
     _name = "firebase.notification"
+    _rec_name = "title"
     _description = "Notification to send to Firebase Cloud Messaging"
     _order = "send_date desc, id desc"
 
+    color = fields.Integer(
+        string='Color Index', compute="_compute_color", inverse="_inverse_color")
+    stage_id = fields.Many2one(
+        'firebase.notification.stage', 'Stage', ondelete='restrict', required=True,
+        default=lambda self: self.env['firebase.notification.stage'].search(
+            [], limit=1), group_expand='_group_expand_stage_ids', index=True)
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
@@ -40,6 +67,23 @@ class FirebaseNotification(models.Model):
     )
     res_model = fields.Char()
     res_id = fields.Integer()
+    test_mode = fields.Boolean()
+    delivered = fields.Integer(compute="_compute_statistics")
+    expected = fields.Integer(compute="_compute_statistics")
+    failed = fields.Integer(compute="_compute_statistics", store=True)
+    opened = fields.Integer(compute="_compute_statistics", store=True)
+    received_ratio = fields.Integer(compute="_compute_statistics")
+    failed_ratio = fields.Integer(compute="_compute_statistics")
+    opened_ratio = fields.Integer(compute="_compute_statistics")
+
+    @api.onchange('stage_id')
+    def onchange_stage_id(self):
+        for notification in self:
+            stage_id = self.env.ref('firebase_connector.notification_stage_2').id
+            if notification.stage_id.id == stage_id:
+                if not notification.send_date:
+                    dt = fields.Datetime.now()
+                    notification.with_context(noonchange=True).send_date = dt
 
     @api.model
     def create(self, vals):
@@ -51,6 +95,16 @@ class FirebaseNotification(models.Model):
             if previous_notification:
                 return previous_notification
         return super(FirebaseNotification, self).create(vals)
+
+    @api.depends("test_mode", "stage_id")
+    def _compute_color(self):
+        for notification in self:
+            if notification.test_mode:
+                notification.color = 4
+
+    def _inverse_color(self):
+        # Allow setting manually a color
+        return True
 
     @api.constrains("send_date")
     def _check_date(self):
@@ -84,17 +138,106 @@ class FirebaseNotification(models.Model):
                     [("partner_id", "=", False)]
                 )
 
-            kwargs.update(
-                {"notification_id": str(notif.id), }
-            )
+            kwargs.update({
+                "notification_id": str(notif.id),
+                "title": notif.title, "body": notif.body
+            })
 
-            notif.sent = registration_ids.send_message(notif.title, notif.body, kwargs)
+            notif.stage_id = self.env.ref('firebase_connector.notification_stage_3').id
+            notif.sent = self.send_multicast_and_handle_errors(
+                registration_ids, notif, kwargs)
+
             if notif.sent:
                 notif.send_date = fields.Datetime.now()
+                notif.stage_id = self.env.ref(
+                    'firebase_connector.notification_stage_4').id
                 for partner in notif.partner_ids:
                     self.env["firebase.notification.partner.read"].create(
                         {"partner_id": partner.id, "notification_id": notif.id, }
                     )
+
+    @api.multi
+    def send_multicast_and_handle_errors(self, registration_ids, notif, data=None):
+        if not firebase_app:
+            _logger.error(
+                "google_application_credentials is not correctly "
+                "configured in odoo.conf or invalid. Skipping "
+                "sending notifications"
+            )
+            return False
+
+        notification = messaging.Notification(title=notif.title, body=notif.body)
+        registration_tokens = []
+        for token in registration_ids:
+            registration_tokens.append(token.registration_id)
+        if registration_tokens:
+            multicast_message = messaging.MulticastMessage(
+                notification=notification,
+                data=data,
+                tokens=registration_tokens
+            )
+
+            try:
+                response = messaging.send_multicast(
+                    multicast_message, dry_run=self.test_mode)
+                _logger.info(
+                    '{0} messages were sent successfully'.format(response.success_count)
+                )
+                responses = response.responses
+                failed_tokens = []
+                for idx, resp in enumerate(responses):
+                    registration_id = self.env["firebase.registration"] \
+                        .search([("registration_id", "=", registration_tokens[idx])])
+                    if not resp.success:
+                        failed_tokens.append(registration_tokens[idx])
+                        self.env["firebase.notification.statistics"].create({
+                            "code": resp.exception.code,
+                            "notification_id": notif.id,
+                            "delivered": False, "failed": True,
+                            "create_date": fields.Datetime.now(),
+                            "registration_id": registration_id.id
+                        })
+                        if resp.exception.code == exceptions.NOT_FOUND:
+                            _logger.debug(
+                                "A device is not reachable from Firebase, unlinking."
+                                "Firebase ID: %s" % registration_tokens[idx]
+                            )
+                            if registration_id:
+                                registration_id.unlink()
+                    else:
+                        self.env["firebase.notification.statistics"].create({
+                            "code": "success",
+                            "notification_id": notif.id,
+                            "delivered": True,
+                            "failed": False,
+                            "create_date": fields.Datetime.now(),
+                            "registration_id": registration_id.id}
+                        )
+                _logger.warning(
+                    'List of tokens that caused failures: {0}'.format(failed_tokens)
+                )
+
+                if response.success_count > 0:
+                    return True
+            except (
+                    messaging.QuotaExceededError,
+                    messaging.SenderIdMismatchError,
+                    messaging.ThirdPartyAuthError,
+                    messaging.UnregisteredError,
+                    exceptions.FirebaseError,
+            ) as ex:
+                _logger.error(ex)
+                # Save error in ir.logging to allow tracking of errors
+                self.env["ir.logging"].create(
+                    {
+                        "name": "Firebase " + ex.__class__.__name__,
+                        "type": "server",
+                        "message": ex,
+                        "path": "/firebase_connector/models/firebase_regitration.py",
+                        "line": "100",
+                        "func": "send_message",
+                    }
+                )
 
     @api.multi
     def duplicate_to_unread(self):
@@ -125,9 +268,57 @@ class FirebaseNotification(models.Model):
 
     def notification_cron(self):
         dt = fields.Datetime.now()
-        self.search([("sent", "=", False), ("send_date", "<", dt)]).send()
-
+        stage_id = self.env.ref('firebase_connector.notification_stage_2').id
+        self.search([
+            ("sent", "=", False),
+            ("send_date", "<", dt),
+            ("stage_id", "=", stage_id)
+        ]).send()
         return True
+
+    @api.multi
+    def schedule(self):
+        stage_id = self.env.ref('firebase_connector.notification_stage_2').id
+        if self.send_date:
+            self.write(dict(stage_id=stage_id))
+        else:
+            dt = fields.Datetime.now()
+            self.write(dict(stage_id=stage_id, send_date=dt))
+
+    def _compute_statistics(self):
+        self.env.cr.execute("""
+                    SELECT
+                        n.id as notification_id,
+                        COUNT(s.id) AS expected,
+                        COUNT(CASE WHEN s.delivered THEN 1 ELSE null END) AS delivered,
+                        COUNT(CASE WHEN s.failed THEN 1 ELSE null END) AS failed,
+                        COUNT(CASE WHEN r.opened THEN 1 ELSE null END) AS opened
+                    FROM
+                        firebase_notification_statistics s
+                    RIGHT JOIN
+                        firebase_notification n
+                        ON (n.id = s.notification_id)
+                    RIGHT JOIN firebase_notification_partner_read r
+                        ON (n.id = r.notification_id)
+                    WHERE
+                        n.id IN %s
+                    GROUP BY
+                        n.id
+                """, (tuple(self.ids),))
+        for row in self.env.cr.dictfetchall():
+            total = row['expected'] or 1
+            row['opened_ratio'] = 100.0 * row['opened'] / total
+            row['received_ratio'] = 100.0 * row['delivered'] / total
+            row['failed_ratio'] = 100.0 * row['failed'] / total
+            self.browse(row.pop('notification_id')).update(row)
+
+    @api.model
+    def _group_expand_stage_ids(self, stages, domain, order):
+        """ Read group customization in order to display all the stages in the
+            kanban view, even if they are empty
+        """
+        stage_ids = stages._search([], order=order, access_rights_uid=SUPERUSER_ID)
+        return stages.browse(stage_ids)
 
 
 class FirebaseNotificationPartnerRead(models.Model):

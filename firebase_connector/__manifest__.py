@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion EU Firebase Connector",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -38,6 +38,7 @@
     "external_dependencies": {"python": ["firebase_admin"], },
     "data": [
         "data/ir_cron.xml",
+        "data/notification_data.xml",
         "views/firebase_notification.xml",
         "views/firebase_registration.xml",
         "security/ir.model.access.csv",

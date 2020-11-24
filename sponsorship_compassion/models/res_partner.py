@@ -430,9 +430,8 @@ class ResPartner(models.Model):
                 "street": _random_str(),
                 "street2": _random_str(),
                 "website": False,
-                "birthdate": False,
                 "function": False,
-                "category_id": False,
+                "category_id": [(5, 0, 0)],
                 "comment": False,
                 "active": False,
             }
