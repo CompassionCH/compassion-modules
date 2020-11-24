@@ -18,7 +18,9 @@ class FirebaseNotificationStatistics(models.Model):
     failed = fields.Boolean(default=False)
     create_date = fields.Datetime()
     registration_id = fields.Many2one(
-        "firebase.registration", "Registration", ondelete="cascade", index=True, readonly=False
+        "firebase.registration", "Registration",
+        ondelete="cascade", index=True, readonly=False
     )
-    partner_name = fields.Char(string="Partner", store=True, related="registration_id.partner_id.name", readonly=True)
-
+    partner_name = fields.Char(
+        string="Partner", store=True, related="registration_id.partner_id.name",
+        readonly=True)
