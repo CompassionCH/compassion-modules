@@ -207,7 +207,8 @@ class RestController(http.Controller):
         res = hero.data_to_json("mobile_app_banner")
         return [res]
 
-    @http.route("/sponsor_a_child", type="http", auth="public", website=True)
+    @http.route("/sponsor_a_child", type="http", auth="public", website=True,
+                sitemap=False)
     def mobile_app_sponsorship_request(self, **parameters):
         """
         Create a sms_child_request and redirect user to sms sponsorship form

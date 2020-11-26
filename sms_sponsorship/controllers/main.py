@@ -46,7 +46,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         "/sms_sponsorship/step1/<int:child_request_id>",
         auth="public",
         website=True,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def step1_redirect_react(self, child_request_id=None):
         """ URL for SMS step 1, redirects to REACT app showing the mobile
@@ -63,7 +63,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         auth="public",
         methods=["POST"],
         csrf=False,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def get_child_data(self, child_request_id):
         """
@@ -105,7 +105,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         auth="public",
         methods=["POST"],
         csrf=False,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def sms_sponsor_confirm(self, child_request_id):
         """
@@ -134,7 +134,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         auth="public",
         methods=["POST"],
         csrf=False,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def sms_change_child(self, child_request_id):
         """
@@ -177,7 +177,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         "/sms_sponsorship/step2/<int:sponsorship_id>/",
         auth="public",
         website=True,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def step2_confirm_sponsorship(self, sponsorship_id=None, **kwargs):
         """ SMS step2 controller. Returns the sponsorship registration form."""
@@ -214,7 +214,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         auth="public",
         methods=["GET"],
         website=True,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def sms_registration_confirmation(self, sponsorship_id=None, **post):
         """
@@ -249,7 +249,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         auth="public",
         methods=["POST"],
         csrf=False,
-        noindex=["robots", "meta", "header"],
+        sitemap=False,
     )
     def sms_change_language(self, child_request_id):
         """

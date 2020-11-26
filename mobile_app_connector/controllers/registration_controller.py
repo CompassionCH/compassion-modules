@@ -19,12 +19,14 @@ class RegistrationController(Controller, WizardFormControllerMixin):
         type="http",
         auth="public",
         website=True,
+        sitemap=False
     )
     def registration(self, model_id=None, **kw):
         """Handle a wizard route.
         """
         return self.make_response("cms.form.res.users", model_id=model_id, **kw)
 
-    @http.route("/registration/confirm", type="http", auth="public", website=True)
+    @http.route("/registration/confirm", type="http", auth="public", website=True,
+                sitemap=False)
     def registration_confirm(self, **kw):
         return request.render("mobile_app_connector.mobile_registration_success", {})

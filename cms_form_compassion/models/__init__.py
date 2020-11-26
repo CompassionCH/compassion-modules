@@ -8,7 +8,6 @@
 #
 ##############################################################################
 
-from . import website
 from . import ir_logging
 from . import cms_form
 from . import widgets
