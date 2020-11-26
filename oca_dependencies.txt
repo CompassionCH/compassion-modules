@@ -26,5 +26,5 @@ report-print-send
 server-ux
 social
 web
-website https://github.com/CompassionCH/website 12.0
+website
 website-cms https://github.com/CompassionCH/website-cms 12.0

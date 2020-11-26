@@ -22,8 +22,7 @@ class PaymentFormController(Controller):
         website=True,
         methods=["GET", "POST"],
         auth="public",
-        noindex=["header", "meta", "robots"],
-        sitemap=False
+        sitemap=False,
     )
     def payment_transaction(self, invoice_id, success_url=None, error_url=None,
                             display_type="full", **kwargs):
