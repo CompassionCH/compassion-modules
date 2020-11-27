@@ -91,6 +91,11 @@ class CompassionCorrespondence(models.Model):
             raise ValueError("Required parameter {}".format(key))
         return params[key]
 
+    def _convert_special_characters(self, string):
+        return string.replace("&amp;quot;", "\"").replace("&amp;amp;", "&")\
+            .replace("&quot;", "\"").replace("&amp;", "&")\
+            .replace("&#x27;", "'").replace("&lt;", "<").replace("&gt;", ">")
+
     def mobile_get_preview(self, *args, **other_params):
         """
         This method is called by the app to retrieve a PDF preview of a letter.
@@ -108,7 +113,8 @@ class CompassionCorrespondence(models.Model):
                              - 'file_upl': the image
         :return: An URL pointing to the PDF preview of the generated letter
         """
-        body = self._get_required_param("letter-copy", other_params)
+        body = self._get_required_param("letter-copy", other_params)\
+            .replace("\r", "")
         selected_child = self._get_required_param("selected-child", other_params)
         # iOS sends the childID, while Android sends the local_id!
         # We try to convert the integer in case the request is from iOS
@@ -145,7 +151,7 @@ class CompassionCorrespondence(models.Model):
             "name": "app-" + child_local_id,
             "selection_domain": f"[('child_id.local_id', '=', '{child_local_id}'),"
                                 f"('state', 'not in', ['terminated','cancelled'])]",
-            "body": escape(body),
+            "body": self._convert_special_characters(escape(body)),
             "language_id": int(self.env["crm.claim"].detect_lang(body)),
             "s2b_template_id": int(template_id),
             "image_ids": datas,

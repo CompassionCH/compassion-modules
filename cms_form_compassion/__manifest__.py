@@ -38,7 +38,6 @@
         "cms_form",  # oca_addons/website_cms
         "website_payment",  # source/addons
         "account_payment",  # source/addons
-        "website_no_index",  # website (OCA)
         "portal",  # source/addons
         "queue_job",  # oca_addons/queue
         "base_automation",  # source/addons
