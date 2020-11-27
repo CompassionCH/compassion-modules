@@ -492,7 +492,8 @@ class EventCompassion(models.Model):
             "user_id": self.user_id.id,
             "partner_ids": [
                 (6, 0, (self.staff_ids |
-                        self.partner_id |
+                        # self.partner_id |  has been commented to avoid
+                        # partner to get notified with meeting invites
                         self.user_id.partner_id).ids)],
             "start": self.start_date,
             "stop": self.end_date or self.start_date,
