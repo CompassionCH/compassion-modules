@@ -73,12 +73,22 @@ class PartnerSponsorshipReport(models.Model):
                  ('scanned_date', '>', _partner.start_period),
                  ('scanned_date', '<=', _partner.end_period)])
 
+
         for partner in self:
             nb_letter = get_nb_letter(partner)
             if partner.is_church:
                 for member in partner.member_ids:
                     nb_letter += get_nb_letter(member)
             partner.sr_nb_s2b_letter = nb_letter
+
+    @api.multi
+    def _compute_b2s_letter(self):
+        def get_nb_letter(_partner):
+            return self.env['correspondence'].search_count(
+                [('partner_id', '=', _partner.id),
+                 ('direction', '=', 'Beneficiary To Supporter'),
+                 ('scanned_date', '>', _partner.start_period),
+                 ('scanned_date', '<=', _partner.end_period)])
 
     @api.multi
     def _compute_related_active_sponsorship(self):
