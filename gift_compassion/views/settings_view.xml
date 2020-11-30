@@ -16,6 +16,7 @@
                         <field name="gift_type"/>
                         <field name="gift_attribution"/>
                         <field name="sponsorship_gift_type"/>
+                        <field name="product_id"/>
                     </group>
                     <group>
                         <field name="currency_id"/>
@@ -39,6 +40,7 @@
                 <field name="gift_type"/>
                 <field name="gift_attribution"/>
                 <field name="sponsorship_gift_type"/>
+                <field name="product_id"/>
                 <field name="min_amount"/>
                 <field name="max_amount"/>
                 <field name="currency_id"/>
