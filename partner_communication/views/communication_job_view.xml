@@ -77,7 +77,7 @@
         <field name="arch" type="xml">
             <tree decoration-primary="state == 'pending'"
                   decoration-muted="state in ('done', 'cancel')"
-                  decoration-danger="need_call!=False and len(activity_ids)">
+                  decoration-danger="need_call!=False and len(activity_ids) or state == 'failure'">
                 <field name="date"/>
                 <field name="config_id"/>
                 <field name="partner_id"/>
@@ -107,7 +107,7 @@
                 <field name="config_id"/>
                 <field name="partner_id"/>
                 <field name="user_id"/>
-                <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]" context=""/>
+                <filter string="Pending" name="pending" domain="[('state', 'in', ['pending','failure'])]" context=""/>
                 <filter string="To Call" name="call" domain="[('need_call', '!=', False), ('activity_ids', '!=', False)]" context=""/>
                 <separator/>
                 <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]" context=""/>

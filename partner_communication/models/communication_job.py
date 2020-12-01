@@ -102,6 +102,7 @@ class CommunicationJob(models.Model):
             ("pending", _("Pending")),
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
+            ("failure", _("Failure"))
         ],
         default="pending",
         track_visibility="onchange",
@@ -452,16 +453,29 @@ class CommunicationJob(models.Model):
         for job in self:
             lang = self.env.context.get("lang_preview", job.partner_id.lang)
             if job.email_template_id and job.object_ids:
-                fields = (
-                    self.env["mail.compose.message"]
-                        .with_context(lang=lang)
-                        .get_generated_fields(job.email_template_id, [job.id])
-                )
-                job.write(
-                    {"body_html": fields["body_html"], "subject": fields["subject"]}
-                )
-                if refresh_uid:
-                    job.user_id = self.env.user
+                try:
+                    fields = (
+                        self.env["mail.compose.message"]
+                            .with_context(lang=lang)
+                            .get_generated_fields(job.email_template_id, [job.id])
+                    )
+                    job.write({
+                        "body_html": fields["body_html"],
+                        "subject": fields["subject"],
+                        "state": job.state if job.state != "failure" else "pending"
+                    })
+                except UserError:
+                    logger.error("Failed to generate communication", exc_info=True)
+                    job.env.clear()
+                    if job.state == "pending":
+                        job.write({
+                            "state": "failure",
+                            "body_html": "Error in template"
+                        })
+                finally:
+                    if refresh_uid:
+                        job.user_id = self.env.user
+
         return True
 
     @api.multi
@@ -572,21 +586,30 @@ class CommunicationJob(models.Model):
         attachment_obj = self.env["partner.communication.attachment"]
         for job in self.with_context(must_skip_send_to_printer=True):
             if job.config_id.attachments_function:
-                binaries = getattr(
-                    job.with_context(lang=job.partner_id.lang),
-                    job.config_id.attachments_function,
-                    dict,
-                )()
-                if binaries and isinstance(binaries, dict):
-                    for name, data in list(binaries.items()):
-                        attachment_obj.create(
-                            {
-                                "name": name,
-                                "communication_id": job.id,
-                                "report_name": data[0],
-                                "data": data[1],
-                            }
-                        )
+                try:
+                    binaries = getattr(
+                        job.with_context(lang=job.partner_id.lang),
+                        job.config_id.attachments_function,
+                        dict,
+                    )()
+                    if binaries and isinstance(binaries, dict):
+                        for name, data in list(binaries.items()):
+                            attachment_obj.create(
+                                {
+                                    "name": name,
+                                    "communication_id": job.id,
+                                    "report_name": data[0],
+                                    "data": data[1],
+                                }
+                            )
+                except:
+                    logger.error("Error during attachment creation", exc_info=True)
+                    job.env.clear()
+                    if job.state == "pending":
+                        job.write({
+                            "state": "failure",
+                            "body_html": "Error in attachments creation."
+                        })
 
     @api.multi
     def preview_pdf(self):
