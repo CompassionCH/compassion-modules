@@ -1,6 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <odoo>
+    <!-- Confirmation page -->
+    <template id="privacy_statement_agreement_confirmation_page" name="Privacy Statement Agreement Confirmation Page">
+        <t t-call="website.layout">
+            <t t-set="head">
+                <meta name="robots" content="noindex"/>
+            </t>
+            <div id="wrap">
+                <div class="container">
+                    <div class="row mb32">
+                        <div class="col-md-9">
+                            <h2 t-esc="confirmation_title"/>
+                            <div class="jumbotron">
+                                <p t-raw="confirmation_message"/>
+                                <t t-if="redirect">
+                                    <p>
+                                        <a class="btn btn-primary" t-attf-href="#{redirect}">Return</a>
+                                    </p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb32">
+                        <div class="col-md-9">
+                            <!-- Privacy Statement Text Accordion -->
+                            <div class="panel-group" id="accordion-privacy-statement" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading-privacy-statement">
+                                        <h4 class="panel-title">
+                                            <b>
+                                                <a role="button" data-toggle="collapse" data-parent="accordion-privacy-statement" href="#collapse-privacy-statement" aria-expanded="true" aria-controls="collapse-contract">Privacy Statement agreement</a>
+                                            </b>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse-privacy-statement" t-attf-class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-privacy-statement">
+                                        <div class="panel-body">
+                                            <t t-raw="privacy_statement_id.text"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="privacy_statement_agreement_page" name="Privacy Statement Agreement">
+        <t t-call="website.layout">
+            <t t-set="head">
+                <meta name="robots" content="noindex"/>
+            </t>
+            <div id="wrap">
+                <div class="container">
+                    <div class="row mb32">
+                        <div class="col-md-9">
+                            <div class="panel-body cms_form_wrapper">
+                                <t t-raw="privacy_statement_id.text"/>
+
+                                <!-- Privacy Statement Form -->
+                                <t t-raw="privacy_statement_form.form_render()"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
     <record id="res_personal_data_agreement_tree" model="ir.ui.view">
         <field name="name">Privacy Statement Tree View</field>
         <field name="model">compassion.privacy.statement</field>
