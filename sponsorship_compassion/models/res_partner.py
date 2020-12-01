@@ -209,7 +209,7 @@ class ResPartner(models.Model):
         # Retrieve all the categories and check if one is Church
         church_category = (
             self.env["res.partner.category"]
-                .with_context(lang="en_US")
+                .with_context(lang="en_US").sudo()
                 .search([("name", "=", "Church")], limit=1)
         )
         for record in self:
