@@ -37,6 +37,11 @@ class PartnerSponsorshipReport(models.Model):
              "are fully managed or those who are "
              "paid (not the correspondent).",
     )
+
+    sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
+                                      compute='_compute_b2s_letter')
+    sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
+                                      compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer("Number of boys", compute="_compute_boy")
     sr_nb_girl = fields.Integer("Number of girls", compute="_compute_girl")
     sr_time_fcp = fields.Integer(
@@ -58,6 +63,38 @@ class PartnerSponsorshipReport(models.Model):
             sponsorships = partner.sponsorship_ids
             sponsorships |= partner.member_ids.mapped("sponsorship_ids")
             partner.related_sponsorships = sponsorships
+
+    @api.multi
+    def _compute_s2b_letter(self):
+        def get_nb_letter(_partner):
+            return self.env['correspondence'].search_count(
+                [('partner_id', '=', _partner.id),
+                 ('direction', '=', 'Supporter To Beneficiary'),
+                 ('scanned_date', '>', _partner.start_period),
+                 ('scanned_date', '<=', _partner.end_period)])
+
+        for partner in self:
+            nb_letter = get_nb_letter(partner)
+            if partner.is_church:
+                for member in partner.member_ids:
+                    nb_letter += get_nb_letter(member)
+            partner.sr_nb_s2b_letter = nb_letter
+
+    @api.multi
+    def _compute_b2s_letter(self):
+        def get_nb_letter(_partner):
+            return self.env['correspondence'].search_count(
+                [('partner_id', '=', _partner.id),
+                 ('direction', '=', 'Beneficiary To Supporter'),
+                 ('scanned_date', '>', _partner.start_period),
+                 ('scanned_date', '<=', _partner.end_period)])
+
+        for partner in self:
+            nb_letter = get_nb_letter(partner)
+            if partner.is_church:
+                for member in partner.member_ids:
+                    nb_letter += get_nb_letter(member)
+            partner.sr_nb_b2s_letter = nb_letter
 
     @api.multi
     def _compute_related_active_sponsorship(self):
