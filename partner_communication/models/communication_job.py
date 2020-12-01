@@ -245,7 +245,7 @@ class CommunicationJob(models.Model):
                 "partner_communication.default_communication").id),
             ("state", "=", "pending"),
         ] + self.env.context.get("same_job_search", [])
-        job = self.search(same_job_search)
+        job = self.search(same_job_search, limit=1)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
             job.refresh_text()
