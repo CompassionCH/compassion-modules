@@ -183,6 +183,8 @@ class MatchPartner(models.AbstractModel):
 
     @api.model
     def _match_rule_fullname_and_zip(self, partner_obj, infos, options=None):
+        if "name" in infos and "firstname" not in infos:
+            infos.update(self.env["res.partner"]._get_inverse_name(infos["name"]))
         return partner_obj.search(
             [
                 ("lastname", "ilike", infos["lastname"]),
