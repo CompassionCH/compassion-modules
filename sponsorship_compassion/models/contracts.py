@@ -782,6 +782,9 @@ class SponsorshipContract(models.Model):
         if self.hold_id:
             self.hold_id.state = "expired"
             self.child_id.hold_id = False
+        # Force refresh some fields in case they are not in sync
+        self.mapped("partner_id").update_number_sponsorships()
+        self._compute_active()
         return True
 
     def cancel_sent(self, vals):
