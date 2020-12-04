@@ -775,13 +775,16 @@ class SponsorshipContract(models.Model):
         """ Called when GMC received the commitment. """
         self.ensure_one()
         # We don't need to write back partner and child
-        del vals["child_id"]
-        del vals["correspondent_id"]
+        vals.pop("child_id", False)
+        vals.pop("correspondent_id", False)
         self.write(vals)
         # Remove the hold on the child.
-        if self.hold_id:
-            self.hold_id.state = "expired"
-            self.child_id.hold_id = False
+        for sponsorship in self.filtered("hold_id"):
+            sponsorship.hold_id.state = "expired"
+            sponsorship.child_id.hold_id = False
+        # Force refresh some fields in case they are not in sync
+        self.mapped("partner_id").update_number_sponsorships()
+        self._compute_active()
         return True
 
     def cancel_sent(self, vals):
