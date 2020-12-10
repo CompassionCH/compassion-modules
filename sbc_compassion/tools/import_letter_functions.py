@@ -173,8 +173,10 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened, "
                 f"no QRCode on this page. {time() - tic:.2} sec"
             )
-
-        os.remove(img_path)
+        try:
+            os.remove(img_path)
+        except FileNotFoundError:
+            _logger.warning("Error removing temp file for QR-processing")
     letter_indexes.append(i + 1)
 
     return letter_indexes, page_imgs, lang
