@@ -152,8 +152,12 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 _logger.warning("Error resizing correspondence page", exc_info=True)
             page_imgs.append(img)
             partner_id, child_id = decode_barcode(env, qrcode)
-            page_preview = cv2.imencode(".jpg", img)
-            preview_data = base64.b64encode(page_preview[1])
+            try:
+                page_preview = cv2.imencode(".jpg", img)
+                preview_data = base64.b64encode(page_preview[1])
+            except cv2.error:
+                _logger.warning("Error encoding preview in jpg")
+                preview_data = False
             values = {
                 "partner_id": partner_id,
                 "child_id": child_id,
