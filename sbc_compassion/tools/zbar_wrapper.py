@@ -54,7 +54,7 @@ def _decode(filename, page):
         im = img
         _logger.warning("Error resizing image for QRcode detection.")
 
-    if not im:
+    if im is None:
         return ""
     qrcode = _scan(im)
     if not qrcode:
