@@ -93,6 +93,7 @@
                 <header>
                     <field name="is_proposer" invisible="1"/>
                     <field name="is_corrector" invisible="1"/>
+                    <field name="is_old_version" invisible="1"/>
                     <field name="state" widget="statusbar"/>
                     <!-- Proposition to submit -->
                     <button type="object" name="submit_proposition" string="Submit proposition" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'pending'),('is_proposer', '=', False)]}"/>
@@ -109,7 +110,7 @@
                     <!-- Cancel Approval -->
                     <button type="object" name="cancel_approve" string="Cancel approval" attrs="{'invisible': ['|','|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"/>
 
-                    <button type="object" name="start_single_revision" string="Start a revision" states="active"/>
+                    <button type="object" name="start_single_revision" string="Start a revision" attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'active')]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

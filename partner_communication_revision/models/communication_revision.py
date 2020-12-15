@@ -141,6 +141,7 @@ class CommunicationRevision(models.Model):
         domain="[('linked_revision_id.id', '=', id), "
                "('linked_revision_id.lang', '=', lang)]",
     )
+    is_old_version = fields.Boolean(compute="_compute_old_version")
 
     _sql_constraints = [
         (
@@ -245,6 +246,13 @@ class CommunicationRevision(models.Model):
                 revision.config_id.email_template_id.with_context(
                     lang=revision.lang
                 ).body_html = revision.body_html
+
+    @api.multi
+    def _compute_old_version(self):
+        for revision in self:
+            latest_version = self.env["partner.communication.revision.history"]\
+                .search([("linked_revision_id", "=", revision.id)], limit=1)
+            revision.is_old_version = revision.active_revision_id != latest_version
 
     ##########################################################################
     #                              ORM METHODS                               #
