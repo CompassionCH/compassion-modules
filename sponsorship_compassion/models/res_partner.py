@@ -48,7 +48,6 @@ class ResPartner(models.Model):
     mandatory_review = fields.Boolean(
         help="Indicates that we should review the letters of this sponsor "
              "before sending them to GMC.",
-        groups="child_compassion.group_sponsorship",
     )
     other_contract_ids = fields.One2many(
         "recurring.contract",
@@ -61,15 +60,12 @@ class ResPartner(models.Model):
     receivable_items = fields.Integer(
         compute="_compute_count_items", groups="child_compassion.group_sponsorship"
     )
-    has_sponsorships = fields.Boolean(
-        groups="child_compassion.group_sponsorship"
-    )
+    has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer(
         string="Number of sponsorships", copy=False
     )
     send_original = fields.Boolean(
         help="Indicates that we request the original letters for this sponsor",
-        groups="child_compassion.group_sponsorship",
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
