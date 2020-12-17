@@ -220,7 +220,11 @@ class WordpressPost(models.Model):
             category_json_url = category_data["href"]
 
             categories_request = requests.get(category_json_url).json()
+            if not isinstance(categories_request, list):
+                categories_request = [categories_request]
             for c in categories_request:
+                if not isinstance(c, dict):
+                    continue
                 category = category_obj.search([("name", "=", c["name"])])
                 if not category:
                     category = category_obj.create({"name": c["name"]})
