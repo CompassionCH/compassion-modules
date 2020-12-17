@@ -110,7 +110,7 @@
                     <!-- Cancel Approval -->
                     <button type="object" name="cancel_approve" string="Cancel approval" attrs="{'invisible': ['|','|', ('state', '!=', 'approved'), '&amp;', ('is_proposer', '=', False),('is_corrector', '=', False)]}"/>
 
-                    <button type="object" name="start_single_revision" string="Start a revision" attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'active')]}"/>
+                    <button type="object" name="start_single_revision" string="Start a revision" states="active"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

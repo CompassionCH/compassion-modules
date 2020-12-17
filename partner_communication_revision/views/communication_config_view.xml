@@ -35,7 +35,7 @@
                                 <field name="update_user_id" readonly="1"/>
                                 <button name="show_revision" type="object" icon="fa-eye" string="Show active text"/>
                                 <button name="edit_revision" type="object" icon="fa-edit" string="Correct active text" attrs="{'invisible': [('is_old_version', '=', True)]}"/>
-                                <button name="new_revision" type="object" icon="fa-plus-square" states="approved" groups="base.group_erp_manager" attrs="{'invisible': [('is_old_version', '=', True)]}"/>
+                                <button name="new_revision" type="object" icon="fa-plus-square" groups="base.group_erp_manager" attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'approved')]}"/>
                                 <field name="state" readonly="1"/>
                                 <button name="save_current_revision" type="object" icon="fa-save" string="Create backup of current revision" attrs="{'invisible': ['|', ('state', '!=', 'active'), ('active_revision_id', '!=', False)]}"/>
                             </tree>
