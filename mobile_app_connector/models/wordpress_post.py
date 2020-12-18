@@ -132,8 +132,8 @@ class WordpressPost(models.Model):
                         # cached_post = self.search([("wp_id", "=", post_id)])
                         # if cached_post:
                         #     cached_post.update_post_categories(post_data, requests)
-                            # Skip post already fetched
-                            # continue
+                        # Skip post already fetched
+                        # continue
 
                         content_empty = True
                         self_url = post_data["_links"]["self"][0]["href"]

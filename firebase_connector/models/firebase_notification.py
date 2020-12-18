@@ -144,17 +144,25 @@ class FirebaseNotification(models.Model):
             })
 
             notif.stage_id = self.env.ref('firebase_connector.notification_stage_3').id
-            notif.sent = self.send_multicast_and_handle_errors(
-                registration_ids, notif, kwargs)
+            split = 500
+            nb_batches = len(registration_ids) // split
+            remaining = (len(registration_ids) % split) and 1
+            status_ok = False
+            for j in range(0, nb_batches + remaining):
+                i = j * split
+                status_ok = status_ok or self.send_multicast_and_handle_errors(
+                    registration_ids[i: i + split], notif, kwargs)
+                if status_ok:
+                    for partner in registration_ids[i: i + split].mapped("partner_id"):
+                        self.env["firebase.notification.partner.read"].create(
+                            {"partner_id": partner.id, "notification_id": notif.id, }
+                        )
+            notif.sent = status_ok
 
-            if notif.sent:
+            if status_ok:
                 notif.send_date = fields.Datetime.now()
                 notif.stage_id = self.env.ref(
                     'firebase_connector.notification_stage_4').id
-                for partner in notif.partner_ids:
-                    self.env["firebase.notification.partner.read"].create(
-                        {"partner_id": partner.id, "notification_id": notif.id, }
-                    )
 
     @api.multi
     def send_multicast_and_handle_errors(self, registration_ids, notif, data=None):
