@@ -62,3 +62,4 @@ access_gmc_message,Access gmc.message,message_center_compassion.model_gmc_messag
 access_gmc_mapping,Access compassion.mapping,message_center_compassion.model_compassion_mapping,group_sponsorship,1,0,0,0
 access_gmc_field_to_json,Access field.to.json,message_center_compassion.model_compassion_field_to_json,group_sponsorship,1,0,0,0
 access_gmc_action,Access gmc.action,message_center_compassion.model_gmc_action,group_sponsorship,1,0,0,0
+access_compassion_covid_update,Full access on compassion_covid_update,model_compassion_project_covid_update,group_sponsorship,1,1,1,1
