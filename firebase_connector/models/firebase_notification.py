@@ -159,8 +159,8 @@ class FirebaseNotification(models.Model):
                     if status_ok:
                         self.env["firebase.notification.partner.read"].create([
                             {"partner_id": partner.id, "notification_id": notif.id}
-                            for partner in registration_ids[i: i + split].mapped(
-                                "partner_id")
+                            for partner in registration_ids[i: i + split].exists()
+                            .mapped("partner_id")
                         ])
                         self.env.cr.commit()
                 notif.sent = status_ok
