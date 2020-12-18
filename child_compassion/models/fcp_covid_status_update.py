@@ -9,8 +9,7 @@
 ##############################################################################
 
 
-from odoo import models, fields, api
-from datetime import datetime
+from odoo import models, fields
 
 
 class ProjectCovidStatus(models.Model):
@@ -22,14 +21,5 @@ class ProjectCovidStatus(models.Model):
         "compassion.project", required=True, ondelete="cascade"
     )
     update_date = fields.Date("updated on", default=fields.Date.today)
-    re_opening_status = fields.Selection(
-        [
-            ("Distance Only (Calls etc)", "Distance Only (Calls etc)"),
-            ("Home Visits Only", "Home Visits Only"),
-            ("Meeting in Small Groups", "Meeting in Small Groups"),
-            ("Normal Program Activities", "Normal Program Activities"),
-        ],
-
-    )
+    re_opening_status = fields.Char()
     comments = fields.Char()
-

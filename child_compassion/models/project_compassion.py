@@ -336,7 +336,8 @@ class CompassionProject(models.Model):
         "compassion.project.ile", "project_id", "Lifecycle events", readonly=True
     )
     covid_status_ids = fields.One2many(
-        "compassion.project.covid_update", "fcp_id", "FCP Re-opening Status", readonly=True
+        "compassion.project.covid_update",
+        "fcp_id", "FCP Re-opening Status", readonly=True
     )
 
     suspension = fields.Selection(
@@ -374,17 +375,10 @@ class CompassionProject(models.Model):
     ######################
     description_en = fields.Text("English description", readonly=True)
 
-    re_opening_status = fields.Selection(
-        [
-            ("Distance Only (Calls etc)", "Distance Only (Calls etc)"),
-            ("Home Visits Only", "Home Visits Only"),
-            ("Meeting in Small Groups", "Meeting in Small Groups"),
-            ("Normal Program Activities", "Normal Program Activities"),
-        ],
-        compute="_compute_re_opening_state",
-        store=True,
-        track_visibility="onchange",
-    )
+    re_opening_status = fields.Char(compute="_compute_re_opening_state",
+                                    store=True,
+                                    track_visibility="onchange",
+                                    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -418,7 +412,6 @@ class CompassionProject(models.Model):
     def _compute_re_opening_state(self):
         for project in self.filtered("covid_status_ids"):
             project.re_opening_status = project.covid_status_ids[0].re_opening_status
-
 
     @api.model
     def _get_materials(self):
@@ -547,9 +540,9 @@ class CompassionProject(models.Model):
     @api.multi
     def get_activities(self, field, max_int=float("inf")):
         all_activities = (
-            self.mapped(field + "_babies_ids")
-            + self.mapped(field + "_kids_ids")
-            + self.mapped(field + "_ados_ids")
+                self.mapped(field + "_babies_ids")
+                + self.mapped(field + "_kids_ids")
+                + self.mapped(field + "_ados_ids")
         ).sorted()
         return all_activities[:max_int].mapped("value")
 
