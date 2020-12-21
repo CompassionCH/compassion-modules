@@ -50,6 +50,15 @@
                                     <field name="nb_csp_kids"/>
                                     <field name="nb_cdsp_kids"/>
                                 </group>
+                                <group string="FCP Re-opening Status">
+                                    <field name="covid_status_ids">
+                                        <tree>
+                                            <field name="update_date"/>
+                                            <field name="re_opening_status"/>
+                                            <field name="comments"/>
+                                        </tree>
+                                    </field>
+                                </group>
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">
                                         <tree>
@@ -202,6 +211,7 @@
             <tree string="project">
                 <field name="name" />
                 <field name="fcp_id" />
+                <field name="re_opening_status" />
                 <field name="last_update_date" />
                 <field name="suspension" />
             </tree>

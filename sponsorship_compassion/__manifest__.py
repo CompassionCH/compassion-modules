@@ -36,6 +36,7 @@
     "website": "http://www.compassion.ch",
     "depends": [
         "recurring_contract",  # compassion-accounting
+        "cms_form_compassion",  # compassion-modules
         "utm",
         "crm",
         "child_compassion",
