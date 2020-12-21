@@ -49,10 +49,10 @@ class ChildCompassion(models.Model):
         if state == "F":
             # Departure
             depart = self.env.ref("sponsorship_compassion.end_reason_depart")
-            for child in self.filtered("sponsor_id"):
-                sponsorship = child.sponsorship_ids[0]
-                sponsorship.end_reason_id = depart.id
-                sponsorship.contract_terminated()
+            sponsorships = self.mapped("sponsorship_ids").filtered(
+                lambda c: c.state not in ("terminated", "cancelled"))
+            sponsorships.write({"end_reason_id": depart.id})
+            sponsorships.contract_terminated()
         else:
             # Hold expiration
             hold_released = self.env.ref("sponsorship_compassion.end_reason_release")

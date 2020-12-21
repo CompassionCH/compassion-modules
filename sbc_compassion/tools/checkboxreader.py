@@ -66,7 +66,7 @@ def find_languages_area(env, filename):
             filename, cfg=cfg, px_threshold=0.1, plot=False, verbose=True)
 
         # print("Output object type: ", type(checkboxes))
-        lang = None
+        lang = env['res.lang.compassion']
         for checkbox in checkboxes:
             # Uncomment to plot the results
             # print("Checkbox bounding rectangle (x,y,width,height): ", checkbox[0])
@@ -100,5 +100,5 @@ def find_languages_area(env, filename):
         return lang
 
     except:
-        _logger.error("Error during checkbox detection", exc_info=True)
+        _logger.warning("Error during checkbox detection", exc_info=True)
         return env['res.lang.compassion']

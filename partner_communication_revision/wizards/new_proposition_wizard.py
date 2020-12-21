@@ -35,9 +35,6 @@ class NewRevisionProposition(models.TransientModel):
                     "not completed"
                 )
             )
-        # Make sure we start from latest version
-        for revision in revisions:
-            revision.active_version_id = revision.get_latest_revision()
         master = config.revision_ids.filtered(lambda r: r.lang == self.lang)
         master.write(
             {

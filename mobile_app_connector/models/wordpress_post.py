@@ -128,11 +128,12 @@ class WordpressPost(models.Model):
                         )
                         post_id = post_data["id"]
                         found_ids.append(post_id)
-                        cached_post = self.search([("wp_id", "=", post_id)])
-                        if cached_post:
-                            cached_post.update_post_categories(post_data, requests)
-                            # Skip post already fetched
-                            continue
+                        # TODO AP-377 FIX this code erases all categories of our news
+                        # cached_post = self.search([("wp_id", "=", post_id)])
+                        # if cached_post:
+                        #     cached_post.update_post_categories(post_data, requests)
+                        # Skip post already fetched
+                        # continue
 
                         content_empty = True
                         self_url = post_data["_links"]["self"][0]["href"]
@@ -220,7 +221,11 @@ class WordpressPost(models.Model):
             category_json_url = category_data["href"]
 
             categories_request = requests.get(category_json_url).json()
+            if not isinstance(categories_request, list):
+                categories_request = [categories_request]
             for c in categories_request:
+                if not isinstance(c, dict):
+                    continue
                 category = category_obj.search([("name", "=", c["name"])])
                 if not category:
                     category = category_obj.create({"name": c["name"]})

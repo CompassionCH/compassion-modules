@@ -50,7 +50,8 @@ class FirebaseNotification(models.Model):
     stage_id = fields.Many2one(
         'firebase.notification.stage', 'Stage', ondelete='restrict', required=True,
         default=lambda self: self.env['firebase.notification.stage'].search(
-            [], limit=1), group_expand='_group_expand_stage_ids', index=True)
+            [], limit=1), group_expand='_group_expand_stage_ids', index=True,
+        copy=False)
     partner_ids = fields.Many2many("res.partner", string="Partners", readonly=False)
     title = fields.Char(required=True)
     body = fields.Char(required=True)
@@ -129,6 +130,9 @@ class FirebaseNotification(models.Model):
         """
         if kwargs is None:
             kwargs = {}
+        self.write({
+            "stage_id": self.env.ref('firebase_connector.notification_stage_3').id})
+        self.env.cr.commit()
         for notif in self:
             registration_ids = self.env["firebase.registration"].search(
                 [("partner_id", "in", notif.partner_ids.ids)]
@@ -143,18 +147,32 @@ class FirebaseNotification(models.Model):
                 "title": notif.title, "body": notif.body
             })
 
-            notif.stage_id = self.env.ref('firebase_connector.notification_stage_3').id
-            notif.sent = self.send_multicast_and_handle_errors(
-                registration_ids, notif, kwargs)
+            split = 500
+            nb_batches = len(registration_ids) // split
+            remaining = (len(registration_ids) % split) and 1
+            status_ok = False
+            try:
+                for j in range(0, nb_batches + remaining):
+                    i = j * split
+                    status_ok = status_ok or self.send_multicast_and_handle_errors(
+                        registration_ids[i: i + split], notif, kwargs)
+                    if status_ok:
+                        self.env["firebase.notification.partner.read"].create([
+                            {"partner_id": partner.id, "notification_id": notif.id}
+                            for partner in registration_ids[i: i + split].exists()
+                            .mapped("partner_id")
+                        ])
+                        self.env.cr.commit()
+                notif.sent = status_ok
 
-            if notif.sent:
-                notif.send_date = fields.Datetime.now()
-                notif.stage_id = self.env.ref(
-                    'firebase_connector.notification_stage_4').id
-                for partner in notif.partner_ids:
-                    self.env["firebase.notification.partner.read"].create(
-                        {"partner_id": partner.id, "notification_id": notif.id, }
-                    )
+                if status_ok:
+                    notif.send_date = fields.Datetime.now()
+                    notif.stage_id = self.env.ref(
+                        'firebase_connector.notification_stage_4').id
+                    self.env.cr.commit()
+            except:
+                self.env.clear()
+                _logger.error("Error while sending notifications", exc_info=True)
 
     @api.multi
     def send_multicast_and_handle_errors(self, registration_ids, notif, data=None):

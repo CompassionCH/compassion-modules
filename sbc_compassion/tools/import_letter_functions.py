@@ -146,11 +146,18 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
             # we finally resize the image before returning it
             img = cv2.imread(img_path)
             f = new_dpi / 300.0
-            img = cv2.resize(img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
+            try:
+                img = cv2.resize(img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
+            except cv2.error:
+                _logger.warning("Error resizing correspondence page", exc_info=True)
             page_imgs.append(img)
             partner_id, child_id = decode_barcode(env, qrcode)
-            page_preview = cv2.imencode(".jpg", img)
-            preview_data = base64.b64encode(page_preview[1])
+            try:
+                page_preview = cv2.imencode(".jpg", img)
+                preview_data = base64.b64encode(page_preview[1])
+            except cv2.error:
+                _logger.warning("Error encoding preview in jpg")
+                preview_data = False
             values = {
                 "partner_id": partner_id,
                 "child_id": child_id,
@@ -166,8 +173,10 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 f"\t\tPage {i + 1}/{inputpdf.numPages} opened, "
                 f"no QRCode on this page. {time() - tic:.2} sec"
             )
-
-        os.remove(img_path)
+        try:
+            os.remove(img_path)
+        except FileNotFoundError:
+            _logger.warning("Error removing temp file for QR-processing")
     letter_indexes.append(i + 1)
 
     return letter_indexes, page_imgs, lang

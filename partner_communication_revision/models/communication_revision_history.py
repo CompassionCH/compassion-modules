@@ -45,17 +45,21 @@ class CommunicationRevisionHistory(models.Model):
 
     @api.multi
     def save_revision_state(self):
+        write_fields = [
+            "revision_number", "revision_date", "body_html", "raw_subject"]
+        if self.linked_revision_id.state == "active":
+            # Also change revision texts when they are not being edited
+            write_fields += ["proposition_text", "subject"]
         for revision in self:
-            revision.write(revision.linked_revision_id.read([
-                "revision_number", "revision_date", "subject",
-                "body_html", "proposition_text", "raw_subject"
-            ])[0])
+            revision.write(revision.linked_revision_id.read(write_fields)[0])
 
     @api.multi
     def get_vals(self):
-        vals = self.read([
-            "revision_number", "revision_date", "subject",
-            "body_html", "proposition_text", "raw_subject"
-        ])[0]
+        read_fields = [
+            "revision_number", "revision_date", "body_html", "raw_subject"]
+        if self.linked_revision_id.state == "active":
+            # Also change revision texts when they are not being edited
+            read_fields += ["proposition_text", "subject"]
+        vals = self.read(read_fields)[0]
         vals.pop("id")
         return vals

@@ -69,7 +69,7 @@ class AppHub(models.AbstractModel):
         unpaid = unpaid.filtered(
             lambda c: not c.is_active
             and not c.parent_id
-            and (c.state in ["waiting", "draft"])
+            and (c.state in ["waiting", "draft", "mandate"])
         )
         children = sponsorships.mapped("child_id")
         sponsorship_amounts = sponsorships.mapped("total_amount")

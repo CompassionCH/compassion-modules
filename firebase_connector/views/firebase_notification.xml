@@ -58,8 +58,14 @@
                         <field name="test_mode"/>
                         <field name="sent"/>
                     </group>
-                    <field name="partner_ids" widget="many2many" attrs="{'invisible': [('sent', '=', True)]}" domain="[('firebase_registration_ids', '!=', False)]"/>
-                    <field name="read_ids" widget="one2many" attrs="{'invisible': [('sent', '=', False)]}"/>
+                    <notebook>
+                        <page string="Partners selection" attrs="{'invisible': [('sent', '=', True)]}">
+                            <field name="partner_ids" widget="many2many" domain="[('firebase_registration_ids', '!=', False)]"/>
+                        </page>
+                        <page string="Sent notifications" attrs="{'invisible': [('read_ids', '=', False)]}">
+                            <field name="read_ids" widget="one2many"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

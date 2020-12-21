@@ -141,6 +141,7 @@ class CommunicationRevision(models.Model):
         domain="[('linked_revision_id.id', '=', id), "
                "('linked_revision_id.lang', '=', lang)]",
     )
+    is_old_version = fields.Boolean(compute="_compute_old_version")
 
     _sql_constraints = [
         (
@@ -246,6 +247,12 @@ class CommunicationRevision(models.Model):
                     lang=revision.lang
                 ).body_html = revision.body_html
 
+    @api.multi
+    def _compute_old_version(self):
+        for revision in self:
+            latest_version = revision.get_latest_revision()
+            revision.is_old_version = revision.active_revision_id != latest_version
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -258,7 +265,8 @@ class CommunicationRevision(models.Model):
         if "active_revision_id" in vals:
             # Change the revision (only one at a time is possible)
             self.ensure_one()
-            if self.active_revision_id:
+            if self.active_revision_id and not self.env.context.get(
+                    "skip_revision_backup"):
                 self.save_current_revision()
             backup = self.env["partner.communication.revision.history"]\
                 .browse(vals["active_revision_id"])
@@ -299,7 +307,6 @@ class CommunicationRevision(models.Model):
             "user_id": self.env.uid,
             "correction_user_id": False,
             "is_master_version": False,
-            "active_revision_id": self.get_latest_revision().id
         })
         return True
 
@@ -932,6 +939,7 @@ class CommunicationRevision(models.Model):
     def _create_backup(self, backup_revision_number):
         self.ensure_one()
         self.active_revision_id = self.env["partner.communication.revision.history"]\
+            .with_context(skip_revision_backup=True)\
             .create({
                 "revision_number": backup_revision_number,
                 "revision_date": self.revision_date,

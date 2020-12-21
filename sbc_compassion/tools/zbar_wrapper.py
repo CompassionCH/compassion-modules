@@ -48,8 +48,14 @@ def _scan(img):
 def _decode(filename, page):
     # obtain image data
     img = cv2.imread(filename, 0)
-    im = cv2.resize(img, None, fx=0.5, fy=0.5)
+    try:
+        im = cv2.resize(img, None, fx=0.5, fy=0.5)
+    except cv2.error:
+        im = img
+        _logger.warning("Error resizing image for QRcode detection.")
 
+    if im is None:
+        return ""
     qrcode = _scan(im)
     if not qrcode:
         zoom_x = 10.0  # horizontal zoom
@@ -67,8 +73,12 @@ def _decode(filename, page):
         tries = 0
         while not qrcode and tries < len(zoom_factors):
             # No QR found, so we try to again after an opening operation
-            im = cv2.resize(img, None, fx=zoom_factors[tries], fy=zoom_factors[tries])
-            imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-            qrcode = _scan(imgage)
+            try:
+                im = cv2.resize(img, None, fx=zoom_factors[tries],
+                                fy=zoom_factors[tries])
+                imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
+                qrcode = _scan(imgage)
+            except cv2.error:
+                _logger.warning("Error resizing image for QRcode detection.")
             tries += 1
     return qrcode
