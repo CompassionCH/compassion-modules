@@ -540,9 +540,9 @@ class CompassionProject(models.Model):
     @api.multi
     def get_activities(self, field, max_int=float("inf")):
         all_activities = (
-                self.mapped(field + "_babies_ids")
-                + self.mapped(field + "_kids_ids")
-                + self.mapped(field + "_ados_ids")
+            self.mapped(field + "_babies_ids")
+            + self.mapped(field + "_kids_ids")
+            + self.mapped(field + "_ados_ids")
         ).sorted()
         return all_activities[:max_int].mapped("value")
 
