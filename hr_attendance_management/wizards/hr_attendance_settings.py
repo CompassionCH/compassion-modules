@@ -101,6 +101,7 @@ class HrAttendanceSettings(models.TransientModel):
 
 class CreateHrAttendance(models.TransientModel):
     _name = "create.hr.attendance.day"
+    _description = "Create atttendance day wizard"
 
     date_from = fields.Date(string="Date from")
     date_to = fields.Date(string="Date to")
