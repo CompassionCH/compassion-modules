@@ -12,6 +12,7 @@ from odoo import models, api
 
 class RevisionInstall(models.AbstractModel):
     _name = "partner.communication.revision.install"
+    _description = "Install revision"
 
     @api.model
     def install(self):

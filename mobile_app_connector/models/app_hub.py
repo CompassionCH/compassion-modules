@@ -26,6 +26,7 @@ class AppHub(models.AbstractModel):
     """
 
     _name = "mobile.app.hub"
+    _description = "Hub mobile app"
 
     # This will limit the number of tiles displayed in one screen
     # This can be later put in some settings if this needs to be changed

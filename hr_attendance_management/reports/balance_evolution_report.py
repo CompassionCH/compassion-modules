@@ -8,6 +8,7 @@ from odoo import models, fields, api
 
 class BalanceEvolutionReport(models.TransientModel):
     _name = "balance.evolution.graph"
+    _description = "Balance evolution graph"
 
     day = fields.Date()
     employee_id = fields.Many2one("hr.employee", "Employee", readonly=False)
