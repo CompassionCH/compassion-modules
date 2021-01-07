@@ -72,7 +72,7 @@
         <field name="arch" type="xml">
             <form string="Follow contract" create="false">
                 <header>
-                    <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,waiting_welcome,active,sub,sub_accept"/>
+                    <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,active,sub,sub_accept"/>
                     <button name="action_sub" type="object" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
                     <button name="action_no_sub" type="object" string="No sub" attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"/>
                     <button name="action_sub_reject" type="object" string="SUB Reject" attrs="{'invisible':[('sds_state','not in',['sub', 'sub_waiting'])]}"/>
@@ -141,7 +141,7 @@
         <field eval="20" name="priority"/>
         <field name="arch" type="xml">
             <tree decoration-info="sds_state == 'draft'" decoration-danger="sds_state == 'start'"
-                  decoration-success="sds_state == 'waiting_welcome'" decoration-primary="sds_state == 'active'"
+                  decoration-primary="sds_state == 'active'"
                   decoration-muted="sds_state in ('cancelled')" string="Follow contracts" create="false" edit="false">
                 <field name="partner_codega"/>
                 <field name="partner_id"/>
