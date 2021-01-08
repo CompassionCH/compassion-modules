@@ -449,8 +449,8 @@ class CommunicationJob(models.Model):
     @api.multi
     def refresh_text(self, refresh_uid=False):
         self.mapped("attachment_ids").unlink()
-        self.set_attachments()
-        for job in self:
+        failed = self.set_attachments()
+        for job in self - failed:
             lang = self.env.context.get("lang_preview", job.partner_id.lang)
             if job.email_template_id and job.object_ids:
                 try:
@@ -584,6 +584,7 @@ class CommunicationJob(models.Model):
         communication record.
         """
         attachment_obj = self.env["partner.communication.attachment"]
+        failed = self.env[self._name]
         for job in self.with_context(must_skip_send_to_printer=True):
             if job.config_id.attachments_function:
                 try:
@@ -610,6 +611,8 @@ class CommunicationJob(models.Model):
                             "state": "failure",
                             "body_html": "Error in attachments creation."
                         })
+                    failed += job
+        return failed
 
     @api.multi
     def preview_pdf(self):
