@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_res_country_statistics_res_country_statistics,res_country_statistics.res_country_statistics,model_res_country_statistics_res_country_statistics,,1,0,0,0
+access_res_country_indicator,access_res_country_indicator,model_res_country_indicator,base.group_user,1,1,1,1
+access_res_country_stat,access_res_country_stat,model_res_country_stat,base.group_user,1,1,1,1

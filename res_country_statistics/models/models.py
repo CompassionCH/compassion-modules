@@ -30,12 +30,13 @@ class ResCountryInfo(models.AbstractModel):
     def _compute_latest_stats(self):
         indicators = self.env['res.country.indicator'].search([])
         for record in self:
-            stat = self.env['res.country.stat'].search([('country_id', '=', record.id)]).sorted(key=lambda r: r.year)
+            stat = self.env['res.country.stat'].search([('country_id', '=', record.id)])
             country_statistics = []
             for i in indicators:
-                res = stat.search([('indicator_id', '=', i.id)])
+                res = stat.search([('indicator_id', '=', i.id)], order='year desc', limit=1)
                 if res:
-                    country_statistics.append(res)
+                    country_statistics.append(res.id)
+            self.statistics_ids = country_statistics
 
 
 class CountryIndicators(models.Model):
@@ -60,24 +61,23 @@ class CountryInformation(models.Model):
     value = fields.Float("Value")
 
     @api.model
-    def load_wb_data(self, from_year, to_year):
+    def load_wb_data(self, countries_list, from_year, to_year):
         indicators = self.env['res.country.indicator'].search([('ref', '!=', False)])
-        countries = self.env['compassion.field.office'].search([('available_on_childpool', '!=', False)])
-        dat = wb.download(indicator=indicators.mapped('ref'), country=countries.mapped('country_id.code'),
-                          start=from_year, end=to_year)
+        dat = wb.download(indicator=indicators.mapped('ref'), country=countries_list, start=from_year, end=to_year)
+        countries = self.env['res.country'].search([('code', 'in', countries_list)])
         for i in indicators:
             i_per_country = dat[i.ref]
             for c in countries:
-                for year, value in i_per_country[c.with_context(lang='en_US').country_id.name].dropna().iteritems():
+                for year, value in i_per_country[c.with_context(lang='en_US').name].dropna().iteritems():
                     vals = {
                         'year': year,
-                        'country_id': c.country_id.id,
+                        'country_id': c.id,
                         'indicator_id': i.id,
                         'value': value
                     }
                     if not self.search([
                         ('year', '=', year),
-                        ('country_id', '=', c.country_id.id),
+                        ('country_id', '=', c.id),
                         ('indicator_id', '=', i.id),
                         ('value', '=', value)]):
                         self.create(vals)
