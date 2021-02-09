@@ -93,10 +93,10 @@ class CHDateWidget(models.AbstractModel):
     def get_placeholder(self):
         # Get correct placeholder depending on language
         placeholders = {
-            "fr_CH": "JJ.MM.AA",
-            "de_DE": "TT.MM.JJ",
-            "it_IT": "GG.MM.AA",
-            "en_US": "DD.MM.YY",
+            "fr_CH": "JJ.MM.AAAA",
+            "de_DE": "TT.MM.JJJJ",
+            "it_IT": "GG.MM.AAAA",
+            "en_US": "DD.MM.YYYY",
         }
         return placeholders.get(self.env.lang)
 
