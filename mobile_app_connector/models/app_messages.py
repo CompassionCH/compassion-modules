@@ -15,6 +15,7 @@ HUB_REFRESH_DAYS = 3
 
 class AppMessages(models.Model):
     _name = "mobile.app.messages"
+    _description = "Message for mobil app"
 
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=True, required=True, ondelete="cascade"

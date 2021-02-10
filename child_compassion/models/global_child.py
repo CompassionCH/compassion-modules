@@ -56,6 +56,7 @@ class GenericChild(models.AbstractModel):
     )
     unsponsored_since = fields.Date(readonly=True)
     image_url = fields.Char()
+    thumbnail_url = fields.Char(compute="_compute_image_thumb")
 
     @api.model
     def _get_availability_state(self):
@@ -123,6 +124,10 @@ class GenericChild(models.AbstractModel):
                 - ((today.month, today.day) < (born.month, born.day))
             )
 
+    @api.multi
+    def _compute_image_thumb(self):
+        self._load_image(True, False)
+
     @api.model
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)
@@ -132,6 +137,33 @@ class GenericChild(models.AbstractModel):
         if not preferred_name:
             odoo_data["preferred_name"] = odoo_data.get("firstname")
         return odoo_data
+
+    @api.multi
+    def _load_image(self, thumb=False, binar=False):
+        if thumb:
+            height = 180
+            width = 180
+            cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(width)
+            for child in self.filtered("image_url"):
+                # url are typically under this format:
+                # https://media.ci.org/image/upload/w_150/ChildPhotos/Published/
+                # 06182814_539e18.jpg
+                image_split = (child.image_url).split("/")
+                try:
+                    ind = image_split.index("w_150")
+                    image_split[ind] = cloudinary
+                    url = "/".join(image_split)
+                    child.thumbnail_url = url
+                except ValueError:
+                    logger.error("Wrong child image received: " + str(child.image_url))
+
+        if binar:
+            for child in self.filtered("image_url"):
+                url = child.image_url if not thumb else child.thumbnail_url
+                try:
+                    child.portrait = base64.encodebytes(urlopen(url).read())
+                except:
+                    logger.error("Image cannot be fetched : " + str(url))
 
 
 class GlobalChild(models.TransientModel):
@@ -144,7 +176,6 @@ class GlobalChild(models.TransientModel):
 
     portrait = fields.Binary(compute="_compute_image_portrait")
     fullshot = fields.Binary(compute="_compute_image_fullshot")
-    thumbnail_url = fields.Char(compute="_compute_image_thumb")
 
     color = fields.Integer(compute="_compute_color")
     is_special_needs = fields.Boolean()
@@ -167,40 +198,9 @@ class GlobalChild(models.TransientModel):
             child.color = 7 if child.gender == "M" else 5
 
     @api.multi
-    def _load_image(self, thumb=False, binar=False):
-        if thumb:
-            height = 180
-            width = 180
-            cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(width)
-            for child in self.filtered("image_url"):
-                # url are typically under this format:
-                #   https://media.ci.org/image/upload/w_150/ChildPhotos/Published/06182814_539e18.jpg
-
-                image_split = (child.image_url).split("/")
-                try:
-                    ind = image_split.index("w_150")
-                    image_split[ind] = cloudinary
-                    url = "/".join(image_split)
-                    child.thumbnail_url = url
-                except ValueError:
-                    logger.error("Wrong child image received: " + str(child.image_url))
-
-        if binar:
-            for child in self.filtered("image_url"):
-                url = child.image_url if not thumb else child.thumbnail_url
-                try:
-                    child.portrait = base64.encodestring(urlopen(url).read())
-                except:
-                    logger.error("Image cannot be fetched : " + str(url))
-
-    @api.multi
     def _compute_image_portrait(self):
         self._load_image(True, True)
 
     @api.multi
     def _compute_image_fullshot(self):
         self._load_image(False, True)
-
-    @api.multi
-    def _compute_image_thumb(self):
-        self._load_image(True, False)
