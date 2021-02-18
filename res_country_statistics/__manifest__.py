@@ -39,7 +39,7 @@
     """,
 
     'author': "Compassion Suisse",
-    'website': "http://www.compassion.cch",
+    'website': "http://www.compassion.ch",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -56,6 +56,7 @@
         'views/views.xml',
         'views/templates.xml',
         'data/res.country.indicator.csv',
+        'data/update_all_country_stat.xml',
         'security/ir.model.access.csv',
     ],
     # only loaded in demonstration mode

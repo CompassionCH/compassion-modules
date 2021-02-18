@@ -21,7 +21,6 @@
                                     <field name="indicator_id"/>
                                     <field name="year"/>
                                     <field name="value"/>
-                                    <field name="type"/>
                                 </tree>
                             </field>
                         </page>

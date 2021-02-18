@@ -9,12 +9,13 @@
 ##############################################################################
 from odoo import api, models, fields
 from pandas_datareader import wb
+from datetime import date
 import logging
 
 _logger = logging.getLogger(__name__)
 
 
-class ResCountryInfo(models.AbstractModel):
+class ResCountryInfo(models.Model):
     """ add latest stat to the country """
     _inherit = "res.country"
     capital_city = fields.Char("capital city")
@@ -75,9 +76,15 @@ class CountryInformation(models.Model):
                         'indicator_id': i.id,
                         'value': value
                     }
-                    if not self.search([
-                        ('year', '=', year),
-                        ('country_id', '=', c.id),
-                        ('indicator_id', '=', i.id),
-                        ('value', '=', value)]):
+                    s = self.search_count([
+                        ('year', '=', year), ('country_id', '=', c.id),
+                        ('indicator_id', '=', i.id), ('value', '=', value)])
+                    if s == 0:
                         self.create(vals)
+
+    @api.model
+    def update_fo_statistics(self, from_year=date.today().year - 5, to_year=date.today().year):
+        countries = self.env['compassion.field.office'].search([]).mapped('country_id.code')
+        _logger.info('updating '+str(len(countries))+' field office countries')
+        _logger.info(str(from_year) + '-' + str(to_year))
+        self.load_wb_data(countries, from_year, to_year)
