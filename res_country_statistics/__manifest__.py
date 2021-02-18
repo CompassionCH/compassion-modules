@@ -9,7 +9,7 @@
 #                            in Jesus' name
 #
 #    Copyright (C) 2021 Compassion CH (http://www.compassion.ch)
-#    @author: David Wulliamoz <ecino@compassion.ch>
+#    @author: David Wulliamoz <dwulliamoz@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base'],
-    'external_dependencies': {'python': ['pandas_datareader']}
+    'external_dependencies': {'python': ['pandas_datareader']},
 
     # always loaded
     'data': [
