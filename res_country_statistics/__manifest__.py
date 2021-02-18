@@ -8,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2021 Compassion CH (http://www.compassion.ch)
+#    @author: David Wulliamoz <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -53,9 +53,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
-        'views/templates.xml',
         'data/res.country.indicator.csv',
         'data/update_all_country_stat.xml',
         'security/ir.model.access.csv',
