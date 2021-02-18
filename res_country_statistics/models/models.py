@@ -44,13 +44,13 @@ class CountryIndicators(models.Model):
     _name = "res.country.indicator"
     _description = "Development indicator from the world bank"
     ref = fields.Char("Reference")
-    name = fields.Char("Name")
+    name = fields.Char("Name", translate=True)
     description = fields.Char("Description")
     type = fields.Selection([
         ("%pop", "% of population"),
         ("tot", "Total"),
         ("y", "Years"),
-        ("p1000lb", "per 1000 live births")], readonly=True)
+        ("p1000lb", "per 1000 live births")], readonly=True, translate=True)
 
 
 class CountryInformation(models.Model):

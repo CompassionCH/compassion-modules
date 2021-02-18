@@ -49,6 +49,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['base'],
+    'external_dependencies': {'python': ['pandas_datareader']}
 
     # always loaded
     'data': [
