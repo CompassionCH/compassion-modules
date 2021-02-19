@@ -55,6 +55,10 @@
         <field name="model_id" ref="model_fo_disaster_alert"/>
         <field name="name">Disaster Alert</field>
     </record>
+    <record id="mapping_fo_disaster_notif" model="compassion.mapping">
+        <field name="model_id" ref="model_fo_disaster_alert"/>
+        <field name="name">Disaster Alert Notification</field>
+    </record>
     <record id="mapping_demand_planning" model="compassion.mapping">
         <field name="model_id" ref="model_demand_planning"/>
         <field name="name">Demand Planning</field>

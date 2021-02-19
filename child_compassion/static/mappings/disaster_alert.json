@@ -10,7 +10,7 @@
         "model": "fcp.disaster.impact",
         "mapping": {
           "Disaster_ImpactOnICPProgram": "impact_on_fcp_program",
-          "ICPDisasterImpact_DisasterImpactDescription": "disaster_impact_description",
+          "ICPDisasterImpact_ICPDisasterStatus": "field_office_impact_status",
           "ICPDisasterImpact_ICPInfrastructureDisasterImpact": "infrastructure",
           "ICP_ID": {
             "field": "project_id.fcp_id",
@@ -31,6 +31,7 @@
           "BeneficiaryPhysicalCondition": "beneficiary_physical_condition",
           "CaregiversDiedNumber": "caregivers_died_number",
           "CaregiversSeriouslyInjuredNumber": "caregivers_seriously_injured_number",
+          "DisasterStatus" : "disaster_status",
           "HouseCondition": "house_condition",
           "LostPersonalEffects": {
             "field": "loss_ids.name",
