@@ -33,7 +33,7 @@ class InteractionResume(models.TransientModel):
         "partner.communication.job", "Communication"
     )
     email_id = fields.Many2one("mail.mail", "Email")
-    mass_mailing_id = fields.Many2one()
+    mass_mailing_id = fields.Many2one("mail.mass_mailing", "Mass mailing")
     logged_mail_direction = fields.Selection(related="email_id.direction")
     message_id = fields.Many2one("mail.message", "Email")
     is_from_employee = fields.Boolean(default=False)
@@ -91,7 +91,8 @@ class InteractionResume(models.TransientModel):
                             ON pcj.config_id = c.id
                         FULL OUTER JOIN utm_source source
                             ON c.source_id = source.id
-                            AND source.name not in ('Default communication','Donation - Thank You')
+                            AND source.name not in ('Default communication',
+                                                    'Donation - Thank You')
                         WHERE pcj.state = 'done'
                         AND pcj.send_mode = 'physical'
                         AND (p.contact_id = %s OR p.id = %s)
