@@ -62,6 +62,6 @@ class IrActionsServer(models.Model):
         return True
 
     @job(default_channel="root.partner_communication")
-    # @related_action("related_action_automation")
+    @related_action("related_action_automation")
     def create_communication_job(self, vals):
         return self.env["partner.communication.job"].create(vals)

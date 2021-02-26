@@ -9,6 +9,7 @@
 ##############################################################################
 
 from odoo import api, models, _
+from odoo.tools.safe_eval import safe_eval
 
 
 class QueueJob(models.Model):
@@ -16,11 +17,16 @@ class QueueJob(models.Model):
 
     @api.multi
     def related_action_automation(self):
+        records = self.record_ids
+        model = "ir.actions.server"
+        if self.result:
+            records = safe_eval(self.result.split("job")[1])
+            model = "partner.communication.job"
         action = {
             "name": _("Automation"),
             "type": "ir.actions.act_window",
-            "res_model": "ir.actions.server",
-            "domain": [("id", "in", self.record_ids)],
+            "res_model": model,
+            "domain": [("id", "in", records)],
             "view_type": "form",
             "view_mode": "tree,form",
         }
