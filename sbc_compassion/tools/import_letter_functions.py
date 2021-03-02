@@ -140,8 +140,9 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
         # read the qrcode on the current page
         qrcode, img_path = _decode_page(page_buffer.read())
         lang = cbr.find_languages_area(env, img_path)
-        if (qrcode and qrcode["data"] != previous_qrcode) or i == 0:
-            previous_qrcode = qrcode and qrcode["data"]
+        if (qrcode and qrcode["data"] != previous_qrcode and
+                qrcode["format"] == "QRCODE") or i == 0:
+            previous_qrcode = qrcode["data"]
             letter_indexes.append(i)
             # we finally resize the image before returning it
             img = cv2.imread(img_path)
