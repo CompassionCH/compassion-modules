@@ -1010,6 +1010,14 @@ class SponsorshipContract(models.Model):
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         partners.update_number_sponsorships()
+        check_duplicate_activity_id = self.env.ref("sponsorship_compassion.activity_check_duplicates").id
+        if self.mapped("partner_id.activity_ids") \
+                .filtered(lambda l: l.activity_type_id.id == check_duplicate_activity_id) \
+                or self.mapped("correspondent_id.activity_ids") \
+                .filtered(lambda l: l.activity_type_id.id == check_duplicate_activity_id):
+            raise UserError(
+                _("Please verify the partner before validating the sponsorship")
+            )
         return True
 
     @api.multi

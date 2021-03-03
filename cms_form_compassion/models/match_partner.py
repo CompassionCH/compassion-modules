@@ -96,7 +96,7 @@ class MatchPartner(models.AbstractModel):
         create_infos.setdefault("tz", "Europe/Zurich")
         partner = partner_obj.create(create_infos)
         partner.activity_schedule(
-            'mail.mail_activity_data_todo',
+            'sponsorship_compassion.activity_check_duplicates,',
             date_deadline=datetime.date(datetime.today() + timedelta(weeks=1)),
             summary="Verify new partner",
             note="Please verify that this partner doesn't already exist",
