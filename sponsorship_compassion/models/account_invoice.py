@@ -20,15 +20,16 @@ class AccountInvoice(models.Model):
 
     children = fields.Char("Children", compute="_compute_children")
     last_payment = fields.Date(compute="_compute_last_payment", store=True)
-    invoice_type = fields.Selection(
+    invoice_category = fields.Selection(
         [
             ("sponsorship", "Sponsorship"),
             ("gift", "Gift"),
             ("fund", "Fund donation"),
             ("other", "Other"),
         ],
-        compute="_compute_invoice_type",
+        compute="_compute_invoice_category",
         store=True,
+        oldname="invoice_category"
     )
 
     @api.multi
@@ -56,7 +57,7 @@ class AccountInvoice(models.Model):
 
     @api.depends("invoice_line_ids", "state")
     @api.multi
-    def _compute_invoice_type(self):
+    def _compute_invoice_category(self):
         sponsorship_cat = self.env.ref(
             "sponsorship_compassion.product_category_sponsorship", False
         )
@@ -75,7 +76,7 @@ class AccountInvoice(models.Model):
             )
 
             if category_lines:
-                invoice.invoice_type = "sponsorship"
+                invoice.invoice_category = "sponsorship"
             else:
                 # check if child_of Gift category
                 category_lines = self.env["account.invoice.line"].search(
@@ -85,7 +86,7 @@ class AccountInvoice(models.Model):
                     ]
                 )
                 if category_lines:
-                    invoice.invoice_type = "gift"
+                    invoice.invoice_category = "gift"
                 else:
                     # check if child_of Fund category
                     category_lines = self.env["account.invoice.line"].search(
@@ -95,10 +96,10 @@ class AccountInvoice(models.Model):
                         ]
                     )
                     if category_lines:
-                        invoice.invoice_type = "fund"
+                        invoice.invoice_category = "fund"
                     else:
                         # last choice -> Other category
-                        invoice.invoice_type = "other"
+                        invoice.invoice_category = "other"
 
     @api.multi
     def action_invoice_paid(self):

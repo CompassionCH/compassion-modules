@@ -131,14 +131,14 @@ class AccountInvoice(models.Model):
                 ('partner_id', '=', partner.id)
             ])
 
-            if invoice.invoice_type in ('gift', 'fund') and has_app \
+            if invoice.invoice_category in ('gift', 'fund') and has_app \
                     and not invoice.avoid_thankyou_letter:
                 invoice.send_mobile_notification()
 
             # when a contract exist before than this invoice created, so the
             # invoice.origin contains sponsorship
             origin = invoice.origin or ""
-            if invoice.invoice_type == 'sponsorship' and 'sponsorship' not in \
+            if invoice.invoice_category == 'sponsorship' and 'sponsorship' not in \
                     origin and ('android' in origin or 'ios' in origin):
                 # we will create a new invoice but notify a staff
                 # member that it needs to be processed manually, to avoid creating
