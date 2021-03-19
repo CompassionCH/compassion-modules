@@ -8,7 +8,7 @@
 #
 ##############################################################################
 import logging
-from datetime import date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
@@ -317,7 +317,7 @@ class RecurringContract(models.Model):
         """ Triggers the transition to SUB state if the sponsorship is in
         valid state (either sub waiting or no sub since less than 50 days)
         """
-        limit = date.today() - relativedelta(days=50)
+        limit = datetime.now() - relativedelta(days=50)
         valid_sub = self.filtered(
             lambda s: s.sds_state == "sub_waiting"
             or (s.sds_state in ["sub_reject",

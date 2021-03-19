@@ -765,7 +765,7 @@ class CommunicationJob(models.Model):
                 .with_context(lang=partner.lang) \
                 .create_emails(self.email_template_id, [self.id], email_vals)
             self.email_id = email
-            email.send()
+            email.send(auto_commit=True)  # Commit emails to avoid sending twice
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)
