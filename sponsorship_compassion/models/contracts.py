@@ -592,7 +592,7 @@ class SponsorshipContract(models.Model):
                 if contract.child_id.sponsor_id == contract.correspondent_id:
                     child = contract.child_id.with_context({})
                     child.child_unsponsored()
-                    child.child_released()
+                    child.child_released('N')
         return super().unlink()
 
     ##########################################################################
