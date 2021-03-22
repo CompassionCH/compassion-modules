@@ -53,6 +53,10 @@ class AccountInvoiceLine(models.Model):
             )
             if len(product_configs) == 1:
                 communication_config = product_configs[0]
+                # avoid taking into account lines with no communication config defined (amount would be wrong)
+                invoice_lines = invoice_lines.filtered(
+                    lambda x: x.product_id.partner_communication_config == communication_config)
+
             else:
                 _logger.warning(
                     f"{len(product_configs)} product thank you config found, "
