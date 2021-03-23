@@ -58,8 +58,4 @@
         'data/update_all_country_stat.xml',
         'security/ir.model.access.csv',
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
 }
