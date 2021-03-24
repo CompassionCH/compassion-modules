@@ -6,7 +6,7 @@
     <record id="activity_check_duplicates" model="mail.activity.type">
         <field name="name">Check Duplicates</field>
         <field name="icon">fa-tasks</field>
-        <field name="res_model_id" ref="sponsorship_compassion.model_res_partner"/>
+        <field name="res_model_id" ref="base.model_res_partner"/>
     </record>
 
 
