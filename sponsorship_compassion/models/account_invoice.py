@@ -29,7 +29,7 @@ class AccountInvoice(models.Model):
         ],
         compute="_compute_invoice_category",
         store=True,
-        oldname="invoice_category"
+        oldname="invoice_type"
     )
 
     @api.multi

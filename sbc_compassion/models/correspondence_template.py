@@ -129,7 +129,6 @@ class CorrespondenceTemplate(models.Model):
         copy=True,
         readonly=False,
     )
-    website_published = fields.Boolean(default = True)
     additional_page_id = fields.Many2one(
         "correspondence.template.page",
         "Additional page",
