@@ -66,6 +66,11 @@ class FirebaseNotification(models.Model):
         string="Partner read status of the notification",
         readonly=True,
     )
+    language = fields.Selection([('fr_CH', 'French'),
+                                 ('de_DE', 'German'),
+                                 ('it_IT', 'Italian'),
+                                 ('en_US', 'English')], required=True)
+
     res_model = fields.Char()
     res_id = fields.Integer()
     test_mode = fields.Boolean()
@@ -142,6 +147,11 @@ class FirebaseNotification(models.Model):
                     [("partner_id", "=", False)]
                 )
 
+            # filter registration based on language
+            if notif.language:
+                registration_ids = registration_ids.filtered(
+                    lambda reg: not reg.language or reg.language == notif.language)
+
             kwargs.update({
                 "notification_id": str(notif.id),
                 "title": notif.title, "body": notif.body
@@ -160,7 +170,7 @@ class FirebaseNotification(models.Model):
                         self.env["firebase.notification.partner.read"].create([
                             {"partner_id": partner.id, "notification_id": notif.id}
                             for partner in registration_ids[i: i + split].exists()
-                            .mapped("partner_id")
+                                .mapped("partner_id")
                         ])
                         self.env.cr.commit()
                 notif.sent = status_ok
