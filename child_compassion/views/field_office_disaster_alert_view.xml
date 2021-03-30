@@ -84,6 +84,7 @@
                                                 <field name="impact_on_fcp_program"/>
                                                 <field name="infrastructure"/>
                                                 <field name="state"/>
+                                                <field name="field_office_impact_status"/>
                                             </tree>
                                         </field>
                                         <field name="child_disaster_impact_ids">
@@ -95,7 +96,6 @@
                                                 <field name="house_condition"/>
                                                 <field name="state"/>
                                                 <field name="disaster_status"/>
-                                                <field name="field_office_impact_status"/>
                                             </tree>
                                         </field>
                                     </group>
