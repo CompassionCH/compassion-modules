@@ -297,6 +297,11 @@
             <field name="connect_schema">http://schemas.ci.org/ci/messages/fieldoffices/2016/04/DisasterKit</field>
             <field name="action_id" ref="field_office_disaster_notif"/>
         </record>
+        <record id="field_office_disaster_connect_3" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/fieldoffices/2020/12/DisasterNotification</field>
+            <field name="action_id" ref="field_office_disaster_notif"/>
+        </record>
+
         <record id="beneficiary_hold_removal_connect" model="gmc.action.connect">
             <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/BeneficiaryHoldRemovalNotification
             </field>
