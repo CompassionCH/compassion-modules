@@ -52,6 +52,7 @@
         "templates/payment_templates.xml",
         "views/config_view.xml",
         "views/ir_logging.xml",
+        "data/activity_data.xml",
     ],
     "demo": [],
     "development_status": "Stable",
