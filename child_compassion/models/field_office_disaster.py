@@ -28,6 +28,7 @@ class ICPDisasterImpact(models.Model):
     disaster_impact_description = fields.Char()
     state = fields.Selection(related="disaster_id.state")
     infrastructure = fields.Char()
+    field_office_impact_status = fields.Char()
 
 
 class FieldOfficeDisasterUpdate(models.Model):
@@ -197,7 +198,6 @@ class FieldOfficeDisasterAlert(models.Model):
     )
     field_office_damage = fields.Char()
     field_office_impact_description = fields.Char()
-    field_office_impact_status = fields.Char()
 
     impact_description = fields.Char()
     impact_on_fcp_infrastructure_damaged = fields.Integer(
