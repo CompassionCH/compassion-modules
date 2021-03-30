@@ -72,7 +72,6 @@
                                     <group>
                                         <field name="field_office_damage"/>
                                         <field name="field_office_impact_description"/>
-                                        <field name="field_office_impact_status"/>
                                     </group>
                                 </group>
                             </page>
@@ -96,6 +95,7 @@
                                                 <field name="house_condition"/>
                                                 <field name="state"/>
                                                 <field name="disaster_status"/>
+                                                <field name="field_office_impact_status"/>
                                             </tree>
                                         </field>
                                     </group>
