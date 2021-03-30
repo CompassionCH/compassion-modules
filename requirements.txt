@@ -26,3 +26,4 @@ git+https://github.com/pdfminer/pdfminer.six@master
 git+https://github.com/mstamy2/PyPDF2@master
 PyMuPDF
 boxdetect
+pandas_datareader
