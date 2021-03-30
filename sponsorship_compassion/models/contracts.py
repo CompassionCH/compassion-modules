@@ -293,7 +293,7 @@ class SponsorshipContract(models.Model):
                 "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
             )
             gift_invoices = invoices.filtered(
-                lambda i: i.invoice_type == "gift"
+                lambda i: i.invoice_category == "gift"
                 and i.state not in ("cancel", "draft")
             )
             contract.nb_invoices = len(gift_invoices)
@@ -926,7 +926,7 @@ class SponsorshipContract(models.Model):
                 "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
             )
             gift_invoices = sponsorship_invoices.filtered(
-                lambda i: i.invoice_type == "gift"
+                lambda i: i.invoice_category == "gift"
             )
             res["domain"] = [("id", "in", gift_invoices.ids)]
         return res
@@ -1324,7 +1324,7 @@ class SponsorshipContract(models.Model):
         # Super method will activate waiting contracts
         # Only activate sponsorships with sponsorship invoice
         to_activate = self
-        if invoice.invoice_type != "sponsorship":
+        if invoice.invoice_category != "sponsorship":
             to_activate -= self.filtered(lambda s: "S" in s.type)
         super(SponsorshipContract, to_activate).invoice_paid(invoice)
 

@@ -80,7 +80,7 @@
                ref="account.invoice_tree"/>
         <field name="arch" type="xml">
             <field name="state" position="before">
-                <field name="invoice_type"/>
+                <field name="invoice_category"/>
             </field>
         </field>
     </record>
@@ -92,12 +92,12 @@
         <field name="arch" type="xml">
             <field name="date" position="after">
                 <field name="payment_mode_id"/>
-                <field name="invoice_type"/>
+                <field name="invoice_category"/>
             </field>
             <xpath expr="//group">
                 <separator/>
-                <filter string="Invoice type" name="invoice_type"
-                        context="{'group_by':'invoice_type'}"/>
+                <filter string="Invoice type" name="invoice_category"
+                        context="{'group_by':'invoice_category'}"/>
             </xpath>
         </field>
     </record>

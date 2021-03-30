@@ -188,7 +188,7 @@ class PartnerSponsorshipReport(models.Model):
                     ("partner_id", "=", _partner.id),
                     ("type", "=", "out_invoice"),
                     ("state", "=", "paid"),
-                    ("invoice_type", "in", ["gift", "sponsorship", "fund"]),
+                    ("invoice_category", "in", ["gift", "sponsorship", "fund"]),
                     ("last_payment", "<", _partner.end_period),
                     ("last_payment", ">", _partner.start_period),
                 ]
@@ -208,7 +208,7 @@ class PartnerSponsorshipReport(models.Model):
             return self.env["account.invoice"].search_count(
                 [
                     ("partner_id", "=", _partner.id),
-                    ("invoice_type", "=", "gift"),
+                    ("invoice_category", "=", "gift"),
                     ("type", "=", "out_invoice"),
                     ("state", "=", "paid"),
                     ("last_payment", "<", _partner.end_period),
@@ -262,7 +262,7 @@ class PartnerSponsorshipReport(models.Model):
                 "|",
                 ("partner_id", "=", self.id),
                 ("partner_id.church_id", "=", self.id),
-                ("invoice_id.invoice_type", "in", ["gift", "sponsorship", "fund"]),
+                ("invoice_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
                 ("invoice_id.type", "=", "out_invoice"),
                 ("state", "=", "paid"),
                 ("last_payment", "<", self.end_period),
