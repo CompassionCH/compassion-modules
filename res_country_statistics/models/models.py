@@ -29,15 +29,15 @@ class ResCountryInfo(models.Model):
 
     @api.multi
     def _compute_latest_stats(self):
-        indicators = self.env['res.country.indicator'].search([])
-        for record in self:
-            stat = self.env['res.country.stat'].search([('country_id', '=', record.id)])
-            country_statistics = []
+        indicators = self.env["res.country.indicator"].search([])
+        for country in self:
+            country_stats = self.env["res.country.stat"]
             for i in indicators:
-                res = stat.search([('indicator_id', '=', i.id)], order='year desc', limit=1)
-                if res:
-                    country_statistics.append(res.id)
-            self.statistics_ids = country_statistics
+                country_stats += self.env["res.country.stat"].search([
+                    ("country_id", "=", country .id),
+                    ("indicator_id", "=", i.id)
+                ], order="year desc", limit=1)
+            country.statistics_ids = country_stats
 
 
 class CountryIndicators(models.Model):
