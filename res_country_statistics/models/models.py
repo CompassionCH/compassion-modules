@@ -86,7 +86,8 @@ class CountryInformation(models.Model):
 
     @api.model
     def update_fo_statistics(self,
-                             from_year=date.today().year - 5, to_year=date.today().year):
+                             from_year=date.today().year - 5,
+                             to_year=date.today().year):
         countries = self.env['compassion.field.office'].search([]).mapped(
             'country_id.code')
         _logger.info('updating '+str(len(countries))+' field office countries')

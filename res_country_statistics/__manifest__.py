@@ -40,7 +40,7 @@
     #       odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '12.0.0.1',
+    'version': '12.0.0.0.1',
 
     # any module necessary for this one to work correctly
     'depends': ['child_compassion'],

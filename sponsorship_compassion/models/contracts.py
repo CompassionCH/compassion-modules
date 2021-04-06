@@ -537,7 +537,8 @@ class SponsorshipContract(models.Model):
 
         try:
             if not testing:
-                self.env.cr.commit()
+                # We want to avoid having dangling sponsorships
+                self.env.cr.commit()  # pylint: disable=invalid-commit
             if updated_correspondents:
                 updated_correspondents._on_correspondant_changed()
         except:
