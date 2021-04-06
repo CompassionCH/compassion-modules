@@ -29,26 +29,21 @@
 # pylint: disable=C8101
 {
     'name': "res_country_statistics",
-    'summary': """
-        Add some statistical indicator retrieve from the world bank""",
-
-    'description': """
-        the following indicator will be retrieve from the world bank:
-        SP.POP.TOTL, SP.DYN.LE00.IN, SH.H2O.SMDW.ZS, SE.ADT.LITR.ZS, SP.DYN.IMRT.IN SH.DYN.MORT
-        
-    """,
-
+    'summary': "Add some statistical indicator retrieve from the world bank",
+    'description': "Add some statistical indicator retrieve from the world bank",
     'author': "Compassion Suisse",
     'website': "http://www.compassion.ch",
+    'license': "AGPL-3",
 
     # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
+    # Check https://github.com/odoo/odoo/blob/12.0/
+    #       odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '12.0.0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['child_compassion'],
     'external_dependencies': {'python': ['pandas_datareader']},
 
     # always loaded

@@ -64,12 +64,14 @@ class CountryInformation(models.Model):
     @api.model
     def load_wb_data(self, countries_list, from_year, to_year):
         indicators = self.env['res.country.indicator'].search([('ref', '!=', False)])
-        dat = wb.download(indicator=indicators.mapped('ref'), country=countries_list, start=from_year, end=to_year)
+        dat = wb.download(indicator=indicators.mapped('ref'),
+                          country=countries_list, start=from_year, end=to_year)
         countries = self.env['res.country'].search([('code', 'in', countries_list)])
         for i in indicators:
             i_per_country = dat[i.ref]
             for c in countries:
-                for year, value in i_per_country[c.with_context(lang='en_US').name].dropna().iteritems():
+                for year, value in i_per_country[c.with_context(lang='en_US').name]\
+                        .dropna().iteritems():
                     vals = {
                         'year': year,
                         'country_id': c.id,
@@ -83,8 +85,10 @@ class CountryInformation(models.Model):
                         self.create(vals)
 
     @api.model
-    def update_fo_statistics(self, from_year=date.today().year - 5, to_year=date.today().year):
-        countries = self.env['compassion.field.office'].search([]).mapped('country_id.code')
+    def update_fo_statistics(self,
+                             from_year=date.today().year - 5, to_year=date.today().year):
+        countries = self.env['compassion.field.office'].search([]).mapped(
+            'country_id.code')
         _logger.info('updating '+str(len(countries))+' field office countries')
         _logger.info(str(from_year) + '-' + str(to_year))
         self.load_wb_data(countries, from_year, to_year)

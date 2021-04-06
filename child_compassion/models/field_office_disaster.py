@@ -62,9 +62,9 @@ class FieldOfficeDisasterUpdate(models.Model):
         if "summary" in odoo_data:
             odoo_data["summary"] = (
                 odoo_data["summary"]
-                    .replace("\\r", "\n")
-                    .replace("\\n", "\n")
-                    .replace("\\t", "\t")
+                .replace("\\r", "\n")
+                .replace("\\n", "\n")
+                .replace("\\t", "\t")
             )
 
         return odoo_data
@@ -335,7 +335,8 @@ class FieldOfficeDisasterAlert(models.Model):
         action_id = self.env.ref("child_compassion.field_office_disaster_detail").id
         fo_ids = list()
         for single_data in commkit_data.get("DisasterResponseList", [commkit_data]):
-            vals = self.json_to_data(single_data, mapping_name="Disaster Alert Notification")
+            vals = self.json_to_data(
+                single_data, mapping_name="Disaster Alert Notification")
             fo_disaster = self.create(vals)
             message_vals = {
                 "action_id": action_id,
