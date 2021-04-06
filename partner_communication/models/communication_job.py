@@ -243,7 +243,7 @@ class CommunicationJob(models.Model):
             ("config_id", "=", vals.get("config_id")),
             ("config_id", "!=", self.env.ref(
                 "partner_communication.default_communication").id),
-            ("state", "=", "pending"),
+            ("state", "in", ["pending", "failure"]),
         ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search, limit=1)
         if job:

@@ -28,6 +28,7 @@ class ICPDisasterImpact(models.Model):
     disaster_impact_description = fields.Char()
     state = fields.Selection(related="disaster_id.state")
     infrastructure = fields.Char()
+    field_office_impact_status = fields.Char()
 
 
 class FieldOfficeDisasterUpdate(models.Model):
@@ -88,6 +89,7 @@ class ChildDisasterImpact(models.Model):
     beneficiary_physical_condition_description = fields.Char()
     caregivers_died_number = fields.Integer()
     caregivers_seriously_injured_number = fields.Integer()
+    disaster_status = fields.Char()
     state = fields.Selection(related="disaster_id.state")
     house_condition = fields.Char()
     loss_ids = fields.Many2many("fo.disaster.loss", string="Child loss", readonly=False)
@@ -144,6 +146,10 @@ class FieldOfficeDisasterAlert(models.Model):
     disaster_id = fields.Char()
     area_description = fields.Char()
     close_date = fields.Date()
+
+    # GMC notification related fields
+    disaster_communication_update_name = fields.Char()
+    api_url = fields.Char()
 
     name = fields.Char()
     disaster_date = fields.Datetime()
@@ -322,11 +328,21 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+
     @api.model
     def process_commkit(self, commkit_data):
+        message_obj = self.env["gmc.message"]
+        action_id = self.env.ref("child_compassion.field_office_disaster_detail").id
         fo_ids = list()
         for single_data in commkit_data.get("DisasterResponseList", [commkit_data]):
-            vals = self.json_to_data(single_data)
+            vals = self.json_to_data(
+                single_data, mapping_name="Disaster Alert Notification")
             fo_disaster = self.create(vals)
+            message_vals = {
+                "action_id": action_id,
+                "object_id": fo_disaster.id,
+            }
+            message_obj.with_context(async_mode=False).create(message_vals)
             fo_ids.append(fo_disaster.id)
+
         return fo_ids

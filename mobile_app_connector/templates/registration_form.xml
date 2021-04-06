@@ -20,13 +20,13 @@
 
     </template>
 
-    <template id="mobile_registration_success" name="App registration success">
+    <template id="mobile_registration_success" name="Registration success">
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="container mt32">
                     <div class="row">
                         <div class="col-md-12">
-                            You have been given access to the Compassion Mobile App.
+                            Your account was successfully created.
                             <br/>
                             <br/>
                             You must now setup your password. Please verify your e-mail address to finalize your registration.

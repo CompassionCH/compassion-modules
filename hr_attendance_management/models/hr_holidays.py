@@ -36,7 +36,7 @@ class HrLeave(models.Model):
                 ]
             )
 
-            rd.attendance_day_ids = att_days
+            rd.sudo().attendance_day_ids = att_days
 
             for att_day in att_days:
                 att_day.leave_ids = att_day.leave_ids | self

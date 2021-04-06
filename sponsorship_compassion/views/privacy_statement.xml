@@ -29,12 +29,12 @@
                                     <div class="panel-heading" role="tab" id="heading-privacy-statement">
                                         <h4 class="panel-title">
                                             <b>
-                                                <a role="button" data-toggle="collapse" data-parent="accordion-privacy-statement" href="#collapse-privacy-statement" aria-expanded="true" aria-controls="collapse-contract">Privacy Statement agreement</a>
+                                                <a role="button" data-toggle="collapse" href="#collapse-privacy-statement" aria-expanded="false" aria-controls="collapse-privacy-statement">Privacy Statement agreement</a>
                                             </b>
                                         </h4>
                                     </div>
-                                    <div id="collapse-privacy-statement" t-attf-class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-privacy-statement">
-                                        <div class="panel-body">
+                                    <div id="collapse-privacy-statement" class="collapse">
+                                        <div class="well">
                                             <t t-raw="privacy_statement_id.text"/>
                                         </div>
                                     </div>

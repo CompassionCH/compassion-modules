@@ -108,7 +108,7 @@ Thank You]]>
         <field name="view_order">10</field>
         <field name="default_model_id" ref="model_res_partner"/>
         <field name="default_body"><![CDATA[% set partner = ctx['objects'].sudo()
-% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_type', '!=', 'sponsorship')], order='last_payment desc', limit=1)
+% set invoice = partner.env['account.invoice'].search([('partner_id', '=', partner.id), ('state', '=', 'paid'), ('invoice_category', '!=', 'sponsorship')], order='last_payment desc', limit=1)
 % if invoice:
 You gave CHF ${invoice.amount_total} on ${invoice.get_date('last_payment')}
 % else:
