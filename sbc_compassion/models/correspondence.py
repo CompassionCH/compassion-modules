@@ -797,7 +797,7 @@ class Correspondence(models.Model):
         """ Method for retrieving the image """
         self.ensure_one()
 
-        if not self.store_letter_image:
+        if not self.store_letter_image or not self.letter_image:
             return self.generate_original_pdf()
 
         return base64.b64decode(self.letter_image)
