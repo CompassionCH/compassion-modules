@@ -50,6 +50,8 @@ def _get_child_correspondence(partner, child):
 def _fill_archive(archive, letters, file_path=""):
     for letter in letters:
         data, fname = _get_data(letter, file_type="pdf")
+        if not data:
+            continue
         full_path = path.join(file_path, fname)
         # Create pdf, write it in archive and then remove it
         with open(fname, "wb") as file:
@@ -84,7 +86,7 @@ class RestController(http.Controller):
         data, fname = _get_data(correspondence, type)
         headers = Headers([("Content-Disposition",
                             f"{disposition}; filename={fname}")])
-        return Response(data, content_type=content_type, headers=headers)
+        return Response(data or "No data", content_type=content_type, headers=headers)
 
     @http.route("/b2s_image/child", type="http", auth="user", methods=["GET"])
     # pylint: disable=redefined-builtin

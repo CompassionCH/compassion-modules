@@ -106,6 +106,7 @@ class CMSForm(models.AbstractModel):
                 indent=4,
                 ensure_ascii=True,
                 sort_keys=True,
+                default=str
             ),
         }
 

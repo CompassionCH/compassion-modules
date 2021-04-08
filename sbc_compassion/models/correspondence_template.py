@@ -370,10 +370,14 @@ class CorrespondenceTemplate(models.Model):
         std_err_file.close()
 
         # Read and return output
-        pdf_file = open(pdf_name, "rb")
-        res = pdf_file.read()
-        pdf_file.close()
-        os.remove(pdf_file.name)
+        try:
+            pdf_file = open(pdf_name, "rb")
+            res = pdf_file.read()
+            pdf_file.close()
+            os.remove(pdf_file.name)
+        except FileNotFoundError:
+            _logger.error("Cannot read PDF made by FPDF.")
+            res = False
         return res
 
     # path of the FPDF folder
