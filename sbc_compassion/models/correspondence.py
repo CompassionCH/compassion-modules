@@ -302,7 +302,6 @@ class Correspondence(models.Model):
         ]
 
     @api.multi
-    @api.depends("sponsorship_id")
     def _compute_name(self):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
@@ -454,7 +453,7 @@ class Correspondence(models.Model):
     @api.multi
     def _compute_b64_image(self):
         for letter in self:
-            letter.b64image = base64.b64encode(letter.get_image())
+            letter.b64image = base64.b64encode(letter.get_image() or b"no_image")
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -810,7 +809,7 @@ class Correspondence(models.Model):
         self.ensure_one()
         sponsor = self.sponsorship_id.correspondent_id
         child = self.sponsorship_id.child_id
-        pdf_name = self.name
+        pdf_name = self.name or _("Letter")
 
         header = (
             f"{sponsor.global_id} - {sponsor.preferred_name}\n"
