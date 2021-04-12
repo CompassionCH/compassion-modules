@@ -1040,6 +1040,7 @@ class SponsorshipContract(models.Model):
         if contracts:
             super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
+            contract.start_date = fields.Datetime.now()
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
@@ -1061,9 +1062,7 @@ class SponsorshipContract(models.Model):
                     raise UserError(
                         _("You cannot validate a sponsorship without any amount")
                     )
-                contract.write(
-                    {"state": "waiting", "start_date": fields.Datetime.now()}
-                )
+                contract.state = "waiting"
                 contract.group_id.generate_invoices()
             if contract.type == "SC":
                 # Activate directly correspondence sponsorships
