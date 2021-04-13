@@ -148,6 +148,17 @@
         </field>
     </record>
 
+    <record id="action_update_won_sponsorships_count" model="ir.actions.server">
+        <field name="name">Update won sponsorship count</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="model_crm_event_compassion"/>
+        <field name="binding_model_id" ref="model_crm_event_compassion"/>
+        <field name="code">
+            records.force_update_won_sponsorships_count()
+        </field>
+    </record>
+
     <!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
     <record id="action_events_compassion" model="ir.actions.act_window">
         <field name="name">Events</field>
