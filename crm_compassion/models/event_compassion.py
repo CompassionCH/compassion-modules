@@ -353,6 +353,11 @@ class EventCompassion(models.Model):
                 event.calendar_event_id = calendar_event
         return True
 
+    @api.multi
+    def force_update_won_sponsorships_count(self):
+        for event in self:
+            event.origin_id._compute_won_sponsorships()
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
