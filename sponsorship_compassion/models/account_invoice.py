@@ -45,7 +45,7 @@ class AccountInvoice(models.Model):
             else:
                 invoice.children = False
 
-    @api.depends("payment_move_line_ids", "state")
+    @api.depends("payment_move_line_ids", "state" , "move_id.line_ids.full_reconcile_id")
     @api.multi
     def _compute_last_payment(self):
         for invoice in self.filtered("payment_move_line_ids"):
