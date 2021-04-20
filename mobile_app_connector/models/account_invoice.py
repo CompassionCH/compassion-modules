@@ -65,6 +65,7 @@ class AccountInvoice(models.Model):
                 "price_unit": payment["amount"],
                 "name": payment["product_id"].name,
                 "medium_id": utc_medium.id,
+                "auto_cancel_no_transaction": True,
             }
             if "contract_id" in payment:
                 l_vals["contract_id"] = payment["contract_id"].id

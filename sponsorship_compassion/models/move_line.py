@@ -35,16 +35,17 @@ class MoveLine(models.Model):
                 move = line.move_id
                 move_line = line
                 break
-        else:
-            raise exceptions.UserError(
-                _(
+            else:
+                raise exceptions.UserError(
+                    _(
                     "This can only be done if one move line can be split "
                     "to cover the reconcile difference"
+                    )
                 )
-            )
 
         # Edit move in order to split payment into two move lines
         move.button_cancel()
+        move_line.payment_id.action_draft()
         move.write(
             {
                 "line_ids": [
