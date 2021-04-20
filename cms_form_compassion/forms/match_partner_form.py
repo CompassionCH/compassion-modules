@@ -41,7 +41,7 @@ class PartnerMatchform(models.AbstractModel):
         lambda self: self.env["res.lang"].sudo().get_installed(),
         "Language"
     )
-    partner_birthdate = fields.Date("Birthdate")
+    partner_birthdate_date = fields.Date("Birthdate")
 
     #######################################################################
     #            Inject default values in form from main object           #
@@ -85,7 +85,7 @@ class PartnerMatchform(models.AbstractModel):
     def _form_load_partner_lang(self, fname, field, value, **req_values):
         return value or self._load_partner_field(fname, **req_values)
 
-    def _form_load_partner_birthdate(self, fname, field, value, **req_values):
+    def _form_load_partner_birthdate_date(self, fname, field, value, **req_values):
         return value or self._load_partner_field(fname, **req_values)
 
     def _load_partner_field(self, fname, **req_values):
