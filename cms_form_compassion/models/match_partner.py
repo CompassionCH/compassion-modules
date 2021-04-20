@@ -215,7 +215,7 @@ class MatchPartner(models.AbstractModel):
             "state_id",
             "title",
             "lang",
-            "birthdate",
+            "birthdate_date",
             "church_unlinked",
             "church_id",
             "function",
