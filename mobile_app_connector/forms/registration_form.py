@@ -389,6 +389,7 @@ class RegistrationSupporterForm(models.AbstractModel):
                     _("This email is already linked to an account.")
                 )
             # partner is not sponsoring a child (but answered yes (form))
+            values["source"] = extra_values.get("source")
             if not partner or len(partner) > 1:
                 email_template = self.env.ref(
                     "mobile_app_connector.email_template_user_not_found"
@@ -399,6 +400,14 @@ class RegistrationSupporterForm(models.AbstractModel):
                 body = email_template.body_html.replace(
                     "%(email_address)", partner_email
                 )
+                if values["source"] == "myaccount":
+                    body = body.replace(
+                        "%(app_type)", "mycompassion"
+                    )
+                else:
+                    body = body.replace(
+                        "%(app_type)", "my mobile app"
+                    )
                 href_link = self._add_mailto(link_text, to, subject, body)
                 raise ValidationError(
                     _(
@@ -413,7 +422,6 @@ class RegistrationSupporterForm(models.AbstractModel):
             values["email"] = partner_email
             values["partner_id"] = partner.id
             # Push source to values for using it in creation
-            values["source"] = extra_values.get("source")
 
     def _form_create(self, values):
         """ Here we create the user using the portal wizard or

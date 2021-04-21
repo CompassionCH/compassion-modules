@@ -24,6 +24,7 @@ class RegistrationController(Controller, WizardFormControllerMixin):
     def registration(self, model_id=None, **kw):
         """Handle a wizard route.
         """
+        request.session["should_save"] = True
         return self.make_response("cms.form.res.users", model_id=model_id, **kw)
 
     @http.route("/registration/confirm", type="http", auth="public", website=True,
