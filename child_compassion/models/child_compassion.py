@@ -671,7 +671,14 @@ class CompassionChild(models.Model):
     @api.multi
     def child_released(self, state="R"):
         """ Is called when a child is released to the global childpool. """
-        self.write({"sponsor_id": False, "state": state, "hold_id": False})
+        # if the state is consigned we want to keep to link to the hold.
+        remove_link_to_hold = state not in ["N"]
+
+        update_dic = {"sponsor_id": False, "state": state}
+        if remove_link_to_hold:
+            update_dic.update({"hold_id": False})
+
+        self.write(update_dic)
         # Check if it was a depart and retrieve lifecycle event
         self.get_lifecycle_event()
 
