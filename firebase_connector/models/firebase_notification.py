@@ -66,11 +66,7 @@ class FirebaseNotification(models.Model):
         string="Partner read status of the notification",
         readonly=True,
     )
-    language = fields.Selection([('fr_CH', 'French'),
-                                 ('de_DE', 'German'),
-                                 ('it_IT', 'Italian'),
-                                 ('en_US', 'English')], required=True)
-
+    language = fields.Selection("_get_lang")
     res_model = fields.Char()
     res_id = fields.Integer()
     test_mode = fields.Boolean()

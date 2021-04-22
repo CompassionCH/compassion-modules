@@ -124,14 +124,8 @@ class GetPartnerMessage(models.Model):
 
         firebase_id = params["firebaseId"]
         operation = params["operation"]
-        partner_id = params.get("supId", None)
-        language = params.get("language", None)
-
-        if partner_id == "":
-            partner_id = None
-
-        if language == "":
-            language = None
+        partner_id = params.get("supId") or None
+        language = params.get("language") or None
 
         _logger.debug(
             operation
