@@ -78,6 +78,11 @@ class FirebaseNotification(models.Model):
     failed_ratio = fields.Integer(compute="_compute_statistics")
     opened_ratio = fields.Integer(compute="_compute_statistics")
 
+    @api.model
+    def _get_lang(self):
+        langs = self.env["res.lang"].search([])
+        return [(l.code, l.name) for l in langs]
+
     @api.onchange('stage_id')
     def onchange_stage_id(self):
         for notification in self:
