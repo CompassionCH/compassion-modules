@@ -47,7 +47,7 @@ class ResPartner(models.Model):
             partner.communication_count = self.env[
                 "partner.communication.job"
             ].search_count(
-                [("partner_id", "=", partner.id), ("state", "!=", "cancel"), ]
+                [("partner_id", "=", partner.id), ("state", "=", "pending"), ]
             )
 
     @api.model

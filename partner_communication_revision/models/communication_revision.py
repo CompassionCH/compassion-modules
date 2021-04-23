@@ -558,7 +558,10 @@ class CommunicationRevision(models.Model):
     def open_translation_view(self):
         # Trick to avoid overriding raw template text changes
         self.raw_template_edit_mode = True
-        return self.config_id.open_translation_view()
+        action = self.config_id.open_translation_view()
+        context = action.get("context", {})
+        context["search_default_lang"] = self.lang
+        return action
 
     @api.multi
     def reload_text(self):
