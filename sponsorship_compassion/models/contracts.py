@@ -591,9 +591,7 @@ class SponsorshipContract(models.Model):
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    child = contract.child_id.with_context({})
-                    child.child_unsponsored()
-                    child.child_released('N')
+                    contract.child_id.with_context({}).child_unsponsored()
         return super().unlink()
 
     ##########################################################################
