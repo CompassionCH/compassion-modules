@@ -64,7 +64,7 @@ class GenerateGiftWizard(models.TransientModel):
                 if self.env.context.get("force_date"):
                     invoice_date = self.invoice_date
                 else:
-                    invoice_date = self.compute_date_birthday_invoice(
+                    invoice_date, late = self.compute_date_birthday_invoice(
                         contract.child_id.birthdate, self.invoice_date
                     )
                 begin_year = self.invoice_date.replace(month=1, day=1)
@@ -168,6 +168,7 @@ class GenerateGiftWizard(models.TransientModel):
         inv_date = payment_date
         birthdate = child_birthdate
         new_date = inv_date
+        late = False
         if birthdate.month >= inv_date.month + 2:
             new_date = inv_date.replace(day=28, month=birthdate.month - 2)
         elif birthdate.month + 3 < inv_date.month:
@@ -175,4 +176,5 @@ class GenerateGiftWizard(models.TransientModel):
                 day=28, year=inv_date.year + 1
             ) + relativedelta(months=-2)
             new_date = max(new_date, inv_date)
-        return new_date
+            late = True
+        return new_date, late

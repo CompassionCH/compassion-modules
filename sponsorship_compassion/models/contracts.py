@@ -591,9 +591,7 @@ class SponsorshipContract(models.Model):
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    child = contract.child_id.with_context({})
-                    child.child_unsponsored()
-                    child.child_released()
+                    contract.child_id.with_context({}).child_unsponsored()
         return super().unlink()
 
     ##########################################################################
@@ -1040,6 +1038,7 @@ class SponsorshipContract(models.Model):
         if contracts:
             super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
+            contract.start_date = fields.Datetime.now()
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
@@ -1061,9 +1060,7 @@ class SponsorshipContract(models.Model):
                     raise UserError(
                         _("You cannot validate a sponsorship without any amount")
                     )
-                contract.write(
-                    {"state": "waiting", "start_date": fields.Datetime.now()}
-                )
+                contract.state = "waiting"
                 contract.group_id.generate_invoices()
             if contract.type == "SC":
                 # Activate directly correspondence sponsorships
