@@ -26,6 +26,7 @@ AUTHORIZED_SENDERS = [
     "CISFDC",
     "CINetsuite",
     "SFDC-CI",
+    "SFCI",
     "SponsorshipPool",
 ]
 
