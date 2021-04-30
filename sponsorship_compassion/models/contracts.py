@@ -1261,7 +1261,7 @@ class SponsorshipContract(models.Model):
             ):
                 # Free the previously selected child
                 contract.child_id.child_unsponsored()
-            if "S" in contract.type:
+            if child_id and "S" in contract.type:
                 # Mark the selected child as sponsored
                 self.env["compassion.child"].browse(child_id).child_sponsored(
                     vals.get("correspondent_id") or contract.correspondent_id.id
