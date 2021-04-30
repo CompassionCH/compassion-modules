@@ -82,7 +82,7 @@ class CommunicationRevision(models.Model):
         compute="_compute_raw_subject", inverse="_inverse_raw_subject"
     )
     body_html = fields.Html(
-        compute="_compute_body_html", inverse="_inverse_body_html"
+        compute="_compute_body_html", inverse="_inverse_body_html", sanitize=False
     )
     raw_template_edit_mode = fields.Boolean()
     simplified_text = fields.Html(sanitize=False)
@@ -110,7 +110,7 @@ class CommunicationRevision(models.Model):
     keyword_ids = fields.One2many(
         "partner.communication.keyword", "revision_id", "Keywords", readonly=False
     )
-    show_all_keywords = fields.Boolean()
+    show_all_keywords = fields.Boolean(default=True)
     edit_keyword_ids = fields.One2many(
         "partner.communication.keyword",
         compute="_compute_keyword_ids",
@@ -555,15 +555,6 @@ class CommunicationRevision(models.Model):
         )
 
     @api.multi
-    def open_translation_view(self):
-        # Trick to avoid overriding raw template text changes
-        self.raw_template_edit_mode = True
-        action = self.config_id.open_translation_view()
-        context = action.get("context", {})
-        context["search_default_lang"] = self.lang
-        return action
-
-    @api.multi
     def reload_text(self):
         self.keyword_ids.unlink()
         self.raw_template_edit_mode = False
@@ -630,9 +621,7 @@ class CommunicationRevision(models.Model):
         :param form_view_mode: Specify a form view.
         :return: action for opening the revision view
         """
-        # We don't need to update keywords when accessing the proposition
-        # text (config id in context for that case)
-        if not self.env.context.get("config_id"):
+        if form_view_mode == "readonly":
             self.reload_text()
         form_view = "partner_communication_revision.revision_form"
         if form_view_mode:
