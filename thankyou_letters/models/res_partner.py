@@ -29,9 +29,6 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     salutation = fields.Char(compute="_compute_salutation")
-    short_salutation = fields.Char(compute="_compute_salutation")
-    informal_salutation = fields.Char(compute="_compute_salutation")
-    full_salutation = fields.Char(compute="_compute_salutation")
     gender = fields.Selection(related="title.gender", readonly=True)
     thankyou_preference = fields.Selection(
         "_get_delivery_preference", default="auto_digital", required=True
@@ -42,42 +39,21 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_salutation(self):
+        """ Define a method _get_salutation_<lang_code> for using a specific salutation based on partner language.
+        """
         for partner in self:
             lang_partner = partner.with_context(lang=partner.lang)
-            if partner.title and partner.firstname and not partner.is_company:
-                title = lang_partner.title
-                title_salutation = (
-                    lang_partner.env["ir.advanced.translation"]
-                    .get("salutation", female=title.gender == "F",
-                         plural=title.plural)
-                    .title()
-                )
-                title_name = title.name
-                partner.salutation = (
-                    title_salutation + " " + title_name + " " +
-                    lang_partner.lastname
-                )
-                partner.short_salutation = title_salutation + " " + \
-                    lang_partner.firstname
-                partner.informal_salutation = title_salutation + " " + \
-                    lang_partner.firstname
-                partner.full_salutation = (
-                    title_salutation + " " + lang_partner.firstname + " " +
-                    lang_partner.lastname
-                )
+            if hasattr(lang_partner, "_get_salutation_" + partner.lang):
+                partner.salutation = getattr(lang_partner, "_get_salutation_" + partner.lang)()
             else:
-                with api.Environment.manage():
-                    # this will enable translation of "Dear friends of Compassion"
-                    env = api.Environment(  # noqa: F841
-                        self.env.cr, self.env.uid, lang_partner.env.context)
-                    partner.salutation = (
-                        _("Dear friends of ") + self.env.user.company_id.name
-                    )
-                    partner.short_salutation = lang_partner.salutation
-                    partner.informal_salutation = (
-                        _("Dear friend of ") + self.env.user.company_id.name
-                    )
-                    partner.full_salutation = lang_partner.salutation
+                partner.salutation = lang_partner._get_salutation_en_US()
+
+    def _get_salutation_en_US(self):
+        self.ensure_one()
+        if self.firstname:
+            return "Dear " + self.firstname
+        else:
+            return "Dear friends of Compassion"
 
     @api.multi
     def _compute_full_name(self):
