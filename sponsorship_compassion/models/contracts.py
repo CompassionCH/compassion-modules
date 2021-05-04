@@ -554,15 +554,6 @@ class SponsorshipContract(models.Model):
             (self - updated_correspondents)._on_language_changed()
 
         if "partner_id" in vals:
-            # Move invoices to new partner
-            invoices = self.invoice_line_ids.mapped("invoice_id").filtered(
-                lambda i: i.state in ("open", "draft")
-            )
-            invoices.action_invoice_cancel()
-            invoices.action_invoice_draft()
-            invoices.write({"partner_id": vals["partner_id"]})
-            invoices.action_invoice_open()
-            # Update number of sponsorships
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
@@ -578,8 +569,7 @@ class SponsorshipContract(models.Model):
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
 
         if "group_id" in vals or "partner_id" in vals:
-            self._on_group_id_changed()
-
+            self.group_id.with_context(async_mode=False).clean_invoices()
         return True
 
     @api.multi
@@ -618,7 +608,9 @@ class SponsorshipContract(models.Model):
             "sponsorship_compassion.suspend_product_id"
         )
         # Cancel invoices in the period of suspension
-        self._clean_invoices(date_start, keep_lines=_("Center suspended"))
+        self.with_context(async_mode=False).clean_invoices(date_start,
+                                                           clean_invoices_paid=True,
+                                                           keep_lines=_("Center suspended"))
 
         for contract in self:
             # Add a note in the contract and in the partner.
@@ -1383,6 +1375,10 @@ class SponsorshipContract(models.Model):
         invl_search.append(("product_id.categ_name", "!=", GIFT_CATEGORY))
         return invl_search
 
+    def _get_invoice_lines_to_clean(self, since_date, to_date):
+        res = super()._get_invoice_lines_to_clean(since_date, to_date)
+        return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
+
     @job(default_channel="root.recurring_invoicer")
     @related_action(action="related_action_contract")
     def cancel_old_invoices(self):
@@ -1420,46 +1416,3 @@ class SponsorshipContract(models.Model):
                 invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_invoice_open()
-
-    @api.multi
-    def _reset_open_invoices_job(self):
-        """Clean the open invoices in order to generate new invoices.
-        This can be useful if contract was updated when active."""
-        invoices_canceled = self._clean_invoices(clean_invoices_paid=False)
-        if invoices_canceled:
-            invoice_obj = self.env["account.invoice"]
-            inv_update_ids = set()
-            for contract in self:
-                # If some invoices are left cancelled, we update them
-                # with new contract information and validate them
-                cancel_invoices = invoice_obj.search(
-                    [("state", "=", "cancel"), ("id", "in", invoices_canceled.ids)]
-                )
-                if cancel_invoices:
-                    inv_update_ids.update(cancel_invoices.ids)
-                    cancel_invoices.action_invoice_draft()
-                    cancel_invoices.env.clear()
-                    contract._update_invoice_lines(cancel_invoices)
-                # If no invoices are left in cancel state, we rewind
-                # the next_invoice_date for the contract to generate again
-                else:
-                    contract.rewind_next_invoice_date()
-                    invoicer = contract.group_id._generate_invoices()
-                    if not invoicer.invoice_ids:
-                        invoicer.unlink()
-            # Validate again modified invoices
-            validate_invoices = invoice_obj.browse(list(inv_update_ids))
-            validate_invoices.action_invoice_open()
-        return True
-
-    def _on_group_id_changed(self):
-        """Remove lines of open invoices and generate them again
-        """
-        self._reset_open_invoices_job()
-        for contract in self:
-            # Update next_invoice_date of group if necessary
-            if contract.group_id.next_invoice_date:
-                next_invoice_date = contract.next_invoice_date
-                group_date = contract.group_id.next_invoice_date
-                if group_date > next_invoice_date:
-                    contract.group_id._compute_next_invoice_date()
