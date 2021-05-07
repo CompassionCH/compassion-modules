@@ -207,7 +207,10 @@ class SmsChildRequest(models.Model):
     @api.multi
     def change_child(self):
         """ Release current child and take another."""
-        self.hold_id.write({"sms_request_id": False})
+        self.hold_id.write({
+            "sms_request_id": False,
+            "expiration_date": self.hold_id.expiration_date + relativedelta(weeks=1)
+        })
         self.write(
             {"state": "new", "child_id": False, "is_trying_to_fetch_child": True}
         )
@@ -215,7 +218,10 @@ class SmsChildRequest(models.Model):
 
     @api.multi
     def cancel_request(self):
-        self.hold_id.write({"sms_request_id": False})
+        self.hold_id.write({
+            "sms_request_id": False,
+            "expiration_date": self.hold_id.expiration_date + relativedelta(weeks=1)
+        })
         return self.write({"state": "expired", "child_id": False})
 
     @job(default_channel="root.sms_request")
