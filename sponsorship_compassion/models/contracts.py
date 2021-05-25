@@ -606,9 +606,8 @@ class SponsorshipContract(models.Model):
             "sponsorship_compassion.suspend_product_id"
         )
         # Cancel invoices in the period of suspension
-        self.with_context(async_mode=False).clean_invoices(date_start,
-                                                           clean_invoices_paid=True,
-                                                           keep_lines=_("Center suspended"))
+        self.with_context(async_mode=False).clean_invoices(
+            date_start, clean_invoices_paid=True, keep_lines=True)
 
         for contract in self:
             # Add a note in the contract and in the partner.
@@ -1303,7 +1302,8 @@ class SponsorshipContract(models.Model):
                             ("contract_id.state", "=", "waiting"),
                         ]
                     )
-                    gift_contract_lines.mapped("contract_id").contract_active()
+                    if gift_contract_lines:
+                        gift_contract_lines.mapped("contract_id").contract_active()
 
                 if (
                         len(contract.invoice_line_ids.filtered(
