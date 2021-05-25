@@ -9,6 +9,7 @@
                     <group>
                         <field name="partner_id"/>
                         <field name="registration_id"/>
+                        <field name="language"/>
                         <button class="oe_inline oe_stat_button"
                                 string="Send Notification"
                                 type="object"
@@ -29,6 +30,7 @@
             <tree>
                 <field name="partner_name"/>
                 <field name="registration_id"/>
+                <field name="language"/>
             </tree>
         </field>
     </record>
