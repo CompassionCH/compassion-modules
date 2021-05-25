@@ -293,7 +293,7 @@ class SponsorshipContract(models.Model):
                 "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
             )
             gift_invoices = invoices.filtered(
-                lambda i: i.invoice_type == "gift"
+                lambda i: i.invoice_category == "gift"
                 and i.state not in ("cancel", "draft")
             )
             contract.nb_invoices = len(gift_invoices)
@@ -537,7 +537,8 @@ class SponsorshipContract(models.Model):
 
         try:
             if not testing:
-                self.env.cr.commit()
+                # We want to avoid having dangling sponsorships
+                self.env.cr.commit()  # pylint: disable=invalid-commit
             if updated_correspondents:
                 updated_correspondents._on_correspondant_changed()
         except:
@@ -590,9 +591,7 @@ class SponsorshipContract(models.Model):
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    child = contract.child_id.with_context({})
-                    child.child_unsponsored()
-                    child.child_released()
+                    contract.child_id.with_context({}).child_unsponsored()
         return super().unlink()
 
     ##########################################################################
@@ -926,7 +925,7 @@ class SponsorshipContract(models.Model):
                 "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
             )
             gift_invoices = sponsorship_invoices.filtered(
-                lambda i: i.invoice_type == "gift"
+                lambda i: i.invoice_category == "gift"
             )
             res["domain"] = [("id", "in", gift_invoices.ids)]
         return res
@@ -1010,6 +1009,15 @@ class SponsorshipContract(models.Model):
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         partners.update_number_sponsorships()
+        check_duplicate_activity_id = self.env.ref(
+            "cms_form_compassion.activity_check_duplicates").id
+        if self.mapped("partner_id.activity_ids").filtered(
+                lambda l: l.activity_type_id.id == check_duplicate_activity_id) \
+                or self.mapped("correspondent_id.activity_ids").filtered(
+                lambda l: l.activity_type_id.id == check_duplicate_activity_id):
+            raise UserError(
+                _("Please verify the partner before validating the sponsorship")
+            )
         return True
 
     @api.multi
@@ -1030,6 +1038,7 @@ class SponsorshipContract(models.Model):
         if contracts:
             super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
+            contract.start_date = fields.Datetime.now()
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
@@ -1051,9 +1060,7 @@ class SponsorshipContract(models.Model):
                     raise UserError(
                         _("You cannot validate a sponsorship without any amount")
                     )
-                contract.write(
-                    {"state": "waiting", "start_date": fields.Datetime.now()}
-                )
+                contract.state = "waiting"
                 contract.group_id.generate_invoices()
             if contract.type == "SC":
                 # Activate directly correspondence sponsorships
@@ -1254,7 +1261,7 @@ class SponsorshipContract(models.Model):
             ):
                 # Free the previously selected child
                 contract.child_id.child_unsponsored()
-            if "S" in contract.type:
+            if child_id and "S" in contract.type:
                 # Mark the selected child as sponsored
                 self.env["compassion.child"].browse(child_id).child_sponsored(
                     vals.get("correspondent_id") or contract.correspondent_id.id
@@ -1316,7 +1323,7 @@ class SponsorshipContract(models.Model):
         # Super method will activate waiting contracts
         # Only activate sponsorships with sponsorship invoice
         to_activate = self
-        if invoice.invoice_type != "sponsorship":
+        if invoice.invoice_category != "sponsorship":
             to_activate -= self.filtered(lambda s: "S" in s.type)
         super(SponsorshipContract, to_activate).invoice_paid(invoice)
 

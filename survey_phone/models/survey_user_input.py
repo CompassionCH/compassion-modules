@@ -38,7 +38,8 @@ class SurveyUserInput(models.Model):
         url available in self.
         :return: Nothing
         """
-        self.survey_link = self.survey_id.public_url + "/" + self.token
+        for input in self:
+            input.survey_link = input.survey_id.public_url + "/" + input.token
 
     def action_view_answers(self):
         """ Print PDF report instead of redirecting to survey. """

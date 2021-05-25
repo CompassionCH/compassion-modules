@@ -62,13 +62,6 @@ class ChildDescription(models.TransientModel):
         }
     }
 
-    school_yes_lang = {
-        "en_US": {
-            "M": u"{preferred_name} does attend {level}.",
-            "F": u"{preferred_name} does attend {level}.",
-        }
-    }
-
     school_no_lang = {
         "en_US": {
             "M": u"{preferred_name} doesn't attend school.",
@@ -188,19 +181,11 @@ class ChildDescription(models.TransientModel):
         if child.us_grade_level and child.us_grade_level != "Not Enrolled":
             # Make sure the education level is set
             child.convert_us_grade_to_education_level()
-            desc("#school_attending").html(
-                self.school_yes_lang[self.env.lang][child.gender].format(
-                    preferred_name=child.preferred_name,
-                    level=child.translate("education_level"),
-                )
+            desc("#school_attending").remove()
+            desc(".school_level")[0].text = _("School level")
+            desc(".school_level")[1].text = child.translate(
+                "education_level"
             )
-            if child.academic_performance:
-                desc(".school_performance")[0].text = _("School performance")
-                desc(".school_performance")[1].text = child.translate(
-                    "academic_performance"
-                )
-            else:
-                desc("#school_performance").remove()
             if child.major_course_study:
                 desc(".school_subject")[0].text = _("Best school subject")
                 desc(".school_subject")[1].text = child.translate("major_course_study")
@@ -217,7 +202,7 @@ class ChildDescription(models.TransientModel):
             else:
                 desc("#vocational_training").remove()
         else:
-            desc("#school_attending").html(
+            desc(".school_attending_title").html(
                 self.school_no_lang[self.env.lang][child.gender].format(
                     preferred_name=child.preferred_name
                 )

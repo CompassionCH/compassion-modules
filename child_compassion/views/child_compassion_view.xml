@@ -173,6 +173,7 @@
                                         <field name="caregivers_died_number"/>
                                         <field name="siblings_died_number"/>
                                         <field name="state"/>
+                                        <field name="disaster_status"/>
                                     </tree>
                                 </field>
                                 <field name="note_ids" attrs="{'invisible': [('lifecycle_ids', '=', False)]}">

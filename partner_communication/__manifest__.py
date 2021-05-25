@@ -57,6 +57,7 @@
         "views/generate_communication_wizard_view.xml",
         "views/crm_phone_view.xml",
         "views/ir_attachment_view.xml",
+        "views/ir_actions_view.xml",
         "data/default_communication.xml",
     ],
     "qweb": [],

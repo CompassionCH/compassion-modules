@@ -29,4 +29,7 @@ class RegistrationController(Controller, WizardFormControllerMixin):
     @http.route("/registration/confirm", type="http", auth="public", website=True,
                 sitemap=False)
     def registration_confirm(self, **kw):
-        return request.render("mobile_app_connector.mobile_registration_success", {})
+        source = request.session.get(
+            "cms.form.res.users", {}).get("steps", {}).get(1, {}).get("source")
+        return request.render(
+            "mobile_app_connector.mobile_registration_success", {"source": source})

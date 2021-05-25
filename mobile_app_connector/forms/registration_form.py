@@ -27,10 +27,14 @@ class UserRegistrationForm(models.AbstractModel):
 
     _wiz_name = _name
     form_buttons_template = (
-        "mobile_app_connector." "mobile_form_buttons_registration"
+        "mobile_app_connector.mobile_form_buttons_registration"
     )
+    source = fields.Char(help="Source for registration", default="app")
+    _wiz_step_stored_fields = ["source"]
 
-    _wiz_step_stored_fields = ()
+    def _form_load_source(self, fname, field, value, **req_values):
+        return self.wiz_load_step(1).get("source") or value or req_values.get(
+            "source") or "app"
 
     def wiz_configure_steps(self):
         return {
@@ -67,6 +71,7 @@ class UserRegistrationForm(models.AbstractModel):
             {
                 "gtc_accept": "cms_form_compassion.form.widget.terms",
                 "partner_birthdate": "cms.form.widget.date.ch",
+                "source": "cms_form_compassion.form.widget.hidden"
             }
         )
         return res
@@ -80,7 +85,7 @@ class UserRegistrationForm(models.AbstractModel):
 
     @property
     def form_title(self):
-        return _("Mobile app account registration")
+        return _("Account registration")
 
     #######################################################################
     #                      FORM'S FIELDS VALIDATION                       #
@@ -207,7 +212,7 @@ class RegistrationBaseForm(models.AbstractModel):
     @property
     def _form_fieldsets(self):
         fieldset = [
-            {"id": "user", "fields": ["has_sponsorship", ]},
+            {"id": "user", "fields": ["has_sponsorship", "source"]},
         ]
         return fieldset
 
@@ -260,6 +265,7 @@ class RegistrationNotSupporter(models.AbstractModel):
                     "partner_country_id",
                     "partner_birthdate",
                     "gtc_accept",
+                    "source"
                 ],
             },
         ]
@@ -292,6 +298,8 @@ class RegistrationNotSupporter(models.AbstractModel):
 
             # Push the email for user creation
             values["email"] = self._sanitize_email(extra_values["partner_email"])
+            # Push the source in values
+            values["source"] = extra_values.get("source")
 
     def _form_create(self, values):
         """ Here we create the user using the portal wizard or
@@ -320,7 +328,7 @@ class RegistrationSupporterForm(models.AbstractModel):
             {
                 "id": "partner",
                 "title": _("Your personal data"),
-                "fields": ["partner_email", "gtc_accept", ],
+                "fields": ["partner_email", "gtc_accept", "source"],
             },
         ]
         return fieldset
@@ -404,6 +412,8 @@ class RegistrationSupporterForm(models.AbstractModel):
             # Push the email for user creation
             values["email"] = partner_email
             values["partner_id"] = partner.id
+            # Push source to values for using it in creation
+            values["source"] = extra_values.get("source")
 
     def _form_create(self, values):
         """ Here we create the user using the portal wizard or

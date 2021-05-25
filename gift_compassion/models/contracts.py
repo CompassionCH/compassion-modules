@@ -54,6 +54,7 @@ class SponsorshipContract(models.Model):
                 gift = self.env["sponsorship.gift"].create_from_invoice_line(invl)
 
                 if not invl.contract_id.is_active:
+                    gift.message_post(body="Associated contract is not active")
                     gift.state = "verify"
 
         super(SponsorshipContract, self).invoice_paid(invoice)
@@ -142,5 +143,5 @@ class SponsorshipContract(models.Model):
         pending_gifts = self.env["sponsorship.gift"].search(
             [("sponsorship_id", "in", self.ids), ("state", "=", "verify")]
         )
-        pending_gifts = pending_gifts.filtered(lambda g: g.is_eligible())
+        pending_gifts = pending_gifts.filtered(lambda g: g.is_eligible()[0])
         pending_gifts.action_ok()

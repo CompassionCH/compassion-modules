@@ -38,9 +38,9 @@ class TestGifts(BaseSponsorshipTest):
         gift = self._create_birthday_gift()
 
         # test gift eligibility based on amount
-        self.assertTrue(gift.is_eligible())
+        self.assertTrue(gift.is_eligible()[0])
         gift.write({"amount": 200})
-        self.assertFalse(gift.is_eligible())
+        self.assertFalse(gift.is_eligible()[0])
 
         # tests for gift types changes
         product = self.env.ref(
@@ -141,7 +141,7 @@ class TestGifts(BaseSponsorshipTest):
             [("sponsorship_id", "=", sponsorship.id)]
         )
         self.assertTrue(gift)
-        self.assertTrue(gift.is_eligible())
+        self.assertTrue(gift.is_eligible()[0])
 
         # gift information
         self.assertEqual(gift.name, "Birthday Gift [" + gift.sponsorship_id.name + "]")

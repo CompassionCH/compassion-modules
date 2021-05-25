@@ -103,8 +103,10 @@ class ContractOrigin(models.Model):
     @api.multi
     def _compute_won_sponsorships(self):
         for origin in self.filtered("contract_ids"):
-            contract_ids = origin.contract_ids
-            origin.won_sponsorships = len(contract_ids)
+            # not tacking sponsors with parent_id or in cancelled state.
+            contract_ids = origin.contract_ids.filtered(lambda c: not c.parent_id)
+            origin.won_sponsorships = len(contract_ids.filtered(lambda c: c.state != "cancelled"))
+            # sponsor who cancelled their sponsorship are used to compute conversion_rate to avoid bias
             origin.conversion_rate = (
                 len(contract_ids.filtered("activation_date"))
                 / float(len(contract_ids))

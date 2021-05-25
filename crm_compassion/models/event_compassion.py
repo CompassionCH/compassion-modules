@@ -243,9 +243,9 @@ class EventCompassion(models.Model):
         - Create an origin for sponsorships.
         """
         # Avoid putting twice the date in linked objects name
+        event_year = str(datetime.today().year)
         if vals.get("start_date") and isinstance(vals["start_date"], str):
-            vals["start_date"] = fields.Date.from_string(vals["start_date"])
-        event_year = str(vals.get("start_date", datetime.today()).year)
+            event_year = str(fields.Date.from_string(vals["start_date"]).year)
         event_name = vals.get("name", "0000")
         if event_name[-4:] == event_year:
             vals["name"] = event_name[:-4]
@@ -352,6 +352,11 @@ class EventCompassion(models.Model):
                 calendar_event = calendar_obj.create(calendar_vals)
                 event.calendar_event_id = calendar_event
         return True
+
+    @api.multi
+    def force_update_won_sponsorships_count(self):
+        for event in self:
+            event.origin_id._compute_won_sponsorships()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

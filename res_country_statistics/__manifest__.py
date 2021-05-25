@@ -8,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino <ecino@compassion.ch>
+#    Copyright (C) 2021 Compassion CH (http://www.compassion.ch)
+#    @author: David Wulliamoz <dwulliamoz@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,34 +28,29 @@
 
 # pylint: disable=C8101
 {
-    "name": "CMS Form additions for Compassion",
-    "version": "12.0.1.0.0",
-    "category": "Other",
-    "author": "Compassion CH",
-    "license": "AGPL-3",
-    "website": "https://github.com/CompassionCH/compassion-modules/tree/10.0",
-    "depends": [
-        "cms_form",  # oca_addons/website_cms
-        "website_payment",  # source/addons
-        "account_payment",  # source/addons
-        "portal",  # source/addons
-        "queue_job",  # oca_addons/queue
-        "base_automation",  # source/addons
-        "link_tracker",  # source/addons
-        "base_location"  # oca_addons/partner-contact
+    'name': "res_country_statistics",
+    'summary': "Add some statistical indicator retrieve from the world bank",
+    'description': "Add some statistical indicator retrieve from the world bank",
+    'author': "Compassion Suisse",
+    'website': "http://www.compassion.ch",
+    'license': "AGPL-3",
+
+    # Categories can be used to filter modules in modules listing
+    # Check https://github.com/odoo/odoo/blob/12.0/
+    #       odoo/addons/base/data/ir_module_category_data.xml
+    # for the full list
+    'category': 'Uncategorized',
+    'version': '12.0.0.0.1',
+
+    # any module necessary for this one to work correctly
+    'depends': ['child_compassion'],
+    'external_dependencies': {'python': ['pandas_datareader']},
+
+    # always loaded
+    'data': [
+        'views/views.xml',
+        'data/res.country.indicator.csv',
+        'data/update_all_country_stat.xml',
+        'security/ir.model.access.csv',
     ],
-    "data": [
-        "data/ir.config_parameter.xml",
-        "security/ir.model.access.csv",
-        "templates/assets.xml",
-        "templates/form_widgets.xml",
-        "templates/payment_templates.xml",
-        "views/config_view.xml",
-        "views/ir_logging.xml",
-        "data/activity_data.xml",
-    ],
-    "demo": [],
-    "development_status": "Stable",
-    "installable": True,
-    "auto_install": False,
 }

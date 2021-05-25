@@ -191,9 +191,12 @@ class SponsorshipGift(models.Model):
             gift.date_partner_paid = fields.Date.to_string(max([d for d in pay_dates]))
 
             if gift.sponsorship_gift_type == "Birthday":
-                gift.gift_date = self.env[
+                gift.gift_date, late = self.env[
                     "generate.gift.wizard"
                 ].compute_date_birthday_invoice(gift.child_id.birthdate, inv_dates[0])
+                if late:
+                    gift.state = "verify"
+                    gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")
             else:
                 gift_date = max([d for d in inv_dates])
                 gift.gift_date = gift_date and gift_date
@@ -352,8 +355,10 @@ class SponsorshipGift(models.Model):
             return False
 
         gift = self.create(gift_vals)
-        if not gift.is_eligible():
+        eligible, message = gift.is_eligible()
+        if not eligible:
             gift.state = "verify"
+            gift.message_post(body=message)
             gift.message_id.state = "postponed"
         return gift
 
@@ -389,7 +394,7 @@ class SponsorshipGift(models.Model):
         self.ensure_one()
         sponsorship = self.sponsorship_id
         if sponsorship.project_id.hold_gifts:
-            return False
+            return False, "Sponsorship may have a project with hold gifts"
 
         threshold_rule = self.env["gift.threshold.settings"].search(
             [
@@ -405,8 +410,12 @@ class SponsorshipGift(models.Model):
             maximum_amount = threshold_rule.max_amount
 
             this_amount = self.amount * current_rate
-            if this_amount < minimum_amount or this_amount > maximum_amount:
-                return False
+            if this_amount < minimum_amount:
+                return False, f"""Gift amount is small than minimal amount, Gift amount: {round(this_amount,2)}$, 
+                Minimal amount :{round(minimum_amount,2)}$. """
+            if this_amount > maximum_amount:
+                return False, f"""Gift amount is higher than maximum amount, Gift amount: {round(this_amount,2)}$, 
+                Maximum amount :{round(maximum_amount,2)}$. """
 
             if threshold_rule.yearly_threshold:
                 # search other gifts for the same sponsorship.
@@ -433,13 +442,16 @@ class SponsorshipGift(models.Model):
                     total_amount += sum(
                         other_gifts.mapped(
                             lambda gift: gift.amount_us_dollars
-                            or gift.amount * current_rate
+                                         or gift.amount * current_rate
                         )
                     )
 
-                return total_amount < (maximum_amount * threshold_rule.gift_frequency)
+                if total_amount > (maximum_amount * threshold_rule.gift_frequency):
+                    return False, f"""Yearly threshold exceed: total_amount: {round(total_amount)}$, Yearly threshold: 
+                                        {round(maximum_amount,2)}*{round(threshold_rule.gift_frequency,2)} 
+                                        = {round(maximum_amount * threshold_rule.gift_frequency,2)}$ """
 
-        return True
+        return True, ""
 
     @api.model
     def get_gift_types(self, product):
