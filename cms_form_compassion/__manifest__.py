@@ -53,6 +53,7 @@
         "views/config_view.xml",
         "views/ir_logging.xml",
         "data/activity_data.xml",
+        "data/base_automation_data.xml"
     ],
     "demo": [],
     "development_status": "Stable",
