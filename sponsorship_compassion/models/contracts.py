@@ -577,6 +577,9 @@ class SponsorshipContract(models.Model):
                 parent.sub_sponsorship_id = sponsorship
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
 
+        if any([k in vals for k in ["partner_id", "correspondent_id"]]):
+            self.on_change_partner_correspondent_id()
+
         if "group_id" in vals or "partner_id" in vals:
             self._on_group_id_changed()
 
@@ -896,10 +899,6 @@ class SponsorshipContract(models.Model):
             }
         )
 
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
-    @api.onchange("partner_id", "correspondent_id")
     def on_change_partner_correspondent_id(self):
         """ On partner change, we set the new commitment number
         (for gift identification). """
@@ -915,6 +914,10 @@ class SponsorshipContract(models.Model):
         self.commitment_number = max(contracts.mapped("commitment_number") or [0]) + 1
         if self.partner_id and not self.correspondent_id:
             self.correspondent_id = self.partner_id
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
 
     @api.multi
     def open_invoices(self):
