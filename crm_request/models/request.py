@@ -66,6 +66,9 @@ class CrmClaim(models.Model):
         if not original_partner:
             raise exceptions.UserError(_("You can only reply if you set the partner."))
 
+        if not self.language:
+            raise exceptions.UserError(_("Language must be specified."))
+
         template_id = self.categ_id.template_id.id
         ctx = {
             "default_model": "crm.claim",

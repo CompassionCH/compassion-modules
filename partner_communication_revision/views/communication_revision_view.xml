@@ -23,8 +23,6 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
-                        <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit template" type="object" groups="base.group_system"/>
-                        <button class="oe_stat_button" name="reload_text" icon="fa-refresh" string="Reload text" type="object" attrs="{'invisible': [('raw_template_edit_mode','=',False)]}"/>
                     </div>
                     <group>
                         <group>
@@ -32,7 +30,7 @@
                             <field name="subject"/>
                         </group>
                         <group>
-                            <field name="raw_subject"/>
+                            <field name="raw_subject" widget="text"/>
                         </group>
                     </group>
                     <group>
@@ -41,20 +39,8 @@
                             <field name="proposition_text" groups="base.group_erp_manager"/>
                         </group>
                         <group>
-                            <field name="simplified_text" widget="html" attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"/>
+                            <field name="body_html" widget="text" attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"/>
                         </group>
-                    </group>
-                    <button name="toggle_all_keywords" type="object" class="oe_stat_button">
-                        <field name="show_all_keywords" widget="boolean_button" options='{"terminology": {
-                            "string_true": "All keywords",
-                            "string_false": "Hidden keywords",
-                            "hover_true": "Hide unused keywords",
-                            "hover_false": "Show all keywords"}}'/>
-                    </button>
-                    <group>
-                        <field name="if_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree_if'}"/>
-                        <field name="edit_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree'}"/>
-                        <field name="for_keyword_ids" context="{'tree_view_ref': 'partner_communication_revision.revision_keyword_tree'}" attrs="{'invisible': [('for_keyword_ids', '=', False)]}"/>
                     </group>
                 </sheet>
             </form>
@@ -137,11 +123,11 @@
                     <group>
                         <group>
                             <field name="subject" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
-                            <field name="proposition_text" widget="text_ckeditor4" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
+                            <field name="proposition_text" attrs="{'required': [('state', '=', 'pending')], 'readonly': ['|', ('is_proposer', '=', False), ('state', '!=', 'pending')]}"/>
                         </group>
                         <group attrs="{'invisible': [('proposition_correction', '=', False)]}">
                             <field name="subject_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit,corrected"/>
-                            <field name="proposition_correction" widget="text_ckeditor4" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit,corrected"/>
+                            <field name="proposition_correction" attrs="{'readonly': ['|', ('is_corrector', '=', False),('state','!=','submit')]}" states="pending,submit,corrected"/>
                         </group>
                         <group string="Compare with other translations" attrs="{'invisible': ['|', ('state', 'not in', ('pending','submit')),('is_master_version', '=', True)]}">
                             <field name="compare_lang" attrs="{'invisible': [('is_master_version', '=', True)]}"/>

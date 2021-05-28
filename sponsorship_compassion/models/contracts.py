@@ -581,9 +581,7 @@ class SponsorshipContract(models.Model):
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
                 if contract.child_id.sponsor_id == contract.correspondent_id:
-                    child = contract.child_id.with_context({})
-                    child.child_unsponsored()
-                    child.child_released('N')
+                    contract.child_id.with_context({}).child_unsponsored()
         return super().unlink()
 
     ##########################################################################
@@ -1255,7 +1253,7 @@ class SponsorshipContract(models.Model):
             ):
                 # Free the previously selected child
                 contract.child_id.child_unsponsored()
-            if "S" in contract.type:
+            if child_id and "S" in contract.type:
                 # Mark the selected child as sponsored
                 self.env["compassion.child"].browse(child_id).child_sponsored(
                     vals.get("correspondent_id") or contract.correspondent_id.id

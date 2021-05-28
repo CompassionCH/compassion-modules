@@ -32,8 +32,8 @@ def verify_and_retrieve(registration_id, partner_id=None):
             raise Unauthorized()
     existing = (
         request.env["firebase.registration"]
-        .sudo()
-        .search([("registration_id", "=", registration_id)])
+            .sudo()
+            .search([("registration_id", "=", registration_id)])
     )
 
     assert len(existing) < 2, "Two firebase registration with same id"
@@ -44,16 +44,31 @@ class RestController(http.Controller):
     @http.route(
         "/firebase/register", type="http", methods=["PUT"], auth="public", csrf=False
     )
-    def firebase_register(self, registration_id, partner_id=None, **kwargs):
+    def firebase_register(self, registration_id, partner_id=None, language=None, **kwargs):
         existing = verify_and_retrieve(registration_id, partner_id)
         if existing:
             existing.partner_id = partner_id
         else:
+
+            languages_map = {
+                "en": "en_US",
+                "fr": "fr_CH",
+                "de": "de_DE",
+                "it": "it_IT",
+            }
+
+            partner_lang = request.env.user.partner_id.lang if partner_id else False
+
+            # get the communication language.
+            communication_language = partner_lang if partner_lang else languages_map.get(language, False)
+
             existing = (
                 request.env["firebase.registration"]
-                .sudo()
-                .create(
-                    {"registration_id": registration_id, "partner_id": partner_id, })
+                    .sudo()
+                    .create(
+                    {"registration_id": registration_id,
+                     "partner_id": partner_id,
+                     "language": communication_language})
             )
 
         return str(existing.id)

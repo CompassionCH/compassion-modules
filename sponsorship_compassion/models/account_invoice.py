@@ -45,7 +45,7 @@ class AccountInvoice(models.Model):
             else:
                 invoice.children = False
 
-    @api.depends("payment_move_line_ids", "state")
+    @api.depends("payment_move_line_ids", "state" , "move_id.line_ids.full_reconcile_id")
     @api.multi
     def _compute_last_payment(self):
         for invoice in self.filtered("payment_move_line_ids"):
@@ -55,7 +55,7 @@ class AccountInvoice(models.Model):
             )
             invoice.last_payment = max(payment_dates or [False])
 
-    @api.depends("invoice_line_ids", "state")
+    @api.depends("invoice_line_ids", "state", "invoice_line_ids.product_id")
     @api.multi
     def _compute_invoice_category(self):
         sponsorship_cat = self.env.ref(
@@ -100,3 +100,7 @@ class AccountInvoice(models.Model):
                     else:
                         # last choice -> Other category
                         invoice.invoice_category = "other"
+
+    @api.multi
+    def recompute_category(self):
+        self._compute_invoice_category()

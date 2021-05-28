@@ -53,6 +53,7 @@
                     <group>
                         <field name="title" attrs="{'readonly': [('sent', '=', True)]}"/>
                         <field name="body" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="language" attrs="{'readonly': [('sent', '=', True)]}"/>
                         <field name="send_date" attrs="{'readonly': [('sent', '=', True)]}"/>
                         <field name="send_to_logged_out_devices" attrs="{'readonly': [('sent', '=', True)]}"/>
                         <field name="test_mode"/>
