@@ -535,20 +535,22 @@ class SponsorshipContract(models.Model):
 
         super().write(vals)
 
-        try:
-            if not testing:
-                # We want to avoid having dangling sponsorships
-                self.env.cr.commit()  # pylint: disable=invalid-commit
-            if updated_correspondents:
+        if updated_correspondents and not testing:
+            # We want to avoid having dangling sponsorships
+            self.env.cr.commit()  # pylint: disable=invalid-commit
+            try:
                 updated_correspondents._on_correspondant_changed()
-        except:
-            # TODO CO-3293 create activity to warn someone
-            logger.error(
-                "Error while changing correspondant at GMC. "
-                "The sponsorship is no longer active at GMC side. "
-                "Please activate it again manually.",
-                exc_info=True,
-            )
+            except:
+                logger.error("Error activating sponsorship", exc_info=True)
+                self.env.clear()
+                for correspondent in updated_correspondents:
+                    correspondent.activity_schedule(
+                        'mail.mail_activity_data_warning',
+                        summary="Activate sponsorship",
+                        user_id=self.env.uid,
+                        note="Error while changing correspondent at GMC. "
+                             "The sponsorship is no longer active at GMC side. "
+                             "Please activate it again manually.")
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -568,8 +570,6 @@ class SponsorshipContract(models.Model):
                 parent.sub_sponsorship_id = sponsorship
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
 
-        if "group_id" in vals or "partner_id" in vals:
-            self.group_id.with_context(async_mode=False).clean_invoices()
         return True
 
     @api.multi
@@ -970,9 +970,9 @@ class SponsorshipContract(models.Model):
             }
             message_obj.create(message_vals)
 
-        self.filtered(lambda c: not c.is_active).write(
-            {"activation_date": fields.Datetime.now()}
-        )
+        not_active = self.filtered(lambda c: not c.is_active)
+        if not_active:
+            not_active.write({"activation_date": fields.Datetime.now()})
         self.write({"state": "active"})
         last_line_id = self.search(
             [("sponsorship_line_id", "!=", False)],
@@ -996,7 +996,9 @@ class SponsorshipContract(models.Model):
             gift_contract_lines = con_line_obj.search(
                 [("sponsorship_id", "=", contract.id)]
             )
-            gift_contract_lines.mapped("contract_id").contract_active()
+            gift_contracts = gift_contract_lines.mapped("contract_id")
+            if gift_contracts:
+                gift_contracts.contract_active()
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         partners.update_number_sponsorships()
@@ -1153,8 +1155,8 @@ class SponsorshipContract(models.Model):
                 ", ".join(errors.mapped("global_id"))
             )
 
-            raise RuntimeError(
-                _("The current commitment at GMC side could not be " "cancelled.")
+            raise UserError(
+                _("The current commitment at GMC side could not be cancelled.")
             )
 
         cancelled_sponsorships.write({"global_id": False})
