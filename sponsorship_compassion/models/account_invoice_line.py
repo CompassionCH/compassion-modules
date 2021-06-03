@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
         """ Only use sponsorship invoices for sponsorships. """
         res = super().filter_for_contract_rewind(filter_state)
         contract = self.mapped("contract_id")
-        if "S" in contract.type:
+        if contract and "S" in contract.type:
             res = res.filtered(
                 lambda l: l.product_id.categ_id == self.env.ref(
                     "sponsorship_compassion.product_category_sponsorship"))
