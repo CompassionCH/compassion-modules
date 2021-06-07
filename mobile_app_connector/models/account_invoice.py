@@ -81,6 +81,7 @@ class AccountInvoice(models.Model):
                 "origin": wrapper.source,
                 "type": "out_invoice",
                 "date_invoice": fields.Date.today(),
+                "auto_cancel_no_transaction": True,
             }
         )
 
