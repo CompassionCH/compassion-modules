@@ -124,9 +124,9 @@ class GetPartnerMessage(models.Model):
 
         firebase_id = params["firebaseId"]
         operation = params["operation"]
-        partner_id = params.get("supId", None)
-        if partner_id == "":
-            partner_id = None
+        partner_id = params.get("supId") or None
+        language = params.get("language") or None
+
         _logger.debug(
             operation
             + "ing a Firebase ID from partner id: "
@@ -137,7 +137,7 @@ class GetPartnerMessage(models.Model):
 
         if operation == "Insert":
             response = Firebase().firebase_register(
-                registration_id=firebase_id, partner_id=partner_id,
+                registration_id=firebase_id, partner_id=partner_id,language=language
             )
         elif operation == "Delete":
             response = Firebase().firebase_unregister(

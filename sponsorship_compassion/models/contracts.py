@@ -535,34 +535,27 @@ class SponsorshipContract(models.Model):
 
         super().write(vals)
 
-        try:
-            if not testing:
-                # We want to avoid having dangling sponsorships
-                self.env.cr.commit()  # pylint: disable=invalid-commit
-            if updated_correspondents:
+        if updated_correspondents and not testing:
+            # We want to avoid having dangling sponsorships
+            self.env.cr.commit()  # pylint: disable=invalid-commit
+            try:
                 updated_correspondents._on_correspondant_changed()
-        except:
-            # TODO CO-3293 create activity to warn someone
-            logger.error(
-                "Error while changing correspondant at GMC. "
-                "The sponsorship is no longer active at GMC side. "
-                "Please activate it again manually.",
-                exc_info=True,
-            )
+            except:
+                logger.error("Error activating sponsorship", exc_info=True)
+                self.env.clear()
+                for correspondent in updated_correspondents:
+                    correspondent.activity_schedule(
+                        'mail.mail_activity_data_warning',
+                        summary="Activate sponsorship",
+                        user_id=self.env.uid,
+                        note="Error while changing correspondent at GMC. "
+                             "The sponsorship is no longer active at GMC side. "
+                             "Please activate it again manually.")
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
 
         if "partner_id" in vals:
-            # Move invoices to new partner
-            invoices = self.invoice_line_ids.mapped("invoice_id").filtered(
-                lambda i: i.state in ("open", "draft")
-            )
-            invoices.action_invoice_cancel()
-            invoices.action_invoice_draft()
-            invoices.write({"partner_id": vals["partner_id"]})
-            invoices.action_invoice_open()
-            # Update number of sponsorships
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
@@ -579,9 +572,6 @@ class SponsorshipContract(models.Model):
 
         if any([k in vals for k in ["partner_id", "correspondent_id"]]):
             self.on_change_partner_correspondent_id()
-
-        if "group_id" in vals or "partner_id" in vals:
-            self._on_group_id_changed()
 
         return True
 
@@ -619,7 +609,8 @@ class SponsorshipContract(models.Model):
             "sponsorship_compassion.suspend_product_id"
         )
         # Cancel invoices in the period of suspension
-        self._clean_invoices(date_start, keep_lines=_("Center suspended"))
+        self.with_context(async_mode=False).clean_invoices(
+            date_start, clean_invoices_paid=True, keep_lines=True)
 
         for contract in self:
             # Add a note in the contract and in the partner.
@@ -982,9 +973,9 @@ class SponsorshipContract(models.Model):
             }
             message_obj.create(message_vals)
 
-        self.filtered(lambda c: not c.is_active).write(
-            {"activation_date": fields.Datetime.now()}
-        )
+        not_active = self.filtered(lambda c: not c.is_active)
+        if not_active:
+            not_active.write({"activation_date": fields.Datetime.now()})
         self.write({"state": "active"})
         last_line_id = self.search(
             [("sponsorship_line_id", "!=", False)],
@@ -1008,7 +999,9 @@ class SponsorshipContract(models.Model):
             gift_contract_lines = con_line_obj.search(
                 [("sponsorship_id", "=", contract.id)]
             )
-            gift_contract_lines.mapped("contract_id").contract_active()
+            gift_contracts = gift_contract_lines.mapped("contract_id")
+            if gift_contracts:
+                gift_contracts.contract_active()
 
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         partners.update_number_sponsorships()
@@ -1165,8 +1158,8 @@ class SponsorshipContract(models.Model):
                 ", ".join(errors.mapped("global_id"))
             )
 
-            raise RuntimeError(
-                _("The current commitment at GMC side could not be " "cancelled.")
+            raise UserError(
+                _("The current commitment at GMC side could not be cancelled.")
             )
 
         cancelled_sponsorships.write({"global_id": False})
@@ -1314,7 +1307,8 @@ class SponsorshipContract(models.Model):
                             ("contract_id.state", "=", "waiting"),
                         ]
                     )
-                    gift_contract_lines.mapped("contract_id").contract_active()
+                    if gift_contract_lines:
+                        gift_contract_lines.mapped("contract_id").contract_active()
 
                 if (
                         len(contract.invoice_line_ids.filtered(
@@ -1384,6 +1378,10 @@ class SponsorshipContract(models.Model):
         invl_search.append(("product_id.categ_name", "!=", GIFT_CATEGORY))
         return invl_search
 
+    def _get_invoice_lines_to_clean(self, since_date, to_date):
+        res = super()._get_invoice_lines_to_clean(since_date, to_date)
+        return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
+
     @job(default_channel="root.recurring_invoicer")
     @related_action(action="related_action_contract")
     def cancel_old_invoices(self):
@@ -1421,46 +1419,3 @@ class SponsorshipContract(models.Model):
                 invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_invoice_open()
-
-    @api.multi
-    def _reset_open_invoices_job(self):
-        """Clean the open invoices in order to generate new invoices.
-        This can be useful if contract was updated when active."""
-        invoices_canceled = self._clean_invoices(clean_invoices_paid=False)
-        if invoices_canceled:
-            invoice_obj = self.env["account.invoice"]
-            inv_update_ids = set()
-            for contract in self:
-                # If some invoices are left cancelled, we update them
-                # with new contract information and validate them
-                cancel_invoices = invoice_obj.search(
-                    [("state", "=", "cancel"), ("id", "in", invoices_canceled.ids)]
-                )
-                if cancel_invoices:
-                    inv_update_ids.update(cancel_invoices.ids)
-                    cancel_invoices.action_invoice_draft()
-                    cancel_invoices.env.clear()
-                    contract._update_invoice_lines(cancel_invoices)
-                # If no invoices are left in cancel state, we rewind
-                # the next_invoice_date for the contract to generate again
-                else:
-                    contract.rewind_next_invoice_date()
-                    invoicer = contract.group_id._generate_invoices()
-                    if not invoicer.invoice_ids:
-                        invoicer.unlink()
-            # Validate again modified invoices
-            validate_invoices = invoice_obj.browse(list(inv_update_ids))
-            validate_invoices.action_invoice_open()
-        return True
-
-    def _on_group_id_changed(self):
-        """Remove lines of open invoices and generate them again
-        """
-        self._reset_open_invoices_job()
-        for contract in self:
-            # Update next_invoice_date of group if necessary
-            if contract.group_id.next_invoice_date:
-                next_invoice_date = contract.next_invoice_date
-                group_date = contract.group_id.next_invoice_date
-                if group_date > next_invoice_date:
-                    contract.group_id._compute_next_invoice_date()

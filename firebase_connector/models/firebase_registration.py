@@ -29,6 +29,7 @@ class FirebaseRegistration(models.Model):
     registration_id = fields.Char("Firebase Registration ID", required=True, index=True)
     partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
     partner_name = fields.Char(related="partner_id.name", readonly=True)
+    language = fields.Char()
 
     _sql_constraints = [
         (

@@ -19,7 +19,7 @@
             </field>
 
             <!-- Redefine how contracts are shown. -->
-            <xpath expr="//div[@name='button_box']/button[@name='%(partner_communication.action_communication_job_partner)d']" position="after">
+            <xpath expr="//div[@name='button_box']/button[1]" position="after">
                 <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book" groups="child_compassion.group_sponsorship">
                     <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
                 </button>
