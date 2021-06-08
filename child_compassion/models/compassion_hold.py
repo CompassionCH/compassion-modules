@@ -205,7 +205,7 @@ class CompassionHold(models.Model):
 
     @api.multi
     def write(self, vals):
-        if self.expiration_date < datetime.now() and "expiration_date" in vals:
+        if "expiration_date" in vals and self.filtered(lambda h: h.expiration_date < datetime.now()):
             raise UserError(_("The expiration date as been reach and thus can't be changed."))
 
         res = super().write(vals)
