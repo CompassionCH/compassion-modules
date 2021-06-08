@@ -239,6 +239,7 @@ class MatchPartner(models.AbstractModel):
             "state_id",
             "country_id",
             "state_id",
+            "birthdate_date",
             "church_unlinked",
             "church_id",
             "function",
