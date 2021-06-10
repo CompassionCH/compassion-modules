@@ -18,7 +18,8 @@ class SBCSettings(models.TransientModel):
 
     # Users to notify after Child Departure
     additional_b2s_translation = fields.Binary(
-        string="B2S additional translation page template"
+        string="B2S additional translation page template",
+        attachment=True
     )
 
     letter_responsible = fields.Many2one(
