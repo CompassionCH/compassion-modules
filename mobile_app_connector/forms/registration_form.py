@@ -402,11 +402,11 @@ class RegistrationSupporterForm(models.AbstractModel):
                 )
                 if values["source"] == "myaccount":
                     body = body.replace(
-                        "%(app_type)", "mycompassion"
+                        "%(app_type)", _("MyCompassion")
                     )
                 else:
                     body = body.replace(
-                        "%(app_type)", "my mobile app"
+                        "%(app_type)", _("my mobile app")
                     )
                 href_link = self._add_mailto(link_text, to, subject, body)
                 raise ValidationError(
