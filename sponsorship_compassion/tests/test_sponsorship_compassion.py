@@ -575,6 +575,52 @@ class TestSponsorship(BaseSponsorshipTest):
         partner_invoice = invoices.mapped("partner_id")
         self.assertEqual(partner_invoice, self.thomas)
 
+    def test_commitment_number_on_partner_change(self):
+        """Test if commitment number is correctly updated"""
+        partner = self.michel
+        partner2 = self.thomas
+
+        child1 = self.create_child("UG18920019")
+        child2 = self.create_child("UG18920011")
+
+        sp_group1 = self.create_group(
+            {
+                "change_method": "do_nothing",
+                "partner_id": partner.id,
+                "payment_mode_id": self.payment_mode.id,
+            }
+        )
+
+        sp_group2 = self.create_group(
+            {
+                "change_method": "do_nothing",
+                "partner_id": partner2.id,
+                "payment_mode_id": self.payment_mode.id,
+            }
+        )
+
+        sponsorship1 = self.create_contract(
+            {
+                "child_id": child1.id,
+                "group_id": sp_group1.id,
+                "partner_id": sp_group1.partner_id.id
+            },
+            [{"amount": 50.0}],
+        )
+
+        sponsorship2 = self.create_contract(
+            {
+                "child_id": child2.id,
+                "group_id": sp_group2.id,
+                "partner_id": sp_group2.partner_id.id
+            },
+            [{"amount": 50.0}],
+        )
+
+        sponsorship2.partner_id = partner
+
+        self.assertGreater(sponsorship2.commitment_number, sponsorship1.commitment_number)
+
     def test_gift_on_invoice_clean(self):
         """
             Test that gift invoice are handled correctly
@@ -636,4 +682,3 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(len(invoices.filtered(lambda x: x.state == "cancel")), 2)
 
         self.assertEqual(len(invoices.filtered(lambda x: x.invoice_category == "gift")), 1)
-
