@@ -51,10 +51,10 @@ class ContractGroup(models.Model):
     @job(default_channel="root.recurring_invoicer")
     @related_action(action="related_action_invoicer")
     @api.multi
-    def _generate_invoices(self, invoicer=None):
+    def _generate_invoices(self, invoicer=None, **kwargs):
         """ Add birthday gifts generation. """
         invoicer = self._generate_birthday_gifts(invoicer)
-        invoicer = super()._generate_invoices(invoicer)
+        invoicer = super()._generate_invoices(invoicer, **kwargs)
         return invoicer
 
     @api.multi
