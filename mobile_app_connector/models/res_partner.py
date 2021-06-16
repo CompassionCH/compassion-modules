@@ -17,6 +17,7 @@ class GetPartnerMessage(models.Model):
     app_displayed_sponsorships = fields.Selection(
         [
             ("all", _("All (partner is the correspondent and/or the payer)")),
+            ("all_info", _("All + correspondence info shown to payer only.")),
             (
                 "correspondent",
                 _("Correspondent (Children the partner correspond with)"),

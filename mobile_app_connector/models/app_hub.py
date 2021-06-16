@@ -52,7 +52,7 @@ class AppHub(models.AbstractModel):
 
         partner = self.env["res.partner"].browse(partner_id)
 
-        if partner.app_displayed_sponsorships == "all":
+        if partner.app_displayed_sponsorships in ["all", "all_info"]:
             sponsorships = partner.sponsorship_ids
             unpaid = partner.contracts_fully_managed + partner.contracts_paid
         else:
@@ -78,7 +78,11 @@ class AppHub(models.AbstractModel):
         unpaid_children = unpaid.mapped("child_id")
         unpaid_amounts = unpaid.mapped("total_amount")
 
-        letters = self.env["correspondence"].search(
+        correspondence_obj = self.env["correspondence"]
+        if partner.app_displayed_sponsorships == "all_info":
+            correspondence_obj = correspondence_obj.sudo()
+
+        letters = correspondence_obj.search(
             [
                 ("sponsorship_id", "in", sponsorships.ids),
             ],
