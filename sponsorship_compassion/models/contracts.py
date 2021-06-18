@@ -501,6 +501,9 @@ class SponsorshipContract(models.Model):
 
         new_sponsorship = super().create(vals)
 
+        if new_sponsorship.partner_id and not new_sponsorship.correspondent_id:
+            new_sponsorship.correspondent_id = new_sponsorship.partner_id
+
         # Set the sub_sponsorship_id in the current parent_id and take
         # sponsorship line id
         if "parent_id" in vals and vals["parent_id"]:
