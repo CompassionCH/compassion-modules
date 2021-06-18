@@ -411,6 +411,9 @@ class ResPartner(models.Model):
         def _random_str():
             return "".join([random.choice(string.ascii_letters) for n in range(8)])
 
+        # referenced users are unlinked to avoid error when self.active is set to False
+        self.user_ids.sudo().unlink()
+
         # Anonymize and delete partner data
         self.with_context(no_upsert=True).write(
             {
@@ -439,7 +442,6 @@ class ResPartner(models.Model):
         ).unlink()
         self.bank_ids.unlink()
         self.privacy_statement_ids.unlink()
-        self.user_ids.sudo().unlink()
         self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
             {"res_name": self.name}
         )
