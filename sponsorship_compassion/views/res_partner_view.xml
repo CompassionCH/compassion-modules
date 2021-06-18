@@ -57,6 +57,7 @@
                                 <field name="months_paid"/>
                                 <field name="total_amount"/>
                                 <field name="state"/>
+                                <field name="type"/>
                                 <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
@@ -80,6 +81,7 @@
                                 <field name="months_paid"/>
                                 <field name="total_amount"/>
                                 <field name="state"/>
+                                <field name="type"/>
                                 <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
@@ -103,6 +105,7 @@
                                 <field name="months_paid"/>
                                 <field name="total_amount"/>
                                 <field name="state"/>
+                                <field name="type"/>
                                 <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
@@ -124,6 +127,7 @@
                                 <field name="months_paid"/>
                                 <field name="total_amount"/>
                                 <field name="state"/>
+                                <field name="type"/>
                                 <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
