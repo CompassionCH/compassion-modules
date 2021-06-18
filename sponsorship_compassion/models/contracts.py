@@ -1042,7 +1042,7 @@ class SponsorshipContract(models.Model):
                     if sponsorship.state == "active":
                         contract.contract_active()
                 contract.group_id.generate_invoices()
-            if contract.type == "S":
+            elif contract.type == "S" or (contract.type == "SC" and contract.total_amount > 0):
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
                 hold.write(
@@ -1058,7 +1058,7 @@ class SponsorshipContract(models.Model):
                     )
                 contract.state = "waiting"
                 contract.group_id.generate_invoices()
-            if contract.type == "SC":
+            elif contract.type == "SC":
                 # Activate directly correspondence sponsorships
                 contract.contract_active()
         return True
