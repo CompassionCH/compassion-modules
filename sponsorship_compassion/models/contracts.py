@@ -1034,7 +1034,8 @@ class SponsorshipContract(models.Model):
         if contracts:
             super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
-            contract.start_date = fields.Datetime.now()
+            if not contract.start_date:
+                contract.start_date = fields.Datetime.now()
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
