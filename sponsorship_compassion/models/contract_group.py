@@ -42,8 +42,10 @@ class ContractGroup(models.Model):
     @api.multi
     def _compute_contains_sponsorship(self):
         for group in self:
-            types = group.mapped("contract_ids.type")
-            group.contains_sponsorship = "S" in types or "SC" in types
+            group.contains_sponsorship = group.mapped("contract_ids").filtered(
+                lambda s: s.type in ("S", "SC") and s.state not in (
+                    "terminated", "cancelled")
+            )
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
