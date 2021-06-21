@@ -66,6 +66,7 @@ class MobileAppJsonRequest(JsonRequest):
         return odoo_result
 
     def _handle_exception(self, exception):
+        _logger.error("Error in Mobile App API", exc_info=True)
         if isinstance(exception, ValueError):
             code = 400
             return self._json_response(
