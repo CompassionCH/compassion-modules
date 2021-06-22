@@ -622,6 +622,30 @@ class TestSponsorship(BaseSponsorshipTest):
 
         self.assertGreater(sponsorship2.commitment_number, sponsorship1.commitment_number)
 
+    def test_correct_default_correspondent(self):
+        partner = self.michel
+
+        child1 = self.create_child("UG18920021")
+
+        sp_group1 = self.create_group(
+            {
+                "change_method": "do_nothing",
+                "partner_id": partner.id,
+                "payment_mode_id": self.payment_mode.id,
+            }
+        )
+
+        sponsorship1 = self.create_contract(
+            {
+                "child_id": child1.id,
+                "group_id": sp_group1.id,
+                "partner_id": sp_group1.partner_id.id
+            },
+            [{"amount": 50.0}],
+        )
+
+        self.assertEqual(sponsorship1.correspondent_id, partner)
+
     def test_gift_on_invoice_clean(self):
         """
             Test that gift invoice are handled correctly
