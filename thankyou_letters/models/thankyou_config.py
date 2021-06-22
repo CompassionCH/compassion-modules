@@ -39,7 +39,9 @@ class ThankYouConfig(models.Model):
         # Cover the case where the total_amount is smaller that all min_
         # donation amount.
 
-        filtered_config = self.filtered(lambda x: x.lang is False or invoice_lines.partner_id.lang == x.lang)
+        filtered_config = self.filtered(
+            lambda x: x.lang is False or
+            invoice_lines.mapped("partner_id").lang == x.lang)
 
         config = filtered_config[0]
         total_amount = sum(invoice_lines.mapped("price_subtotal"))
