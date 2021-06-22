@@ -501,9 +501,6 @@ class SponsorshipContract(models.Model):
 
         new_sponsorship = super().create(vals)
 
-        if new_sponsorship.partner_id and not new_sponsorship.correspondent_id:
-            new_sponsorship.correspondent_id = new_sponsorship.partner_id
-
         # Set the sub_sponsorship_id in the current parent_id and take
         # sponsorship line id
         if "parent_id" in vals and vals["parent_id"]:
@@ -575,6 +572,7 @@ class SponsorshipContract(models.Model):
 
         if any([k in vals for k in ["partner_id", "correspondent_id"]]):
             self.on_change_partner_correspondent_id()
+            self.auto_correspondent_id()
 
         return True
 
@@ -893,6 +891,12 @@ class SponsorshipContract(models.Model):
             }
         )
 
+    @api.onchange("partner_id")
+    def auto_correspondent_id(self):
+        """If correspondent is not specified use partner_id"""
+        if self.partner_id and not self.correspondent_id:
+            self.correspondent_id = self.partner_id
+
     def on_change_partner_correspondent_id(self):
         """ On partner change, we set the new commitment number
         (for gift identification). """
@@ -906,8 +910,6 @@ class SponsorshipContract(models.Model):
             ]
         )
         self.commitment_number = max(contracts.mapped("commitment_number") or [0]) + 1
-        if self.partner_id and not self.correspondent_id:
-            self.correspondent_id = self.partner_id
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
