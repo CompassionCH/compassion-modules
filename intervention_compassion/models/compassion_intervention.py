@@ -10,7 +10,6 @@
 
 import logging
 import time
-from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, _, api
 from odoo.exceptions import UserError
