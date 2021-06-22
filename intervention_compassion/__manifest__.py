@@ -47,7 +47,6 @@
         "data/intervention_action_rules.xml",
         "data/compassion_mapping.xml",
         "data/gmc_action.xml",
-        "data/ir_cron.xml",
         "security/intervention_groups.xml",
         "security/ir.model.access.csv",
         "views/compassion_intervention_view.xml",

@@ -850,20 +850,6 @@ class CompassionIntervention(models.Model):
             json["ICP"] = json["ICP"].split("; ")
         return super().json_to_data(json, mapping_name)
 
-    @api.model
-    def send_notif_before_expiration(self):
-        threshold_date = fields.datetime.today() + relativedelta(days=1)
-        for intervention in self.filtered(lambda x: x.state == "on_hold" and x.expiration_date <= threshold_date):
-            for user in intervention.user_id:
-                intervention.activity_schedule(
-                    "mail.mail_activity_data_todo",
-                    summary=_("On Hold intervention close to expiration date"),
-                    note=_("The Intervention {} you were assigned to is close"
-                           "to reach it's expiration date while still On Hold.".
-                           format(intervention.intervention_id)
-                           ),
-                    user_id=user.id
-                )
 
 class InterventionDeliverable(models.Model):
     _name = "compassion.intervention.deliverable"
