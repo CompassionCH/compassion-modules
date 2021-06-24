@@ -10,6 +10,7 @@
 
 import logging
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import mock
 from odoo import fields
@@ -72,7 +73,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                     {
                         "hold_id": self.ref(9),
                         "type": "Consignment Hold",
-                        "expiration_date": fields.Datetime.now(),
+                        "expiration_date": fields.Datetime.now() + relativedelta(weeks=2),
                         "primary_owner": 1,
                     }
                 )
@@ -286,7 +287,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group.id,
                 "partner_id": self.david.id,
             },
-            [{"amount": 50.0}],
+            [],
         )
         # Activate correspondence sponsorship
         update_hold = self.validate_sponsorship(sponsorship)
@@ -621,6 +622,30 @@ class TestSponsorship(BaseSponsorshipTest):
 
         self.assertGreater(sponsorship2.commitment_number, sponsorship1.commitment_number)
 
+    def test_correct_default_correspondent(self):
+        partner = self.michel
+
+        child1 = self.create_child("UG18920021")
+
+        sp_group1 = self.create_group(
+            {
+                "change_method": "do_nothing",
+                "partner_id": partner.id,
+                "payment_mode_id": self.payment_mode.id,
+            }
+        )
+
+        sponsorship1 = self.create_contract(
+            {
+                "child_id": child1.id,
+                "group_id": sp_group1.id,
+                "partner_id": sp_group1.partner_id.id
+            },
+            [{"amount": 50.0}],
+        )
+
+        self.assertEqual(sponsorship1.correspondent_id, partner)
+
     def test_gift_on_invoice_clean(self):
         """
             Test that gift invoice are handled correctly
@@ -682,3 +707,29 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(len(invoices.filtered(lambda x: x.state == "cancel")), 2)
 
         self.assertEqual(len(invoices.filtered(lambda x: x.invoice_category == "gift")), 1)
+
+    def test_partly_paid_sponsorship_activation(self):
+        """
+        Correspondence sponsorship with partial payment should not be automatically activated
+        unlink SC sponsorship with total_amount of 0.
+        """
+        child = self.create_child("PE012304567")
+
+        contract_group = self.create_group(
+            {
+                "partner_id": self.michel.id,
+                "change_method": "clean_invoices"
+            }
+        )
+        contract = self.create_contract(
+            {
+                "type": "SC",
+                "partner_id": self.michel.id,
+                "group_id": contract_group.id,
+                "child_id": child.id
+            },
+            [{"amount": 50.0}])
+
+        self.assertEqual(contract.state, "draft")
+        self.validate_sponsorship(contract)
+        self.assertEqual(contract.state, "waiting")

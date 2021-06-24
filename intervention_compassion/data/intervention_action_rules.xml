@@ -65,4 +65,20 @@
         <field name="state">object_write</field>
         <field name="fields_lines" eval="[(4, ref('sla_wait_action_field'))]"/>
     </record>
+
+    <record id="intervention_notif_before_expire" model="base.automation">
+        <field name="name">Intervention: Send notification before intervention on hold expire.</field>
+        <field name="model_id" ref="model_compassion_intervention"/>
+        <field name="trigger">on_time</field>
+        <field name="trg_date_id" ref="field_compassion_intervention__expiration_date"/>
+        <field name="filter_domain">[('state', '=', 'on_hold')]</field>
+        <field name="trg_date_range">-7</field>
+        <field name="trg_date_range_type">day</field>
+        <field name="state">next_activity</field>
+        <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+        <field name="activity_summary">On Hold intervention close to expiration date</field>
+        <field name="activity_note">An Intervention you are assigned to is close to reach it's expiration date while still On Hold.</field>
+        <field name="activity_user_type">generic</field>
+        <field name="activity_user_field_name">user_id</field>
+    </record>
 </odoo>

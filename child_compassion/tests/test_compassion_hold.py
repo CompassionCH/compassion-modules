@@ -12,14 +12,13 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 
-from odoo.tests import tagged, TransactionCase
+from odoo.tests import TransactionCase
 
 mock_update_hold = (
     "odoo.addons.child_compassion.models.compassion_hold" ".CompassionHold.update_hold"
 )
 
 
-@tagged("wip_test")
 class TestHold(TransactionCase):
 
     @mock.patch(mock_update_hold)

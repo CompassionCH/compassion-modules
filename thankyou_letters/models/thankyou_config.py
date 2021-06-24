@@ -13,7 +13,7 @@ from odoo import api, models, fields
 class ThankYouConfig(models.Model):
     _name = "thankyou.config"
     _description = "Thank You Configuration"
-    _order = "min_donation_amount"
+    _order = "min_donation_amount, lang desc"
 
     min_donation_amount = fields.Integer(
         "Minimum Donation Amount",
@@ -24,6 +24,8 @@ class ThankYouConfig(models.Model):
         "get_need_call",
         help="Indicates we should have a personal contact with the partner",
     )
+    lang = fields.Selection("_get_lang",
+                            help="If specified will only be used with partners that have the same language.")
     user_id = fields.Many2one("res.users", string="Thanker", readonly=False)
 
     @api.multi
@@ -36,9 +38,14 @@ class ThankYouConfig(models.Model):
         assert len(self) > 0, "There should be at least one Thank you configuration."
         # Cover the case where the total_amount is smaller that all min_
         # donation amount.
-        config = self[0]
+
+        filtered_config = self.filtered(
+            lambda x: x.lang is False or
+            invoice_lines.mapped("partner_id").lang == x.lang)
+
+        config = filtered_config[0]
         total_amount = sum(invoice_lines.mapped("price_subtotal"))
-        for thankyou_config in self:
+        for thankyou_config in filtered_config:
             if total_amount >= thankyou_config.min_donation_amount:
                 config = thankyou_config
         return config
@@ -61,3 +68,8 @@ class ThankYouConfig(models.Model):
             print_if_not_email=print_if_not_email,
             send_mode_pref_field="thankyou_preference",
         )
+
+    @api.model
+    def _get_lang(self):
+        langs = self.env["res.lang"].search([])
+        return [(l.code, l.name) for l in langs]
