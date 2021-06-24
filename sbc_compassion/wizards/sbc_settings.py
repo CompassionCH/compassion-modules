@@ -17,10 +17,6 @@ class SBCSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     # Users to notify after Child Departure
-    additional_b2s_translation = fields.Binary(
-        string="B2S additional translation page template"
-    )
-
     letter_responsible = fields.Many2one(
         "res.users",
         string="Letter responsible for activity schedule",
@@ -37,17 +33,10 @@ class SBCSettings(models.TransientModel):
             "sbc_compassion.letter_responsible", str(self.letter_responsible.id or 0)
         )
 
-        page_template = self.env.ref("sbc_compassion.b2s_additional_page")
-        page_template.background = self.additional_b2s_translation
-
     @api.model
     def get_values(self):
         res = super().get_values()
         config = self.env["ir.config_parameter"].sudo()
-
-        b2s_add_page = self.env.ref("sbc_compassion.b2s_additional_page")
-
-        res["additional_b2s_translation"] = b2s_add_page.background
         res["letter_responsible"] = int(
             config.get_param("sbc_compassion.letter_responsible", 0)
         )
