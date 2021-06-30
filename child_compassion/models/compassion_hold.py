@@ -420,6 +420,13 @@ class CompassionHold(models.Model):
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get("BeneficiaryHoldRemovalNotification")
         hold = self.search([("hold_id", "=", data.get("HoldID"))])
+
+        # avoid realising a hold (and related child) that has already been released
+        if hold and hold.state == "expired":
+            logger.warning("Received Beneficiary Hold Removal order from GMC for already expired hold.")
+            # return empty list because no hold were created or modified
+            return []
+
         if not hold:
             child = self.env["compassion.child"].search(
                 [("global_id", "=", data.get("Beneficiary_GlobalID"))]
