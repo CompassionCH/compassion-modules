@@ -3,6 +3,7 @@
 
 import logging
 from email.utils import parseaddr
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
@@ -320,7 +321,8 @@ class CrmClaim(models.Model):
 
         request_to_notify = self.search([
             ("stage_id", "in", [new_stage_id, wait_support_stage_id]),
-            ("user_id", "!=", False)
+            ("user_id", "!=", False),
+            ("write_date", "<", fields.datetime.now() - relativedelta(weeks=1))
         ])
 
         for req in request_to_notify:
