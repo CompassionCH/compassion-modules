@@ -7,7 +7,7 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "category": "CRM",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     # Python dependencies
     "external_dependencies": {"python": ["detectlanguage"]},
     # any module necessary for this one to work correctly
@@ -24,6 +24,7 @@
         "data/request_email_template.xml",
         "data/crm_request_data.xml",
         "data/request_sequence.xml",
+        "data/ir_cron.xml",
         "views/request.xml",
         "views/request_category.xml",
         "views/holiday_automated_response_view.xml",

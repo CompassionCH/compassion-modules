@@ -310,3 +310,26 @@ class CrmClaim(models.Model):
                 force_send=True,
                 email_values={"email_to": request.email_origin},
             )
+
+    @api.model
+    def cron_reminder_request(self):
+        """ Periodically sends a reminder to unaddressed request (new, waiting for support)"""
+
+        new_stage_id = self.env.ref("crm_claim.stage_claim1").id
+        wait_support_stage_id = self.env.ref("crm_request.stage_wait_support").id
+
+        request_to_notify = self.search([
+            ("stage_id", "in", [new_stage_id, wait_support_stage_id]),
+            ("user_id", "!=", False)
+        ])
+
+        for req in request_to_notify:
+            req.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=_("A support request require your attention"),
+                note=_("The request {} you were assigned to requires"
+                       " your attention.".
+                       format(req.code)
+                       ),
+                user_id=req.user_id.id
+            )
