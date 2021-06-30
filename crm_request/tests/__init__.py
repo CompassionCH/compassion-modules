@@ -9,3 +9,4 @@
 ##############################################################################
 
 from . import test_crm_claim_categories
+from . import test_crm_claim_request

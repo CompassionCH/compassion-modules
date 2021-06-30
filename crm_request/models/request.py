@@ -158,7 +158,7 @@ class CrmClaim(models.Model):
         alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
 
         # Find the corresponding type
-        subject = msg.get("subject")
+        subject = msg.get("subject", "")
         category_ids = self.env["crm.claim.category"].search(
             [("keywords", "!=", False)]
         )
