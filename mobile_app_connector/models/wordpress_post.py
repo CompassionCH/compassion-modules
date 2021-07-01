@@ -128,12 +128,13 @@ class WordpressPost(models.Model):
                         )
                         post_id = post_data["id"]
                         found_ids.append(post_id)
-                        # TODO AP-377 FIX this code erases all categories of our news
-                        # cached_post = self.search([("wp_id", "=", post_id)])
-                        # if cached_post:
-                        #     cached_post.update_post_categories(post_data, requests)
-                        # Skip post already fetched
-                        # continue
+                        cached_post = self.search([("wp_id", "=", post_id)])
+                        if cached_post:
+                            # TODO AP-377 FIX this code erases all categories of our
+                            #  news
+                            # cached_post.update_post_categories(post_data, requests)
+                            # Skip post already fetched
+                            continue
 
                         content_empty = True
                         self_url = post_data["_links"]["self"][0]["href"]
