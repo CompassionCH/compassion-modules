@@ -32,14 +32,14 @@ class ContractGroup(models.Model):
         if contract.no_birthday_invoice:
             gift_obj = self.env["sponsorship.gift"]
             gift_vals = gift_obj.get_gift_types(gift_wizard.product_id)
-            gift_date = gift_wizard.compute_date_birthday_invoice(
+            gift_date, _ = gift_wizard.compute_date_birthday_invoice(
                 contract.child_id.birthdate, gift_wizard.invoice_date
             )
             # Search that a gift is not already pending
             existing_gifts = gift_obj.search(
                 [
                     ("sponsorship_id", "=", contract.id),
-                    ("gift_date", "like", gift_date[:4]),
+                    ("gift_date", "like", str(gift_date)[:4]),
                     ("gift_type", "=", gift_vals["gift_type"]),
                     ("attribution", "=", gift_vals["attribution"]),
                     (
