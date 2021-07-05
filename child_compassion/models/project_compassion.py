@@ -99,10 +99,12 @@ class CompassionProject(models.Model):
     number_church_members = fields.Integer(readonly=True)
     weekly_child_attendance = fields.Integer(readonly=True)
     implemented_program_ids = fields.Many2many(
-        "fcp.program", string="Programs implemented", readonly=True
+        "fcp.program", "fcp_implemented_programs", "fcp_id", "program_id",
+        string="Programs implemented", readonly=True
     )
     interested_program_ids = fields.Many2many(
-        "fcp.program", string="Programs of interest", readonly=True
+        "fcp.program", "fcp_interested_programs", "fcp_id", "program_id",
+        string="Programs of interest", readonly=True
     )
 
     # Church infrastructure information
