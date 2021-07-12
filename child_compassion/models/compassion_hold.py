@@ -205,6 +205,9 @@ class CompassionHold(models.Model):
 
     @api.multi
     def write(self, vals):
+        if "expiration_date" in vals and self.filtered(lambda h: h.expiration_date < datetime.now()):
+            raise UserError(_("The expiration date as been reach and thus can't be changed."))
+
         res = super().write(vals)
         notify_vals = ["primary_owner", "type", "expiration_date"]
         notify = reduce(lambda prev, val: prev or val in vals, notify_vals, False)
@@ -417,6 +420,13 @@ class CompassionHold(models.Model):
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get("BeneficiaryHoldRemovalNotification")
         hold = self.search([("hold_id", "=", data.get("HoldID"))])
+
+        # avoid realising a hold (and related child) that has already been released
+        if hold and hold.state == "expired":
+            logger.warning("Received Beneficiary Hold Removal order from GMC for"
+                           "already expired hold.")
+            return hold.ids
+
         if not hold:
             child = self.env["compassion.child"].search(
                 [("global_id", "=", data.get("Beneficiary_GlobalID"))]

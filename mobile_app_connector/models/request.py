@@ -71,6 +71,7 @@ class CrmClaim(models.Model):
                     .search([("name", "=", source)])
                     .id,
                 "partner_id": partner.id,
+                "stage_id": self.sudo().env.ref("crm_claim.stage_claim1").id,
                 "user_id": False,
                 "language": self.sudo().detect_lang(question).lang_id.code,
             }

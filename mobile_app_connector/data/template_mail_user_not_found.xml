@@ -6,7 +6,7 @@
             <field name="name">Template user not found - Send by Email</field>
             <field name="email_to">info@compassion.ch</field>
             <field name="subject">Account Setup: User Not Found</field>
-            <field name="body_html"><![CDATA[Hello,<br/><br/>Please set my mobile app account with the following email address: "%(email_address)"<br/><br/>Yours sincerely]]></field>
+            <field name="body_html"><![CDATA[Hello,<br/><br/>Please set %(app_type) account with the following email address: "%(email_address)"<br/><br/>Yours sincerely]]></field>
         </record>
     </data>
 </odoo>

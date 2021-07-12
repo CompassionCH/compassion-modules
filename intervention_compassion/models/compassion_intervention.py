@@ -469,7 +469,7 @@ class CompassionIntervention(models.Model):
         intervention_local_ids = []
         # For each dictionary, we update the corresponding record
         for idr in intervention_request:
-            vals = self.json_to_data(commkit_data)
+            vals = self.json_to_data(idr)
             intervention_id = vals["intervention_id"]
 
             intervention = self.search([("intervention_id", "=", intervention_id)])

@@ -3,6 +3,7 @@
 
 import logging
 from email.utils import parseaddr
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
@@ -158,7 +159,7 @@ class CrmClaim(models.Model):
         alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
 
         # Find the corresponding type
-        subject = msg.get("subject")
+        subject = msg.get("subject", "")
         category_ids = self.env["crm.claim.category"].search(
             [("keywords", "!=", False)]
         )
@@ -309,4 +310,28 @@ class CrmClaim(models.Model):
                 request.id,
                 force_send=True,
                 email_values={"email_to": request.email_origin},
+            )
+
+    @api.model
+    def cron_reminder_request(self):
+        """ Periodically sends a reminder to unaddressed request (new, waiting for support)"""
+
+        new_stage_id = self.env.ref("crm_claim.stage_claim1").id
+        wait_support_stage_id = self.env.ref("crm_request.stage_wait_support").id
+
+        request_to_notify = self.search([
+            ("stage_id", "in", [new_stage_id, wait_support_stage_id]),
+            ("user_id", "!=", False),
+            ("write_date", "<", fields.datetime.now() - relativedelta(weeks=1))
+        ])
+
+        for req in request_to_notify:
+            req.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=_("A support request require your attention"),
+                note=_("The request {} you were assigned to requires"
+                       " your attention.".
+                       format(req.code)
+                       ),
+                user_id=req.user_id.id
             )

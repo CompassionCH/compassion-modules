@@ -69,6 +69,8 @@ class SponsorshipContract(models.Model):
                     gift = invl.gift_id
                     if gift.state == "verify":
                         gift.state = "draft"
+                        if gift.message_id.state == "postponed":
+                            gift.message_id.state = "new"
 
         return res
 

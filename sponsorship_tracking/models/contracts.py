@@ -211,9 +211,11 @@ class RecurringContract(models.Model):
     @api.multi
     def contract_waiting(self):
         """ Make contract SDS status in active mode. """
-        self.filtered(lambda s: s.sds_state == "draft").write(
-            {"sds_state": "active", "sds_state_date": fields.Date.today()}
-        )
+        to_transition = self.filtered(lambda s: s.sds_state == "draft")
+        if to_transition:
+            to_transition.write(
+                {"sds_state": "active", "sds_state_date": fields.Date.today()}
+            )
         return super().contract_waiting()
 
     @api.multi

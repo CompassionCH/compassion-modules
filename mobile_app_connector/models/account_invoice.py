@@ -81,6 +81,7 @@ class AccountInvoice(models.Model):
                 "origin": wrapper.source,
                 "type": "out_invoice",
                 "date_invoice": fields.Date.today(),
+                "auto_cancel_no_transaction": True,
             }
         )
 
@@ -176,6 +177,7 @@ class AccountInvoice(models.Model):
         lines = self.mapped("invoice_line_ids").with_context(context)
         children = lines.mapped("contract_id.child_id")
         amount, for_text = lines.get_donations()
+        for_text = for_text or _("one of our fund")
         if children:
             if len(children) > 1:
                 for_text = children.get_number()

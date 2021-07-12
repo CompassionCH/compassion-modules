@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "CMS Form additions for Compassion",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -53,6 +53,7 @@
         "views/config_view.xml",
         "views/ir_logging.xml",
         "data/activity_data.xml",
+        "data/base_automation_data.xml"
     ],
     "demo": [],
     "development_status": "Stable",

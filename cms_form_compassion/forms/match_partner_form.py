@@ -41,11 +41,17 @@ class PartnerMatchform(models.AbstractModel):
         lambda self: self.env["res.lang"].sudo().get_installed(),
         "Language"
     )
-    partner_birthdate = fields.Date("Birthdate")
+    partner_birthdate_date = fields.Date("Birthdate")
 
     #######################################################################
     #            Inject default values in form from main object           #
     #######################################################################
+    def form_init(self, request, main_object=None, **kw):
+        form = super().form_init(request, main_object, **kw)
+        if kw.get("partner_id"):
+            form.partner_id = kw.get("partner_id")
+        return form
+
     def _form_load_partner_id(self, fname, field, value, **req_values):
         return value or req_values.get(fname, self.main_object.partner_id.id)
 
@@ -85,13 +91,14 @@ class PartnerMatchform(models.AbstractModel):
     def _form_load_partner_lang(self, fname, field, value, **req_values):
         return value or self._load_partner_field(fname, **req_values)
 
-    def _form_load_partner_birthdate(self, fname, field, value, **req_values):
+    def _form_load_partner_birthdate_date(self, fname, field, value, **req_values):
         return value or self._load_partner_field(fname, **req_values)
 
     def _load_partner_field(self, fname, **req_values):
         """ For inherited forms, we try to load partner fields in
         partner_id field that may exist in main_object of form. """
-        partner = self.main_object.partner_id or self.env["res.partner"]
+        partner = self.main_object.partner_id or self.partner_id or \
+            self.env["res.partner"]
         pf_name = fname.split("partner_")[1]
         return req_values.get(fname, getattr(partner.sudo(), pf_name, ""))
 
