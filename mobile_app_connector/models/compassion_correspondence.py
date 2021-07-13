@@ -150,7 +150,7 @@ class CompassionCorrespondence(models.Model):
         gen = self.env["correspondence.s2b.generator"].sudo().create({
             "name": "app-" + child_local_id,
             "selection_domain": f"[('child_id.local_id', '=', '{child_local_id}'),"
-                                f"('state', 'not in', ['terminated','cancelled'])]",
+                                f"('state', 'not in', ['draft','cancelled'])]",
             "body": self._convert_special_characters(escape(body)),
             "language_id": int(self.env["crm.claim"].detect_lang(body)),
             "s2b_template_id": int(template_id),
