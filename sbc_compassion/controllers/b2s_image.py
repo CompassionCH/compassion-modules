@@ -40,7 +40,8 @@ def _get_data(letter, file_type=None):
 
 def _get_child_correspondence(partner, child):
     sponsorship_ids = child.sponsorship_ids.filtered(
-        lambda contract: contract.partner_id == partner
+        lambda contract: contract.correspondent_id == partner or
+        contract.partner_id == partner
     )
     return request.env["correspondence"].search([
         ("sponsorship_id", "=", sponsorship_ids[0].id),
