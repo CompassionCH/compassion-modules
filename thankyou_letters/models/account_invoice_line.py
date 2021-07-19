@@ -41,73 +41,91 @@ class AccountInvoiceLine(models.Model):
         Creates a thank you letter communication.
         Must be called only on a single partner at a time.
         """
-        invoice_lines = self.filtered("product_id.requires_thankyou")
-        if not invoice_lines:
+        new_invoice_lines = self.filtered("product_id.requires_thankyou")
+        if not new_invoice_lines:
             # Avoid generating thank you if no valid invoice lines are present
             return
 
-        communication_config = self.env.context.get("default_communication_config")
-        if not communication_config:
-            product_configs = invoice_lines.mapped(
+        new_communication_config = self.env.context.get("default_communication_config")
+        if not new_communication_config:
+            product_configs = new_invoice_lines.mapped(
                 "product_id.partner_communication_config"
             )
             if len(product_configs) == 1:
-                communication_config = product_configs[0]
+                new_communication_config = product_configs[0]
                 # avoid taking into account lines with no communication config defined
                 # (amount would be wrong)
-                invoice_lines = invoice_lines.filtered(
+                invoice_lines = new_invoice_lines.filtered(
                     lambda x: x.product_id.partner_communication_config ==
-                    communication_config)
+                              new_communication_config)
 
             else:
                 _logger.warning(
                     f"{len(product_configs)} product thank you config found, "
                     f"falling back to the default"
                 )
-                communication_config = self.env.ref(
+                new_communication_config = self.env.ref(
                     "thankyou_letters.config_thankyou_standard")
 
         partner = self.mapped("partner_id")
         partner.ensure_one()
 
-        existing_comm = self.env["partner.communication.job"].search(
+        all_thanks_config_ids = self.env["partner.communication.config"].search(
+            [("send_mode_pref_field", "like", "thankyou_preference")]).ids
+
+        all_existing_comm = self.env["partner.communication.job"].search(
             [
                 ("partner_id", "=", partner.id),
                 ("state", "in", ("call", "pending")),
-                ("config_id", "=", communication_config.id),
+                ("config_id", "in", all_thanks_config_ids),
             ]
             + self.env.context.get("same_job_search", [])
         )
-        if existing_comm:
-            invoice_lines = existing_comm.get_objects() | invoice_lines
+
+        all_invoice_lines = new_invoice_lines
+        if all_existing_comm:
+            all_invoice_lines |= all_existing_comm.get_objects()
 
         thankyou_config = (
-            self.env["thankyou.config"].search([]).for_donation(invoice_lines)
-        )
-        send_mode, auto_mode = thankyou_config.build_inform_mode(
-            partner, communication_config.print_if_not_email
+            self.env["thankyou.config"].search([]).for_donation(all_invoice_lines)
         )
 
-        comm_vals = {
-            "partner_id": partner.id,
-            "config_id": communication_config.id,
-            "object_ids": invoice_lines.ids,
-            "need_call": thankyou_config.need_call or communication_config.need_call,
-            "print_subject": False,
-            "user_id": self.env.context.get("default_user_id")
-            or thankyou_config.user_id.id,
-            "send_mode": send_mode,
-            "auto_send": auto_mode,
-        }
-        success_stories = invoice_lines.mapped("product_id.success_story_id")
-        if success_stories:
-            existing_comm = existing_comm.with_context(
-                default_success_story_id=success_stories[0].id
+        for communication_config in new_communication_config | all_existing_comm.mapped("config_id"):
+
+            invoice_lines = new_invoice_lines \
+                if new_communication_config == communication_config else self.env[self._name]
+
+            existing_comm = all_existing_comm.filtered(lambda x: x.config_id.id == communication_config.id)
+
+            if existing_comm:
+                invoice_lines |= existing_comm.get_objects()
+
+            send_mode, auto_mode = thankyou_config.build_inform_mode(
+                partner, communication_config.print_if_not_email
             )
 
-        if existing_comm:
-            existing_comm.write(comm_vals)
-            existing_comm.refresh_text()
-        else:
-            existing_comm = existing_comm.create(comm_vals)
-        self.mapped("invoice_id").write({"communication_id": existing_comm.id})
+            comm_vals = {
+                "partner_id": partner.id,
+                "config_id": communication_config.id,
+                "object_ids": invoice_lines.ids,
+                "need_call": thankyou_config.need_call or communication_config.need_call,
+                "print_subject": False,
+                "user_id": self.env.context.get("default_user_id")
+                           or thankyou_config.user_id.id,
+                "send_mode": send_mode,
+                "auto_send": auto_mode,
+            }
+            success_stories = invoice_lines.mapped("product_id.success_story_id")
+            if success_stories:
+                existing_comm = existing_comm.with_context(
+                    default_success_story_id=success_stories[0].id
+                )
+
+            if existing_comm:
+                existing_comm.write(comm_vals)
+                existing_comm.refresh_text()
+            else:
+                existing_comm = existing_comm.create(comm_vals)
+
+            if new_communication_config == communication_config:
+                self.mapped("invoice_id").write({"communication_id": existing_comm.id})
