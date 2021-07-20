@@ -84,12 +84,12 @@ class FieldToJson(models.Model):
         readonly=False,
     )
     to_json_conversion = fields.Text(
-        help="Pyhton function that will convert the value for its JSON "
+        help="Python function that will convert the value for its JSON "
              "representation. Use `odoo_value` as the raw value of the Odoo"
              "field. You should return the final JSON value."
     )
     from_json_conversion = fields.Text(
-        help="Pyhton function that will convert the JSON value to its  "
+        help="Python function that will convert the JSON value to its  "
              "correct value in Odoo. Use `json_value` as the value to be "
              "processed. You should return the final Odoo value."
     )
