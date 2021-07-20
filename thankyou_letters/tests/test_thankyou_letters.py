@@ -22,9 +22,12 @@ class TestThankYouLetters(SavepointCase):
         # Create accounting needed data
         cls.account_model = cls.env["account.account"]
         cls.eur_currency = cls.env.ref("base.EUR")
-        cls.env.ref(
-            "l10n_generic_coa.configurable_chart_template"
-        ).try_loading_for_current_company()
+        try:
+            cls.env.ref(
+                "l10n_generic_coa.configurable_chart_template"
+            ).try_loading_for_current_company()
+        except ValueError as e:
+            logger.error("Could not load configurable chart template properly")
         cls.account_revenue = cls.account_model.search(
             [
                 (
@@ -54,6 +57,11 @@ class TestThankYouLetters(SavepointCase):
         cls.env["thankyou.config"].create(
             {"min_donation_amount": 50.0, "send_mode": "auto_digital_only", }
         )
+
+        cls.env["thankyou.config"].create(
+            {"min_donation_amount": 1000.0, "need_call": "after_sending", "send_mode": "auto_digital_only",}
+        )
+
 
     def test_success_stories_set(self):
         """ Pay some invoices and test the success stories are
@@ -94,6 +102,86 @@ class TestThankYouLetters(SavepointCase):
 
         # Mouse should not be thanked
         self.assertFalse(invoice_mouse.communication_id)
+
+    def test_multiple_donation_thankyou(self):
+        """send multiple donation of different config and expect communication
+        To be adapt to big donors as total pending donation goes over 1000CHF"""
+
+        # use the first thanks comm to avoid other issue (missing user_id reference in test db)
+        thanks_partner_comm1 = self.env["partner.communication.config"].search(
+            [("send_mode_pref_field", "like", "thankyou_preference")], limit=1)
+
+        thanks_partner_comm2 = thanks_partner_comm1.copy()
+
+        self.assertIsNot(thanks_partner_comm1, False)
+        self.assertIsNot(thanks_partner_comm2, False)
+
+        # create 2 products with identical communication and a 3rd one with
+        product1 = self.env["product.product"].create({
+            "name": "product1",
+            "partner_communication_config": thanks_partner_comm1.id,
+            "requires_thankyou": True
+        })
+
+        product2 = self.env["product.product"].create({
+            "name": "product2",
+            "partner_communication_config": thanks_partner_comm1.id,
+            "requires_thankyou": True
+        })
+
+        product3 = self.env["product.product"].create({
+            "name": "product3",
+            "partner_communication_config": thanks_partner_comm2.id,
+            "requires_thankyou": True
+        })
+
+        self.assertIsNot(product1, False)
+        self.assertIsNot(product2, False)
+
+        partner = self.env["res.partner"].create({
+            "name": "test partner"
+        })
+
+        invoice1 = self.create_invoice(partner.id, product1.id, 300)
+        self.pay_invoice(invoice1)
+
+        all_existing_comm = self.env["partner.communication.job"].search(
+            [
+                ("partner_id", "=", partner.id),
+                ("state", "in", ("call", "pending")),
+                ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
+            ])
+
+        self.assertEqual(len(all_existing_comm), 1)
+        self.assertEqual(thanks_partner_comm1.id, product1.partner_communication_config.id)
+
+        invoice2 = self.create_invoice(partner.id, product2.id, 400)
+        self.pay_invoice(invoice2)
+
+        all_existing_comm = self.env["partner.communication.job"].search(
+            [
+                ("partner_id", "=", partner.id),
+                ("state", "in", ("call", "pending")),
+                ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
+            ])
+
+        self.assertEqual(len(all_existing_comm), 1)
+
+        comm_to_watch = all_existing_comm[0]
+        prev_need_call = comm_to_watch.need_call
+
+        invoice3 = self.create_invoice(partner.id, product3.id, 400)
+        self.pay_invoice(invoice3)
+
+        all_existing_comm = self.env["partner.communication.job"].search(
+            [
+                ("partner_id", "=", partner.id),
+                ("state", "in", ("call", "pending")),
+                ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
+            ])
+
+        self.assertEqual(len(all_existing_comm), 2)
+        self.assertNotEqual(prev_need_call, comm_to_watch.need_call)
 
     def create_invoice(self, partner_id, product_id, amount):
         invoice = self.env["account.invoice"].create(
