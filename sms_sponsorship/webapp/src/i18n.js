@@ -11,7 +11,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting 1child to 959. This service is free of charge. Thank you!",
                     "error_noService": "Thanks for your interest. Due to the high demand right now, the process of your request takes more time than usual. Please click the bellow button in a moment. Thank you!",
-                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
+                    "error_sponsorshipAlreadyMade": "This child is already sponsorized! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Sponsor a child from our website",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
@@ -87,7 +87,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_noService": "Merci pour votre intérêt. En raison de la demande élevée, le traitement de votre requête prend un peu plus de temps que prévu. Merci de cliquer sur le bouton ci-dessous dans quelques instants.",
-                    "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
+                    "error_sponsorshipAlreadyMade": "Cet enfant est déjà sponsorisé ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Rafraichir la page",
                     "error_sponsorFromWebsite": "Parrainer depuis le site internet",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
@@ -156,7 +156,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
+                    "error_sponsorshipAlreadyMade": "Dieses Kind hat schon einen Paten/Patin. <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
                     "error_noService": "Schön, dass du dran bist. Der Server läuft heiss, aufgrund der vielen Anfragen. Es braucht gerade ein bisschen Geduld. Bitte klicke gleich auf den Button unten. Danke!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
@@ -227,7 +227,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Errore: questa richiesta non è valida. <br/><br/>Si prega di riprovare per ottenere un link valido mandando SMS a 1bambino al 959. l'SMS è gratuito. Grazie! \n",
                     "error_noService": "Errore: il servizio non è disponibile in questo momento.<br/><br/>Riprova tra qualche minuto. Grazie!",
-                    "error_sponsorshipAlreadyMade": "Grazie! Sostieni già questo bambino. <br/><br/>Se vuoi sostenerne un altro invia nuovamente un SMS a 1bambino al 959",
+                    "error_sponsorshipAlreadyMade": "Questo bambino ha già un sostenitore ! <br/><br/>Se vuoi sostenerne un altro invia nuovamente un SMS a 1bambino al 959",
                     "error_refresh": "Aggiorna la pagina",
                     "error_sponsorFromWebsite": "Sostieni dal nostro sito web",
                     "error_websiteUrl": "https://compassion.ch/it/sostieni-un-bambino/",
@@ -281,7 +281,7 @@ i18n
                     // SuccessMessage.js
                     "successTitle": "Hai scelto di sostenere {{preferred_name}}",
                     "successMessage1": "Juhu! {{preferred_name}} presto riceverà la buona notizia che sei il suo sostenitore.",
-                    "successMessage2": "Ci vuole ancora qualche passo per confermare il sostegno, ma non ti preoccupare: riceverai tutti i dettagli via e-mail in modo da poter completare la registrazione quando avrai il tempo. Grazie!",
+                    "successMessage2": "Ci vuole ancora qualche passo per confermare il sostegno, non ti preoccupare: invieremo tutti i dettagli al tuo indirizzo e-mail. Potrai completare la registrazione quando avrai il tempo. Grazie!",
                     // LangDialog.js
                     "langTitle": "Scegli la tua lingua",
                     "langAction": "Cambia lingua",

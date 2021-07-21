@@ -131,8 +131,14 @@ class TextFields extends React.Component {
         const {preferred_name, image_url} = this.props.appContext.state.child;
         this.props.appContext.setState({child: false});
         jsonRPC(url, data, (res) => {
-            if (JSON.parse(res.responseText).result.result === 'success') {
-                this.props.appContext.setState({success: {preferred_name: preferred_name, image_url: image_url}});
+            switch(JSON.parse(res.responseText).result.result) {
+                case 'success': 
+                    this.props.appContext.setState({success: {preferred_name: preferred_name, image_url: image_url}});
+                    break;
+                case 'failure':
+                    this.props.appContext.getChild();
+                    break;
+                default:
             }
         });
     };
