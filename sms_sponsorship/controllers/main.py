@@ -37,6 +37,13 @@ def get_child_request(request_id, lang=None):
         )
     return sms_request.with_context(lang=lang_code)
 
+def has_child_active_sms_request_procedure(child_id: int) -> bool:
+    number_active_sms_child_requests_for_child = request.env["sms.child.request"].sudo().search_count([
+        ("child_id", "=", child_id),
+        '|', ('sponsorship_confirmed', '=', True),
+        ('state', '=like', 'step_')  # If the request is at step1 or step2
+    ])
+    return number_active_sms_child_requests_for_child != 0
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
@@ -77,7 +84,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         sms_child_request = get_child_request(child_request_id, lang=lang)
         if not sms_child_request or sms_child_request.state == "expired":
             return {"invalid_sms_child_request": True}
-        if sms_child_request.sponsorship_confirmed:
+        if (sms_child_request.sponsorship_confirmed or
+                has_child_active_sms_request_procedure(sms_child_request.child_id.id)):
             return {"sponsorship_confirmed": True}
 
         # No child for this request, we try to fetch one
@@ -118,6 +126,10 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         sms_child_request = get_child_request(child_request_id)
         if sms_child_request:
             sms_child_request.ensure_one()
+
+            if has_child_active_sms_request_procedure(sms_child_request.child_id.id):
+                return {"result": "failure"}
+
             body["mobile"] = sms_child_request.sender
             partner = (
                 sms_child_request.partner_id if sms_child_request.partner_id else False
