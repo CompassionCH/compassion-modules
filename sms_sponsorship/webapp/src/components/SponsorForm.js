@@ -147,27 +147,7 @@ class TextFields extends React.Component {
                 <Typography variant="title" style={{color: '#555555', marginLeft: '8px'}}>
                     {t("coordinates")}
                 </Typography>
-                <div style={{marginTop: '25px'}}>
-                        <Button variant="outlined"
-                            onClick={() => {
-                                let sponsor_form = document.forms.sponsor_form;
-                                partner.firstname = '';
-                                partner.lastname = '';
-                                partner.email = '';
-                                sponsor_form.email2.value = '';
-                                this.setState({
-                                    partner: partner,
-                                });
-                            }
-                            }
-                            color="primary"
-                            size="medium"
-                            fullWidth
-                    >
-                        {t('newSponsor')}
-                    </Button>
-                </div>
-                <form id="sponsor_form" className={classes.container} noValidate autoComplete="off">
+                    <form id="sponsor_form" className={classes.container} noValidate autoComplete="off">
                     <TextField
                         id="firstname"
                         label={t("firstname")}
