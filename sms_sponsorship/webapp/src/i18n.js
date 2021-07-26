@@ -18,7 +18,7 @@ i18n
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
-                    "notMatchCriteria": "Could not found a child with given criteria.",
+                    "notMatchCriteria": "Could not find a child with given criteria.",
                     // ChildCard.js
                     "cardTitle": "Sponsor a child",
                     "age": "Age",
@@ -94,7 +94,7 @@ i18n
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères. Merci de patienter quelques secondes...",
                     "ageYears": " ans",
-                    "notMatchCriteria": "Could not found a child with given criteria.",
+                    "notMatchCriteria": "Impossible de trouver un enfant avec les critères donnés.",
                     // ChildCard.js
                     "cardTitle": "Parrainer un enfant",
                     "age": "Age",
@@ -164,7 +164,7 @@ i18n
                     "waitingForChild": "Bitte warte ein paar Sekunden, wir suchen ein Kind, das auf einen Paten wartet ...",
                     "waitingForOtherChild": "Wir suchen ein Kind, das zu dir passt, bitte warte ein paar Sekunden ...",
                     "ageYears": " Jahre",
-                    "notMatchCriteria": "Could not found a child with given criteria.",
+                    "notMatchCriteria": "Es konnte kein Kind mit den angegebenen Kriterien gefunden werden.",
                     // ChildCard.js
                     "cardTitle": "Ein Kind unterstützen",
                     "age": "Alter",
@@ -234,7 +234,7 @@ i18n
                     "waitingForChild": "Stiamo cercando un bambino in attesa di un sostenitore, per favore aspetta qualche secondo ...",
                     "waitingForOtherChild": "Stiamo cercando un bambino che corrisponda alla tua richiesta, per favore aspetta qualche secondo ...",
                     "ageYears": " anni",
-                    "notMatchCriteria": "Could not found a child with given criteria.",
+                    "notMatchCriteria": "Impossibile trovare un bambino con i criteri indicati.",
                     // ChildCard.js
                     "cardTitle": "Sostieni un bambino",
                     "age": "Età",
