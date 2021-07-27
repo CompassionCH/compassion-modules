@@ -11,7 +11,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting 1child to 959. This service is free of charge. Thank you!",
                     "error_noService": "Thanks for your interest. Due to the high demand right now, the process of your request takes more time than usual. Please click the bellow button in a moment. Thank you!",
-                    "error_sponsorshipAlreadyMade": "This child is already sponsorized! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
+                    "error_sponsorshipAlreadyMade": "This child is already sponsored! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Sponsor a child from our website",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
@@ -87,7 +87,7 @@ i18n
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_noService": "Merci pour votre intérêt. En raison de la demande élevée, le traitement de votre requête prend un peu plus de temps que prévu. Merci de cliquer sur le bouton ci-dessous dans quelques instants.",
-                    "error_sponsorshipAlreadyMade": "Cet enfant est déjà sponsorisé ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
+                    "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Rafraichir la page",
                     "error_sponsorFromWebsite": "Parrainer depuis le site internet",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
