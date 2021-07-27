@@ -18,6 +18,7 @@ i18n
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
+                    "notMatchCriteria": "Could not find a child with given criteria.",
                     // ChildCard.js
                     "cardTitle": "Sponsor a child",
                     "age": "Age",
@@ -35,7 +36,6 @@ i18n
                     "emailConfirm": "Confirm your email address",
                     "sponsorshipPlus": "Sponsorship plus",
                     "otherChild": "Other child",
-                    "newSponsor": "New sponsor",
                     "sponsorNow": "Sponsor {{name}}",
                     "error_invalidMail": "Please verify that you put a valid e-mail address.",
                     "error_missingFirstname": "Please enter your first name",
@@ -94,6 +94,7 @@ i18n
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères. Merci de patienter quelques secondes...",
                     "ageYears": " ans",
+                    "notMatchCriteria": "Impossible de trouver un enfant avec les critères donnés.",
                     // ChildCard.js
                     "cardTitle": "Parrainer un enfant",
                     "age": "Age",
@@ -111,7 +112,6 @@ i18n
                     "emailConfirm": "Confirmez votre addresse e-mail",
                     "sponsorshipPlus": "Parrainage plus",
                     "otherChild": "Choisir un autre enfant",
-                    "newSponsor": "Nouveau parrain",
                     "sponsorNow": "Parrainer {{name}}",
                     "error_invalidMail": "Merci de vérifier la validité de votre adresse e-mail",
                     "error_missingFirstname": "Veuillez renseigner votre prénom",
@@ -164,6 +164,7 @@ i18n
                     "waitingForChild": "Bitte warte ein paar Sekunden, wir suchen ein Kind, das auf einen Paten wartet ...",
                     "waitingForOtherChild": "Wir suchen ein Kind, das zu dir passt, bitte warte ein paar Sekunden ...",
                     "ageYears": " Jahre",
+                    "notMatchCriteria": "Es konnte kein Kind mit den angegebenen Kriterien gefunden werden.",
                     // ChildCard.js
                     "cardTitle": "Ein Kind unterstützen",
                     "age": "Alter",
@@ -181,7 +182,6 @@ i18n
                     "emailConfirm": "Bestätige deine E-Mail",
                     "sponsorshipPlus": "Patenschaft Plus",
                     "otherChild": "Ein anderes Kind unterstützen",
-                    "newSponsor": "Anderer Pate",
                     "sponsorNow": "{{name}} unterstützen",
                     "error_invalidMail": "Bitte Bestätige deine E-Mail-Adresse",
                     "error_missingFirstname": "Bitte fügen deinen Vornamen hinzu",
@@ -234,6 +234,7 @@ i18n
                     "waitingForChild": "Stiamo cercando un bambino in attesa di un sostenitore, per favore aspetta qualche secondo ...",
                     "waitingForOtherChild": "Stiamo cercando un bambino che corrisponda alla tua richiesta, per favore aspetta qualche secondo ...",
                     "ageYears": " anni",
+                    "notMatchCriteria": "Impossibile trovare un bambino con i criteri indicati.",
                     // ChildCard.js
                     "cardTitle": "Sostieni un bambino",
                     "age": "Età",
@@ -251,7 +252,6 @@ i18n
                     "emailConfirm": "Conferma il tuo indirizzo Email",
                     "sponsorshipPlus": "Sostegno Plus",
                     "otherChild": "Sostieni un altro bambino",
-                    "newSponsor": "Nuovo sostenitore",
                     "sponsorNow": "Sostieni {{name}}",
                     "error_invalidMail": "Per favore verifica che hai inserito un indirizzo Email valido",
                     "error_missingFirstname": "Per favore inserisci il tuo nome",

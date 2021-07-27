@@ -17,7 +17,7 @@ from werkzeug.exceptions import NotFound
 from odoo.addons.mobile_app_connector.controllers.mobile_app_controller import _get_lang
 
 from odoo import _
-from odoo.http import request, route, Controller
+from odoo.http import request, route, Controller, Response
 
 _logger = logging.getLogger(__name__)
 
@@ -181,7 +181,8 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         if tw:
             sms_child_request.write(tw)
 
-        sms_child_request.change_child()
+        if not sms_child_request.change_child():
+            return {"code": 416, "Error": "Could not found a child with given criteria."}
 
     # STEP 2
     ########
