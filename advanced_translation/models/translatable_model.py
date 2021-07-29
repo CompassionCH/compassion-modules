@@ -96,7 +96,10 @@ class AdvancedTranslatable(models.AbstractModel):
             values = self.mapped(field)
         if isinstance(values, list):
             seen = set()
-            values = [x for x in values if not (x in seen or seen.add(x))]
+            values = [
+                x for x in values if not (x in seen or seen.add(x))
+                and x != _("Unknown")
+            ]
             if len(values) > limit:
                 if substitution:
                     return substitution
