@@ -46,8 +46,9 @@ class HrLeave(models.Model):
         if employee_id:
             employee = self.env['hr.employee'].browse(employee_id)
             res = employee.get_work_days_data(date_from, date_to)
-            # we extract the hour instead of the day. dividing the total leave hours by 8
+            # we extract the hour instead of the day. dividing the total leave hours by default hours per day
             # allows us to take into account employees that work part time (instead of subtracting whole days)
-            return res['hours'] / 8.0
+            return res['hours'] / self.env["res.config.settings"].sudo().search(
+                [("resource_calendar_id", "!=", False)], limit=1).resource_calendar_id.hours_per_day
 
         return super()._get_number_of_days(date_from, date_to, employee_id)
