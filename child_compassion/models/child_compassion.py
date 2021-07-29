@@ -536,14 +536,12 @@ class CompassionChild(models.Model):
         - At least two pictures
         - Difference between two last pictures is at least 6 months
         - Last picture is no older than 6 months
-        :return: True
         """
-        res = True
         # Update child's pictures
         for child in self:
-            res = child._get_last_pictures() and res
             pictures = child.pictures_ids
-            if res and len(pictures) > 1:
+            # last_picture return false is there is no new pictures
+            if child._get_last_pictures() and len(pictures) > 1:
                 today = date.today()
                 last_photo = pictures[1].date
                 new_photo = pictures[0].date
@@ -553,7 +551,6 @@ class CompassionChild(models.Model):
                     diff_today.months <= 6 and diff_today.years == 0
                 ):
                     child.new_photo()
-        return res
 
     # Lifecycle methods
     ###################
