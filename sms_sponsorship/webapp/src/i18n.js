@@ -11,13 +11,14 @@ i18n
                     // App.js
                     "error_noRequestID": "Error : this request is invalid or has expired. <br/>Please try again to get a valid link by texting 1child to 959. This service is free of charge. Thank you!",
                     "error_noService": "Thanks for your interest. Due to the high demand right now, the process of your request takes more time than usual. Please click the bellow button in a moment. Thank you!",
-                    "error_sponsorshipAlreadyMade": "You already sponsored this child, thank you! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
+                    "error_sponsorshipAlreadyMade": "This child is already sponsored! <br/><br/> If you want to sponsor another child, please text again 1child to 959. This service is free of charge.",
                     "error_refresh": "Refresh page",
                     "error_sponsorFromWebsite": "Sponsor a child from our website",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
                     "waitingForChild": "we are looking for a child waiting for a sponsor, please wait a few seconds...",
                     "waitingForOtherChild": "we are looking for a child matching your request, please wait a few seconds...",
                     "ageYears": " years",
+                    "notMatchCriteria": "Could not find a child with given criteria.",
                     // ChildCard.js
                     "cardTitle": "Sponsor a child",
                     "age": "Age",
@@ -35,7 +36,6 @@ i18n
                     "emailConfirm": "Confirm your email address",
                     "sponsorshipPlus": "Sponsorship plus",
                     "otherChild": "Other child",
-                    "newSponsor": "New sponsor",
                     "sponsorNow": "Sponsor {{name}}",
                     "error_invalidMail": "Please verify that you put a valid e-mail address.",
                     "error_missingFirstname": "Please enter your first name",
@@ -87,13 +87,14 @@ i18n
                     // App.js
                     "error_noRequestID": "Erreur : requête invalide ou expirée. <br/>Pour recevoir un nouveau lien valide, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_noService": "Merci pour votre intérêt. En raison de la demande élevée, le traitement de votre requête prend un peu plus de temps que prévu. Merci de cliquer sur le bouton ci-dessous dans quelques instants.",
-                    "error_sponsorshipAlreadyMade": "Vous avez déjà parrainé cet enfant ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
+                    "error_sponsorshipAlreadyMade": "Cet enfant est déjà parrainé ! <br/><br/> Si vous souhaitez parrainer un autre enfant, merci d'envoyer 1enfant par SMS au 959. Ce SMS est gratuit.",
                     "error_refresh": "Rafraichir la page",
                     "error_sponsorFromWebsite": "Parrainer depuis le site internet",
                     "error_websiteUrl": "https://www.compassion.ch/parrainer",
                     "waitingForChild": "Merci de patienter quelques secondes pendant que nous recherchons un enfant en attente d'un parrain...",
                     "waitingForOtherChild": "Nous recherchons un enfant qui correspond à vos critères. Merci de patienter quelques secondes...",
                     "ageYears": " ans",
+                    "notMatchCriteria": "Impossible de trouver un enfant avec les critères donnés.",
                     // ChildCard.js
                     "cardTitle": "Parrainer un enfant",
                     "age": "Age",
@@ -111,7 +112,6 @@ i18n
                     "emailConfirm": "Confirmez votre addresse e-mail",
                     "sponsorshipPlus": "Parrainage plus",
                     "otherChild": "Choisir un autre enfant",
-                    "newSponsor": "Nouveau parrain",
                     "sponsorNow": "Parrainer {{name}}",
                     "error_invalidMail": "Merci de vérifier la validité de votre adresse e-mail",
                     "error_missingFirstname": "Veuillez renseigner votre prénom",
@@ -156,7 +156,7 @@ i18n
                 translations: {
                     // App.js
                     "error_noRequestID": "Fehler: Diese Anfrage ist ungültig. <br/> Bitte versuche es erneut: um einen gültigen Link zu erhalten, sende 1Kind an 959. Danke!",
-                    "error_sponsorshipAlreadyMade": "Du bist bereits Pate/Patin von diesem Kind. Danke! <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
+                    "error_sponsorshipAlreadyMade": "Dieses Kind hat schon einen Paten/Patin. <br/><br/>Wenn du ein weiteres Kind unterstützen möchtest, sende bitte erneut 1Kind an 959.",
                     "error_noService": "Schön, dass du dran bist. Der Server läuft heiss, aufgrund der vielen Anfragen. Es braucht gerade ein bisschen Geduld. Bitte klicke gleich auf den Button unten. Danke!",
                     "error_refresh": "Seite aktualisieren",
                     "error_sponsorFromWebsite": "Auf der Website eine Patenschaft abschliessen",
@@ -164,6 +164,7 @@ i18n
                     "waitingForChild": "Bitte warte ein paar Sekunden, wir suchen ein Kind, das auf einen Paten wartet ...",
                     "waitingForOtherChild": "Wir suchen ein Kind, das zu dir passt, bitte warte ein paar Sekunden ...",
                     "ageYears": " Jahre",
+                    "notMatchCriteria": "Es konnte kein Kind mit den angegebenen Kriterien gefunden werden.",
                     // ChildCard.js
                     "cardTitle": "Ein Kind unterstützen",
                     "age": "Alter",
@@ -181,7 +182,6 @@ i18n
                     "emailConfirm": "Bestätige deine E-Mail",
                     "sponsorshipPlus": "Patenschaft Plus",
                     "otherChild": "Ein anderes Kind unterstützen",
-                    "newSponsor": "Anderer Pate",
                     "sponsorNow": "{{name}} unterstützen",
                     "error_invalidMail": "Bitte Bestätige deine E-Mail-Adresse",
                     "error_missingFirstname": "Bitte fügen deinen Vornamen hinzu",
@@ -227,13 +227,14 @@ i18n
                     // App.js
                     "error_noRequestID": "Errore: questa richiesta non è valida. <br/><br/>Si prega di riprovare per ottenere un link valido mandando SMS a 1bambino al 959. l'SMS è gratuito. Grazie! \n",
                     "error_noService": "Errore: il servizio non è disponibile in questo momento.<br/><br/>Riprova tra qualche minuto. Grazie!",
-                    "error_sponsorshipAlreadyMade": "Grazie! Sostieni già questo bambino. <br/><br/>Se vuoi sostenerne un altro invia nuovamente un SMS a 1bambino al 959",
+                    "error_sponsorshipAlreadyMade": "Questo bambino ha già un sostenitore ! <br/><br/>Se vuoi sostenerne un altro invia nuovamente un SMS a 1bambino al 959",
                     "error_refresh": "Aggiorna la pagina",
                     "error_sponsorFromWebsite": "Sostieni dal nostro sito web",
                     "error_websiteUrl": "https://compassion.ch/it/sostieni-un-bambino/",
                     "waitingForChild": "Stiamo cercando un bambino in attesa di un sostenitore, per favore aspetta qualche secondo ...",
                     "waitingForOtherChild": "Stiamo cercando un bambino che corrisponda alla tua richiesta, per favore aspetta qualche secondo ...",
                     "ageYears": " anni",
+                    "notMatchCriteria": "Impossibile trovare un bambino con i criteri indicati.",
                     // ChildCard.js
                     "cardTitle": "Sostieni un bambino",
                     "age": "Età",
@@ -251,7 +252,6 @@ i18n
                     "emailConfirm": "Conferma il tuo indirizzo Email",
                     "sponsorshipPlus": "Sostegno Plus",
                     "otherChild": "Sostieni un altro bambino",
-                    "newSponsor": "Nuovo sostenitore",
                     "sponsorNow": "Sostieni {{name}}",
                     "error_invalidMail": "Per favore verifica che hai inserito un indirizzo Email valido",
                     "error_missingFirstname": "Per favore inserisci il tuo nome",
@@ -281,7 +281,7 @@ i18n
                     // SuccessMessage.js
                     "successTitle": "Hai scelto di sostenere {{preferred_name}}",
                     "successMessage1": "Juhu! {{preferred_name}} presto riceverà la buona notizia che sei il suo sostenitore.",
-                    "successMessage2": "Ci vuole ancora qualche passo per confermare il sostegno, ma non ti preoccupare: riceverai tutti i dettagli via e-mail in modo da poter completare la registrazione quando avrai il tempo. Grazie!",
+                    "successMessage2": "Ci vuole ancora qualche passo per confermare il sostegno, non ti preoccupare: invieremo tutti i dettagli al tuo indirizzo e-mail. Potrai completare la registrazione quando avrai il tempo. Grazie!",
                     // LangDialog.js
                     "langTitle": "Scegli la tua lingua",
                     "langAction": "Cambia lingua",
