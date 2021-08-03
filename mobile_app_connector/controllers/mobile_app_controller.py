@@ -20,6 +20,8 @@ from odoo import http, _
 from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 from odoo.http import request
 
+from base64 import b64decode
+
 _logger = logging.getLogger(__name__)
 
 
@@ -31,8 +33,8 @@ def _get_lang(req, params):
 
 
 class RestController(http.Controller):
-    @http.route("/mobile-app-api/login", type="json", methods=["GET"], auth="public")
-    def mobile_app_login(self, username, password, **kwargs):
+    @http.route("/mobile-app-api/login", type="json", methods=["GET", "POST"], auth="public")
+    def mobile_app_login(self, username=None, password=None, **kwargs):
         """
         This is the first entry point for logging, which will setup the
         session for the user so that he can later call the main entry point.
@@ -43,7 +45,14 @@ class RestController(http.Controller):
         :return: json user data
         """
         try:
-            request.session.authenticate(request.session.db, username, password)
+            if request.httprequest.method == "POST":
+                request_data = request.jsonrequest
+                request.session.authenticate(request.session.db,
+                                             request_data['username'],
+                                             b64decode(request_data['password']))
+            # TODO remove connection through GET once app update is old enough
+            elif request.httprequest.method == "GET":
+                request.session.authenticate(request.session.db, username, password)
             user = request.env.user
         except:
             _logger.warning("Wrong login attempt from the app for user %s", username)
