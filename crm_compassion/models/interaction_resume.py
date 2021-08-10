@@ -242,7 +242,7 @@ class InteractionResume(models.TransientModel):
         Check in each row if e-mail (outgoing) or message (incoming) contains
         at least 1 attachment.
         """
-        for row in self:
+        for row in self.sudo():
             row.has_attachment = (
                 row.email_id.attachment_ids or row.message_id.attachment_ids
             )
