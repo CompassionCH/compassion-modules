@@ -18,6 +18,9 @@
         <field name="model">holiday.closure</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button type="object" name="edit_holiday_template" string="Edit automatic reply template"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
