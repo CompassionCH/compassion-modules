@@ -17,6 +17,7 @@ class HolidayClosure(models.Model):
     _name = "holiday.closure"
     _description = "Holiday closure"
     _inherit = "translatable.model"
+    _rec_name = "holiday_name"
 
     start_date = fields.Date("Start of holiday", required=True)
     end_date = fields.Date("End of holiday", required=True)
@@ -71,3 +72,23 @@ class HolidayClosure(models.Model):
                 record.with_context(lang=lang).holiday_message = self.with_context(
                     lang=lang)._default_message()
         return res
+
+    def edit_holiday_template(self):
+        """ Shortcut to open the template. """
+        mail_template = self.env.ref("crm_request.business_closed_email_template")
+        res_model = "mail.template"
+        res_id = mail_template.id
+        config_model = "partner.communication.config"
+        partner_communication_installed = config_model in self.env
+        if partner_communication_installed:
+            res_model = config_model
+            res_id = self.env[config_model].search([
+                ("email_template_id", "=", res_id)
+            ]).id
+        return {
+            "type": 'ir.actions.act_window',
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": res_model,
+            "res_id": res_id,
+        }
