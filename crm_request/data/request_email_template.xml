@@ -11,16 +11,18 @@
             <field name="body_html" type="html">
                 <div>
                     % set claim = object
+                    % set partner = object.partner_id
                     % set closure = object.holiday_closure_id
                     % set holiday_name = closure.holiday_name
-                    % set date_start = closure.get_date('start_date')
-                    % set date_end = closure.get_date('end_date')
+                    % set start_date = closure.get_date('start_date')
+                    % set end_date = closure.get_date('end_date')
+                    % set reply_date = closure.get_date('reply_date')
                 </div>
                 <div>
                     Dear Compassion member,
                     <br/>
                     <br/>
-                    Our office is closed for ${holiday_name}, from the ${date_start} to the ${date_end}. You will get an answer as soon as we reopen.
+                    ${closure.holiday_message | safe}
                     <br/>
                     <br/>
                     Yours sincerely
@@ -40,7 +42,6 @@
                     % set claim = object
                 </div>
                 <div>
-                    <!-- TODO replace me here -->
                     TODO replace me
                 </div>
             </field>

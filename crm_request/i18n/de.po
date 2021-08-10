@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-10 12:35+0000\n"
-"PO-Revision-Date: 2021-08-10 15:26+0200\n"
+"PO-Revision-Date: 2021-08-10 15:27+0200\n"
 "Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
 "Language-Team: \n"
-"Language: fr_CH\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,11 +36,11 @@ msgid ""
 "</p>        \n"
 msgstr ""
 "\n"
-"<p>Merci pour votre message.</p>\n"
-"<p>Nous sommes impatients de répondre à nouveau à votre message à partir de "
-"${reply_date} .</p>\n"
-"<p>D’ici là, nous vous souhaitons de joyeuses fêtes.</p>\n"
-"<p>Meilleures salutations de toute l’équipe compassion</p>        \n"
+"<p>Vielen Dank für deine Nachricht.</p>\n"
+"<p>Wir freuen uns, deine Nachricht ab dem ${reply_date} wieder zu "
+"beantworten.</p>\n"
+"<p>Bis dahin wünschen wir dir schöne Festtage.</p>\n"
+"<p>Liebe Grüsse vom ganzen Compassion Team</p>        \n"
 
 #. module: crm_request
 #: model:mail.template,body_html:crm_request.volunteer_email_template
@@ -83,13 +83,13 @@ msgstr ""
 "                    % set date_end = closure.get_date('end_date')\n"
 "                </div>\n"
 "                <div>\n"
-"                    Bienvenue à Compassion.\n"
+"                    Willkommen bei Compassion.\n"
 "                    <br/>\n"
 "                    <br/>\n"
-"                    Nous nous réjouissons de répondre à nouveau à vos "
-"message le ${date_end}.<br/>\n"
-"                    D'ici là, nous vous souhaitons de belles fêtes.<br/>\n"
-"                    Meilleures salutations de toute l'équipe de Compassion.\n"
+"                    Wir freuen uns, Ihre Nachricht ab dem 17. Mai 2021 "
+"wieder zu beantworten. \n"
+"                    Bis dahin wünschen wir Ihnen schöne Festtage. Liebe "
+"Grüsse vom ganzen Compassion Team\n"
 "                    <br/>\n"
 "                    <br/>\n"
 "                </div>\n"
@@ -99,210 +99,211 @@ msgstr ""
 #: code:addons/crm_request/models/request.py:331
 #, python-format
 msgid "A support request require your attention"
-msgstr "Une demande de support nécessite votre attention"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_stage__active
 msgid "Active"
-msgstr "Actif"
+msgstr "Aktiv"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__alias_id
 msgid "Alias"
-msgstr "Alias"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
 msgid "Assign"
-msgstr "Affecter"
+msgstr "Zuweisen"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__user_id
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__user_id
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Assign to"
-msgstr "Assigner à..."
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
 msgid "Assigned to me"
-msgstr "Assigner à moi"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "Abbrechen"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Category"
-msgstr "Catégorie"
+msgstr "Kategorie"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim_category
 msgid "Category of claim"
-msgstr "Catégorie de demande"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Claim"
-msgstr "Demande"
+msgstr "Forderung"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__name
 msgid "Claim Subject"
-msgstr "Sujet de la Demande"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim_stage
 msgid "Claim stages"
-msgstr "Étapes de demande"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__color
 msgid "Color index"
-msgstr "Color index"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__create_uid
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__create_uid
 msgid "Created by"
-msgstr "Créé par"
+msgstr "Angelegt von"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__create_date
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__create_date
 msgid "Created on"
-msgstr "Créé le"
+msgstr "Angelegt am"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__date
 msgid "Date"
-msgstr "Date"
+msgstr "Datum"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__reply_date
 msgid "Date of first reply"
-msgstr "Date de la première réponse"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__description
 msgid "Description"
-msgstr "Description"
+msgstr "Beschreibung"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__display_name
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__display_name
 msgid "Display Name"
-msgstr "Nom affiché"
+msgstr "Anzeigename"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__email_origin
 msgid "Email Origin"
-msgstr "Email Origin"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_compose_message
 msgid "Email composition wizard"
-msgstr "Assistant de composition de courriel"
+msgstr "E-Mail Assistent"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__end_date
 msgid "End of holiday"
-msgstr "Fin des vacances"
+msgstr ""
 
 #. module: crm_request
 #: selection:holiday.closure,gender:0
 msgid "Female"
-msgstr "Fille"
+msgstr "Weiblich"
 
 #. module: crm_request
 #: code:addons/crm_request/models/mail_message.py:24
 #, python-format
 msgid "From"
-msgstr "De"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__gender
 msgid "Gender"
-msgstr "Genre"
+msgstr "Geschlecht"
 
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.crm_holiday_act
 #: model:ir.ui.menu,name:crm_request.menu_crm_holiday_act
 msgid "Holiday"
-msgstr "Vacances"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_message
+#| msgid "Message"
 msgid "Holiday Message"
-msgstr "Message de vacances"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_holiday_closure
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__holiday_closure_id
 msgid "Holiday closure"
-msgstr "Fermeture des fêtes"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_holiday_closure_tree
 msgid "Holiday periods"
-msgstr "Périodes de vacances"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.crm_holiday_act_menu
 msgid "Holidays"
-msgstr "Vacances"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__id
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__id
 msgid "ID"
-msgstr "Identifiant"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__ref
 msgid "Internal Reference"
-msgstr "Référence interne"
+msgstr "Interne Referenz"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__intern_note
 msgid "Internal note"
-msgstr "Note interne"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__keywords
 msgid "Keywords"
-msgstr "Mots-clés"
+msgstr "Schlüsselworter"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__language
 msgid "Language"
-msgstr "Langue"
+msgstr "Sprache"
 
 #. module: crm_request
 #: code:addons/crm_request/models/request.py:71
 #, python-format
 msgid "Language must be specified."
-msgstr "La langue doit être spécifiée."
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard____last_update
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure____last_update
 msgid "Last Modified on"
-msgstr "Dernière modification le"
+msgstr "Zuletzt verändert am"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__write_uid
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__write_uid
 msgid "Last Updated by"
-msgstr "Dernière mise à jour par"
+msgstr "Zuletzt aktualisiert durch"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_assign_request_wizard__write_date
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__write_date
 msgid "Last Updated on"
-msgstr "Dernière mise à jour le"
+msgstr "Zuletzt aktualisiert am"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_crm_claim_category__keywords
@@ -310,44 +311,42 @@ msgid ""
 "List of keywords (separated by a comma \",\") who could be contained in the "
 "demand subject"
 msgstr ""
-"Liste des mots-clés (séparés par une virgule \",\") qui pourraient être "
-"contenus dans l’objet de la demande"
 
 #. module: crm_request
 #: selection:holiday.closure,gender:0
 msgid "Male"
-msgstr "Garçon"
+msgstr "Männlich"
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_message
 msgid "Message"
-msgstr "Message"
+msgstr "Nachricht"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__holiday_name
 msgid "Name of holiday"
-msgstr "Nom de la fermeture"
+msgstr ""
 
 #. module: crm_request
 #: code:addons/crm_request/models/request.py:131
 #, python-format
 msgid "No partner aliases match: %s !"
-msgstr "Aucun alias de partenaire ne correspond : %s !"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__code
 msgid "Number"
-msgstr "Numéro"
+msgstr "Nummer"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.assign_request_wizard_form
 msgid "OK"
-msgstr "OK"
+msgstr ""
 
 #. module: crm_request
 #: model:mail.template,subject:crm_request.business_closed_email_template
 msgid "Office closed"
-msgstr "Bureau fermé"
+msgstr "Holiday response"
 
 #. module: crm_request
 #: code:addons/crm_request/models/request_category.py:36
@@ -356,30 +355,28 @@ msgid ""
 "One keyword must be unique over all types and not be included in another "
 "keyword"
 msgstr ""
-"Un mot clé doit être unique sur tous les types et ne pas être inclus dans un "
-"autre mot clé"
 
 #. module: crm_request
 #: code:addons/crm_request/models/mail_message.py:25
 #, python-format
 msgid "Original Message"
-msgstr "Message d’origine"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_mail_mail
 msgid "Outgoing Mails"
-msgstr "Courriels sortants"
+msgstr "Postausgang"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Partner"
-msgstr "Partenaire"
+msgstr ""
 
 #. module: crm_request
 #: code:addons/crm_request/models/holiday_closure.py:53
 #, python-format
 msgid "Please choose an end_date greater than the start_date"
-msgstr "Veuillez choisir une date de fin ultérieure à la date de début"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.actions.act_window,help:crm_request.request_action
@@ -390,17 +387,11 @@ msgid ""
 "may automatically be linked to an email address using the mail gateway "
 "module."
 msgstr ""
-"Enregistrez et suivez les demandes de vos clients. Les demandes peuvent être "
-"liées à une commande client ou à un lot. Vous pouvez envoyer des e-mails "
-"avec des pièces jointes et conserver l’historique complet d’une demande (e-"
-"mails envoyés, type d’intervention, etc.). Les demandes peuvent être "
-"automatiquement liées à une adresse e-mail à l’aide du module de passerelle "
-"de messagerie."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
 msgid "Reply"
-msgstr "Répondre"
+msgstr "Antworten"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_form_view_id
@@ -410,28 +401,28 @@ msgstr ""
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_crm_claim
 msgid "Request"
-msgstr "Demande"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model,name:crm_request.model_assign_request_wizard
 msgid "Request Assignation Wizard"
-msgstr "Assistant d'assignation"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.action_wizard_request_assign
 msgid "Request assign"
-msgstr "Assignation"
+msgstr ""
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
 msgid "Request open"
-msgstr "Demande ouverte"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.actions.act_window,name:crm_request.request_action
 #: model:ir.ui.menu,name:crm_request.menu_crm_case_claims
 msgid "Requests"
-msgstr "Demandes"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.actions.server,name:crm_request.crm_request_reminder_cron_ir_actions_server
@@ -439,62 +430,59 @@ msgstr "Demandes"
 #: model:ir.cron,name:crm_request.crm_request_reminder_cron
 msgid "Send weekly reminder to user for new or waiting support request"
 msgstr ""
-"Envoyer un rappel hebdomadaire à l’utilisateur pour une nouvelle demande de "
-"support ou une demande de support en attente"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__stage_id
 msgid "Stage"
-msgstr "Étape"
+msgstr "Stufe"
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_holiday_closure__start_date
 msgid "Start of holiday"
-msgstr "Début des vacances"
+msgstr ""
 
 #. module: crm_request
 #: code:addons/crm_request/models/mail_message.py:23
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim__subject
 #, python-format
 msgid "Subject"
-msgstr "Objet"
+msgstr "Betreff"
 
 #. module: crm_request
 #: model:ir.ui.menu,name:crm_request.support_root
 msgid "Support"
-msgstr "Support"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,field_description:crm_request.field_crm_claim_category__template_id
 msgid "Template"
-msgstr "Modèle"
+msgstr "Vorlage"
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_crm_claim__alias_id
 msgid "The destination email address that the contacts used."
-msgstr "Adresse e-mail de destination utilisée par les contacts."
+msgstr ""
 
 #. module: crm_request
 #: code:addons/crm_request/models/request.py:334
 #, python-format
 msgid "The request {} you were assigned to requires your attention."
 msgstr ""
-"La demande {} à laquelle vous avez été affecté nécessite votre attention."
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.crm_request_type_form
 msgid "Type"
-msgstr "Type"
+msgstr "Typ"
 
 #. module: crm_request
 #: model_terms:ir.ui.view,arch_db:crm_request.support_search_view
 msgid "Unassigned"
-msgstr "Non assigné"
+msgstr "Nicht zugewiesen"
 
 #. module: crm_request
 #: model:crm.claim.category,name:crm_request.category_undefined
 msgid "Undefined"
-msgstr "Indéfini"
+msgstr ""
 
 #. module: crm_request
 #: model:ir.model.fields,help:crm_request.field_holiday_closure__holiday_message
@@ -503,28 +491,25 @@ msgid ""
 "in the text with the holiday name, start date, end date or the date at which "
 "we will be able to answer again."
 msgstr ""
-"Utilisez ${holiday_name}, ${start_date}, ${end_date} et ${reply_date} pour "
-"remplacer dans le texte par le nom des vacances, la date de début, la date "
-"de fin ou la date à laquelle nous serons en mesure de répondre à nouveau."
 
 #. module: crm_request
 #: model:crm.claim.category,name:crm_request.category_volunteer
 #: model:mail.template,subject:crm_request.volunteer_email_template
 msgid "Volunteer"
-msgstr "Volontaire"
+msgstr ""
 
 #. module: crm_request
 #: model:crm.claim.stage,name:crm_request.stage_wait_support
 msgid "Waiting for support"
-msgstr "En attente de support"
+msgstr "Warten auf Unterstützung"
 
 #. module: crm_request
 #: model:crm.claim.stage,name:crm_request.stage_wait_customer
 msgid "Waiting on customer"
-msgstr "En attente du client"
+msgstr "Warten auf den Kunden"
 
 #. module: crm_request
 #: code:addons/crm_request/models/request.py:68
 #, python-format
 msgid "You can only reply if you set the partner."
-msgstr "Vous ne pouvez répondre que si vous définissez le partenaire."
+msgstr ""
