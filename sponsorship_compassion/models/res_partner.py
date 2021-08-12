@@ -259,7 +259,7 @@ class ResPartner(models.Model):
         res = super().write(vals)
 
         if "church_id" in vals:
-            self.update_number_sponsorships()
+            self.mapped("church_id").update_number_sponsorships()
 
         notify_vals = [
             "firstname",
