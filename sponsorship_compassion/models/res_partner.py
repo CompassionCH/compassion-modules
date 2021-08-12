@@ -257,6 +257,10 @@ class ResPartner(models.Model):
         if "firstname" in vals and "preferred_name" not in vals:
             vals["preferred_name"] = vals["firstname"]
         res = super().write(vals)
+
+        if "church_id" in vals:
+            self.mapped("church_id").update_number_sponsorships()
+
         notify_vals = [
             "firstname",
             "lastname",
