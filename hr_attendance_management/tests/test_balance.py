@@ -16,7 +16,7 @@ class TestAnnualBalance(SavepointCase):
 
         cls.jack = cls.env.ref("hr.employee_fme")
         cls.gilles = cls.env.ref("hr.employee_qdp")
-        cls.pieter = cls.env.ref("hr.employee_root")
+        cls.pieter = cls.env.ref("hr.employee_admin")
         cls.michael = cls.env.ref("hr.employee_niv")
 
         # Add work schedule (8h/work days) for Gilles, Jack and Michael
@@ -66,7 +66,26 @@ class TestAnnualBalance(SavepointCase):
             {"check_in": start_02, "check_out": stop_02, "employee_id": employee.id, }
         )
 
+    def clean_employee_work_history(self, employee):
+        employee.period_ids.unlink()
+
+        all_att = self.env["hr.attendance"].search(
+            [("employee_id", "=", employee.id)]
+        )
+        if all_att:
+            all_att.unlink()
+
+        all_att_days = self.env["hr.attendance.day"].search(
+            [("employee_id", "=", employee.id)]
+        )
+        if all_att_days:
+            all_att_days.unlink()
+
     def test_annual_no_limit(self):
+
+        self.clean_employee_work_history(self.jack)
+        self.clean_employee_work_history(self.michael)
+
         self.config.max_extra_hours = 2
         self.config.set_max_extra_hours()
         self.assertEqual(self.config.get_max_extra_hours(), 2)
@@ -82,7 +101,6 @@ class TestAnnualBalance(SavepointCase):
             self.create_att_day_for_date_with_supp_hours(self.wednesday, person, 1)
             self.create_att_day_for_date_with_supp_hours(self.thursday, person, 1)
             self.create_att_day_for_date_with_supp_hours(self.friday, person, 1)
-            person._compute_balance()
 
         # Both jack and michael have worked 5 days with 1 hours extra hours
         # each day.
@@ -111,8 +129,6 @@ class TestAnnualBalance(SavepointCase):
         self.env["hr.employee.period"].search(
             [("employee_id", "=", self.michael.id)]
         ).unlink()
-        # self.jack._cron_compute_annual_balance()
-        self.jack._compute_balance()
         # michael extra hours should be affected by the yearly cutoff
         self.assertEqual(self.jack.balance, 2)
         self.assertEqual(self.michael.balance, 5)
@@ -128,7 +144,5 @@ class TestAnnualBalance(SavepointCase):
             ].check_out + timedelta(
                 hours=3
             )
-        self.michael._compute_balance()
-        self.jack._compute_balance()
         self.assertEqual(self.jack.balance, 2)
         self.assertEqual(self.michael.balance, 7.75)

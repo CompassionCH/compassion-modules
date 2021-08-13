@@ -91,7 +91,14 @@ class HrAttendance(models.Model):
             att_day_updated = self
 
         res = super().write(vals)
-        att_day_updated._find_related_day()._compute_paid_hours()
+        att_day_updated._find_related_day().compute_breaks()
+        return res
+
+    @api.multi
+    def unlink(self):
+        related_att_days = self._find_related_day()
+        res = super().unlink()
+        related_att_days.compute_breaks()
         return res
 
     def _find_related_day(self):
