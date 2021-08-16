@@ -24,16 +24,16 @@ class FieldOffice(models.Model):
 
         country = other_params["country"]
         country_id = self.env["res.country"].search([("name", "=", country)])
-        field_office = self.search([("country_id", "=", country_id.id)])
+        field_office_ids = self.search([("country_id", "=", country_id.id)])
         res = []
-        for field_id in field_office.ids:
+        for field_id in field_office_ids:
             res.append(
                 {
-                    "ID": field_id,
+                    "ID": field_id.id,
                     "PROJECT_ID": country,
-                    "SUMMARY": field_office.learning_summary,
-                    "IMAGE": field_office.learning_image_url,
-                    "SCHEDULE": field_office._get_schedules_json(),
+                    "SUMMARY": field_id.learning_summary,
+                    "IMAGE": field_id.learning_image_url,
+                    "SCHEDULE": field_id._get_schedules_json(),
                 }
             )
         return res
