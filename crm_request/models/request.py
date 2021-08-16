@@ -123,9 +123,9 @@ class CrmClaim(models.Model):
         }
 
     def _get_partner_alias(self, partner, email):
-        if email and partner.email != email:
+        if email and partner.email.lower() != email.lower():
             for partner_alias in partner.other_contact_ids:
-                if partner_alias.email == email:
+                if partner_alias.email.lower() == email.lower():
                     return partner_alias
             # No match is found
             raise exceptions.Warning(_("No partner aliases match: %s !") % email)
