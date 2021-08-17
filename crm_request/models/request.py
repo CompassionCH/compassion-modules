@@ -94,14 +94,12 @@ class CrmClaim(models.Model):
             messages = self.mapped("message_ids").filtered(
                 lambda m: m.body
                 and (
-                    m.author_id == original_partner or partner in m.partner_ids)
+                    m.author_id == partner or partner in m.partner_ids)
             )
             if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
-                message = messages.filtered(lambda m: m.author_id == self.partner_id)[
-                    :1
-                ]
+                message = messages.filtered(lambda m: m.author_id == partner)[:1]
                 if message:
                     ctx["reply_quote"] = message.get_message_quote()
                     ctx["message_id"] = message.id
