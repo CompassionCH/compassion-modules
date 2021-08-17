@@ -65,7 +65,7 @@ class InteractionResume(models.TransientModel):
             self.env["res.partner"]
                 .search([("email", "!=", False), ("email", "=", email_address)])
                 .ids
-        )
+        ) + [partner_id] + original_partner.other_contact_ids.ids
 
         self.search([("partner_id", "in", partners_with_same_email_ids)]).unlink()
         self.env.cr.execute(

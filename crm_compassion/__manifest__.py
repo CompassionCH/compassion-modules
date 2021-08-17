@@ -40,6 +40,7 @@
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
         "mail_tracking",  # oca_addons/social
+        "partner_contact_in_several_companies",  # oca_addons/partner-contact
         "mass_mailing",
         "base_automation",
     ],
