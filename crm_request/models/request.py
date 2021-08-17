@@ -285,7 +285,7 @@ class CrmClaim(models.Model):
         try:
             code_lang = detectlanguage.simple_detect(text)
         except (IndexError, detectlanguage.DetectLanguageError):
-            # Language could not be detected
+            # Language could not be detected TODO CO-3737 move res.lang.compassion
             return self.env["res.lang.compassion"]
         for lang in langs:
             if lang.get("code") == code_lang:

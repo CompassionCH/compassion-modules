@@ -1,11 +1,13 @@
 ##############################################################################
 #
-#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
-#    @author: Quentin Gigon <gigon.quentin@gmail.com>
+#    Copyright (C) 2019-2021 Compassion CH (http://www.compassion.ch)
+#    @author: Quentin Gigon <gigon.quentin@gmail.com>, Emanuel Cino
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import datetime
+import re
 
 from pandas.tseries.offsets import BDay
 
@@ -25,9 +27,15 @@ class HolidayClosure(models.Model):
     holiday_name = fields.Char("Name of holiday", required=True, translate=True)
     holiday_message = fields.Html(
         default=lambda s: s._default_message(), translate=True, sanitize=False,
-        help="Use ${holiday_name}, ${start_date}, ${end_date} and ${reply_date} "
+        help="Use [holiday_name], [start_date], [end_date] and [reply_date] "
              "to replace in the text with the holiday name, start date, end date "
              "or the date at which we will be able to answer again.")
+    holiday_template_message = fields.Html(
+        compute="_compute_holiday_template_message",
+        help="Used in the template to replace keywords by actual values",
+        sanitize=False
+    )
+    signature = fields.Html(compute="_compute_signature", sanitize=False)
 
     @api.model
     def _default_message(self):
@@ -36,14 +44,11 @@ class HolidayClosure(models.Model):
     Thank you for your message.
 </p>
 <p>
-    We look forward to answering your message again from ${reply_date}.
+    We look forward to answering your message again from [reply_date].
 </p>
 <p>
     Until then, we wish you happy holidays.
-</p>
-<p>
-    Best regards from the whole Compassion team
-</p>        
+</p>       
 """)
 
     @api.constrains("end_date", "start_date")
@@ -53,6 +58,28 @@ class HolidayClosure(models.Model):
                 raise ValidationError(
                     _("Please choose an end_date greater than the start_date")
                 )
+
+    def _compute_holiday_template_message(self):
+        for holiday in self:
+            def var_replace(match):
+                value = getattr(holiday, match.group(1), "")
+                if isinstance(value, datetime.date):
+                    value = holiday.get_date(match.group(1), "date_full")
+                if not isinstance(value, str):
+                    value = str(value)
+                return value
+            holiday.holiday_template_message = re.sub(
+                r"\[(\w+)\]", var_replace, holiday.holiday_message
+            )
+
+    def _compute_signature(self):
+        user = self.env["res.users"]
+        template = self.get_holiday_template()
+        if template._name == "partner.communication.config":
+            omr_config = template.get_config_for_lang(self.env.lang)[0]
+            user = omr_config.user_id or template.user_id
+        for holiday in self:
+            holiday.signature = user.signature or _("The Compassion team")
 
     @api.onchange("end_date")
     def onchange_end_date(self):
@@ -75,20 +102,40 @@ class HolidayClosure(models.Model):
 
     def edit_holiday_template(self):
         """ Shortcut to open the template. """
-        mail_template = self.env.ref("crm_request.business_closed_email_template")
-        res_model = "mail.template"
-        res_id = mail_template.id
-        config_model = "partner.communication.config"
-        partner_communication_installed = config_model in self.env
-        if partner_communication_installed:
-            res_model = config_model
-            res_id = self.env[config_model].search([
-                ("email_template_id", "=", res_id)
-            ]).id
+        template = self.get_holiday_template()
         return {
             "type": 'ir.actions.act_window',
             "view_type": "form",
             "view_mode": "form",
-            "res_model": res_model,
-            "res_id": res_id,
+            "res_model": template._name,
+            "res_id": template.id,
+        }
+
+    @api.model
+    def get_holiday_template(self):
+        """ Returns the holiday template
+        (either the mail.template record or partner.communication.config if
+         the module is installed and a rule is linked to the it).
+        """
+        res = self.env.ref("crm_request.business_closed_email_template")
+        config_model = "partner.communication.config"
+        partner_communication_installed = config_model in self.env
+        if partner_communication_installed:
+            config = self.env[config_model].search([
+                ("email_template_id", "=", res.id)
+            ], limit=1)
+            if config:
+                res = config
+        return res
+
+    @api.multi
+    def open_preview(self):
+        return {
+            "name": "Preview",
+            "type": "ir.actions.act_window",
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": "holiday.closure.template.preview",
+            "context": self.env.context,
+            "target": "new",
         }

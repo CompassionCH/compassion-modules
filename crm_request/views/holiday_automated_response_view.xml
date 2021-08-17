@@ -1,6 +1,5 @@
 
 <odoo>
-
      <record id="crm_holiday_closure_tree" model="ir.ui.view">
         <field name="name">crm.holiday.closure.tree</field>
         <field name="model">holiday.closure</field>
@@ -22,6 +21,9 @@
                     <button type="object" name="edit_holiday_template" string="Edit automatic reply template"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="open_preview" icon="fa-search-plus" string="Preview" type="object"/>
+                    </div>
                     <group>
                         <group>
                             <field name="holiday_name"/>
@@ -32,10 +34,30 @@
                             <field name="reply_date"/>
                         </group>
                     </group>
+                    <div class="alert alert-info" role="alert">
+                        Use [holiday_name], [start_date], [end_date] and [reply_date] to replace in the text with the holiday name, start date, end date or the date at which we will be able to answer again.
+                        <br/>
+                        The salutation and the signature is automatically generated and is not needed here.
+                        <br/>
+                        If you edit the default message, please don't forget to enter the translations as well! Use the preview to check the final result.
+                    </div>
                     <group>
                         <field name="holiday_message"/>
                     </group>
                 </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm_holiday_closure_preview" model="ir.ui.view">
+        <field name="name">crm.holiday.closure.preview</field>
+        <field name="model">holiday.closure.template.preview</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-info" role="alert">
+                    The salutation is always in the language of the partner, so you will always see the salutation in your language.
+                </div>
+                <field name="preview_text"/>
             </form>
         </field>
     </record>
