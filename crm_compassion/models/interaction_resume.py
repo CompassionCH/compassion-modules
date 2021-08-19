@@ -65,7 +65,7 @@ class InteractionResume(models.TransientModel):
             self.env["res.partner"]
                 .search([("email", "!=", False), ("email", "=", email_address)])
                 .ids
-        )
+        ) + [partner_id] + original_partner.other_contact_ids.ids
 
         self.search([("partner_id", "in", partners_with_same_email_ids)]).unlink()
         self.env.cr.execute(
@@ -242,7 +242,7 @@ class InteractionResume(models.TransientModel):
         Check in each row if e-mail (outgoing) or message (incoming) contains
         at least 1 attachment.
         """
-        for row in self:
+        for row in self.sudo():
             row.has_attachment = (
                 row.email_id.attachment_ids or row.message_id.attachment_ids
             )

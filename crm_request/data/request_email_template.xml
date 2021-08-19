@@ -11,37 +11,17 @@
             <field name="body_html" type="html">
                 <div>
                     % set claim = object
+                    % set partner = object.partner_id
                     % set closure = object.holiday_closure_id
-                    % set holiday_name = closure.holiday_name
-                    % set date_start = closure.get_date('start_date')
-                    % set date_end = closure.get_date('end_date')
                 </div>
                 <div>
-                    Dear Compassion member,
+                    ${partner.salutation or "Dear friends of Compassion"},
                     <br/>
                     <br/>
-                    Our office is closed for ${holiday_name}, from the ${date_start} to the ${date_end}. You will get an answer as soon as we reopen.
+                    ${closure.holiday_template_message | safe}
                     <br/>
                     <br/>
-                    Yours sincerely
-                </div>
-            </field>
-        </record>
-        <record id="volunteer_email_template" model="mail.template">
-            <field name="name">Volunteer - Default</field>
-            <field name="model_id" ref="model_crm_claim"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="email_to">${object.email_from}</field>
-            <field name="lang">${object.language}</field>
-            <field name="reply_to">info@compassion.ch</field>
-            <field name="subject">Volunteer</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set claim = object
-                </div>
-                <div>
-                    <!-- TODO replace me here -->
-                    TODO replace me
+                    ${closure.signature | safe}
                 </div>
             </field>
         </record>

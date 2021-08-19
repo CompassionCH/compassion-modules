@@ -88,12 +88,10 @@ class ImportReview(models.TransientModel):
     @api.onchange("partner_id")
     def _get_default_sponsorship(self):
         self.ensure_one()
-        if self.partner_id:
-            sponsorships = self.env["recurring.contract"].search(
-                [("correspondent_id", "=", self.partner_id.id)]
-            )
-            if len(sponsorships) == 1:
-                self.sponsorship_id = sponsorships
+        if self.current_line_index is False:
+            self._compute_current_line()
+
+        self.sponsorship_id = self._get_sponsorship_from_line(self.current_line_index)
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -107,7 +105,7 @@ class ImportReview(models.TransientModel):
         self.write(
             {
                 "current_line_index": self.current_line_index + 1,
-                "sponsorship_id": False,
+                "sponsorship_id": self._get_sponsorship_from_line(self.current_line_index + 1).id,
             }
         )
         self.current_line_id.reviewed = True
@@ -141,3 +139,13 @@ class ImportReview(models.TransientModel):
             self.postpone_import_id = postpone_import
         self.current_line_id.import_id = postpone_import
         self.current_line_index += 1
+
+    def _get_sponsorship_from_line(self, line_idx):
+        import_line_id = self.env.context.get("line_ids")[line_idx]
+        import_line = self.env["import.letter.line"].browse(import_line_id)
+        # if no sponsorship are attached to current import line trigger the compute function
+        # to ensure the field was computed properly before it is used
+        if not import_line.sponsorship_id:
+            import_line._compute_sponsorship()
+
+        return import_line.sponsorship_id
