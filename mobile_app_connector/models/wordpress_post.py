@@ -8,6 +8,7 @@
 ##############################################################################
 import html
 import logging
+from urllib import parse
 
 from odoo import api, models, fields, _
 from ..tools import wp_requests
@@ -130,14 +131,13 @@ class WordpressPost(models.Model):
                         found_ids.append(post_id)
                         cached_post = self.search([("wp_id", "=", post_id)])
                         if cached_post:
-                            # TODO AP-377 FIX this code erases all categories of our
-                            #  news
-                            # cached_post.update_post_categories(post_data, requests)
+                            cached_post.update_post_categories(post_data, requests)
                             # Skip post already fetched
                             continue
 
                         content_empty = True
-                        self_url = post_data["_links"]["self"][0]["href"]
+                        self_url = self._fix_wp_api_url(
+                            post_data["_links"]["self"][0]["href"])
                         http_response = requests.get(self_url)
                         if http_response.ok:
                             content = http_response.json()
@@ -145,9 +145,8 @@ class WordpressPost(models.Model):
                                 content_empty = False
                         try:
                             # Fetch image for thumbnail
-                            image_json_url = post_data["_links"]["wp:featuredmedia"][0][
-                                "href"
-                            ]
+                            image_json_url = self._fix_wp_api_url(
+                                post_data["_links"]["wp:featuredmedia"][0]["href"])
                             image_json = requests.get(image_json_url).json()
                             if (
                                     ".jpg"
@@ -184,11 +183,25 @@ class WordpressPost(models.Model):
             # Delete unpublished posts
             self.search(
                 [("wp_id", "not in", found_ids), ("post_type", "=", post_type)]
-            ).unlink()
+            ).write({"display_on_hub": False})
             _logger.info("Fetch Wordpress Posts finished!")
         except ValueError:
             _logger.warning("Error fetching wordpress posts", exc_info=True)
         return True
+
+    def _fix_wp_api_url(self, url):
+        """
+        Sometimes the URL starts with language and makes the fetch fail
+        (compassion.ch/it/wp-json) -> remove everything before wp-json and returns
+        the URL
+        :param url: URL to check
+        :return: URL cleaned
+        """
+        self_url = url
+        self_path = parse.urlparse(url).path
+        if not self_path.startswith("/wp-json"):
+            self_url = url.replace(self_path.split("/wp-json")[0], "")
+        return self_url
 
     def update_post_categories(self, post_data, requests):
         """
@@ -219,7 +232,7 @@ class WordpressPost(models.Model):
             category_data = [
                 d for d in post_data["_links"]["wp:term"] if d["taxonomy"] == "category"
             ][0]
-            category_json_url = category_data["href"]
+            category_json_url = self._fix_wp_api_url(category_data["href"])
 
             categories_request = requests.get(category_json_url).json()
             if not isinstance(categories_request, list):
