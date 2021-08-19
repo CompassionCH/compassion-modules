@@ -8,7 +8,7 @@
 #
 ##############################################################################
 import math
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from odoo import api, models, fields
 
@@ -197,7 +197,7 @@ class WeeklyDemand(models.Model):
     def _compute_resupply_sub(self):
         """ Compute SUB resupply. """
         sub_average = self._default_demand_sub()
-        today = datetime.date.today()
+        today = date.today()
         start_date = today - timedelta(weeks=STATS_DURATION)
         rejected_sub = (
             self.env["recurring.contract"]
