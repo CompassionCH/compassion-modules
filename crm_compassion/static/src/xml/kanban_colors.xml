@@ -1,0 +1,41 @@
+<template>
+    <t t-extend="FieldMany2ManyTag">
+        <t t-jquery="t[t-set='colornames']" t-operation="attributes">
+            <attribute name="value">['No color', 'Red', 'Orange', 'Yellow', 'Light blue', 'Dark purple', 'Salmon pink', 'Medium blue', 'Dark blue', 'Fushia', 'Green', 'Purple', 'Dark red', 'Blue', 'Red', 'Brown', 'Green', 'Light yellow', 'Beige', 'Pastel green', 'Tommy blue', 'Dark grey', 'Dark violet', 'Dark brown', 'Greyish blue']</attribute>
+        </t>
+    </t>
+    <t t-extend="FieldMany2ManyTag.colorpicker">
+        <t t-jquery=".o_tag_color_11" t-operation="after">
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_12" data-color="12" title="Dark red" aria-label="Dark red"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_13" data-color="13" title="Blue" aria-label="Blue"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_14" data-color="14" title="Red" aria-label="Red"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_15" data-color="15" title="Brown" aria-label="Brown"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_16" data-color="16" title="Green" aria-label="Green"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_17" data-color="17" title="Light yellow" aria-label="Light yellow"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_18" data-color="18" title="Beige" aria-label="Beige"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_19" data-color="19" title="Pastel green" aria-label="Pastel green"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_20" data-color="20" title="Tommy blue" aria-label="Tommy blue"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_21" data-color="21" title="Dark grey" aria-label="Dark grey"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_22" data-color="22" title="Dark violet" aria-label="Dark violet"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_23" data-color="23" title="Dark brown" aria-label="Dark brown"/></li>
+            <li><a role="menuitem" href="#" t-att-data-id="tag_id" class="o_tag_color_24" data-color="24" title="Greyish blue" aria-label="Greyish blue"/></li>
+        </t>
+    </t>
+    <t t-extend="KanbanColorPicker">
+        <t t-jquery="li:last" t-operation="after">
+            <li><a role="menuitem" href="#" data-color="12" class="oe_kanban_color_12" title="Dark red" aria-label="Dark red"/></li>
+            <li><a role="menuitem" href="#" data-color="13" class="oe_kanban_color_13" title="Blue" aria-label="Blue"/></li>
+            <li><a role="menuitem" href="#" data-color="14" class="oe_kanban_color_14" title="Red" aria-label="Red"/></li>
+            <li><a role="menuitem" href="#" data-color="15" class="oe_kanban_color_15" title="Brown" aria-label="Brown"/></li>
+            <li><a role="menuitem" href="#" data-color="16" class="oe_kanban_color_16" title="Green" aria-label="Green"/></li>
+            <li><a role="menuitem" href="#" data-color="17" class="oe_kanban_color_17" title="Light yellow" aria-label="Light yellow"/></li>
+            <li><a role="menuitem" href="#" data-color="18" class="oe_kanban_color_18" title="Beige" aria-label="Beige"/></li>
+            <li><a role="menuitem" href="#" data-color="19" class="oe_kanban_color_19" title="Pastel green" aria-label="Pastel green"/></li>
+            <li><a role="menuitem" href="#" data-color="20" class="oe_kanban_color_20" title="Tommy blue" aria-label="Tommy blue"/></li>
+            <li><a role="menuitem" href="#" data-color="21" class="oe_kanban_color_21" title="Dark grey" aria-label="Dark grey"/></li>
+            <li><a role="menuitem" href="#" data-color="22" class="oe_kanban_color_22" title="Dark violet" aria-label="Dark violet"/></li>
+            <li><a role="menuitem" href="#" data-color="23" class="oe_kanban_color_23" title="Dark brown" aria-label="Dark brown"/></li>
+            <li><a role="menuitem" href="#" data-color="24" class="oe_kanban_color_24" title="Greyish blue" aria-label="Greyish blue"/></li>
+        </t>
+    </t>
+</template>

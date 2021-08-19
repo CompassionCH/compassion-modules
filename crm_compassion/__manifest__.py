@@ -50,6 +50,7 @@
         "data/demand_planning.xml",
         "security/crm_compassion_security.xml",
         "security/ir.model.access.csv",
+        "static/src/xml/assets.xml",
         "views/account_invoice_line.xml",
         "views/calendar_event_view.xml",
         "views/calendar_view.xml",
@@ -68,6 +69,9 @@
         "views/partner_log_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
+    ],
+    "qweb": [
+        "static/src/xml/kanban_colors.xml"
     ],
     "demo": [],
     "installable": True,
