@@ -48,7 +48,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     send_mode = fields.Selection("_send_mode_select", default="physical")
     customize_template = fields.Boolean()
     subject = fields.Char()
-    body_html = fields.Html(sanitize=False)
+    body_html = fields.Text()
     report_id = fields.Many2one(
         "ir.actions.report",
         "Letter template",
