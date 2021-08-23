@@ -27,6 +27,7 @@
     "Channel_Name": "channel",
     "GlobalPartner_ID": {
       "to_json_conversion": "self.env.user.company_id.country_id.code"
-    }
+    },
+    "HoldExpirationDate": "expiration_date"
   }
 }

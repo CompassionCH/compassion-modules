@@ -90,7 +90,9 @@ class Partner(models.Model):
             "res_model": "interaction.resume",
             "view_type": "form",
             "view_mode": "tree,form",
-            "domain": [("partner_id", "in", self.ids + partners_with_same_email_ids)],
+            "domain": [("partner_id", "in",
+                        self.ids + partners_with_same_email_ids +
+                        self.other_contact_ids.ids)],
             "target": "current",
         }
 

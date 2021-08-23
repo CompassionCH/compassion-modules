@@ -23,7 +23,7 @@ class IrActionsServer(models.Model):
         "partner.communication.config", "Communication type", readonly=False,
         domain="[('model_id', '=', model_id)]",
     )
-    partner_field = fields.Char(string="Partner field name")
+    partner_field = fields.Char(string="Partner field name ('self' for instance itself)")
 
     @api.model
     def run_action_communication(self, action, eval_context=None):
@@ -33,7 +33,13 @@ class IrActionsServer(models.Model):
 
         model_name = action.model_name
         if "records" in eval_context:
-            for partner in eval_context["records"].mapped(action.partner_field):
+
+            for raw_record in eval_context["records"]:
+
+                is_self = action.partner_field == "self"
+
+                partner = raw_record if is_self else raw_record[action.partner_field]
+
                 children = eval_context["records"]
                 records = self.env[model_name].search([
                     (action.partner_field, "=", partner.id),

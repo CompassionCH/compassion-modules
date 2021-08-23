@@ -10,6 +10,7 @@ import getRequestId from './components/getRequestId';
 import Message from './components/Message';
 import SuccessMessage from './components/SuccessMessage';
 import Button from "@material-ui/core/Button";
+import WarningMessage from './components/WarningMessage';
 
 const theme = createMuiTheme({
     palette: {
@@ -111,7 +112,26 @@ class Main extends React.Component {
         });
 
         jsonRPC(url, data, (res) => {
-            this.getChild();
+            if (res.response){
+                const r = JSON.parse(res.response);
+                if (r.result && r.result.code === 416){
+                    // Add warning message
+                    this.setState({
+                        notMatchCriteria: true,
+                        child:{
+                           'loading_other_child': false
+                        }
+                    });
+                    setTimeout(() => {
+                        this.setState({
+                            notMatchCriteria: false
+                        })
+                    }, 5000);
+                }
+                else{
+                    this.getChild();
+                }
+            }
         });
     };
 
@@ -229,6 +249,12 @@ class Main extends React.Component {
                                                     {!child.loading_other_child ? (
                                                         <div>
                                                             {child.has_a_child ? (
+
+                                                                <div>
+                                                                {this.state.notMatchCriteria ? (
+                                                                <WarningMessage text={t("notMatchCriteria")} />
+                                                                ):(<p/>)}
+
                                                                 <ChildCard centered
                                                                            name={child.name}
                                                                            preferredName={child.preferred_name}
@@ -239,6 +265,7 @@ class Main extends React.Component {
                                                                            appContext={this}
                                                                            t={t}
                                                                 />
+                                                                </div>
                                                             ):(
                                                                 <CenteredLoading text={t("waitingForChild")}/>
                                                             )}

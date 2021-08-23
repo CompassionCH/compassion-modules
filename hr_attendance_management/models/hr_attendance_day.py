@@ -462,8 +462,8 @@ class HrAttendanceDay(models.Model):
     def recompute_period_if_old_day(self):
         for day in self:
             employee_periods = day.employee_id.period_ids
-            period_of_day = employee_periods.search(
-                [("start_date", "<=", day.date), ("end_date", ">=", day.date)], limit=1
+            period_of_day = employee_periods.filtered(
+                lambda x: x.start_date <= day.date <= x.end_date
             )
             if period_of_day:
                 period_of_day.update_period()

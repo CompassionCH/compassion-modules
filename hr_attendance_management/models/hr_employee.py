@@ -83,7 +83,7 @@ class HrEmployee(models.Model):
                 previous_period = previous_periods.sorted(key=lambda e: e.end_date)[-1]
                 employee.current_period_start_date = previous_period.end_date
             else:
-                config = self.env["res.config.settings"].create({})
+                config = self.env["res.config.settings"]
                 employee.current_period_start_date = (
                     config.get_beginning_date_for_balance_computation()
                 )
@@ -164,8 +164,7 @@ class HrEmployee(models.Model):
             # so we just assign the value. The cap is taken in consideration
             # here.
             elif final_balance is not None:
-                max_extra_hours = self.env['res.config.settings'].create({}) \
-                    .get_max_extra_hours()
+                max_extra_hours = self.env['res.config.settings'].get_max_extra_hours()
                 bal = min(max_extra_hours, final_balance)
                 employee.balance = bal
                 # if we capped the hours
@@ -267,7 +266,7 @@ class HrEmployee(models.Model):
         """
         self.ensure_one()
         max_extra_hours = (
-            self.env["res.config.settings"].create({}).get_max_extra_hours()
+            self.env["res.config.settings"].get_max_extra_hours()
         )
         if not start_date:
             start_date = fields.Date.today().replace(month=1, day=1)
@@ -371,7 +370,7 @@ class HrEmployee(models.Model):
     @api.multi
     def _compute_time_warning_balance(self):
         max_extra_hours = (
-            self.env["res.config.settings"].create({}).get_max_extra_hours()
+            self.env["res.config.settings"].get_max_extra_hours()
         )
         for employee in self:
             if employee.balance < 0:

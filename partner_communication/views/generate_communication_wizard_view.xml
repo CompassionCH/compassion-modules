@@ -24,7 +24,7 @@
                             <field name="report_id"/>
                         </group>
                         <field name="subject" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
-                        <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}" wiget="text_ckeditor4"/>
+                        <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
                     </group>
                     <group states="preview">
                         <field name="preview_email" attrs="{'invisible': [('send_mode', '=', 'physical')]}"/>

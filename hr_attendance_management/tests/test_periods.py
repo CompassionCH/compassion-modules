@@ -3,6 +3,7 @@
 
 import logging
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from odoo.tests import SavepointCase
 
@@ -417,6 +418,69 @@ class TestPeriod(SavepointCase):
         self.assertEquals(new_next_period.end_date, old_next_overlapping_end_date)
 
         all_periods.unlink()
+
+    def test_change_attendance_old_period(self):
+        self.gilles.period_ids.unlink()
+
+        all_att = self.env["hr.attendance"].search(
+            [("employee_id", "=", self.gilles.id)]
+        )
+        if all_att:
+            all_att.unlink()
+
+        all_att_days = self.env["hr.attendance.day"].search(
+            [("employee_id", "=", self.gilles.id)]
+        )
+        if all_att_days:
+            all_att_days.unlink()
+
+        period1 = self.create_period(
+            self.start_date_1,
+            self.end_date_1,
+            self.gilles.id,
+            False,
+            balance=0,
+            previous_period=None,
+            lost=0,
+        )
+
+        period2 = self.create_period(
+            self.start_date_2,
+            self.end_date_2,
+            self.gilles.id,
+            False,
+            balance=0,
+            previous_period=period1.id,
+            lost=0,
+        )
+
+        date_to_modify = self.start_date_1 + relativedelta(days=1)
+        date_to_modify = datetime(date_to_modify.year, date_to_modify.month, date_to_modify.day)
+
+        # simulate a week of attendance in old period
+        self.create_att_day_for_date_with_supp_hours(
+            date_to_modify,
+            self.gilles.id,
+            1)
+
+        # simulate a week of attendance in new period
+        self.create_att_day_for_date_with_supp_hours(
+            self.start_date_2 + relativedelta(days=3),
+            self.gilles.id,
+            1)
+
+        self.assertEquals(self.get_periods_count(self.gilles.id), 2)
+        self.assertEquals(self.gilles.balance, 2.0)
+        self.assertEquals(period2.balance, 1.0)
+        self.assertEquals(period1.balance, 1.0)
+
+        self.gilles.attendance_ids[-1].write({
+            "check_in": date_to_modify.replace(hour=7, minute=0, second=0)
+        })
+
+        self.assertEquals(self.gilles.balance, 3.0)
+        self.assertEquals(period1.balance, 2.0)
+        self.assertEquals(period1.final_balance, 2.0)
 
     def get_periods_count(self, employee_id):
         all_periods = self.env["hr.employee.period"].search(

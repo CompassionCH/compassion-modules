@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="assets_backend" name="Compassion kanban colors" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/crm_compassion/static/src/js/kanban_record.js"></script>
+        </xpath>
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/crm_compassion/static/src/scss/kanban_colors.scss"/>
+        </xpath>
+    </template>
+</odoo>
