@@ -39,10 +39,11 @@ class ResPartner(models.Model):
 
     @api.multi
     def _compute_salutation(self):
-        """ Define a method _get_salutation_<lang_code> for using a specific salutation based on partner language.
+        """ Define a method _get_salutation_<lang_code> for using a specific salutation based on partner language
+            or salutation_language if defined in context
         """
         for partner in self:
-            lang_partner = partner.with_context(lang=partner.lang)
+            lang_partner = partner.with_context(lang=self.env.context.get('salutation_language', partner.lang))
             if hasattr(lang_partner, "_get_salutation_" + partner.lang):
                 partner.salutation = getattr(lang_partner, "_get_salutation_" + partner.lang)()
             else:

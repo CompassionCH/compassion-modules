@@ -54,9 +54,6 @@
         <field name="model">holiday.closure.template.preview</field>
         <field name="arch" type="xml">
             <form>
-                <div class="alert alert-info" role="alert">
-                    The salutation is always in the language of the partner, so you will always see the salutation in your language.
-                </div>
                 <field name="preview_text"/>
             </form>
         </field>
