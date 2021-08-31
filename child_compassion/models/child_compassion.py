@@ -672,7 +672,7 @@ class CompassionChild(models.Model):
         for child in self.filtered("hold_id"):
             if child.hold_id.state == "active":
                 logger.warning(
-                    "Trying to release a child that have active hold: %s",
+                    "Trying to release a child that has active hold: %s",
                     child.local_id, exc_info=True
                 )
                 to_release -= child
