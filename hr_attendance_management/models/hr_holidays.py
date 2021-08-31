@@ -51,10 +51,10 @@ class HrLeave(models.Model):
             # we extract the hour instead of the day. dividing the total leave hours
             # by default hours per day allows us to take into account employees
             # that work part time (instead of subtracting whole days)
-            hours_per_day = employee.company_id.resource_calendar_id.hours_per_day
+            hours_per_day = employee.contract_id.resource_calendar_id.hours_per_day
             if not hours_per_day:
                 raise UserError(_(
-                    "Company should define default working hours per day"))
-            return res['hours'] / employee.company_id.resource_calendar_id.hours_per_day
+                    "Working contract should define working hours per day"))
+            return res['hours'] / hours_per_day
 
         return super()._get_number_of_days(date_from, date_to, employee_id)
