@@ -22,8 +22,7 @@
                             <tree
                                     decoration-primary="state in ('pending','submit','corrected')"
                                     decoration-success="state=='approved'"
-                                    decoration-muted="is_old_version"
-                                    editable="top">
+                                    decoration-muted="is_old_version">
                                 <field name="is_old_version" invisible="1"/>
                                 <field name="config_id" invisible="1"/>
                                 <field name="lang" readonly="1"/>
