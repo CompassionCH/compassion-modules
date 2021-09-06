@@ -5,6 +5,9 @@
     "ICPDisasterImpacts": {
       "field": "fcp_disaster_impact_ids",
       "allow_relational_creation": true,
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "project_fcp_id",
       "sub_mapping": {
         "name": "FCPDisasterImpactMapping",
         "model": "fcp.disaster.impact",
@@ -12,17 +15,16 @@
           "Disaster_ImpactOnICPProgram": "impact_on_fcp_program",
           "ICPDisasterImpact_ICPDisasterStatus": "field_office_impact_status",
           "ICPDisasterImpact_ICPInfrastructureDisasterImpact": "infrastructure",
-          "ICP_ID": {
-            "field": "project_id.fcp_id",
-            "search_relational_record": true,
-            "relational_raise_if_not_found": false
-          }
+          "ICP_ID": "project_fcp_id"
         }
       }
     },
     "BeneficiaryDisasterImpacts": {
       "field": "child_disaster_impact_ids",
       "allow_relational_creation": true,
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "child_global_id",
       "sub_mapping": {
         "name": "ChildDisasterImpact",
         "model": "child.disaster.impact",
@@ -40,11 +42,7 @@
           },
           "SiblingsDiedNumber": "siblings_died_number",
           "SiblingsSeriouslyInjuredNumber": "siblings_seriously_injured_number",
-          "Beneficiary_GlobalID": {
-            "field": "child_id.global_id",
-            "search_relational_record": true,
-            "relational_raise_if_not_found": false
-          },
+          "Beneficiary_GlobalID": "child_global_id",
           "SponsorshipStatus": "sponsorship_status",
           "Beneficiary_FullName": "name"
         }
@@ -53,6 +51,9 @@
     "DisasterCommunicationUpdates": {
       "field": "fo_disaster_update_ids",
       "allow_relational_creation": true,
+      "relational_write_mode": "append",
+      "search_relational_record": true,
+      "search_key": "fodu_id",
       "sub_mapping": {
         "name": "FieldOfficeDisasterUpdate",
         "model": "fo.disaster.update",

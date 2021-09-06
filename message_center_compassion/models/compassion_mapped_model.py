@@ -127,7 +127,7 @@ class CompassionMappedModel(models.AbstractModel):
                             e.field_relation, e.field_name, e.value, e.json_name
                         )
             res.append(data)
-        return res[0] if len(res) == 1 else res
+        return res[0] if len(res) == 1 and not isinstance(res[0], tuple) else res
 
     def fetch_missing_relational_records(self, field_relation, field_name, values,
                                          json_name):

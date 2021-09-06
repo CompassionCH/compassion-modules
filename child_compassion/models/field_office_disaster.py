@@ -18,17 +18,25 @@ class ICPDisasterImpact(models.Model):
     _order = "id desc"
 
     project_id = fields.Many2one(
-        "compassion.project", "Project", ondelete="cascade", readonly=False
+        "compassion.project", "Project", compute="_compute_project", store=True,
+        readonly=True
     )
     disaster_id = fields.Many2one(
         "fo.disaster.alert", "Disaster Alert", ondelete="cascade", readonly=False
     )
-
+    project_fcp_id = fields.Char(required=True)
     impact_on_fcp_program = fields.Char(oldname="impact_on_icp_program")
     disaster_impact_description = fields.Char()
     state = fields.Selection(related="disaster_id.state")
     infrastructure = fields.Char()
     field_office_impact_status = fields.Char()
+
+    @api.depends("project_fcp_id")
+    def _compute_project(self):
+        for impact in self:
+            impact.project_id = self.env["compassion.project"].search([
+                ("fcp_id", "=", impact.project_fcp_id)
+            ], limit=1)
 
 
 class FieldOfficeDisasterUpdate(models.Model):
@@ -77,12 +85,12 @@ class ChildDisasterImpact(models.Model):
     _order = "id desc"
 
     child_id = fields.Many2one(
-        "compassion.child", "Child", ondelete="cascade", readonly=False
+        "compassion.child", "Child", compute="_compute_child", store=True, readonly=True
     )
     disaster_id = fields.Many2one(
         "fo.disaster.alert", "Disaster Alert", ondelete="cascade", readonly=False
     )
-
+    child_global_id = fields.Char(required=True)
     name = fields.Char()
     beneficiary_location = fields.Char()
     beneficiary_physical_condition = fields.Char()
@@ -97,6 +105,13 @@ class ChildDisasterImpact(models.Model):
     siblings_seriously_injured_number = fields.Integer()
     sponsorship_status = fields.Char()
 
+    @api.depends("child_global_id")
+    def _compute_child(self):
+        for impact in self:
+            impact.child_id = self.env["compassion.child"].search([
+                ("global_id", "=", impact.child_global_id)
+            ], limit=1)
+
     @api.model
     def create(self, vals):
         """ Log a note in child when new disaster impact is registered. """
@@ -109,21 +124,6 @@ class ChildDisasterImpact(models.Model):
                 subject=_("Disaster Alert"),
             )
         return impact
-
-    def json_to_data(self, json, mapping_name=None):
-        """ Loss may contain empty values as 'None' and we need to filter them. """
-        res = super().json_to_data(json, mapping_name)
-        if not isinstance(res, list):
-            res = [res]
-        for vals in res:
-            filtered_loss = []
-            for loss_data in vals.get("loss_ids", []):
-                if isinstance(loss_data[2], dict):
-                    if loss_data[2]["name"] == "None":
-                        continue
-                filtered_loss.append(loss_data)
-            vals["loss_ids"] = filtered_loss
-        return res
 
 
 class DisasterLoss(models.Model):
@@ -328,6 +328,19 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
+    @api.model
+    def simulate_details(self, commkit_data):
+        """ This can be used for simulating the reception of Disaster Alert
+        with all details already present in the message. You should change the
+        field `incoming_method` of the gmc.action `Disaster Alert` to use this
+        method."""
+        fo_ids = list()
+        for single_data in commkit_data.get("DisasterResponseList", [commkit_data]):
+            vals = self.json_to_data(
+                single_data, mapping_name="Disaster Alert")
+            fo_disaster = self.create(vals)
+            fo_ids.append(fo_disaster.id)
+        return fo_ids
 
     @api.model
     def process_commkit(self, commkit_data):

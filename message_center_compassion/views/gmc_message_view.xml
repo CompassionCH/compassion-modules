@@ -110,6 +110,7 @@
                             <field name="mapping_id"/>
                             <field name="connect_outgoing_wrapper"/>
                             <field name="connect_answer_wrapper"/>
+                            <field name="incoming_method"/>
                             <field name="success_method"/>
                             <field name="failure_method"/>
                         </group>
