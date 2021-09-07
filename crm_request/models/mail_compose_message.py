@@ -40,7 +40,9 @@ class MailComposer(models.TransientModel):
         """
         Append the quote of previous e-mail to the body of the message.
         """
-        result = super().onchange_template_id(
+        result = super(MailComposer, self.with_context(
+            lang=self.env.context.get('salutation_language', self.env.lang))
+        ).onchange_template_id(
             template_id, composition_mode, model, res_id
         )
         reply_quote = self.env.context.get("reply_quote")

@@ -64,6 +64,7 @@
                                         </field>
                                         <field name="fo_disaster_update_ids">
                                             <tree>
+                                                <field name="create_date"/>
                                                 <field name="name"/>
                                                 <field name="summary"/>
                                             </tree>
@@ -80,7 +81,7 @@
                                     <group colspan="2">
                                         <field name="fcp_disaster_impact_ids">
                                             <tree>
-                                                <field name="project_id"/>
+                                                <field name="project_fcp_id"/>
                                                 <field name="impact_on_fcp_program"/>
                                                 <field name="infrastructure"/>
                                                 <field name="state"/>
@@ -89,7 +90,7 @@
                                         </field>
                                         <field name="child_disaster_impact_ids">
                                             <tree>
-                                                <field name="child_id"/>
+                                                <field name="child_global_id"/>
                                                 <field name="name"/>
                                                 <field name="beneficiary_location"/>
                                                 <field name="beneficiary_physical_condition"/>
@@ -170,6 +171,7 @@
                             <group>
                                 <field name="disaster_id"/>
                                 <field name="child_id"/>
+                                <field name="child_global_id"/>
                                 <field name="name"/>
                                 <field name="disaster_status"/>
                             </group>
@@ -200,7 +202,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="create_date"/>
-                    <field name="child_id"/>
+                    <field name="child_global_id"/>
                     <field name="beneficiary_location"/>
                     <field name="beneficiary_physical_condition"/>
                     <field name="house_condition"/>

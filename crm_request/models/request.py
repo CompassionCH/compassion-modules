@@ -60,7 +60,8 @@ class CrmClaim(models.Model):
     def action_reply(self):
         """
         This function opens a window to compose an email, with the default
-        template message loaded by default"""
+        template message loaded by default
+        """
         self.ensure_one()
         original_partner = self.partner_id
 
@@ -78,7 +79,7 @@ class CrmClaim(models.Model):
             "default_template_id": template_id,
             "default_composition_mode": "comment",
             "mark_so_as_sent": True,
-            "lang": self.language,
+            "salutation_language": self.language,
         }
 
         if original_partner:

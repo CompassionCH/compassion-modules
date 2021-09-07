@@ -20,7 +20,6 @@
     ],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
         "data/request_email_template.xml",
         "data/crm_request_data.xml",
         "data/request_sequence.xml",
