@@ -70,22 +70,12 @@ class ChildPictures(models.Model):
         """
 
         pictures = super().create(vals)
-
-        same_url = pictures._find_same_picture_by_url()
-        if same_url:
-            pictures.child_id.message_post(
-                body=_("The picture was the same"), subject=_("Picture update")
-            )
-            pictures.unlink()
-            return False
-
         # Retrieve Headshot
         image_date = pictures._get_picture("Headshot", width=180, height=180)
         # Retrieve Fullshot
         image_date = image_date and pictures._get_picture(
             "Fullshot", width=800, height=1200
         )
-
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
             pictures.child_id.message_post(
@@ -111,25 +101,16 @@ class ChildPictures(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
-    def _find_same_picture_by_url(self):
-        self.ensure_one()
-        same_url = self.search(
-            [
-                ("child_id", "=", self.child_id.id),
-                ("image_url", "=", self.image_url),
-                ("id", "!=", self.id),
-            ]
-        )
-        return same_url
-
-    @api.multi
     def _find_same_picture(self):
         self.ensure_one()
-        pics = self.search([("child_id", "=", self.child_id.id)])
+        reference = self.with_context(bin_size=False)
+        pics = reference.search([
+            ("child_id", "=", self.child_id.id),
+            ("id", "!=", self.id)
+        ], limit=1)  # The last picture is most probably one that could be the same.
         same_pics = pics.filtered(
-            lambda record: record.fullshot == self.fullshot
-            and record.headshot == self.headshot
-            and record.id != self.id
+            lambda record: record.fullshot == reference.fullshot
+            and record.headshot == reference.headshot
         )
         return same_pics
 
