@@ -1,5 +1,6 @@
 <odoo>
     <data noupdate="1">
+        <!-- Template email when business is closed for holiday -->
         <record id="business_closed_email_template" model="mail.template">
             <field name="name">Holiday - Automated response</field>
             <field name="model_id" ref="model_crm_claim"/>
@@ -22,6 +23,34 @@
                     <br/>
                     <br/>
                     ${closure.signature | safe}
+                </div>
+            </field>
+        </record>
+
+        <!-- Template email when assigned contact is in holiday -->
+        <record id="assigned_contact_holiday_email_template" model="mail.template">
+            <field name="name">Assigned contact in holiday</field>
+            <field name="model_id" ref="model_crm_claim"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="email_to">${object.email_from}</field>
+            <field name="lang">${object.language}</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="subject">Your assigned contact is in holiday</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set claim = object
+                    % set partner = object.partner_id
+                </div>
+                <div>
+                    ${partner.salutation or "Dear friends of Compassion"},
+                    <br/>
+                    <br/>
+                    Your assigned contact at Compassion is currently in holiday. You might not have an answer before [his/her] return on the [return_date].
+                    If your request requires an urgent answer, please reply to this email or reach to us by phone.
+                    Thank you for your comprehension.
+                    <br/>
+                    <br/>
+                    Kind regards,
                 </div>
             </field>
         </record>
