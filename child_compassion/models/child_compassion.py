@@ -539,17 +539,17 @@ class CompassionChild(models.Model):
         """
         # Update child's pictures
         for child in self:
-            pictures = child.pictures_ids
             # last_picture return false is there is no new pictures
-            if child._get_last_pictures() and len(pictures) > 1:
+            if child._get_last_pictures() and len(child.pictures_ids) > 1:
+                pictures = child.pictures_ids
                 today = date.today()
                 last_photo = pictures[1].date
                 new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
-                if (diff_pic.months > 6 or diff_pic.years > 0) and (
-                    diff_today.months <= 6 and diff_today.years == 0
-                ):
+                if (
+                        len(pictures) == 2 or diff_pic.months >= 6 or diff_pic.years > 0
+                ) and (diff_today.months <= 6 and diff_today.years == 0):
                     child.new_photo()
 
     # Lifecycle methods
