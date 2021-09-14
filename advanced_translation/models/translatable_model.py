@@ -129,7 +129,8 @@ class AdvancedTranslatable(models.AbstractModel):
         )
 
         dates = [format_datetime(
-            fields.Datetime.to_datetime(d), _format, locale=_lang) for d in dates]
+            fields.Datetime.to_datetime(d), _format,
+            tzinfo=self.env.user.tz, locale=_lang) for d in dates]
 
         if len(dates) > 1:
             res_string = ", ".join(dates[:-1])
