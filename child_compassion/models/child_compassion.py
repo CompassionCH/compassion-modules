@@ -9,6 +9,7 @@
 ##############################################################################
 
 import logging
+import traceback
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
@@ -672,8 +673,9 @@ class CompassionChild(models.Model):
         for child in self.filtered("hold_id"):
             if child.hold_id.state == "active":
                 logger.warning(
-                    "Trying to release a child that has active hold: %s",
-                    child.local_id, exc_info=True
+                    "Trying to release a child that has active hold: %s %s",
+                    child.local_id,
+                    ''.join(traceback.format_stack())
                 )
                 to_release -= child
         to_release.write({"sponsor_id": False, "state": state, "hold_id": False})
