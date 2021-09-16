@@ -7,7 +7,7 @@ import logging
 from addons.resource.models.resource import Intervals
 from odoo import models, fields, api
 from datetime import datetime
-from pytz import utc
+from pytz import UTC
 
 _logger = logging.getLogger(__name__)
 
@@ -19,6 +19,11 @@ class ResourceCalendar(models.Model):
         """ Return the attendance intervals in the given datetime range after excluding the public holidays.
             The returned intervals are expressed in the resource's timezone.
         """
+        if not start_dt.tzinfo:
+            start_dt = start_dt.replace(tzinfo=UTC)
+        if not end_dt.tzinfo:
+            end_dt = end_dt.replace(tzinfo=UTC)
+
         attendance_intervals = super(ResourceCalendar, self)._attendance_intervals(start_dt, end_dt, resource)
 
         # By searching for days instead of years then days, we ensure the interval can span over multiple years
@@ -27,9 +32,10 @@ class ResourceCalendar(models.Model):
             ("date", "<=", end_dt)
         ])
 
+        # We represent the public holidays as Intervals to easily remove them from the addendance_intervals
         public_holiday_intervals = Intervals((
-            datetime.combine(ph.date, datetime.min.time()).replace(tzinfo=utc),
-            datetime.combine(ph.date, datetime.max.time()).replace(tzinfo=utc),
+            datetime.combine(ph.date, datetime.min.time()).replace(tzinfo=UTC),
+            datetime.combine(ph.date, datetime.max.time()).replace(tzinfo=UTC),
             ph
         ) for ph in public_holiday)
 
