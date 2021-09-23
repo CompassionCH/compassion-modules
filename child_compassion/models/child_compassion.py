@@ -9,6 +9,7 @@
 ##############################################################################
 
 import logging
+import traceback
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
@@ -539,17 +540,17 @@ class CompassionChild(models.Model):
         """
         # Update child's pictures
         for child in self:
-            pictures = child.pictures_ids
             # last_picture return false is there is no new pictures
-            if child._get_last_pictures() and len(pictures) > 1:
+            if child._get_last_pictures() and len(child.pictures_ids) > 1:
+                pictures = child.pictures_ids
                 today = date.today()
                 last_photo = pictures[1].date
                 new_photo = pictures[0].date
                 diff_pic = relativedelta(new_photo, last_photo)
                 diff_today = relativedelta(today, new_photo)
-                if (diff_pic.months > 6 or diff_pic.years > 0) and (
-                    diff_today.months <= 6 and diff_today.years == 0
-                ):
+                if (
+                        len(pictures) == 2 or diff_pic.months >= 6 or diff_pic.years > 0
+                ) and (diff_today.months <= 6 and diff_today.years == 0):
                     child.new_photo()
 
     # Lifecycle methods
@@ -668,14 +669,23 @@ class CompassionChild(models.Model):
     @api.multi
     def child_released(self, state="R"):
         """ Is called when a child is released to the global childpool. """
-        self.write({"sponsor_id": False, "state": state, "hold_id": False})
+        to_release = self
+        for child in self.filtered("hold_id"):
+            if child.hold_id.state == "active":
+                logger.warning(
+                    "Trying to release a child that has active hold: %s %s",
+                    child.local_id,
+                    ''.join(traceback.format_stack())
+                )
+                to_release -= child
+        to_release.write({"sponsor_id": False, "state": state, "hold_id": False})
         # Check if it was a depart and retrieve lifecycle event
-        self.get_lifecycle_event()
+        to_release.get_lifecycle_event()
 
         # the children will be deleted when we reach their expiration date
         postpone = 60 * 60 * 24 * 7  # One week by default
         today = datetime.today()
-        for child in self.filtered(lambda c: not c.has_been_sponsored):
+        for child in to_release.filtered(lambda c: not c.has_been_sponsored):
             if child.hold_expiration:
                 expire = child.hold_expiration
                 postpone = (expire - today).total_seconds() + 60

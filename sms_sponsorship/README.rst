@@ -28,29 +28,23 @@ mobile-friendly sponsor a child form.
 .. contents::
    :local:
 
-Installation
-============
-
-To install the module, you need to cd to ``sms_sponsorship/webapp`` and run the following commands :
-
-   npm install && npm run build
-
-Then, a new ``build`` folder will appear into ``webapp``. If there is no ``sms_sponsorship/static`` symbolic link, run this command :
-
-   ln -s sms_sponsorship/webapp/build sms_sponsorship/static
-
-Configuration
-=============
-
 Development
 ~~~~~~~~~~~
 
 To develop for the react webapp, please follow these steps :
-#. Use a code editor compatible with react (for exemple : WebStorm)
-#. Open the project ``sms_sponsorship/webapp``
-#. If not already done, execute ``npm install``
 
-To launch the app on the development server, run ``npm start``.
+#. Use a code editor compatible with react (for exemple : WebStorm)
+#. Open the project sms_sponsorship/webapp
+#. If not already done, execute npm install
+
+To launch the app on the development server, run npm start.
+
+To publish the changes:
+
+   npm install && npm run build
+
+Then, a new build folder will appear into webapp.
+Copy the build folder into the static folder to make it available and rename it to react.
 
 Proxy
 ~~~~~
