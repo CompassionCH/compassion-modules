@@ -45,7 +45,7 @@ class RecurringContract(models.Model):
         :return: True
         """
         frontend_lang = self.env["res.lang"].search(
-            [("code", "like", vals["lang"] + "_")], limit=1
+            [("code", "like", vals["lang"][:2])], limit=1
         )
 
         if partner and (
@@ -60,7 +60,8 @@ class RecurringContract(models.Model):
             partner = match_obj.match_partner_to_infos(vals)
 
         # Update SMS Request
-        sms_child_request.write({"partner_id": partner.id, "lang_code": partner.lang})
+        sms_child_request.write({
+            "partner_id": partner.id, "lang_code": partner.lang or frontend_lang.code})
 
         # prepare correct medium_id depending on sms_child_request's source
         medium_name = "sms_sponsorship.utm_medium_"
