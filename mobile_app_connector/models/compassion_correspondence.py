@@ -158,6 +158,8 @@ class CompassionCorrespondence(models.Model):
             "source": other_params.get("source", "app"),
         })
         gen.onchange_domain()
+        # Only generate for one sponsorship! If the child was sponsored several times
+        gen.sponsorship_ids = gen.sponsorship_ids[:1]
         # We commit otherwise the generation fails
         self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
@@ -215,14 +217,16 @@ class CompassionCorrespondence(models.Model):
                     ("s2b_template_id", "=", int(template_id)),
                     ("state", "=", "preview"),
                 ],
-                limit=1,
                 order="create_date DESC",
             )
         )
-        gen.generate_letters_job()
-        gen.write(
+        # Use the latest preview for generating the letter
+        gen[:1].generate_letters_job()
+        gen[:1].write(
             {"state": "done", "date": fields.Datetime.now(), }
         )
+        # Delete old previews
+        gen[1:].unlink()
         return {
             "DbId": gen.letter_ids.mapped("id"),
         }
