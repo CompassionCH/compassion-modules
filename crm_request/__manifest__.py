@@ -7,7 +7,7 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "category": "CRM",
-    "version": "12.0.1.1.0",
+    "version": "12.0.1.1.1",
     # Python dependencies
     "external_dependencies": {"python": ["detectlanguage", "pandas"]},
     # any module necessary for this one to work correctly

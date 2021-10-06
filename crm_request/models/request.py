@@ -3,6 +3,7 @@
 
 import logging
 from email.utils import parseaddr
+from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, exceptions, _
@@ -220,10 +221,23 @@ class CrmClaim(models.Model):
            new mail on the thread
         """
         result = super().message_update(msg_dict, update_vals)
+        msg_date = parser.parse(msg_dict['date'])
         for request in self:
-            request.stage_id = self.env["ir.model.data"].get_object_reference(
+            request.stage_id = self.env['ir.model.data'].get_object_reference(
                 "crm_request", "stage_wait_support"
             )[1]
+
+            if request.user_id and self.env['hr.leave'].search([
+                ("employee_id", "in", request.user_id.employee_ids.ids),
+                ("date_from", "<=", msg_date),
+                ("date_to", ">=", msg_date),
+                '|', ("state", "=", "validate"),
+                ("state", "=", "confirm")
+            ], count=True) != 0:
+                request.stage_id = self.env['ir.model.data'].get_object_reference(
+                    "crm_claim", "stage_claim1"
+                )[1]
+                request.user_id = False
         return result
 
     @api.multi
