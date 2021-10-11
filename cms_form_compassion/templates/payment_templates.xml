@@ -17,43 +17,25 @@ License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
     </template>
 
     <!-- Called after submission of form, display form for redirecting to Payment Provider -->
-    <template id="modal_payment_submit" name="Payment form redirection page">
-        <div class="text-center" style="margin-top: 50px;">
-            <p>Thank you for your submission. If you are not automatically redirected to the payment page, please click on the Next button.</p>
-            <t t-set="tx_ids"
-               t-value="invoice.transaction_ids.filtered(lambda tx: tx.state in ('authorized', 'done'))"/>
-            <div t-if="not tx_ids and invoice.state == 'open' and invoice.amount_total" id="payment_compassion">
-                <div t-if="pms or acquirers">
-                    <!-- Portal payment code from account_payment.portal_invoice_payment -->
-                    <div class="row" id="portal_pay">
-                        <div id="pay_with">
-                            <h3 class="modal-title">Pay with</h3>
-                            <div t-if="pms or acquirers" id="payment_method" class="text-left col-md-13">
-                                <t t-call="payment.payment_tokens_list">
-                                    <t t-set="mode" t-value="'payment'"/>
-                                    <t t-set="partner_id"
-                                       t-value="invoice.partner_id.id if request.env.user._is_public() else request.env.user.partner_id.id"/>
-                                    <t t-set="callback_method" t-value="''"/> <!-- TODO -->
-                                    <t t-set="form_action"
-                                       t-value="'/invoice/pay/' + str(invoice.id) + '/s2s_token_tx/'"/>
-                                    <t t-set="prepare_tx_url"
-                                       t-value="'/invoice/pay/' + str(invoice.id) + '/form_tx/'"/>
-                                    <t t-set="submit_txt">Next</t>
-                                    <t t-set="icon_class" t-value="'fa-lock'"/>
-                                </t>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <template id="payment_submit_full" name="Payment redirection page">
+    <template id="payment_submit" name="Payment redirection page">
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="container">
-                    <t t-call="cms_form_compassion.modal_payment_submit"/>
+                    <!-- Use portal invoice payment route but override return URLs to avoid being redirected back to the portal after the payment. -->
+                    <!-- In the portal, the payment method is displayed in a modal. Here we want to make the modal visible in full page. -->
+                    <t t-call="account_payment.portal_invoice_payment"/>
+                    <script type="text/javascript">
+                        var content = $("#pay_with").find(".modal-content");
+                        $("#pay_with").parent().html(content.html());
+                        $("#portal_pay").addClass("mt-4");
+                        $("button.close").hide();
+                        <t t-if="return_url">
+                            $("input[name='success_url']").val('<t t-esc="return_url"/>)');
+                            $("input[name='error_url']").val('<t t-esc="return_url"/>)');
+                            $("form.o_payment_form").attr("data-success-url", "<t t-esc="return_url"/>");
+                            $("form.o_payment_form").attr("data-error-url", "<t t-esc="return_url"/>");
+                        </t>
+                    </script>
                 </div>
             </div>
         </t>

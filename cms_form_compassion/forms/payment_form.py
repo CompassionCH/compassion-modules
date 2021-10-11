@@ -17,10 +17,6 @@ class PaymentForm(models.AbstractModel):
     _description = "Payment Form"
     _inherit = "cms.form"
 
-    # Can either be "modal" or "full" depending if the payment form is
-    # displayed in a modal view or in a full page.
-    _display_type = "modal"
-
     # Internal field for the payment process: it will use the generated invoice
     # for payment. All the display of the form and the logic for invoice creation
     # must be implemented in inherited forms.
@@ -28,11 +24,7 @@ class PaymentForm(models.AbstractModel):
 
     # Properties for page redirect after payment
     @property
-    def _payment_success_redirect(self):
-        return ""
-
-    @property
-    def _payment_error_redirect(self):
+    def _payment_redirect(self):
         return ""
 
     @property
@@ -48,9 +40,8 @@ class PaymentForm(models.AbstractModel):
     def form_next_url(self, main_object=None):
         # Redirect to payment controller
         return (
-            f"/compassion/payment/invoice/{self.invoice_id.id}?success_url="
-            f"{self._payment_success_redirect}&error_url="
-            f"{self._payment_error_redirect}&display_type={self._display_type}"
+            f"/compassion/payment/invoice/{self.invoice_id.id}?return_url="
+            f"{self._payment_redirect}"
         )
 
     def generate_invoice(self):

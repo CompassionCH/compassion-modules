@@ -1,6 +1,5 @@
 odoo.define('cms_form_compassion.modal_form', function (require) {
     "use strict";
-    var PaymentForm = require('payment.payment_form');
     var DateWidget = require('cms_form.date_widget');
     var Widget = require("web.Widget");
     var core = require('web.core');
@@ -49,21 +48,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                         }
                         var result_html = $('<div></div>');
                         result_html.load(data.redirect, function() {
-                            var payment_compassion = result_html.find('#payment_compassion');
-                            if (payment_compassion.length) {
-                                // Special case for payment form, we load payment JS otherwise the payment is not working.
-                                var modal_body = modal.find('.modal-body');
-                                modal_body.html(result_html.html());
-                                modal_body.find('.o_payment_form').each(function () {
-                                    var $elem = $(this);
-                                    var form = new PaymentForm(null, $elem.data());
-                                    form.attachTo($elem);
-                                });
-                                // Auto submit the payment form after 3 seconds
-                                // setTimeout(function() { modal_body.find('#o_payment_form_pay').click(); }, 3000);
-                            } else {
-                                self.on_receive_back_html_result(result_html.html());
-                            }
+                            self.on_receive_back_html_result(result_html.html());
                         });
                     } else {
                         self.on_receive_back_html_result(data);
@@ -164,20 +149,5 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
             $(button).find('span.o_loader').remove();
         },
     });
-
-    $(function () {
-        // TODO This was taken from payment/payment_form.js module, but apparently there could be a better way
-        // of loading the widget into the view. We can see how this one will evolve maybe.
-        if (!$('.cms_modal_form').length) {
-            console.log("DOM doesn't contain '.cms_modal_form'");
-            return;
-        }
-        $('.cms_modal_form').each(function () {
-            var $elem = $(this);
-            var form = new ModalForm(null, $elem.data());
-            form.attachTo($elem);
-        });
-    });
-
     return ModalForm;
 });
