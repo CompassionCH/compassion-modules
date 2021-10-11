@@ -158,7 +158,7 @@ class CorrespondenceS2bGenerator(models.Model):
         :return: True
         """
         self.with_delay().generate_letters_job()
-        return self.write({"state": "done", "date": fields.Datetime.now(), })
+        return True
 
     @api.multi
     @job(default_channel="root.sbc_compassion")
@@ -197,7 +197,7 @@ class CorrespondenceS2bGenerator(models.Model):
             letters += letters.create(vals)
 
         self.letter_ids = letters
-        return True
+        return self.write({"state": "done", "date": fields.Datetime.now()})
 
     @api.multi
     def open_letters(self):
