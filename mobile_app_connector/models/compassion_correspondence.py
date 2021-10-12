@@ -221,14 +221,11 @@ class CompassionCorrespondence(models.Model):
             )
         )
         # Use the latest preview for generating the letter
-        gen[:1].generate_letters_job()
-        gen[:1].write(
-            {"state": "done", "date": fields.Datetime.now(), }
-        )
+        gen[:1].generate_letters()
         # Delete old previews
         gen[1:].unlink()
         return {
-            "DbId": gen.letter_ids.mapped("id"),
+            "DbId": gen[:1].ids,
         }
 
     @api.multi
