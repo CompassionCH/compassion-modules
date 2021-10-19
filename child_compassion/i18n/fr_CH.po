@@ -3526,7 +3526,7 @@ msgid ""
 "In addition, the project offers special activities for the parents such as "
 "education courses."
 msgstr ""
-"De plus, le centre d'accueil propose des activités pour les parents ainsi "
+"De plus, le centre de développement de l’enfant propose des activités pour les parents ainsi "
 "que des cours d'éducation."
 
 #. module: child_compassion
@@ -3538,7 +3538,7 @@ msgstr "In local currency"
 #. module: child_compassion
 #: selection:compassion.child,vocational_training_type:0
 msgid "Income-generating program at project"
-msgstr "Programme d'activités générant des revenus au centre d'accueil"
+msgstr "Programme d'activités générant des revenus au centre de développement de l’enfant"
 
 #. module: child_compassion
 #: model:res.lang.compassion,name:child_compassion.lang_compassion_indonesian
@@ -5470,7 +5470,7 @@ msgstr "Project activities"
 #: code:addons/child_compassion/wizards/project_description.py:141
 #, python-format
 msgid "Project activities for children"
-msgstr "Activités pour les enfants du centre d'accueil"
+msgstr "Activités pour les enfants du centre de développement de l’enfant"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_description_project_id
@@ -5488,7 +5488,7 @@ msgstr "Project lifecycle event"
 #: code:addons/child_compassion/wizards/project_description.py:82
 #, python-format
 msgid "Project name"
-msgstr "Nom du centre d'accueil"
+msgstr "Nom du centre de développement de l’enfant"
 
 #. module: child_compassion
 #: model:ir.model.fields,field_description:child_compassion.field_compassion_project_project_need_ids
@@ -6879,13 +6879,13 @@ msgstr ""
 #: code:addons/child_compassion/wizards/project_description.py:96
 #, python-format
 msgid "The project has no electricity."
-msgstr "Le centre d'accueil n'a pas l'électricité."
+msgstr "Le centre de développement de l’enfant n'a pas l'électricité."
 
 #. module: child_compassion
 #: code:addons/child_compassion/wizards/project_description.py:76
 #, python-format
 msgid "The project is located in %s, close to the border."
-msgstr "Le centre d'accueil se trouve en %s, près de la frontière."
+msgstr "Le centre de développement de l’enfant se trouve en %s, près de la frontière."
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/project_compassion.py:554
@@ -7465,7 +7465,7 @@ msgstr "alumni"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "another project opened closer to {his} home"
-msgstr "un autre centre d'accueil a ouvert près de {sa} maison"
+msgstr "un autre centre de développement de l’enfant a ouvert près de {sa} maison"
 
 #. module: child_compassion
 #: code:addons/child_compassion/models/household.py:274
@@ -7946,12 +7946,12 @@ msgstr "de besoins spécifiques"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "of the project closure"
-msgstr "le centre d'accueil a cessé ses activités"
+msgstr "le centre de développement de l’enfant a cessé ses activités"
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "of the project downsizing"
-msgstr "de la réduction des effectifs du centre d'accueil"
+msgstr "de la réduction des effectifs du centre de développement de l’enfant"
 
 #. module: child_compassion
 #: model:ir.ui.view,arch_db:child_compassion.view_availability_management_settings_form
@@ -8034,7 +8034,7 @@ msgstr "convaincu par un autre programme"
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_field_office_tree
 #: model:ir.ui.view,arch_db:child_compassion.view_compassion_project_tree
 msgid "project"
-msgstr "centre d'accueil"
+msgstr "centre de développement de l’enfant"
 
 #. module: child_compassion
 #: model:ir.actions.act_window,name:child_compassion.open_view_project_tree
@@ -8295,7 +8295,7 @@ msgstr "{he} a atteint l'âge maximum ou la date de fin du programme."
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "{he} reached the end of relevant programs available at the project"
-msgstr "{he} a achevé les programmes disponibles au sein du centre d'accueil"
+msgstr "{he} a achevé les programmes disponibles au sein du centre de développement de l’enfant"
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
@@ -8310,7 +8310,7 @@ msgstr "{he} est enregistré de manière incorrecte"
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
 msgid "{he} was taken out of project by parents"
-msgstr "{he} a été enlevé du centre d'accueil par les parents"
+msgstr "{he} a été enlevé du centre de développement de l’enfant par les parents"
 
 #. module: child_compassion
 #: selection:compassion.child.ble,request_reason:0
