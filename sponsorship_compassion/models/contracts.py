@@ -784,21 +784,18 @@ class SponsorshipContract(models.Model):
     def cancel_sent(self, vals):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
+        hold = self.env["compassion.hold"].browse(vals.get("hold_id", -1))
         if self.hold_expiration_date:
             hold_expiration = self.hold_expiration_date
-            if "hold_id" in vals and hold_expiration >= datetime.now():
-                child = self.child_id
-                hold_vals = {
-                    "hold_id": vals["hold_id"],
-                    "child_id": child.id,
-                    "type": HoldType.SPONSOR_CANCEL_HOLD.value,
-                    "channel": "sponsor_cancel",
-                    "expiration_date": self.hold_expiration_date,
-                    "primary_owner": self.write_uid.id,
-                    "state": "active",
-                }
-                hold = self.env["compassion.hold"].create(hold_vals)
-                child.child_consigned(hold.id)
+            child = self.child_id
+            hold.write({
+                "child_id": child.id,
+                "type": HoldType.SPONSOR_CANCEL_HOLD.value,
+                "channel": "sponsor_cancel",
+                "expiration_date": hold_expiration,
+                "primary_owner": self.write_uid.id,
+                "state": "active",
+            })
         return True
 
     @api.multi

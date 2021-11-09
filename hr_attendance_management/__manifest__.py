@@ -37,7 +37,7 @@
         "hr_contract",  # source/addons
         "hr_employee_calendar_planning",  # hr
     ],
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.1.0",
     "auto_install": False,
     "website": "https://www.compassion.ch",
     "license": "AGPL-3",

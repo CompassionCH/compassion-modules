@@ -22,7 +22,7 @@ msgstr ""
 #, python-format
 msgid "The project is not fund-suspended. You cannot extend the suspension."
 msgstr ""
-"Le centre d'accueil n'a pas de retenue de fonds actuellement. Il est "
+"Le centre de développement de l’enfant n'a pas de retenue de fonds actuellement. Il est "
 "impossible de la prolonger."
 
 #. module: sponsorship_compassion
@@ -372,7 +372,7 @@ msgstr "LSV"
 #: view:compassion.project.suspension.wizard:0
 msgid "This will extend the suspension of the project to the defined date."
 msgstr ""
-"Cela va prolonger la suspension du centre d'accueil jusqu'à la date choisie. "
+"Cela va prolonger la suspension du centre de développement de l’enfant jusqu'à la date choisie. "
 "Les parrainages concernés seront suspendus."
 
 #. module: sponsorship_compassion
@@ -385,7 +385,7 @@ msgstr "Cela ne peut se faire que sur une ligne de crédit"
 #: code:addons/sponsorship_compassion/model/project_compassion.py:68
 #, python-format
 msgid "No project selected"
-msgstr "Aucun centre d'accueil sélectionné"
+msgstr "Aucun centre de développement de l’enfant sélectionné"
 
 #. module: sponsorship_compassion
 #: field:recurring.contract,child_code:0
@@ -439,7 +439,7 @@ msgstr "Génération de facture cadeau"
 #. module: sponsorship_compassion
 #: model:ir.actions.act_window,name:sponsorship_compassion.action_suspend_project
 msgid "Suspend Project"
-msgstr "Suspension du Centre d'accueil"
+msgstr "Suspension du Centre de développement de l’enfant"
 
 #. module: sponsorship_compassion
 #: model:ir.model,name:sponsorship_compassion.model_account_invoice_line
@@ -489,7 +489,7 @@ msgstr "Un groupe de contrats"
 #: code:addons/sponsorship_compassion/model/project_compassion.py:69
 #, python-format
 msgid "Please select a project to suspend"
-msgstr "Veuillez choisir au moins un centre d'accueil"
+msgstr "Veuillez choisir au moins un centre de développement de l’enfant"
 
 # Ne pas traduire
 #. module: sponsorship_compassion
@@ -704,7 +704,7 @@ msgstr "Uniquement correspondant"
 #, python-format
 msgid "The project %s is fund-suspended. You cannot reconcile invoice (%s)."
 msgstr ""
-"Le centre d'accueil %s est en suspension avec retenue des fonds. Le lettrage "
+"Le centre de développement de l’enfant %s est en suspension avec retenue des fonds. Le lettrage "
 "de la facture %s n'est pas autorisé."
 
 #. module: sponsorship_compassion
@@ -786,7 +786,7 @@ msgstr "Contrat pour facturation récurrente"
 #: model:product.template,name:sponsorship_compassion.product_gift_project_product_template
 #: model:product.template,name:sponsorship_compassion.product_template_gift_project
 msgid "Project Gift"
-msgstr "Cadeau centre d'accueil"
+msgstr "Cadeau centre de développement de l’enfant"
 
 #. module: sponsorship_compassion
 #: model:account.payment.term,name:sponsorship_compassion.payment_term_lsv_25th
