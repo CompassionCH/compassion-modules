@@ -182,6 +182,23 @@
         </field>
     </record>
 
+    <!-- Ignored Reporters -->
+    <record model="ir.actions.act_window" id="ignored_reporters_action">
+      <field name="name">Ignored Reporters</field>
+      <field name="res_model">ignored_reporter</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.ui.view" id="ignored_reporter">
+      <field name="name">Ignored Reporters</field>
+      <field name="model">ignored_reporter</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="email"/>
+        </tree>
+      </field>
+    </record>
+
     <!-- Top menu -->
     <menuitem id="support_root"
               name="Support"
@@ -203,5 +220,9 @@
     <menuitem id="crm_holiday_act_menu" name="Holidays"
               groups="sales_team.group_sale_manager"
               parent="crm_claim.menu_crm_case_claim-act"/>
+    <menuitem id="crm_claim.menu_config_claim_ignored_reporters"
+              name="Ignored reporters"
+              action="ignored_reporters_action"
+              parent="crm_claim.menu_config_claim"/>
 
 </odoo>
