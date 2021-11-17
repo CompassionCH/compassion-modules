@@ -253,6 +253,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def create_communication(self, vals):
         """ Generate partner communication """
         communication = self.env["partner.communication.job"].create(vals)
+        communication.print_header = self.print_header
         if self.customize_template or not self.model_id:
             default = self.env.ref("partner_communication.default_communication")
             model = self.model_id or default
