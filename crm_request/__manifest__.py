@@ -22,6 +22,7 @@
     "data": [
         "data/request_email_template.xml",
         "data/crm_request_data.xml",
+        "data/ignored_reporter.xml",
         "data/request_sequence.xml",
         "data/ir_cron.xml",
         "views/request.xml",

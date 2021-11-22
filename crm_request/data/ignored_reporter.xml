@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+    <record model="ignored_reporter">
+        <field name="email">wordpress@compassion.ch</field>
+    </record>
+</odoo>
