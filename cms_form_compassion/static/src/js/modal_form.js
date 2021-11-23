@@ -131,7 +131,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
                         new_form.find("div.form-controls").before(error_div.parent())
                     }
                     new_form.submit(self.formEvent);
-                    modal_form.html(new_form);
+                    modal_form.parent().html(new_form);
                 } else {
                     // We can reload the page.
                     document.write(render_result);
