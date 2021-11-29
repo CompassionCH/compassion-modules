@@ -99,7 +99,6 @@ class ResPartner(models.Model):
     def forget_me(self):
         super().forget_me()
         # Delete correspondence
-        self.env["correspondence"].with_context(force_delete=True).search(
-            [("partner_id", "=", self.id)]
-        ).unlink()
+        self.env["correspondence"].search(
+            [("partner_id", "=", self.id)]).unlink()
         return True
