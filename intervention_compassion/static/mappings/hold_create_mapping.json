@@ -6,7 +6,8 @@
       "field": "intervention_id.intervention_id"
     },
     "HoldID": {
-      "field": "created_intervention_id.hold_id"
+      "field": "created_intervention_id.hold_id",
+      "relational_write_mode": ""
     },
     "ExpirationDate": {
       "field": "expiration_date"
