@@ -345,6 +345,7 @@ class CrmClaim(models.Model):
         request_to_notify = self.search([
             ("stage_id", "in", [new_stage_id, wait_support_stage_id]),
             ("user_id", "!=", False),
+            ("user_id", "not in", [187]),  # Exclude Sarah
             ("write_date", "<", fields.datetime.now() - relativedelta(weeks=1))
         ])
 
