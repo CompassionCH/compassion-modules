@@ -185,13 +185,13 @@
     <!-- Ignored Reporters -->
     <record model="ir.actions.act_window" id="ignored_reporters_action">
       <field name="name">Ignored Reporters</field>
-      <field name="res_model">ignored_reporter</field>
+      <field name="res_model">ignored.reporter</field>
       <field name="view_mode">tree,form</field>
     </record>
 
-    <record model="ir.ui.view" id="ignored_reporter">
+    <record model="ir.ui.view" id="ignored_reporter_tree">
       <field name="name">Ignored Reporters</field>
-      <field name="model">ignored_reporter</field>
+      <field name="model">ignored.reporter</field>
       <field name="arch" type="xml">
         <tree>
           <field name="email"/>

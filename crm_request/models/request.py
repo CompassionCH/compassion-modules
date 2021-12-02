@@ -177,7 +177,7 @@ class CrmClaim(models.Model):
             "email_origin": msg.get("from"),
         }
 
-        ignored_reporter = self.env["ignored_reporter"].search([])
+        ignored_reporter = self.env["ignored.reporter"].search([])
         ignored_reporter = [i.email for i in ignored_reporter]
 
         # If the mail is ignored_reporters use the email in the body instead
