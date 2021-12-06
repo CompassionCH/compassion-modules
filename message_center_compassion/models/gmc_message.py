@@ -413,7 +413,8 @@ class GmcMessage(models.Model):
         action = self.action_id
         try:
             answer_data = data_object.json_to_data(answer_data, action.mapping_id.name)
-            getattr(data_object, action.success_method)(answer_data)
+            f = getattr(data_object, action.success_method)
+            f(answer_data)
             self.state = "success"
         except Exception as e:
             logger.error(traceback.format_exc())
