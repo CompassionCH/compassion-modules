@@ -177,11 +177,21 @@ class CrmClaim(models.Model):
             "email_origin": msg.get("from"),
         }
 
+        ignored_reporter = self.env["ignored.reporter"].search([])
+        ignored_reporter = [i.email for i in ignored_reporter]
+
+        # If the mail is ignored_reporters use the email in the body instead
+        if defaults["email_origin"] in ignored_reporter:
+            email = msg["reply_to"]
+            defaults["email_origin"] = email
+            msg["from"] = email
+            msg["email_from"] = email
+
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
             options = {"skip_create": True}
             partner = match_obj.match_partner_to_infos(
-                {"email": parseaddr(msg.get("from"))[1]}, options
+                {"email": parseaddr(defaults["email_origin"])[1]}, options
             )
             if partner:
                 defaults["partner_id"] = partner.id
