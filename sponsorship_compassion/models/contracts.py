@@ -10,6 +10,7 @@
 
 import logging
 import os
+import json
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
@@ -526,7 +527,6 @@ class SponsorshipContract(models.Model):
                 if record.global_id:
                     old_correspondents = record.correspondent_id
                     record._remove_correspondent(old_correspondents)
-                    self.correspondent_id.update_number_sponsorships()
 
             for child in self.mapped("child_id"):
                 child.child_sponsored(vals["correspondent_id"])
@@ -534,8 +534,6 @@ class SponsorshipContract(models.Model):
         # Change the sub_sponsorship_id value in the previous parent_id
         if "parent_id" in vals:
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
-
-        super().write(vals)
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -549,7 +547,6 @@ class SponsorshipContract(models.Model):
             new_correspondents = self.env["res.partner"].browse(new_correspondents)
             for record in self:
                 record._add_correspondent(new_correspondents)
-                record.correspondent_id.update_number_sponsorships()
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -562,7 +559,7 @@ class SponsorshipContract(models.Model):
             self.on_change_partner_correspondent_id()
             self.auto_correspondent_id()
 
-        return True
+        return super().write(vals)
 
     @api.multi
     def unlink(self):
@@ -1106,7 +1103,7 @@ class SponsorshipContract(models.Model):
             raise UserError(_("You can't change the correspondent of a cancelled or terminated sponsorship"))
 
         hold_expiration_date = self.env["compassion.hold"].get_default_hold_expiration(HoldType.SPONSOR_CANCEL_HOLD)
-        self.write({"hold_expiration_date": hold_expiration_date})
+        self.hold_expiration_date = hold_expiration_date
 
         # Cancel sponsorship at GMC
         message = message_obj.create(
@@ -1119,7 +1116,6 @@ class SponsorshipContract(models.Model):
             )
         message.process_messages()
 
-        import json
         answer = json.loads(message.answer)
         if "Code" not in answer:
             raise UserError(_("Invalid GMC answer"))
@@ -1131,7 +1127,9 @@ class SponsorshipContract(models.Model):
                 logger.error(error_message)
                 raise UserError(_("GMC returned an error :") + "\n" + error_message)
 
-        self.write({"global_id": False, "state": "terminated"})
+        self.global_id = False
+        self.state = "terminated"
+        self.correspondent_id.update_number_sponsorships()
         self.env.cr.commit()
         return True
 
@@ -1150,11 +1148,17 @@ class SponsorshipContract(models.Model):
             }
         )
         message.process_messages()
-        if not (message.state == "success"):
-            self.message_post(body=message.failure_reason, subject=_("The sponsorship is no more active!"))
-            raise UserError(_("Couldn't add the correspondent, contract terminated."))
 
-        self.write({"state": "active"})
+        answer = json.loads(message.answer)
+        if "Message" not in answer:
+            raise UserError(_("Invalid GMC answer"))
+        if message.state == "failure":
+            error_message = answer["Message"]
+            logger.error(error_message)
+            raise UserError(_("Contract terminated, ") + _("GMC returned an error :") + "\n" + error_message)
+
+        self.state = "active"
+        self.correspondent_id.update_number_sponsorships()
         self.env.cr.commit()
         return True
 
