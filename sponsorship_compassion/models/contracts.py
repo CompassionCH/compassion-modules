@@ -535,6 +535,8 @@ class SponsorshipContract(models.Model):
         if "parent_id" in vals:
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
+        super().write(vals)
+
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
 
@@ -559,7 +561,7 @@ class SponsorshipContract(models.Model):
             self.on_change_partner_correspondent_id()
             self.auto_correspondent_id()
 
-        return super().write(vals)
+        return True
 
     @api.multi
     def unlink(self):
