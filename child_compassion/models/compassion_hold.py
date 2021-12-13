@@ -205,8 +205,10 @@ class CompassionHold(models.Model):
 
     @api.multi
     def write(self, vals):
-        if "expiration_date" in vals and self.filtered(lambda h: h.expiration_date < datetime.now()):
-            raise UserError(_("The expiration date as been reach and thus can't be changed."))
+        if "expiration_date" in vals and self.filtered(
+                lambda h: h.expiration_date < datetime.now()):
+            raise UserError(_(
+                "The expiration date as been reach and thus can't be changed."))
 
         res = super().write(vals)
         notify_vals = ["primary_owner", "type", "expiration_date"]
@@ -245,7 +247,7 @@ class CompassionHold(models.Model):
             }
             messages += message_obj.create(message_vals)
         messages.process_messages()
-        failed = messages.filtered(lambda m: m.state == "failure")
+        failed = messages.filtered(lambda m: "failure" in m.state)
         if failed:
             self.env.cr.rollback()
             raise UserError("\n\n".join(failed.mapped("failure_reason")))

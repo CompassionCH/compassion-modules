@@ -64,6 +64,7 @@ class GmcMessage(models.Model):
             ("postponed", _("Postponed")),
             ("success", _("Success")),
             ("failure", _("Failure")),
+            ("odoo_failure", _("Odoo Failure")),
         ],
         "State",
         readonly=True,
@@ -119,7 +120,7 @@ class GmcMessage(models.Model):
 
     @api.multi
     def process_messages(self):
-        new_messages = self.filtered(lambda m: m.state in ("new", "failure", "pending"))
+        new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
         new_messages.write({"state": "pending", "failure_reason": False})
         if self.env.context.get("async_mode", True):
             new_messages.with_delay()._process_messages()
@@ -363,9 +364,9 @@ class GmcMessage(models.Model):
                         {
                             "content": content_data,
                             "request_id": onramp_answer.get(
-                                "request_id", str(self[i].id)
-                            ),
+                                "request_id") or str(self[i].id),
                             "answer": json.dumps(result, indent=4, sort_keys=True),
+                            "state": "success"
                         }
                     )
                     if not testing:
@@ -420,10 +421,13 @@ class GmcMessage(models.Model):
             logger.error(traceback.format_exc())
             self.env.cr.rollback()
             self.env.clear()
-            if action.failure_method:
-                getattr(data_object, action.failure_method)(answer_data)
+            try:
+                if action.failure_method:
+                    getattr(data_object, action.failure_method)(answer_data)
+            except:
+                pass
             self.write(
-                {"state": "failure", "failure_reason": str(e), }
+                {"state": "odoo_failure", "failure_reason": str(e), }
             )
 
     def _answer_failure(self, onramp_answer, results=None):

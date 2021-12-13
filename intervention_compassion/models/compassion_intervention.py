@@ -495,7 +495,7 @@ class CompassionIntervention(models.Model):
             .with_context(async_mode=False)
             .create({"action_id": action_id, "object_id": self.id})
         )
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True
 
@@ -689,7 +689,7 @@ class CompassionIntervention(models.Model):
                 .with_context(hold_update=False)
                 .create(message_vals)
             )
-            if message.state == "failure":
+            if "failure" in message.state:
                 raise UserError(message.failure_reason)
         return True
 
@@ -703,7 +703,7 @@ class CompassionIntervention(models.Model):
             .with_context(async_mode=False)
             .create({"action_id": action_id, "object_id": self.id})
         )
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True
 

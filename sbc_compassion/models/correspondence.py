@@ -552,7 +552,7 @@ class Correspondence(models.Model):
             [
                 ("action_id", "=", gmc_action.id),
                 ("object_id", "in", self.ids),
-                ("state", "in", ["new", "failure", "postponed"]),
+                ("state", "in", ["new", "failure", "odoo_failure", "postponed"]),
             ]
         )
         gmc_messages.unlink()
@@ -832,7 +832,7 @@ class Correspondence(models.Model):
             [
                 ("action_id", "=", gmc_action.id),
                 ("object_id", "in", self.ids),
-                ("state", "in", ["new", "failure"]),
+                ("state", "in", ["new", "failure", "odoo_failure"]),
             ]
         )
         gmc_messages.write({"state": "postponed"})

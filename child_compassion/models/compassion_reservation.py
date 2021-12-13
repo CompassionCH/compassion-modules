@@ -122,7 +122,7 @@ class CompassionReservation(models.Model):
                     .filtered(lambda r: r.state == "active")
                     .handle_reservation()
             )
-            failed = messages.filtered(lambda m: m.state == "failure")
+            failed = messages.filtered(lambda m: "failure" in m.state)
             if failed:
                 raise UserError("\n\n".join(failed.mapped("failure_reason")))
         return res

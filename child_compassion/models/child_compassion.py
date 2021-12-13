@@ -524,7 +524,7 @@ class CompassionChild(models.Model):
                 "child_id": child.id,
             }
             message = message_obj.create(message_vals)
-            if message.state == "failure" and not self.env.context.get("async_mode"):
+            if "failure" in message.state and not self.env.context.get("async_mode"):
                 raise UserError(message.failure_reason)
         return True
 

@@ -404,7 +404,7 @@ class ResPartner(models.Model):
                     }
                 )
             )
-            if message.state == "failure":
+            if "failure" in message.state:
                 answer = message.get_answer_dict()
                 raise UserError(
                     answer
