@@ -624,7 +624,7 @@ class CompassionProject(models.Model):
             "object_id": self.id,
         }
         message = message_obj.create(message_vals)
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
 
         return True
