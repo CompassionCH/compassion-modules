@@ -384,6 +384,7 @@ def find_template(img, templates, resize_ratio=1.0):
 
         # try to recognize the pattern
         res = patternRecognition(img1, temp_image)
+        del temp_image
         if res is None:
             continue
 
