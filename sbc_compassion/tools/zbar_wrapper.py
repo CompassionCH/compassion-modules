@@ -42,6 +42,8 @@ def _scan(img):
     qrcode = None
     for symbol in pyzbar.decode(pil):
         qrcode = symbol
+    pil.close()
+    del pil
     return qrcode
 
 
@@ -49,36 +51,40 @@ def _decode(filename, page):
     # obtain image data
     img = cv2.imread(filename, 0)
     try:
-        im = cv2.resize(img, None, fx=0.5, fy=0.5)
+        img = cv2.resize(img, None, fx=0.5, fy=0.5)
     except cv2.error:
-        im = img
         _logger.warning("Error resizing image for QRcode detection.")
 
-    if im is None:
+    if img is None:
         return ""
-    qrcode = _scan(im)
-    if not qrcode:
-        zoom_x = 10.0  # horizontal zoom
-        zomm_y = 10.0  # vertical zoom
-        mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor 2 in each dimension
-        # use 'mat' instead of the identity matrix
-        pix = page.getPixmap(matrix=mat, alpha=0)
-        pix.writePNG("page%i.png" % page.number)  # store image as a PNG
-        # No QR found, so we try to again after an opening operation
-        img = cv2.imread(filename, 0)
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-        imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-        qrcode = _scan(imgage)
-        zoom_factors = [0.4, 0.3, 0.2, 0.6, 0.7, 0.8, 0.9, 1.0]
-        tries = 0
-        while not qrcode and tries < len(zoom_factors):
-            # No QR found, so we try to again after an opening operation
-            try:
-                im = cv2.resize(img, None, fx=zoom_factors[tries],
-                                fy=zoom_factors[tries])
-                imgage = cv2.morphologyEx(im, cv2.MORPH_OPEN, kernel)
-                qrcode = _scan(imgage)
-            except cv2.error:
-                _logger.warning("Error resizing image for QRcode detection.")
-            tries += 1
-    return qrcode
+
+    qr_code = _scan(img)
+    del img
+    if qr_code:
+        return qr_code
+
+    # No QR found, so we try to again after an opening operation
+
+    # zoom in each dimension
+    zoom = (10.0, 10.0)
+    mat = fitz.Matrix(*zoom)
+    pix = page.get_pixmap(matrix=mat, alpha=0)
+    # store image as a PNG
+    pix.save(filename)
+
+    img_original = cv2.imread(filename, 0)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    zoom_factors = [1.0, 0.4, 0.3, 0.2, 0.6, 0.7, 0.8, 0.9]
+    for zoom_factor in zoom_factors:
+        try:
+            img = cv2.resize(img_original, None, fx=zoom_factor, fy=zoom_factor)
+            img_open = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+            del img
+            qr_code = _scan(img_open)
+            del img_open
+            if qr_code:
+                break
+        except cv2.error:
+            _logger.warning("Error resizing image for QRcode detection.")
+    del img_original, kernel
+    return qr_code
