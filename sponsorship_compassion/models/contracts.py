@@ -10,6 +10,7 @@
 
 import logging
 import os
+import json
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
@@ -522,10 +523,10 @@ class SponsorshipContract(models.Model):
 
         updated_correspondents = self.env[self._name]
         if "correspondent_id" in vals:
-            old_correspondents = self.mapped("correspondent_id")
-            updated_correspondents = self._on_change_correspondant(
-                vals["correspondent_id"]
-            )
+            updated_correspondents = self.filtered("global_id")
+            for record in updated_correspondents:
+                record._remove_correspondent()
+
             for child in self.mapped("child_id"):
                 child.child_sponsored(vals["correspondent_id"])
 
@@ -534,23 +535,7 @@ class SponsorshipContract(models.Model):
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
         super().write(vals)
-
-        if updated_correspondents and not testing:
-            # We want to avoid having dangling sponsorships
-            self.env.cr.commit()  # pylint: disable=invalid-commit
-            try:
-                updated_correspondents._on_correspondant_changed()
-            except:
-                logger.error("Error activating sponsorship", exc_info=True)
-                self.env.clear()
-                for correspondent in updated_correspondents:
-                    correspondent.activity_schedule(
-                        'mail.mail_activity_data_warning',
-                        summary="Activate sponsorship",
-                        user_id=self.env.uid,
-                        note="Error while changing correspondent at GMC. "
-                             "The sponsorship is no longer active at GMC side. "
-                             "Please activate it again manually.")
+        self.env.cr.commit()
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -560,8 +545,10 @@ class SponsorshipContract(models.Model):
             old_partners.update_number_sponsorships()
 
         if "correspondent_id" in vals:
-            self.mapped("correspondent_id").update_number_sponsorships()
-            old_correspondents.update_number_sponsorships()
+            for record in self:
+                update_status = record.add_correspondent()
+                if update_status is not True:
+                    record.message_post(update_status[1])
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -610,7 +597,7 @@ class SponsorshipContract(models.Model):
             "sponsorship_compassion.suspend_product_id"
         )
         # Cancel invoices in the period of suspension
-        self.with_context(async_mode=False).clean_invoices(
+        self.with_context({"async_mode": False}).clean_invoices(
             date_start, clean_invoices_paid=True, keep_lines=True)
 
         for contract in self:
@@ -771,6 +758,7 @@ class SponsorshipContract(models.Model):
         # We don't need to write back partner and child
         vals.pop("child_id", False)
         vals.pop("correspondent_id", False)
+        vals["state"] = "active"
         self.write(vals)
         # Remove the hold on the child.
         for sponsorship in self.filtered("hold_id"):
@@ -784,7 +772,9 @@ class SponsorshipContract(models.Model):
     def cancel_sent(self, vals):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
-        hold = self.env["compassion.hold"].browse(vals.get("hold_id", -1))
+        hold_id = vals.get("hold_id")
+        hold = self.env["compassion.hold"].search([
+            "|", ("hold_id", "=", hold_id), ("id", "=", hold_id)])
         if self.hold_expiration_date:
             hold_expiration = self.hold_expiration_date
             child = self.child_id
@@ -796,6 +786,8 @@ class SponsorshipContract(models.Model):
                 "primary_owner": self.write_uid.id,
                 "state": "active",
             })
+            if not child.hold_id:
+                child.hold_id = hold
         return True
 
     @api.multi
@@ -1084,25 +1076,23 @@ class SponsorshipContract(models.Model):
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         action = self.env.ref("sponsorship_compassion.create_sponsorship")
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         for sponsorship in self.filtered(
                 lambda s: s.global_id and s.state not in ("cancelled", "terminated")
         ):
-            # Commit at each message processed
             try:
-                with self.env.cr.savepoint():
-                    message = message_obj.create(
-                        {
-                            "action_id": action.id,
-                            "child_id": sponsorship.child_id.id,
-                            "partner_id": sponsorship.correspondent_id.id,
-                            "object_id": sponsorship.id,
-                        }
-                    )
-                    message.process_messages()
-                    if message.state == "failure":
-                        failure = message.failure_reason
-                        sponsorship.message_post(failure, _("Language update failed."))
+                message = message_obj.create(
+                    {
+                        "action_id": action.id,
+                        "child_id": sponsorship.child_id.id,
+                        "partner_id": sponsorship.correspondent_id.id,
+                        "object_id": sponsorship.id,
+                    }
+                )
+                message.process_messages()
+                if "failure" in message.state:
+                    failure = message.failure_reason
+                    sponsorship.message_post(failure, _("Language update failed."))
             except:
                 logger.error(
                     "Error when updating sponsorship language. "
@@ -1110,98 +1100,75 @@ class SponsorshipContract(models.Model):
                     exc_info=True,
                 )
 
-    @api.multi
-    def _on_change_correspondant(self, correspondent_id):
-        """
-        This is useful for not having to internally cancel and create
-        a new commitment just to change the corresponding partner.
-        It will however cancel the commitment at GMC side and create a new
-        one.
-        But in Odoo, we will not see the commitment has changed.
-        """
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+    def _remove_correspondent(self):
+        self.ensure_one()
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         cancel_action = self.env.ref("sponsorship_compassion.cancel_sponsorship")
 
-        sponsorships = self.filtered(
-            lambda s: s.correspondent_id.id != correspondent_id
-            and s.global_id
-            and s.state not in ("cancelled", "terminated")
-        )
-        sponsorships.write(
-            {
-                "hold_expiration_date": self.env[
-                    "compassion.hold"
-                ].get_default_hold_expiration(HoldType.SPONSOR_CANCEL_HOLD)
-            }
-        )
-        cancelled_sponsorships = self.env[self._name]
-        errors = self.env[self._name]
+        if self.state in ("cancelled", "terminated"):
+            raise UserError(_("You can't change the correspondent of a"
+                              " cancelled or terminated sponsorship"))
+
+        hold_expiration_date = self.env["compassion.hold"].get_default_hold_expiration(
+            HoldType.SPONSOR_CANCEL_HOLD)
+        self.hold_expiration_date = hold_expiration_date
 
         # Cancel sponsorship at GMC
-        messages = message_obj
-        for sponsorship in sponsorships:
-            messages += message_obj.create(
+        message = message_obj.create(
                 {
                     "action_id": cancel_action.id,
-                    "child_id": sponsorship.child_id.id,
-                    "partner_id": sponsorship.correspondent_id.id,
-                    "object_id": sponsorship.id,
+                    "child_id": self.child_id.id,
+                    "partner_id": self.correspondent_id.id,
+                    "object_id": self.id,
                 }
             )
-        messages.process_messages()
-        for i in range(0, len(messages)):
-            if messages[i].state == "success":
-                cancelled_sponsorships += sponsorships[i]
+        message.process_messages()
+
+        answer = json.loads(message.answer)
+        if not isinstance(answer, dict) or "Code" not in answer:
+            raise UserError(_("Invalid GMC answer"))
+        if "failure" in message.state:
+            if answer["Code"] in [5000, ]:
+                logger.warning(message.answer)
             else:
-                messages[i].unlink()
-                errors += sponsorships[i]
-        if errors:
-            logger.error(
-                "Could not cancel contracts with following global_id(s):"
-                ", ".join(errors.mapped("global_id"))
-            )
+                error_message = answer["Message"]
+                logger.error(error_message)
+                raise UserError(_("GMC returned an error :") + "\n" + error_message)
 
-            raise UserError(
-                _("The current commitment at GMC side could not be cancelled.")
-            )
+        self.global_id = False
+        self.state = "terminated"
+        self.correspondent_id.update_number_sponsorships()
+        return True
 
-        cancelled_sponsorships.write({"global_id": False})
-        return cancelled_sponsorships
-
-    @api.multi
-    def _on_correspondant_changed(self):
-        """
-        This is useful for not having to internally cancel and create
-        a new commitment just to change the corresponding partner.
-        It will however cancel the commitment at GMC side and create a new
-        one.
-        But in Odoo, we will not see the commitment has changed.
-        """
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+    def add_correspondent(self):
+        self.ensure_one()
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         create_action = self.env.ref("sponsorship_compassion.create_sponsorship")
-
-        # Upsert correspondents
-        self.mapped("correspondent_id").upsert_constituent().process_messages()
+        self.correspondent_id.upsert_constituent().process_messages()
 
         # Create new sponsorships at GMC
-        messages = message_obj
-        for sponsorship in self:
-            partner = sponsorship.correspondent_id
-            messages += message_obj.create(
-                {
-                    "action_id": create_action.id,
-                    "child_id": sponsorship.child_id.id,
-                    "partner_id": partner.id,
-                    "object_id": sponsorship.id,
-                }
-            )
-        messages.process_messages()
-        for i in range(0, len(messages)):
-            if not messages[i].state == "success":
-                self[i].message_post(
-                    body=messages[i].failure_reason,
-                    subject=_("The sponsorship is no more active!")
-                )
+        message = message_obj.create(
+            {
+                "action_id": create_action.id,
+                "child_id": self.child_id.id,
+                "partner_id": self.correspondent_id.id,
+                "object_id": self.id,
+            }
+        )
+        message.process_messages()
+
+        answer = json.loads(message.answer)
+        if not isinstance(answer, dict) or "Message" not in answer:
+            return False, _("Invalid GMC answer")
+        if "failure" in message.state:
+            error_message = answer["Message"]
+            logger.error(error_message)
+            return False, _("Couldn't activate the new correspondent, GMC returned "
+                            "the following error: ") + "\n" + error_message
+
+        self.correspondent_id.update_number_sponsorships()
+        self.env.cr.commit()
+        return True
 
     @api.multi
     def _on_sponsorship_finished(self):
@@ -1239,7 +1206,7 @@ class SponsorshipContract(models.Model):
                 message_obj.search(
                     [
                         ("action_id", "=", action_id),
-                        ("state", "in", ["new", "failure"]),
+                        ("state", "in", ["new", "failure", "odoo_failure"]),
                         ("object_id", "=", sponsorship.id),
                     ]
                 ).unlink()

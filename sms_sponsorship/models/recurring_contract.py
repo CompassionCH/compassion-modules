@@ -141,7 +141,7 @@ class RecurringContract(models.Model):
                 ("partner_id", "=", self.partner_id.id),
                 ("payment_mode_id", "=", payment_mode_id),
             ],
-            order="next_invoice_date desc",
+            order="id desc",
             limit=1,
         )
         if not group:

@@ -67,6 +67,6 @@ class HoldWizard(models.TransientModel):
         if not test_mode:
             self.env.cr.commit()  # pylint: disable=invalid-commit
         message.with_context(async_mode=False).process_messages()
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True

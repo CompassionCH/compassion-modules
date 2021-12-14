@@ -37,7 +37,7 @@ class HrLeave(models.Model):
                 ]
             )
 
-            rd.sudo().attendance_day_ids = att_days
+            rd.attendance_day_ids = att_days
 
             for att_day in att_days:
                 att_day.leave_ids = att_day.leave_ids | self
@@ -52,7 +52,7 @@ class HrLeave(models.Model):
                 raise UserError(_("Working contract should define working hours per day"))
 
             # We get the working intervals (without the public holidays)
-            attendance_interval = employee.contract_id.resource_calendar_id._attendance_intervals(date_from, date_to)
+            attendance_interval = employee.contract_id.resource_calendar_id._attendance_intervals(date_from, date_to, employee)
 
             # For each working intervals, compute the ratio over a regular day
             total = sum(

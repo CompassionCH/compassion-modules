@@ -13,6 +13,9 @@ Defines a few functions useful in ../models/import_letters_history.py
 import base64
 import logging
 import os
+import tempfile
+import secrets
+import gc
 from io import BytesIO
 from time import time
 
@@ -61,47 +64,50 @@ def analyze_attachment(env, file_data, file_name, force_template):
     letter_datas = list()
     _logger.info(f"\tImport file : {file_name}")
 
-    pdf_in_buffer = BytesIO(file_data)
-    inputpdf = PdfFileReader(pdf_in_buffer)
-    letter_indexes, imgs, lang = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
+    inputpdf = PdfFileReader(BytesIO(file_data))
+    letter_indexes, imgs_path, lang = _find_qrcodes(env, line_vals, inputpdf, new_dpi)
     _logger.info(f"\t {len(letter_indexes)-1 or 1} letters found!")
 
     # Construct the data for each detected letter: store as PDF
     if len(letter_indexes) > 1:
         last_index = 0
         for index in letter_indexes[1:]:
-            inputpdf = PdfFileReader(pdf_in_buffer)
+            inputpdf = PdfFileReader(BytesIO(file_data))
             output = PdfFileWriter()
-            letter_data = BytesIO()
-            for i in range(last_index, index):
-                output.addPage(inputpdf.getPage(i))
-            output.write(letter_data)
-            letter_data.seek(0)
-            letter_datas.append(letter_data.read())
+            with BytesIO() as letter_data:
+                for i in range(last_index, index):
+                    output.addPage(inputpdf.getPage(i))
+                output.write(letter_data)
+                letter_data.seek(0)
+                letter_datas.append(letter_data.read())
             last_index = index
     else:
         letter_datas.append(file_data)
 
     # now try to find the layout for all splitted letters
-    for i in range(len(letter_datas)):
+    for i, (letter_data, img_path, letter_vals) in enumerate(zip(letter_datas, imgs_path, line_vals)):
         _logger.info(
-            f"\tAnalyzing template and language of letter {i + 1}/{len(letter_datas)}"
+            f"\tAnalyzing template and language of letter {i + 1}/{len(imgs_path)}"
         )
+        img = cv2.imread(img_path)
 
-        letter_vals = line_vals[i]
         file_split = file_name.split(".")
         attach_name = file_split[0] + "-" + str(i) + ".pdf"
-        letter_vals["letter_image"] = base64.b64encode(letter_datas[i])
+        letter_vals["letter_image"] = base64.b64encode(letter_data)
         letter_vals["file_name"] = attach_name
         if force_template:
             letter_vals["template_id"] = force_template.id
         else:
             # use pattern recognition to find the template
-            _find_template(env, imgs[i], letter_vals, resize_ratio)
+            _find_template(env, img, letter_vals, resize_ratio)
+            del img
             tic = time()
             if lang:
                 letter_vals["letter_language_id"] = lang.id
             _logger.debug(f"\t\tLanguage analysis done in {time() - tic:.3} sec.")
+
+    gc.collect()
+    _logger.info(f"GC.collect")
 
     return line_vals
 
@@ -124,7 +130,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
     """
     # Holds the indexes of the pages where a new letter is detected
     letter_indexes = list()
-    page_imgs = list()
+    imgs_path = list()
 
     previous_qrcode = ""
     _logger.debug(f"\tThe imported PDF is made of {inputpdf.numPages} pages.")
@@ -139,6 +145,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
 
         # read the qrcode on the current page
         qrcode, img_path = _decode_page(page_buffer.read())
+        page_buffer.close()
         lang = cbr.find_languages_area(env, img_path)
         if (qrcode and qrcode["data"] != previous_qrcode and
                 qrcode["format"] == "QRCODE") or i == 0:
@@ -152,7 +159,9 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
                 img = cv2.resize(img, (0, 0), fx=f, fy=f, interpolation=cv2.INTER_CUBIC)
             except cv2.error:
                 _logger.warning("Error resizing correspondence page", exc_info=True)
-            page_imgs.append(img)
+            path = os.path.join(tempfile.tempdir, secrets.token_urlsafe(16) + ".jpg")
+            cv2.imwrite(path, img)
+            imgs_path.append(path)
             partner_id, child_id = decode_barcode(env, qrcode)
             try:
                 page_preview = cv2.imencode(".jpg", img)
@@ -160,6 +169,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
             except cv2.error:
                 _logger.warning("Error encoding preview in jpg")
                 preview_data = False
+            del img
             values = {
                 "partner_id": partner_id,
                 "child_id": child_id,
@@ -181,7 +191,7 @@ def _find_qrcodes(env, line_vals, inputpdf, new_dpi):
             _logger.warning("Error removing temp file for QR-processing")
     letter_indexes.append(i + 1)
 
-    return letter_indexes, page_imgs, lang
+    return letter_indexes, imgs_path, lang
 
 
 def _decode_page(page_data):
@@ -195,26 +205,25 @@ def _decode_page(page_data):
     """
     tic = time()
 
-    doc = fitz.open("pdf", page_data)
-    for page in doc:  # iterate through the pages
-        zoom_x = 5.0  # horizontal zoom
-        zomm_y = 5.0  # vertical zoom
+    doc = fitz.Document("pdf", page_data)
+    # get first page
+    page = next(doc.pages())
 
-        mat = fitz.Matrix(zoom_x, zomm_y)  # zoom factor in each dimension
-        # use 'mat' instead of the identity matrix
-        pix = page.getPixmap(matrix=mat, alpha=0)
-        pix.writePNG("page%i.png" % page.number)  # store image as a PNG
+    zoom = (5.0, 5.0)
+    mat = fitz.Matrix(*zoom)  # zoom factor in each dimension
+    # use 'mat' instead of the identity matrix
+    pix = page.get_pixmap(matrix=mat, alpha=0)
 
-    img_url = os.getcwd() + "/page0.png"  # there is only one image
-    decoder_lib = "zbar"
-    if decoder_lib == "zxing":
-        qrdata = zxing_wrapper.scan_qrcode(img_url, page)
-        _logger.debug(f"\t\tQRCode decoded using ZXing in {time() - tic:.3} sec")
-    elif decoder_lib == "zbar":
-        qrdata = zbar_wrapper.scan_qrcode(img_url, page)
-        _logger.debug(f"\t\tQRCode decoded using ZBar in {time() - tic:.3} sec")
+    img_url = os.path.join(os.getcwd(), "page0.png")
+    pix.save(img_url)  # store image as a PNG
 
-    return qrdata, img_url
+    # qr_data = zxing_wrapper.scan_qrcode(img_url, page)
+    # _logger.debug(f"\t\tQRCode decoded using ZXing in {time() - tic:.3} sec")
+    qr_data = zbar_wrapper.scan_qrcode(img_url, page)
+    _logger.debug(f"\t\tQRCode decoded using ZBar in {time() - tic:.3} sec")
+    doc.close()
+
+    return qr_data, img_url
 
 
 def decode_barcode(env, barcode):
