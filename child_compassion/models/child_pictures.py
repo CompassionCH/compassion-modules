@@ -9,12 +9,17 @@
 ##############################################################################
 import base64
 import logging
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 
 from odoo import models, fields, api, _
 from odoo.http import request
 
 logger = logging.getLogger(__name__)
+
+# This User-Agent simulate a browser, so that the fetch is not blocked
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
+}
 
 
 class ChildPictures(models.Model):
@@ -135,13 +140,15 @@ class ChildPictures(models.Model):
                     ind = image_split.index("media.ci.org")
                 image_split[ind + 1] = cloudinary
                 url = "/".join(image_split)
-                data = base64.encodebytes(urlopen(url).read())
+
+                data = urlopen(Request(url, None, HEADERS)).read()
+                data = base64.encodebytes(data)
                 _image_date = picture.child_id.last_photo_date or fields.Date.today()
                 if pic_type.lower() == "headshot":
                     self.headshot = data
                 elif pic_type.lower() == "fullshot":
                     self.fullshot = data
-            except:
+            except Exception as e:
                 self._error_msg = (
                     "Image cannot be fetched, invalid image "
                     "url : " + picture.image_url
