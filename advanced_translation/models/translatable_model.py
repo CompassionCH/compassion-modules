@@ -123,6 +123,7 @@ class AdvancedTranslatable(models.AbstractModel):
         :return: the formatted dates
         """
         _lang = self.env.context.get("lang") or self.env.lang or "en_US"
+        _tz = self.env.user.tz or "Europe/Zurich"
         _format = self.env["ir.advanced.translation"].get(date_type)
         dates = sorted(
             set(self.filtered(field).mapped(field))
