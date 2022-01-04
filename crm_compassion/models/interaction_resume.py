@@ -26,7 +26,7 @@ class InteractionResume(models.TransientModel):
     state = fields.Selection(related="direction")
     communication_date = fields.Datetime()
     subject = fields.Text()
-    other_type = fields.Text()
+    other_type = fields.Char()
     has_attachment = fields.Boolean(compute="_compute_has_attachment")
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
