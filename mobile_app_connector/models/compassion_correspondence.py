@@ -221,9 +221,16 @@ class CompassionCorrespondence(models.Model):
             )
         )
         # Use the latest preview for generating the letter
-        gen[:1].generate_letters()
+        # update utms
+        utm_source = params.get("utm_source")
+        utm_medium = params.get("utm_medium")
+        utm_campaign = params.get("utm_campaign")
+        utms = self.env["utm.mixin"].get_utms(utm_source, utm_medium, utm_campaign)
+
+        gen[:1].generate_letters(utms)
         # Delete old previews
         gen[1:].unlink()
+
         return {
             "DbId": gen[:1].ids,
         }

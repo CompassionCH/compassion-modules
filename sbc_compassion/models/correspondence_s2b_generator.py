@@ -9,6 +9,7 @@
 ##############################################################################
 import base64
 import logging
+from collections import defaultdict
 from io import BytesIO
 
 from odoo.addons.queue_job.job import job, related_action
@@ -152,22 +153,25 @@ class CorrespondenceS2bGenerator(models.Model):
         return self.write({"state": "draft"})
 
     @api.multi
-    def generate_letters(self):
+    def generate_letters(self, utms=None):
         """
         Launch S2B Creation job
         :return: True
         """
-        self.with_delay().generate_letters_job()
+        self.with_delay().generate_letters_job(utms)
         return True
 
     @api.multi
     @job(default_channel="root.sbc_compassion")
     @related_action(action="related_action_s2b")
-    def generate_letters_job(self):
+    def generate_letters_job(self, utms=None):
         """
         Create S2B Letters
         :return: True
         """
+        if utms is None:
+            utms = dict()
+        utms = defaultdict(lambda: None, utms)
         letters = self.env["correspondence"]
         for sponsorship in self.sponsorship_ids:
             text = self._get_text(sponsorship)
@@ -179,6 +183,9 @@ class CorrespondenceS2bGenerator(models.Model):
                 "source": self.source,
                 "original_language_id": self.language_id.id,
                 "original_text": text,
+                "campaign_id": utms["campaign"],
+                "medium_id": utms["medium"],
+                "source_id": utms["source"],
             }
             if self.image_ids:
                 vals["original_attachment_ids"] = [
