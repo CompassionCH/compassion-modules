@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="log_other_interaction_wizard_view" model="ir.ui.view">
+        <field name="name">partner.log.other.interaction.wizard</field>
+        <field name="model">partner.log.other.interaction.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="partner_id" invisible="1"/>
+                    <group>
+                        <field name="other_type"/>
+                        <field name="direction"/>
+                    </group>
+                    <group>
+                        <field name="subject"/>
+                        <field name="body"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="log_interaction" string="Log other" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window id="action_log_interaction"
+                name="Log other interaction"
+                src_model="res.partner"
+                res_model="partner.log.other.interaction.wizard"
+                view_mode="form" view_type="form" target="new"/>
+</odoo>

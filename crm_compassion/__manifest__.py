@@ -67,6 +67,7 @@
         "views/interaction_resume_view.xml",
         "views/mail_message_view.xml",
         "views/partner_log_interaction_wizard_view.xml",
+        "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
     ],

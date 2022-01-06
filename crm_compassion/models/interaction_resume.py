@@ -19,13 +19,14 @@ class InteractionResume(models.TransientModel):
     partner_id = fields.Many2one("res.partner", "Partner")
     email = fields.Char()
     communication_type = fields.Selection(
-        [("Paper", "Paper"), ("Phone", "Phone"), ("SMS", "SMS"), ("Email", "Email")]
+        [("Paper", "Paper"), ("Phone", "Phone"), ("SMS", "SMS"), ("Email", "Email"), ("Other", "Other")]
     )
     direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ])
     # Used to display icons in tree view
     state = fields.Selection(related="direction")
     communication_date = fields.Datetime()
     subject = fields.Text()
+    other_type = fields.Char()
     has_attachment = fields.Boolean(compute="_compute_has_attachment")
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
@@ -76,6 +77,7 @@ class InteractionResume(models.TransientModel):
                         COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
                         NULL AS email,
                         COALESCE(source.name, pcj.subject) AS subject,
+                        '' as other_type,
                         REGEXP_REPLACE(pcj.body_html, '<img[^>]*>', '') AS body,
                         'out' AS direction,
                         0 as phone_id,
@@ -104,6 +106,7 @@ class InteractionResume(models.TransientModel):
                         COALESCE(p.contact_id, p.id) AS partner_id,
                         NULL AS email,
                         crmpc.name as subject,
+                        '' as other_type,
                         crmpc.name as body,
                         CASE crmpc.direction
                             WHEN 'inbound' THEN 'in' ELSE 'out'
@@ -128,6 +131,7 @@ class InteractionResume(models.TransientModel):
                         COALESCE(p.contact_id, p.id) AS partner_id,
                         mt.recipient_address as email,
                         COALESCE(source.name, m.subject) as subject,
+                        '' as other_type,
                         REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                         'out' AS direction,
                         0 as phone_id,
@@ -163,6 +167,7 @@ class InteractionResume(models.TransientModel):
                         COALESCE(tracking.partner_id, p.contact_id, p.id) AS partner_id,
                         mail.email as email,
                         source.name as subject,
+                        '' as other_type,
                         NULL AS body,
                         'out' AS direction,
                         0 as phone_id,
@@ -195,6 +200,7 @@ class InteractionResume(models.TransientModel):
                         COALESCE(p.contact_id, p.id) AS partner_id,
                         m.email_from as email,
                         m.subject as subject,
+                        '' as other_type,
                         REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                         'in' AS direction,
                         0 as phone_id,
@@ -209,6 +215,27 @@ class InteractionResume(models.TransientModel):
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
+                        )
+            -- other interactions
+                    UNION (
+                      SELECT
+                        'Other' as communication_type,
+                        o.create_date as communication_date,
+                        COALESCE(p.contact_id, p.id) AS partner_id,
+                        '' as email,
+                        o.subject as subject,
+                        o.other_type as other_type,
+                        REGEXP_REPLACE(o.body, '<img[^>]*>', '') AS body,
+                        o.direction AS direction,
+                        0 as phone_id,
+                        0 as email_id,
+                        0 as message_id,
+                        false as is_from_employee,
+                        0 as paper_id,
+                        NULL as tracking_status,
+                        0 as mass_mailing_id
+                        FROM "partner_log_other_interaction" as o
+                        JOIN res_partner p ON o.partner_id = p.id
                         )
             ORDER BY communication_date desc
             LIMIT 240
