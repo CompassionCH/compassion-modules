@@ -12,3 +12,4 @@ from . import portal_wizard
 from . import demand_settings
 from . import child_hold_wizard
 from . import partner_log_interaction_wizard
+from . import partner_log_other_interaction_wizard
