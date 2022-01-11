@@ -545,7 +545,7 @@ class SponsorshipContract(models.Model):
             old_partners.update_number_sponsorships()
 
         if "correspondent_id" in vals:
-            for record in self:
+            for record in self.filtered("global_id"):
                 update_status = record.add_correspondent()
                 if update_status is not True:
                     record.message_post(update_status[1])
