@@ -851,7 +851,7 @@ class CommunicationJob(models.Model):
             return next((v for v in source if v), False)
 
         print_options["output_tray"] = get_first((
-            self[0:].printer_output_tray_id.system_name,
+            self[:1].printer_output_tray_id.system_name,
             config_lang.printer_output_tray_id.system_name,
             behaviour["output_tray"]
         ))
