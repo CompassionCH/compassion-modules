@@ -789,7 +789,7 @@ class CommunicationJob(models.Model):
             if job.attachment_ids:
                 # Print letter
                 print_name = name[:3] + " " + (job.subject or "")
-                output_tray = job.print_letter(print_name)
+                output_tray = job.print_letter(print_name)["output_tray"]
 
                 # Print attachments in the same output_tray
                 job.attachment_ids.print_attachments(
@@ -825,55 +825,48 @@ class CommunicationJob(models.Model):
         if len(lang) > 1:
             raise UserError(_("Cannot print multiple langs at the same time."))
         lang = lang[0]
+
+        # Get report
         report = self.mapped("report_id").with_context(
             print_name=print_name, lang=lang, must_skip_send_to_printer=True
         )
-        if len(report) > 1:
-            raise UserError(_(
-                "Cannot print multiple communication types at the same time."))
-        behaviour = report.behaviour()
-        printer = behaviour["printer"].with_context(lang=lang)
-
         # Get communication config of language
-        printer_configs = self.mapped("config_id.printer_config_ids")
-        config_lang = printer_configs.filtered(lambda c: c.lang_id.code == lang)
-        if len(config_lang) > 1:
-            raise UserError(_(
-                "Cannot print multiple communication types at the same time."))
+        config_lang = self.mapped("config_id.printer_config_ids").filtered(
+            lambda c: c.lang_id.code == lang
+        )
 
-        # The trays are defined at 3 places, get options in order of priority
-        # Output tray - partner.communication.job
-        if len(self) == 1 and self.printer_output_tray_id.system_name:
-            output_tray = self.printer_output_tray_id.system_name
-        # Output tray - partner.communication.config
-        elif config_lang.printer_output_tray_id.system_name:
-            output_tray = config_lang.printer_output_tray_id.system_name
-        # Output tray - ir.actions.report
-        elif report.printer_output_tray_id.system_name:
-            output_tray = report.printer_output_tray_id.system_name
-        else:
-            output_tray = False
-        # Handle input tray similarly to output tray
-        if config_lang.printer_input_tray_id.system_name:
-            input_tray = config_lang.printer_input_tray_id.system_name
-        elif report.printer_input_tray_id.system_name:
-            input_tray = report.printer_input_tray_id.system_name
-        else:
-            input_tray = False
+        if len(report) > 1 or len(config_lang) > 1:
+            raise UserError(_("Cannot print multiple communication types at the same time."))
 
-        if behaviour["action"] != "client" and printer:
-            # Get pdf should directly send it to the printer if report
-            # is correctly configured.
+        behaviour = report.behaviour()
+
+        print_options["doc_format"] = report.report_type
+        print_options["action"] = behaviour["action"]
+
+        # The get the print options in the following order of priority:
+        # - partner.communication.job (only for output bin)
+        # - partner.communication.config
+        # - ir.actions.report (behaviour: which can be specific for the user currently logged in)
+        def get_first(source):
+            return next((v for v in source if v), False)
+
+        print_options["output_tray"] = get_first((
+            self[:1].printer_output_tray_id.system_name,
+            config_lang.printer_output_tray_id.system_name,
+            behaviour["output_tray"]
+        ))
+        print_options["input_tray"] = get_first((
+            config_lang.printer_input_tray_id.system_name,
+            behaviour["input_tray"]
+        ))
+
+        printer = behaviour["printer"].with_context(lang=lang)
+        if behaviour["action"] == "server" and printer:
+            # Get pdf should directly send it to the printer
             to_print = report.render_qweb_pdf(self.ids)
-            printer.print_document(
-                report.report_name, to_print[0],
-                doc_format=report.report_type,
-                action=behaviour['action'],
-                input_tray=input_tray,
-                output_tray=output_tray,
-                **print_options
-            )
-        return output_tray
+            printer.print_document(report.report_name, to_print[0], **print_options)
+
+        return print_options
 
     @api.model
     def _needaction_domain_get(self):
