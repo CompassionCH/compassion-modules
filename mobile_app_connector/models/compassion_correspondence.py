@@ -215,7 +215,7 @@ class CompassionCorrespondence(models.Model):
                     ("name", "=", "app-" + child.local_id),
                     ("sponsorship_ids.child_id", "=", child.id),
                     ("s2b_template_id", "=", int(template_id)),
-                    ("state", "=", "preview"),
+                    ("state", "in", ["draft", "preview"]),
                 ],
                 order="create_date DESC",
             )
