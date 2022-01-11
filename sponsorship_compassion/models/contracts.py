@@ -544,7 +544,7 @@ class SponsorshipContract(models.Model):
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
-        if "correspondent_id" in vals:
+        if "correspondent_id" in vals and self.state in ["active"]:
             for record in self:
                 update_status = record.add_correspondent()
                 if update_status is not True:
