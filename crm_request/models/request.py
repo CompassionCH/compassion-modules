@@ -287,8 +287,9 @@ class CrmClaim(models.Model):
         which can occur for example with circular references
         """
         for _ in range(10):
-            if partner.contact_id:
-                partner = partner.contact_id
+            if not partner.contact_id:
+                break
+            partner = partner.contact_id
         return partner
 
     @api.multi
