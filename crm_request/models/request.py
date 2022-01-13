@@ -177,10 +177,8 @@ class CrmClaim(models.Model):
             "email_origin": msg.get("from"),
         }
 
-        ignored_reporter = self.env["ignored.reporter"].search([])
-        ignored_reporter = [i.email for i in ignored_reporter]
-
         # If the mail is ignored_reporters use the email in the body instead
+        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
         if defaults["email_origin"] in ignored_reporter:
             email = msg["reply_to"]
             defaults["email_origin"] = email
@@ -266,6 +264,32 @@ class CrmClaim(models.Model):
                 )[1]
 
         return result
+
+    @api.multi
+    def create(self, values):
+        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
+        if values.get("partner_id"):
+            partner_id = values.get("partner_id")
+            partner = self.env["res.partner"].browse(partner_id)
+            partner = self.get_partner_parent(partner)
+            if partner.email in ignored_reporter:
+                del values["partner_id"]
+            else:
+                values["partner_id"] = partner.id
+        return super().create(values)
+
+    @staticmethod
+    def get_partner_parent(partner):
+        """
+        if the mail used refer to an alternative partner identity
+        iteratively take the partner 'parent' instead
+        here we use a for loop with 10 steps to avoid an infinite while
+        which can occur for example with circular references
+        """
+        for _ in range(10):
+            if partner.contact_id:
+                partner = partner.contact_id
+        return partner
 
     @api.multi
     def write(self, values):
