@@ -21,6 +21,7 @@ from odoo.addons.queue_job.job import job, related_action
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from ..tools import import_letter_functions as func
+from ..tools import read_barcode
 
 logger = logging.getLogger(__name__)
 
@@ -169,11 +170,9 @@ class ImportLettersHistory(models.Model):
             )
             if other_import:
                 raise UserError(
-                    _(
-                        "Another import with the same configuration is "
-                        "already open. Please finish it before creating a new "
-                        "one."
-                    )
+                    _("Another import with the same configuration is "
+                      "already open. Please finish it before creating a new "
+                      "one.")
                 )
         return super().create(vals)
 
@@ -238,7 +237,7 @@ class ImportLettersHistory(models.Model):
     ##########################################################################
     @job(default_channel="root.sbc_compassion")
     @related_action(action="related_action_s2b_imports")
-    def _run_analyze(self):
+    def run_analyze(self):
         """
         Analyze each attachment:
         - check for duplicate file names and skip them
@@ -246,44 +245,51 @@ class ImportLettersHistory(models.Model):
         - call _analyze_attachment for every resulting file
         """
         self.ensure_one()
-        # keep track of file names to detect duplicates
-        file_name_history = []
-        logger.info("Imported files analysis started...")
-        progress = 1
 
-        for attachment in self.data:
-            if attachment.name not in file_name_history:
-                file_name_history.append(attachment.name)
-                file_data = base64.b64decode(
-                    attachment.with_context(bin_size=False).datas
-                )
-                # check for zip
-                if func.check_file(attachment.name) == 2:
-                    zip_file = BytesIO(file_data)
-                    zip_ = zipfile.ZipFile(zip_file, "r")
-                    for f in zip_.namelist():
-                        logger.debug(f"Analyzing file {progress}/{self.nber_letters}")
-                        self._analyze_attachment(zip_.read(f), f)
-                        progress += 1
-                # case with normal format (PDF,TIFF)
-                elif func.check_file(attachment.name) == 1:
-                    logger.debug(f"Analyzing file {progress}/{self.nber_letters}")
-                    self._analyze_attachment(file_data, attachment.name)
-                    progress += 1
-                else:
-                    raise UserError(_("Only zip/pdf files are supported."))
+        logger.info(f"Letters import started")
+
+        for attachment in set(self.data):
+            logger.info(f"- {attachment.name}")
+            file_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
+            extension = attachment.name.split(".")[-1:]
+
+            if extension in ["pdf"]:
+                self._analyze_attachment(file_data, attachment.name)
+            elif extension in ["zip"]:
+                zip_ = zipfile.ZipFile(BytesIO(file_data), "r")
+                for f in zip_.namelist():
+                    self._analyze_attachment(zip_.read(f), f)
             else:
-                raise UserError(_("Two files are the same"))
+                logger.error(f"{attachment.name} ignored, invalid extension")
 
+        logger.info(f"Letters import completed")
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
-        logger.info("Imported files analysis completed.")
 
     def _analyze_attachment(self, file_data, file_name):
-        line_vals = func.analyze_attachment(
-            self.env, file_data, file_name, self.template_id
-        )
-        for i in range(0, len(line_vals)):
-            line_vals[i]["import_id"] = self.id
-            self.env["import.letter.line"].create(line_vals[i])
+        partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(file_data)
+
+        partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
+        if partner:
+            partner_id = partner.id
+        else:
+            partner_id = None
+
+        child = self.env["compassion.child"].search(["|", ("code", "=", child_code), ("local_id", "=", child_code)], limit=1)
+        if child:
+            child_id = child.id
+        else:
+            child_id = None
+
+        data = {
+            "import_id": self.id,
+            "partner_id": partner_id,
+            "child_id": child_id,
+            "letter_image_preview": preview,
+            "letter_image": None,
+            "file_name": file_name,
+            "template_id": None,
+        }
+        self.env["import.letter.line"].create(data)
+        self._cr.commit()
