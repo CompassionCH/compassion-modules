@@ -8,29 +8,27 @@
         <field name="arch" type="xml">
             <form string="Imports">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,open,done"/>
                     <field name="import_completed" invisible="1"/>
                     <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
-                    <button name="button_import" string="Load Files" type="object" states="draft"/>
+                    <button name="button_import" string="Load Files" type="object"/>
                 </header>
                 <sheet>
                     <h1>Imported Letters</h1>
                     <group>
-                        <label for="data" string="Files" states="draft"/>
-                        <div states="draft">
-                            <field name="data" widget="many2many_binary"/>
-                        </div>
+                        <label for="data" string="Files"/>
+                        <field name="data" widget="many2many_binary"/>
                         <field name="config_id" widget="radio"/>
                         <field name="nber_letters"/>
                         <field name="mandatory_review"/>
                         <field name="is_encourager"/>
                         <field name="physical_attachments"/>
                         <field name="attachments_description"/>
-                        <field name="template_id" states="draft,open"/>
+                        <field name="template_id"/>
                     </group>
                     <group>
                         <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
-                        <field name="import_line_ids" states="open,ready" domain="[('id','=','-1')]">
+                        <field name="import_line_ids" domain="[('id','=','-1')]">
                             <tree decoration-danger="status != 'ok'" decoration-success="status == 'ok'" create="false" editable="bottom">
                                 <field name="status"/>
                                 <field name="partner_id"/>

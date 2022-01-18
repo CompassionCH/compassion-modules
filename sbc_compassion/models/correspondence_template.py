@@ -18,7 +18,6 @@ import tempfile
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.tools import config
-from ..tools import patternrecognition as pr
 
 _logger = logging.getLogger(__name__)
 
@@ -408,24 +407,6 @@ class CorrespondenceTemplate(models.Model):
             template.qrcode_y_max = template.page_height * float(
                 config_obj.get_param("qrcode_y_max")
             )
-            if template.pattern_image:
-                # pattern detection
-                res = pr.patternRecognition(
-                    template_cv_image,
-                    template.pattern_image,
-                    template.get_pattern_area(),
-                )
-                if res is None:
-                    raise UserError(
-                        _(
-                            "The pattern could not be detected in given "
-                            "template image."
-                        )
-                    )
-                else:
-                    pattern_keypoints = res[0]
-
-                template.nber_keypoints = pattern_keypoints.shape[0]
 
     def _get_cv2_image(self):
         self.ensure_one()

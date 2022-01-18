@@ -13,40 +13,21 @@ between the database and the mail.
 """
 import base64
 import logging
-import zipfile
-from io import BytesIO
 
 from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from ..tools import import_letter_functions as func
 from ..tools import read_barcode
 
 logger = logging.getLogger(__name__)
 
 
 class ImportLettersHistory(models.Model):
-    """
-    Keep history of imported letters.
-    This class allows the user to import some letters (individually or in a
-    zip file) in the database by doing an automatic analysis.
-    The code is reading QR codes in order to detect child and partner codes
-    for every letter, using the zxing library for code detection.
-    """
-
     _name = "import.letters.history"
     _inherit = ["import.letter.config", "mail.thread"]
-    _description = _(
-        """History of the letters imported from a zip
-    or a PDF/TIFF"""
-    )
     _order = "create_date desc"
     _rec_name = "create_date"
-
-    ##########################################################################
-    #                                 FIELDS                                 #
-    ##########################################################################
 
     state = fields.Selection(
         [
@@ -79,9 +60,6 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
-    ##########################################################################
-    #                             FIELDS METHODS                             #
-    ##########################################################################
     @api.multi
     @api.depends(
         "import_line_ids",
@@ -113,55 +91,14 @@ class ImportLettersHistory(models.Model):
 
     @api.onchange("data")
     def _compute_nber_letters(self):
-        """
-        Counts the number of scans. If a zip file is given, the number of
-        scans inside is counted.
-        """
         for letter in self:
             if letter.state in ("open", "pending", "ready"):
                 letter.nber_letters = len(letter.import_line_ids)
             elif letter.state == "done":
                 letter.nber_letters = len(letter.letters_ids)
             elif letter.state is False or letter.state == "draft":
-                # counter
-                tmp = 0
-                # loop over all the attachments
-                for attachment in letter.data:
-                    # pdf or tiff case
-                    if func.check_file(attachment.name) == 1:
-                        tmp += 1
-                    # zip case
-                    elif func.is_zip(attachment.name):
-                        # create a tempfile and read it
-                        zip_file = BytesIO(
-                            base64.b64decode(
-                                attachment.with_context(bin_size=False).datas
-                            )
-                        )
-                        # catch ALL the exceptions that can be raised
-                        # by class zipfile
-                        try:
-                            zip_ = zipfile.ZipFile(zip_file, "r")
-                            list_file = zip_.namelist()
-                            # loop over all files in zip
-                            for tmp_file in list_file:
-                                tmp += func.check_file(tmp_file) == 1
-                        except zipfile.BadZipfile:
-                            raise UserError(
-                                _("Zip file corrupted (" + attachment.name + ")")
-                            )
-                        except zipfile.LargeZipFile:
-                            raise UserError(
-                                _("Zip64 is not supported(" + attachment.name + ")")
-                            )
+                letter.nber_letters = len(letter.data)
 
-                letter.nber_letters = tmp
-            else:
-                raise UserError(_("State: '%s' not implemented") % letter.state)
-
-    ##########################################################################
-    #                              ORM METHODS                               #
-    ##########################################################################
     @api.model
     def create(self, vals):
         if vals.get("config_id"):
@@ -176,28 +113,14 @@ class ImportLettersHistory(models.Model):
                 )
         return super().create(vals)
 
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
     @api.multi
     def button_import(self):
-        """
-        Analyze the attachment in order to create the letter's lines
-        """
         for letters_import in self:
-            if letters_import.data:
-                letters_import.state = "pending"
-                if self.env.context.get("async_mode", True):
-                    letters_import.with_delay()._run_analyze()
-                else:
-                    letters_import._run_analyze()
+            letters_import.with_delay().run_analyze()
         return True
 
     @api.multi
     def button_save(self):
-        """
-        save the import_line as a correspondence
-        """
         # check if all the imports are OK
         for letters_h in self:
             if letters_h.state != "ready":
@@ -213,7 +136,6 @@ class ImportLettersHistory(models.Model):
 
     @api.multi
     def button_review(self):
-        """ Returns a form view for import lines in order to browse them """
         self.ensure_one()
         return {
             "name": _("Review Imports"),
@@ -232,43 +154,24 @@ class ImportLettersHistory(models.Model):
             for field, val in list(config.get_correspondence_metadata().items()):
                 setattr(self, field, val)
 
-    ##########################################################################
-    #                             PRIVATE METHODS                            #
-    ##########################################################################
     @job(default_channel="root.sbc_compassion")
     @related_action(action="related_action_s2b_imports")
     def run_analyze(self):
-        """
-        Analyze each attachment:
-        - check for duplicate file names and skip them
-        - decompress zip file if necessary
-        - call _analyze_attachment for every resulting file
-        """
         self.ensure_one()
-
-        logger.info(f"Letters import started")
+        self.state = "pending"
+        logger.info("Letters import started...")
 
         for attachment in set(self.data):
-            logger.info(f"- {attachment.name}")
-            file_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
-            extension = attachment.name.split(".")[-1:]
-
-            if extension in ["pdf"]:
-                self._analyze_attachment(file_data, attachment.name)
-            elif extension in ["zip"]:
-                zip_ = zipfile.ZipFile(BytesIO(file_data), "r")
-                for f in zip_.namelist():
-                    self._analyze_attachment(zip_.read(f), f)
-            else:
-                logger.error(f"{attachment.name} ignored, invalid extension")
+            pdf_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
+            self._analyze_pdf(pdf_data, attachment.name)
 
         logger.info(f"Letters import completed")
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
 
-    def _analyze_attachment(self, file_data, file_name):
-        partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(file_data)
+    def _analyze_pdf(self, pdf_data, file_name):
+        partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(pdf_data)
 
         partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
         if partner:
@@ -287,9 +190,12 @@ class ImportLettersHistory(models.Model):
             "partner_id": partner_id,
             "child_id": child_id,
             "letter_image_preview": preview,
-            "letter_image": None,
+            "letter_image": pdf_data,
             "file_name": file_name,
-            "template_id": None,
+            "template_id": self.template_id.id,
         }
         self.env["import.letter.line"].create(data)
+        # this commit is really important
+        # it avoid having to keep the "data"s in memory until the whole process is finished
+        # each time a letter is scanned, it is also inserted in the DB
         self._cr.commit()

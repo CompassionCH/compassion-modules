@@ -13,7 +13,6 @@ import tempfile
 from os import remove
 
 from odoo import models, api, fields
-from ..tools import patternrecognition as pr
 
 _logger = logging.getLogger(__name__)
 try:
