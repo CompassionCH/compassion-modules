@@ -26,80 +26,44 @@ def detect_barcode_in_image(image):
     return barcodes
 
 
-def no_ops(img):
-    return img
-
-
 def top_left(img):
-    return img.crop([0, 0, 0.4 * img.width, 0.2 * img.height])
-
-
-def greyscale(img):
-    return ImageOps.grayscale(img)
+    return img.crop([0, 0, 0.38 * img.width, 0.15 * img.height])
 
 
 def threshold(img):
     return img.point(lambda p: p > 127 and 255)
 
 
-def erode(img):
-    return img.filter(ImageFilter.MaxFilter(3))
-
-
-def dilate(img):
-    return img.filter(ImageFilter.MinFilter(3))
-
-
-def contrast(img):
-    return ImageEnhance.Contrast(img).enhance(2)
-
-
-def rotate(i):
+def erode(i):
     def f(img):
-        return img.rotate(i)
+        return img.filter(ImageFilter.MaxFilter(i))
     return f
 
 
-def red_channel(img):
-    return img.split()[0]
-
-
-def green_channel(img):
-    return img.split()[1]
+def contrast(i):
+    def f(img):
+        return ImageEnhance.Contrast(img).enhance(i)
+    return f
 
 
 def blue_channel(img):
     return img.split()[2]
 
 
-operations_list = [
-    (top_left, blue_channel, contrast, erode,),
-    (top_left, threshold,),
+strategies = [
+    (top_left, blue_channel, contrast(2), erode(3)),
+    (top_left, threshold),
     (top_left,),
-    (),
-    (top_left, blue_channel, erode,),
-    (top_left, threshold, contrast, dilate,),
-    (top_left, green_channel, contrast, erode,),
-
-    (top_left, greyscale, contrast, erode,),
-    (top_left, red_channel, contrast, erode,),
-
-    (top_left, greyscale,),
-    (top_left, greyscale, erode,),
-    (top_left, greyscale, dilate,),
-    (top_left, greyscale, contrast, dilate,),
-
-    (top_left, threshold, erode,),
-    (top_left, threshold, dilate,),
-    (top_left, threshold, contrast, erode,),
+    (), # do nothing
 ]
 
 
 def find_barcode_using_multiple_strategies(original):
-    for operation_list in operations_list:
+    for strategy in strategies:
         img = original.copy()
-        for operation in operation_list:
+        for operation in strategy:
             img = operation(img)
+        # img.show()
         barcodes = detect_barcode_in_image(img)
 
         if len(barcodes) > 1:
@@ -147,10 +111,15 @@ def letter_barcode_detection_pipeline(pdf_data):
 if __name__ == '__main__':
     t = time.perf_counter()
     files = glob.glob("/opt/letters/it/develStandard_With_Attachments/*.pdf")
-    # files = ["SKM_C25821121012112.pdf"]
-    bc = [letter_barcode_detection_pipeline(open(file, "rb").read()) for file in files]
+    output = []
+    for file in files:
+        print(file)
+        file_data = open(file, "rb").read()
+        o = letter_barcode_detection_pipeline(file_data)
+        print(o[0], o[1])
+        output.append(o)
 
-    success = sum([a is not None for a in bc])
-    total = len(bc)
+    success = sum([o[0] is not None for o in output])
+    total = len(output)
     print(f"{success} / {total} = {success/total}")
     print(f"{time.perf_counter() - t} sec.")
