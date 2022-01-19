@@ -154,18 +154,28 @@ class ImportLettersHistory(models.Model):
             for field, val in list(config.get_correspondence_metadata().items()):
                 setattr(self, field, val)
 
+    def local_generator(self):
+        d = set(self.data)
+        n = len(d)
+        for i, attachment in enumerate(d):
+            yield i + 1, n, attachment.name
+            pdf_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
+            self._analyze_pdf(pdf_data, attachment.name)
+
     @job(default_channel="root.sbc_compassion")
     @related_action(action="related_action_s2b_imports")
-    def run_analyze(self):
+    def run_analyze(self, generator=None):
+        if generator is None:
+            generator = self.local_generator
+
         self.ensure_one()
         self.state = "pending"
         logger.info("Letters import started...")
 
-        for attachment in set(self.data):
-            pdf_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
-            self._analyze_pdf(pdf_data, attachment.name)
+        for i, n, file in generator():
+            logger.info(f"{i}/{n} : {file}")
 
-        logger.info(f"Letters import completed")
+        logger.info(f"Letters import completed !")
         # remove all the files (now they are inside import_line_ids)
         self.data.unlink()
         self.import_completed = True
