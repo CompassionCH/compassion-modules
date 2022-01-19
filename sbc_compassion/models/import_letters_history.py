@@ -13,6 +13,7 @@ between the database and the mail.
 """
 import base64
 import logging
+import traceback
 
 from odoo.addons.queue_job.job import job, related_action
 
@@ -181,7 +182,11 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
 
     def _analyze_pdf(self, pdf_data, file_name):
-        partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(pdf_data)
+        try:
+            partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(pdf_data)
+        except Exception as e:
+            logger.error(f"Couldn't import file {file_name} : \n{traceback.format_exc()}")
+            return
 
         partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
         if partner:
