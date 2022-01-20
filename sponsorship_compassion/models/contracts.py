@@ -518,11 +518,14 @@ class SponsorshipContract(models.Model):
         if "child_id" in vals:
             self._link_unlink_child_to_sponsor(vals)
 
+        old_partners = self.env["res.partner"]
         if "partner_id" in vals:
             old_partners = self.mapped("partner_id")
 
         updated_correspondents = self.env[self._name]
+        previous_states = []
         if "correspondent_id" in vals:
+            previous_states.extend([r.state for r in self])
             updated_correspondents = self.filtered("global_id")
             for record in updated_correspondents:
                 record._remove_correspondent()
@@ -545,10 +548,12 @@ class SponsorshipContract(models.Model):
             old_partners.update_number_sponsorships()
 
         if "correspondent_id" in vals:
-            for record in self.filtered("global_id"):
-                update_status = record.add_correspondent()
-                if update_status is not True:
-                    record.message_post(update_status[1])
+            for record, previous_state in zip(self, previous_states):
+                if previous_state not in ["active"]:
+                    continue
+                success, error_msg = record.add_correspondent()
+                if success is False:
+                    record.message_post(error_msg)
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -1168,7 +1173,7 @@ class SponsorshipContract(models.Model):
 
         self.correspondent_id.update_number_sponsorships()
         self.env.cr.commit()
-        return True
+        return True, ""
 
     @api.multi
     def _on_sponsorship_finished(self):
