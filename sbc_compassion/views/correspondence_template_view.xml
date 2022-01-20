@@ -91,15 +91,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Add item in the 'More' list -->
-    <act_window id="action_cross_check_correspondence_template"
-                key2="client_action_multi" name="Cross Check Patterns"
-                res_model="correspondence.template.crosscheck"
-                src_model="correspondence.template"
-                view_mode="form" target="new" view_type="form"
-    />
-
-
     <menuitem id="menu_correspondence_template" parent="correspondence_config" action="action_compassion_correspondence_template_form"
               name="Correspondence Templates" sequence="1"/>
 </odoo>
