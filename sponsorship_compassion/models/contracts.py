@@ -623,52 +623,7 @@ class SponsorshipContract(models.Model):
                 message_type="comment",
             )
 
-        # Change invoices if config tells to do so.
-        if suspend_config:
-            product_id = int(suspend_config)
-            self._suspend_change_invoices(date_start, product_id)
-
         return True
-
-    @api.multi
-    def _suspend_change_invoices(self, since_date, product_id):
-        """ Change cancelled sponsorship invoices and put them for given
-        product. Re-open invoices. """
-        cancel_inv_lines = (
-            self.env["account.invoice.line"]
-                .with_context(lang="en_US")
-                .search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("state", "=", "cancel"),
-                    ("product_id.categ_name", "=", SPONSORSHIP_CATEGORY),
-                    ("due_date", ">=", since_date),
-                ]
-            )
-        )
-        invoices = cancel_inv_lines.mapped("invoice_id")
-        invoices.action_invoice_draft()
-        invoices.env.clear()
-        vals = self.get_suspend_invl_data(product_id)
-        cancel_inv_lines.write(vals)
-        invoices.action_invoice_open()
-
-    @api.multi
-    def get_suspend_invl_data(self, product_id):
-        """ Returns invoice_line data for a given product when center
-        is suspended. """
-
-        product = self.env["product.product"].browse(product_id)
-        vals = {
-            "product_id": product_id,
-            "account_id": product.property_account_income_id.id,
-            "name": "Replacement of sponsorship (fund-suspended)",
-        }
-        rec = self.env["account.analytic.default"].account_get(product.id)
-        if rec and rec.analytic_id:
-            vals["account_analytic_id"] = rec.analytic_id.id
-
-        return vals
 
     @api.multi
     def reactivate_contract(self):
@@ -797,27 +752,10 @@ class SponsorshipContract(models.Model):
             Add analytic account to invoice_lines.
         """
         contracts = self.filtered(lambda c: c.total_amount != 0)
-        suspend_config = int(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("sponsorship_compassion.suspend_product_id", 0)
-        )
+
         res = list()
         for contract in contracts:
             invl_datas = super(SponsorshipContract, contract).get_inv_lines_data()
-
-            # If project is suspended, either skip invoice or replace product
-            if contract.type in ["S", "SC"] and contract.project_id.hold_cdsp_funds:
-                if not suspend_config:
-                    continue
-                for invl_data in invl_datas:
-                    current_product = (
-                        self.env["product.product"]
-                            .with_context(lang="en_US")
-                            .browse(invl_data["product_id"])
-                    )
-                    if current_product.categ_name == SPONSORSHIP_CATEGORY:
-                        invl_data.update(self.get_suspend_invl_data(suspend_config))
 
             if contract.type == "G":
                 for i in range(0, len(invl_datas)):
