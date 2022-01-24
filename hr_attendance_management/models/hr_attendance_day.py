@@ -307,8 +307,16 @@ class HrAttendanceDay(models.Model):
     @api.multi
     @api.depends("paid_hours", "due_hours")
     def _compute_day_balance(self):
+        sick_leave = self.env.ref("hr_holidays.holiday_status_sl")
+
         for att_day in self:
-            att_day.day_balance = att_day.paid_hours - att_day.due_hours
+            validated_leaves = att_day.leave_ids.filtered(
+                lambda r: r.state == "validate"
+            )
+            if sick_leave in validated_leaves.mapped("holiday_status_id"):
+                att_day.day_balance = 0
+            else:
+                att_day.day_balance = att_day.paid_hours - att_day.due_hours
 
     @api.multi
     def validate_extend_breaks(self):
