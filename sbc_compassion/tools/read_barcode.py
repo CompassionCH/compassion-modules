@@ -1,12 +1,11 @@
 import fitz
-import glob
-import time
 import base64
 import io
 import re
 
 from pyzbar import pyzbar
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter
+
 
 def read_pdf(pdf_data):
     return fitz.Document("pdf", pdf_data)
@@ -63,7 +62,6 @@ def find_barcode_using_multiple_strategies(original):
         img = original.copy()
         for operation in strategy:
             img = operation(img)
-        # img.show()
         barcodes = detect_barcode_in_image(img)
 
         if len(barcodes) > 1:
@@ -90,8 +88,6 @@ def get_info_from_barcode(code):
 
 
 def create_preview(image):
-    # Nearest is the fastest algorithm:
-    # https://pillow.readthedocs.io/en/stable/handbook/concepts.html#filters-comparison-table
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG")
     preview_b64 = base64.b64encode(buffer.getvalue())
@@ -106,20 +102,3 @@ def letter_barcode_detection_pipeline(pdf_data):
     partner, child = get_info_from_barcode(barcode)
     preview = create_preview(original)
     return partner, child, preview
-
-
-if __name__ == '__main__':
-    t = time.perf_counter()
-    files = glob.glob("/opt/letters/it/develStandard_With_Attachments/*.pdf")
-    output = []
-    for file in files:
-        print(file)
-        file_data = open(file, "rb").read()
-        o = letter_barcode_detection_pipeline(file_data)
-        print(o[0], o[1])
-        output.append(o)
-
-    success = sum([o[0] is not None for o in output])
-    total = len(output)
-    print(f"{success} / {total} = {success/total}")
-    print(f"{time.perf_counter() - t} sec.")

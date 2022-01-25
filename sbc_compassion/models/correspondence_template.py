@@ -72,11 +72,6 @@ class CorrespondenceTemplate(models.Model):
             ("CH-A-6S11-1", "Layout 6"),
         ]
     )
-    pattern_image = fields.Binary(
-        attachment=True,
-        help="Pattern that will be used to detect the template from a scanned "
-             "document. It should be present on the first page of the template.",
-    )
     template_image = fields.Binary(compute="_compute_template_image")
     page_width = fields.Integer(help="Width of the template in pixels")
     page_height = fields.Integer(help="Height of the template in pixels")
@@ -118,7 +113,6 @@ class CorrespondenceTemplate(models.Model):
         copy=True,
         readonly=False,
     )
-    nber_keypoints = fields.Integer("Number of key points")
     usage_count = fields.Integer(compute="_compute_usage_count")
     page_ids = fields.One2many(
         "correspondence.template.page",
@@ -178,33 +172,13 @@ class CorrespondenceTemplate(models.Model):
     @api.multi
     def write(self, vals):
         super().write(vals)
-        if "template_image" in vals or "pattern_image" in vals:
+        if "template_image" in vals:
             self._compute_template_data()
         return True
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def get_layout_names(self):
-        return [name[0] for name in self.get_gmc_layouts]
-
-    def get_pattern_area(self):
-        """ Returns a numpy array of floats with the pattern area coordinates
-            relative to the page size.
-            [x_min, x_max, y_min, y_max]
-        """
-        area = numpy.array(
-            [
-                self.pattern_x_min,
-                self.pattern_x_max,
-                self.pattern_y_min,
-                self.pattern_y_max,
-            ],
-            float,
-        )
-        area[:2] = area[:2] / float(self.page_width)
-        area[2:] = area[2:] / float(self.page_height)
-        return area
 
     def get_template_size(self, resize_factor=1.0):
         """ Returns the width and height of the template in a numpy array. """
@@ -424,7 +398,7 @@ def _verify_template(tpl):
     """
     width = tpl.page_width
     height = tpl.page_height
-    if tpl.template_image and tpl.pattern_image:
+    if tpl.template_image:
         valid_coordinates = (
             0 <= tpl.pattern_x_min < tpl.pattern_x_max <= width
             and 0 <= tpl.pattern_y_min < tpl.pattern_y_max <= height

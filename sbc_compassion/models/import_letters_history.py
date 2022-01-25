@@ -137,6 +137,7 @@ class ImportLettersHistory(models.Model):
 
     @api.multi
     def button_review(self):
+        """ Returns a form view for import lines in order to browse them """
         self.ensure_one()
         return {
             "name": _("Review Imports"),
@@ -155,26 +156,50 @@ class ImportLettersHistory(models.Model):
             for field, val in list(config.get_correspondence_metadata().items()):
                 setattr(self, field, val)
 
-    def local_generator(self):
-        d = set(self.data)
-        n = len(d)
-        for i, attachment in enumerate(d):
-            yield i + 1, n, attachment.name
+    def manual_imports_generator(self):
+        """
+        Generator function for the manual imports
+        Decode the attachments from base64 to a PDF binary and then pass it to analysis
+
+        yield:
+            int: the current step in the analysis
+            int: the current last step for the analysis
+            str: the name of the file analysed
+        """
+        unique_files = set(self.data)
+        unique_files_length = len(unique_files)
+        for i, attachment in enumerate(unique_files):
+            yield i + 1, unique_files_length, attachment.name
             pdf_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
             self._analyze_pdf(pdf_data, attachment.name)
 
     @job(default_channel="root.sbc_compassion")
     @related_action(action="related_action_s2b_imports")
     def run_analyze(self, generator=None):
+        """
+        The analysis require a generator function that yield the names (for the logs)
+        and call the _analyze_pdf function on the pdf file to analyse
+
+        Using generators allows us to be more flexible
+        on what we analyse without code duplication.
+        Additionally, since it uses generators, it does flood the memory with all the documents
+        before the analysis
+        (With generators don't need to read all the documents before sending them to analysis)
+
+        The generator must yield the following values:
+            int: the current step in the analysis
+            int: the current last step for the analysis (may or may
+            str: the name of the file analysed
+        """
         if generator is None:
-            generator = self.local_generator
+            generator = self.manual_imports_generator
 
         self.ensure_one()
         self.state = "pending"
         logger.info("Letters import started...")
 
-        for i, n, file in generator():
-            logger.info(f"{i}/{n} : {file}")
+        for current_file, nb_files_to_import, filename in generator():
+            logger.info(f"{current_file}/{nb_files_to_import} : {filename}")
 
         logger.info(f"Letters import completed !")
         # remove all the files (now they are inside import_line_ids)
@@ -189,21 +214,12 @@ class ImportLettersHistory(models.Model):
             return
 
         partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
-        if partner:
-            partner_id = partner.id
-        else:
-            partner_id = None
-
         child = self.env["compassion.child"].search(["|", ("code", "=", child_code), ("local_id", "=", child_code)], limit=1)
-        if child:
-            child_id = child.id
-        else:
-            child_id = None
 
         data = {
             "import_id": self.id,
-            "partner_id": partner_id,
-            "child_id": child_id,
+            "partner_id": partner.id,
+            "child_id": child.id,
             "letter_image_preview": preview,
             "letter_image": pdf_data,
             "file_name": file_name,

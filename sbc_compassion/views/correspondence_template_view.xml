@@ -23,7 +23,6 @@
                             <field name="name"/>
                             <field name="layout"/>
                             <field name="active"/>
-                            <field name="pattern_image" widget="image" class="oe_avatar"/>
                             <field name="usage_count"/>
                             <separator colspan="2" string="Language checkboxes"/>
                             <field name="checkbox_ids" context="{'default_template_id': active_id}">
@@ -48,7 +47,6 @@
                             <field name="pattern_x_max"/>
                             <field name="pattern_y_min"/>
                             <field name="pattern_y_max"/>
-                            <field name="nber_keypoints"/>
                             <separator string="Pages layout" colspan="2"/>
                             <field name="page_ids" context="{'default_template_id': active_id}"/>
                             <field name="additional_page_id" context="{'default_template_id': active_id}"/>
