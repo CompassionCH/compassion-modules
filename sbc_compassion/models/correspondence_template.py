@@ -109,18 +109,6 @@ class CorrespondenceTemplate(models.Model):
             template.template_image = template.page_ids[:1].background
 
     ##########################################################################
-    #                              ORM METHODS                               #
-    ##########################################################################
-    @api.model
-    def create(self, vals):
-        return super().create(vals)
-
-    @api.multi
-    def write(self, vals):
-        super().write(vals)
-        return True
-
-    ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
 

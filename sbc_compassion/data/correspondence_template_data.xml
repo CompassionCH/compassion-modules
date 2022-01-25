@@ -126,15 +126,5 @@
             <field name="key">threshold_keypoints_template</field>
             <field name="value">0.4</field>
         </record>
-
-        <!-- Blue corner settings -->
-        <record id="bluecorner_y_max" model="ir.config_parameter">
-            <field name="key">bluecorner_y_max</field>
-            <field name="value">0.07</field>
-        </record>
-        <record id="bluecorner_x_min" model="ir.config_parameter">
-            <field name="key">bluecorner_x_min</field>
-            <field name="value">0.9</field>
-        </record>
     </data>
 </odoo>
