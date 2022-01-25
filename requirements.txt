@@ -20,8 +20,6 @@ pyzbar
 matplotlib
 openupgradelib
 pdfminer
-opencv-python
-opencv-contrib-python
 git+https://github.com/pdfminer/pdfminer.six@master
 git+https://github.com/mstamy2/PyPDF2@master
 PyMuPDF>=1.19.3
