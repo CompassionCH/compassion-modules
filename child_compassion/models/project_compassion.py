@@ -489,7 +489,7 @@ class CompassionProject(models.Model):
         """
         for project in self:
             project.message_post(
-                body=_("The project was suspended and funds are retained."),
+                body=_("The project was suspended."),
                 subject=_("Project Suspended"),
                 message_type="comment",
             )

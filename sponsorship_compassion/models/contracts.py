@@ -77,7 +77,6 @@ class SponsorshipContract(models.Model):
         default=lambda self: self._get_standard_lines(), readonly=False
     )
     preferred_name = fields.Char(related="child_id.preferred_name")
-    suspended_amount = fields.Float(compute="_compute_suspended_amount")
 
     child_id = fields.Many2one(
         "compassion.child",
@@ -306,34 +305,6 @@ class SponsorshipContract(models.Model):
             contract.gift_partner_id = getattr(
                 contract, contract.send_gifts_to, contract.correspondent_id
             )
-
-    @api.multi
-    def _compute_suspended_amount(self):
-        """ Suspended amount is all amount donated to suspension product
-        and amount not reconciled. """
-        suspend_config = int(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("sponsorship_compassion.suspend_product_id", 0)
-        )
-        suspend_product = self.env["product.product"].browse(suspend_config).exists()
-        for contract in self.filtered("child_id"):
-            amount = 0
-            if suspend_product:
-                amount += sum(
-                    self.env["account.invoice.line"]
-                    .search(
-                        [
-                            ("contract_id", "=", contract.id),
-                            ("state", "=", "paid"),
-                            ("product_id", "=", suspend_product.id),
-                        ]
-                    )
-                    .mapped("price_subtotal")
-                    or [0]
-                )
-            amount += contract.partner_id.debit
-            contract.suspended_amount = amount
 
     @api.multi
     @api.depends(
@@ -581,131 +552,6 @@ class SponsorshipContract(models.Model):
     @api.model
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
-
-    @api.multi
-    def suspend_contract(self):
-        """
-        If ir.config.parameter is set : change sponsorship invoices with
-        a fund donation set in the config.
-        Otherwise, Cancel the number of invoices specified starting
-        from a given date. This is useful to suspend a contract for a given
-        period."""
-        date_start = date.today()
-
-        config_obj = self.env["ir.config_parameter"].sudo()
-        suspend_config = config_obj.get_param(
-            "sponsorship_compassion.suspend_product_id"
-        )
-        # Cancel invoices in the period of suspension
-        self.with_context({"async_mode": False}).clean_invoices(
-            date_start, clean_invoices_paid=True, keep_lines=True)
-
-        for contract in self:
-            # Add a note in the contract and in the partner.
-            project_code = contract.project_id.fcp_id
-            contract.message_post(
-                body=_(
-                    "The project %s was suspended and funds are retained."
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically cancelled."
-                ) % project_code,
-                subject=_("Project Suspended"),
-                message_type="comment",
-            )
-            contract.partner_id.message_post(
-                body=_(
-                    "The project %s was suspended and"
-                    " funds are retained for child %s. <b>"
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically cancelled."
-                ) % (project_code, contract.child_code),
-                subject=_("Project Suspended"),
-                message_type="comment",
-            )
-
-        return True
-
-    @api.multi
-    def reactivate_contract(self):
-        """ When project is reactivated, we re-open cancelled invoices,
-        or we change open invoices if fund is set to replace sponsorship
-        product. We also change attribution of invoices paid in advance.
-        """
-        date_start = date.today()
-        config_obj = self.env["ir.config_parameter"]
-        suspend_config = config_obj.get_param(
-            "sponsorship_compassion.suspend_product_id"
-        )
-        invl_obj = self.env["account.invoice.line"]
-        sponsorship_product = self.env["product.product"].search(
-            [("default_code", "=", "sponsorship")]
-        )
-        if suspend_config:
-            # Revert future invoices with sponsorship product
-            susp_product_id = int(suspend_config)
-            invl_lines = invl_obj.search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("product_id", "=", susp_product_id),
-                    ("state", "in", ["open", "paid"]),
-                    ("due_date", ">=", date_start),
-                ]
-            )
-            invl_data = {
-                "product_id": sponsorship_product.id,
-                "account_id": sponsorship_product.property_account_income_id.id,
-                "name": sponsorship_product.name,
-            }
-            rec = self.env["account.analytic.default"].account_get(
-                sponsorship_product.id
-            )
-            if rec and rec.analytic_id:
-                invl_data["account_analytic_id"] = rec.analytic_id.id
-            invl_lines.write(invl_data)
-
-            invoices = invl_lines.mapped("invoice_id")
-            contracts = invl_lines.mapped("contract_id")
-            reconciles = invoices.filtered(lambda inv: inv.state == "paid").mapped(
-                "payment_move_line_ids.full_reconcile_id"
-            )
-
-            # Unreconcile paid invoices
-            reconciles.mapped("reconciled_line_ids").remove_move_reconcile()
-            # Cancel and confirm again invoices to update move lines
-            invoices.action_invoice_cancel()
-            invoices.action_invoice_draft()
-            invoices.env.clear()
-            invoices.action_invoice_open()
-        else:
-            # Open again cancelled invoices
-            inv_lines = invl_obj.search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("product_id", "=", sponsorship_product.id),
-                    ("state", "=", "cancel"),
-                    ("due_date", ">=", date_start),
-                ]
-            )
-            contracts = inv_lines.mapped("contract_id")
-            to_open = inv_lines.mapped("invoice_id").filtered(
-                lambda inv: inv.state == "cancel"
-            )
-            to_open.action_invoice_draft()
-            to_open.env.clear()
-            for i in to_open:
-                i.action_invoice_open()
-
-        # Log a note in the contracts
-        for contract in contracts:
-            contract.message_post(
-                body=_(
-                    "The project was reactivated."
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically reverted."
-                ),
-                subject=_("Project Reactivated"),
-                type="comment",
-            )
 
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
