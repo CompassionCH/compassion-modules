@@ -24,29 +24,11 @@
                             <field name="layout"/>
                             <field name="active"/>
                             <field name="usage_count"/>
-                            <separator colspan="2" string="Language checkboxes"/>
-                            <field name="checkbox_ids" context="{'default_template_id': active_id}">
-                                <tree editable="bottom">
-                                    <field name="language_id"/>
-                                    <field name="x_min"/>
-                                    <field name="x_max"/>
-                                    <field name="y_min"/>
-                                    <field name="y_max"/>
-                                </tree>
-                            </field>
                         </group>
                         <group string="Metadata">
                             <field name="page_width"/>
                             <field name="page_height"/>
-                            <field name="qrcode_x_min"/>
-                            <field name="qrcode_x_max"/>
-                            <field name="qrcode_y_min"/>
-                            <field name="qrcode_y_max"/>
                             <separator colspan="2"/>
-                            <field name="pattern_x_min"/>
-                            <field name="pattern_x_max"/>
-                            <field name="pattern_y_min"/>
-                            <field name="pattern_y_max"/>
                             <separator string="Pages layout" colspan="2"/>
                             <field name="page_ids" context="{'default_template_id': active_id}"/>
                             <field name="additional_page_id" context="{'default_template_id': active_id}"/>

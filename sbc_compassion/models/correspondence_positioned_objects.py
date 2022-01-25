@@ -65,17 +65,3 @@ class CorrespondenceTextBox(models.Model):
             res.append(self.text_type)
         res.append(str(self.text_line_height))
         return res
-
-
-class CorrespondenceLanguageCheckbox(models.Model):
-    """ This class represents a checkbox that can be present in a template
-    and can be ticked by the supporter to select the language in which the
-    letter is written. It gives the position of the checkbox inside a template
-    in order to find it and verify if it is ticked or not.
-    The object s  """
-
-    _name = "correspondence.lang.checkbox"
-    _inherit = "correspondence.positioned.object"
-    _description = "Correspondence Lang Checkbox"
-
-    language_id = fields.Many2one("res.lang.compassion", readonly=False)
