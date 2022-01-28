@@ -93,7 +93,7 @@ class WeeklyDemand(models.Model):
             allocate = 0
             for event in events:
                 hold_start = event.hold_start_date
-                event_start = event.start_date
+                event_start = event.start_date.date()
                 days_for_allocation = (event_start - hold_start).days + 1
                 days_in_week = 7
                 if week_start < hold_start:
@@ -274,6 +274,12 @@ class WeeklyDemand(models.Model):
         if vals["average_unsponsored_ambassador"] < 0:
             vals["number_children_ambassador"] -= vals["average_unsponsored_ambassador"]
             vals["average_unsponsored_ambassador"] = 0
+
+        # this ensure that the default functions are triggered
+        # even if the record is created with "False" values
+        for k, v in dict(vals).items():
+            if bool(v) is False or v is None:
+                del vals[k]
 
         return super().create(vals)
 
