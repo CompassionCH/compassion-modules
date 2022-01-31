@@ -1024,8 +1024,7 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     def invoice_paid(self, invoice):
-        """ Prevent to reconcile invoices for fund-suspended projects
-            or sponsorships older than 3 months. """
+        """ Prevent to reconcile invoices for sponsorships older than 3 months. """
         for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
                 contract = invl.contract_id
@@ -1038,25 +1037,6 @@ class SponsorshipContract(models.Model):
                     ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(f"The contract {contract.name} is not active.")
-
-                # Check if project allows this kind of payment.
-                payment_allowed = True
-                project = contract.project_id
-                if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
-                    payment_allowed = (
-                        not project.hold_cdsp_funds
-                        or (
-                            invl.due_date
-                            < project.lifecycle_ids[:1].suspension_start_date
-                            if project.lifecycle_ids[:1].suspension_start_date
-                            else True
-                        )
-                    )
-                if not payment_allowed:
-                    raise UserError(
-                        f"The project {project.fcp_id} is fund-suspended. "
-                        f"You cannot reconcile invoice ({invoice.id})."
-                    )
 
                 # Activate gift related contracts (if any)
                 if "S" in contract.type:
