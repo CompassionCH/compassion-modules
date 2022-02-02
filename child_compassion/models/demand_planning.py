@@ -135,10 +135,10 @@ class DemandPlanning(models.Model):
             ("week_start_date", "=", start_date),
         ]
 
-    @api.model
-    def json_to_data(self, json, mapping_name=None):
-        connect_data = super().json_to_data(json, mapping_name)
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        connect_data = super().data_to_json(mapping_name)
+        connect_data["GlobalPartner_ID"] = self.env.user.country_id.code
         return {
-            "GlobalPartnerWeeklyDemandRequest": connect_data,
-            "GlobalPartner_ID": self.env.user.country_id.code,
+            "GlobalPartnerWeeklyDemandRequest": connect_data
         }
