@@ -142,3 +142,11 @@ class DemandPlanning(models.Model):
             "GlobalPartnerWeeklyDemandRequest": connect_data,
             "GlobalPartner_ID": self.env.user.country_id.code,
         }
+
+    @api.multi
+    def data_to_json(self, mapping_name=None):
+        connect_data = super().data_to_json(mapping_name)
+        connect_data["GlobalPartner_ID"] = self.env.user.country_id.code
+        return {
+            "GlobalPartnerWeeklyDemandRequest": connect_data
+        }
