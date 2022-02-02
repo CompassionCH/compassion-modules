@@ -469,7 +469,7 @@ class CompassionIntervention(models.Model):
         intervention_local_ids = []
         # For each dictionary, we update the corresponding record
         for idr in intervention_request:
-            vals = self.json_to_data(commkit_data)
+            vals = self.json_to_data(idr)
             intervention_id = vals["intervention_id"]
 
             intervention = self.search([("intervention_id", "=", intervention_id)])
@@ -495,7 +495,7 @@ class CompassionIntervention(models.Model):
             .with_context(async_mode=False)
             .create({"action_id": action_id, "object_id": self.id})
         )
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True
 
@@ -689,7 +689,7 @@ class CompassionIntervention(models.Model):
                 .with_context(hold_update=False)
                 .create(message_vals)
             )
-            if message.state == "failure":
+            if "failure" in message.state:
                 raise UserError(message.failure_reason)
         return True
 
@@ -703,7 +703,7 @@ class CompassionIntervention(models.Model):
             .with_context(async_mode=False)
             .create({"action_id": action_id, "object_id": self.id})
         )
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
         return True
 

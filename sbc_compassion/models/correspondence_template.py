@@ -18,7 +18,6 @@ import tempfile
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.tools import config
-from ..tools import patternrecognition as pr
 
 _logger = logging.getLogger(__name__)
 
@@ -73,53 +72,9 @@ class CorrespondenceTemplate(models.Model):
             ("CH-A-6S11-1", "Layout 6"),
         ]
     )
-    pattern_image = fields.Binary(
-        attachment=True,
-        help="Pattern that will be used to detect the template from a scanned "
-             "document. It should be present on the first page of the template.",
-    )
     template_image = fields.Binary(compute="_compute_template_image")
     page_width = fields.Integer(help="Width of the template in pixels")
     page_height = fields.Integer(help="Height of the template in pixels")
-    qrcode_x_min = fields.Integer(
-        help="Minimum X position of the area in which to look for the QR "
-             "code inside the template (given in pixels)"
-    )
-    qrcode_x_max = fields.Integer(
-        help="Maximum X position of the area in which to look for the QR "
-             "code inside the template (given in pixels)"
-    )
-    qrcode_y_min = fields.Integer(
-        help="Minimum Y position of the area in which to look for the QR "
-             "code inside the template (given in pixels)"
-    )
-    qrcode_y_max = fields.Integer(
-        help="Maximum Y position of the area in which to look for the QR "
-             "code inside the template (given in pixels)"
-    )
-    pattern_x_min = fields.Integer(
-        help="Minimum X position of the area in which to look for the "
-             "pattern inside the template (given in pixels)"
-    )
-    pattern_x_max = fields.Integer(
-        help="Maximum X position of the area in which to look for the "
-             "pattern inside the template (given in pixels)"
-    )
-    pattern_y_min = fields.Integer(
-        help="Minimum Y position of the area in which to look for the "
-             "pattern inside the template (given in pixels)"
-    )
-    pattern_y_max = fields.Integer(
-        help="Maximum Y position of the area in which to look for the "
-             "pattern inside the template (given in pixels)"
-    )
-    checkbox_ids = fields.Many2many(
-        "correspondence.lang.checkbox",
-        string="Language checkboxes",
-        copy=True,
-        readonly=False,
-    )
-    nber_keypoints = fields.Integer("Number of key points")
     usage_count = fields.Integer(compute="_compute_usage_count")
     page_ids = fields.One2many(
         "correspondence.template.page",
@@ -140,20 +95,6 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.constrains(
-        "pattern_x_min",
-        "pattern_x_max",
-        "pattern_y_min",
-        "pattern_y_max",
-        "page_width",
-        "page_height",
-    )
-    def verify_position(self):
-        """ Check that position of elements inside template are valid
-        coordinates. """
-        for tpl in self:
-            if not _verify_template(tpl):
-                raise ValidationError(_("Please give valid coordinates."))
 
     @api.multi
     def _compute_usage_count(self):
@@ -168,44 +109,8 @@ class CorrespondenceTemplate(models.Model):
             template.template_image = template.page_ids[:1].background
 
     ##########################################################################
-    #                              ORM METHODS                               #
-    ##########################################################################
-    @api.model
-    def create(self, vals):
-        template = super().create(vals)
-        template._compute_template_data()
-        return template
-
-    @api.multi
-    def write(self, vals):
-        super().write(vals)
-        if "template_image" in vals or "pattern_image" in vals:
-            self._compute_template_data()
-        return True
-
-    ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def get_layout_names(self):
-        return [name[0] for name in self.get_gmc_layouts]
-
-    def get_pattern_area(self):
-        """ Returns a numpy array of floats with the pattern area coordinates
-            relative to the page size.
-            [x_min, x_max, y_min, y_max]
-        """
-        area = numpy.array(
-            [
-                self.pattern_x_min,
-                self.pattern_x_max,
-                self.pattern_y_min,
-                self.pattern_y_max,
-            ],
-            float,
-        )
-        area[:2] = area[:2] / float(self.page_width)
-        area[2:] = area[2:] / float(self.page_height)
-        return area
 
     def get_template_size(self, resize_factor=1.0):
         """ Returns the width and height of the template in a numpy array. """
@@ -390,67 +295,3 @@ class CorrespondenceTemplate(models.Model):
         if folder == "":
             return os.path.join(self._absolute_path, filename)
         return os.path.join(self._absolute_path, folder + "/" + filename)
-
-    def _compute_template_data(self):
-        config_obj = self.env["ir.config_parameter"].sudo()
-        for template in self.filtered("template_image"):
-            template_cv_image = template._get_cv2_image()
-            template.page_height, template.page_width = template_cv_image.shape[:2]
-            template.qrcode_x_min = template.page_width * float(
-                config_obj.get_param("qrcode_x_min")
-            )
-            template.qrcode_x_max = template.page_width * float(
-                config_obj.get_param("qrcode_x_max")
-            )
-            template.qrcode_y_min = template.page_height * float(
-                config_obj.get_param("qrcode_y_min")
-            )
-            template.qrcode_y_max = template.page_height * float(
-                config_obj.get_param("qrcode_y_max")
-            )
-            if template.pattern_image:
-                # pattern detection
-                res = pr.patternRecognition(
-                    template_cv_image,
-                    template.pattern_image,
-                    template.get_pattern_area(),
-                )
-                if res is None:
-                    raise UserError(
-                        _(
-                            "The pattern could not be detected in given "
-                            "template image."
-                        )
-                    )
-                else:
-                    pattern_keypoints = res[0]
-
-                template.nber_keypoints = pattern_keypoints.shape[0]
-
-    def _get_cv2_image(self):
-        self.ensure_one()
-        with tempfile.NamedTemporaryFile(suffix=".png") as template_file:
-            template_file.write(base64.b64decode(self.template_image))
-            template_file.flush()
-            template_cv_image = cv2.imread(template_file.name)
-        return template_cv_image
-
-
-def _verify_template(tpl):
-    """
-    Test each position if a CorrespondenceTemplate in order to
-    see if 0 < min < max < size where size is the size of the page.
-    """
-    width = tpl.page_width
-    height = tpl.page_height
-    if tpl.template_image and tpl.pattern_image:
-        valid_coordinates = (
-            0 <= tpl.pattern_x_min < tpl.pattern_x_max <= width
-            and 0 <= tpl.pattern_y_min < tpl.pattern_y_max <= height
-        )
-    else:
-        valid_coordinates = (
-            0 <= tpl.pattern_x_min <= tpl.pattern_x_max <= width
-            and 0 <= tpl.pattern_y_min <= tpl.pattern_y_max <= height
-        )
-    return valid_coordinates

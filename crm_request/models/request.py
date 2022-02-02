@@ -3,6 +3,8 @@
 
 import logging
 from email.utils import parseaddr
+from dateutil import parser
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, exceptions, _
 from odoo.tools import config
@@ -59,7 +61,8 @@ class CrmClaim(models.Model):
     def action_reply(self):
         """
         This function opens a window to compose an email, with the default
-        template message loaded by default"""
+        template message loaded by default
+        """
         self.ensure_one()
         original_partner = self.partner_id
 
@@ -77,7 +80,7 @@ class CrmClaim(models.Model):
             "default_template_id": template_id,
             "default_composition_mode": "comment",
             "mark_so_as_sent": True,
-            "lang": self.language,
+            "salutation_language": self.language,
         }
 
         if original_partner:
@@ -93,14 +96,12 @@ class CrmClaim(models.Model):
             messages = self.mapped("message_ids").filtered(
                 lambda m: m.body
                 and (
-                    m.author_id == original_partner or partner in m.partner_ids)
+                    m.author_id == partner or partner in m.partner_ids)
             )
             if messages:
                 # Put quote of previous message in context for using in
                 # mail compose message wizard
-                message = messages.filtered(lambda m: m.author_id == self.partner_id)[
-                    :1
-                ]
+                message = messages.filtered(lambda m: m.author_id == partner)[:1]
                 if message:
                     ctx["reply_quote"] = message.get_message_quote()
                     ctx["message_id"] = message.id
@@ -122,9 +123,9 @@ class CrmClaim(models.Model):
         }
 
     def _get_partner_alias(self, partner, email):
-        if email and partner.email != email:
+        if email and partner.email.lower() != email.lower():
             for partner_alias in partner.other_contact_ids:
-                if partner_alias.email == email:
+                if partner_alias.email.lower() == email.lower():
                     return partner_alias
             # No match is found
             raise exceptions.Warning(_("No partner aliases match: %s !") % email)
@@ -158,7 +159,7 @@ class CrmClaim(models.Model):
         alias = self.env["mail.alias"].search([["alias_name", "=", alias_char]])
 
         # Find the corresponding type
-        subject = msg.get("subject")
+        subject = msg.get("subject", "")
         category_ids = self.env["crm.claim.category"].search(
             [("keywords", "!=", False)]
         )
@@ -176,11 +177,19 @@ class CrmClaim(models.Model):
             "email_origin": msg.get("from"),
         }
 
+        # If the mail is ignored_reporters use the email in the body instead
+        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
+        if defaults["email_origin"] in ignored_reporter:
+            email = msg["reply_to"]
+            defaults["email_origin"] = email
+            msg["from"] = email
+            msg["email_from"] = email
+
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
             options = {"skip_create": True}
             partner = match_obj.match_partner_to_infos(
-                {"email": parseaddr(msg.get("from"))[1]}, options
+                {"email": parseaddr(defaults["email_origin"])[1]}, options
             )
             if partner:
                 defaults["partner_id"] = partner.id
@@ -220,10 +229,23 @@ class CrmClaim(models.Model):
            new mail on the thread
         """
         result = super().message_update(msg_dict, update_vals)
+        msg_date = parser.parse(msg_dict['date'])
         for request in self:
-            request.stage_id = self.env["ir.model.data"].get_object_reference(
+            request.stage_id = self.env['ir.model.data'].get_object_reference(
                 "crm_request", "stage_wait_support"
             )[1]
+
+            if request.user_id and self.env['hr.leave'].search([
+                ("employee_id", "in", request.user_id.employee_ids.ids),
+                ("date_from", "<=", msg_date),
+                ("date_to", ">=", msg_date),
+                '|', ("state", "=", "validate"),
+                ("state", "=", "confirm")
+            ], count=True) != 0:
+                request.stage_id = self.env['ir.model.data'].get_object_reference(
+                    "crm_claim", "stage_claim1"
+                )[1]
+                request.user_id = False
         return result
 
     @api.multi
@@ -242,6 +264,33 @@ class CrmClaim(models.Model):
                 )[1]
 
         return result
+
+    @api.multi
+    def create(self, values):
+        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
+        if values.get("partner_id"):
+            partner_id = values.get("partner_id")
+            partner = self.env["res.partner"].browse(partner_id)
+            partner = self.get_partner_parent(partner)
+            if partner.email in ignored_reporter:
+                del values["partner_id"]
+            else:
+                values["partner_id"] = partner.id
+        return super().create(values)
+
+    @staticmethod
+    def get_partner_parent(partner):
+        """
+        if the mail used refer to an alternative partner identity
+        iteratively take the partner 'parent' instead
+        here we use a for loop with 10 steps to avoid an infinite while
+        which can occur for example with circular references
+        """
+        for _ in range(10):
+            if not partner.contact_id:
+                break
+            partner = partner.contact_id
+        return partner
 
     @api.multi
     def write(self, values):
@@ -284,7 +333,7 @@ class CrmClaim(models.Model):
         try:
             code_lang = detectlanguage.simple_detect(text)
         except (IndexError, detectlanguage.DetectLanguageError):
-            # Language could not be detected
+            # Language could not be detected TODO CO-3737 move res.lang.compassion
             return self.env["res.lang.compassion"]
         for lang in langs:
             if lang.get("code") == code_lang:
@@ -309,4 +358,29 @@ class CrmClaim(models.Model):
                 request.id,
                 force_send=True,
                 email_values={"email_to": request.email_origin},
+            )
+
+    @api.model
+    def cron_reminder_request(self):
+        """ Periodically sends a reminder to unaddressed request (new, waiting for support)"""
+
+        new_stage_id = self.env.ref("crm_claim.stage_claim1").id
+        wait_support_stage_id = self.env.ref("crm_request.stage_wait_support").id
+
+        request_to_notify = self.search([
+            ("stage_id", "in", [new_stage_id, wait_support_stage_id]),
+            ("user_id", "!=", False),
+            ("user_id", "not in", [187]),  # Exclude Sarah
+            ("write_date", "<", fields.datetime.now() - relativedelta(weeks=1))
+        ])
+
+        for req in request_to_notify:
+            req.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=_("A support request require your attention"),
+                note=_("The request {} you were assigned to requires"
+                       " your attention.".
+                       format(req.code)
+                       ),
+                user_id=req.user_id.id
             )

@@ -31,7 +31,7 @@ class OnrampConnector(object):
     # Holds the last time a token was retrieved from GMC.
     _token_time = None
 
-    # Requests Session that will be used accross calls to server
+    # Requests Session that will be used across calls to server
     _session = None
 
     # Requests headers for sending messages
@@ -124,12 +124,9 @@ class OnrampConnector(object):
                     "connect_token_server in your Odoo configuration file."
                 )
             )
-        params_post = "grant_type=client_credentials&scope=read+write"
+        params_post = "grant_type=client_credentials&scope=connect/read-write"
         header_post = {
             "Content-type": "application/x-www-form-urlencoded",
-            "Content-Length": "46",
-            "Expect": "100-continue",
-            "Connection": "Keep-Alive",
         }
         response = requests.post(
             provider, data=params_post, auth=(client, secret), headers=header_post

@@ -22,7 +22,8 @@
       "to_json_conversion": "''"
     },
     "HoldID": {
-      "field": "hold_id.hold_id"
+      "field": "hold_id.hold_id",
+      "allow_relational_creation": true
     },
     "HoldType": {
       "field": null,

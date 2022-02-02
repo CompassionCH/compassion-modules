@@ -150,7 +150,7 @@ class CompassionCorrespondence(models.Model):
         gen = self.env["correspondence.s2b.generator"].sudo().create({
             "name": "app-" + child_local_id,
             "selection_domain": f"[('child_id.local_id', '=', '{child_local_id}'),"
-                                f"('state', 'not in', ['terminated','cancelled'])]",
+                                f"('state', 'not in', ['draft','cancelled'])]",
             "body": self._convert_special_characters(escape(body)),
             "language_id": int(self.env["crm.claim"].detect_lang(body)),
             "s2b_template_id": int(template_id),
@@ -158,6 +158,8 @@ class CompassionCorrespondence(models.Model):
             "source": other_params.get("source", "app"),
         })
         gen.onchange_domain()
+        # Only generate for one sponsorship! If the child was sponsored several times
+        gen.sponsorship_ids = gen.sponsorship_ids[:1]
         # We commit otherwise the generation fails
         self.env.cr.commit()  # pylint: disable=invalid-commit
         gen.preview()
@@ -213,18 +215,24 @@ class CompassionCorrespondence(models.Model):
                     ("name", "=", "app-" + child.local_id),
                     ("sponsorship_ids.child_id", "=", child.id),
                     ("s2b_template_id", "=", int(template_id)),
-                    ("state", "=", "preview"),
+                    ("state", "in", ["draft", "preview"]),
                 ],
-                limit=1,
                 order="create_date DESC",
             )
         )
-        gen.generate_letters_job()
-        gen.write(
-            {"state": "done", "date": fields.Datetime.now(), }
-        )
+        # Use the latest preview for generating the letter
+        # update utms
+        utm_source = params.get("utm_source")
+        utm_medium = params.get("utm_medium")
+        utm_campaign = params.get("utm_campaign")
+        utms = self.env["utm.mixin"].get_utms(utm_source, utm_medium, utm_campaign)
+
+        gen[:1].generate_letters(utms)
+        # Delete old previews
+        gen[1:].unlink()
+
         return {
-            "DbId": gen.letter_ids.mapped("id"),
+            "DbId": gen[:1].ids,
         }
 
     @api.multi

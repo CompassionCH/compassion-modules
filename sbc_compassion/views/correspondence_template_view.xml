@@ -23,32 +23,12 @@
                             <field name="name"/>
                             <field name="layout"/>
                             <field name="active"/>
-                            <field name="pattern_image" widget="image" class="oe_avatar"/>
                             <field name="usage_count"/>
-                            <separator colspan="2" string="Language checkboxes"/>
-                            <field name="checkbox_ids" context="{'default_template_id': active_id}">
-                                <tree editable="bottom">
-                                    <field name="language_id"/>
-                                    <field name="x_min"/>
-                                    <field name="x_max"/>
-                                    <field name="y_min"/>
-                                    <field name="y_max"/>
-                                </tree>
-                            </field>
                         </group>
                         <group string="Metadata">
                             <field name="page_width"/>
                             <field name="page_height"/>
-                            <field name="qrcode_x_min"/>
-                            <field name="qrcode_x_max"/>
-                            <field name="qrcode_y_min"/>
-                            <field name="qrcode_y_max"/>
                             <separator colspan="2"/>
-                            <field name="pattern_x_min"/>
-                            <field name="pattern_x_max"/>
-                            <field name="pattern_y_min"/>
-                            <field name="pattern_y_max"/>
-                            <field name="nber_keypoints"/>
                             <separator string="Pages layout" colspan="2"/>
                             <field name="page_ids" context="{'default_template_id': active_id}"/>
                             <field name="additional_page_id" context="{'default_template_id': active_id}"/>
@@ -90,15 +70,6 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
-
-    <!-- Add item in the 'More' list -->
-    <act_window id="action_cross_check_correspondence_template"
-                key2="client_action_multi" name="Cross Check Patterns"
-                res_model="correspondence.template.crosscheck"
-                src_model="correspondence.template"
-                view_mode="form" target="new" view_type="form"
-    />
-
 
     <menuitem id="menu_correspondence_template" parent="correspondence_config" action="action_compassion_correspondence_template_form"
               name="Correspondence Templates" sequence="1"/>

@@ -10,9 +10,9 @@ Compassion CH Message Center
 .. |badge1| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge2| image:: https://img.shields.io/badge/github-CompassionCH%2Fcompassion--modules-lightgray.png?logo=github
-    :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/message_center_compassion
-    :alt: CompassionCH/compassion-modules
+.. |badge2| image:: https://img.shields.io/badge/github-compassionch%2Fcompassion--modules-lightgray.png?logo=github
+    :target: https://github.com/compassionch/compassion-modules/tree/12.0/message_center_compassion
+    :alt: compassionch/compassion-modules
 
 |badge1| |badge2| 
 
@@ -38,9 +38,7 @@ To configure this module, you need to:
 * connect_client = <username for token requests>
 * connect_secret = <password for token requests>
 * connect_token_server = <base URL of token server>
-* connect_token_endpoint = <endpoint for fetching token>
-* connect_token_issuer = <issuer name of the token>
-* connect_token_cert = <full URL of the public key of the token server>
+* connect_token_cert = <comma-separated list of full URLs of the public keys of the token server>
 
 To allow incoming messages you must setup a user with required access rights
 and with login = <username sent by GMC in tokens> and password = <password
@@ -59,10 +57,10 @@ To use this module, you need to:
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/CompassionCH/compassion-modules/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/compassionch/compassion-modules/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/CompassionCH/compassion-modules/issues/new?body=module:%20message_center_compassion%0Aversion:%2011.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/compassionch/compassion-modules/issues/new?body=module:%20message_center_compassion%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -94,4 +92,6 @@ This module is maintained by Compassion Switzerland.
 Compassion Switzerland is a nonprofit organization whose
 mission is to release children from extreme poverty in Jesus name.
 
-This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/11.0/message_center_compassion>`_ project on GitHub.
+This module is part of the `compassionch/compassion-modules <https://github.com/compassionch/compassion-modules/tree/12.0/message_center_compassion>`_ project on GitHub.
+
+You are welcome to contribute.

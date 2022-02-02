@@ -188,13 +188,15 @@ class SmsChildRequest(models.Model):
                     }
                 )
                 .id,
-                "is_trying_to_fetch_child": True,
+                "is_trying_to_fetch_child": "child_id" in vals,
             }
         )
+
         # Directly commit for the job to work
         if not test_mode:
             self.env.cr.commit()  # pylint: disable=invalid-commit
-        request.with_delay(priority=5).reserve_child()
+        if "child_id" not in vals:
+            request.with_delay(priority=5).reserve_child()
         return request
 
     @api.onchange("partner_id")

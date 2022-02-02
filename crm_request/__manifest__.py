@@ -7,9 +7,9 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "category": "CRM",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.1.1",
     # Python dependencies
-    "external_dependencies": {"python": ["detectlanguage"]},
+    "external_dependencies": {"python": ["detectlanguage", "pandas"]},
     # any module necessary for this one to work correctly
     "depends": [
         "crm_claim_code",  # oca_addons/crm
@@ -20,10 +20,11 @@
     ],
     # always loaded
     "data": [
-        # 'security/ir.model.access.csv',
         "data/request_email_template.xml",
         "data/crm_request_data.xml",
+        "data/ignored_reporter.xml",
         "data/request_sequence.xml",
+        "data/ir_cron.xml",
         "views/request.xml",
         "views/request_category.xml",
         "views/holiday_automated_response_view.xml",

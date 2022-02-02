@@ -82,9 +82,9 @@
                             <field name="sponsorship_id"
                                    options="{'colors':{'draft':'blue', 'waiting':'green', 'cancelled':'grey', 'terminated':'grey', 'mandate':'red'}, 'field_color':'state'}"
                                    attrs="{'required': [('gift_type', '!=', 'Project Gift')]}"/>
-                            <field name="partner_id" domain="[('global_id', '!=', False)]"/>
-                            <field name="child_id"/>
-                            <field name="project_id"/>
+                            <field name="partner_id" domain="[('global_id', '!=', False)]" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
+                            <field name="child_id" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
+                            <field name="project_id" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
                         </group>
                         <group>
                             <field name="gift_type"/>

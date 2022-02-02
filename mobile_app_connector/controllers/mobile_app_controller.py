@@ -20,6 +20,8 @@ from odoo import http, _
 from odoo.addons.base.models.ir_mail_server import MailDeliveryException
 from odoo.http import request
 
+from base64 import b64decode
+
 _logger = logging.getLogger(__name__)
 
 
@@ -31,8 +33,8 @@ def _get_lang(req, params):
 
 
 class RestController(http.Controller):
-    @http.route("/mobile-app-api/login", type="json", methods=["GET"], auth="public")
-    def mobile_app_login(self, username, password, **kwargs):
+    @http.route("/mobile-app-api/login", type="json", methods=["GET", "POST"], auth="public")
+    def mobile_app_login(self, username=None, password=None, **kwargs):
         """
         This is the first entry point for logging, which will setup the
         session for the user so that he can later call the main entry point.
@@ -43,7 +45,14 @@ class RestController(http.Controller):
         :return: json user data
         """
         try:
-            request.session.authenticate(request.session.db, username, password)
+            if request.httprequest.method == "POST":
+                request_data = request.jsonrequest
+                request.session.authenticate(request.session.db,
+                                             request_data['username'],
+                                             b64decode(request_data['password']))
+            # TODO remove connection through GET once app update is old enough
+            elif request.httprequest.method == "GET":
+                request.session.authenticate(request.session.db, username, password)
             user = request.env.user
         except:
             _logger.warning("Wrong login attempt from the app for user %s", username)
@@ -215,10 +224,56 @@ class RestController(http.Controller):
         It uses sms sponsorship
         :return: Redirect to sms_sponsorship form
         """
+        if not parameters.get('source'):
+            return werkzeug.exceptions.BadRequest('Missing "source" GET parameter')
+
         values = {
             "lang_code": _get_lang(request, parameters),
             "source": parameters.get("source"),
             "partner_id": parameters.get("partner_id"),
+        }
+        sms_child_request = request.env["sms.child.request"].sudo().create(values)
+        return werkzeug.utils.redirect(sms_child_request.step1_url, 302)
+
+    @http.route("/sponsor_this_child", type="http", auth="public", website=True,
+                sitemap=False)
+    def mobile_app_sponsorship_request_specific_child(self, **parameters):
+        """
+        Create a sms_child_request for a provided child id and redirect user to sms sponsorship form
+        It uses sms sponsorship
+        :return: Redirect to sms_sponsorship form
+        """
+        if not parameters.get('source'):
+            return werkzeug.exceptions.BadRequest('Missing "source" GET parameter')
+
+        if not parameters.get("child_id"):
+            redirect_parameters = f"source={parameters.get('source')}"
+            if parameters.get('partner_id'):
+                redirect_parameters += f"&partner_id={parameters.get('partner_id')}"
+            return werkzeug.utils.redirect(f"/sponsor_a_child?{redirect_parameters}", 302)
+
+        child = request.env['compassion.child'].sudo().search([("id", "=", parameters.get('child_id'))])
+
+        # Get number of active requests for this child. We should not offer to sponsor a sponsored child
+        number_active_sms_child_requests_for_child = request.env["sms.child.request"].sudo().search_count([
+            ("child_id", "=", child.id),
+            '|', ('sponsorship_confirmed', '=', True),
+            ('state', '=like', 'step_')  # If the request is at step1 or step2
+        ])
+
+        # Ensure child exists, is on hold and no active sms child request exists for this child
+        # Not using ensure_one() to have all under the same error
+        if len(child) != 1 or not child.hold_id or number_active_sms_child_requests_for_child != 0:
+            return werkzeug.exceptions.Gone('Child does not exist or is no longer available. Sorry.')
+
+        values = {
+            "lang_code": _get_lang(request, parameters),
+            "source": parameters.get("source"),
+            "child_id": child.id,
+            "partner_id": parameters.get("partner_id"),
+            # child_reserved mean that a child has been affected to the request
+            # not that the child is reserved for this request only
+            "state": "child_reserved"
         }
         sms_child_request = request.env["sms.child.request"].sudo().create(values)
         return werkzeug.utils.redirect(sms_child_request.step1_url, 302)

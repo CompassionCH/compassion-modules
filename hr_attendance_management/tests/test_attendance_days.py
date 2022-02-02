@@ -3,6 +3,7 @@
 
 import logging
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from odoo.tests import SavepointCase
 
@@ -16,7 +17,7 @@ class TestAttendanceDays(SavepointCase):
 
         cls.jack = cls.env.ref("hr.employee_fme")
         cls.gilles = cls.env.ref("hr.employee_qdp")
-        cls.pieter = cls.env.ref("hr.employee_root")
+        cls.pieter = cls.env.ref("hr.employee_admin")
         cls.michael = cls.env.ref("hr.employee_niv")
 
         # Add work schedule (8h/work days) for Gilles, Jack and Michael
@@ -183,6 +184,13 @@ class TestAttendanceDays(SavepointCase):
             """
             start = date.strftime("%Y-%m-%d 08:00:00")
             stop = date.strftime("%Y-%m-%d 18:00:00")
+
+            all_attendance = self.env["hr.attendance"].search(
+                [("employee_id", "=", employee_id.id)]
+            )
+            if all_attendance:
+                all_attendance.unlink()
+
             attendance = self.env["hr.attendance"].create(
                 {"check_in": start, "check_out": stop, "employee_id": employee_id.id, }
             )
@@ -245,7 +253,8 @@ class TestAttendanceDays(SavepointCase):
         ####################################################
         self.assertTrue(att_day)
         # The date of attendance_day and attendance are the same as date
-        self.assertTrue(att_day.date == attendance.date == date.strftime("%Y-%m-%d"))
+        self.assertTrue(att_day.date == attendance.date)
+        self.assertTrue(str(att_day.date) == date.strftime("%Y-%m-%d"))
 
         # Break rule based on due hours
         self.assertEqual(att_day.rule_id.name, "7 - 9")
@@ -291,6 +300,18 @@ class TestAttendanceDays(SavepointCase):
         # week 1     |      5     |          20          |   20
         # week 2     |      5     |          20          |   40
 
+        all_att = self.env["hr.attendance"].search(
+            [("employee_id", "=", self.michael.id)]
+        )
+        if all_att:
+            all_att.unlink()
+
+        all_att_days = self.env["hr.attendance.day"].search(
+            [("employee_id", "=", self.michael.id)]
+        )
+        if all_att_days:
+            all_att_days.unlink()
+
         weeks = 2
         date_start = self.last_week[0] - timedelta(weeks=weeks)
         date_stop = self.last_week[0] - timedelta(days=1)
@@ -325,9 +346,8 @@ class TestAttendanceDays(SavepointCase):
                 divmod_in = divmod(start * 60, 60)
                 att_01 = self.env["hr.attendance"].create(
                     {
-                        "check_in": att_day.date
-                        + f" {divmod_in[0]:02.0f}:{divmod_in[1]:02.0f}:00",
-                        "check_out": att_day.date + " 12:00:00",
+                        "check_in": att_day.date + relativedelta(hours=divmod_in[0], minutes=divmod_in[1]),
+                        "check_out": att_day.date + relativedelta(hours=12.0),
                         "employee_id": self.michael.id,
                     }
                 )
@@ -337,10 +357,8 @@ class TestAttendanceDays(SavepointCase):
                 divmod_out = divmod(stop * 60, 60)
                 att_02 = self.env["hr.attendance"].create(
                     {
-                        "check_in": att_day.date
-                        + f" {divmod_in[0]:02.0f}:{divmod_in[1]:02.0f}:00",
-                        "check_out": att_day.date
-                        + f" {divmod_out[0]:02.0f}:{divmod_out[1]:02.0f}:00",
+                        "check_in": att_day.date + relativedelta(hours=divmod_in[0], minutes=divmod_in[1]),
+                        "check_out": att_day.date + relativedelta(hours=divmod_out[0], minutes=divmod_out[1]),
                         "employee_id": self.michael.id,
                     }
                 )
@@ -403,9 +421,9 @@ class TestAttendanceDays(SavepointCase):
 
         for in_leave, date in date_data:
             att_day = self.pieter.attendance_days_ids.filtered(
-                lambda rd: rd.date == date
+                lambda rd: (rd.date.year == date.year and rd.date.month == date.month and rd.date.day == date.day)
             )
-            self.assertNotEqual(att_day, None)
+            self.assertIsNot(att_day, False)
 
             if in_leave:
                 if att_day.due_hours != 0:
@@ -470,3 +488,15 @@ class TestAttendanceDays(SavepointCase):
 
         self.assertEqual(gilles_old_day.due_hours, 0)
         self.assertEqual(gilles_new_day.due_hours, 5)
+
+    def test_attendance_day_w_no_calendar(self):
+        """create an attendance day for someone w/ not calendar"""
+
+        john_doe = self.env["hr.employee"].create({
+            "name": "[Test] John Doe"
+        })
+
+        self.assertFalse(self.env["hr.employee.calendar"].search([("employee_id", "=", john_doe.id)]))
+        self.create_attendance_day(datetime.today(), john_doe.id)
+
+        john_doe.unlink()

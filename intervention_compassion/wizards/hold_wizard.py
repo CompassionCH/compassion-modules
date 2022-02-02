@@ -96,7 +96,7 @@ class HoldWizard(models.TransientModel):
             .with_context(async_mode=False)
             .create({"action_id": create_hold.id, "object_id": self.id, })
         )
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
 
         return {

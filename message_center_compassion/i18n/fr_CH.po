@@ -132,7 +132,7 @@ msgstr "Vous ne pouvez pas avoir deux requêtes avec le même identifiant."
 #: field:gmc.message.pool,project_id:0
 #, python-format
 msgid "Project"
-msgstr "Centre d'accueil"
+msgstr "Centre de développement de l’enfant"
 
 #. module: message_center_compassion
 #: code:addons/message_center_compassion/model/contracts.py:32
@@ -723,10 +723,10 @@ msgstr "File des messages"
 #~ msgstr "Suspendu"
 
 #~ msgid "Project Reactivated"
-#~ msgstr "Centre d'accueil réactivé"
+#~ msgstr "Centre de développement de l’enfant réactivé"
 
 #~ msgid "Suspension"
 #~ msgstr "Suspension"
 
 #~ msgid "Project Fund-Suspended"
-#~ msgstr "Centre d'accueil suspendu avec retenue des fonds"
+#~ msgstr "Centre de développement de l’enfant suspendu avec retenue des fonds"

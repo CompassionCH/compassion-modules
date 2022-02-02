@@ -40,6 +40,7 @@
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
         "mail_tracking",  # oca_addons/social
+        "partner_contact_in_several_companies",  # oca_addons/partner-contact
         "mass_mailing",
         "base_automation",
     ],
@@ -49,6 +50,7 @@
         "data/demand_planning.xml",
         "security/crm_compassion_security.xml",
         "security/ir.model.access.csv",
+        "static/src/xml/assets.xml",
         "views/account_invoice_line.xml",
         "views/calendar_event_view.xml",
         "views/calendar_view.xml",
@@ -65,8 +67,12 @@
         "views/interaction_resume_view.xml",
         "views/mail_message_view.xml",
         "views/partner_log_interaction_wizard_view.xml",
+        "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
+    ],
+    "qweb": [
+        "static/src/xml/kanban_colors.xml"
     ],
     "demo": [],
     "installable": True,

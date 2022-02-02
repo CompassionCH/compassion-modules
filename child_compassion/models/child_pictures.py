@@ -9,12 +9,17 @@
 ##############################################################################
 import base64
 import logging
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 
 from odoo import models, fields, api, _
 from odoo.http import request
 
 logger = logging.getLogger(__name__)
+
+# This User-Agent simulate a browser, so that the fetch is not blocked
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
+}
 
 
 class ChildPictures(models.Model):
@@ -70,22 +75,12 @@ class ChildPictures(models.Model):
         """
 
         pictures = super().create(vals)
-
-        same_url = pictures._find_same_picture_by_url()
-        if same_url:
-            pictures.child_id.message_post(
-                body=_("The picture was the same"), subject=_("Picture update")
-            )
-            pictures.unlink()
-            return False
-
         # Retrieve Headshot
         image_date = pictures._get_picture("Headshot", width=180, height=180)
         # Retrieve Fullshot
         image_date = image_date and pictures._get_picture(
             "Fullshot", width=800, height=1200
         )
-
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
             pictures.child_id.message_post(
@@ -111,25 +106,16 @@ class ChildPictures(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
-    def _find_same_picture_by_url(self):
-        self.ensure_one()
-        same_url = self.search(
-            [
-                ("child_id", "=", self.child_id.id),
-                ("image_url", "=", self.image_url),
-                ("id", "!=", self.id),
-            ]
-        )
-        return same_url
-
-    @api.multi
     def _find_same_picture(self):
         self.ensure_one()
-        pics = self.search([("child_id", "=", self.child_id.id)])
+        reference = self.with_context(bin_size=False)
+        pics = reference.search([
+            ("child_id", "=", self.child_id.id),
+            ("id", "!=", self.id)
+        ], limit=1)  # The last picture is most probably one that could be the same.
         same_pics = pics.filtered(
-            lambda record: record.fullshot == self.fullshot
-            and record.headshot == self.headshot
-            and record.id != self.id
+            lambda record: record.fullshot == reference.fullshot
+            and record.headshot == reference.headshot
         )
         return same_pics
 
@@ -154,13 +140,15 @@ class ChildPictures(models.Model):
                     ind = image_split.index("media.ci.org")
                 image_split[ind + 1] = cloudinary
                 url = "/".join(image_split)
-                data = base64.encodebytes(urlopen(url).read())
+
+                data = urlopen(Request(url, None, HEADERS)).read()
+                data = base64.encodebytes(data)
                 _image_date = picture.child_id.last_photo_date or fields.Date.today()
                 if pic_type.lower() == "headshot":
                     self.headshot = data
                 elif pic_type.lower() == "fullshot":
                     self.fullshot = data
-            except:
+            except Exception as e:
                 self._error_msg = (
                     "Image cannot be fetched, invalid image "
                     "url : " + picture.image_url

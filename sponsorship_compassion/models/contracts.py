@@ -10,6 +10,7 @@
 
 import logging
 import os
+import json
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
@@ -76,7 +77,6 @@ class SponsorshipContract(models.Model):
         default=lambda self: self._get_standard_lines(), readonly=False
     )
     preferred_name = fields.Char(related="child_id.preferred_name")
-    suspended_amount = fields.Float(compute="_compute_suspended_amount")
 
     child_id = fields.Many2one(
         "compassion.child",
@@ -307,34 +307,6 @@ class SponsorshipContract(models.Model):
             )
 
     @api.multi
-    def _compute_suspended_amount(self):
-        """ Suspended amount is all amount donated to suspension product
-        and amount not reconciled. """
-        suspend_config = int(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("sponsorship_compassion.suspend_product_id", 0)
-        )
-        suspend_product = self.env["product.product"].browse(suspend_config).exists()
-        for contract in self.filtered("child_id"):
-            amount = 0
-            if suspend_product:
-                amount += sum(
-                    self.env["account.invoice.line"]
-                    .search(
-                        [
-                            ("contract_id", "=", contract.id),
-                            ("state", "=", "paid"),
-                            ("product_id", "=", suspend_product.id),
-                        ]
-                    )
-                    .mapped("price_subtotal")
-                    or [0]
-                )
-            amount += contract.partner_id.debit
-            contract.suspended_amount = amount
-
-    @api.multi
     @api.depends(
         "correspondent_id", "correspondent_id.ref", "child_id", "child_id.local_id"
     )
@@ -517,15 +489,18 @@ class SponsorshipContract(models.Model):
         if "child_id" in vals:
             self._link_unlink_child_to_sponsor(vals)
 
+        old_partners = self.env["res.partner"]
         if "partner_id" in vals:
             old_partners = self.mapped("partner_id")
 
         updated_correspondents = self.env[self._name]
+        previous_states = []
         if "correspondent_id" in vals:
-            old_correspondents = self.mapped("correspondent_id")
-            updated_correspondents = self._on_change_correspondant(
-                vals["correspondent_id"]
-            )
+            previous_states.extend([r.state for r in self])
+            updated_correspondents = self.filtered("global_id")
+            for record in updated_correspondents:
+                record._remove_correspondent()
+
             for child in self.mapped("child_id"):
                 child.child_sponsored(vals["correspondent_id"])
 
@@ -534,23 +509,7 @@ class SponsorshipContract(models.Model):
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
         super().write(vals)
-
-        if updated_correspondents and not testing:
-            # We want to avoid having dangling sponsorships
-            self.env.cr.commit()  # pylint: disable=invalid-commit
-            try:
-                updated_correspondents._on_correspondant_changed()
-            except:
-                logger.error("Error activating sponsorship", exc_info=True)
-                self.env.clear()
-                for correspondent in updated_correspondents:
-                    correspondent.activity_schedule(
-                        'mail.mail_activity_data_warning',
-                        summary="Activate sponsorship",
-                        user_id=self.env.uid,
-                        note="Error while changing correspondent at GMC. "
-                             "The sponsorship is no longer active at GMC side. "
-                             "Please activate it again manually.")
+        self.env.cr.commit()
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -560,8 +519,12 @@ class SponsorshipContract(models.Model):
             old_partners.update_number_sponsorships()
 
         if "correspondent_id" in vals:
-            self.mapped("correspondent_id").update_number_sponsorships()
-            old_correspondents.update_number_sponsorships()
+            for record, previous_state in zip(self, previous_states):
+                if previous_state not in ["active"]:
+                    continue
+                success, error_msg = record.add_correspondent()
+                if success is False:
+                    record.message_post(error_msg)
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -569,6 +532,10 @@ class SponsorshipContract(models.Model):
                 parent = sponsorship.parent_id
                 parent.sub_sponsorship_id = sponsorship
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
+
+        if any([k in vals for k in ["partner_id", "correspondent_id"]]):
+            self.on_change_partner_correspondent_id()
+            self.auto_correspondent_id()
 
         return True
 
@@ -591,182 +558,13 @@ class SponsorshipContract(models.Model):
     def _on_invoice_line_removal(self, invl_rm_data):
         pass
 
-    @api.multi
-    def suspend_contract(self):
-        """
-        If ir.config.parameter is set : change sponsorship invoices with
-        a fund donation set in the config.
-        Otherwise, Cancel the number of invoices specified starting
-        from a given date. This is useful to suspend a contract for a given
-        period."""
-        date_start = date.today()
-
-        config_obj = self.env["ir.config_parameter"].sudo()
-        suspend_config = config_obj.get_param(
-            "sponsorship_compassion.suspend_product_id"
-        )
-        # Cancel invoices in the period of suspension
-        self.with_context(async_mode=False).clean_invoices(
-            date_start, clean_invoices_paid=True, keep_lines=True)
-
-        for contract in self:
-            # Add a note in the contract and in the partner.
-            project_code = contract.project_id.fcp_id
-            contract.message_post(
-                body=_(
-                    "The project %s was suspended and funds are retained."
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically cancelled."
-                ) % project_code,
-                subject=_("Project Suspended"),
-                message_type="comment",
-            )
-            contract.partner_id.message_post(
-                body=_(
-                    "The project %s was suspended and"
-                    " funds are retained for child %s. <b>"
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically cancelled."
-                ) % (project_code, contract.child_code),
-                subject=_("Project Suspended"),
-                message_type="comment",
-            )
-
-        # Change invoices if config tells to do so.
-        if suspend_config:
-            product_id = int(suspend_config)
-            self._suspend_change_invoices(date_start, product_id)
-
-        return True
-
-    @api.multi
-    def _suspend_change_invoices(self, since_date, product_id):
-        """ Change cancelled sponsorship invoices and put them for given
-        product. Re-open invoices. """
-        cancel_inv_lines = (
-            self.env["account.invoice.line"]
-                .with_context(lang="en_US")
-                .search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("state", "=", "cancel"),
-                    ("product_id.categ_name", "=", SPONSORSHIP_CATEGORY),
-                    ("due_date", ">=", since_date),
-                ]
-            )
-        )
-        invoices = cancel_inv_lines.mapped("invoice_id")
-        invoices.action_invoice_draft()
-        invoices.env.clear()
-        vals = self.get_suspend_invl_data(product_id)
-        cancel_inv_lines.write(vals)
-        invoices.action_invoice_open()
-
-    @api.multi
-    def get_suspend_invl_data(self, product_id):
-        """ Returns invoice_line data for a given product when center
-        is suspended. """
-
-        product = self.env["product.product"].browse(product_id)
-        vals = {
-            "product_id": product_id,
-            "account_id": product.property_account_income_id.id,
-            "name": "Replacement of sponsorship (fund-suspended)",
-        }
-        rec = self.env["account.analytic.default"].account_get(product.id)
-        if rec and rec.analytic_id:
-            vals["account_analytic_id"] = rec.analytic_id.id
-
-        return vals
-
-    @api.multi
-    def reactivate_contract(self):
-        """ When project is reactivated, we re-open cancelled invoices,
-        or we change open invoices if fund is set to replace sponsorship
-        product. We also change attribution of invoices paid in advance.
-        """
-        date_start = date.today()
-        config_obj = self.env["ir.config_parameter"]
-        suspend_config = config_obj.get_param(
-            "sponsorship_compassion.suspend_product_id"
-        )
-        invl_obj = self.env["account.invoice.line"]
-        sponsorship_product = self.env["product.product"].search(
-            [("default_code", "=", "sponsorship")]
-        )
-        if suspend_config:
-            # Revert future invoices with sponsorship product
-            susp_product_id = int(suspend_config)
-            invl_lines = invl_obj.search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("product_id", "=", susp_product_id),
-                    ("state", "in", ["open", "paid"]),
-                    ("due_date", ">=", date_start),
-                ]
-            )
-            invl_data = {
-                "product_id": sponsorship_product.id,
-                "account_id": sponsorship_product.property_account_income_id.id,
-                "name": sponsorship_product.name,
-            }
-            rec = self.env["account.analytic.default"].account_get(
-                sponsorship_product.id
-            )
-            if rec and rec.analytic_id:
-                invl_data["account_analytic_id"] = rec.analytic_id.id
-            invl_lines.write(invl_data)
-
-            invoices = invl_lines.mapped("invoice_id")
-            contracts = invl_lines.mapped("contract_id")
-            reconciles = invoices.filtered(lambda inv: inv.state == "paid").mapped(
-                "payment_move_line_ids.full_reconcile_id"
-            )
-
-            # Unreconcile paid invoices
-            reconciles.mapped("reconciled_line_ids").remove_move_reconcile()
-            # Cancel and confirm again invoices to update move lines
-            invoices.action_invoice_cancel()
-            invoices.action_invoice_draft()
-            invoices.env.clear()
-            invoices.action_invoice_open()
-        else:
-            # Open again cancelled invoices
-            inv_lines = invl_obj.search(
-                [
-                    ("contract_id", "in", self.ids),
-                    ("product_id", "=", sponsorship_product.id),
-                    ("state", "=", "cancel"),
-                    ("due_date", ">=", date_start),
-                ]
-            )
-            contracts = inv_lines.mapped("contract_id")
-            to_open = inv_lines.mapped("invoice_id").filtered(
-                lambda inv: inv.state == "cancel"
-            )
-            to_open.action_invoice_draft()
-            to_open.env.clear()
-            for i in to_open:
-                i.action_invoice_open()
-
-        # Log a note in the contracts
-        for contract in contracts:
-            contract.message_post(
-                body=_(
-                    "The project was reactivated."
-                    "<br/>Invoices due in the suspension period "
-                    "are automatically reverted."
-                ),
-                subject=_("Project Reactivated"),
-                type="comment",
-            )
-
     def commitment_sent(self, vals):
         """ Called when GMC received the commitment. """
         self.ensure_one()
         # We don't need to write back partner and child
         vals.pop("child_id", False)
         vals.pop("correspondent_id", False)
+        vals["state"] = "active"
         self.write(vals)
         # Remove the hold on the child.
         for sponsorship in self.filtered("hold_id"):
@@ -780,21 +578,22 @@ class SponsorshipContract(models.Model):
     def cancel_sent(self, vals):
         """ Called when GMC received the commitment cancel request. """
         self.ensure_one()
+        hold_id = vals.get("hold_id")
+        hold = self.env["compassion.hold"].search([
+            "|", ("hold_id", "=", hold_id), ("id", "=", hold_id)])
         if self.hold_expiration_date:
             hold_expiration = self.hold_expiration_date
-            if "hold_id" in vals and hold_expiration >= datetime.now():
-                child = self.child_id
-                hold_vals = {
-                    "hold_id": vals["hold_id"],
-                    "child_id": child.id,
-                    "type": HoldType.SPONSOR_CANCEL_HOLD.value,
-                    "channel": "sponsor_cancel",
-                    "expiration_date": self.hold_expiration_date,
-                    "primary_owner": self.write_uid.id,
-                    "state": "active",
-                }
-                hold = self.env["compassion.hold"].create(hold_vals)
-                child.child_consigned(hold.id)
+            child = self.child_id
+            hold.write({
+                "child_id": child.id,
+                "type": HoldType.SPONSOR_CANCEL_HOLD.value,
+                "channel": "sponsor_cancel",
+                "expiration_date": hold_expiration,
+                "primary_owner": self.write_uid.id,
+                "state": "active",
+            })
+            if not child.hold_id:
+                child.hold_id = hold
         return True
 
     @api.multi
@@ -804,27 +603,10 @@ class SponsorshipContract(models.Model):
             Add analytic account to invoice_lines.
         """
         contracts = self.filtered(lambda c: c.total_amount != 0)
-        suspend_config = int(
-            self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("sponsorship_compassion.suspend_product_id", 0)
-        )
+
         res = list()
         for contract in contracts:
             invl_datas = super(SponsorshipContract, contract).get_inv_lines_data()
-
-            # If project is suspended, either skip invoice or replace product
-            if contract.type in ["S", "SC"] and contract.project_id.hold_cdsp_funds:
-                if not suspend_config:
-                    continue
-                for invl_data in invl_datas:
-                    current_product = (
-                        self.env["product.product"]
-                            .with_context(lang="en_US")
-                            .browse(invl_data["product_id"])
-                    )
-                    if current_product.categ_name == SPONSORSHIP_CATEGORY:
-                        invl_data.update(self.get_suspend_invl_data(suspend_config))
 
             if contract.type == "G":
                 for i in range(0, len(invl_datas)):
@@ -887,10 +669,12 @@ class SponsorshipContract(models.Model):
             }
         )
 
-    ##########################################################################
-    #                             VIEW CALLBACKS                             #
-    ##########################################################################
-    @api.onchange("partner_id", "correspondent_id")
+    @api.onchange("partner_id")
+    def auto_correspondent_id(self):
+        """If correspondent is not specified use partner_id"""
+        if self.partner_id and not self.correspondent_id:
+            self.correspondent_id = self.partner_id
+
     def on_change_partner_correspondent_id(self):
         """ On partner change, we set the new commitment number
         (for gift identification). """
@@ -904,8 +688,10 @@ class SponsorshipContract(models.Model):
             ]
         )
         self.commitment_number = max(contracts.mapped("commitment_number") or [0]) + 1
-        if self.partner_id and not self.correspondent_id:
-            self.correspondent_id = self.partner_id
+
+    ##########################################################################
+    #                             VIEW CALLBACKS                             #
+    ##########################################################################
 
     @api.multi
     def open_invoices(self):
@@ -1031,7 +817,8 @@ class SponsorshipContract(models.Model):
         if contracts:
             super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
-            contract.start_date = fields.Datetime.now()
+            if not contract.start_date:
+                contract.start_date = fields.Datetime.now()
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
@@ -1039,7 +826,7 @@ class SponsorshipContract(models.Model):
                     if sponsorship.state == "active":
                         contract.contract_active()
                 contract.group_id.generate_invoices()
-            if contract.type == "S":
+            elif contract.type == "S" or (contract.type == "SC" and contract.total_amount > 0):
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
                 hold.write(
@@ -1055,7 +842,7 @@ class SponsorshipContract(models.Model):
                     )
                 contract.state = "waiting"
                 contract.group_id.generate_invoices()
-            if contract.type == "SC":
+            elif contract.type == "SC":
                 # Activate directly correspondence sponsorships
                 contract.contract_active()
         return True
@@ -1078,25 +865,23 @@ class SponsorshipContract(models.Model):
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         action = self.env.ref("sponsorship_compassion.create_sponsorship")
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         for sponsorship in self.filtered(
                 lambda s: s.global_id and s.state not in ("cancelled", "terminated")
         ):
-            # Commit at each message processed
             try:
-                with self.env.cr.savepoint():
-                    message = message_obj.create(
-                        {
-                            "action_id": action.id,
-                            "child_id": sponsorship.child_id.id,
-                            "partner_id": sponsorship.correspondent_id.id,
-                            "object_id": sponsorship.id,
-                        }
-                    )
-                    message.process_messages()
-                    if message.state == "failure":
-                        failure = message.failure_reason
-                        sponsorship.message_post(failure, _("Language update failed."))
+                message = message_obj.create(
+                    {
+                        "action_id": action.id,
+                        "child_id": sponsorship.child_id.id,
+                        "partner_id": sponsorship.correspondent_id.id,
+                        "object_id": sponsorship.id,
+                    }
+                )
+                message.process_messages()
+                if "failure" in message.state:
+                    failure = message.failure_reason
+                    sponsorship.message_post(failure, _("Language update failed."))
             except:
                 logger.error(
                     "Error when updating sponsorship language. "
@@ -1104,98 +889,75 @@ class SponsorshipContract(models.Model):
                     exc_info=True,
                 )
 
-    @api.multi
-    def _on_change_correspondant(self, correspondent_id):
-        """
-        This is useful for not having to internally cancel and create
-        a new commitment just to change the corresponding partner.
-        It will however cancel the commitment at GMC side and create a new
-        one.
-        But in Odoo, we will not see the commitment has changed.
-        """
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+    def _remove_correspondent(self):
+        self.ensure_one()
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         cancel_action = self.env.ref("sponsorship_compassion.cancel_sponsorship")
 
-        sponsorships = self.filtered(
-            lambda s: s.correspondent_id.id != correspondent_id
-            and s.global_id
-            and s.state not in ("cancelled", "terminated")
-        )
-        sponsorships.write(
-            {
-                "hold_expiration_date": self.env[
-                    "compassion.hold"
-                ].get_default_hold_expiration(HoldType.SPONSOR_CANCEL_HOLD)
-            }
-        )
-        cancelled_sponsorships = self.env[self._name]
-        errors = self.env[self._name]
+        if self.state in ("cancelled", "terminated"):
+            raise UserError(_("You can't change the correspondent of a"
+                              " cancelled or terminated sponsorship"))
+
+        hold_expiration_date = self.env["compassion.hold"].get_default_hold_expiration(
+            HoldType.SPONSOR_CANCEL_HOLD)
+        self.hold_expiration_date = hold_expiration_date
 
         # Cancel sponsorship at GMC
-        messages = message_obj
-        for sponsorship in sponsorships:
-            messages += message_obj.create(
+        message = message_obj.create(
                 {
                     "action_id": cancel_action.id,
-                    "child_id": sponsorship.child_id.id,
-                    "partner_id": sponsorship.correspondent_id.id,
-                    "object_id": sponsorship.id,
+                    "child_id": self.child_id.id,
+                    "partner_id": self.correspondent_id.id,
+                    "object_id": self.id,
                 }
             )
-        messages.process_messages()
-        for i in range(0, len(messages)):
-            if messages[i].state == "success":
-                cancelled_sponsorships += sponsorships[i]
+        message.process_messages()
+
+        answer = json.loads(message.answer)
+        if not isinstance(answer, dict) or "Code" not in answer:
+            raise UserError(_("Invalid GMC answer"))
+        if "failure" in message.state:
+            if answer["Code"] in [5000, ]:
+                logger.warning(message.answer)
             else:
-                messages[i].unlink()
-                errors += sponsorships[i]
-        if errors:
-            logger.error(
-                "Could not cancel contracts with following global_id(s):"
-                ", ".join(errors.mapped("global_id"))
-            )
+                error_message = answer["Message"]
+                logger.error(error_message)
+                raise UserError(_("GMC returned an error :") + "\n" + error_message)
 
-            raise UserError(
-                _("The current commitment at GMC side could not be cancelled.")
-            )
+        self.global_id = False
+        self.state = "terminated"
+        self.correspondent_id.update_number_sponsorships()
+        return True
 
-        cancelled_sponsorships.write({"global_id": False})
-        return cancelled_sponsorships
-
-    @api.multi
-    def _on_correspondant_changed(self):
-        """
-        This is useful for not having to internally cancel and create
-        a new commitment just to change the corresponding partner.
-        It will however cancel the commitment at GMC side and create a new
-        one.
-        But in Odoo, we will not see the commitment has changed.
-        """
-        message_obj = self.env["gmc.message"].with_context(async_mode=False)
+    def add_correspondent(self):
+        self.ensure_one()
+        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         create_action = self.env.ref("sponsorship_compassion.create_sponsorship")
-
-        # Upsert correspondents
-        self.mapped("correspondent_id").upsert_constituent().process_messages()
+        self.correspondent_id.upsert_constituent().process_messages()
 
         # Create new sponsorships at GMC
-        messages = message_obj
-        for sponsorship in self:
-            partner = sponsorship.correspondent_id
-            messages += message_obj.create(
-                {
-                    "action_id": create_action.id,
-                    "child_id": sponsorship.child_id.id,
-                    "partner_id": partner.id,
-                    "object_id": sponsorship.id,
-                }
-            )
-        messages.process_messages()
-        for i in range(0, len(messages)):
-            if not messages[i].state == "success":
-                self[i].message_post(
-                    body=messages[i].failure_reason,
-                    subject=_("The sponsorship is no more active!")
-                )
+        message = message_obj.create(
+            {
+                "action_id": create_action.id,
+                "child_id": self.child_id.id,
+                "partner_id": self.correspondent_id.id,
+                "object_id": self.id,
+            }
+        )
+        message.process_messages()
+
+        answer = json.loads(message.answer)
+        if not isinstance(answer, dict) or "Message" not in answer:
+            return False, _("Invalid GMC answer")
+        if "failure" in message.state:
+            error_message = answer["Message"]
+            logger.error(error_message)
+            return False, _("Couldn't activate the new correspondent, GMC returned "
+                            "the following error: ") + "\n" + error_message
+
+        self.correspondent_id.update_number_sponsorships()
+        self.env.cr.commit()
+        return True, ""
 
     @api.multi
     def _on_sponsorship_finished(self):
@@ -1233,7 +995,7 @@ class SponsorshipContract(models.Model):
                 message_obj.search(
                     [
                         ("action_id", "=", action_id),
-                        ("state", "in", ["new", "failure"]),
+                        ("state", "in", ["new", "failure", "odoo_failure"]),
                         ("object_id", "=", sponsorship.id),
                     ]
                 ).unlink()
@@ -1262,8 +1024,7 @@ class SponsorshipContract(models.Model):
 
     @api.multi
     def invoice_paid(self, invoice):
-        """ Prevent to reconcile invoices for fund-suspended projects
-            or sponsorships older than 3 months. """
+        """ Prevent to reconcile invoices for sponsorships older than 3 months. """
         for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
                 contract = invl.contract_id
@@ -1276,25 +1037,6 @@ class SponsorshipContract(models.Model):
                     ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(f"The contract {contract.name} is not active.")
-
-                # Check if project allows this kind of payment.
-                payment_allowed = True
-                project = contract.project_id
-                if invl.product_id.categ_name == SPONSORSHIP_CATEGORY:
-                    payment_allowed = (
-                        not project.hold_cdsp_funds
-                        or (
-                            invl.due_date
-                            < project.lifecycle_ids[:1].suspension_start_date
-                            if project.lifecycle_ids[:1].suspension_start_date
-                            else True
-                        )
-                    )
-                if not payment_allowed:
-                    raise UserError(
-                        f"The project {project.fcp_id} is fund-suspended. "
-                        f"You cannot reconcile invoice ({invoice.id})."
-                    )
 
                 # Activate gift related contracts (if any)
                 if "S" in contract.type:

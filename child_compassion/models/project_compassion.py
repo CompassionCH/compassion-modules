@@ -99,10 +99,12 @@ class CompassionProject(models.Model):
     number_church_members = fields.Integer(readonly=True)
     weekly_child_attendance = fields.Integer(readonly=True)
     implemented_program_ids = fields.Many2many(
-        "fcp.program", string="Programs implemented", readonly=True
+        "fcp.program", "fcp_implemented_programs", "fcp_id", "program_id",
+        string="Programs implemented", readonly=True
     )
     interested_program_ids = fields.Many2many(
-        "fcp.program", string="Programs of interest", readonly=True
+        "fcp.program", "fcp_interested_programs", "fcp_id", "program_id",
+        string="Programs of interest", readonly=True
     )
 
     # Church infrastructure information
@@ -487,7 +489,7 @@ class CompassionProject(models.Model):
         """
         for project in self:
             project.message_post(
-                body=_("The project was suspended and funds are retained."),
+                body=_("The project was suspended."),
                 subject=_("Project Suspended"),
                 message_type="comment",
             )
@@ -622,7 +624,7 @@ class CompassionProject(models.Model):
             "object_id": self.id,
         }
         message = message_obj.create(message_vals)
-        if message.state == "failure":
+        if "failure" in message.state:
             raise UserError(message.failure_reason)
 
         return True

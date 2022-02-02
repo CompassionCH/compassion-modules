@@ -96,7 +96,10 @@ class AdvancedTranslatable(models.AbstractModel):
             values = self.mapped(field)
         if isinstance(values, list):
             seen = set()
-            values = [x for x in values if not (x in seen or seen.add(x))]
+            values = [
+                x for x in values if not (x in seen or seen.add(x))
+                and x != _("Unknown")
+            ]
             if len(values) > limit:
                 if substitution:
                     return substitution
@@ -120,13 +123,15 @@ class AdvancedTranslatable(models.AbstractModel):
         :return: the formatted dates
         """
         _lang = self.env.context.get("lang") or self.env.lang or "en_US"
+        _tz = self.env.user.tz or "Europe/Zurich"
         _format = self.env["ir.advanced.translation"].get(date_type)
         dates = sorted(
             set(self.filtered(field).mapped(field))
         )
 
         dates = [format_datetime(
-            fields.Datetime.to_datetime(d), _format, locale=_lang) for d in dates]
+            fields.Datetime.to_datetime(d), _format,
+            tzinfo=_tz, locale=_lang) for d in dates]
 
         if len(dates) > 1:
             res_string = ", ".join(dates[:-1])

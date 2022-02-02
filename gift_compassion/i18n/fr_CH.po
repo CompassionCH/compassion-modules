@@ -490,12 +490,12 @@ msgstr "Project"
 #: code:addons/gift_compassion/models/sponsorship_gift.py:113
 #, python-format
 msgid "Project"
-msgstr "Centre d'accueil"
+msgstr "Centre de développement de l’enfant"
 
 #. module: gift_compassion
 #: selection:sponsorship.gift,undeliverable_reason:0
 msgid "Project Transitioned"
-msgstr "Centre d'accueil transitionné"
+msgstr "Centre de développement de l’enfant transitionné"
 
 #. module: gift_compassion
 #: model:ir.actions.server,name:gift_compassion.send_gift

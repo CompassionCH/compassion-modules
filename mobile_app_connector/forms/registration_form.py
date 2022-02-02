@@ -70,7 +70,7 @@ class UserRegistrationForm(models.AbstractModel):
         res.update(
             {
                 "gtc_accept": "cms_form_compassion.form.widget.terms",
-                "partner_birthdate": "cms.form.widget.date.ch",
+                "partner_birthdate_date": "cms.form.widget.date.ch",
                 "source": "cms_form_compassion.form.widget.hidden"
             }
         )
@@ -263,7 +263,7 @@ class RegistrationNotSupporter(models.AbstractModel):
                     "partner_zip",
                     "partner_city",
                     "partner_country_id",
-                    "partner_birthdate",
+                    "partner_birthdate_date",
                     "gtc_accept",
                     "source"
                 ],
@@ -402,11 +402,11 @@ class RegistrationSupporterForm(models.AbstractModel):
                 )
                 if values["source"] == "myaccount":
                     body = body.replace(
-                        "%(app_type)", "mycompassion"
+                        "%(app_type)", _("MyCompassion")
                     )
                 else:
                     body = body.replace(
-                        "%(app_type)", "my mobile app"
+                        "%(app_type)", _("my mobile app")
                     )
                 href_link = self._add_mailto(link_text, to, subject, body)
                 raise ValidationError(

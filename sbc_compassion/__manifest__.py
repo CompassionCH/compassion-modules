@@ -59,7 +59,6 @@
         "views/import_letters_history_view.xml",
         "views/correspondence_template_view.xml",
         "views/correspondence_template_page_view.xml",
-        "views/correspondence_template_crosscheck_view.xml",
         "views/import_review_view.xml",
         "views/download_letters_view.xml",
         "views/get_letter_image_wizard_view.xml",

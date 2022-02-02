@@ -307,19 +307,16 @@ class HrAttendanceDay(models.Model):
     @api.multi
     @api.depends("paid_hours", "due_hours")
     def _compute_day_balance(self):
-        for att_day in self:
-            att_day.day_balance = att_day.balance_computation()
-
-    def balance_computation(self):
-        self.ensure_one()
         sick_leave = self.env.ref("hr_holidays.holiday_status_sl")
 
-        if sick_leave in self.leave_ids.filtered(
+        for att_day in self:
+            validated_leaves = att_day.leave_ids.filtered(
                 lambda r: r.state == "validate"
-        ).mapped("holiday_status_id"):
-            return 0
-        else:
-            return self.paid_hours - self.due_hours
+            )
+            if sick_leave in validated_leaves.mapped("holiday_status_id"):
+                att_day.day_balance = 0
+            else:
+                att_day.day_balance = att_day.paid_hours - att_day.due_hours
 
     @api.multi
     def validate_extend_breaks(self):
@@ -462,8 +459,8 @@ class HrAttendanceDay(models.Model):
     def recompute_period_if_old_day(self):
         for day in self:
             employee_periods = day.employee_id.period_ids
-            period_of_day = employee_periods.search(
-                [("start_date", "<=", day.date), ("end_date", ">=", day.date)], limit=1
+            period_of_day = employee_periods.filtered(
+                lambda x: x.start_date <= day.date <= x.end_date
             )
             if period_of_day:
                 period_of_day.update_period()
@@ -483,6 +480,13 @@ class HrAttendanceDay(models.Model):
             "target": "current",
         }
 
+    @staticmethod
+    def compare_attendance_day_leave_half_day(att, leave):
+        for li in [("morning", "am"), ("afternoon", "pm")]:
+            if att.day_period.lower() in li and leave.request_date_from_period.lower() in li:
+                return True
+        return False
+
     def get_leave_time(self, due_hours):
         """
         Compute leave duration for the day.
@@ -493,50 +497,42 @@ class HrAttendanceDay(models.Model):
         for leave in self.leave_ids:
             if leave.state != "validate" or leave.holiday_status_id.keep_due_hours:
                 continue
+            # Convert UTC in local timezone
+            user_tz = self.employee_id.user_id.tz
+            if not user_tz:
+                user_tz = u"UTC"
+            local = pytz.timezone(user_tz)
+            utc = pytz.timezone("UTC")
+
+            local_start = utc.localize(leave.date_from).astimezone(local)
+            local_end = utc.localize(leave.date_to).astimezone(local)
+            leave_start_date = local_start.date()
+            leave_end_date = local_end.date()
+
+            if leave.request_unit_half:
+                for att in self.cal_att_ids:
+                    if self.compare_attendance_day_leave_half_day(att, leave):
+                        deduction += att.due_hours
+            elif leave_start_date < self.date < leave_end_date:
+                deduction += due_hours
+            elif self.date == leave_start_date:
+                # convert time in float
+                start = local_start.hour + local_start.minute // 60.0
+                for att in self.cal_att_ids:
+                    if att.hour_from <= start < att.hour_to:
+                        deduction += att.hour_to - start
+                    elif start < att.hour_from:
+                        deduction += att.due_hours
+            elif self.date == leave_end_date:
+                # convert time in float
+                end = local_end.hour + local_end.minute // 60.0
+                for att in self.cal_att_ids:
+                    if att.hour_from < end <= att.hour_to:
+                        deduction += end - att.hour_from
+                    elif end > att.hour_to:
+                        deduction += att.due_hours
             else:
-                utc_start = leave.date_from
-                utc_end = leave.date_to
-
-                # Convert UTC in local timezone
-                user_tz = self.employee_id.user_id.tz
-                if not user_tz:
-                    user_tz = u"UTC"
-                local = pytz.timezone(user_tz)
-                utc = pytz.timezone("UTC")
-
-                local_start = utc.localize(utc_start).astimezone(local)
-                local_end = utc.localize(utc_end).astimezone(local)
-
-                leave_start_date = local_start.date()
-                leave_end_date = local_end.date()
-
-                date = self.date
-
-                full_day = due_hours
-
-                if leave_start_date < date < leave_end_date:
-                    deduction += full_day
-
-                elif date == leave_start_date:
-                    # convert time in float
-                    start = local_start.hour + local_start.minute // 60.0
-                    for att in self.cal_att_ids:
-                        if att.hour_from <= start < att.hour_to:
-                            deduction += att.hour_to - start
-                        elif start < att.hour_from:
-                            deduction += att.due_hours
-
-                elif date == leave_end_date:
-                    # convert time in float
-                    end = local_end.hour + local_end.minute // 60.0
-                    for att in self.cal_att_ids:
-                        if att.hour_from < end <= att.hour_to:
-                            deduction += end - att.hour_from
-                        elif end > att.hour_to:
-                            deduction += att.due_hours
-
-                else:
-                    _logger.error("This day doesn't correspond to this leave")
+                _logger.error("This day doesn't correspond to this leave")
         return deduction
 
     @api.multi

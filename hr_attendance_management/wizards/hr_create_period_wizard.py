@@ -47,8 +47,7 @@ class ChangeDayDWizard(models.TransientModel):
                 # Add one day to end_date as the logic
                 # uses an exclusive superior bound
                 str(
-                    datetime.datetime.strptime(record.end_date, "%Y-%m-%d").date()
-                    + datetime.timedelta(days=1)
+                    record.end_date + datetime.timedelta(days=1)
                 ),
                 0,
                 previous_period_id,

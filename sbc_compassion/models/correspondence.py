@@ -546,25 +546,13 @@ class Correspondence(models.Model):
 
     @api.multi
     def unlink(self):
-        if not self.env.context.get("force_delete"):
-            for letter in self:
-                if (
-                        letter.kit_identifier
-                        or letter.state == "Global Partner translation queue"
-                ):
-                    raise UserError(
-                        _(
-                            "You cannot delete a letter which is in "
-                            "translation or already sent to GMC."
-                        )
-                    )
         # Remove unsent messages
         gmc_action = self.env.ref("sbc_compassion.create_letter")
         gmc_messages = self.env["gmc.message"].search(
             [
                 ("action_id", "=", gmc_action.id),
                 ("object_id", "in", self.ids),
-                ("state", "in", ["new", "failure", "postponed"]),
+                ("state", "in", ["new", "failure", "odoo_failure", "postponed"]),
             ]
         )
         gmc_messages.unlink()
@@ -844,7 +832,7 @@ class Correspondence(models.Model):
             [
                 ("action_id", "=", gmc_action.id),
                 ("object_id", "in", self.ids),
-                ("state", "in", ["new", "failure"]),
+                ("state", "in", ["new", "failure", "odoo_failure"]),
             ]
         )
         gmc_messages.write({"state": "postponed"})

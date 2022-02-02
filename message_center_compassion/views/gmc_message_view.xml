@@ -11,7 +11,7 @@
         <field name="model">gmc.message</field>
         <field name="priority">17</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="state == 'failure'"
+            <tree decoration-danger="state in ('failure', 'odoo_failure')"
                   decoration-primary="state == 'new'"
                   decoration-muted="state == 'success'">
                 <field name="action_id" />
@@ -28,7 +28,7 @@
         <field name="model">gmc.message</field>
         <field name="priority">12</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="state == 'failure'"
+            <tree decoration-danger="state in ('failure', 'odoo_failure')"
                   decoration-primary="state == 'new'"
                   decoration-muted="state == 'success'">
                 <field name="action_id" />
@@ -50,7 +50,7 @@
             <form string="GMC Message" create="false">
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="new,pending,success" />
-                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new" />
+                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new,failure,odoo_failure" />
                     <button name="reset_message" type="object" string="Set back to New" states="failure,pending"/>
                     <button name="force_success" type="object" string="Success" groups="base.group_erp_manager" attrs="{'invisible':[('state','in',['postponed', 'success'])]}"/>
                     <button name="open_related" type="object" string="Related"/>
@@ -110,6 +110,7 @@
                             <field name="mapping_id"/>
                             <field name="connect_outgoing_wrapper"/>
                             <field name="connect_answer_wrapper"/>
+                            <field name="incoming_method"/>
                             <field name="success_method"/>
                             <field name="failure_method"/>
                         </group>
@@ -154,7 +155,7 @@
                 <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]" context="{'group_by':'action_id'}" />
                 <separator />
                 <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
-                <filter string="Failed" name="failure" domain="[('state','=','failure')]" />
+                <filter string="Failed" name="failure" domain="[('state','in',('failure','odoo_failure'))]" />
                 <filter string="Success" name="success" domain="[('state','=','success')]" />
                 <group expand="0" string="Group By...">
                     <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>

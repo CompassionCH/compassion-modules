@@ -94,7 +94,7 @@ class CompassionProject(models.Model):
 
         if project:
             result["ProjectServiceResult"]["ICPResponseList"] = [
-                (project.data_to_json("mobile_app_project"))
+                (project.sudo().data_to_json("mobile_app_project"))
             ]
         return result
 

@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_event_compassion_salesman,Access on event_compassion,model_crm_event_compassion,child_compassion.group_sponsorship,1,1,1,1
 access_demand_weekly_revision,Full access on demand_weekly_revision,model_demand_weekly_revision,base.group_erp_manager,1,1,1,1
 read_access_demand_weekly_revision,Read only access on demand_weekly_revision,model_demand_weekly_revision,sales_team.group_sale_salesman_all_leads,1,0,0,0
+partner_log_other_interaction,Full access on partner_log_other_interaction,model_partner_log_other_interaction,base.group_user,1,1,1,1
+partner_log_other_interaction_wizard,Full access on partner_log_other_interaction_wizard,model_partner_log_other_interaction_wizard,base.group_user,1,1,1,1

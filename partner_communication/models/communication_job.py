@@ -9,6 +9,7 @@
 ##############################################################################
 import logging
 import threading
+from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
 
@@ -774,69 +775,98 @@ class CommunicationJob(models.Model):
 
     def _print_report(self):
         name = self.env.user.firstname or self.env.user.name
+        origin = self.env.context.get("origin")
+        state = "done"
+        if origin == "both_print":
+            state = "pending"
+
+        # Batch print communications of same type (if no attachments)
+        batch_print = {
+            lang: defaultdict(lambda: self.env[self._name])
+            for lang in list(set(self.mapped("partner_id.lang")))
+        }
         for job in self:
-            report = job.report_id.with_context(
-                print_name=name[:3] + " " + (job.subject or ""),
-                must_skip_send_to_printer=True,
-                lang=job.partner_id.lang,
-            )
-            # Get pdf should directly send it to the printer if report
-            # is correctly configured.
-            to_print = report.render_qweb_pdf(job.ids)
+            if job.attachment_ids:
+                # Print letter
+                print_name = name[:3] + " " + (job.subject or "")
+                output_tray = job.print_letter(print_name)["output_tray"]
 
-            # Print letter
-            lang = job.partner_id.lang
-            job = job.with_context(lang=lang)
-            report = job.report_id
-            behaviour = report.behaviour()
-            printer = behaviour["printer"].with_context(lang=lang)
-
-            # Get communication config of language
-            printer_configs = job.mapped("config_id.printer_config_ids")
-            config_lang = printer_configs.filtered(lambda c: c.lang_id.code == lang)
-
-            # The trays are defined at 3 places, get options in order of priority
-            # Output tray - partner.communication.job
-            if job.printer_output_tray_id.system_name:
-                output_tray = job.printer_output_tray_id.system_name
-            # Output tray - partner.communication.config
-            elif config_lang.printer_output_tray_id.system_name:
-                output_tray = config_lang.printer_output_tray_id.system_name
-            # Output tray - ir.actions.report
-            elif report.printer_output_tray_id.system_name:
-                output_tray = report.printer_output_tray_id.system_name
-            else:
-                output_tray = False
-            # Handle input tray similarly to output tray
-            if config_lang.printer_input_tray_id.system_name:
-                input_tray = config_lang.printer_input_tray_id.system_name
-            elif report.printer_input_tray_id.system_name:
-                input_tray = report.printer_input_tray_id.system_name
-            else:
-                input_tray = False
-
-            if behaviour["action"] != "client" and printer:
-                printer.print_document(
-                    report.report_name, to_print[0],
-                    doc_format=report.report_type,
-                    action=behaviour['action'],
-                    input_tray=input_tray,
-                    output_tray=output_tray
+                # Print attachments in the same output_tray
+                job.attachment_ids.print_attachments(
+                    output_tray=output_tray,
                 )
+                job.write({"state": state, "sent_date": fields.Datetime.now()})
+                if not testing:
+                    # Commit to avoid invalid state if process fails
+                    self.env.cr.commit()  # pylint: disable=invalid-commit
+            else:
+                batch_print[job.partner_id.lang][job.config_id.name] += job
 
-            # Print attachments
-            job.attachment_ids.print_attachments(
-                output_tray=output_tray,
-            )
-            origin = self.env.context.get("origin")
-            state = "done"
-            if origin == "both_print":
-                state = "pending"
-            job.write({"state": state, "sent_date": fields.Datetime.now()})
-            if not testing:
-                # Commit to avoid invalid state if process fails
-                self.env.cr.commit()  # pylint: disable=invalid-commit
+        for lang, configs in batch_print.items():
+            for config, jobs in configs.items():
+                print_name = name[:3] + " " + config
+                jobs.print_letter(print_name)
+                jobs.write({"state": state, "sent_date": fields.Datetime.now()})
+                if not testing:
+                    # Commit to avoid invalid state if process fails
+                    self.env.cr.commit()  # pylint: disable=invalid-commit
         return True
+
+    def print_letter(self, print_name, **print_options):
+        """
+        Sends the communication to the printer.
+        Returns all configuration needed for printing the jobs.
+        :param print_name: name of the document sent to the printer
+        :param print_options: use inheritance to add printing options like duplex
+                              printing
+        :return: output_tray used to print letter
+        """
+        lang = list(set(self.mapped("partner_id.lang")))
+        if len(lang) > 1:
+            raise UserError(_("Cannot print multiple langs at the same time."))
+        lang = lang[0]
+
+        # Get report
+        report = self.mapped("report_id").with_context(
+            print_name=print_name, lang=lang, must_skip_send_to_printer=True
+        )
+        # Get communication config of language
+        config_lang = self.mapped("config_id.printer_config_ids").filtered(
+            lambda c: c.lang_id.code == lang
+        )
+
+        if len(report) > 1 or len(config_lang) > 1:
+            raise UserError(_("Cannot print multiple communication types at the same time."))
+
+        behaviour = report.behaviour()
+
+        print_options["doc_format"] = report.report_type
+        print_options["action"] = behaviour["action"]
+
+        # The get the print options in the following order of priority:
+        # - partner.communication.job (only for output bin)
+        # - partner.communication.config
+        # - ir.actions.report (behaviour: which can be specific for the user currently logged in)
+        def get_first(source):
+            return next((v for v in source if v), False)
+
+        print_options["output_tray"] = get_first((
+            self[:1].printer_output_tray_id.system_name,
+            config_lang.printer_output_tray_id.system_name,
+            behaviour["output_tray"]
+        ))
+        print_options["input_tray"] = get_first((
+            config_lang.printer_input_tray_id.system_name,
+            behaviour["input_tray"]
+        ))
+
+        printer = behaviour["printer"].with_context(lang=lang)
+        if behaviour["action"] == "server" and printer:
+            # Get pdf should directly send it to the printer
+            to_print = report.render_qweb_pdf(self.ids)
+            printer.print_document(report.report_name, to_print[0], **print_options)
+
+        return print_options
 
     @api.model
     def _needaction_domain_get(self):

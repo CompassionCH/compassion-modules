@@ -56,8 +56,8 @@
                 <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id': partner_id}</attribute>
             </field>
             <field name="group_id" position="after">
-                <field name="parent_id" domain="[('partner_id', '=', partner_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
-                                   context="{'default_type':'S'}"/>
+                <field name="parent_id" domain="[('correspondent_id', '=', correspondent_id), ('id', '!=', active_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
+                                   context="{'default_type':'S'}" attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"/>
                 <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
             </field>
 
@@ -69,14 +69,6 @@
             <!-- Add transfer field -->
             <field name="end_reason_id" position="after">
                 <field name="transfer_partner_id" attrs="{'invisible': [('transfer_partner_id', '=', False)]}"/>
-            </field>
-
-            <!-- Replace filter domain of parent_id field to take correspondant -->
-            <field name="parent_id" position="attributes">
-                <attribute name="domain" position="replace">
-                    <attribute name="domain">[('correspondent_id', '=', correspondent_id), ('child_id', '!=', child_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]</attribute>
-                </attribute>
-                <attribute name="attrs">{'invisible': [('type', 'not in', ['S', 'SC'])]}</attribute>
             </field>
         </field>
     </record>
@@ -95,7 +87,8 @@
                 <!-- Ability to link gift contract lines to sponsorships -->
                 <field name="contract_type" invisible="1"/>
                 <field name="sponsorship_id"
-                       domain="[('correspondent_id', '=', parent.partner_id), ('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled'])]"
+                       domain="[('type', 'like', 'S'), ('state', 'not in', ['draft', 'terminated', 'cancelled']),'|',
+                               ('correspondent_id', '=', parent.partner_id),('partner_id', '=', parent.partner_id)]"
                 />
             </field>
         </field>

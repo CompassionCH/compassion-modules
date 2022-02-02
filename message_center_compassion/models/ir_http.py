@@ -20,8 +20,10 @@ _logger = logging.getLogger(__name__)
 
 try:
     from jwt import JWT, jwk
-except ImportError:
+    from jwt.exceptions import JWTDecodeError
+except ImportError as e:
     _logger.error("Please install python jwt")
+    raise e
 
 
 class IrHTTP(models.AbstractModel):
@@ -37,33 +39,57 @@ class IrHTTP(models.AbstractModel):
         cert_url = config.get("connect_token_cert")
         if request.httprequest.method == "GET":
             mode = "read"
-        if request.httprequest.method == "POST":
+        elif request.httprequest.method == "POST":
             mode = "write"
+        else:
+            mode = None
 
-        # Get public certificate of issuer for token validation
-        try:
-            token_data = request.httprequest.headers.get("Authorization")
-            access_token = token_data.split()[1]
-            _logger.debug("Received access token: %s", access_token)
-            cert = requests.get(cert_url)
-            key_json = cert.json()["keys"][0]
-        except (ValueError, AttributeError):
-            # If any error occurs during token and certificate retrieval,
-            # we put a wrong certificate, and jwt library will fail
-            # to decrypt the token, leading to unauthorized error.
-            key_json = {}
+        # We iterate over the various certificates provider
+        found_right_certificate = False
+        jwt_decoded = None
+        for one_cert_url in cert_url.split(','):
+            one_cert_url = one_cert_url.strip()
+            access_token = None
 
-        public_key = jwk.RSAJWK.from_dict(key_json)
-        jwt_decoded = JWT().decode(
-            access_token, key=public_key, algorithms=["RS256"], do_verify=True
-        )
+            # Get public certificate of issuer for token validation
+            try:
+                token_data = request.httprequest.headers.get("Authorization")
+                access_token = token_data.split()[1]
+                cert = requests.get(one_cert_url)
+                keys_json = cert.json()["keys"]
+            except (ValueError, AttributeError):
+                # If any error occurs during token and certificate retrieval,
+                # we put a wrong certificate, and jwt library will fail
+                # to decrypt the token, leading to unauthorized error.
+                keys_json = []
+
+            for key_json in keys_json:
+                try:
+                    public_key = jwk.RSAJWK.from_dict(key_json)
+                    jwt_decoded = JWT().decode(
+                        access_token, key=public_key, algorithms={"RS256"}, do_verify=True
+                    )
+                except JWTDecodeError:
+                    continue
+
+                # If we did not encounter an error before, it means the certificate allowed to correctly decode the
+                # access token so we hopefully found a matching certificate
+                if jwt_decoded:
+                    found_right_certificate = True
+                    break
+
+            if found_right_certificate:
+                break
+
+        if not found_right_certificate:
+            raise Unauthorized()
+
         # validation
         # is scope read or write in scopes ?
         scope = jwt_decoded.get("scope")
         if scope and mode not in scope:
             raise Unauthorized()
         client_id = jwt_decoded.get("client_id") or jwt_decoded.get("ClientID")
-        _logger.debug("TOKEN CLIENT IS -----------------> " + client_id)
         return client_id
 
     @classmethod

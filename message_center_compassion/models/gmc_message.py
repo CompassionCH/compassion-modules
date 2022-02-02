@@ -64,6 +64,7 @@ class GmcMessage(models.Model):
             ("postponed", _("Postponed")),
             ("success", _("Success")),
             ("failure", _("Failure")),
+            ("odoo_failure", _("Odoo Failure")),
         ],
         "State",
         readonly=True,
@@ -119,7 +120,7 @@ class GmcMessage(models.Model):
 
     @api.multi
     def process_messages(self):
-        new_messages = self.filtered(lambda m: m.state in ("new", "failure", "pending"))
+        new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
         new_messages.write({"state": "pending", "failure_reason": False})
         if self.env.context.get("async_mode", True):
             new_messages.with_delay()._process_messages()
@@ -326,6 +327,8 @@ class GmcMessage(models.Model):
             )
 
         # Extract the Answer
+        content_sent = message_data.get(action.connect_outgoing_wrapper, message_data)
+        content_data = json.dumps(content_sent, indent=4, sort_keys=True)
         results = onramp_answer.get("content", {})
         answer_wrapper = action.connect_answer_wrapper
         try:
@@ -335,7 +338,7 @@ class GmcMessage(models.Model):
         except (AttributeError, KeyError):
             logger.error("Unexpected answer: %s", results)
         if not results:
-            self._answer_failure(onramp_answer)
+            self._answer_failure(content_data, onramp_answer)
             return
 
         if not isinstance(results, list):
@@ -345,7 +348,6 @@ class GmcMessage(models.Model):
                 .with_context(lang="en_US")
                 .browse(self.mapped("object_id"))
         )
-        content_sent = message_data.get(action.connect_outgoing_wrapper, message_data)
 
         if 200 <= onramp_answer["code"] < 300:
             # Success, loop through answer to get individual results
@@ -354,7 +356,7 @@ class GmcMessage(models.Model):
                 content_data = (
                     json.dumps(content_sent[i], indent=4, sort_keys=True)
                     if isinstance(content_sent, list)
-                    else json.dumps(content_sent, indent=4, sort_keys=True)
+                    else content_data
                 )
                 if isinstance(result, dict) and result.get("Code", 2000) == 2000:
                     # Individual message was successfully processed
@@ -363,9 +365,9 @@ class GmcMessage(models.Model):
                         {
                             "content": content_data,
                             "request_id": onramp_answer.get(
-                                "request_id", str(self[i].id)
-                            ),
+                                "request_id") or str(self[i].id),
                             "answer": json.dumps(result, indent=4, sort_keys=True),
+                            "state": "success"
                         }
                     )
                     if not testing:
@@ -399,7 +401,7 @@ class GmcMessage(models.Model):
                 self.write(
                     {"content": json.dumps(content_sent, indent=4, sort_keys=True)}
                 )
-                self[i]._answer_failure(onramp_answer, result)
+                self[i]._answer_failure(content_data, onramp_answer, result)
 
     def _process_single_answer(self, data_object, answer_data):
         """
@@ -413,19 +415,23 @@ class GmcMessage(models.Model):
         action = self.action_id
         try:
             answer_data = data_object.json_to_data(answer_data, action.mapping_id.name)
-            getattr(data_object, action.success_method)(answer_data)
+            f = getattr(data_object, action.success_method)
+            f(answer_data)
             self.state = "success"
         except Exception as e:
             logger.error(traceback.format_exc())
             self.env.cr.rollback()
             self.env.clear()
-            if action.failure_method:
-                getattr(data_object, action.failure_method)(answer_data)
+            try:
+                if action.failure_method:
+                    getattr(data_object, action.failure_method)(answer_data)
+            except:
+                pass
             self.write(
-                {"state": "failure", "failure_reason": str(e), }
+                {"state": "odoo_failure", "failure_reason": str(e), }
             )
 
-    def _answer_failure(self, onramp_answer, results=None):
+    def _answer_failure(self, content_data, onramp_answer, results=None):
         """ Write error message when onramp answer is not a success.
             :onramp_answer: complete message received back
             :results: extracted content from the answer
@@ -441,7 +447,9 @@ class GmcMessage(models.Model):
             {
                 "state": "failure",
                 "failure_reason": f"[{error_code}] {error_message}",
-                "answer": json.dumps(results, indent=4, sort_keys=True),
+                "answer": json.dumps(
+                    results or onramp_answer, indent=4, sort_keys=True),
+                "content": content_data
             }
         )
 

@@ -70,7 +70,7 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
                 "partner_zip",
                 "partner_city",
                 "partner_country_id",
-                "partner_birthdate",
+                "partner_birthdate_date",
             ],
         }, {
             "id": "origin",
@@ -89,7 +89,7 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
         res.update(
             {
                 "gtc_accept": "cms_form_compassion.form.widget.terms",
-                "partner_birthdate": "cms.form.widget.date.ch",
+                "partner_birthdate_date": "cms.form.widget.date.ch",
             }
         )
         return res

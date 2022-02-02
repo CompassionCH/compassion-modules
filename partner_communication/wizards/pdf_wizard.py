@@ -42,7 +42,7 @@ class PdfPreviewWizard(models.TransientModel):
             return
         comm = self.communication_id
         report = comm.report_id.with_context(
-            lang=comm.partner_id.lang, must_skip_send_to_printer=True
+            lang=comm.partner_id.lang, must_skip_send_to_printer=True, bin_size=False
         )
         data = report.render_qweb_pdf(comm.ids)
         with Image(blob=data[0]) as pdf_image:

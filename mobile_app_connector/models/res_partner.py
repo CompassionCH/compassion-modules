@@ -17,6 +17,7 @@ class GetPartnerMessage(models.Model):
     app_displayed_sponsorships = fields.Selection(
         [
             ("all", _("All (partner is the correspondent and/or the payer)")),
+            ("all_info", _("All + correspondence info shown to payer only.")),
             (
                 "correspondent",
                 _("Correspondent (Children the partner correspond with)"),
@@ -45,6 +46,13 @@ class GetPartnerMessage(models.Model):
             partner_id.app_messages = app_messages
 
         return partners
+
+    @api.multi
+    def write(self, vals):
+        res = super().write(vals)
+        if vals.get("app_displayed_sponsorships"):
+            self.mapped("app_messages").write({"force_refresh": True})
+        return res
 
     @api.model
     def mobile_get_all_correspondence(self, **other_params):
