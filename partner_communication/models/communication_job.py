@@ -284,7 +284,7 @@ class CommunicationJob(models.Model):
                     job.send()
             return job
         except Exception:
-            logger.error("Couldn't create this communication :", self, vals)
+            logger.warning("Couldn't create this communication :", self, vals)
             return None
 
 
@@ -776,7 +776,7 @@ class CommunicationJob(models.Model):
                 with self.env.cr.savepoint():
                     email.send()
             except Exception:
-                logger.error("Couldn't send this email : ", self)
+                logger.warning("Couldn't send this email : ", self)
                 return "failure"
 
             # Subscribe author to thread, so that the reply
