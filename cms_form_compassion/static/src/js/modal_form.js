@@ -149,5 +149,20 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
             $(button).find('span.o_loader').remove();
         },
     });
+
+    $(function () {
+        // TODO This was taken from payment/payment_form.js module, but apparently there could be a better way
+        // of loading the widget into the view. We can see how this one will evolve maybe.
+        if (!$('.cms_modal_form').length) {
+            console.log("DOM doesn't contain '.cms_modal_form'");
+            return;
+        }
+        $('.cms_modal_form').each(function () {
+            var $elem = $(this);
+            var form = new ModalForm(null, $elem.data());
+            form.attachTo($elem);
+        });
+    });
+
     return ModalForm;
 });
