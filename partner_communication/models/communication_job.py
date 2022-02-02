@@ -231,57 +231,62 @@ class CommunicationJob(models.Model):
         """
         # Object ids accept lists, integer or string values. It should contain
         # a comma separated list of integers
-        object_ids = vals.get("object_ids")
-        if isinstance(object_ids, list):
-            vals["object_ids"] = ",".join(map(str, object_ids))
-        elif object_ids:
-            vals["object_ids"] = str(object_ids)
-        else:
-            vals["object_ids"] = str(vals["partner_id"])
+        try:
+            with self.env.cr.savepoint():
+                object_ids = vals.get("object_ids")
+                if isinstance(object_ids, list):
+                    vals["object_ids"] = ",".join(map(str, object_ids))
+                elif object_ids:
+                    vals["object_ids"] = str(object_ids)
+                else:
+                    vals["object_ids"] = str(vals["partner_id"])
 
-        same_job_search = [
-            ("partner_id", "=", vals.get("partner_id")),
-            ("config_id", "=", vals.get("config_id")),
-            ("config_id", "!=", self.env.ref(
-                "partner_communication.default_communication").id),
-            ("state", "in", ["pending", "failure"]),
-        ] + self.env.context.get("same_job_search", [])
-        job = self.search(same_job_search, limit=1)
-        if job:
-            job.object_ids = job.object_ids + "," + vals["object_ids"]
-            job.refresh_text()
+                same_job_search = [
+                    ("partner_id", "=", vals.get("partner_id")),
+                    ("config_id", "=", vals.get("config_id")),
+                    ("config_id", "!=", self.env.ref(
+                        "partner_communication.default_communication").id),
+                    ("state", "in", ["pending", "failure"]),
+                ] + self.env.context.get("same_job_search", [])
+                job = self.search(same_job_search, limit=1)
+                if job:
+                    job.object_ids = job.object_ids + "," + vals["object_ids"]
+                    job.refresh_text()
+                    return job
+
+                self._get_default_vals(vals)
+                job = super().create(vals)
+
+                # Determine send mode
+                send_mode = job.config_id.get_inform_mode(job.partner_id)
+
+                if "send_mode" not in vals and "default_send_mode" not in self.env.context:
+                    job.send_mode = send_mode[0]
+                if "auto_send" not in vals and "default_auto_send" not in self.env.context:
+                    job.auto_send = send_mode[1]
+
+                if not job.body_html or not strip_tags(job.body_html):
+                    job.refresh_text()
+                else:
+                    job.set_attachments()
+
+                if job.body_html or job.send_mode == "physical":
+                    job.count_pdf_page()
+
+                # Difference between send_mode of partner and send_mode of job
+                if send_mode[0] != job.send_mode:
+                    if "only" in job.partner_id.global_communication_delivery_preference:
+                        # Send_mode chosen by the employee is not compatible with the partner
+                        # So we remove it and an employee must set it manually afterwards
+                        job.send_mode = ""
+
+                if job.auto_send:
+                    job.send()
             return job
+        except Exception:
+            logger.error("Couldn't create this communication :", self, vals)
+            return None
 
-        self._get_default_vals(vals)
-        job = super().create(vals)
-
-        # Determine send mode
-        send_mode = job.config_id.get_inform_mode(job.partner_id)
-
-        if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-            job.send_mode = send_mode[0]
-        if "auto_send" not in vals and "default_auto_send" not in self.env.context:
-            job.auto_send = send_mode[1]
-
-        if not job.body_html or not strip_tags(job.body_html):
-            job.refresh_text()
-        else:
-            job.set_attachments()
-
-        if job.body_html or job.send_mode == "physical":
-            job.count_pdf_page()
-
-        # Difference between send_mode of partner and send_mode of job
-        if send_mode[0] != job.send_mode:
-            if "only" in job.partner_id.global_communication_delivery_preference:
-                # Send_mode chosen by the employee is not compatible with the partner
-                # So we remove it and an employee must set it manually afterwards
-                job.send_mode = ""
-
-        if job.auto_send:
-            job.send()
-
-        return job
 
     @api.multi
     def copy(self, vals=None):
@@ -766,7 +771,14 @@ class CommunicationJob(models.Model):
                 .with_context(lang=partner.lang) \
                 .create_emails(self.email_template_id, [self.id], email_vals)
             self.email_id = email
-            email.send(auto_commit=True)  # Commit emails to avoid sending twice
+
+            try:
+                with self.env.cr.savepoint():
+                    email.send()
+            except Exception:
+                logger.error("Couldn't send this email : ", self)
+                return "failure"
+
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)
