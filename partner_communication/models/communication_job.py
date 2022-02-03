@@ -13,6 +13,7 @@ from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
 
+from jinja2 import TemplateSyntaxError
 from reportlab.lib.colors import white
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
@@ -174,7 +175,8 @@ class CommunicationJob(models.Model):
                         pdf_str = report.render_qweb_pdf(record.ids)
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
-                    except (UserError, PdfReadError, QWebException):
+                    except (UserError, PdfReadError, QWebException,
+                            TemplateSyntaxError):
                         self.env.clear()
                         record.pdf_page_count = 0
 
@@ -254,6 +256,8 @@ class CommunicationJob(models.Model):
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
             job.refresh_text()
+            if job.auto_send:
+                job.send()
             return job
 
         self._get_default_vals(vals)
@@ -464,12 +468,13 @@ class CommunicationJob(models.Model):
                             .with_context(lang=lang)
                             .get_generated_fields(job.email_template_id, [job.id])
                     )
+                    assert fields["body_html"] and fields["subject"]
                     job.write({
                         "body_html": fields["body_html"],
                         "subject": fields["subject"],
                         "state": job.state if job.state != "failure" else "pending"
                     })
-                except UserError:
+                except (UserError, QWebException, TemplateSyntaxError, AssertionError):
                     logger.error("Failed to generate communication", exc_info=True)
                     job.env.clear()
                     if job.state == "pending":
@@ -774,8 +779,9 @@ class CommunicationJob(models.Model):
             try:
                 with self.env.cr.savepoint():
                     email.send()
-            except Exception:
-                logger.error("Error while sending communication by email to %s ", partner.email, exc_info=True)
+            except:
+                logger.error("Error while sending communication by email to %s ",
+                             partner.email, exc_info=True)
                 return "failure"
 
             # Subscribe author to thread, so that the reply
