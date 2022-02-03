@@ -775,7 +775,7 @@ class CommunicationJob(models.Model):
                 with self.env.cr.savepoint():
                     email.send()
             except Exception:
-                logger.warning("Couldn't send this email : ", self)
+                logger.error("Error while sending communication by email to %s ", partner.email, exc_info=True)
                 return "failure"
 
             # Subscribe author to thread, so that the reply
