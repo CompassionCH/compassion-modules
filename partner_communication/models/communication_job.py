@@ -18,13 +18,13 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 
 from odoo import api, models, fields, _, tools
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, QWebException
 
 logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
 try:
-    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileWriter, PdfFileReader, PdfReadError
 except ImportError:
     logger.warning(
         "Please install PyPDF2 for generating OMR codes in "
@@ -167,12 +167,15 @@ class CommunicationJob(models.Model):
         if not skip_count:
             for record in self.filtered("report_id"):
                 if record.send_mode == "physical":
-                    report = record.report_id.with_context(
-                        lang=record.partner_id.lang, must_skip_send_to_printer=True
-                    )
-                    pdf_str = report.render_qweb_pdf(record.ids)
-                    pdf = PdfFileReader(BytesIO(pdf_str[0]))
-                    record.pdf_page_count = pdf.getNumPages()
+                    try:
+                        report = record.report_id.with_context(
+                            lang=record.partner_id.lang, must_skip_send_to_printer=True
+                        )
+                        pdf_str = report.render_qweb_pdf(record.ids)
+                        pdf = PdfFileReader(BytesIO(pdf_str[0]))
+                        record.pdf_page_count = pdf.getNumPages()
+                    except (UserError, PdfReadError, QWebException):
+                        pass
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env["partner.communication.attachment"]
@@ -231,61 +234,56 @@ class CommunicationJob(models.Model):
         """
         # Object ids accept lists, integer or string values. It should contain
         # a comma separated list of integers
-        try:
-            with self.env.cr.savepoint():
-                object_ids = vals.get("object_ids")
-                if isinstance(object_ids, list):
-                    vals["object_ids"] = ",".join(map(str, object_ids))
-                elif object_ids:
-                    vals["object_ids"] = str(object_ids)
-                else:
-                    vals["object_ids"] = str(vals["partner_id"])
+        object_ids = vals.get("object_ids")
+        if isinstance(object_ids, list):
+            vals["object_ids"] = ",".join(map(str, object_ids))
+        elif object_ids:
+            vals["object_ids"] = str(object_ids)
+        else:
+            vals["object_ids"] = str(vals["partner_id"])
 
-                same_job_search = [
-                    ("partner_id", "=", vals.get("partner_id")),
-                    ("config_id", "=", vals.get("config_id")),
-                    ("config_id", "!=", self.env.ref(
-                        "partner_communication.default_communication").id),
-                    ("state", "in", ["pending", "failure"]),
-                ] + self.env.context.get("same_job_search", [])
-                job = self.search(same_job_search, limit=1)
-                if job:
-                    job.object_ids = job.object_ids + "," + vals["object_ids"]
-                    job.refresh_text()
-                    return job
-
-                self._get_default_vals(vals)
-                job = super().create(vals)
-
-                # Determine send mode
-                send_mode = job.config_id.get_inform_mode(job.partner_id)
-
-                if "send_mode" not in vals and "default_send_mode" not in self.env.context:
-                    job.send_mode = send_mode[0]
-                if "auto_send" not in vals and "default_auto_send" not in self.env.context:
-                    job.auto_send = send_mode[1]
-
-                if not job.body_html or not strip_tags(job.body_html):
-                    job.refresh_text()
-                else:
-                    job.set_attachments()
-
-                if job.body_html or job.send_mode == "physical":
-                    job.count_pdf_page()
-
-                # Difference between send_mode of partner and send_mode of job
-                if send_mode[0] != job.send_mode:
-                    if "only" in job.partner_id.global_communication_delivery_preference:
-                        # Send_mode chosen by the employee is not compatible with the partner
-                        # So we remove it and an employee must set it manually afterwards
-                        job.send_mode = ""
-
-                if job.auto_send:
-                    job.send()
+        same_job_search = [
+            ("partner_id", "=", vals.get("partner_id")),
+            ("config_id", "=", vals.get("config_id")),
+            ("config_id", "!=", self.env.ref(
+                "partner_communication.default_communication").id),
+            ("state", "in", ["pending", "failure"]),
+        ] + self.env.context.get("same_job_search", [])
+        job = self.search(same_job_search, limit=1)
+        if job:
+            job.object_ids = job.object_ids + "," + vals["object_ids"]
+            job.refresh_text()
             return job
-        except Exception:
-            logger.warning("Couldn't create this communication :", self, vals)
-            return None
+
+        self._get_default_vals(vals)
+        job = super().create(vals)
+
+        # Determine send mode
+        send_mode = job.config_id.get_inform_mode(job.partner_id)
+
+        if "send_mode" not in vals and "default_send_mode" not in self.env.context:
+            job.send_mode = send_mode[0]
+        if "auto_send" not in vals and "default_auto_send" not in self.env.context:
+            job.auto_send = send_mode[1]
+
+        if not job.body_html or not strip_tags(job.body_html):
+            job.refresh_text()
+        else:
+            job.set_attachments()
+
+        if job.body_html or job.send_mode == "physical":
+            job.count_pdf_page()
+
+        # Difference between send_mode of partner and send_mode of job
+        if send_mode[0] != job.send_mode:
+            if "only" in job.partner_id.global_communication_delivery_preference:
+                # Send_mode chosen by the employee is not compatible with the partner
+                # So we remove it and an employee must set it manually afterwards
+                job.send_mode = ""
+
+        if job.auto_send:
+            job.send()
+        return job
 
 
     @api.multi
