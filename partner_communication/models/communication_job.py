@@ -175,7 +175,8 @@ class CommunicationJob(models.Model):
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
                     except (UserError, PdfReadError, QWebException):
-                        pass
+                        self.env.clear()
+                        record.pdf_page_count = 0
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env["partner.communication.attachment"]
