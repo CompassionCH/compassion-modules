@@ -5,20 +5,6 @@
         <field name="layout">CH-A-1S11-1</field>
         <field name="page_width">2480</field>
         <field name="page_height">3508</field>
-
-        <!-- Pattern-->
-        <field name="pattern_image" type="base64"
-               file="sbc_compassion/static/img/PatternPostman"/>
-
-        <field name="pattern_x_min">0</field>
-        <field name="pattern_x_max">590</field>
-        <field name="pattern_y_min">3120</field>
-        <field name="pattern_y_max">3500</field>
-
-        <field name="qrcode_x_min">0</field>
-        <field name="qrcode_x_max">1041</field>
-        <field name="qrcode_y_min">0</field>
-        <field name="qrcode_y_max">1052</field>
     </record>
 
     <!-- Template pages -->
@@ -52,56 +38,11 @@
     </record>
 
     <!-- Template Dove *************************************************** -->
-    <record id="dove_checkbox_fr" model="correspondence.lang.checkbox">
-        <field name="language_id" ref="child_compassion.lang_compassion_french"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">60</field>
-        <field name="y_max">150</field>
-    </record>
-    <record id="dove_checkbox_en" model="correspondence.lang.checkbox">
-        <field name="language_id" ref="child_compassion.lang_compassion_english"/>
-        <field name="x_min">1540</field>
-        <field name="x_max">1680</field>
-        <field name="y_min">60</field>
-        <field name="y_max">150</field>
-    </record>
-    <record id="dove_checkbox_es" model="correspondence.lang.checkbox">
-        <field name="language_id" ref="child_compassion.lang_compassion_spanish"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">190</field>
-        <field name="y_max">300</field>
-    </record>
-    <record id="dove_checkbox_po" model="correspondence.lang.checkbox">
-        <field name="language_id" ref="child_compassion.lang_compassion_portuguese"/>
-        <field name="x_min">920</field>
-        <field name="x_max">1050</field>
-        <field name="y_min">310</field>
-        <field name="y_max">420</field>
-    </record>
-
     <record id="template_dove" model="correspondence.template">
         <field name="name">Dove</field>
         <field name="layout">CH-A-1S11-1</field>
         <field name="page_width">2480</field>
         <field name="page_height">3508</field>
-
-        <!-- Pattern-->
-        <field name="pattern_image" type="base64"
-               file="sbc_compassion/static/img/DovePattern"/>
-
-        <field name="pattern_x_min">1260</field>
-        <field name="pattern_x_max">1815</field>
-        <field name="pattern_y_min">2520</field>
-        <field name="pattern_y_max">3020</field>
-
-        <field name="qrcode_x_min">0</field>
-        <field name="qrcode_x_max">1041</field>
-        <field name="qrcode_y_min">0</field>
-        <field name="qrcode_y_max">1052</field>
-
-        <field name="checkbox_ids" eval="[(4, ref('dove_checkbox_fr')), (4, ref('dove_checkbox_en')), (4, ref('dove_checkbox_es')), (4, ref('dove_checkbox_po'))]"/>
     </record>
 
     <!-- Template pages -->

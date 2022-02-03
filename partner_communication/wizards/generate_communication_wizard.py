@@ -45,7 +45,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         domain=[("model", "=", "res.partner")],
         readonly=False,
     )
-    send_mode = fields.Selection("_send_mode_select", default="physical")
+    send_mode = fields.Selection("_send_mode_select")
     customize_template = fields.Boolean()
     subject = fields.Char()
     body_html = fields.Text()
@@ -149,9 +149,6 @@ class GenerateCommunicationWizard(models.TransientModel):
             self.report_id = self.model_id.report_id
             self.body_html = self.model_id.email_template_id.body_html
             self.subject = self.model_id.email_template_id.subject
-            send_mode = self.model_id.send_mode.replace("auto_", "")
-            if send_mode in [m[0] for m in self._send_mode_select()]:
-                self.send_mode = send_mode
 
     @api.multi
     def get_preview(self):
@@ -239,10 +236,13 @@ class GenerateCommunicationWizard(models.TransientModel):
                 "partner_id": partner.id,
                 "object_ids": partner.id,
                 "config_id": model.id,
-                "auto_send": False,
-                "send_mode": self.send_mode,
                 "report_id": self.report_id.id or model.report_id.id,
             }
+            if self.send_mode:
+                vals.update({
+                    "send_mode": self.send_mode,
+                    "auto_send": False
+                })
             if async_mode:
                 self.with_delay().create_communication(vals)
             else:
