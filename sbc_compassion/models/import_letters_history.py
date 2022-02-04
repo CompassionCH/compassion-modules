@@ -213,15 +213,25 @@ class ImportLettersHistory(models.Model):
             logger.error(f"Couldn't import file {file_name} : \n{traceback.format_exc()}")
             return
 
-        partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
-        child = self.env["compassion.child"].search(["|", ("code", "=", child_code), ("local_id", "=", child_code)], limit=1)
+        partner = self.env["res.partner"].search([("ref", "=", partner_code)])
+
+        # since the child code and local_id accept NULL
+        # this ensure that even if the child_code is None we don't retrieve
+        # one for those
+        child = self.env["compassion.child"]
+        if child_code:
+            child = child.search(["|", ("code", "=", child_code), ("local_id", "=", child_code)])
+
+        assert len(partner) <= 1 and len(child) <= 1
+
+        letter_image = base64.b64encode(pdf_data)
 
         data = {
             "import_id": self.id,
             "partner_id": partner.id,
             "child_id": child.id,
             "letter_image_preview": preview,
-            "letter_image": pdf_data,
+            "letter_image": letter_image,
             "file_name": file_name,
             "template_id": self.template_id.id,
         }
