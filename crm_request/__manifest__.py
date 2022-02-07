@@ -9,7 +9,7 @@
     "category": "CRM",
     "version": "12.0.1.1.1",
     # Python dependencies
-    "external_dependencies": {"python": ["detectlanguage", "pandas"]},
+    "external_dependencies": {"python": ["pandas"]},
     # any module necessary for this one to work correctly
     "depends": [
         "crm_claim_code",  # oca_addons/crm

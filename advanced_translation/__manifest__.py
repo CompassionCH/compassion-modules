@@ -36,10 +36,11 @@
     "website": "http://www.compassion.ch",
     "development_status": "Stable",
     "depends": ["base"],
-    "external_dependencies": {"python": ["babel", ]},
+    "external_dependencies": {"python": ["babel", "pytesseract", "iso639", "langdetect"]},
     "data": [
         "security/ir.model.access.csv",
         "views/advanced_translation_view.xml",
+        "data/res.lang.compassion.csv",
         "data/ir.advanced.translation.csv",
     ],
     "demo": ["demo/ir.advanced.translation.csv"],

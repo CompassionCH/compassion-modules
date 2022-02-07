@@ -7,14 +7,9 @@ from dateutil import parser
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, exceptions, _
-from odoo.tools import config
 from odoo.tools import html_sanitize
 
 _logger = logging.getLogger(__name__)
-try:
-    import detectlanguage
-except ImportError:
-    _logger.warning("Please install detectlanguage")
 
 
 class CrmClaim(models.Model):
@@ -212,7 +207,7 @@ class CrmClaim(models.Model):
         request_id = super().message_new(msg, defaults)
         request = self.browse(request_id.id)
         if not request.language:
-            request.language = self.detect_lang(request.description).lang_id.code
+            request.language = self.env["langdetect"].detect_language(request.description).lang_id.code
 
         # # send automated holiday response
         try:
@@ -319,34 +314,6 @@ class CrmClaim(models.Model):
                     lambda m: m.email_from == request.email_origin
                 ).write({"author_id": values["partner_id"]})
         return True
-
-    @api.model
-    def detect_lang(self, text):
-        """
-        Use detectlanguage API to find the language of the given text
-        :param text: text to detect
-        :return: res.lang compassion record if the language is found, or False
-        """
-        detectlanguage.configuration.api_key = config.get("detect_language_api_key")
-        language_name = False
-        langs = detectlanguage.languages()
-        try:
-            code_lang = detectlanguage.simple_detect(text)
-        except (IndexError, detectlanguage.DetectLanguageError):
-            # Language could not be detected TODO CO-3737 move res.lang.compassion
-            return self.env["res.lang.compassion"]
-        for lang in langs:
-            if lang.get("code") == code_lang:
-                language_name = lang.get("name")
-                break
-        if not language_name:
-            return self.env["res.lang.compassion"]
-
-        return (
-            self.env["res.lang.compassion"]
-                .with_context({"lang": "en_US"})
-                .search([("name", "=ilike", language_name)], limit=1)
-        )
 
     @api.multi
     def send_holiday_answer(self):

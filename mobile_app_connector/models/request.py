@@ -73,7 +73,7 @@ class CrmClaim(models.Model):
                 "partner_id": partner.id,
                 "stage_id": self.sudo().env.ref("crm_claim.stage_claim1").id,
                 "user_id": False,
-                "language": self.sudo().detect_lang(question).lang_id.code,
+                "language": self.env["langdetect"].sudo().detect_language(question).lang_id.code,
             }
         )
         claim.message_post(

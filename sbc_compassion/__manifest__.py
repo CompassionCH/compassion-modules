@@ -35,7 +35,9 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
-    "depends": ["sponsorship_compassion"],
+    "depends": [
+        "sponsorship_compassion",
+    ],
     "external_dependencies": {
         "python": [
             "magic",
