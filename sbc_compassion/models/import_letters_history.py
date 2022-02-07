@@ -248,34 +248,37 @@ class ImportLettersHistory(models.Model):
 
     def _analyze_pdf(self, pdf_data, file_name):
         try:
+            data = {
+                "import_id": self.id,
+                "file_name": file_name,
+                "letter_image": base64.b64encode(pdf_data),
+                "template_id": self.template_id.id,
+            }
+
             image = self.pdf_to_image(pdf_data)
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
             letter_text_image = self.crop_letter_text(image)
             letter_text_str = self.env["ocr"].image_to_string(letter_text_image)
-            letter_text_language = self.env["langdetect"].detect_language(letter_text_str)
-            preview = self.create_preview(image)
+            data["letter_language_id"] = self.env["langdetect"].detect_language(letter_text_str).id
+            data["letter_image_preview"] = self.create_preview(image)
 
-            logger.debug(letter_text_str)
-            logger.debug(letter_text_language)
+            partner = self.env["res.partner"].search([("ref", "=", partner_code)])
+
+            # since the child code and local_id accept NULL
+            # this ensure that even if the child_code is None we don't retrieve
+            # one for those
+            child = self.env["compassion.child"]
+            if child_code:
+                child = child.search(["|", ("code", "=", child_code), ("local_id", "=", child_code)])
+
+            data["partner_id"] = partner.id
+            data["child_id"] = child.id
+
+            self.env["import.letter.line"].create(data)
+            # this commit is really important
+            # it avoid having to keep the "data"s in memory until the whole process is finished
+            # each time a letter is scanned, it is also inserted in the DB
+            self._cr.commit()
         except Exception as e:
             logger.error(f"Couldn't import file {file_name} : \n{traceback.format_exc()}")
             return
-
-        partner = self.env["res.partner"].search([("ref", "=", partner_code)], limit=1)
-        child = self.env["compassion.child"].search(["|", ("code", "=", child_code), ("local_id", "=", child_code)], limit=1)
-
-        data = {
-            "import_id": self.id,
-            "partner_id": partner.id,
-            "child_id": child.id,
-            "file_name": file_name,
-            "template_id": self.template_id.id,
-            "letter_image": pdf_data,
-            "letter_language_id": letter_text_language.id,
-            "letter_image_preview": preview,
-        }
-        self.env["import.letter.line"].create(data)
-        # this commit is really important
-        # it avoid having to keep the "data"s in memory until the whole process is finished
-        # each time a letter is scanned, it is also inserted in the DB
-        self._cr.commit()
