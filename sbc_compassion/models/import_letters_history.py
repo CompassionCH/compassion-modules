@@ -13,7 +13,11 @@ between the database and the mail.
 """
 import base64
 import logging
+import io
 import traceback
+
+import fitz
+from PIL import Image
 
 from odoo.addons.queue_job.job import job, related_action
 
@@ -206,9 +210,53 @@ class ImportLettersHistory(models.Model):
         self.data.unlink()
         self.import_completed = True
 
+    def pdf_to_image(self, pdf_data):
+        pdf = fitz.Document("pdf", pdf_data)
+        page0 = next(pdf.pages())
+        image = self.convert_pdf_page_to_image(page0)
+        return image
+
+    @staticmethod
+    def convert_pdf_page_to_image(page):
+        mat = fitz.Matrix(4.5, 4.5)
+        pix = page.get_pixmap(matrix=mat, alpha=0)
+        mode = "RGBA" if pix.alpha else "RGB"
+        size = [pix.width, pix.height]
+        image = Image.frombytes(mode, size, pix.samples)
+        return image
+
+    @staticmethod
+    def create_preview(image):
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG")
+        preview_b64 = base64.b64encode(buffer.getvalue())
+        return preview_b64
+
+    @staticmethod
+    def crop_letter_text(img):
+        """Crop image to obtain text area for standard templates
+        """
+        box = [
+            0.03 * img.width,
+            0.15 * img.height,
+            (1 - 0.03) * img.width,
+            0.5 * img.height
+        ]
+        box = tuple([int(i) for i in box])
+        img = img.crop(box)
+        return img
+
     def _analyze_pdf(self, pdf_data, file_name):
         try:
-            partner_code, child_code, preview = read_barcode.letter_barcode_detection_pipeline(pdf_data)
+            image = self.pdf_to_image(pdf_data)
+            partner_code, child_code = read_barcode.letter_barcode_detection(image)
+            letter_text_image = self.crop_letter_text(image)
+            letter_text_str = self.env["ocr"].image_to_string(letter_text_image)
+            letter_text_language = self.env["langdetect"].detect_language(letter_text_str)
+            preview = self.create_preview(image)
+
+            logger.debug(letter_text_str)
+            logger.debug(letter_text_language)
         except Exception as e:
             logger.error(f"Couldn't import file {file_name} : \n{traceback.format_exc()}")
             return
@@ -220,10 +268,11 @@ class ImportLettersHistory(models.Model):
             "import_id": self.id,
             "partner_id": partner.id,
             "child_id": child.id,
-            "letter_image_preview": preview,
-            "letter_image": pdf_data,
             "file_name": file_name,
             "template_id": self.template_id.id,
+            "letter_image": pdf_data,
+            "letter_language_id": letter_text_language.id,
+            "letter_image_preview": preview,
         }
         self.env["import.letter.line"].create(data)
         # this commit is really important

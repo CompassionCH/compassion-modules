@@ -27,3 +27,4 @@ boxdetect
 pandas-datareader
 pytesseract
 langdetect
+iso639-lang

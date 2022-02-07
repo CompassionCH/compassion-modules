@@ -25,7 +25,9 @@ class OSD(models.AbstractModel):
         # filter languages below the threshold or that are not looked for
         languages = [lang for lang in languages if lang.prob >= threshold and lang.lang in self.languages_langdetect]
 
+        language = self.env["res.lang.compassion"]
         if len(languages) <= 0:
-            return None
+            return language
 
-        return languages[0].lang
+        language = language.search_iso639(languages[0].lang)
+        return language

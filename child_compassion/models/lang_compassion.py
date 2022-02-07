@@ -8,6 +8,7 @@
 #
 ##############################################################################
 
+from iso639 import Lang
 from odoo import fields, models
 
 
@@ -27,3 +28,7 @@ class ResLang(models.Model):
     code_iso = fields.Char(size=128)
     lang_id = fields.Many2one("res.lang", readonly=False)
     translatable = fields.Boolean(help="Can be translated by GP")
+
+    def search_iso639(self, iso_str):
+        iso_lang = Lang(iso_str)
+        return self.search([("code_iso", "ilike", iso_lang.pt3)], limit=1)
