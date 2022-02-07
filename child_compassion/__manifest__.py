@@ -76,7 +76,6 @@
         "data/compassion.field.office.csv",
         "data/field.office.learning.csv",
         "data/global_partner.xml",
-        "data/res.lang.compassion.csv",
         "data/fcp.involvement.csv",
         "data/fcp.church.ministry.csv",
         "data/fcp.program.csv",
