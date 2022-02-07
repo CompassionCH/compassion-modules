@@ -20,6 +20,8 @@ addons:
       - tesseract-ocr-fra
       - tesseract-ocr-deu
       - tesseract-ocr-ita
+      - tesseract-ocr-spa
+      - tesseract-ocr-por
       - tesseract-ocr-osd # for script
 env:
   global:
