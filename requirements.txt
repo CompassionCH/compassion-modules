@@ -14,7 +14,6 @@ odoo-sphinx-autodoc
 regex
 bs4
 firebase_admin
-detectlanguage
 python-magic
 pyzbar
 matplotlib
@@ -25,3 +24,6 @@ git+https://github.com/mstamy2/PyPDF2@master
 PyMuPDF>=1.19.3
 boxdetect
 pandas-datareader
+pytesseract
+langdetect
+iso639-lang

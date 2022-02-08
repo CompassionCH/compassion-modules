@@ -19,7 +19,6 @@
         "cms_form_compassion",  # compassion-modules
         "base_phone",  # OCA/connector_telephony
         "stock",  # source/addons
-        "payment_ogone",  # source/addons
     ],
     "data": [
         "security/ir.model.access.csv",

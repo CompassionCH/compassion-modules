@@ -247,7 +247,7 @@ class CompassionChild(models.Model):
         ],
         readonly=True,
     )
-    not_enrolled_reason = fields.Char(readonly=True)
+    not_enrolled_reason = fields.Char(readonly=True, translate=True)
 
     # Spiritual information
     #######################
