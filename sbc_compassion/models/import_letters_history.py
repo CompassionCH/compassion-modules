@@ -262,14 +262,15 @@ class ImportLettersHistory(models.Model):
             data["letter_language_id"] = self.env["langdetect"].detect_language(letter_text_str).id
             data["letter_image_preview"] = self.create_preview(image)
 
-            partner = self.env["res.partner"].search([("ref", "=", partner_code)])
+            partner = self.env["res.partner"].search([
+                ("ref", "=", partner_code), ("has_sponsorships", "=", True)])
 
             # since the child code and local_id accept NULL
             # this ensure that even if the child_code is None we don't retrieve
             # one for those
             child = self.env["compassion.child"]
             if child_code:
-                child = child.search(["|", ("code", "=", child_code), ("local_id", "=", child_code)])
+                child = child.search([("local_id", "=", child_code)], limit=1)
 
             data["partner_id"] = partner.id
             data["child_id"] = child.id
