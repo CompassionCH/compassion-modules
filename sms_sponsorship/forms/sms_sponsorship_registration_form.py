@@ -22,7 +22,6 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
     _form_model = "recurring.contract"
     _form_model_fields = ["partner_id", "payment_mode_id"]
     _form_required_fields = ("partner_id", "payment_mode_id", "gtc_accept")
-    _display_type = "full"
 
     origin_text = fields.Char("I have heard of Compassion through")
 
@@ -38,14 +37,9 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
     gtc_accept = fields.Boolean("Terms and conditions", required=True)
 
     @property
-    def _payment_success_redirect(self):
+    def _payment_redirect(self):
         return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
-               "/confirm?payment=success"
-
-    @property
-    def _payment_error_redirect(self):
-        return "/sms_sponsorship/step2/" + str(self.main_object.id) + \
-               "/confirm?payment=error"
+               "/confirm"
 
     @property
     def form_title(self):
@@ -145,7 +139,7 @@ class PartnerSmsRegistrationForm(models.AbstractModel):
         if self.pay_first_month_ebanking:
             return super().form_next_url(main_object)
         else:
-            return self._payment_success_redirect
+            return self._payment_redirect
 
     def _edit_transaction_values(self, tx_values, form_vals):
         """ Add invoice link and change reference. """

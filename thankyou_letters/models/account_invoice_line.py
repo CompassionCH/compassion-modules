@@ -11,6 +11,7 @@
 import logging
 
 from odoo import models, api
+from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ class AccountInvoiceLine(models.Model):
         return total_string, res_name
 
     @api.multi
+    @job
     def generate_thank_you(self):
         """
         Creates a thank you letter communication.
