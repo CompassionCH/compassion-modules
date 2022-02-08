@@ -244,7 +244,6 @@ class RegistrationNotSupporter(models.AbstractModel):
     _inherit = "cms.form.res.users"
 
     _form_model = "res.users"
-    _display_type = "full"
 
     gtc_accept = fields.Boolean("Terms and conditions", required=True)
 
@@ -318,7 +317,6 @@ class RegistrationSupporterForm(models.AbstractModel):
 
     _form_model = "res.users"
     _form_required_fields = ["partner_email", "gtc_accept"]
-    _display_type = "full"
 
     gtc_accept = fields.Boolean("Terms and conditions", required=True)
 

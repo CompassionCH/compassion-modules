@@ -15,6 +15,12 @@ addons:
       - postgresql-9.6-postgis-2.3 # travis doesn't know which one to install
       - postgresql-9.6-postgis-2.3-scripts # pre-installed on travis but required for runbot
       - libzbar0  # for pyzbar to work
+      - tesseract-ocr # used by pytesseract
+      - tesseract-ocr-eng
+      - tesseract-ocr-fra
+      - tesseract-ocr-deu
+      - tesseract-ocr-ita
+      - tesseract-ocr-spa
 env:
   global:
   - VERSION="12.0" TESTS="0" LINT_CHECK="0" TRANSIFEX="0"

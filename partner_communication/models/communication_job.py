@@ -13,18 +13,19 @@ from collections import defaultdict
 from html.parser import HTMLParser
 from io import BytesIO
 
+from jinja2 import TemplateSyntaxError
 from reportlab.lib.colors import white
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
 
 from odoo import api, models, fields, _, tools
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, QWebException
 
 logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
 try:
-    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileWriter, PdfFileReader, PdfReadError
 except ImportError:
     logger.warning(
         "Please install PyPDF2 for generating OMR codes in "
@@ -167,12 +168,17 @@ class CommunicationJob(models.Model):
         if not skip_count:
             for record in self.filtered("report_id"):
                 if record.send_mode == "physical":
-                    report = record.report_id.with_context(
-                        lang=record.partner_id.lang, must_skip_send_to_printer=True
-                    )
-                    pdf_str = report.render_qweb_pdf(record.ids)
-                    pdf = PdfFileReader(BytesIO(pdf_str[0]))
-                    record.pdf_page_count = pdf.getNumPages()
+                    try:
+                        report = record.report_id.with_context(
+                            lang=record.partner_id.lang, must_skip_send_to_printer=True
+                        )
+                        pdf_str = report.render_qweb_pdf(record.ids)
+                        pdf = PdfFileReader(BytesIO(pdf_str[0]))
+                        record.pdf_page_count = pdf.getNumPages()
+                    except (UserError, PdfReadError, QWebException,
+                            TemplateSyntaxError):
+                        self.env.clear()
+                        record.pdf_page_count = 0
 
     def _inverse_ir_attachments(self):
         attach_obj = self.env["partner.communication.attachment"]
@@ -250,6 +256,8 @@ class CommunicationJob(models.Model):
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
             job.refresh_text()
+            if job.auto_send:
+                job.send()
             return job
 
         self._get_default_vals(vals)
@@ -280,8 +288,8 @@ class CommunicationJob(models.Model):
 
         if job.auto_send:
             job.send()
-
         return job
+
 
     @api.multi
     def copy(self, vals=None):
@@ -460,12 +468,13 @@ class CommunicationJob(models.Model):
                             .with_context(lang=lang)
                             .get_generated_fields(job.email_template_id, [job.id])
                     )
+                    assert fields["body_html"] and fields["subject"]
                     job.write({
                         "body_html": fields["body_html"],
                         "subject": fields["subject"],
                         "state": job.state if job.state != "failure" else "pending"
                     })
-                except UserError:
+                except (UserError, QWebException, TemplateSyntaxError, AssertionError):
                     logger.error("Failed to generate communication", exc_info=True)
                     job.env.clear()
                     if job.state == "pending":
@@ -766,7 +775,15 @@ class CommunicationJob(models.Model):
                 .with_context(lang=partner.lang) \
                 .create_emails(self.email_template_id, [self.id], email_vals)
             self.email_id = email
-            email.send(auto_commit=True)  # Commit emails to avoid sending twice
+
+            try:
+                with self.env.cr.savepoint():
+                    email.send()
+            except:
+                logger.error("Error while sending communication by email to %s ",
+                             partner.email, exc_info=True)
+                return "failure"
+
             # Subscribe author to thread, so that the reply
             # notifies the author.
             self.message_subscribe(self.user_id.partner_id.ids)

@@ -45,7 +45,7 @@ class PdfPreviewWizard(models.TransientModel):
             lang=comm.partner_id.lang, must_skip_send_to_printer=True, bin_size=False
         )
         data = report.render_qweb_pdf(comm.ids)
-        with Image(blob=data[0]) as pdf_image:
+        with Image(blob=data[0], resolution=150) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
         self.preview = preview

@@ -9,7 +9,6 @@ from . import child_lifecycle_event
 from . import household
 from . import fcp_property
 from . import fcp_covid_status_update
-from . import lang_compassion
 from . import project_lifecycle_event
 from . import global_partner
 from . import compassion_hold

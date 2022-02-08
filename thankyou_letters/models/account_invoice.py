@@ -129,7 +129,7 @@ class AccountInvoice(models.Model):
             invoice_lines = self.mapped("invoice_line_ids").filtered(
                 lambda l: l.partner_id == partner
             )
-            invoice_lines.generate_thank_you()
+            invoice_lines.with_delay().generate_thank_you()
 
     @api.multi
     def _filter_invoice_to_thank(self):
