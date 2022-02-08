@@ -232,6 +232,11 @@ class ImportLettersHistory(models.Model):
         preview_b64 = base64.b64encode(buffer.getvalue())
         return preview_b64
 
+    @staticmethod
+    def crop(image):
+        # ignore top and bottom part cause they usually contain non interesting text
+        return image.crop((0, image.height * 0.15, image.width, image.height * 0.85))
+
     def _analyze_pdf(self, pdf_data, file_name):
         try:
             letter_image = base64.b64encode(pdf_data)
@@ -244,7 +249,7 @@ class ImportLettersHistory(models.Model):
 
             image = self.pdf_to_image(pdf_data)
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
-            letter_str = self.env["ocr"].image_to_string(image)
+            letter_str, _ = self.env["ocr"].image_to_string(self.crop(image))
             data["letter_language_id"] = self.env["langdetect"].detect_language(letter_str).id
             data["letter_image_preview"] = self.create_preview(image)
 
