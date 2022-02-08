@@ -9,7 +9,7 @@ class OSD(models.AbstractModel):
     _name = "langdetect"
     _description = "Language detection with langdetect"
 
-    default_threshold = 0.85
+    default_threshold = 0.95
     languages_langdetect = ["en", "de", "fr", "it", "pt", "es"]
 
     def detect_language(self, text, threshold=None):

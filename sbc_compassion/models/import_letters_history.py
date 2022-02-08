@@ -232,34 +232,20 @@ class ImportLettersHistory(models.Model):
         preview_b64 = base64.b64encode(buffer.getvalue())
         return preview_b64
 
-    @staticmethod
-    def crop_letter_text(img):
-        """Crop image to obtain text area for standard templates
-        """
-        box = [
-            0.03 * img.width,
-            0.15 * img.height,
-            (1 - 0.03) * img.width,
-            0.5 * img.height
-        ]
-        box = tuple([int(i) for i in box])
-        img = img.crop(box)
-        return img
-
     def _analyze_pdf(self, pdf_data, file_name):
         try:
+            letter_image = base64.b64encode(pdf_data)
             data = {
                 "import_id": self.id,
                 "file_name": file_name,
-                "letter_image": base64.b64encode(pdf_data),
+                "letter_image": letter_image,
                 "template_id": self.template_id.id,
             }
 
             image = self.pdf_to_image(pdf_data)
             partner_code, child_code = read_barcode.letter_barcode_detection(image)
-            letter_text_image = self.crop_letter_text(image)
-            letter_text_str = self.env["ocr"].image_to_string(letter_text_image)
-            data["letter_language_id"] = self.env["langdetect"].detect_language(letter_text_str).id
+            letter_str = self.env["ocr"].image_to_string(image)
+            data["letter_language_id"] = self.env["langdetect"].detect_language(letter_str).id
             data["letter_image_preview"] = self.create_preview(image)
 
             partner = self.env["res.partner"].search([("ref", "=", partner_code)])
