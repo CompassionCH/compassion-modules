@@ -19,12 +19,12 @@
 
             <!-- Add correspondant field for sponsorships -->
             <field name="partner_id" position="after">
-                <field name="correspondent_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC'])], 'required': [('type', 'in', ['S', 'SC'])]}"/>
+                <field name="correspondent_id" options="{'create': false, 'm2o_dialog': false}" attrs="{'invisible':[('type', 'not in', ['S','SC','SWP'])], 'required': [('type', 'in', ['S', 'SC','SWP'])]}"/>
                 <field name="send_gifts_to"/>
             </field>
 
             <field name="medium_id" position="attributes">
-                <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
+                <attribute name="attrs">{'required':[('type', 'in', ['S','SC','SWP'])]}</attribute>
             </field>
             <field name="medium_id" position="before">
                 <field name="child_id" domain="[('state', 'in', ('N', 'I'))]" options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
@@ -32,12 +32,12 @@
             </field>
             <!-- Make origin and medium mandatory for sponsorships -->
             <field name="origin_id" position="attributes">
-                <attribute name="attrs">{'required':[('type', 'in', ['S','SC'])]}</attribute>
+                <attribute name="attrs">{'required':[('type', 'in', ['S','SC','SWP'])]}</attribute>
             </field>
 
             <!-- Field child_id is not available for general contracts -->
             <xpath expr="//field[@name='child_id']" position="attributes">
-                <attribute name="attrs">{'readonly': ['|', ('type', 'not in', ['S','SC']), ('state', 'in', ['active', 'terminated', 'cancelled'])], 'required': [('type', 'in', ['S','SC'])]}</attribute>
+                <attribute name="attrs">{'readonly': ['|', ('type', 'not in', ['S','SC','SWP']), ('state', 'in', ['active', 'terminated', 'cancelled'])], 'required': [('type', 'in', ['S','SC','SWP'])]}</attribute>
             </xpath>
 
             <!-- Add context in contract lines -->
@@ -48,7 +48,7 @@
             <!-- Automatic birthday invoice -->
             <field name="next_invoice_date" position="after">
                 <field name="birthday_invoice"
-                       attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC'])]}"/>
+                       attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC','SWP'])]}"/>
             </field>
 
             <!-- Add context for group view -->
@@ -57,7 +57,7 @@
             </field>
             <field name="group_id" position="after">
                 <field name="parent_id" domain="[('correspondent_id', '=', correspondent_id), ('id', '!=', active_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
-                                   context="{'default_type':'S'}" attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"/>
+                                   context="{'default_type':'S'}" attrs="{'invisible': [('type', 'not in', ['S', 'SC','SWP'])]}"/>
                 <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
             </field>
 
