@@ -640,7 +640,7 @@ class CompassionIntervention(models.Model):
     def show_partner(self):
         contracts = self.env["recurring.contract"].search(
             [
-                ("type", "not in", ["S", "SC"]),
+                ("type", "not in", ["S", "SC", "SWP"]),
                 (
                     "contract_line_ids.product_id.product_tmpl_id",
                     "=",

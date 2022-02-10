@@ -43,7 +43,7 @@ class ContractGroup(models.Model):
     def _compute_contains_sponsorship(self):
         for group in self:
             group.contains_sponsorship = group.mapped("contract_ids").filtered(
-                lambda s: s.type in ("S", "SC") and s.state not in (
+                lambda s: s.type in ("S", "SC", "SWP") and s.state not in (
                     "terminated", "cancelled")
             )
 

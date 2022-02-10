@@ -202,7 +202,7 @@ class DownloadChildPictures(models.TransientModel):
                     "|",
                     ("correspondent_id", "in", partners.ids),
                     ("partner_id", "in", partners.ids),
-                    ("type", "in", ["S", "SC"]),
+                    ("type", "in", ["S", "SC", "SWP"]),
                     ("state", "!=", "cancelled"),
                 ]
             )
@@ -214,7 +214,7 @@ class DownloadChildPictures(models.TransientModel):
             contracts = self.env["recurring.contract"].search(
                 [
                     ("child_id", "in", childrens.ids),
-                    ("type", "in", ["S", "SC"]),
+                    ("type", "in", ["S", "SC", "SWP"]),
                     ("state", "!=", "cancelled"),
                 ]
             )
