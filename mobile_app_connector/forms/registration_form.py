@@ -32,9 +32,16 @@ class UserRegistrationForm(models.AbstractModel):
     source = fields.Char(help="Source for registration", default="app")
     _wiz_step_stored_fields = ["source"]
 
-    def _form_load_source(self, fname, field, value, **req_values):
-        return self.wiz_load_step(1).get("source") or value or req_values.get(
-            "source") or "app"
+    def _form_load_source(self, fname, _, value, **__):
+        """Check the source in the following order
+        1. The request GET arguments
+        2. The wizard first step (which is carried over by the session)
+        3. The default value
+        """
+        _1 = self.request.args.get(fname)
+        _2 = self.wiz_load_step(1).get(fname)
+        _3 = value
+        return _1 or _2 or _3
 
     def wiz_configure_steps(self):
         return {
