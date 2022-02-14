@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
 
 try:
-    from PyPDF2 import PdfFileWriter, PdfFileReader, PdfReadError
+    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from PyPDF2.utils import PdfReadError
 except ImportError:
     logger.warning(
         "Please install PyPDF2 for generating OMR codes in "
@@ -172,7 +173,7 @@ class CommunicationJob(models.Model):
                         report = record.report_id.with_context(
                             lang=record.partner_id.lang, must_skip_send_to_printer=True
                         )
-                        pdf_str = report.render_qweb_pdf(record.ids)
+                        pdf_str = report.sudo().render_qweb_pdf(record.ids)
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
                     except (UserError, PdfReadError, QWebException,
