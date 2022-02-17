@@ -13,7 +13,8 @@
       "field": "expiration_date"
     },
     "HoldAmount": {
-      "field": "hold_amount"
+      "field": "hold_amount",
+      "to_json_conversion": "str(odoo_value)"
     },
     "NextYearOptIn": {
       "field": "next_year_opt_in"
