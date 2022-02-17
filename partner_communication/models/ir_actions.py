@@ -23,7 +23,13 @@ class IrActionsServer(models.Model):
         "partner.communication.config", "Communication type", readonly=False,
         domain="[('model_id', '=', model_id)]",
     )
-    partner_field = fields.Char(string="Partner field name ('self' for instance itself)")
+    partner_field = fields.Char("Partner field name",
+                                help="'self' for record itself")
+    send_mode = fields.Selection("send_mode_select")
+    auto_send = fields.Boolean()
+
+    def send_mode_select(self):
+        return self.env["partner.communication.job"].send_mode_select()
 
     @api.model
     def run_action_communication(self, action, eval_context=None):
@@ -63,6 +69,10 @@ class IrActionsServer(models.Model):
                         "object_ids": records.ids,
                         "config_id": action.config_id.id,
                     }
+                if self.send_mode:
+                    vals["send_mode"] = self.send_mode
+                if self.auto_send:
+                    vals["auto_send"] = self.auto_send
                 delay = datetime.now() + timedelta(minutes=3)
                 self.with_delay(eta=delay).create_communication_job(vals)
         return True
