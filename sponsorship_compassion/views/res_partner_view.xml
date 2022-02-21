@@ -18,6 +18,13 @@
                 <field name="global_id"/>
             </field>
 
+            <field name="birthdate_date" position="after">
+                <field name="is_of_age" invisible="1"/>
+                <field name="age"/>
+                <field name="parent_consent" attrs="{'invisible': [('is_of_age','=',True)]}"/>
+                <field name="can_manage_paid_sponsorships" attrs="{'invisible': [('is_of_age','=',True)]}"/>
+            </field>
+
             <!-- Redefine how contracts are shown. -->
             <xpath expr="//div[@name='button_box']/button[1]" position="after">
                 <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book" groups="child_compassion.group_sponsorship">

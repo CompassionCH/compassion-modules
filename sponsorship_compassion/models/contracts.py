@@ -168,6 +168,8 @@ class SponsorshipContract(models.Model):
         "compassion.hold", related="child_id.hold_id", readonly=False
     )
 
+    state = fields.Selection(selection_add=[('waiting_approval', _('Waiting Approval'))])
+
     _sql_constraints = [
         (
             "unique_global_id",

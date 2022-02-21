@@ -46,6 +46,7 @@
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
         "account_analytic_default",
+        "partner_contact_birthdate",
     ],
     "data": [
         "views/sponsorship_contract_view.xml",

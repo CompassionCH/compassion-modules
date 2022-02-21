@@ -7,6 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import datetime
 import functools
 import random
 import string
@@ -19,6 +20,8 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = ["res.partner", "compassion.mapped.model"]
     _name = "res.partner"
+
+    MAJORITY_AGE = 18
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -101,9 +104,46 @@ class ResPartner(models.Model):
     )
     gmc_gender = fields.Char(compute='_compute_gmc_gender')
 
+    parent_consent = fields.Selection(
+        [
+            ("not_submitted", _("Not submitted yet.")),
+            ("waiting", _("Waiting Compassion approval")),
+            ("approved", _("Approved")),
+            ("refused", _("Refused")),
+        ],
+        string="Parent consents",
+        default="not_submitted",
+        store=True,
+        readonly=False,
+        required=True,
+        track_visibility="onchange",
+    )
+
+    can_manage_paid_sponsorships = fields.Boolean(
+        compute="_compute_can_manage_paid_sponsorships",
+        store=False,
+        readonly=True,
+    )
+    is_of_age = fields.Boolean(
+        compute="_compute_is_of_age",
+        store=False,
+        readonly=True,
+    )
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+
+    @api.multi
+    def _compute_is_of_age(self):
+        for record in self:
+            record.is_of_age = record.age >= self.MAJORITY_AGE
+
+    @api.multi
+    def _compute_can_manage_paid_sponsorships(self):
+        for record in self:
+            record.can_manage_paid_sponsorships = record.is_of_age or record.parent_consent in ["approved"]
+
     @api.multi
     def _compute_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
