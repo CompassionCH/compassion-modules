@@ -128,7 +128,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         if self.model_id:
             config = self.model_id.email_template_id
             if self.force_language:
-                config.with_context(lang=self.force_language)
+                config = config.with_context(lang=self.force_language)
             self.report_id = self.model_id.report_id
             self.subject = config.subject
             self.body_html = config.body_html
@@ -136,7 +136,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.multi
     def get_preview(self):
         partner = self.partner_ids[0]
-        config = self.model_id or self.env.ref("partner_communication.default_communication")
+        config = self.model_id
         object_ids = self.env.context.get("object_ids", partner.id)
         auto_send = False
         communication_job = {
@@ -147,6 +147,10 @@ class GenerateCommunicationWizard(models.TransientModel):
         }
         comm_job = self.env["partner.communication.job"]
         comm = comm_job.create(communication_job)
+
+        if self.force_language:
+            comm = comm.with_context(lang_preview=self.force_language)
+            comm.refresh_text()
 
         if self.customize_template:
             comm.email_template_id.body_html = self.body_html
