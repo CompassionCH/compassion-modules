@@ -12,7 +12,6 @@
                     </div>
                     <group states="edit">
                         <field name="selection_domain" string="Partners" widget="domain" options="{'model': 'res.partner'}"/>
-                        <field name="language_added_in_domain" invisible="1"/>
                         <field name="partner_ids" widget="many2many_tags" invisible="1"/>
                         <group>
                             <field name="model_id"/>
