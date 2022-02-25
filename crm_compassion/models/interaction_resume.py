@@ -191,7 +191,7 @@ class InteractionResume(models.TransientModel):
                         ELSE 'sent'
                         END tracking_status,
                         mm.id as mass_mailing_id,
-                        false as has_attachment
+                        (nb_attachment is not NULL) as has_attachment
                         FROM "mail_mail_statistics" as mail
                         FULL OUTER JOIN (
                             SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
