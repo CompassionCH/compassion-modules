@@ -138,15 +138,15 @@ class GenerateCommunicationWizard(models.TransientModel):
         partner = self.partner_ids[0]
         config = self.model_id
         object_ids = self.env.context.get("object_ids", partner.id)
-        auto_send = False
-        communication_job = {
+        comm_vals = {
             "partner_id": partner.id,
             "config_id": config.id,
             "object_ids": object_ids,
-            "auto_send": auto_send,
+            "auto_send": False,
         }
-        comm_job = self.env["partner.communication.job"]
-        comm = comm_job.create(communication_job)
+        if self.send_mode:
+            comm_vals["send_mode"] = self.send_mode
+        comm = self.env["partner.communication.job"].create(comm_vals)
 
         if self.force_language:
             comm = comm.with_context(lang_preview=self.force_language)
