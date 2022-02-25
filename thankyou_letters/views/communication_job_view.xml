@@ -9,9 +9,9 @@
                 <field name="success_sentence_id"/>
             </field>
             <field name="subject" position="after">
-                <field name="print_subject" attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}"/>
-                <field name="print_header" attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}"/>
-                <field name="show_signature" attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}"/>
+                <field name="print_subject" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
+                <field name="print_header" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
+                <field name="show_signature" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
             </field>
         </field>
     </record>
