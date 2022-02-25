@@ -13,11 +13,4 @@
             </form>
         </field>
     </record>
-
-    <!-- Menu Item -->
-    <act_window id="action_activate_contract"
-                key2="client_action_multi" name="Force activation"
-                res_model="recurring.contract.activate.wizard" src_model="recurring.contract"
-                view_mode="form" target="new" view_type="form"
-    />
 </odoo>
