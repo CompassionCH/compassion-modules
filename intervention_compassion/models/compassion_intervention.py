@@ -487,6 +487,8 @@ class CompassionIntervention(models.Model):
 
     @api.multi
     def update_hold(self):
+        if not self.hold_id:
+            return True
         action_id = self.env.ref(
             "intervention_compassion.intervention_update_hold_action"
         ).id
@@ -825,15 +827,17 @@ class CompassionIntervention(models.Model):
             intervention_local_ids.append(intervention.id)
             amendment_type = ", ".join(interventionamendment.get("AmendmentType", []))
             amendment_reason = interventionamendment.get("ReasonsForAmendment", "")
-            body = _("This intervention has been modified by amendment.")
-            body += (
-                f"<br/><ul><li>Amendment ID: "
-                f"{interventionamendment['InterventionAmendment_ID']}</li>"
-            )
-            body += f"<li>Amendment Type: {amendment_type}</li>"
-            body += f"<li>Amendment Reason: {amendment_reason}</li>"
-            body += f"<li>Amendment Amount: {amendment_amount}</li>"
-            body += f"<li>Hold ID: {interventionamendment['HoldID']}</li></ul>"
+            amendment_hold_id = interventionamendment.get("HoldID", "")
+            body = _("This intervention has been modified by amendment.") + \
+                f"""<br/>
+                <ul>
+                    <li>Amendment ID: {interventionamendment['InterventionAmendment_ID']}</li>
+                    <li>Amendment Type: {amendment_type}</li>
+                    <li>Amendment Reason: {amendment_reason}</li>
+                    <li>Amendment Amount: {amendment_amount}</li>
+                    <li>Hold ID: {amendment_hold_id}</li>
+                </ul>
+                """
             intervention.message_post(
                 body=body,
                 subject=_(intervention.name + ": Amendment received"),
@@ -845,6 +849,7 @@ class CompassionIntervention(models.Model):
 
     @api.multi
     def json_to_data(self, json, mapping_name=None):
+        json = json.get("InterventionAmendmentKitRequest", json)
         if "ICP" in json:
             json["ICP"] = json["ICP"].split("; ")
         return super().json_to_data(json, mapping_name)

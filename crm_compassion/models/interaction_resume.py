@@ -27,7 +27,7 @@ class InteractionResume(models.TransientModel):
     communication_date = fields.Datetime()
     subject = fields.Text()
     other_type = fields.Char()
-    has_attachment = fields.Boolean(compute="_compute_has_attachment")
+    has_attachment = fields.Boolean()
     body = fields.Html()
     phone_id = fields.Many2one("crm.phonecall", "Phonecall")
     paper_id = fields.Many2one(
@@ -86,7 +86,8 @@ class InteractionResume(models.TransientModel):
                         false as is_from_employee,
                         pcj.id as paper_id,
                         NULL as tracking_status,
-                        0 as mass_mailing_id
+                        0 as mass_mailing_id,
+                        false as has_attachment
                         FROM "partner_communication_job" as pcj
                         JOIN res_partner p ON pcj.partner_id = p.id
                         FULL OUTER JOIN partner_communication_config c
@@ -118,7 +119,8 @@ class InteractionResume(models.TransientModel):
                         crmpc.is_from_employee as is_from_employee,
                         0 as paper_id,
                         NULL as tracking_status,
-                        0 as mass_mailing_id
+                        0 as mass_mailing_id,
+                        false as has_attachment
                         FROM "crm_phonecall" as crmpc
                         JOIN res_partner p ON crmpc.partner_id = p.id
                         WHERE (p.contact_id = %s OR p.id = %s) AND crmpc.state = 'done'
@@ -140,8 +142,15 @@ class InteractionResume(models.TransientModel):
                         mail.is_from_employee as is_from_employee,
                         job.id as paper_id,
                         COALESCE(mt.state, 'error') as tracking_status,
-                        mt.mass_mailing_id as mass_mailing_id
+                        mt.mass_mailing_id as mass_mailing_id,
+                        (nb_attachment is not NULL) as has_attachment
                         FROM "mail_mail" as mail
+                        FULL OUTER JOIN (
+                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
+                            FROM mail_message AS m
+                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
+                            GROUP BY m.id
+                        ) AS attachment ON mail.mail_message_id = attachment.id
                         JOIN mail_message m ON mail.mail_message_id = m.id
                         JOIN mail_mail_res_partner_rel rel
                         ON rel.mail_mail_id = mail.id
@@ -181,8 +190,15 @@ class InteractionResume(models.TransientModel):
                             WHEN mail.bounced IS NOT NULL THEN 'bounced'
                         ELSE 'sent'
                         END tracking_status,
-                        mm.id as mass_mailing_id
+                        mm.id as mass_mailing_id,
+                        (nb_attachment is not NULL) as has_attachment
                         FROM "mail_mail_statistics" as mail
+                        FULL OUTER JOIN (
+                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
+                            FROM mail_message AS m
+                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
+                            GROUP BY m.id
+                        ) AS attachment ON mail.mail_mail_id = attachment.id
                         FULL OUTER JOIN mail_tracking_email tracking
                             ON mail.mail_tracking_id = tracking.id
                         JOIN res_partner p ON p.email = mail.email
@@ -209,8 +225,15 @@ class InteractionResume(models.TransientModel):
                         false as is_from_employee,
                         0 as paper_id,
                         NULL as tracking_status,
-                        0 as mass_mailing_id
+                        0 as mass_mailing_id,
+                        (nb_attachment is not NULL) as has_attachment
                         FROM "mail_message" as m
+                        FULL OUTER JOIN (
+                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
+                            FROM mail_message AS m
+                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
+                            GROUP BY m.id
+                        ) AS attachment ON m.id = attachment.id
                         JOIN res_partner p ON m.author_id = p.id
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
@@ -233,7 +256,8 @@ class InteractionResume(models.TransientModel):
                         false as is_from_employee,
                         0 as paper_id,
                         NULL as tracking_status,
-                        0 as mass_mailing_id
+                        0 as mass_mailing_id,
+                        false as has_attachment
                         FROM "partner_log_other_interaction" as o
                         JOIN res_partner p ON o.partner_id = p.id
                         )
@@ -263,13 +287,3 @@ class InteractionResume(models.TransientModel):
         """
         self.ensure_one()
         return True
-
-    def _compute_has_attachment(self):
-        """
-        Check in each row if e-mail (outgoing) or message (incoming) contains
-        at least 1 attachment.
-        """
-        for row in self.sudo():
-            row.has_attachment = (
-                row.email_id.attachment_ids or row.message_id.attachment_ids
-            )

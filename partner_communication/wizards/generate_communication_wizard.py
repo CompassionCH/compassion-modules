@@ -56,7 +56,6 @@ class GenerateCommunicationWizard(models.TransientModel):
         default=lambda s: s._default_report(),
         readonly=False,
     )
-    language_added_in_domain = fields.Boolean()
     preview_email = fields.Html(readonly=True)
     preview_pdf = fields.Binary(readonly=True)
     communication_ids = fields.Many2many(
@@ -71,11 +70,9 @@ class GenerateCommunicationWizard(models.TransientModel):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.model
-    def _compute_pdf_preview(self, res_preview):
-        report = self.report_id.with_context(
-            lang=self.partner_ids[0].lang, must_skip_send_to_printer=True
-        )
-        data = report.render_qweb_pdf(res_preview.ids)
+    def render_preview(self, communication):
+        report = communication.report_id.with_context(must_skip_send_to_printer=True)
+        data = report.render_qweb_pdf(communication.ids)
         with Image(blob=data[0]) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
         return preview
@@ -83,16 +80,6 @@ class GenerateCommunicationWizard(models.TransientModel):
     @api.model
     def _default_report(self):
         return self.env["ir.actions.report"].search([])[0]
-
-    @api.model
-    def _compute_email_preview(self, res_preview, email_template_id, comm_model):
-        partner = self.partner_ids[0]
-        template = email_template_id.with_context(lang=partner.lang)
-        model = template.model or comm_model
-        preview_email = template._render_template(
-            res_preview.body_html, model, res_preview.ids
-        )[res_preview.id]
-        return preview_email
 
     @api.model
     def _default_domain(self):
@@ -129,58 +116,52 @@ class GenerateCommunicationWizard(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.onchange("selection_domain", "force_language")
+    @api.onchange("selection_domain")
     def onchange_domain(self):
-        if self.force_language and not self.language_added_in_domain:
-            domain = self.selection_domain or "[]"
-            domain = domain[:-1] + f", ('lang', '=', '{self.force_language}')]"
-            self.selection_domain = domain.replace("[, ", "[")
-            self.language_added_in_domain = True
         if self.selection_domain:
             self.partner_ids = self.env["res.partner"].search(
                 safe_eval(self.selection_domain)
             )
-        if not self.force_language:
-            self.language_added_in_domain = False
 
-    @api.onchange("model_id")
-    def onchange_model_id(self):
+    @api.onchange("model_id", "force_language")
+    def onchange_model_or_language(self):
         if self.model_id:
+            config = self.model_id.email_template_id
+            if self.force_language:
+                config = config.with_context(lang=self.force_language)
             self.report_id = self.model_id.report_id
-            self.body_html = self.model_id.email_template_id.body_html
-            self.subject = self.model_id.email_template_id.subject
+            self.subject = config.subject
+            self.body_html = config.body_html
 
     @api.multi
     def get_preview(self):
-        comm_model = "partner.communication.job"
-        config = self.model_id or self.env.ref(
-            "partner_communication.default_communication"
-        )
         partner = self.partner_ids[0]
-        res_preview = self.env[comm_model].create(
-            {
-                "partner_id": partner.id,
-                "config_id": config.id,
-                "object_ids": self.env.context.get("object_ids", partner.id),
-                "auto_send": False,
-            }
-        )
+        config = self.model_id
+        object_ids = self.env.context.get("object_ids", partner.id)
+        comm_vals = {
+            "partner_id": partner.id,
+            "config_id": config.id,
+            "object_ids": object_ids,
+            "auto_send": False,
+        }
+        if self.send_mode:
+            comm_vals["send_mode"] = self.send_mode
+        comm = self.env["partner.communication.job"].create(comm_vals)
+
+        if self.force_language:
+            comm = comm.with_context(lang_preview=self.force_language)
+            comm.refresh_text()
+
         if self.customize_template:
-            res_preview.body_html = self.body_html
+            comm.email_template_id.body_html = self.body_html
+            comm.body_html = self.env["mail.compose.message"].get_generated_fields(
+                comm.email_template_id, comm.ids)["body_html"]
 
-        if self.send_mode == "physical":
-            self.preview_pdf = self._compute_pdf_preview(res_preview)
-        elif self.send_mode == "digital":
-            self.preview_email = self._compute_email_preview(
-                res_preview, config.email_template_id, comm_model
-            )
-        elif self.send_mode == "both":
-            self.preview_email = self._compute_email_preview(
-                res_preview, config.email_template_id, comm_model
-            )
-            self.preview_pdf = self._compute_pdf_preview(res_preview)
+        self.preview_email = comm.body_html
+        if self.send_mode in ["physical", "both"]:
+            self.preview_pdf = self.render_preview(comm)
 
-        res_preview.unlink()
+        comm.unlink()
         self.state = "preview"
         return self.reload()
 
@@ -226,7 +207,7 @@ class GenerateCommunicationWizard(models.TransientModel):
             "context": self._context,
         }
 
-    @job
+    @job(default_channel="root.partner_communication")
     def generate_communications(self, async_mode=True):
         """ Create the communication records """
         default = self.env.ref("partner_communication.default_communication")
