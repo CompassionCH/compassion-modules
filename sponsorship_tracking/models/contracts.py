@@ -81,9 +81,15 @@ class RecurringContract(models.Model):
     def unlink(self):
         """ Put parent in SUB Reject. """
         is_sub = self.filtered(lambda s: s.parent_id.sds_state == "sub")
-        is_sub.mapped("parent_id").action_sub_reject()
+        to_remove = self
+        for sub in is_sub:
+            if sub.child_id:
+                to_remove -= sub
+                sub.parent_id.action_sub_reject()
+            else:
+                sub.parent_id._check_need_sub()
         # Unlink is already called in action_sub_reject
-        return super(RecurringContract, self - is_sub).unlink()
+        return super(RecurringContract, to_remove).unlink()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
