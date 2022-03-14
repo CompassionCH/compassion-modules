@@ -148,6 +148,7 @@ class SponsorshipContract(models.Model):
             ("G", "Child Gift"),
             ("S", "Sponsorship"),
             ("SC", "Correspondence"),
+            ("SWP", "Write&Pray"),
         ],
         required=True,
         default="O",
@@ -186,7 +187,7 @@ class SponsorshipContract(models.Model):
 
     @api.onchange("type")
     def _create_empty_lines_for_correspondence(self):
-        self.contract_line_ids = self._get_sponsorship_standard_lines(self.type == "SC")
+        self.contract_line_ids = self._get_sponsorship_standard_lines(self.type in ["SC", "SWP"])
 
     @api.model
     def _get_sponsorship_standard_lines(self, correspondence):
@@ -239,29 +240,6 @@ class SponsorshipContract(models.Model):
         }
         res.append((0, 0, sponsorship_vals))
         res.append((0, 0, gen_vals))
-        return res
-
-    @api.model
-    def fields_view_get(
-            self, view_id=None, view_type="form", toolbar=False, submenu=False
-    ):
-        """ Display only contract type needed in view.
-        """
-        res = super().fields_view_get(
-            view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
-        )
-
-        if view_type == "form" and "type" in res["fields"]:
-            s_type = self._context.get("default_type", "O")
-            if "S" in s_type:
-                # Remove non sponsorship types
-                res["fields"]["type"]["selection"].pop(0)
-                res["fields"]["type"]["selection"].pop(0)
-            else:
-                # Remove type Sponsorships so that we cannot change to it.
-                res["fields"]["type"]["selection"].pop(2)
-                res["fields"]["type"]["selection"].pop(2)
-
         return res
 
     @api.multi
@@ -826,7 +804,7 @@ class SponsorshipContract(models.Model):
                     if sponsorship.state == "active":
                         contract.contract_active()
                 contract.group_id.generate_invoices()
-            elif contract.type == "S" or (contract.type == "SC" and contract.total_amount > 0):
+            elif contract.type == "S" or (contract.type in ["SC", "SWP"] and contract.total_amount > 0):
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
                 hold.write(
@@ -842,7 +820,7 @@ class SponsorshipContract(models.Model):
                     )
                 contract.state = "waiting"
                 contract.group_id.generate_invoices()
-            elif contract.type == "SC":
+            elif contract.type in ["SC", "SWP"]:
                 # Activate directly correspondence sponsorships
                 contract.contract_active()
         return True

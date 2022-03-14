@@ -12,7 +12,7 @@
             </button>
 
             <xpath expr="//page[1]" position="after">
-                <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC'])]}">
+                <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC','SWP'])]}">
                     <group>
                         <field name="reading_language" options="{'create':False}"/>
                         <field name="last_letter"/>

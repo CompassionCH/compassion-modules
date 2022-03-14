@@ -114,7 +114,7 @@ class ResPartner(models.Model):
             partner.contracts_correspondant = contract_obj.search(
                 [
                     ("correspondent_id", "=", partner.id),
-                    ("type", "in", ["S", "SC"]),
+                    ("type", "in", ["S", "SC", "SWP"]),
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
@@ -122,7 +122,7 @@ class ResPartner(models.Model):
             partner.contracts_paid = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
-                    ("type", "in", ["S", "SC"]),
+                    ("type", "in", ["S", "SC", "SWP"]),
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
@@ -130,7 +130,7 @@ class ResPartner(models.Model):
             partner.contracts_fully_managed = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
-                    ("type", "in", ["S", "SC"]),
+                    ("type", "in", ["S", "SC", "SWP"]),
                     ("fully_managed", "=", True),
                 ],
                 order="start_date desc",
@@ -141,7 +141,7 @@ class ResPartner(models.Model):
                 + partner.contracts_fully_managed
             )
             partner.other_contract_ids = contract_obj.search(
-                [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC"])],
+                [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC", "SWP"])],
                 order="start_date desc",
             ).ids
 

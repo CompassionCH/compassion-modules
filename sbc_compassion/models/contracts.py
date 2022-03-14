@@ -107,7 +107,7 @@ class Contracts(models.Model):
                 "reading_language" not in vals:
             child = self.env["compassion.child"].browse(vals["child_id"])
             correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
-            english = self.env.ref("child_compassion.lang_compassion_english")
+            english = self.env.ref("advanced_translation.lang_compassion_english")
             spoken_langs = correspondent.spoken_lang_ids
             reading_language = (spoken_langs & child.correspondence_language_id) or (
                 spoken_langs & english) or spoken_langs.filtered(
@@ -140,7 +140,7 @@ class Contracts(models.Model):
                 if sponsor_main_lang in child_languages:
                     sponsorship.reading_language = sponsor_main_lang
                 else:
-                    english = self.env.ref("child_compassion.lang_compassion_english")
+                    english = self.env.ref("advanced_translation.lang_compassion_english")
                     common_langs = (child_languages & sponsor_languages) - english
                     if common_langs:
                         sponsorship.reading_language = common_langs[0]

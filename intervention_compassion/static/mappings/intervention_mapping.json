@@ -162,7 +162,8 @@
       "field": "cancel_reason"
     },
     "HoldAmount": {
-      "field": "hold_amount"
+      "field": "hold_amount",
+      "to_json_conversion": "str(odoo_value)"
     },
     "PrimaryOwner": {
       "field": "user_id.name",

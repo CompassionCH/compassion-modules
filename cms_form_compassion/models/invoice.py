@@ -6,7 +6,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class AccountInvoice(models.Model):
@@ -16,3 +16,17 @@ class AccountInvoice(models.Model):
         default=False, help='If true, cancel the invoice if the linked payment '
         'transaction is cancelled'
     )
+
+    auto_cancel_date = fields.Datetime(
+        string="Auto cancel date",
+        help="Date at which the invoice should be canceled automatically via Automated Actions",
+        default=False,
+        invisible=True,
+        readonly=True,
+    )
+
+    @api.multi
+    def auto_cancel(self):
+        invoices = self.filtered(lambda i: i.state in ["draft", "open"])
+        invoices.write({"auto_cancel_date": False})
+        invoices.action_invoice_cancel()

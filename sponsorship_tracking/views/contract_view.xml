@@ -59,7 +59,7 @@
                 <button name="switch_contract_view"
                         type="object"
                         string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
-                        attrs="{'invisible': [('type', 'not in', ['S', 'SC'])]}"
+                        attrs="{'invisible': [('type', 'not in', ['S', 'SC', 'SWP'])]}"
                         class="oe_inline oe_stat_button" icon="fa-history"/>
             </button>
         </field>

@@ -159,8 +159,11 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
         }
         $('.cms_modal_form').each(function () {
             var $elem = $(this);
-            var form = new ModalForm(null, $elem.data());
-            form.attachTo($elem);
+            if (this.id !== "modal_donation") {
+                console.log("Modal form JS loaded for elem " + this.id);
+                var form = new ModalForm(null, $elem.data());
+                form.attachTo($elem);
+            }
         });
     });
 
