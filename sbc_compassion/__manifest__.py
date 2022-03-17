@@ -42,14 +42,11 @@
         "python": [
             "magic",
             "wand",
-            "numpy",
             "pyzbar",
             "pdfminer",
-            "matplotlib",
             "PyPDF2",
             "openupgradelib",
             "fitz",  # PyMuPDF
-            "boxdetect",
         ]
     },
     "data": [
