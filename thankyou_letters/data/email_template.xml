@@ -15,7 +15,7 @@
                     ${partner.salutation},
                     <br/>
                     <br/>
-                    We thank you for the donation of CHF ${donations[0]}.-
+                    We thank you for the donation of ${donations[0].currency_id.symbol} ${donations[0]}.-
                     % if donations[1]:
                         you made for ${donations[1]}.
                     % else
