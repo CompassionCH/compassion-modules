@@ -106,15 +106,12 @@ class SubSponsorshipWizard(models.TransientModel):
             ("other_support", _("Wants to support with fund donations")),
             ("other_organization", _("Supports another organization")),
             ("not_now", _("Doesn't want to take another child right now")),
-            ("not_given", _("Not given")),
             ("other", _("Other...")),
         ]
 
-        end_reasons = self.env['recurring.contract.end.reason']
-        for reason in end_reasons:
-            selection.append((reason.name, reason.name))
-
-        return selection
+        end_reasons = self.env['recurring.contract.end.reason'].sudo()\
+            .search([]).mapped(lambda it: (it.name, _(it.name)))
+        return end_reasons + selection
 
     @api.multi
     def no_sub(self):
@@ -126,9 +123,7 @@ class SubSponsorshipWizard(models.TransientModel):
         if default_reason == "other":
             reason = self.no_sub_reason
         else:
-            reason = dict(self._fields["no_sub_default_reasons"].selection).get(
-                default_reason
-            )
+            reason = dict(self._no_sub_reasons_selection()).get(default_reason)
         contract.write(
             {
                 "no_sub_reason": reason,
