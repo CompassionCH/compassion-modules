@@ -462,20 +462,13 @@ class ResPartner(models.Model):
         for partner in self:
             if not partner.ref:
                 partner.ref = self.env["ir.sequence"].get("partner.ref")
-            contract_count = self.env["recurring.contract"].search_count(
-                [
-                    ("correspondent_id", "=", partner.id),
-                    ("state", "not in", ("terminated", "cancelled")),
-                ]
-            )
-            if contract_count:
-                # UpsertConstituent Message if not one already pending
-                message_vals = {
-                    "action_id": action_id,
-                    "object_id": partner.id,
-                    "partner_id": partner.id,
-                }
-                messages += message_obj.create(message_vals)
+            # UpsertConstituent Message if not one already pending
+            message_vals = {
+                "action_id": action_id,
+                "object_id": partner.id,
+                "partner_id": partner.id,
+            }
+            messages += message_obj.create(message_vals)
         return messages
 
     def _get_active_sponsorships_domain(self):
