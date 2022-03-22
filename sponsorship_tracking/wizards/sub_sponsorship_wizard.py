@@ -29,19 +29,8 @@ class SubSponsorshipWizard(models.TransientModel):
         domain=[("state", "in", ["N", "I"])],
         readonly=False,
     )
-    no_sub_default_reasons = fields.Selection(
-        [
-            ("other_sponsorship", _("Sponsors other children")),
-            ("financial", _("Financial reasons")),
-            ("old", _("Is too old to sponsor another child")),
-            ("other_support", _("Wants to support with fund donations")),
-            ("other_organization", _("Supports another organization")),
-            ("not_now", _("Doesn't want to take another child right now")),
-            ("not_given", _("Not given")),
-            ("other", _("Other...")),
-        ],
-        "No sub reason",
-    )
+
+    no_sub_default_reasons = fields.Selection(selection="_no_sub_reasons_selection", string="No sub reason")
     no_sub_reason = fields.Char("No sub reason")
 
     @api.multi
@@ -107,6 +96,25 @@ class SubSponsorshipWizard(models.TransientModel):
                     }
                 ).env.context,
             }
+
+    def _no_sub_reasons_selection(self):
+        """ Extend the list of no_sub_reasons with standard end reasons """
+        selection = [
+            ("other_sponsorship", _("Sponsors other children")),
+            ("financial", _("Financial reasons")),
+            ("old", _("Is too old to sponsor another child")),
+            ("other_support", _("Wants to support with fund donations")),
+            ("other_organization", _("Supports another organization")),
+            ("not_now", _("Doesn't want to take another child right now")),
+            ("not_given", _("Not given")),
+            ("other", _("Other...")),
+        ]
+
+        end_reasons = self.env['recurring.contract.end.reason']
+        for reason in end_reasons:
+            selection.append((reason.name, reason.name))
+
+        return selection
 
     @api.multi
     def no_sub(self):
