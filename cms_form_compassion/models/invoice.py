@@ -27,6 +27,6 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def auto_cancel(self):
-        invoices = self.filtered(lambda i: i.state in ["draft", "open"])
+        invoices = self.filtered(lambda i: i.state == "draft")
         invoices.write({"auto_cancel_date": False})
         invoices.action_invoice_cancel()
