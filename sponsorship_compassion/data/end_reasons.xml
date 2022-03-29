@@ -41,4 +41,22 @@
     <record id="end_reason_not_given" model="recurring.contract.end.reason">
         <field name="name">Not given</field>
     </record>
+    <record id="end_reason_sponsor_other_children" model="recurring.contract.end.reason">
+        <field name="name">Sponsors other children</field>
+    </record>
+    <record id="end_reason_too_old" model="recurring.contract.end.reason">
+        <field name="name">Is too old to sponsor another child</field>
+    </record>
+    <record id="end_reason_funds" model="recurring.contract.end.reason">
+        <field name="name">Wants to support with fund donations</field>
+    </record>
+    <record id="end_reason_another_ngo" model="recurring.contract.end.reason">
+        <field name="name">Supports another organization</field>
+    </record>
+    <record id="end_reason_not_another_child" model="recurring.contract.end.reason">
+        <field name="name">Doesn't want to take another child right now</field>
+    </record>
+    <record id="end_reason_other" model="recurring.contract.end.reason">
+        <field name="name">Other</field>
+    </record>
 </odoo>

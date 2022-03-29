@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Sponsorships Tracking",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -39,6 +39,7 @@
         "views/sub_sponsorship_wizard_view.xml",
         "views/contract_view.xml",
         "views/settings_view.xml",
+        "views/end_reason_view.xml",
         "data/sponsorship_action_rules.xml",
         "data/install.xml",
     ],
