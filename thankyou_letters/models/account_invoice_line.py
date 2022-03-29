@@ -27,7 +27,7 @@ class AccountInvoiceLine(models.Model):
         :return: (total_donation_amount, product_name)
         """
         res_name = False
-        total = sum(self.mapped("price_subtotal"))
+        total = sum(self.mapped("price_subtotal_signed"))
         total_string = f"{int(total):,}".replace(",", "'")
 
         product_names = self.mapped("product_id.thanks_name")
