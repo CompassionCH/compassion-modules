@@ -6,14 +6,14 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import models
 
 
 class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
     def _set_transaction_cancel(self):
-        for invoice in self.invoice_ids.filtered('auto_cancel_no_transaction'):
+        for invoice in self.invoice_ids.filtered(
+                lambda i: i.auto_cancel_no_transaction and i.state != "paid"):
             invoice.action_invoice_cancel()
         return super()._set_transaction_cancel()
-
