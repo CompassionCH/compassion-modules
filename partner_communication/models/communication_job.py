@@ -392,7 +392,7 @@ class CommunicationJob(models.Model):
                 if ((job.need_call == "before_sending"
                      and job.state == "pending")
                         and not job.activity_ids):
-                    job.schedule_call()
+                    job.sudo(job.user_id.id).schedule_call()
 
         return True
 
@@ -428,7 +428,7 @@ class CommunicationJob(models.Model):
 
             # if the call must be done after the sending, an activity is scheduled
             if job.need_call == "after_sending":
-                job.schedule_call()
+                job.sudo(job.user_id.id).schedule_call()
         if to_print:
             return to_print._print_report()
         return True
@@ -438,7 +438,7 @@ class CommunicationJob(models.Model):
         self.activity_schedule(
             'mail.mail_activity_data_call',
             summary="Call " + self.partner_id.name,
-            user_id=self.user_id.id,
+            user_id=self.env.uid,
             note=f"Call {self.partner_id.name} at (phone) "
                  f"{self.partner_phone or self.partner_mobile} regarding "
                  f"the communication."

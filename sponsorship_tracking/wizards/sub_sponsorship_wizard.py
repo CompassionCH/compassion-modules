@@ -29,20 +29,16 @@ class SubSponsorshipWizard(models.TransientModel):
         domain=[("state", "in", ["N", "I"])],
         readonly=False,
     )
-    no_sub_default_reasons = fields.Selection(
-        [
-            ("other_sponsorship", _("Sponsors other children")),
-            ("financial", _("Financial reasons")),
-            ("old", _("Is too old to sponsor another child")),
-            ("other_support", _("Wants to support with fund donations")),
-            ("other_organization", _("Supports another organization")),
-            ("not_now", _("Doesn't want to take another child right now")),
-            ("not_given", _("Not given")),
-            ("other", _("Other...")),
-        ],
-        "No sub reason",
-    )
-    no_sub_reason = fields.Char("No sub reason")
+    no_sub_default_reasons = fields.Many2one(
+        "recurring.contract.end.reason", "No sub reason")
+    is_other = fields.Boolean(compute="_compute_is_other")
+    no_sub_reason = fields.Char("Precisions")
+
+    @api.depends("no_sub_default_reasons")
+    def _compute_is_other(self):
+        other = self.env.ref("sponsorship_compassion.end_reason_other")
+        for record in self:
+            record.is_other = record.no_sub_default_reasons == other
 
     @api.multi
     def create_subsponsorship(self):
@@ -114,13 +110,9 @@ class SubSponsorshipWizard(models.TransientModel):
         self.ensure_one()
         sponsorship_id = self.env.context.get("active_id")
         contract = self.env["recurring.contract"].browse(sponsorship_id)
-        default_reason = self.no_sub_default_reasons
-        if default_reason == "other":
+        reason = self.no_sub_default_reasons.name
+        if reason.lower() == "other":
             reason = self.no_sub_reason
-        else:
-            reason = dict(self._fields["no_sub_default_reasons"].selection).get(
-                default_reason
-            )
         contract.write(
             {
                 "no_sub_reason": reason,
