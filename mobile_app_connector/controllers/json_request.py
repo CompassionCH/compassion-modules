@@ -19,6 +19,7 @@ from odoo.addons.message_center_compassion.controllers.json_request import (
 
 from odoo.http import JsonRequest, Root, SessionExpiredException
 from odoo.tools import date_utils
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -87,6 +88,16 @@ class MobileAppJsonRequest(JsonRequest):
                     "http_code": code,
                     "http_status": code,
                     "message": str(exception),
+                }
+            )
+        if isinstance(exception, UserError):
+            code = 400
+            return self._json_response(
+                error={
+                    "code": code,
+                    "http_code": code,
+                    "http_status": code,
+                    "message": str(exception.name),
                 }
             )
         # RE-Raise last error, without compromising the StackTrace
