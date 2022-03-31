@@ -8,8 +8,11 @@
 ##############################################################################
 import logging
 from collections import defaultdict
+from datetime import datetime, timedelta
 
 from odoo import models, api, fields, _
+from odoo.exceptions import UserError
+from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
@@ -48,7 +51,7 @@ class AccountInvoice(models.Model):
             return result
 
         payments = (
-            wrapper.child_gifts + wrapper.fund_donations + wrapper.sponsorships_payments
+            wrapper.child_gifts + wrapper.fund_donations
         )
 
         if 'android' in wrapper.source:
@@ -73,26 +76,24 @@ class AccountInvoice(models.Model):
 
         # create invoice and merge lines
         lines_cmd = [(0, 0, v) for v in invoice_lines_values]
-        existing_invoice = False
-        invoice = self.sudo().create(
-            {
-                "partner_id": wrapper.partner_id,
-                "invoice_line_ids": lines_cmd,
-                "origin": wrapper.source,
-                "type": "out_invoice",
-                "date_invoice": fields.Date.today(),
-                "auto_cancel_no_transaction": True,
-            }
-        )
+        invoice = self.sudo()
 
         if wrapper.sponsorships_payments:
             # User is paying for sponsorship: only if everything match an open invoice,
             # we will use it.
+            total_sponsorship = sum(map(
+                lambda sp: float(sp.get("amount", 0)), wrapper.sponsorships_payments))
+            sponsorships = self.env["recurring.contract"].sudo()
+            for sp in wrapper.sponsorships_payments:
+                sponsorships += sp.get("contract_id")
+            # Generate invoices to increase chance for donation to match
+            sponsorships.button_generate_invoices()
             sponsorship_invoice = invoice.search(
                 [
                     ("partner_id", "=", wrapper.partner_id),
                     ("state", "=", "open"),
-                    ("amount_total", "=", invoice.amount_total),
+                    ("amount_total", "=", total_sponsorship),
+                    ("invoice_category", "=", "sponsorship")
                 ],
                 order="date asc",
                 limit=1,
@@ -100,23 +101,55 @@ class AccountInvoice(models.Model):
             sp_invoice_contracts = sponsorship_invoice.invoice_line_ids.mapped(
                 "contract_id"
             )
-            new_invoice_contracts = invoice.invoice_line_ids.mapped("contract_id")
-            common_sponsorships = sp_invoice_contracts & new_invoice_contracts
+            common_sponsorships = sp_invoice_contracts & sponsorships
             if common_sponsorships and len(common_sponsorships) == len(
                     sp_invoice_contracts
             ):
-                invoice.unlink()
                 invoice = sponsorship_invoice
                 invoice.origin = wrapper.source + " sponsorship payment"
-                existing_invoice = True
+                if lines_cmd:
+                    # Merge other donations into the sponsorship invoice
+                    if wrapper.child_gifts:
+                        # We don't allow merging child gifts and sponsorship
+                        raise UserError(_(
+                            "You cannot pay your sponsorship with gifts at the "
+                            "same time. Please make two separate donations."))
+                    invoice.action_invoice_cancel()
+                    invoice.action_invoice_draft()
+                    invoice.write({"invoice_line_ids": lines_cmd})
+                    for line in invoice.invoice_line_ids:
+                        bckp_price = line.price_unit
+                        line._onchange_product_id()
+                        line.price_unit = bckp_price
+                    invoice.action_invoice_open()
+                    delay = datetime.now() + timedelta(minutes=15)
+                    invoice.message_post(
+                        body="Sponsorship invoice used for mobile app donation.")
+                    invoice.with_delay(eta=delay).remove_mobile_donation_if_not_paid()
+            else:
+                # No matching sponsorship payment, we don't accept the payment
+                raise UserError(_(
+                    "Your sponsorship payment doesn't match any expected payment. "
+                    "Please reach to our team to check what is due."))
 
-        if not existing_invoice:
+        if not invoice:
+            invoice = self.sudo().create(
+                {
+                    "partner_id": wrapper.partner_id,
+                    "invoice_line_ids": lines_cmd,
+                    "origin": wrapper.source,
+                    "type": "out_invoice",
+                    "date_invoice": fields.Date.today(),
+                    "auto_cancel_no_transaction": True,
+                    "payment_mode_id": False  # We don't know yet how it will be paid
+                }
+            )
             for line in invoice.invoice_line_ids:
                 bckp_price = line.price_unit
                 line._onchange_product_id()
                 line.price_unit = bckp_price
+            invoice.action_invoice_open()
 
-        invoice.action_invoice_open()
         result["Donation"].append(invoice.id)
         return result
 
@@ -131,37 +164,9 @@ class AccountInvoice(models.Model):
             has_app = self.env['firebase.registration'].search_count([
                 ('partner_id', '=', partner.id)
             ])
-
             if invoice.invoice_category in ('gift', 'fund') and has_app \
                     and not invoice.avoid_thankyou_letter:
                 invoice.send_mobile_notification()
-
-            # when a contract exist before than this invoice created, so the
-            # invoice.origin contains sponsorship
-            origin = invoice.origin or ""
-            if invoice.invoice_category == 'sponsorship' and 'sponsorship' not in \
-                    origin and ('android' in origin or 'ios' in origin):
-                # we will create a new invoice but notify a staff
-                # member that it needs to be processed manually, to avoid creating
-                # delays in his due months.
-                partner_ids = (
-                    self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
-                )[0][2]
-                if partner_ids:
-                    activity_values = {
-                        "user_id": self.env["res.partner"].sudo().browse(
-                            partner_ids[0]).user_ids[:1].id
-                    }
-                    invoice.activity_schedule(
-                        "mail.mail_activity_data_todo",
-                        summary=_("Sponsorship paid from the app"),
-                        note=_(
-                            "This invoice created from the app needs to be manually "
-                            "processed. You may want to cancel another sponsorship "
-                            "invoice to avoid creating an overdue for the supporter."
-                        ),
-                        **activity_values
-                    )
         return res
 
     def send_mobile_notification(self):
@@ -188,7 +193,8 @@ class AccountInvoice(models.Model):
             {
                 "topic": "spam",  # to ensure he will receive the notification
                 "destination": "Donation",  # to put the gift icon
-                "fund_type_id": lines.mapped("product_id.product_tmpl_id")[:1].id,
+                "product_template_id": lines.mapped(
+                    "product_id.product_tmpl_id")[:1].id,
                 "partner_ids": [(6, 0, partner.ids)],
                 "title": _("You gave CHF %s.- for %s") % (amount, for_text),
                 "body": _("Thank you for your generosity!"),
@@ -198,6 +204,25 @@ class AccountInvoice(models.Model):
         )
         notification.send()
         payment_moves.write({"mobile_notification_id": notification.id})
+        return True
+
+    @job(default_channel="root.mobile_app_connector")
+    def remove_mobile_donation_if_not_paid(self):
+        """ Job utility to remove donation from sponsorship invoice in case the
+        transaction was aborted. """
+        self.ensure_one()
+        sponsorship_category = self.env.ref(
+            "sponsorship_compassion.product_category_sponsorship")
+        if self.state == "open":
+            self.action_invoice_cancel()
+            self.action_invoice_draft()
+            self.env.clear()
+            self.mapped("invoice_line_ids").filtered(
+                lambda l: l.product_id.categ_id != sponsorship_category).unlink()
+            self.origin = False
+            self.action_invoice_open()
+            self.message_post(
+                body="Removed mobile donation as no payment was received")
         return True
 
 
