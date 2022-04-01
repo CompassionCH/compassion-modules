@@ -1,5 +1,5 @@
 <odoo>
-        <record id="automated_action" model="ir.cron">
+        <record id="cancel_invoice_cron" model="ir.cron">
             <field name="name">Cancel Online invoices without</field>
             <field name="model_id" ref="model_account_invoice"/>
             <field name="code">model.auto_cancel()</field>
