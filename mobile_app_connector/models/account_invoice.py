@@ -77,6 +77,7 @@ class AccountInvoice(models.Model):
         # create invoice and merge lines
         lines_cmd = [(0, 0, v) for v in invoice_lines_values]
         invoice = self.sudo()
+        delay = datetime.now() + timedelta(minutes=15)
 
         if wrapper.sponsorships_payments:
             # User is paying for sponsorship: only if everything match an open invoice,
@@ -122,7 +123,6 @@ class AccountInvoice(models.Model):
                         line._onchange_product_id()
                         line.price_unit = bckp_price
                     invoice.action_invoice_open()
-                    delay = datetime.now() + timedelta(minutes=15)
                     invoice.message_post(
                         body="Sponsorship invoice used for mobile app donation.")
                     invoice.with_delay(eta=delay).remove_mobile_donation_if_not_paid()
@@ -140,7 +140,7 @@ class AccountInvoice(models.Model):
                     "origin": wrapper.source,
                     "type": "out_invoice",
                     "date_invoice": fields.Date.today(),
-                    "auto_cancel_no_transaction": True,
+                    "auto_cancel_date": delay,
                     "payment_mode_id": False  # We don't know yet how it will be paid
                 }
             )

@@ -1,0 +1,9 @@
+<odoo>
+        <record id="automated_action" model="ir.cron">
+            <field name="name">Cancel Online invoices without</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">model.auto_cancel()</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+        </record>
+</odoo>
