@@ -71,7 +71,7 @@
 
     <!-- Add menus for thank you letters -->
     <record id="partner_communication.action_communication_job" model="ir.actions.act_window">
-        <field name="domain">[('config_id.model', '!=', 'account.invoice.line')]</field>
+        <field name="domain">[('model', '!=', 'account.invoice.line')]</field>
     </record>
     <record id="action_thank_you" model="ir.actions.act_window">
         <field name="name">Donation Receipts</field>
@@ -80,7 +80,7 @@
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"/>
-        <field name="domain">[('config_id.model', '=', 'account.invoice.line')]</field>
+        <field name="domain">[('model', '=', 'account.invoice.line')]</field>
         <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id':
             uid}
         </field>
