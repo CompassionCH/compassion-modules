@@ -124,7 +124,7 @@ class SmsChildRequest(models.Model):
     @api.depends("date")
     def _compute_event(self):
         limit_date = datetime.today() - relativedelta(days=7)
-        for request in self.filtered(lambda r: r.type == "sms" and r.date):
+        for request in self.filtered(lambda r: r.source == "SMS" and r.date):
             event_id = self.env["crm.event.compassion"].search(
                 [
                     ("accepts_sms_booking", "=", True),
