@@ -1,0 +1,23 @@
+<odoo>
+    <record id="channel_sponsorship" model="queue.job.channel">
+        <field name="name">sponsorship_compassion</field>
+        <field name="parent_id" ref="queue_job.channel_root"/>
+    </record>
+
+    <!-- Job functions -->
+    <record id="generate_invoices_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract_group"/>
+        <field name="method">_generate_invoices</field>
+        <field name="channel_id" ref="channel_sponsorship"/>
+    </record>
+    <record id="no_money_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">put_child_on_no_money_hold</field>
+        <field name="channel_id" ref="child_compassion.channel_global_pool"/>
+    </record>
+    <record id="cancel_old_invoices_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">cancel_old_invoices</field>
+        <field name="channel_id" ref="channel_sponsorship"/>
+    </record>
+</odoo>

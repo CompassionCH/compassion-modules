@@ -11,7 +11,6 @@
 import logging
 
 from odoo import models, api
-from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ class AccountInvoiceLine(models.Model):
         :return: (total_donation_amount, product_name)
         """
         res_name = False
-        total = sum(self.mapped("price_subtotal"))
+        total = sum(self.mapped("price_subtotal_signed"))
         total_string = f"{int(total):,}".replace(",", "'")
 
         product_names = self.mapped("product_id.thanks_name")
@@ -37,7 +36,6 @@ class AccountInvoiceLine(models.Model):
         return total_string, res_name
 
     @api.multi
-    @job
     def generate_thank_you(self):
         """
         Creates a thank you letter communication.
@@ -55,12 +53,6 @@ class AccountInvoiceLine(models.Model):
             )
             if len(product_configs) == 1:
                 new_communication_config = product_configs[0]
-                # avoid taking into account lines with no communication config defined
-                # (amount would be wrong)
-                invoice_lines = new_invoice_lines.filtered(
-                    lambda x: x.product_id.partner_communication_config ==
-                              new_communication_config)
-
             else:
                 _logger.warning(
                     f"{len(product_configs)} product thank you config found, "
@@ -93,7 +85,6 @@ class AccountInvoiceLine(models.Model):
         )
 
         for communication_config in new_communication_config | all_existing_comm.mapped("config_id"):
-
             invoice_lines = new_invoice_lines \
                 if new_communication_config == communication_config else self.env[self._name]
 

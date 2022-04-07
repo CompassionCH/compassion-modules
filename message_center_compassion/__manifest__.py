@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion CH Message Center",
-    "version": "12.0.1.0.1",
+    "version": "12.0.1.0.2",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -46,6 +46,7 @@
         "views/compassion_mapping_view.xml",
         "views/import_json_mapping_view.xml",
         "views/compassion_settings_view.xml",
+        "data/queue_job.xml",
     ],
     "demo": ["demo/res_users.xml"],
     "installable": True,

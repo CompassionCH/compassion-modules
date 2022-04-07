@@ -56,6 +56,7 @@
         "data/ir_cron.xml",
         "data/request_sequence.xml",
         "data/crm_claim_category_data.xml",
+        "data/queue_job.xml",
         "views/wp_post_view.xml",
         "views/wp_post_category_view.xml",
         "views/app_banner_view.xml",

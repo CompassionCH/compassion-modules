@@ -10,8 +10,6 @@ from datetime import datetime, timedelta
 
 from odoo import models, fields, api
 
-from odoo.addons.queue_job.job import job, related_action
-
 
 class IrActionsServer(models.Model):
     _inherit = 'ir.actions.server'
@@ -77,7 +75,5 @@ class IrActionsServer(models.Model):
                 self.with_delay(eta=delay).create_communication_job(vals)
         return True
 
-    @job(default_channel="root.partner_communication")
-    @related_action("related_action_automation")
     def create_communication_job(self, vals):
         return self.env["partner.communication.job"].create(vals)

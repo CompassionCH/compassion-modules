@@ -1,0 +1,43 @@
+<odoo>
+    <record id="channel_sms_sponsorship" model="queue.job.channel">
+        <field name="name">sms_sponsorship</field>
+        <field name="parent_id" ref="queue_job.channel_root"/>
+    </record>
+
+    <!-- Job functions -->
+    <record id="hold_children_for_sms_job" model="queue.job.function">
+        <field name="model_id" ref="model_crm_event_compassion"/>
+        <field name="method">hold_children_for_sms</field>
+        <field name="channel_id" ref="child_compassion.channel_global_pool"/>
+    </record>
+    <record id="create_sms_sponsorship_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">create_sms_sponsorship</field>
+        <field name="channel_id" ref="channel_sms_sponsorship"/>
+    </record>
+    <record id="finalize_form_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">finalize_form</field>
+        <field name="channel_id" ref="channel_sms_sponsorship"/>
+    </record>
+    <record id="post_message_from_step2_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">post_message_from_step2</field>
+        <field name="channel_id" ref="channel_sms_sponsorship"/>
+    </record>
+    <record id="create_first_sms_invoice_job" model="queue.job.function">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="method">create_first_sms_invoice</field>
+        <field name="channel_id" ref="channel_sms_sponsorship"/>
+    </record>
+    <record id="update_partner_job" model="queue.job.function">
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="method">update_partner</field>
+        <field name="channel_id" ref="channel_sms_sponsorship"/>
+    </record>
+    <record id="reserve_child_job" model="queue.job.function">
+        <field name="model_id" ref="model_sms_child_request"/>
+        <field name="method">reserve_child</field>
+        <field name="channel_id" ref="child_compassion.channel_global_pool"/>
+    </record>
+</odoo>

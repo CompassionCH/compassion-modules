@@ -108,7 +108,7 @@ odoo.define('cms_form_compassion.modal_form', function (require) {
 //                    });
 //                }
                 var error_div = $(render_result).find('.alert.alert-danger');
-                if (error_div.length) {
+                if (error_div.length && !error_div.is(':hidden')) {
                     // We should replace the form content without closing
                     // the modal and check if the errors are visible inside the form.
                     var modal_errors = new_form.find('.alert.alert-danger.error-msg');

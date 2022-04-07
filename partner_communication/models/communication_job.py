@@ -88,18 +88,22 @@ class CommunicationJob(models.Model):
         required=True,
         default=lambda s: s.env.ref("partner_communication.default_communication"),
         readonly=False,
+        index=True
     )
-    model = fields.Char(related="config_id.model")
+    model = fields.Char(related="config_id.model", store=True, index=True)
     partner_id = fields.Many2one(
-        "res.partner", "Send to", required=True, ondelete="cascade", readonly=False
+        "res.partner", "Send to", required=True, ondelete="cascade", readonly=False,
+        index=True
     )
+    company_id = fields.Many2one(
+        "res.company", related="partner_id.company_id", store=True, index=True)
     partner_phone = fields.Char(related="partner_id.phone")
     partner_mobile = fields.Char(related="partner_id.mobile")
     country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
     parent_id = fields.Many2one(related="partner_id.parent_id", readonly=False)
     object_ids = fields.Char("Resource ids", required=True)
-    date = fields.Datetime(default=fields.Datetime.now)
-    sent_date = fields.Datetime(readonly=True, copy=False)
+    date = fields.Datetime(default=fields.Datetime.now, index=True)
+    sent_date = fields.Datetime(readonly=True, copy=False, index=True)
     state = fields.Selection(
         [
             ("pending", _("Pending")),
@@ -121,7 +125,7 @@ class CommunicationJob(models.Model):
     auto_send = fields.Boolean(
         help="Job is processed at creation if set to true", copy=False
     )
-    send_mode = fields.Selection("send_mode_select")
+    send_mode = fields.Selection("send_mode_select", index=True)
     email_template_id = fields.Many2one(
         related="config_id.email_template_id", store=True, readonly=False
     )

@@ -9,8 +9,6 @@
 ##############################################################################
 from datetime import datetime, timedelta
 
-from odoo.addons.queue_job.job import job
-
 from odoo import api, models
 
 
@@ -120,7 +118,6 @@ class MatchPartner(models.AbstractModel):
         return create_infos
 
     @api.model
-    @job
     def match_update(self, partner, infos, options=None):
         """Update the matched partner with a selection of the given infos."""
         update_infos = self.match_process_update_infos(infos, options)

@@ -1,7 +1,7 @@
 <odoo>
         <record id="automated_action" model="base.automation">
             <field name="name">Cancel Draft Transaction after 10 min</field>
-            <field name="model_id" ref="model_payment_transaction"/>
+            <field name="model_id" ref="payment.model_payment_transaction"/>
             <field name="trigger">on_time</field>
             <field name="trg_date_range">10</field>
             <field name="trg_date_range_type">minutes</field>

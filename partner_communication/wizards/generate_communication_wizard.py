@@ -10,8 +10,6 @@
 import base64
 import logging
 
-from odoo.addons.queue_job.job import job
-
 from odoo import models, api, fields, _
 from odoo.tools import safe_eval
 
@@ -207,7 +205,6 @@ class GenerateCommunicationWizard(models.TransientModel):
             "context": self._context,
         }
 
-    @job(default_channel="root.partner_communication")
     def generate_communications(self, async_mode=True):
         """ Create the communication records """
         default = self.env.ref("partner_communication.default_communication")
@@ -230,7 +227,6 @@ class GenerateCommunicationWizard(models.TransientModel):
                 self.create_communication(vals)
         return True
 
-    @job(default_channel="root.partner_communication")
     def create_communication(self, vals):
         """ Generate partner communication """
         communication = self.env["partner.communication.job"].create(vals)

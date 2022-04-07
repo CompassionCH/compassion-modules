@@ -127,7 +127,7 @@ class InteractionResume(models.TransientModel):
                         )
             -- outgoing e-mails
                     UNION (
-                      SELECT
+                      SELECT DISTINCT ON (email_id)
                         'Email' as communication_type,
                         m.date as communication_date,
                         COALESCE(p.contact_id, p.id) AS partner_id,

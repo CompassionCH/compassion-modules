@@ -68,6 +68,7 @@
         "data/child_layouts.xml",
         "data/correspondence_mappings.xml",
         "data/gmc_action.xml",
+        "data/queue_job.xml",
     ],
     "demo": ["demo/correspondence_template.xml", ],
     "installable": True,
