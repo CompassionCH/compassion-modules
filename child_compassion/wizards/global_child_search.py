@@ -13,7 +13,6 @@ from math import ceil
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
-from odoo.addons.queue_job.job import job
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -373,7 +372,6 @@ class GlobalChildSearch(models.TransientModel):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @job(default_channel="root.global_pool")
     def hold_children_job(self):
         """Job for holding requested children on the web."""
         self.ensure_one()

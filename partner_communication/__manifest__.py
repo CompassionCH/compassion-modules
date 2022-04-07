@@ -59,6 +59,7 @@
         "views/ir_attachment_view.xml",
         "views/ir_actions_view.xml",
         "data/default_communication.xml",
+        "data/queue_job.xml",
     ],
     "qweb": [],
     "demo": ["demo/demo_data.xml"],

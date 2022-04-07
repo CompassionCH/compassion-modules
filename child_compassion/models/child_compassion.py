@@ -7,7 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 import logging
 import traceback
 from datetime import datetime, date
@@ -15,7 +14,6 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
-from odoo.addons.queue_job.job import job, related_action
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -402,8 +400,6 @@ class CompassionChild(models.Model):
         return res
 
     @api.multi
-    @job(default_channel="root.child_compassion")
-    @related_action("related_action_child_compassion")
     def unlink_job(self):
         """ Small wrapper to unlink only released children. """
         return self.filtered(lambda c: c.state == "R").unlink()
@@ -529,8 +525,6 @@ class CompassionChild(models.Model):
         return True
 
     @api.multi
-    @job
-    @related_action("related_action_child_compassion")
     def update_child_pictures(self):
         """
         Check if there is a new picture if all conditions are satisfied:

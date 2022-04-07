@@ -11,15 +11,14 @@
 import logging
 import os
 import json
-from datetime import datetime, date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
-from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
-from .product_names import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
+from .product_names import GIFT_CATEGORY
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -633,8 +632,6 @@ class SponsorshipContract(models.Model):
         return res
 
     @api.multi
-    @job(default_channel="root.sponsorship_compassion")
-    @related_action(action="related_action_contract")
     def put_child_on_no_money_hold(self):
         """Convert child to No Money Hold"""
         self.ensure_one()
@@ -1099,8 +1096,6 @@ class SponsorshipContract(models.Model):
         res = super()._get_invoice_lines_to_clean(since_date, to_date)
         return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
 
-    @job(default_channel="root.recurring_invoicer")
-    @related_action(action="related_action_contract")
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
            which are older than the first paid invoice of contract.

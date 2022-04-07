@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 
 from odoo import models, api, fields, _
 from odoo.exceptions import UserError
-from odoo.addons.queue_job.job import job
 
 _logger = logging.getLogger(__name__)
 
@@ -206,7 +205,6 @@ class AccountInvoice(models.Model):
         payment_moves.write({"mobile_notification_id": notification.id})
         return True
 
-    @job(default_channel="root.mobile_app_connector")
     def remove_mobile_donation_if_not_paid(self):
         """ Job utility to remove donation from sponsorship invoice in case the
         transaction was aborted. """

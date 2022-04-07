@@ -46,6 +46,7 @@
         "data/email_template.xml",
         "data/communication_config.xml",
         "data/ir_cron.xml",
+        "data/queue_job.xml",
         "views/success_story_view.xml",
         "views/communication_job_view.xml",
         "views/account_invoice_view.xml",

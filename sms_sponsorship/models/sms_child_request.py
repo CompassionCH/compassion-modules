@@ -15,7 +15,6 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import models, api, fields
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
-from odoo.addons.queue_job.job import job, related_action
 from odoo.tools import config
 
 # By default, don't propose children older than this
@@ -220,8 +219,6 @@ class SmsChildRequest(models.Model):
         self.hold_id.write({"sms_request_id": False})
         return self.write({"state": "expired", "child_id": False})
 
-    @job(default_channel="root.sms_request")
-    @related_action(action="related_action_sms_request")
     def reserve_child(self):
         """Finds a child for SMS sponsorship service.
         Try to fetch a child in the event allocation pool or

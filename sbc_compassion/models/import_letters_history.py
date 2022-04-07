@@ -19,8 +19,6 @@ import traceback
 import fitz
 from PIL import Image
 
-from odoo.addons.queue_job.job import job, related_action
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from ..tools import read_barcode
@@ -177,8 +175,6 @@ class ImportLettersHistory(models.Model):
             pdf_data = base64.b64decode(attachment.with_context(bin_size=False).datas)
             self._analyze_pdf(pdf_data, attachment.name)
 
-    @job(default_channel="root.sbc_compassion")
-    @related_action(action="related_action_s2b_imports")
     def run_analyze(self, generator=None):
         """
         The analysis require a generator function that yield the names (for the logs)
