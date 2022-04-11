@@ -23,6 +23,16 @@ class ResPartner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    portal_sponsorships = fields.Selection([
+            ("all", "All (partner is the correspondent and/or the payer)"),
+            ("all_info", "All + correspondence info shown to payer only."),
+            ("correspondent", "Correspondent (Children the partner corresponds with)"),
+        ],
+        "Sponsorships accessible from the portal",
+        default="correspondent",
+        required=True,
+        oldname="app_displayed_sponsorships"
+    )
     global_id = fields.Char(copy=False, readonly=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
@@ -498,3 +508,22 @@ class ResPartner(models.Model):
             del connect_data["GlobalID"]
 
         return connect_data
+
+    def get_portal_sponsorships(self, states=None):
+        """
+        Returns the sponsorships that can be displayed in the portal for the sponsor.
+        :param states: Optional desired states of sponsorships displayed
+        :return: recurring.contract recordset
+        """
+        self.ensure_one()
+        if self.portal_sponsorships in ["all", "all_info"]:
+            sponsorships = self.sponsorship_ids
+        else:
+            sponsorships = (
+                    self.contracts_correspondant + self.contracts_fully_managed
+            )
+        if states is not None:
+            if not isinstance(states, list):
+                states = [states]
+            sponsorships = sponsorships.filtered(lambda s: s.state in states)
+        return sponsorships
