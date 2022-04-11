@@ -54,4 +54,4 @@ class StaffNotificationSettings(models.TransientModel):
     @api.model
     def get_param(self, param):
         """Get a single param from ['res.config.settings']"""
-        return self.sudo().get_values()[param]
+        return self.sudo().get_values().get(param)

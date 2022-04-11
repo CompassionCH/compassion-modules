@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion EU Mobile App Connector",
-    "version": "12.0.1.0.2",
+    "version": "12.0.1.0.3",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -71,7 +71,6 @@
         "views/firebase_notification.xml",
         "views/communication_job.xml",
         "views/communication_config.xml",
-        "views/res_partner.xml",
     ],
     "demo": [],
     "development_status": "Beta",

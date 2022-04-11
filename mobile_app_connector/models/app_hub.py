@@ -10,7 +10,6 @@ import logging
 import random
 import json
 from collections import defaultdict
-from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 
 from odoo import api, models, fields
@@ -51,26 +50,15 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env["res.partner"].browse(partner_id)
+        all_sponsorships = partner.get_portal_sponsorships()
+        sponsorships = all_sponsorships.filtered(
+            lambda s: s.can_write_letter or s.can_make_gift)
 
-        if partner.app_displayed_sponsorships in ["all", "all_info"]:
-            sponsorships = partner.sponsorship_ids
-            unpaid = partner.contracts_fully_managed + partner.contracts_paid
-        else:
-            sponsorships = (
-                partner.contracts_correspondant + partner.contracts_fully_managed
-            )
-            unpaid = partner.contracts_fully_managed
-
-        # show active sponsorships and sponsorships that ended less than 2 months ago.
-        date_limit = fields.Datetime.now() - relativedelta(months=2)
-        sponsorships = sponsorships.filtered(
-            lambda sp: sp.is_active or (sp.state == "terminated" and
-                                        sp.end_date and sp.end_date > date_limit))
-
-        unpaid = unpaid.filtered(
+        unpaid = all_sponsorships.filtered(
             lambda c: not c.is_active
             and not c.parent_id
             and (c.state in ["waiting", "draft", "mandate"])
+            and c.partner_id == partner
         )
         children = sponsorships.mapped("child_id")
         sponsorship_amounts = sponsorships.mapped("total_amount")
@@ -79,7 +67,7 @@ class AppHub(models.AbstractModel):
         unpaid_amounts = unpaid.mapped("total_amount")
 
         correspondence_obj = self.env["correspondence"]
-        if partner.app_displayed_sponsorships == "all_info":
+        if partner.portal_sponsorships == "all_info":
             correspondence_obj = correspondence_obj.sudo()
 
         letters = correspondence_obj.search(
