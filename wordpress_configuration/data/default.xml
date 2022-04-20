@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
-        <function id="create_default_wordpress_configuration_record" model="wordpress.configuration" name="create_default_configuration"/>
-    </data>
-</odoo>
