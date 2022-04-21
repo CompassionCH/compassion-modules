@@ -409,7 +409,7 @@ class SponsorshipContract(models.Model):
             hold_gifts = sponsorship.project_id.hold_gifts
             is_allowed = sponsorship.state == "active" and not hold_gifts
             if sponsorship.state == "terminated" and not hold_gifts:
-                is_allowed = (now - sponsorship.end_date).days <= days_allowed
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_make_gift = is_allowed
 
     def _compute_can_write_letter(self):
@@ -420,7 +420,7 @@ class SponsorshipContract(models.Model):
             hold_letters = sponsorship.project_id.hold_s2b_letters
             is_allowed = sponsorship.state == "active" and not hold_letters
             if sponsorship.state == "terminated" and not hold_letters:
-                is_allowed = (now - sponsorship.end_date).days <= days_allowed
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_write_letter = is_allowed
 
     ##########################################################################
