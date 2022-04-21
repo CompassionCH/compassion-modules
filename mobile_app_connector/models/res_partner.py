@@ -14,20 +14,6 @@ from odoo import api, models, fields, _
 class GetPartnerMessage(models.Model):
     _inherit = "res.partner"
 
-    app_displayed_sponsorships = fields.Selection(
-        [
-            ("all", _("All (partner is the correspondent and/or the payer)")),
-            ("all_info", _("All + correspondence info shown to payer only.")),
-            (
-                "correspondent",
-                _("Correspondent (Children the partner correspond with)"),
-            ),
-        ],
-        "Sponsorships displayed in the app",
-        default="correspondent",
-        required=True,
-    )
-
     app_messages = fields.Many2one(
         "mobile.app.messages", "Mobile app messages"
     )
@@ -50,7 +36,7 @@ class GetPartnerMessage(models.Model):
     @api.multi
     def write(self, vals):
         res = super().write(vals)
-        if vals.get("app_displayed_sponsorships"):
+        if vals.get("portal_sponsorships"):
             self.mapped("app_messages").write({"force_refresh": True})
         return res
 

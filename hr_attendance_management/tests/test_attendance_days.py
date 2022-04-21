@@ -417,8 +417,6 @@ class TestAttendanceDays(SavepointCase):
             #     domain=[('id', '=', self.pieter.id)],
             #     day=date)
 
-        self.assertNotEqual(leave.attendance_day_ids, None)
-
         for in_leave, date in date_data:
             att_day = self.pieter.attendance_days_ids.filtered(
                 lambda rd: (rd.date.year == date.year and rd.date.month == date.month and rd.date.day == date.day)
