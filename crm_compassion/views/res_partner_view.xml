@@ -65,10 +65,4 @@
         <field name="binding_model_id" ref="model_res_partner"/>
         <field name="binding_type">action</field>
     </record>
-
-    <!-- Replace domain of communications button to display only pending communications -->
-    <record id="partner_communication.action_communication_job_partner" model="ir.actions.act_window">
-        <field name="domain">[('state', '!=', 'done')]</field>
-    </record>
-
 </odoo>
