@@ -18,8 +18,8 @@ python-magic
 pyzbar
 openupgradelib
 pdfminer
-git+https://github.com/pdfminer/pdfminer.six@master
-git+https://github.com/mstamy2/PyPDF2@master
+git+https://github.com/pdfminer/pdfminer.six
+git+https://github.com/mstamy2/PyPDF2
 PyMuPDF>=1.19.3
 pandas-datareader
 pytesseract
