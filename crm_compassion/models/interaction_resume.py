@@ -163,7 +163,7 @@ class InteractionResume(models.TransientModel):
                         FULL OUTER JOIN utm_source source
                             ON config.source_id = source.id
                             AND source.name != 'Default communication'
-                        WHERE mail.state = ANY (ARRAY ['sent', 'received'])
+                        WHERE mail.state = ANY (ARRAY ['sent', 'received', 'exception'])
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         AND (mail.direction = 'out' OR mail.direction IS NULL)
                         )
