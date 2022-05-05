@@ -18,6 +18,7 @@ class LogInteractionWizard(models.TransientModel):
         "res.partner", "Partner", default=lambda s: s._default_partner(), readonly=False
     )
     subject = fields.Char()
+    date = fields.Datetime(default=fields.Datetime.now)
     body = fields.Html()
     direction = fields.Selection(
         [("in", "Incoming"), ("out", "Outgoing"), ], default='out', required=True
@@ -39,13 +40,14 @@ class LogInteractionWizard(models.TransientModel):
         mail = self.env["mail.mail"].create(
             {
                 "state": "sent",
-                "recipient_ids": [(4, partner.id)],
+                "recipient_ids": [(4, partner.id if self.direction == "out" else user.partner_id.id)],
                 "subject": self.subject,
                 "body_html": self.body,
                 "author_id": user.partner_id.id
                 if self.direction == "out" else partner.id,
                 "is_from_employee": self.direction == "out",
                 "direction": self.direction,
+                "date": self.date,
                 "mail_message_id": self.env["mail.message"]
                 .create({
                     "model": "res.partner",
@@ -57,6 +59,7 @@ class LogInteractionWizard(models.TransientModel):
                     "subtype_id": self.env.ref("mail.mt_comment").id,
                     "email_from": user.email if self.direction == "out" else
                     partner.email,
+                    "date": self.date
                 }).id,
             }
         )
