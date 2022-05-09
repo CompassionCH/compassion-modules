@@ -162,7 +162,7 @@ class TextFields extends React.Component {
                         value={partner.firstname}
                         margin="dense"
                         required={true}
-                        error={this.state.formErrors === 'firstname'}
+                        error={this.state.formErrors == 'firstname'}
                     />
                     <TextField
                         id="lastname"
@@ -172,7 +172,7 @@ class TextFields extends React.Component {
                         value={partner.lastname}
                         margin="dense"
                         required={true}
-                        error={this.state.formErrors === 'lastname'}
+                        error={this.state.formErrors == 'lastname'}
                     />
                     <TextField
                         id="email"
@@ -183,7 +183,7 @@ class TextFields extends React.Component {
                         value={partner.email}
                         margin="dense"
                         required={true}
-                        error={this.state.formErrors === 'email'}
+                        error={this.state.formErrors == 'email'}
                     />
                     <TextField
                         id="email2"
@@ -192,7 +192,7 @@ class TextFields extends React.Component {
                         className={classes.textField}
                         margin="dense"
                         required={true}
-                        error={this.state.formErrors === 'email'}
+                        error={this.state.formErrors == 'email'}
                     />
                     {/*invisible checkbox for sponsorship plus*/}
                     <input readOnly
