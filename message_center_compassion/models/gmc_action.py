@@ -84,7 +84,7 @@ class GmcAction(models.Model):
         vals.pop("direction", False)
         return super().write(vals)
 
-    @api.multi
+    
     @api.constrains(
         "mapping_id", "direction", "incoming_method", "success_method", "failure_method"
     )

@@ -19,7 +19,7 @@ class ImportJsonMapping(models.TransientModel):
 
     file = fields.Binary()
 
-    @api.multi
+    
     def import_json_mapping(self):
         self.ensure_one()
         dec = str(base64.decodebytes(self.file), "utf-8")

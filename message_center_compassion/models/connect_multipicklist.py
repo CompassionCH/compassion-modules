@@ -29,7 +29,7 @@ class ConnectMultipicklist(models.AbstractModel):
         )
     ]
 
-    @api.multi
+    
     def get_res_view(self):
         """
         Method to find all children given a property
@@ -44,7 +44,7 @@ class ConnectMultipicklist(models.AbstractModel):
             "domain": [["id", "in", res_ids]],
         }
 
-    @api.multi
+    
     def get_res_ids(self):
         """
         :return: Recordset of records having a given property

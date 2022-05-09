@@ -50,7 +50,7 @@ class CompassionMapping(models.Model):
         mapping.load_from_json(json["mapping"])
         return mapping
 
-    @api.multi
+    
     def load_from_json(self, json):
         """
         Function used to import JSON file to create/update a mapping

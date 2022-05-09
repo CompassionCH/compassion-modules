@@ -63,7 +63,7 @@ class QueryFilter(models.TransientModel):
         if self.mapped_fields:
             return {"domain": {"field_id": [("id", "in", self.mapped_fields.ids)]}}
 
-    @api.multi
+    
     def data_to_json(self, mapping_name=None):
         # Queries should always be lists
         result = []

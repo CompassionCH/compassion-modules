@@ -112,11 +112,11 @@ class GmcMessage(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
+    
     def update_res_name(self):
         self._compute_res_name()
 
-    @api.multi
+    
     def process_messages(self):
         new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
         new_messages.write({"state": "pending", "failure_reason": False})
@@ -126,7 +126,7 @@ class GmcMessage(models.Model):
             new_messages._process_messages()
         return True
 
-    @api.multi
+    
     def get_answer_dict(self, index=0):
         answer = json.loads(self[index].answer)
         if isinstance(answer, list):
@@ -136,18 +136,18 @@ class GmcMessage(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
+    
     def force_success(self):
         self.write({"state": "success", "failure_reason": False})
         self.mapped("message_ids").unlink()
         return True
 
-    @api.multi
+    
     def reset_message(self):
         self.write({"state": "new", "process_date": False, "failure_reason": False})
         return True
 
-    @api.multi
+    
     def open_related(self):
         self.ensure_one()
         if self.direction == "out":
@@ -175,7 +175,7 @@ class GmcMessage(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.multi
+    
     def _process_messages(self):
         """ Process given messages in pool. """
         today = datetime.now()

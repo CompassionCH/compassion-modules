@@ -28,7 +28,7 @@ class CompassionMappedModel(models.AbstractModel):
     _name = "compassion.mapped.model"
     _description = "Compassion Mapping"
 
-    @api.multi
+    
     def data_to_json(self, mapping_name=None):
         """
          Function to convert an odoo record into JSON representation for
