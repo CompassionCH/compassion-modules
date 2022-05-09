@@ -174,6 +174,11 @@ class CompassionChild(models.Model):
                     res[key] = datetime.datetime.strptime(value, "%Y-%m-%d").strftime(
                         "%d/%m/%Y %H:%M:%S"
                     )
+            if key in ("SupporterGroupId", "SupporterId") and not value:
+                sponsor = self.env["recurring.contract"].search([("child_id", "=", self.id)], limit=1).correspondent_id
+                if sponsor:
+                    value = sponsor.id
+                    res[key] = value
             if key == "SupporterGroupId":
                 if value:
                     res[key] = int(value)

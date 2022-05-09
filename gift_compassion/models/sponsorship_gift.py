@@ -198,8 +198,7 @@ class SponsorshipGift(models.Model):
                     gift.state = "verify"
                     gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")
             else:
-                gift_date = max([d for d in inv_dates])
-                gift.gift_date = gift_date and gift_date
+                gift.gift_date = max([d for d in inv_dates])
 
             gift.amount = sum(amounts)
 

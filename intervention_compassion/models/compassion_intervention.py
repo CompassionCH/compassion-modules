@@ -773,9 +773,8 @@ class CompassionIntervention(models.Model):
         intervention_local_ids = []
 
         for milestone in milestones_data:
-            intervention_vals = self.json_to_data(commkit_data)
             milestone_id = milestone.get("InterventionReportingMilestone_ID")
-            intervention_id = intervention_vals.get("intervention_id")
+            intervention_id = milestone.get("Intervention_ID")
             intervention = self.search([("intervention_id", "=", intervention_id)])
             if intervention:
                 intervention_local_ids.append(intervention.id)

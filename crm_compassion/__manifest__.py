@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion CH - Events",
-    "version": "12.0.1.0.1",
+    "version": "12.0.1.0.3",
     "category": "CRM",
     "sequence": 150,
     "author": "Compassion CH",

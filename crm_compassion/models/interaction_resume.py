@@ -7,7 +7,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class InteractionResume(models.TransientModel):
@@ -35,6 +36,7 @@ class InteractionResume(models.TransientModel):
     )
     email_id = fields.Many2one("mail.mail", "Email")
     mass_mailing_id = fields.Many2one("mail.mass_mailing", "Mass mailing")
+    other_interaction_id = fields.Many2one("partner.log.other.interaction", "Logged interaction")
     logged_mail_direction = fields.Selection(related="email_id.direction")
     message_id = fields.Many2one("mail.message", "Email")
     is_from_employee = fields.Boolean(default=False)
@@ -87,6 +89,7 @@ class InteractionResume(models.TransientModel):
                         pcj.id as paper_id,
                         NULL as tracking_status,
                         0 as mass_mailing_id,
+                        0 as other_interaction_id,
                         false as has_attachment
                         FROM "partner_communication_job" as pcj
                         JOIN res_partner p ON pcj.partner_id = p.id
@@ -120,6 +123,7 @@ class InteractionResume(models.TransientModel):
                         0 as paper_id,
                         NULL as tracking_status,
                         0 as mass_mailing_id,
+                        0 as other_interaction_id,
                         false as has_attachment
                         FROM "crm_phonecall" as crmpc
                         JOIN res_partner p ON crmpc.partner_id = p.id
@@ -143,6 +147,7 @@ class InteractionResume(models.TransientModel):
                         job.id as paper_id,
                         COALESCE(mt.state, 'error') as tracking_status,
                         mt.mass_mailing_id as mass_mailing_id,
+                        0 as other_interaction_id,
                         (nb_attachment is not NULL) as has_attachment
                         FROM "mail_mail" as mail
                         FULL OUTER JOIN (
@@ -163,7 +168,7 @@ class InteractionResume(models.TransientModel):
                         FULL OUTER JOIN utm_source source
                             ON config.source_id = source.id
                             AND source.name != 'Default communication'
-                        WHERE mail.state = ANY (ARRAY ['sent', 'received'])
+                        WHERE mail.state = ANY (ARRAY ['sent', 'received', 'exception'])
                         AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
                         AND (mail.direction = 'out' OR mail.direction IS NULL)
                         )
@@ -191,6 +196,7 @@ class InteractionResume(models.TransientModel):
                         ELSE 'sent'
                         END tracking_status,
                         mm.id as mass_mailing_id,
+                        0 as other_interaction_id,
                         (nb_attachment is not NULL) as has_attachment
                         FROM "mail_mail_statistics" as mail
                         FULL OUTER JOIN (
@@ -226,6 +232,7 @@ class InteractionResume(models.TransientModel):
                         0 as paper_id,
                         NULL as tracking_status,
                         0 as mass_mailing_id,
+                        0 as other_interaction_id,
                         (nb_attachment is not NULL) as has_attachment
                         FROM "mail_message" as m
                         FULL OUTER JOIN (
@@ -243,7 +250,7 @@ class InteractionResume(models.TransientModel):
                     UNION (
                       SELECT
                         'Other' as communication_type,
-                        o.create_date as communication_date,
+                        o.date as communication_date,
                         COALESCE(p.contact_id, p.id) AS partner_id,
                         '' as email,
                         o.subject as subject,
@@ -257,6 +264,7 @@ class InteractionResume(models.TransientModel):
                         0 as paper_id,
                         NULL as tracking_status,
                         0 as mass_mailing_id,
+                        o.id as other_interaction_id,
                         false as has_attachment
                         FROM "partner_log_other_interaction" as o
                         JOIN res_partner p ON o.partner_id = p.id
@@ -279,11 +287,40 @@ class InteractionResume(models.TransientModel):
 
         return self.create(self.env.cr.dictfetchall())
 
-    def open_object(self):
-        """
-        TODO Implement and add icon in tree view
-        Used for opening the related object directly from tree view.
-        :return: action for opening the related object
-        """
-        self.ensure_one()
-        return True
+    def write(self, vals):
+        log_date = vals.get("communication_date")
+        if log_date:
+            for record in self:
+                for _field in ["email_id", "message_id", "paper_id", "other_interaction_id", "phone_id"]:
+                    getattr(record, _field).write({"date": log_date})
+        direction = vals.get("direction")
+        if direction:
+            for record in self.filtered(lambda r: r.direction != direction):
+                email = record.email_id
+                message = record.message_id
+                if not email:
+                    email = self.env["mail.mail"].search([("mail_message_id", "=", message.id)])
+                if email:
+                    author = email.author_id
+                    dest = email.recipient_ids
+                    # Solves the previous bug on logged emails where author is same as dest
+                    if author == dest:
+                        dest = self.env.user.partner_id
+                    email.write({
+                        "author_id": dest[:1].id,
+                        "recipient_ids": [(6, 0, author.ids)],
+                        "partner_ids": [(6, 0, author.ids)],
+                        "email_from": dest[:1].email,
+                        "direction": direction
+                    })
+                    email.mail_message_id.write({
+                        "author_id": dest[:1].id,
+                        "email_from": dest[:1].email,
+                        "partner_ids": [(6, 0, author.ids)],
+                        "email_to": author.email
+                    })
+                elif record.other_interaction_id:
+                    record.other_interaction_id.direction = direction
+                else:
+                    raise UserError(_("Cannot change direction of this interaction"))
+        return super().write(vals)

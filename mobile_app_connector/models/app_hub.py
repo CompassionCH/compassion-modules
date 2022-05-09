@@ -50,7 +50,8 @@ class AppHub(models.AbstractModel):
             return self._public_hub(**pagination)
 
         partner = self.env["res.partner"].browse(partner_id)
-        all_sponsorships = partner.get_portal_sponsorships()
+        all_sponsorships = partner.get_portal_sponsorships().with_context(
+            allow_during_suspension=True)
         sponsorships = all_sponsorships.filtered(
             lambda s: s.can_write_letter or s.can_make_gift)
 
