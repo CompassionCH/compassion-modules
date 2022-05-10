@@ -18,9 +18,3 @@ class ImportConfig(models.Model):
     _inherit = "correspondence.metadata"
 
     name = fields.Char()
-    is_encourager = fields.Boolean("Encourager")
-
-    def get_fields(self):
-        res = super().get_fields()
-        res.append("is_encourager")
-        return res

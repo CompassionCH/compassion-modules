@@ -139,9 +139,6 @@
           "GlobalId": {
             "field": "global_id"
           },
-          "MandatoryReviewRequired": {
-            "field": "mandatory_review"
-          },
           "ObjectUrl": {
             "field": null
           },

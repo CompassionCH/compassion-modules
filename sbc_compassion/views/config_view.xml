@@ -10,8 +10,6 @@
                     <group>
                         <field name="name"/>
                         <field name="template_id"/>
-                        <field name="mandatory_review"/>
-                        <field name="is_encourager"/>
                     </group>
                     <group>
                         <field name="physical_attachments"/>

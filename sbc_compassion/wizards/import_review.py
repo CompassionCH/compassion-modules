@@ -52,8 +52,6 @@ class ImportReview(models.TransientModel):
         order="translatable desc, id asc",
         readonly=False,
     )
-    is_encourager = fields.Boolean(related="current_line_id.is_encourager", readonly=False)
-    mandatory_review = fields.Boolean(related="current_line_id.mandatory_review", readonly=False)
     physical_attachments = fields.Selection(
         related="current_line_id.physical_attachments",
             readonly=False
