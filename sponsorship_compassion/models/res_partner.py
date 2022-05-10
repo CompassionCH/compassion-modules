@@ -54,10 +54,6 @@ class ResPartner(models.Model):
         "recurring.contract",
         compute="_compute_related_contracts",
     )
-    mandatory_review = fields.Boolean(
-        help="Indicates that we should review the letters of this sponsor "
-             "before sending them to GMC.",
-    )
     other_contract_ids = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
@@ -72,9 +68,6 @@ class ResPartner(models.Model):
     has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer(
         string="Number of sponsorships", copy=False
-    )
-    send_original = fields.Boolean(
-        help="Indicates that we request the original letters for this sponsor",
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
@@ -276,8 +269,6 @@ class ResPartner(models.Model):
             "lastname",
             "name",
             "preferred_name",
-            "mandatory_review",
-            "send_original",
             "title",
         ]
         notify = functools.reduce(

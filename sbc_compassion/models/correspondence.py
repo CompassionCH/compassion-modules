@@ -316,12 +316,6 @@ class Correspondence(models.Model):
             else:
                 letter.name = _("New correspondence")
 
-    @api.depends("sponsorship_id")
-    def _set_partner_review(self):
-        for letter in self:
-            if letter.partner_id.mandatory_review:
-                letter.mandatory_review = True
-
     @api.depends("page_ids")
     def _compute_original_text(self):
         for letter in self:

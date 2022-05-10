@@ -163,10 +163,6 @@
                     </group>
                 </page>
             </xpath>
-            <field name="website" position="after">
-                <field name="send_original" groups="child_compassion.group_sponsorship"/>
-            </field>
-
         </field>
     </record>
     <record id="compassion_partner_view_buttons" model="ir.ui.view">
