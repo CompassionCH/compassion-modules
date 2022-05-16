@@ -57,4 +57,7 @@ class MailActivity(models.Model):
         if feedback:
             vals["description"] = feedback
         self.mapped("phonecall_id").with_context(from_activity=True).write(vals)
+        related_partner = self.env[self.res_model].browse(self.res_id)
+        if not related_partner.message_ids:
+            related_partner.message_post(body='System note', message_type='comment', subtype='mail.mt_note')
         return super().action_feedback(feedback)
