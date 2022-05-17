@@ -54,7 +54,7 @@ class GmcMessage(models.Model):
     action_id = fields.Many2one(
         "gmc.action", "GMC Message", ondelete="restrict", required=False, readonly=True
     )
-    process_date = fields.Datetime(readonly=True, track_visibility="onchange")
+    process_date = fields.Datetime(readonly=True, tracking=True)
     state = fields.Selection(
         [
             ("new", _("New")),
@@ -67,9 +67,9 @@ class GmcMessage(models.Model):
         "State",
         readonly=True,
         default="new",
-        track_visibility="always",
+        tracking=True,
     )
-    failure_reason = fields.Text("Failure details", track_visibility="onchange")
+    failure_reason = fields.Text("Failure details", tracking=True)
     headers = fields.Text(readonly=True)
     content = fields.Text()
     answer = fields.Text(readonly=True)

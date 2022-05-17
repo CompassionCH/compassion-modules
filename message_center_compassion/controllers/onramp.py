@@ -50,20 +50,20 @@ class RestController(http.Controller):
         }
         action_connect = (
             request.env["gmc.action.connect"]
-            .sudo(request.uid)
+            .with_user(request.uid)
             .search([("connect_schema", "=", message_type)])
         )
         if not action_connect:
             try:
                 action_connect = (
                     request.env["gmc.action.connect"]
-                    .sudo(request.uid)
+                    .with_user(request.uid)
                     .create({"connect_schema": message_type})
                 )
             except ValidationError:
                 action_connect = (
                     request.env["gmc.action.connect"]
-                    .sudo(request.uid)
+                    .with_user(request.uid)
                     .search([("connect_schema", "=", message_type)])
                 )
 
@@ -87,7 +87,7 @@ class RestController(http.Controller):
                 _logger.warning("Unknown message type received: " + message_type)
                 result["Message"] = "Unknown message type - not processed."
 
-        request.env["gmc.message"].sudo(request.uid).create(params)
+        request.env["gmc.message"].with_user(request.uid).create(params)
 
         return result
 
@@ -97,7 +97,7 @@ class RestController(http.Controller):
         )
         if from_address not in AUTHORIZED_SENDERS:
             raise exceptions.AccessDenied()
-        company_obj = request.env["res.company"].sudo(request.uid)
+        company_obj = request.env["res.company"].with_user(request.uid)
         companies = company_obj.search([])
         country_codes = companies.mapped("partner_id.country_id.code")
         to_address = headers.get("x-cim-ToAddress") or headers.get("X-Cim-ToAddress")

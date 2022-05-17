@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Copyright (C) 2014 Compassion (http://www.compassion.ch)
-    @author Emanuel Cino <ecino@compassion.ch>
-    The licence is in the file __manifest__.py
--->
 <odoo>
-    <!-- GMC Message Pool tree view -->
     <record id="view_gmc_message_incoming_tree" model="ir.ui.view">
         <field name="name">gmc.message.incoming.tree</field>
         <field name="model">gmc.message</field>
@@ -14,11 +8,11 @@
             <tree decoration-danger="state in ('failure', 'odoo_failure')"
                   decoration-primary="state == 'new'"
                   decoration-muted="state == 'success'">
-                <field name="action_id" />
+                <field name="action_id"/>
                 <field name="res_name"/>
-                <field name="date" />
-                <field name="process_date" />
-                <field name="state" />
+                <field name="date"/>
+                <field name="process_date"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -31,28 +25,28 @@
             <tree decoration-danger="state in ('failure', 'odoo_failure')"
                   decoration-primary="state == 'new'"
                   decoration-muted="state == 'success'">
-                <field name="action_id" />
-                <field name="partner_id" />
+                <field name="action_id"/>
+                <field name="partner_id"/>
                 <field name="res_name"/>
-                <field name="date" />
-                <field name="process_date" />
-                <field name="state" />
+                <field name="date"/>
+                <field name="process_date"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
 
-
-    <!-- GMC Message Pool form view -->
     <record id="view_gmc_message_form" model="ir.ui.view">
         <field name="name">gmc.message.form</field>
         <field name="model">gmc.message</field>
         <field name="arch" type="xml">
             <form string="GMC Message" create="false">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="new,pending,success" />
-                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message" states="new,failure,odoo_failure" />
+                    <field name="state" widget="statusbar" statusbar_visible="new,pending,success"/>
+                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message"
+                            states="new,failure,odoo_failure"/>
                     <button name="reset_message" type="object" string="Set back to New" states="failure,pending"/>
-                    <button name="force_success" type="object" string="Success" groups="base.group_erp_manager" attrs="{'invisible':[('state','in',['postponed', 'success'])]}"/>
+                    <button name="force_success" type="object" string="Success" groups="base.group_erp_manager"
+                            attrs="{'invisible':[('state','in',['postponed', 'success'])]}"/>
                     <button name="open_related" type="object" string="Related"/>
                 </header>
                 <sheet>
@@ -63,9 +57,9 @@
                         </h1>
                     </div>
                     <group>
-                        <field name="direction" invisible="1" />
-                        <field name="date" />
-                        <field name="process_date" />
+                        <field name="direction" invisible="1"/>
+                        <field name="date"/>
+                        <field name="process_date"/>
                         <field name="res_name"/>
                         <field name="partner_id"/>
                         <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
@@ -87,8 +81,6 @@
         </field>
     </record>
 
-
-    <!-- GMC Action views -->
     <record id="view_gmc_action_form" model="ir.ui.view">
         <field name="name">gmc.action.form</field>
         <field name="model">gmc.action</field>
@@ -142,8 +134,6 @@
     </record>
 
 
-
-    <!-- Search Filters -->
     <record id="view_gmc_message_filter" model="ir.ui.view">
         <field name="name">gmc.message.filter</field>
         <field name="model">gmc.message</field>
@@ -151,16 +141,19 @@
             <search>
                 <field name="action_id"/>
                 <field name="partner_id"/>
-                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]" context="{'group_by':'action_id'}" />
-                <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]" context="{'group_by':'action_id'}" />
-                <separator />
-                <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]" />
-                <filter string="Failed" name="failure" domain="[('state','in',('failure','odoo_failure'))]" />
-                <filter string="Success" name="success" domain="[('state','=','success')]" />
+                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]"
+                        context="{'group_by':'action_id'}"/>
+                <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]"
+                        context="{'group_by':'action_id'}"/>
+                <separator/>
+                <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]"/>
+                <filter string="Failed" name="failure" domain="[('state','in',('failure','odoo_failure'))]"/>
+                <filter string="Success" name="success" domain="[('state','=','success')]"/>
                 <group expand="0" string="Group By...">
                     <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Date" name="date" domain="[]" context="{'group_by':'date'}"/>
-                    <filter string="Process Date" name="process_date" domain="[]" context="{'group_by':'process_date'}"/>
+                    <filter string="Process Date" name="process_date" domain="[]"
+                            context="{'group_by':'process_date'}"/>
                     <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter string="Message Type" name="message_type" domain="[]" context="{'group_by':'action_id'}"/>
                 </group>
@@ -169,12 +162,10 @@
     </record>
 
 
-    <!-- Sidebar actions, called from menuitems -->
     <record id="action_gmc_message_form" model="ir.actions.act_window">
         <field name="name">Message Pool</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -187,9 +178,9 @@
         <field name="name">Incoming Messages</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_incoming':1, 'search_default_pending':1, 'search_default_failure':1}</field>
+        <field name="context">{'search_default_incoming': 1, 'search_default_pending': 1,
+                               'search_default_failure': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -201,9 +192,9 @@
         <field name="name">Outgoing Messages</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_outgoing':1, 'search_default_pending':1, 'search_default_failure':1}</field>
+        <field name="context">{'search_default_outgoing': 1, 'search_default_pending': 1,
+                               'search_default_failure': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -215,7 +206,6 @@
         <field name="name">GMC Action</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.action</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
@@ -223,21 +213,21 @@
         <field name="name">GMC Action to Connect</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.action.connect</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Menu Items -->
-    <menuitem id="menu_message_center" name="Message Center" groups="group_gmc_user" sequence="4" web_icon="message_center_compassion,static/description/icon.png"/>/>
-    <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1" />
-    <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form" sequence="1" />
+    <menuitem id="menu_message_center" name="Message Center" groups="group_gmc_user" sequence="4"
+              web_icon="message_center_compassion,static/description/icon.png"/>/>
+    <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1"/>
+    <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form"
+              sequence="1"/>
     <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
-    <menuitem id="menu_message_outgoing_all" parent="menu_message_outgoing"  action="action_gmc_message_outgoing_form" sequence="2"/>
+    <menuitem id="menu_message_outgoing_all" parent="menu_message_outgoing" action="action_gmc_message_outgoing_form"
+              sequence="2"/>
     <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="group_gmc_manager"/>
     <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
     <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
 
-    <!-- Process Message Views -->
     <record id="message_pool_process" model="ir.ui.view">
         <field name="name">gmc.message.process.form</field>
         <field name="model">gmc.message.process</field>
@@ -247,7 +237,8 @@
                     This will execute the action defined for each new message in the pool.
                 </p>
                 <footer>
-                    <button string="Process Messages" name="process_messages" type="object" default_focus="1" class="oe_highlight"/>
+                    <button string="Process Messages" name="process_messages" type="object" default_focus="1"
+                            class="oe_highlight"/>
                     or
                     <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
@@ -255,9 +246,11 @@
         </field>
     </record>
 
-    <act_window id="action_message_pool_process"
-                multi="True"
-                key2="client_action_multi" name="Process Messages"
-                res_model="gmc.message.process" src_model="gmc.message"
-                view_mode="form" target="new" view_type="form" />
+    <record id="action_message_pool_process" model="ir.actions.act_window">
+        <field name="name">Process Messages</field>
+        <field name="res_model">gmc.message.process</field>
+        <field name="binding_model">gmc.message</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 </odoo>
