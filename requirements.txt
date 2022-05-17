@@ -1,6 +1,9 @@
-jwt
 babel
-pytesseract
 iso639
 iso639-lang
+jwt
 langdetect
+pyquery
+pytesseract
+pytz
+timezonefinder
