@@ -2,4 +2,5 @@ jwt
 babel
 pytesseract
 iso639
+iso639-lang
 langdetect
