@@ -28,6 +28,9 @@
     "GlobalPartner_ID": {
       "to_json_conversion": "gpid"
     },
-    "HoldExpirationDate": "expiration_date"
+    "HoldExpirationDate": {
+      "field": "expiration_date",
+      "from_json_conversion": "json_value.replace('T', ' ').rstrip('Z')"
+    }
   }
 }
