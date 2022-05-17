@@ -82,7 +82,7 @@ class CrmLead(models.Model):
         CRM_LEAD_FIELDS_TO_MERGE.extend(["phonecall_ids", "meeting_ids"])
         return super().merge_opportunity(user_id, team_id)
 
-    @api.depends('partner_id')
+    @api.depends("partner_id")
     def _compute_name(self):
         for lead in self:
             if not lead.name and lead.partner_id and lead.partner_id.name:

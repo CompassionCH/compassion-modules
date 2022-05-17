@@ -26,7 +26,7 @@ class AccountPartialReconcile(models.Model):
             gift = line.gift_id
             if gift.state in ["draft", "verify"]:
                 if gift.invoice_line_ids:
-                    gift.write({'invoice_line_ids': [(3, line.id)]})
+                    gift.write({"invoice_line_ids": [(3, line.id)]})
                     if not gift.invoice_line_ids:
                         gift.unlink()
             elif gift.state != "Undeliverable":
