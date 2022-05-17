@@ -1,1 +1,5 @@
 jwt
+babel
+pytesseract
+iso639
+langdetect

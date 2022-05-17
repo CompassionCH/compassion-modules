@@ -18,7 +18,6 @@ class AdvancedTranslatable(models.AbstractModel):
 
     gender = fields.Selection([("M", "Male"), ("F", "Female"), ], default="M")
 
-    @api.multi
     def get(self, keyword):
         """
         Gets the translation for one keyword, depending on the recordset
@@ -39,7 +38,6 @@ class AdvancedTranslatable(models.AbstractModel):
         else:
             return advanced_translation.get(keyword)
 
-    @api.multi
     def translate(self, field):
         """ helps getting the translated value of a
         char/selection field by adding a translate function.
@@ -79,7 +77,6 @@ class AdvancedTranslatable(models.AbstractModel):
             res = res[0]
         return res or ""
 
-    @api.multi
     def get_list(self, field, limit=float("inf"), substitution=None, translate=True):
         """
         Get a list of values, separated with commas. (last separator 'and')
@@ -112,7 +109,6 @@ class AdvancedTranslatable(models.AbstractModel):
             values = res_string
         return values
 
-    @api.multi
     def get_date(self, field, date_type="date_short"):
         """
         Useful to format a date field in a given language

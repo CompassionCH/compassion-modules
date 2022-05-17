@@ -249,7 +249,6 @@
     <record id="action_message_pool_process" model="ir.actions.act_window">
         <field name="name">Process Messages</field>
         <field name="res_model">gmc.message.process</field>
-        <field name="binding_model">gmc.message</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
