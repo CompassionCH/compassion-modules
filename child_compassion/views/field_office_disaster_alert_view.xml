@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data>
+<odoo>
         <!--Field office disaster form view -->
         <record id="view_field_office_disaster" model="ir.ui.view">
             <field name="name">fo.disaster.alert.form</field>
@@ -215,10 +214,8 @@
         <record id="open_view_field_office_disaster" model="ir.actions.act_window">
             <field name="name">Disaster Alerts</field>
             <field name="res_model">fo.disaster.alert</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <menuitem id="menu_sponsorship_field_office_disaster_alert" parent="menu_field_section" name="Disaster Alerts" action="open_view_field_office_disaster" sequence="6"/>
-    </data>
-</openerp>
+</odoo>

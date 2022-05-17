@@ -159,13 +159,13 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    hold_id = fields.Char(readonly=True, track_visibility="onchange")
+    hold_id = fields.Char(readonly=True, tracking=True)
     child_id = fields.Many2one("compassion.child", "Child on hold", readonly=True)
     state = fields.Selection(
         [("draft", "Draft"), ("active", "Active"), ("expired", "Expired")],
         readonly=True,
         default="draft",
-        track_visibility="onchange",
+        tracking=True,
     )
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one(
@@ -176,11 +176,11 @@ class CompassionHold(models.Model):
     )
 
     # Track field changes
-    ambassador = fields.Many2one(track_visibility="onchange", readonly=False)
-    primary_owner = fields.Many2one(track_visibility="onchange", readonly=False)
-    type = fields.Selection(track_visibility="onchange")
-    channel = fields.Selection(track_visibility="onchange")
-    expiration_date = fields.Datetime(track_visibility="onchange",
+    ambassador = fields.Many2one(tracking=True, readonly=False)
+    primary_owner = fields.Many2one(tracking=True, readonly=False)
+    type = fields.Selection(tracking=True)
+    channel = fields.Selection(tracking=True)
+    expiration_date = fields.Datetime(tracking=True,
                                       required=False,
                                       default=datetime.now() + timedelta(days=60)
                                       )
@@ -203,7 +203,6 @@ class CompassionHold(models.Model):
                 return hold
         return super().create(vals)
 
-    @api.multi
     def write(self, vals):
         if "expiration_date" in vals and self.filtered(
                 lambda h: h.expiration_date < datetime.now()):
@@ -218,7 +217,6 @@ class CompassionHold(models.Model):
 
         return res
 
-    @api.multi
     def unlink(self):
         """
         Don't unlink active holds, but only those that don't relate to
@@ -234,7 +232,6 @@ class CompassionHold(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def update_hold(self):
         message_obj = self.env["gmc.message"].with_context(async_mode=False)
         action_id = self.env.ref("child_compassion.create_hold").id
@@ -252,7 +249,6 @@ class CompassionHold(models.Model):
             self.env.cr.rollback()
             raise UserError("\n\n".join(failed.mapped("failure_reason")))
 
-    @api.multi
     def hold_sent(self, vals):
         """ Called when hold is sent to Connect. """
         self.write(vals)
@@ -354,7 +350,6 @@ class CompassionHold(models.Model):
 
         return list()
 
-    @api.multi
     def button_release_hold(self):
         """
         Prevent releasing No Money Holds!
@@ -363,7 +358,6 @@ class CompassionHold(models.Model):
             raise UserError(_("You cannot release No Money Hold!"))
         return self.release_hold()
 
-    @api.multi
     def release_hold(self):
         messages = self.env["gmc.message"].with_context(async_mode=False)
         action_id = self.env.ref("child_compassion.release_hold").id
@@ -383,7 +377,6 @@ class CompassionHold(models.Model):
             self.mapped("child_id").write({"hold_id": False})
         return True
 
-    @api.multi
     def hold_released(self, vals=None):
         """ Called when release message was successfully sent to GMC. """
         self.write({"state": "expired"})
@@ -451,7 +444,6 @@ class CompassionHold(models.Model):
         hold.hold_released()
         return [hold.id]
 
-    @api.multi
     def postpone_no_money_hold(self, additional_text=None):
         """
         When a No Money Hold is expiring, this will extend the hold duration.
@@ -499,7 +491,6 @@ class CompassionHold(models.Model):
     #                              Mapping METHOD                            #
     ##########################################################################
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
         for key, val in json_data.copy().items():

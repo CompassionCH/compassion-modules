@@ -44,7 +44,6 @@
         <field name="name">Compassion languages</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.lang.compassion</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
     <menuitem name="Compassion langugages" action="action_lang_compassion_view" id="menu_lang_compassion" parent="base.menu_translation"/>

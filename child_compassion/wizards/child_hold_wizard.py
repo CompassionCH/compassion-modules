@@ -32,7 +32,6 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def get_hold_values(self):
         hold_vals = super().get_hold_values()
         if self.channel in ("ambassador", "event"):
@@ -42,7 +41,6 @@ class ChildHoldWizard(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def send(self):
         holds = self.env["compassion.hold"]
         child_search = (

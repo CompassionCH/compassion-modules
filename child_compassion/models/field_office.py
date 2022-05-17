@@ -98,7 +98,6 @@ class FieldOffice(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def update_informations(self):
         """ Get the most recent informations for selected field offices and
         update them accordingly. """

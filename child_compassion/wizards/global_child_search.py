@@ -165,7 +165,6 @@ class GlobalChildSearch(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def add_status(self):
         self.ensure_one()
         if self.state_selected:
@@ -175,13 +174,11 @@ class GlobalChildSearch(models.TransientModel):
         self.state_chooser = False
         return True
 
-    @api.multi
     def reset_status(self):
         self.ensure_one()
         self.state_selected = False
         return True
 
-    @api.multi
     def do_search(self):
         self.ensure_one()
         # Remove previous search results
@@ -205,7 +202,6 @@ class GlobalChildSearch(models.TransientModel):
 
         return True
 
-    @api.multi
     def add_search(self):
         self.ensure_one()
         self.skip += self.nb_selected
@@ -227,7 +223,6 @@ class GlobalChildSearch(models.TransientModel):
             raise UserError(_("No children found."))
         return True
 
-    @api.multi
     def rich_mix(self):
         self.ensure_one()
         # Remove previous search results
@@ -241,7 +236,6 @@ class GlobalChildSearch(models.TransientModel):
         )
         return True
 
-    @api.multi
     def make_a_hold(self):
         """ Create hold and send to Connect """
         self.ensure_one()
@@ -260,7 +254,6 @@ class GlobalChildSearch(models.TransientModel):
             "target": "new",
         }
 
-    @api.multi
     def create_reservation(self):
         self.ensure_one()
         return {
@@ -273,7 +266,6 @@ class GlobalChildSearch(models.TransientModel):
             "target": "new",
         }
 
-    @api.multi
     def country_mix(self):
         """
         Tries to find an even number of children for each country.
@@ -316,7 +308,6 @@ class GlobalChildSearch(models.TransientModel):
         (self.global_child_ids - found_children).unlink()
         return True
 
-    @api.multi
     def do_365_mix(self):
         """ Try to find one child per day of the year having his birthdate
         on that date."""
@@ -351,7 +342,6 @@ class GlobalChildSearch(models.TransientModel):
                 # No children found on that date: displays it.
                 self.missing_dates += current_date.strftime("%d.%m\n")
 
-    @api.multi
     def filter(self):
         self.ensure_one()
         matching = self.global_child_ids.filtered(lambda child: self._does_match(child))
@@ -360,7 +350,6 @@ class GlobalChildSearch(models.TransientModel):
         self.nb_found = len(self.global_child_ids)
         return True
 
-    @api.multi
     def take_more(self):
         self.ensure_one()
         # Use rich mix
@@ -500,7 +489,6 @@ class GlobalChildSearch(models.TransientModel):
 
         return self.write({"search_filter_ids": new_filters})
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         json_result = super().data_to_json(mapping_name)
         if mapping_name == "profile_search":

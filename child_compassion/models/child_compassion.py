@@ -41,17 +41,17 @@ class CompassionChild(models.Model):
     ##########################################################################
     # General Information
     #####################
-    local_id = fields.Char(track_visibility="onchange")
+    local_id = fields.Char(tracking=True)
     code = fields.Char(help="Old child reference")
     compass_id = fields.Char("Compass ID", oldname="unique_id")
     estimated_birthdate = fields.Boolean(readonly=True)
     cognitive_age_group = fields.Char(readonly=True)
     cdsp_type = fields.Selection(
         [("Home Based", "Home based"), ("Center Based", "Center based")],
-        track_visibility="onchange",
+        tracking=True,
         readonly=True,
     )
-    last_review_date = fields.Date(track_visibility="onchange", readonly=True)
+    last_review_date = fields.Date(tracking=True, readonly=True)
     last_photo_date = fields.Date()
     type = fields.Selection(
         [("CDSP", "CDSP"), ("LDP", "LDP")], required=True, default="CDSP"
@@ -71,12 +71,12 @@ class CompassionChild(models.Model):
         ],
         readonly=True,
         required=True,
-        track_visibility="onchange",
+        tracking=True,
         default="W",
     )
     is_available = fields.Boolean(compute="_compute_available")
     sponsor_id = fields.Many2one(
-        "res.partner", "Sponsor", track_visibility="onchange", readonly=True
+        "res.partner", "Sponsor", tracking=True, readonly=True
     )
     partner_id = fields.Many2one("res.partner", related="sponsor_id", readonly=False)
     sponsor_ref = fields.Char("Sponsor reference", related="sponsor_id.ref")
@@ -282,7 +282,7 @@ class CompassionChild(models.Model):
         "compassion.child.pictures",
         "child_id",
         "Child pictures",
-        track_visibility="onchange",
+        tracking=True,
         readonly=False,
     )
     household_id = fields.Many2one("compassion.household", "Household", readonly=True)
@@ -390,7 +390,6 @@ class CompassionChild(models.Model):
             child.with_delay().update_child_pictures()
         return child
 
-    @api.multi
     def unlink(self):
         holds = self.mapped("hold_id").filtered(
             lambda h: h.state == "active" and h.type != HoldType.NO_MONEY_HOLD.value
@@ -399,7 +398,6 @@ class CompassionChild(models.Model):
         holds.release_hold()
         return res
 
-    @api.multi
     def unlink_job(self):
         """ Small wrapper to unlink only released children. """
         return self.filtered(lambda c: c.state == "R").unlink()
@@ -487,7 +485,6 @@ class CompassionChild(models.Model):
         }
         return number_dict.get(len(self), str(len(self))) + " " + self.get("child")
 
-    @api.multi
     def json_to_data(self, json, mapping_name=None):
         data = super().json_to_data(json, mapping_name)
         # Update household
@@ -506,7 +503,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def get_infos(self):
         """Get the most recent case study, basic informations, updates
            portrait picture and creates the project if it doesn't exist.
@@ -524,7 +520,6 @@ class CompassionChild(models.Model):
                 raise UserError(message.failure_reason)
         return True
 
-    @api.multi
     def update_child_pictures(self):
         """
         Check if there is a new picture if all conditions are satisfied:
@@ -549,14 +544,12 @@ class CompassionChild(models.Model):
 
     # Lifecycle methods
     ###################
-    @api.multi
     def new_photo(self):
         """
         Hook for doing something when a new photo is attached to the child.
         """
         pass
 
-    @api.multi
     def get_lifecycle_event(self):
         onramp = OnrampConnector()
         endpoint = "beneficiaries/{}/kits/beneficiarylifecycleeventkit"
@@ -572,7 +565,6 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.multi
     def child_waiting_hold(self):
         """ Called on child creation. """
         if self.mapped("hold_id"):
@@ -584,7 +576,6 @@ class CompassionChild(models.Model):
         self.write({"state": "W", "sponsor_id": False})
         return True
 
-    @api.multi
     def child_consigned(self, hold_id):
         """Called on child allocation."""
         self.write({"state": "N", "hold_id": hold_id, "date": fields.Datetime.now()})
@@ -605,7 +596,6 @@ class CompassionChild(models.Model):
         self.get_infos()
         return True
 
-    @api.multi
     def child_sponsored(self, sponsor_id):
         self.ensure_one()
         if self.state in ("W", "F", "R"):
@@ -628,7 +618,6 @@ class CompassionChild(models.Model):
             {"state": "P", "has_been_sponsored": True, "sponsor_id": sponsor_id}
         )
 
-    @api.multi
     def child_unsponsored(self):
         for child in self:
             values = {"sponsor_id": False}
@@ -660,7 +649,6 @@ class CompassionChild(models.Model):
         self.get_lifecycle_event()
         return True
 
-    @api.multi
     def child_released(self, state="R"):
         """ Is called when a child is released to the global childpool. """
         to_release = self
@@ -688,7 +676,6 @@ class CompassionChild(models.Model):
 
         return True
 
-    @api.multi
     def child_departed(self):
         """ Is called when a child is departed. """
         return self.child_released(state="F")
@@ -697,7 +684,6 @@ class CompassionChild(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
 
-    @api.multi
     def _get_last_pictures(self):
         self.ensure_one()
 

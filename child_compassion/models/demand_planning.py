@@ -85,7 +85,6 @@ class DemandPlanning(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def send_planning(self):
         message_obj = self.env["gmc.message"]
         pool = message_obj
@@ -106,7 +105,6 @@ class DemandPlanning(models.Model):
 
         return True
 
-    @api.multi
     def reset(self):
         return self.write({"state": "draft", "sent_date": False})
 
@@ -135,7 +133,6 @@ class DemandPlanning(models.Model):
             ("week_start_date", "=", start_date),
         ]
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         connect_data = super().data_to_json(mapping_name)
         connect_data["GlobalPartner_ID"] = self.env.user.country_id.code

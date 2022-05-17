@@ -52,7 +52,6 @@ class ChildPictures(models.Model):
             pictures.fname = code + " " + date + " fullshot.jpg"
             pictures.hname = code + " " + date + " headshot.jpg"
 
-    @api.multi
     def _compute_image_url_compassion(self):
         for image in self:
             try:
@@ -105,7 +104,6 @@ class ChildPictures(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.multi
     def _find_same_picture(self):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
@@ -119,7 +117,6 @@ class ChildPictures(models.Model):
         )
         return same_pics
 
-    @api.multi
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
         """ Gets a picture from Compassion webservice """
         self.ensure_one()

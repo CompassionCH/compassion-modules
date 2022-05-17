@@ -87,7 +87,6 @@ class MajorRevision(models.Model):
             "Preferred Name": "preferred_name",
         }
 
-    @api.multi
     def get_field_value(self):
         values = list()
         for revision in self:

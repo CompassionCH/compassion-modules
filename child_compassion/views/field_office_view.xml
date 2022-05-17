@@ -113,7 +113,6 @@
     <record id="open_view_field_office" model="ir.actions.act_window">
         <field name="name">Field Offices</field>
         <field name="res_model">compassion.field.office</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 

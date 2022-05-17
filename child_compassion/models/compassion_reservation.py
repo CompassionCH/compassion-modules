@@ -32,7 +32,7 @@ class CompassionReservation(models.Model):
         [("draft", "Draft"), ("active", "Active"), ("expired", "Expired")],
         readonly=True,
         default="draft",
-        track_visibility="onchange",
+        tracking=True,
     )
     fcp_id = fields.Many2one(
         "compassion.project", "Project", oldname="icp_id", readonly=False
@@ -50,15 +50,15 @@ class CompassionReservation(models.Model):
     )
     campaign_event_identifier = fields.Char()
     expiration_date = fields.Datetime(
-        "Hold expiration date", track_visibility="onchange"
+        "Hold expiration date", tracking=True
     )
     reservation_expiration_date = fields.Date(
         required=True,
-        track_visibility="onchange",
+        tracking=True,
         default=lambda s: s._default_expiration_date(),
     )
     is_reservation_auto_approved = fields.Boolean(default=True)
-    number_of_beneficiaries = fields.Integer(track_visibility="onchange")
+    number_of_beneficiaries = fields.Integer(tracking=True)
     number_reserved = fields.Integer()
 
     _sql_constraints = [
@@ -72,13 +72,11 @@ class CompassionReservation(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("child_id")
     def _compute_child_global_id(self):
         for reservation in self.filtered("child_id"):
             reservation.child_global_id = reservation.child_id.global_id
 
-    @api.multi
     def _inverse_child_global_id(self):
         for reservation in self.filtered("child_global_id"):
             child = self.env["compassion.child"].search(
@@ -102,7 +100,6 @@ class CompassionReservation(models.Model):
     ##########################################################################
     #                             ORM METHODS                                #
     ##########################################################################
-    @api.multi
     def write(self, vals):
         res = super().write(vals)
         sync_fields = [
@@ -127,7 +124,6 @@ class CompassionReservation(models.Model):
                 raise UserError("\n\n".join(failed.mapped("failure_reason")))
         return res
 
-    @api.multi
     def unlink(self):
         active = self.filtered(lambda r: r.state == "active")
         draft = self.filtered(lambda r: r.state == "draft")
@@ -192,16 +188,13 @@ class CompassionReservation(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def send_reservation(self):
         return self.with_context(async_mode=False).handle_reservation()
 
-    @api.multi
     def cancel_reservation(self):
         self.with_context(async_mode=False).handle_reservation(cancel=True)
         return True
 
-    @api.multi
     def show_reserved_children(self):
         self.ensure_one()
 
@@ -233,7 +226,6 @@ class CompassionReservation(models.Model):
     ##########################################################################
     #                              Mapping METHOD                            #
     ##########################################################################
-    @api.multi
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
         # Read manually Primary Owner, to avoid security restrictions on

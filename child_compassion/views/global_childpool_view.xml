@@ -256,7 +256,6 @@
     <record id="open_view_childpool" model="ir.actions.act_window">
         <field name="name">Global Childpool</field>
         <field name="res_model">compassion.childpool.search</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form</field>
     </record>
 

@@ -297,7 +297,6 @@ class FieldOfficeDisasterAlert(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def view_children(self):
         return {
             "name": _("Impacted children"),
@@ -311,7 +310,6 @@ class FieldOfficeDisasterAlert(models.Model):
             "target": "current",
         }
 
-    @api.multi
     def view_icp(self):
         return {
             "name": _("Impacted projects"),

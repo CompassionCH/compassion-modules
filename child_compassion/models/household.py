@@ -75,7 +75,6 @@ class Household(models.Model):
     nb_brothers = fields.Integer(compute="_compute_siblings")
     nb_sisters = fields.Integer(compute="_compute_siblings")
 
-    @api.multi
     def _compute_siblings(self):
         for household in self:
             brothers = household.member_ids.filtered(
@@ -95,7 +94,6 @@ class Household(models.Model):
                 else len(sisters)
             )
 
-    @api.multi
     def _compute_primary_caregiver(self):
         for household in self:
             primary_caregiver = household.member_ids.filtered("is_primary_caregiver")
@@ -103,7 +101,6 @@ class Household(models.Model):
                 household.primary_caregiver_id = primary_caregiver[0]
                 household.primary_caregiver = primary_caregiver[0].translate("role")
 
-    @api.multi
     def get_male_guardian(self):
         self.ensure_one()
         caregiver = self.member_ids.filtered(
@@ -111,7 +108,6 @@ class Household(models.Model):
         )
         return caregiver.translate("role")
 
-    @api.multi
     def get_female_guardian(self):
         self.ensure_one()
         caregiver = self.member_ids.filtered(
@@ -119,7 +115,6 @@ class Household(models.Model):
         )
         return caregiver.translate("role")
 
-    @api.multi
     def get_caregivers(self):
         """ Returns valid names for caregivers. """
         self.ensure_one()
@@ -303,7 +298,6 @@ class HouseholdMembers(models.Model):
         ]
 
     @api.depends("role")
-    @api.multi
     def _compute_gender(self):
         for caregiver in self:
             if caregiver.role in dict(self._get_male_roles()).keys():

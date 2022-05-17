@@ -419,7 +419,6 @@
     <record id="open_view_children_tree" model="ir.actions.act_window">
         <field name="name">Children</field>
         <field name="res_model">compassion.child</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="context">{'search_default_available':1}</field>
     </record>

@@ -4,8 +4,7 @@
     @author Emanuel Cino <ecino@compassion.ch>
     The licence is in the file __manifest__.py
 -->
-<openerp>
-    <data>
+<odoo>
         <record id="view_gmc_message_child_tree" model="ir.ui.view">
             <field name="name">gmc.message.child.tree</field>
             <field name="model">gmc.message</field>
@@ -28,5 +27,4 @@
                 </field>
             </field>
         </record>
-    </data>
-</openerp>
+</odoo>

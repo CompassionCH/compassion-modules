@@ -151,7 +151,6 @@ class ProjectLifecycle(models.Model):
 
         return lifecycle_ids
 
-    @api.multi
     def data_to_json(self, mapped_name=None):
         odoo_data = super().data_to_json(mapped_name)
         status = odoo_data.get("project_status")

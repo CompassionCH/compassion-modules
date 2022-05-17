@@ -36,7 +36,6 @@ class WeeklyDemand(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.depends("week_start_date")
-    @api.multi
     def _compute_period_locked(self):
         for week in self:
             date_week = week.week_start_date

@@ -27,7 +27,6 @@ class AvailabilitySettings(models.TransientModel):
     sponsor_cancel_hold_duration = fields.Integer(help="In Days")
     sub_child_hold_duration = fields.Integer(help="In Days")
 
-    @api.multi
     def set_values(self):
         super().set_values()
         config = self.env["ir.config_parameter"]

@@ -347,7 +347,7 @@ class CompassionProject(models.Model):
         "Suspension",
         compute="_compute_suspension_state",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
     )
     status = fields.Selection(
         [
@@ -356,13 +356,13 @@ class CompassionProject(models.Model):
             ("T", _("Terminated")),
             ("S", _("Suspended")),
         ],
-        track_visibility="onchange",
+        tracking=True,
         default="A",
         readonly=True,
     )
     last_reviewed_date = fields.Date(
         "Last reviewed date",
-        track_visibility="onchange",
+        tracking=True,
         readonly=True,
         oldname="status_date",
     )
@@ -379,13 +379,12 @@ class CompassionProject(models.Model):
 
     re_opening_status = fields.Char(compute="_compute_re_opening_state",
                                     store=True,
-                                    track_visibility="onchange",
+                                    tracking=True,
                                     )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("fcp_id")
     def _compute_field_office(self):
         fo_obj = self.env["compassion.field.office"]
@@ -398,7 +397,6 @@ class CompassionProject(models.Model):
         return self.env["connect.month"].get_months_selection()
 
     @api.depends("lifecycle_ids")
-    @api.multi
     def _compute_suspension_state(self):
         for project in self.filtered("lifecycle_ids"):
             last_info = project.lifecycle_ids[0]
@@ -410,7 +408,6 @@ class CompassionProject(models.Model):
                 project.suspension = False
 
     @api.depends("covid_status_ids")
-    @api.multi
     def _compute_re_opening_state(self):
         for project in self.filtered("covid_status_ids"):
             project.re_opening_status = project.covid_status_ids[0].re_opening_status
@@ -435,7 +432,6 @@ class CompassionProject(models.Model):
             ("Plastic", "Plastic"),
         ]
 
-    @api.multi
     @api.depends("gps_longitude", "gps_latitude")
     def _compute_timezone(self):
         tf = TimezoneFinder()
@@ -446,13 +442,11 @@ class CompassionProject(models.Model):
                 lng=project.gps_longitude, lat=project.gps_latitude
             )
 
-    @api.multi
     def _compute_usd(self):
         usd = self.env.ref("base.USD")
         for project in self:
             project.usd = usd
 
-    @api.multi
     def _compute_chf_income(self):
         for project in self.filtered("country_id"):
             income = project.monthly_income / project.country_id.currency_id.rate
@@ -482,7 +476,6 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def suspend_funds(self):
         """ Hook to perform some action when project is suspended.
         By default: log a message.
@@ -495,7 +488,6 @@ class CompassionProject(models.Model):
             )
         return True
 
-    @api.multi
     def get_time(self):
         """
         Compute the current time in the project location
@@ -511,7 +503,6 @@ class CompassionProject(models.Model):
         self.search([("field_office_id", "=", False)])._compute_field_office()
         return True
 
-    @api.multi
     def update_weather(self):
         """
         Update the weather infos of the centers if it was not accessed in the
@@ -539,7 +530,6 @@ class CompassionProject(models.Model):
                 project.current_temperature = json["main"]["temp"]
                 project.last_weather_refresh_date = fields.Datetime.now()
 
-    @api.multi
     def get_activities(self, field, max_int=float("inf")):
         all_activities = (
             self.mapped(field + "_babies_ids")
@@ -548,7 +538,6 @@ class CompassionProject(models.Model):
         ).sorted()
         return all_activities[:max_int].mapped("value")
 
-    @api.multi
     def details_answer(self, vals):
         """ Called when receiving the answer of GetDetails message. """
         self.ensure_one()
@@ -572,7 +561,6 @@ class CompassionProject(models.Model):
                 projects += self.create(vals)
         return projects.ids
 
-    @api.multi
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)
         status = odoo_data.get("status")
@@ -613,7 +601,6 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def update_informations(self):
         """ Get the most recent informations for selected projects and update
             them accordingly. """
@@ -629,7 +616,6 @@ class CompassionProject(models.Model):
 
         return True
 
-    @api.multi
     def get_lifecycle_event(self):
         onramp = OnrampConnector()
         endpoint = "churchpartners/{}/kits/icplifecycleeventkit"

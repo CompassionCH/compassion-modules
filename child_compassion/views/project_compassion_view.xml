@@ -291,7 +291,6 @@
     <record id="open_view_project_tree" model="ir.actions.act_window">
         <field name="name">projects</field>
         <field name="res_model">compassion.project</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_compassion_project_tree"/>
     </record>

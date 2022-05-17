@@ -113,7 +113,6 @@ class GenericChild(models.AbstractModel):
         del vals["id"]
         return vals
 
-    @api.multi
     def _compute_age(self):
         today = date.today()
         for child in self.filtered("birthdate"):
@@ -124,7 +123,6 @@ class GenericChild(models.AbstractModel):
                 - ((today.month, today.day) < (born.month, born.day))
             )
 
-    @api.multi
     def _compute_image_thumb(self):
         self._load_image(True, False)
 
@@ -138,7 +136,6 @@ class GenericChild(models.AbstractModel):
             odoo_data["preferred_name"] = odoo_data.get("firstname")
         return odoo_data
 
-    @api.multi
     def _load_image(self, thumb=False, binar=False):
         if thumb:
             height = 180
@@ -189,7 +186,6 @@ class GlobalChild(models.TransientModel):
     hold_expiration_date = fields.Datetime()
     source_code = fields.Char("origin of the hold")
 
-    @api.multi
     def _compute_color(self):
         available = self.filtered(lambda c: c.beneficiary_state == "Available")
         for child in available:
@@ -197,10 +193,8 @@ class GlobalChild(models.TransientModel):
         for child in self - available:
             child.color = 7 if child.gender == "M" else 5
 
-    @api.multi
     def _compute_image_portrait(self):
         self._load_image(True, True)
 
-    @api.multi
     def _compute_image_fullshot(self):
         self._load_image(False, True)
