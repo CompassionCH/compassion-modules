@@ -404,6 +404,7 @@ class RegistrationSupporterForm(models.AbstractModel):
                 )
             # partner is not sponsoring a child (but answered yes (form))
             values["source"] = extra_values.get("source")
+            partner = partner or self.partner_id
             if not partner or len(partner) > 1:
                 email_template = self.env.ref(
                     "mobile_app_connector.email_template_user_not_found"

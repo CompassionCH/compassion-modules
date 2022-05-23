@@ -408,7 +408,7 @@ class SponsorshipContract(models.Model):
         for sponsorship in self:
             hold_gifts = sponsorship.project_id.hold_gifts and not \
                 self.env.context.get("allow_during_suspension")
-            is_allowed = sponsorship.state not in ["terminated", "cancelled"] and not hold_gifts
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_gifts
             if sponsorship.state == "terminated" and not hold_gifts:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_make_gift = is_allowed
@@ -420,7 +420,7 @@ class SponsorshipContract(models.Model):
         for sponsorship in self:
             hold_letters = sponsorship.project_id.hold_s2b_letters and not \
                 self.env.context.get("allow_during_suspension")
-            is_allowed = sponsorship.state not in ["terminated", "cancelled"] and not hold_letters
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_letters
             if sponsorship.state == "terminated" and not hold_letters:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_write_letter = is_allowed

@@ -53,7 +53,7 @@ class AppHub(models.AbstractModel):
         all_sponsorships = partner.get_portal_sponsorships().with_context(
             allow_during_suspension=True)
         sponsorships = all_sponsorships.filtered(
-            lambda s: s.can_write_letter or s.can_make_gift)
+            lambda s: s.state in ("active", "terminated") and (s.can_write_letter or s.can_make_gift))
 
         unpaid = all_sponsorships.filtered(
             lambda c: not c.is_active

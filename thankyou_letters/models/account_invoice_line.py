@@ -44,7 +44,7 @@ class AccountInvoiceLine(models.Model):
         new_invoice_lines = self.filtered("product_id.requires_thankyou")
         if not new_invoice_lines:
             # Avoid generating thank you if no valid invoice lines are present
-            return
+            return "Product is not thankable"
 
         new_communication_config = self.env.context.get("default_communication_config")
         if not new_communication_config:
@@ -83,7 +83,7 @@ class AccountInvoiceLine(models.Model):
         thankyou_config = (
             self.env["thankyou.config"].search([]).for_donation(all_invoice_lines)
         )
-
+        generated_comms = self.env["partner.communication.job"]
         for communication_config in new_communication_config | all_existing_comm.mapped("config_id"):
             invoice_lines = new_invoice_lines \
                 if new_communication_config == communication_config else self.env[self._name]
@@ -122,3 +122,5 @@ class AccountInvoiceLine(models.Model):
 
             if new_communication_config == communication_config:
                 self.mapped("invoice_id").write({"communication_id": existing_comm.id})
+            generated_comms += existing_comm
+        return generated_comms.ids
