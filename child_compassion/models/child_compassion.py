@@ -73,6 +73,7 @@ class CompassionChild(models.Model):
         required=True,
         track_visibility="onchange",
         default="W",
+        index=True
     )
     is_available = fields.Boolean(compute="_compute_available")
     sponsor_id = fields.Many2one(
