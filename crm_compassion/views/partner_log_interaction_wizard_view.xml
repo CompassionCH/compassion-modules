@@ -12,6 +12,7 @@
                     <group>
                         <field name="subject"/>
                         <field name="direction"/>
+                        <field name="date"/>
                         <field name="body" required="1"/>
                     </group>
                 </sheet>

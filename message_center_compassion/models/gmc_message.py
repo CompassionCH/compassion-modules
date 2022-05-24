@@ -13,8 +13,6 @@ import re
 import traceback
 from datetime import datetime
 
-from odoo.addons.queue_job.job import job, related_action
-
 from odoo import api, models, fields, tools, _
 from odoo.exceptions import UserError
 from ..tools.onramp_connector import OnrampConnector
@@ -178,8 +176,6 @@ class GmcMessage(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     @api.multi
-    @job(default_channel="root.gmc_pool")
-    @related_action(action="related_action_messages")
     def _process_messages(self):
         """ Process given messages in pool. """
         today = datetime.now()

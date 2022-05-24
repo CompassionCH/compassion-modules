@@ -11,15 +11,14 @@
 import logging
 import os
 import json
-from datetime import datetime, date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
-from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
-from .product_names import GIFT_CATEGORY, SPONSORSHIP_CATEGORY
+from .product_names import GIFT_CATEGORY
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -166,6 +165,14 @@ class SponsorshipContract(models.Model):
     )
     hold_id = fields.Many2one(
         "compassion.hold", related="child_id.hold_id", readonly=False
+    )
+    can_make_gift = fields.Boolean(
+        compute="_compute_can_make_gift",
+        help="Whether gift to the child is possible at the moment or not"
+    )
+    can_write_letter = fields.Boolean(
+        compute="_compute_can_write_letter",
+        help="Whether letter to the child is possible at the moment or not"
     )
 
     _sql_constraints = [
@@ -393,6 +400,30 @@ class SponsorshipContract(models.Model):
                             "please choose a unique one"
                         )
                     )
+
+    def _compute_can_make_gift(self):
+        days_allowed = self.env["ir.config_parameter"].sudo().get_param(
+            "sponsorship_compassion.time_allowed_for_gifts", 90)
+        now = fields.Datetime.now()
+        for sponsorship in self:
+            hold_gifts = sponsorship.project_id.hold_gifts and not \
+                self.env.context.get("allow_during_suspension")
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_gifts
+            if sponsorship.state == "terminated" and not hold_gifts:
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
+            sponsorship.can_make_gift = is_allowed
+
+    def _compute_can_write_letter(self):
+        days_allowed = self.env["ir.config_parameter"].sudo().get_param(
+            "sponsorship_compassion.time_allowed_for_letters", 90)
+        now = fields.Datetime.now()
+        for sponsorship in self:
+            hold_letters = sponsorship.project_id.hold_s2b_letters and not \
+                self.env.context.get("allow_during_suspension")
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_letters
+            if sponsorship.state == "terminated" and not hold_letters:
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
+            sponsorship.can_write_letter = is_allowed
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -633,8 +664,6 @@ class SponsorshipContract(models.Model):
         return res
 
     @api.multi
-    @job(default_channel="root.sponsorship_compassion")
-    @related_action(action="related_action_contract")
     def put_child_on_no_money_hold(self):
         """Convert child to No Money Hold"""
         self.ensure_one()
@@ -1099,8 +1128,6 @@ class SponsorshipContract(models.Model):
         res = super()._get_invoice_lines_to_clean(since_date, to_date)
         return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
 
-    @job(default_channel="root.recurring_invoicer")
-    @related_action(action="related_action_contract")
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
            which are older than the first paid invoice of contract.

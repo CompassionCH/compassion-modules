@@ -7,8 +7,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.addons.queue_job.job import job, related_action
-
 from odoo import api, models, _
 
 
@@ -66,7 +64,5 @@ class ResPartner(models.Model):
         )
         return True
 
-    @job(default_channel="root.res_partner")
-    @related_action(action="related_action_update_partner")
     def update_partner(self, partner_vals):
         return self.write(partner_vals)

@@ -12,7 +12,6 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
-from odoo.addons.queue_job.job import job
 
 from odoo import api, models, fields
 from .sms_child_request import DEFAULT_MAX_AGE
@@ -63,7 +62,6 @@ class EventCompassion(models.Model):
         return True
 
     @api.multi
-    @job
     def hold_children_for_sms(self, force_hold_number=None):
         """ Put children on hold for an event that accepts SMS sponsorships
         :param force_hold_number: Used to set the number of children to reserve

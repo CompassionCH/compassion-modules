@@ -37,7 +37,7 @@
         "hr_contract",  # source/addons
         "hr_employee_calendar_planning",  # hr
     ],
-    "version": "12.0.1.1.0",
+    "version": "12.0.1.1.1",
     "auto_install": False,
     "website": "https://www.compassion.ch",
     "license": "AGPL-3",
@@ -52,7 +52,6 @@
         "views/hr_attendance_view.xml",
         "views/hr_employee.xml",
         "views/hr_holidays_status_views.xml",
-        "views/hr_holidays_views.xml",
         "views/attendance.xml",
         "views/hr_attendance_break.xml",
         "views/hr_attendance_location.xml",

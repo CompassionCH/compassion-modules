@@ -8,6 +8,7 @@
 ##############################################################################
 
 import logging
+from builtins import NotImplementedError
 
 from odoo.addons.firebase_connector.controllers.firebase_controller import (
     RestController as Firebase,
@@ -144,7 +145,7 @@ class GetPartnerMessage(models.Model):
                 registration_id=firebase_id, partner_id=partner_id
             )
         else:
-            raise NotImplemented("Operation %s is not supported by Odoo" % operation)
+            raise NotImplementedError("Operation %s is not supported by Odoo" % operation)
         try:
             reg_id = int(response.data)
         except TypeError:

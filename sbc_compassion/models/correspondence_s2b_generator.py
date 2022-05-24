@@ -162,8 +162,6 @@ class CorrespondenceS2bGenerator(models.Model):
         return True
 
     @api.multi
-    @job(default_channel="root.sbc_compassion")
-    @related_action(action="related_action_s2b")
     def generate_letters_job(self, utms=None):
         """
         Create S2B Letters

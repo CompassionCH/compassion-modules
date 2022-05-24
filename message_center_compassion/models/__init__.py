@@ -7,5 +7,4 @@ from . import gmc_action_connect
 from . import ir_http
 from . import connect_multipicklist
 from . import advanced_query
-from . import queue_job
 from . import res_partner_test

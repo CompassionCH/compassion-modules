@@ -25,6 +25,7 @@
         "security/access_rules.xml",
         "data/sms_crons.xml",
         "data/utm_medium.xml",
+        "data/queue_job.xml",
         "views/event_compassion_view.xml",
         "views/hold_view.xml",
         "views/sms_child_request_view.xml",

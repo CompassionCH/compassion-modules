@@ -88,18 +88,22 @@ class CommunicationJob(models.Model):
         required=True,
         default=lambda s: s.env.ref("partner_communication.default_communication"),
         readonly=False,
+        index=True
     )
-    model = fields.Char(related="config_id.model")
+    model = fields.Char(related="config_id.model", store=True, index=True)
     partner_id = fields.Many2one(
-        "res.partner", "Send to", required=True, ondelete="cascade", readonly=False
+        "res.partner", "Send to", required=True, ondelete="cascade", readonly=False,
+        index=True
     )
+    company_id = fields.Many2one(
+        "res.company", related="partner_id.company_id", store=True, index=True)
     partner_phone = fields.Char(related="partner_id.phone")
     partner_mobile = fields.Char(related="partner_id.mobile")
     country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
     parent_id = fields.Many2one(related="partner_id.parent_id", readonly=False)
     object_ids = fields.Char("Resource ids", required=True)
-    date = fields.Datetime(default=fields.Datetime.now)
-    sent_date = fields.Datetime(readonly=True, copy=False)
+    date = fields.Datetime(default=fields.Datetime.now, index=True)
+    sent_date = fields.Datetime(readonly=True, copy=False, index=True)
     state = fields.Selection(
         [
             ("pending", _("Pending")),
@@ -121,7 +125,7 @@ class CommunicationJob(models.Model):
     auto_send = fields.Boolean(
         help="Job is processed at creation if set to true", copy=False
     )
-    send_mode = fields.Selection("send_mode_select")
+    send_mode = fields.Selection("send_mode_select", index=True)
     email_template_id = fields.Many2one(
         related="config_id.email_template_id", store=True, readonly=False
     )
@@ -392,7 +396,7 @@ class CommunicationJob(models.Model):
                 if ((job.need_call == "before_sending"
                      and job.state == "pending")
                         and not job.activity_ids):
-                    job.schedule_call()
+                    job.sudo(job.user_id.id).schedule_call()
 
         return True
 
@@ -428,7 +432,7 @@ class CommunicationJob(models.Model):
 
             # if the call must be done after the sending, an activity is scheduled
             if job.need_call == "after_sending":
-                job.schedule_call()
+                job.sudo(job.user_id.id).schedule_call()
         if to_print:
             return to_print._print_report()
         return True
@@ -438,7 +442,7 @@ class CommunicationJob(models.Model):
         self.activity_schedule(
             'mail.mail_activity_data_call',
             summary="Call " + self.partner_id.name,
-            user_id=self.user_id.id,
+            user_id=self.env.uid,
             note=f"Call {self.partner_id.name} at (phone) "
                  f"{self.partner_phone or self.partner_mobile} regarding "
                  f"the communication."

@@ -36,20 +36,21 @@
             <form>
                 <group>
                     <field name="communication_date"/>
-                    <field name="communication_type"/>
-                    <field name="other_type" attrs="{'invisible': [('other_type', '=', '')]}"/>
-                    <field name="email" attrs="{'invisible': [('communication_type','!=','Email')]}"/>
-                    <field name="direction"/>
-                    <field name="phone_id" attrs="{'invisible': [('phone_id','=',False)]}"/>
-                    <field name="paper_id" attrs="{'invisible': [('paper_id','=',False)]}"/>
-                    <field name="email_id" attrs="{'invisible': [('email_id','=',False)]}"/>
-                    <field name="tracking_status" attrs="{'invisible': [('email_id','=',False)]}"/>
-                    <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}"/>
+                    <field name="communication_type" readonly="1"/>
+                    <field name="other_type" attrs="{'invisible': [('other_type', '=', '')]}" readonly="1"/>
+                    <field name="email" attrs="{'invisible': [('communication_type','!=','Email')]}" readonly="1"/>
+                    <field name="direction" attrs="{'readonly': ['|', '&amp;', '&amp;', ('other_interaction_id', '=', False), ('email_id', '=', False), ('message_id', '=', False), ('paper_id', '!=', False)]}"/>
+                    <field name="phone_id" attrs="{'invisible': [('phone_id','=',False)]}" readonly="1"/>
+                    <field name="paper_id" attrs="{'invisible': [('paper_id','=',False)]}" readonly="1"/>
+                    <field name="email_id" attrs="{'invisible': [('email_id','=',False)]}" readonly="1"/>
+                    <field name="other_interaction_id" attrs="{'invisible': [('other_interaction_id','=',False)]}" readonly="1"/>
+                    <field name="tracking_status" attrs="{'invisible': [('email_id','=',False)]}" readonly="1"/>
+                    <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}" readonly="1"/>
                 </group>
                 <group>
-                    <field name="subject"/>
-                    <field name="has_attachment"/>
-                    <field name="body" />
+                    <field name="subject" readonly="1"/>
+                    <field name="has_attachment" readonly="1"/>
+                    <field name="body" readonly="1"/>
                 </group>
             </form>
         </field>

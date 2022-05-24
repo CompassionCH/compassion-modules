@@ -49,7 +49,7 @@ class PartnerMatchform(models.AbstractModel):
     def form_init(self, request, main_object=None, **kw):
         form = super().form_init(request, main_object, **kw)
         if kw.get("partner_id"):
-            form.partner_id = kw.get("partner_id")
+            form.partner_id = int(kw.get("partner_id"))
         return form
 
     def _form_load_partner_id(self, fname, field, value, **req_values):

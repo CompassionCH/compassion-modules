@@ -20,6 +20,5 @@ from . import contracts
 from . import correspondence_positioned_objects
 from . import project_compassion
 from . import correspondence_s2b_generator
-from . import queue_job
 from . import last_writing_report
 from . import field_to_json

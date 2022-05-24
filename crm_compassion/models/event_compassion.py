@@ -254,8 +254,8 @@ class EventCompassion(models.Model):
 
         # Compute hold_start_date from vals if it hasn't been set
         if not vals.get("hold_start_date"):
-            hold_start_date = \
-                self.compute_hold_start_date(start=vals["start_date"])
+            hold_start_date = self.compute_hold_start_date(
+                start=fields.Datetime.from_string(vals["start_date"]))
             vals["hold_start_date"] = hold_start_date
 
         event = super().create(vals)

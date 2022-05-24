@@ -35,7 +35,7 @@ class ProductTemplate(models.Model):
         """
 
         result = []
-        donation_types = self.search([("mobile_app", "=", True)])
+        donation_types = self.sudo().search([("mobile_app", "=", True)])
 
         for donation in donation_types:
             result.append(donation.data_to_json("mobile_app_donation"))

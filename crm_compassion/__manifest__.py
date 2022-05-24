@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion CH - Events",
-    "version": "12.0.1.0.1",
+    "version": "12.0.1.0.3",
     "category": "CRM",
     "sequence": 150,
     "author": "Compassion CH",
@@ -46,7 +46,6 @@
     ],
     "data": [
         "data/account_analytic_data.xml",
-        "data/action_rule_auto_cancel.xml",
         "data/calendar_event_type.xml",
         "data/demand_planning.xml",
         "security/crm_compassion_security.xml",

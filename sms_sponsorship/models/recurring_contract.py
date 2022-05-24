@@ -10,7 +10,6 @@ import logging
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
-from odoo.addons.queue_job.job import job, related_action
 
 from odoo import api, models, fields, _
 
@@ -36,7 +35,6 @@ class RecurringContract(models.Model):
             )
 
     @api.model
-    @job
     def create_sms_sponsorship(self, vals, partner, sms_child_request):
         """ Creates sponsorship from REACT webapp data.
         :param vals: form values
@@ -95,8 +93,6 @@ class RecurringContract(models.Model):
         sms_child_request.with_context(lang=partner.lang).complete_step1(sponsorship.id)
         return True
 
-    @job(default_channel="root.sms_sponsorship")
-    @related_action(action="related_action_contract")
     def finalize_form(self, pay_first_month_ebanking, payment_mode_id):
         """ validate sms sponsorship after step 2 and send confirmation email
         :param pay_first_month_ebanking: has the sponsor paid first month
@@ -112,8 +108,6 @@ class RecurringContract(models.Model):
 
         return True
 
-    @job(default_channel="root.sms_sponsorship")
-    @related_action(action="related_action_contract")
     def post_message_from_step2(self, message):
         # Post message in sponsorship
         notify_ids = (
@@ -151,8 +145,6 @@ class RecurringContract(models.Model):
         self.group_id = group
         return True
 
-    @job(default_channel="root.sms_sponsorship")
-    @related_action(action="related_action_contract")
     def create_first_sms_invoice(self):
         """In case the sponsor is a new partner, create first invoice
         because the sponsorship won't be validated and invoices are not

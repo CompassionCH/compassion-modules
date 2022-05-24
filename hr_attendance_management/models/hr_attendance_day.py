@@ -435,9 +435,6 @@ class HrAttendanceDay(models.Model):
             [("employee_id", "=", rd.employee_id.id), ("date", "=", rd.date), ]
         )
 
-        for leave in rd.leave_ids:
-            leave._compute_att_day()
-
         # compute breaks
         rd.compute_breaks()
 

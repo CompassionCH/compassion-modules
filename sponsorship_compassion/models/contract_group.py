@@ -11,8 +11,6 @@
 import logging
 from datetime import datetime
 
-from odoo.addons.queue_job.job import job, related_action
-
 from odoo import api, fields, models
 from .product_names import GIFT_REF
 
@@ -50,8 +48,6 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @job(default_channel="root.recurring_invoicer")
-    @related_action(action="related_action_invoicer")
     @api.multi
     def _generate_invoices(self, invoicer=None, **kwargs):
         """ Add birthday gifts generation. """

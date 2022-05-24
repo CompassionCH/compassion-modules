@@ -36,8 +36,11 @@
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
-                    <button name="create_contract" string="Add" type="object"
-                            groups="child_compassion.group_sponsorship"/>
+                    <group>
+                        <field name="portal_sponsorships"/>
+                    </group>
+                    <button name="create_contract" string="New sponsorship" type="object"
+                            groups="child_compassion.group_sponsorship" class="my-2 btn-primary"/>
                     <div groups="child_compassion.group_sponsorship"
                          attrs="{'invisible' : [('contracts_paid','=', [])]}">
                         <h3>Sponsorships as payer only</h3>
@@ -160,10 +163,6 @@
                     </group>
                 </page>
             </xpath>
-            <field name="website" position="after">
-                <field name="send_original" groups="child_compassion.group_sponsorship"/>
-            </field>
-
         </field>
     </record>
     <record id="compassion_partner_view_buttons" model="ir.ui.view">

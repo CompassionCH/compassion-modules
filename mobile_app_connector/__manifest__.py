@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion EU Mobile App Connector",
-    "version": "12.0.1.0.2",
+    "version": "12.0.1.0.3",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
@@ -56,6 +56,7 @@
         "data/ir_cron.xml",
         "data/request_sequence.xml",
         "data/crm_claim_category_data.xml",
+        "data/queue_job.xml",
         "views/wp_post_view.xml",
         "views/wp_post_category_view.xml",
         "views/app_banner_view.xml",
@@ -70,7 +71,6 @@
         "views/firebase_notification.xml",
         "views/communication_job.xml",
         "views/communication_config.xml",
-        "views/res_partner.xml",
     ],
     "demo": [],
     "development_status": "Beta",
