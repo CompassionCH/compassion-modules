@@ -60,10 +60,10 @@ class ResPartner(models.Model):
         string="Other contracts",
     )
     unrec_items = fields.Integer(
-        compute="_compute_count_items", groups="child_compassion.group_sponsorship"
+        compute="_compute_count_items"
     )
     receivable_items = fields.Integer(
-        compute="_compute_count_items", groups="child_compassion.group_sponsorship"
+        compute="_compute_count_items"
     )
     has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer(
@@ -74,17 +74,14 @@ class ResPartner(models.Model):
         "compassion.child",
         "sponsor_id",
         "Sponsored children",
-        groups="child_compassion.group_sponsorship",
         readonly=False,
     )
     number_children = fields.Integer(
         string="Number of children", related="number_sponsorships",
-        groups="child_compassion.group_sponsorship"
     )
     privacy_statement_ids = fields.One2many(
         "privacy.statement.agreement",
         "partner_id",
-        groups="child_compassion.group_sponsorship",
         copy=False,
         readonly=False,
     )
