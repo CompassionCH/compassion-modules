@@ -30,7 +30,7 @@ class PhoneCall(models.Model):
         super().write(values)
         if values.get("state") == "done" and not self.env.context.get("from_activity"):
             for phonecall in self:
-                self.env["mail.activity"].search([
-                    ("phonecall_id", "=", phonecall.id)
-                ]).action_feedback(feedback=phonecall.description)
+                activity = self.env["mail.activity"].search([("phonecall_id", "=", phonecall.id)])
+                if activity:
+                    activity.action_feedback(feedback=phonecall.description)
         return True
