@@ -6,28 +6,16 @@
             <form>
                 <field name="state" invisible="1"/>
                 <sheet>
-                    <div class="oe_button_box" states="edit,preview">
-                        <button name="get_preview" string="Generate preview" type="object" class="oe_stat_button" icon="fa-search-plus" attrs="{'invisible': ['|', ('send_mode', '=', False), ('state', '!=', 'edit')]}"/>
-                        <button name="edit" string="Edit" type="object" class="oe_stat_button" icon="fa-edit" states="preview"/>
-                    </div>
                     <group states="edit">
+                        <h4>Partner Selection</h4>
                         <field name="selection_domain" string="Partners" widget="domain" options="{'model': 'res.partner'}"/>
-                        <field name="partner_ids" widget="many2many_tags" invisible="1"/>
-                        <group>
+                        <field name="partner_ids" invisible="1"/>
+                        <group string="Options">
                             <field name="model_id"/>
-                            <field name="send_mode"/>
-                            <field name="customize_template" attrs="{'invisible': [('model_id', '=', False)]}"/>
-                            <field name="force_language" attrs="{'required': [('body_html', '!=', False), '|', ('model_id', '=', False), ('customize_template', '=', True)]}"/>
+                            <field name="customize_template"/>
+                            <field name="send_mode" attrs="{'invisible': [('customize_template', '=', False)]}"/>
+                            <field name="force_language" attrs="{'invisible': [('customize_template', '=', False)]}"/>
                         </group>
-                        <group>
-                            <field name="report_id"/>
-                        </group>
-                        <field name="subject" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
-                        <field name="body_html" attrs="{'invisible': [('customize_template', '=', False), ('model_id', '!=', False)]}"/>
-                    </group>
-                    <group states="preview">
-                        <field name="preview_email" attrs="{'invisible': [('send_mode', '=', 'physical')]}"/>
-                        <field name="preview_pdf" widget="image" width="500" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
                     </group>
                     <div states="generation">
                         <p>The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
@@ -36,7 +24,7 @@
                     </div>
                 </sheet>
                 <footer>
-                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog" states="edit,preview"/>
+                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog" states="edit"/>
                     <button name="reload" string="Reload" type="object" class="oe_highlight" icon="fa-refresh" states="generation"/>
                     <button name="close" string="Close" type="object" states="generation"/>
                 </footer>
@@ -59,5 +47,6 @@
     <act_window id="action_generate_communication" key2="client_action_multi" name="Generate Communications"
                 res_model="partner.communication.generate.wizard" src_model="res.partner"
                 view_mode="form" target="new" view_type="form"
+                context="{'default_selection_domain': [('id', 'in', active_ids)]}"
     />
 </odoo>
