@@ -39,7 +39,7 @@ class CommunicationAttachment(models.Model):
         required=True, help="Identifier of the report used to print"
     )
     attachment_id = fields.Many2one(
-        "ir.attachment", string="Attachments", required=True, readonly=False
+        "ir.attachment", string="Attachments", required=True, readonly=False, ondelete="cascade"
     )
     data = fields.Binary(compute="_compute_data")
 
@@ -80,6 +80,11 @@ class CommunicationAttachment(models.Model):
         if new_record:
             res.attachment_id.res_id = res.communication_id.id
         return res
+
+    @api.multi
+    def unlink(self):
+        self.mapped("attachment_id").unlink()
+        return super().unlink()
 
     @api.multi
     def print_attachments(self, output_tray=None):
