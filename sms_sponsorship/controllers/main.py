@@ -37,13 +37,15 @@ def get_child_request(request_id, lang=None):
         )
     return sms_request.with_context(lang=lang_code)
 
+
 def has_child_active_sms_request_procedure(child_id: int) -> bool:
     number_active_sms_child_requests_for_child = request.env["sms.child.request"].sudo().search_count([
         ("child_id", "=", child_id),
         '|', ('sponsorship_confirmed', '=', True),
         ('state', '=like', 'step_')  # If the request is at step1 or step2
     ])
-    return number_active_sms_child_requests_for_child != 0
+    return child_id and number_active_sms_child_requests_for_child != 0
+
 
 class SmsSponsorshipWebsite(Controller, FormControllerMixin):
 
@@ -92,9 +94,11 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
         child = sms_child_request.child_id
         if not child and not sms_child_request.is_trying_to_fetch_child:
             sms_child_request.is_trying_to_fetch_child = True
+            request.env.cr.commit()
             if not sms_child_request.reserve_child() and not sms_child_request.\
                     event_id.disable_childpool_search:
                 sms_child_request.is_trying_to_fetch_child = True
+                request.env.cr.commit()
                 sms_child_request.take_child_from_childpool()
         if child:
             result = child.get_sms_sponsor_child_data()
