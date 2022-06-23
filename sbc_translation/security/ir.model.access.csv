@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_correspondence_translator,Write access on correspondence for translators,model_correspondence,group_user,1,1,0,0
+access_translator_user,Write access on translator,model_translation_user,group_user,1,1,0,0
+access_admin_translator_user,Full access on translator,model_translation_user,group_manager,1,1,1,1
+access_translator_competence,Access on translator competence,model_translation_user_skill,group_user,1,0,1,1
+access_admin_translator_competence,Full access on translator competence,model_translation_user_skill,group_manager,1,1,1,1
+access_translation_competence,Read access on translation competence,model_translation_competence,group_user,1,0,0,0
+access_admin_translation_competence_user,Full access on translation competence,model_translation_competence,group_manager,1,1,1,1

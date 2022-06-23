@@ -215,16 +215,7 @@ class Correspondence(models.Model):
     final_letter_url = fields.Char()
     import_id = fields.Many2one("import.letters.history", readonly=False)
     translator = fields.Char()
-    translator_id = fields.Many2one(
-        "res.partner",
-        "Local translator",
-        compute="_compute_translator",
-        inverse="_inverse_set_translator",
-        store=True,
-        readonly=False,
-    )
     email = fields.Char(related="partner_id.email")
-    translate_date = fields.Datetime()
     sponsorship_state = fields.Selection(
         related="sponsorship_id.state", string="Sponsorship state", readonly=True
     )
@@ -398,42 +389,6 @@ class Correspondence(models.Model):
             else:
                 letter.letter_format = "pdf"
 
-    @api.multi
-    @api.depends("translator")
-    def _compute_translator(self):
-        partner_obj = self.env["res.partner"]
-        for letter in self:
-            if letter.translator:
-                match = re.search(r"(.*)\[(.*)\]", letter.translator)
-                if match:
-                    (name, email) = match.group(1, 2)
-                    # 1. Search by e-mail
-                    partner = partner_obj.search(
-                        ["|", ("email", "=", email), ("translator_email", "=", email)]
-                    )
-                    if len(partner) == 1:
-                        letter.translator_id = partner
-                        continue
-                    # 2. Search by name
-                    words = name.split()
-                    partner = partner_obj.search([("name", "like", words[0])])
-                    if len(words) > 1:
-                        for word in words[1:]:
-                            partner = partner.filtered(lambda p: word in p.name)
-                            if len(partner) == 1:
-                                break
-                    if len(partner) == 1:
-                        letter.translator_id = partner
-
-    @api.multi
-    def _inverse_set_translator(self):
-        """ Sets the translator e-mail address. """
-        for letter in self:
-            if letter.translator:
-                match = re.search(r"(.*)\[(.*)\]", letter.translator)
-                if match:
-                    letter.translator_id.translator_email = match.group(2)
-
     def _get_uuid(self):
         return str(uuid.uuid4())
 
@@ -530,9 +485,6 @@ class Correspondence(models.Model):
                         lambda o: o.state == "Translation check unsuccessful"):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
-
-        if "translator_id" in vals:
-            vals["translate_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:
             vals["letter_image"] = False
 
