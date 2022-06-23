@@ -1,0 +1,127 @@
+from odoo import api, models, fields
+
+
+class TranslationUser(models.Model):
+    _name = "translation.user"
+    _description = "Compassion Translator"
+
+    user_id = fields.Many2one("res.users", "User", required=True, index=True)
+    partner_id = fields.Many2one("res.partner", "Partner", related="user_id.partner_id")
+    name = fields.Char(related="user_id.name", store=True)
+    active = fields.Boolean(default=True)
+    translator_since = fields.Datetime(default=fields.Datetime.now)
+    translation_skills = fields.One2many("translation.user.skill", "translator_id", "Skills")
+    translated_letter_ids = fields.One2many(
+        "correspondence", related="user_id.translated_letter_ids", readonly=False
+    )
+    nb_translated_letters = fields.Integer(
+        "Total translations", compute="_compute_nb_translated_letters", store=True
+    )
+    nb_translated_letters_this_year = fields.Integer(
+        "Translations this year", compute="_compute_nb_translated_letters_this_year", store=True
+    )
+    nb_translated_letters_last_year = fields.Integer(
+        "Translations last year", compute="_compute_nb_translated_letters_last_year", store=True
+    )
+    search_source_lang = fields.Many2one(
+        "res.lang.compassion", domain=[("translatable", "=", True)],
+        help="Utility field only used for the search view"
+    )
+    search_dest_lang = fields.Many2one(
+        "res.lang.compassion", domain=[("translatable", "=", True)],
+        help="Utility field only used for the search view"
+    )
+
+    _sql_constraints = [
+        ("unique_translator", "unique(user_id)", "This translator already exists.")
+    ]
+
+    @api.multi
+    @api.depends("user_id.translated_letter_ids")
+    def _compute_nb_translated_letters(self):
+        for translator in self:
+            translator.nb_translated_letters = len(translator.translated_letter_ids)
+
+    @api.multi
+    @api.depends("user_id.translated_letter_ids")
+    def _compute_nb_translated_letters_this_year(self):
+        for translator in self:
+            translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
+                lambda it: it.translate_date.year == fields.Datetime.now().year))
+
+    @api.multi
+    @api.depends("user_id.translated_letter_ids")
+    def _compute_nb_translated_letters_last_year(self):
+        for translator in self:
+            translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
+                lambda it: it.translate_date.year == fields.Datetime.now().year - 1))
+
+    @api.model
+    def create(self, vals_list):
+        """
+        When creating a translator, put him the rights for using the platform.
+        """
+        records = super().create(vals_list)
+        user_group = self.env.ref("sbc_translation.group_user")
+        records.mapped("user_id").write({"groups_id": [(4, user_group.id)]})
+        return records
+
+    @api.multi
+    def write(self, vals):
+        """
+        When activating/deactivating a translator, update rights accordingly.
+        """
+        super().write(vals)
+        if "active" in vals:
+            user_group = self.env.ref("sbc_translation.group_user")
+            action = 4 if vals["active"] else 3  # Add or remove group
+            self.mapped("user_id").write({"groups_id": [(action, user_group.id)]})
+        return True
+
+    @api.multi
+    def unlink(self):
+        """
+        Remove Translation Platform rights when removing translator.
+        """
+        user_group = self.env.ref("sbc_translation.group_user")
+        self.mapped("user_id").write({"groups_id": [(3, user_group.id)]})
+        return super().unlink()
+
+    @api.multi
+    def open_translated_letters(self):
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Translated letters",
+            "res_model": "correspondence",
+            "view_type": "form",
+            "view_mode": "tree,form",
+            "context": {"search_default_translator_id": self.partner_id.id},
+        }
+
+    @api.model
+    def get_user_info(self):
+        """
+        Translation Platform API call to fetch user info.
+        """
+        translator = self.search([("user_id", "=", self.env.uid)])
+        user = translator.user_id
+        partner = translator.partner_id
+        group_user = self.env.ref("sbc_translation.group_user")
+        group_admin = self.env.ref("sbc_translation.group_manager")
+        role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
+        language = self.env["res.lang"].with_context(lang="en_US").search([("code", "=", partner.lang)])
+        return {
+            "email": translator.user_id.email or None,
+            "role": role,
+            "name": partner.name or None,
+            "age": partner.age or None,
+            "language": language.name or None,
+            "total": translator.nb_translated_letters or None,
+            "year": translator.nb_translated_letters_this_year or None,
+            "lastYear": translator.nb_translated_letters_last_year or None,
+            "skills": [{
+                "source": skill.competence_id.source_language_id.name,
+                "target": skill.competence_id.dest_language_id.name,
+                "verified": skill.verified
+            } for skill in translator.translation_skills.with_context(lang="en_US")] or None
+        }
