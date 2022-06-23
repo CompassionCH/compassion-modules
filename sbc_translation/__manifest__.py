@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2022 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -27,51 +27,25 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    "name": "Sponsor to beneficiary communication",
-    "version": "12.0.1.0.5",
+    "name": "SBC Translation Platform",
+    "version": "12.0.1.0.0",
     "category": "Other",
-    "summary": "SBC - Supporter to Beneficiary Communication",
+    "summary": "SBC - Translation Platform",
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "depends": [
-        "sponsorship_compassion",
+        "sbc_compassion",
+        "partner_contact_birthdate"
     ],
-    "external_dependencies": {
-        "python": [
-            "magic",
-            "wand",
-            "pyzbar",
-            "pdfminer",
-            "PyPDF2",
-            "openupgradelib",
-            "fitz",  # PyMuPDF
-        ]
-    },
     "data": [
+        "security/ir_groups.xml",
         "security/ir.model.access.csv",
-        "views/config_view.xml",
-        "views/contracts_view.xml",
-        "views/partner_compassion_view.xml",
-        "views/correspondence_view.xml",
-        "views/import_letters_history_view.xml",
-        "views/correspondence_template_view.xml",
-        "views/correspondence_template_page_view.xml",
-        "views/import_review_view.xml",
-        "views/download_letters_view.xml",
-        "views/get_letter_image_wizard_view.xml",
-        "views/correspondence_s2b_generator_view.xml",
-        "views/last_writing_report_view.xml",
-        "data/correspondence_template_data.xml",
-        "data/correspondence_type.xml",
-        "data/child_layouts.xml",
-        "data/correspondence_mappings.xml",
-        "data/gmc_action.xml",
-        "data/queue_job.xml",
+        "security/access_rules.xml",
+        "views/translation_user_view.xml",
     ],
-    "demo": ["demo/correspondence_template.xml", ],
+    "demo": [],
     "installable": True,
     "auto_install": False,
-    "post_init_hook": "load_mappings",
 }
