@@ -1,0 +1,40 @@
+<odoo>
+    <record id="view_translation_competence_tree" model="ir.ui.view">
+        <field name="name">translation.competence.tree</field>
+        <field name="model">translation.competence</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="source_language_id"/>
+                <field name="dest_language_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_translation_competence_form" model="ir.ui.view">
+        <field name="name">translation.competence.form</field>
+        <field name="model">translation.competence</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="source_language_id"/>
+                        </group>
+                        <group>
+                            <field name="dest_language_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_compassion_translation_competence_form" model="ir.actions.act_window">
+        <field name="name">Competences</field>
+        <field name="res_model">translation.competence</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_translation_competence" parent="menu_translation_platform" name="Competences" action="action_compassion_translation_competence_form" sequence="2"/>
+</odoo>
