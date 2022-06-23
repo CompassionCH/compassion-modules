@@ -98,30 +98,45 @@ class TranslationUser(models.Model):
             "context": {"search_default_translator_id": self.partner_id.id},
         }
 
+    @api.multi
+    def list_users(self):
+        """
+        Translation Platform API call to fetch user info.
+        """
+        return [t.get_user_info() for t in self]
+
     @api.model
-    def get_user_info(self):
+    def get_my_info(self):
         """
         Translation Platform API call to fetch user info.
         """
         translator = self.search([("user_id", "=", self.env.uid)])
-        user = translator.user_id
-        partner = translator.partner_id
+        return translator.get_user_info()
+
+    @api.multi
+    def get_user_info(self):
+        """
+        Translation Platform API call to fetch user info.
+        """
+        self.ensure_one()
+        user = self.user_id
+        partner = self.partner_id
         group_user = self.env.ref("sbc_translation.group_user")
         group_admin = self.env.ref("sbc_translation.group_manager")
         role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
         language = self.env["res.lang"].with_context(lang="en_US").search([("code", "=", partner.lang)])
         return {
-            "email": translator.user_id.email or None,
+            "email": self.user_id.email or None,
             "role": role,
             "name": partner.name or None,
             "age": partner.age or None,
             "language": language.name or None,
-            "total": translator.nb_translated_letters or None,
-            "year": translator.nb_translated_letters_this_year or None,
-            "lastYear": translator.nb_translated_letters_last_year or None,
+            "total": self.nb_translated_letters or None,
+            "year": self.nb_translated_letters_this_year or None,
+            "lastYear": self.nb_translated_letters_last_year or None,
             "skills": [{
                 "source": skill.competence_id.source_language_id.name,
                 "target": skill.competence_id.dest_language_id.name,
                 "verified": skill.verified
-            } for skill in translator.translation_skills.with_context(lang="en_US")] or None
+            } for skill in self.translation_skills.with_context(lang="en_US")] or None
         }
