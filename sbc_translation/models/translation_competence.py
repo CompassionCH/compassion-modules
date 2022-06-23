@@ -35,6 +35,6 @@ class TranslationUserSkill(models.Model):
     _name = "translation.user.skill"
     _description = "Translation user skill"
 
-    translator_id = fields.Many2one("translation.user", required=True, index=True)
-    competence_id = fields.Many2one("translation.competence", required=True, index=True)
+    translator_id = fields.Many2one("translation.user", required=True, index=True, ondelete="cascade")
+    competence_id = fields.Many2one("translation.competence", required=True, index=True, ondelete="cascade")
     verified = fields.Boolean(help="The competence has been approved by a manager.")
