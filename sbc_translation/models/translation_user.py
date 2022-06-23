@@ -12,7 +12,7 @@ class TranslationUser(models.Model):
     translator_since = fields.Datetime(default=fields.Datetime.now)
     translation_skills = fields.One2many("translation.user.skill", "translator_id", "Skills")
     translated_letter_ids = fields.One2many(
-        "correspondence", related="user_id.translated_letter_ids", readonly=False
+        "correspondence", "new_translator_id", readonly=False
     )
     nb_translated_letters = fields.Integer(
         "Total translations", compute="_compute_nb_translated_letters", store=True
@@ -37,20 +37,20 @@ class TranslationUser(models.Model):
     ]
 
     @api.multi
-    @api.depends("user_id.translated_letter_ids")
+    @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters(self):
         for translator in self:
             translator.nb_translated_letters = len(translator.translated_letter_ids)
 
     @api.multi
-    @api.depends("user_id.translated_letter_ids")
+    @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_this_year(self):
         for translator in self:
             translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
                 lambda it: it.translate_date.year == fields.Datetime.now().year))
 
     @api.multi
-    @api.depends("user_id.translated_letter_ids")
+    @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_last_year(self):
         for translator in self:
             translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
@@ -126,17 +126,46 @@ class TranslationUser(models.Model):
         role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
         language = self.env["res.lang"].with_context(lang="en_US").search([("code", "=", partner.lang)])
         return {
-            "email": self.user_id.email or None,
+            "email": self.user_id.email or "None",
             "role": role,
-            "name": partner.name or None,
-            "age": partner.age or None,
-            "language": language.name or None,
-            "total": self.nb_translated_letters or None,
-            "year": self.nb_translated_letters_this_year or None,
-            "lastYear": self.nb_translated_letters_last_year or None,
+            "name": partner.name or "None",
+            "age": partner.age or "None",
+            "language": language.name or "None",
+            "total": self.nb_translated_letters or "None",
+            "year": self.nb_translated_letters_this_year or "None",
+            "lastYear": self.nb_translated_letters_last_year or "None",
+            "translatorId": self.id,
             "skills": [{
                 "source": skill.competence_id.source_language_id.name,
                 "target": skill.competence_id.dest_language_id.name,
                 "verified": skill.verified
-            } for skill in self.translation_skills.with_context(lang="en_US")] or None
+            } for skill in self.translation_skills.with_context(lang="en_US")] or "None"
         }
+
+    @api.model
+    def migrate_translators(self):
+        # TODO move in sbc_switzerland/post_migration script
+        translators = self.env["advocate.details"].search([
+            ("engagement_ids", "=", 2),
+        ])
+        for translator in translators:
+            partner = translator.partner_id
+            user = self.env["res.users"].search([
+                "|", ("partner_id", "=", partner.id), ("login", "=", partner.email)
+            ], limit=1)
+            if not user:
+                # TODO Create a specific communication to warn the translator about the new account
+                user = self.env["res.users"].create({
+                    "partner_id": partner.id,
+                    "login": partner.email or partner.ref
+                })
+            if not self.search([("user_id", "=", user.id)]):
+                new_t = self.create([{
+                    "user_id": user.id,
+                    "translator_since": translator.active_since or translator.create_date,
+                    "active": not translator.state == "inactive"
+                }])
+                self.env["correspondence"].search([
+                    ("translator_id", "=", partner.id)
+                ]).write({"new_translator_id": new_t.id})
+                self.env.cr.commit()

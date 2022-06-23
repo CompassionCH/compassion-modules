@@ -23,7 +23,8 @@ class Correspondence(models.Model):
         """
     _inherit = "correspondence"
 
-    user_id = fields.Many2one("res.users", "Local translator")
+    translator_id = fields.Many2one("res.partner", "Local translator")  # TODO remove me
+    new_translator_id = fields.Many2one("translation.user", "Local translator")
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
