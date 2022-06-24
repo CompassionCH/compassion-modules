@@ -12,7 +12,7 @@ import logging
 
 from odoo import models, api, fields, _
 from odoo.exceptions import UserError
-from odoo.addons.sbc_compassion.models.correspondence_page import BOX_SEPARATOR
+from odoo.addons.sbc_compassion.models.correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
@@ -29,6 +29,20 @@ class Correspondence(models.Model):
         "res.lang.compassion", "Source of translation", readonly=False
     )
     translate_date = fields.Datetime()
+    translation_status = fields.Selection([
+        ("to do", "To do"),
+        ("in progress", "In progress"),
+        ("to validate", "To validate"),
+        ("done", "Done")
+    ], index=True)
+    translation_priority = fields.Selection([
+        ("0", "0"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4")
+    ], index=True)
+    unread_comments = fields.Boolean()
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -92,6 +106,8 @@ class Correspondence(models.Model):
             {
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
+                "translation_priority": "0",
+                "translation_status": "to do"
             }
         )
 
@@ -196,6 +212,61 @@ class Correspondence(models.Model):
                 "state": "Received in the system"
             })
             letter.send_local_translate()
+
+    @api.model
+    def list_letters(self, limit=None, offset=None):
+        """ API call to fetch letters to translate """
+        letters = self.search(
+            [("state", "=", "Global Partner translation queue")],
+            limit=limit, offset=offset)
+        return [l.get_letter_info() for l in letters]
+
+    @api.multi
+    def get_letter_info(self):
+        self.ensure_one()
+        return {
+            "id": self.id,
+            "status": self.translation_status or "None",
+            "priority": self.translation_priority or "0",
+            "title": self.name,
+            "source": self.src_translation_lang_id.with_context(lang="en_US").name,
+            "target": self.translation_language_id.with_context(lang="en_US").name,
+            "unreadComments": self.unread_comments,
+            "translatorId": self.new_translator_id.id or "None",
+            "lastUpdate": fields.Datetime.to_string(self.write_date),
+            "date": fields.Date.to_string(self.scanned_date),
+            "translatedElements": self.get_translated_elements() or "None",
+            "child": {
+                "firstName": self.child_id.preferred_name,
+                "lastName": self.child_id.lastname,
+                "sex": self.child_id.gender,
+                "age": self.child_id.age
+            },
+            "sponsor": {
+                "firstName": self.partner_id.firstname,
+                "lastName": self.partner_id.lastname,
+                "sex": self.partner_id.gmc_gender[0],
+                "age": self.partner_id.age
+            }
+        }
+
+    @api.multi
+    def get_translated_elements(self):
+        res = []
+        for page in self.page_ids:
+            if res:
+                res.append({
+                    "type": "pageBreak",
+                    "id": page.id
+                })
+            for paragraph in page.paragraph_ids:
+                res.append({
+                    "type": "paragraph",
+                    "id": paragraph.id,
+                    "content": paragraph.translated_text,
+                    "comments": paragraph.comments,
+                })
+        return res
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

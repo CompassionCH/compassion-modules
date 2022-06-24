@@ -9,7 +9,6 @@
                 <field name="kit_identifier"/>
                 <field name="direction"/>
                 <field name="status_date"/>
-                <field name="translator_id"/>
                 <field name="state"/>
                 <field name="is_final_letter" invisible="1"/>
             </tree>
@@ -117,12 +116,10 @@
                         </group>
                         <group>
                             <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
-                            <field name="translator_id" attrs="{'invisible': [('translator_id', '=', False)]}"/>
-                            <field name="translate_date" attrs="{'invisible': [('translator_id', '=', False)]}"/>
                             <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
                         </group>
                     </group>
-                    <field name="page_ids" context="{'default_correspondence_id': context.active_id}">
+                    <field name="page_ids" context="{'default_correspondence_id': active_id}">
                         <tree>
                             <field name="original_text"/>
                             <field name="english_text"/>
@@ -145,24 +142,21 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <group colspan="2">
+                    <group>
                         <field name="correspondence_id"/>
-                    </group>
-                    <group>
                         <field name="original_page_url"/>
-                    </group>
-                    <group>
                         <field name="final_page_url"/>
                     </group>
-                    <group colspan="2">
-                        <field name="original_text"/>
-                    </group>
-                    <group>
-                        <field name="english_text"/>
-                    </group>
-                    <group>
-                        <field name="translated_text"/>
-                    </group>
+                </group>
+                <group>
+                    <field name="paragraph_ids">
+                        <tree editable="bottom">
+                            <field name="original_text"/>
+                            <field name="english_text"/>
+                            <field name="translated_text"/>
+                            <field name="sequence" widget="handle"/>
+                        </tree>
+                    </field>
                 </group>
             </form>
         </field>
@@ -188,7 +182,6 @@
                 <field name="direction" />
                 <field name="state" />
                 <field name="sponsorship_id" />
-                <field name="translator_id" />
                 <filter name="direction_stb" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
                 <separator />
                 <filter name="direction_bts" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />

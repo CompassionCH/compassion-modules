@@ -45,6 +45,7 @@
         "security/access_rules.xml",
         "views/translation_user_view.xml",
         "views/translation_competence_view.xml",
+        "views/correspondence_view.xml",
     ],
     "demo": [],
     "installable": True,
