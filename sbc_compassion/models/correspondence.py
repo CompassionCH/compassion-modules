@@ -9,7 +9,6 @@
 ##############################################################################
 import base64
 import logging
-import re
 import threading
 import uuid
 from io import BytesIO
@@ -368,11 +367,8 @@ class Correspondence(models.Model):
 
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
-        txt = self.page_ids.filtered(source_text).mapped(source_text)
+        txt = self.page_ids.mapped("paragraph_ids").filtered(source_text).mapped(source_text)
         return ("\n" + PAGE_SEPARATOR + "\n").join(txt)
-
-    def _change_language(self):
-        return True
 
     @api.multi
     @api.depends("letter_image")
@@ -586,7 +582,7 @@ class Correspondence(models.Model):
                  list of translation boxes (containing the translation text)
         """
         text_boxes = []
-        pages = self.page_ids
+        paragraphs = self.page_ids.mapped("paragraph_ids")
         if self.translated_text:
             source = "translated_text"
             # In case the translated text is not the same as the english text
@@ -600,7 +596,7 @@ class Correspondence(models.Model):
                     and self.translation_language_id.code_iso != "eng"
             ):
                 # Avoid capturing english text that hasn't been translated
-                pages = pages.filtered(source).filtered(
+                paragraphs = paragraphs.filtered(source).filtered(
                     lambda p: "".join((p.translated_text or "").split())
                               != "".join((p.english_text or "").split())
                 )
@@ -608,7 +604,7 @@ class Correspondence(models.Model):
             source = "english_text"
             # Avoid capturing translations that are the same text as the
             # original text.
-            pages = pages.filtered(source).filtered(
+            paragraphs = paragraphs.filtered(source).filtered(
                 lambda p: "".join((p.english_text or "").split())
                           != "".join((p.original_text or "").split())
             )
@@ -616,7 +612,7 @@ class Correspondence(models.Model):
             return source, text_boxes
 
         # Get the text boxes separately
-        text_pages = pages.mapped(source)
+        text_pages = paragraphs.mapped(source)
         for index, text in enumerate(text_pages):
             # Skip pages that should not contain anything
             page_layout = self.template_id.page_ids.filtered(
@@ -624,7 +620,7 @@ class Correspondence(models.Model):
             )
             if not text.strip() and not page_layout.text_box_ids:
                 continue
-            text_boxes.extend([t.strip() for t in text.split(BOX_SEPARATOR)])
+            text_boxes.append(text.strip())
 
         return source, text_boxes
 
@@ -656,6 +652,7 @@ class Correspondence(models.Model):
 
             letter_ids.append(letter.id)
 
+        process_letters.create_text_boxes()
         process_letters.process_letter()
         return letter_ids
 
@@ -952,6 +949,26 @@ class Correspondence(models.Model):
         return self.write({
             "state": "Quality check unsuccessful",
         })
+    
+    @api.multi
+    def create_text_boxes(self):
+        self.mapped("page_ids.paragraph_ids").unlink()
+        paragraphs = self.env["correspondence.paragraph"].with_context(from_correspondence_text=True)
+        for page in self.mapped("page_ids"):
+            if page.original_text or page.english_text or page.translated_text:
+                original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
+                english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
+                translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
+                nb_paragraphs = max(len(original_boxes), len(english_boxes), len(translated_boxes))
+                for i in range(0, nb_paragraphs):
+                    paragraphs += paragraphs.create([{
+                        "page_id": page.id,
+                        "original_text": original_boxes[i] if len(original_boxes) > i else "",
+                        "english_text": english_boxes[i] if len(english_boxes) > i else "",
+                        "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
+                        "sequence": i
+                    }])
+        return paragraphs
 
     ##########################################################################
     #                            PRIVATE METHODS                             #

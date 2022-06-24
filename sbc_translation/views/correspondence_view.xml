@@ -1,0 +1,48 @@
+<odoo>
+    <!-- Add buttons for translation platform -->
+    <record id="view_correspondence_form_translation" model="ir.ui.view">
+        <field name="name">correspondence.form.translation</field>
+        <field name="model">correspondence</field>
+        <field name="inherit_id" ref="sbc_compassion.view_correspondence_form" />
+        <field name="arch" type="xml">
+            <button name="compose_letter_button" position="before">
+                <button name="remove_local_translate" type="object" string="Remove from translation" class="oe_highlight"
+                        states="Global Partner translation queue"/>
+                <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
+                        states="Published to Global Partner,Received in the system"/>
+            </button>
+            <button name="resubmit_letter" position="after">
+                <button name="resubmit_to_translation" type="object"
+                        string="Put back into translation"
+                        attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+            </button>
+            <field name="translator" position="after">
+                <field name="new_translator_id"/>
+                <field name="src_translation_lang_id"/>
+                <field name="translation_status"/>
+                <field name="translation_priority"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_correspondence_page_form" model="ir.ui.view">
+        <field name="name">correspondence.page.form</field>
+        <field name="model">correspondence.page</field>
+        <field name="inherit_id" ref="sbc_compassion.view_correspondence_page_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='translated_text']" position="after">
+                <field name="comments"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Resubmit letter to Translation mass action-->
+    <record id="resubmit_letter_translation_action" model="ir.actions.server">
+        <field name="name">Resubmit to translation</field>
+        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="state">code</field>
+        <field name="code">records.resubmit_to_translation()</field>
+        <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="binding_type">action</field>
+    </record>
+</odoo>

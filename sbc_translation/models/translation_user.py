@@ -114,6 +114,17 @@ class TranslationUser(models.Model):
         return translator.get_user_info()
 
     @api.multi
+    def add_skill(self, competence_id):
+        """
+        Translation Platform API. Adds a new skill to the translator
+        :param competence_id: translation.competence ID to add
+        """
+        return self.env["translation.user.skill"].create([{
+            "translator_id": translator.id,
+            "competence_id": competence_id,
+        } for translator in self])
+
+    @api.multi
     def get_user_info(self):
         """
         Translation Platform API call to fetch user info.
