@@ -28,6 +28,9 @@ class Correspondence(models.Model):
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
+    translation_competence_id = fields.Many2one(
+        "translation.competence", compute="_compute_competence", store=True, inverse="_inverse_competence"
+    )
     translate_date = fields.Datetime()
     translate_done = fields.Datetime()
     translation_status = fields.Selection([
@@ -44,6 +47,23 @@ class Correspondence(models.Model):
         ("4", "4")
     ], index=True)
     unread_comments = fields.Boolean()
+
+    @api.depends("src_translation_lang_id", "translation_language_id")
+    def _compute_competence(self):
+        for letter in self:
+            src = letter.src_translation_lang_id
+            dst = letter.translation_language_id
+            competence = self.env["translation.competence"].search([
+                ("source_language_id", "=", src.id),
+                ("dest_language_id", "=", dst.id)])
+            letter.translation_competence_id = competence.id
+
+    def _inverse_competence(self):
+        for letter in self:
+            letter.write({
+                "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
+                "translation_language_id": letter.translation_competence_id.dest_language_id.id
+            })
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -138,60 +158,72 @@ class Correspondence(models.Model):
             self.with_context(force_publish=True).process_letter()
         return True
 
-    # TODO Pair with new platform
     @api.multi
-    def submit_translation(self, translate_lang, translate_text, translator, src_lang):
+    def save_translation(self, letter_elements, translator_id=None):
         """
-        Puts the translated text into the correspondence.
-        :param translate_lang: code_iso of the language of the translation
-        :param translate_text: text of the translation
-        :param translator: reference of the translator
-        :param src_lang: code_iso of the source language of translation
-        :return: None
+        TP API for saving a translation
+        :param letter_elements: list of dict containing paragraphs or pagebreak data
+        :param translator_id: optional translator assigned
         """
         self.ensure_one()
-        translate_lang_id = (
-            self.env["res.lang.compassion"]
-                .search([("code_iso", "=", translate_lang),
-                         ("translatable", "=", True)])
-                .id
-        )
-        src_lang_id = (
-            self.env["res.lang.compassion"].search([
-                ("code_iso", "=", src_lang),
-                ("translatable", "=", True)
+        page_index = 0
+        paragraph_index = 0
+        if not self.page_ids:
+            self.env["correspondence.page"].create({"correspondence_id": self.id})
+        current_page = self.page_ids[page_index]
+        if translator_id is None:
+            translator_id = self.env["translation.user"].search([
+                ("user_id", "=", self.env.uid)
             ]).id
-        )
-        translator_partner = self.env["res.partner"].search([("ref", "=", translator)])
-
         letter_vals = {
-            "translation_language_id": translate_lang_id,
-            "translator_id": translator_partner.id,
-            "src_translation_lang_id": src_lang_id,
-            "translate_done": fields.Datetime.now()
+            "new_translator_id": translator_id,
+            "translation_status": "in progress"
         }
-        if self.direction == "Supporter To Beneficiary":
-            state = "Received in the system"
+        text_field = "translated_text"
+        if self.direction == "Supporter To Beneficiary" and self.translation_language_id.code_iso == "eng":
+            text_field = "english_text"
+        for element in letter_elements:
+            if element.get("type") == "pageBreak":
+                page_index += 1
+                paragraph_index = 0
+                if page_index >= len(self.page_ids):
+                    self.env["correspondence.page"].create({"correspondence_id": self.id})
+                current_page = self.page_ids[page_index]
+            elif element.get("type") == "paragraph":
+                paragraph_vals = {
+                    "page_id": current_page.id,
+                    "index": paragraph_index,
+                    text_field: element.get("content"),
+                    "comments": element.get("comments")
+                }
+                if paragraph_index >= len(current_page.paragraph_ids):
+                    self.env["correspondence.paragraph"].create(paragraph_vals)
+                else:
+                    current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
+                paragraph_index += 1
+            if element.get("comments"):
+                letter_vals["unread_comments"] = True
+                # TODO notification?
+        return self.write(letter_vals)
 
-            # Compute the target text
-            target_text = "english_text"
-            if translate_lang != "eng":
-                target_text = "translated_text"
+    @api.multi
+    def submit_translation(self, letter_elements, translator_id=None):
+        """
+        TP API for saving a translation
+        :param letter_elements: list of dict containing paragraphs or pagebreak data
+        :param translator_id: optional translator assigned
+        """
+        self.ensure_one()
+        self.save_translation(letter_elements, translator_id)
+        user_skill = self.new_translator_id.translation_skills.filtered(
+            lambda s: s.competence_id == self.translation_competence_id)
+        is_s2b = self.direction == "Supporter To Beneficiary"
+        letter_vals = {
+            "translate_done": fields.Datetime.now(),
+            "translation_status": "done" if user_skill.verified else "to validate",
+            "state": "Received in the system" if is_s2b else "Published to Global Partner"
+        }
 
-            # Remove #BOX# in the text, as supporter letters don't have boxes
-            translate_text = translate_text.replace(BOX_SEPARATOR, "\n")
-        else:
-            state = "Published to Global Partner"
-            target_text = "translated_text"
-
-        # Check that layout L4 translation gets on second page
-        if self.template_id.layout == "CH-A-4S01-1" and not translate_text.startswith(
-                "#PAGE#"
-        ):
-            translate_text = "#PAGE#" + translate_text
-        letter_vals.update(
-            {target_text: translate_text.replace("\r", ""), "state": state, }
-        )
         self.write(letter_vals)
 
         # Send to GMC
@@ -201,6 +233,7 @@ class Correspondence(models.Model):
             # Recompose the letter image and process letter
             if super().process_letter():
                 self.send_communication()
+        return True
 
     @api.multi
     def resubmit_to_translation(self):
