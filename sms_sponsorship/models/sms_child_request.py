@@ -231,6 +231,7 @@ class SmsChildRequest(models.Model):
         if not child_fetched and not self.event_id.disable_childpool_search:
             child_fetched = self.take_child_from_childpool()
         self.is_trying_to_fetch_child = False
+        self.env.cr.commit()
         return child_fetched
 
     def complete_step1(self, sponsorship_id):
@@ -314,6 +315,8 @@ class SmsChildRequest(models.Model):
             child_hold = self.env["compassion.hold"].browse(
                 result_action["domain"][0][2]
             )
+            if not child_hold:
+                return False
             child_hold.sms_request_id = self.id
             if child_hold.state == "active":
                 self.write(
@@ -328,9 +331,8 @@ class SmsChildRequest(models.Model):
             _logger.error("Error during SMS child reservation", exc_info=True)
             self.env.cr.rollback()
             self.env.clear()
-            return False
-        finally:
             self.is_trying_to_fetch_child = False
+            return False
 
     def _take_child_from_event(self):
         """ Search in the allocated children for the event.
