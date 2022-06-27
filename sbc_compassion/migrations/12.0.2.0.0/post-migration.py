@@ -18,3 +18,9 @@ def migrate(env, version):
                             "Quality check unsuccessful"]
     )])
     correspondence.create_text_boxes()
+
+    # Update translation done
+    env.cr.execute("""
+        UPDATE correspondence SET translate_done = translate_date
+        WHERE translate_date IS NOT NULL;
+    """)
