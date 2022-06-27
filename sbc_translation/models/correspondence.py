@@ -29,6 +29,7 @@ class Correspondence(models.Model):
         "res.lang.compassion", "Source of translation", readonly=False
     )
     translate_date = fields.Datetime()
+    translate_done = fields.Datetime()
     translation_status = fields.Selection([
         ("to do", "To do"),
         ("in progress", "In progress"),
@@ -107,7 +108,9 @@ class Correspondence(models.Model):
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
                 "translation_priority": "0",
-                "translation_status": "to do"
+                "translation_status": "to do",
+                "translate_date": fields.Datetime.now(),
+                "translation_language_id": dst_lang.id
             }
         )
 
@@ -165,7 +168,7 @@ class Correspondence(models.Model):
             "translation_language_id": translate_lang_id,
             "translator_id": translator_partner.id,
             "src_translation_lang_id": src_lang_id,
-            "translate_date": fields.Datetime.now()
+            "translate_done": fields.Datetime.now()
         }
         if self.direction == "Supporter To Beneficiary":
             state = "Received in the system"
