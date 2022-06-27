@@ -216,16 +216,14 @@ class Correspondence(models.Model):
             })
             letter.send_local_translate()
 
-    @api.model
-    def list_letters(self, limit=None, offset=None):
+    @api.multi
+    def list_letters(self):
         """ API call to fetch letters to translate """
-        letters = self.search(
-            [("state", "=", "Global Partner translation queue")],
-            limit=limit, offset=offset)
-        return [l.get_letter_info() for l in letters]
+        return [letter.get_letter_info() for letter in self]
 
     @api.multi
     def get_letter_info(self):
+        """ Translation Platform API for fetching letter data. """
         self.ensure_one()
         return {
             "id": self.id,
