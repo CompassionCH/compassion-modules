@@ -23,7 +23,7 @@
     <record id="translator_user_manager_rule" model="ir.rule">
         <field name="name">Translator manager</field>
         <field name="model_id" ref="model_translation_user"/>
-        <field name="domain_force">[('1', '=', '1')]</field>
+        <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_manager'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
@@ -43,7 +43,7 @@
     <record id="translator_skills_manager_rule" model="ir.rule">
         <field name="name">Translator skills manager</field>
         <field name="model_id" ref="model_translation_user_skill"/>
-        <field name="domain_force">[('1', '=', '1')]</field>
+        <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('group_manager'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>

@@ -18,6 +18,8 @@
             </button>
             <field name="translator" position="after">
                 <field name="new_translator_id"/>
+                <field name="translate_date"/>
+                <field name="translate_done"/>
                 <field name="src_translation_lang_id"/>
                 <field name="translation_status"/>
                 <field name="translation_priority"/>

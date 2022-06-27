@@ -29,6 +29,7 @@ class Correspondence(models.Model):
         "res.lang.compassion", "Source of translation", readonly=False
     )
     translate_date = fields.Datetime()
+    translate_done = fields.Datetime()
     translation_status = fields.Selection([
         ("to do", "To do"),
         ("in progress", "In progress"),
@@ -107,7 +108,9 @@ class Correspondence(models.Model):
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
                 "translation_priority": "0",
-                "translation_status": "to do"
+                "translation_status": "to do",
+                "translate_date": fields.Datetime.now(),
+                "translation_language_id": dst_lang.id
             }
         )
 
@@ -165,7 +168,7 @@ class Correspondence(models.Model):
             "translation_language_id": translate_lang_id,
             "translator_id": translator_partner.id,
             "src_translation_lang_id": src_lang_id,
-            "translate_date": fields.Datetime.now()
+            "translate_done": fields.Datetime.now()
         }
         if self.direction == "Supporter To Beneficiary":
             state = "Received in the system"
@@ -213,16 +216,14 @@ class Correspondence(models.Model):
             })
             letter.send_local_translate()
 
-    @api.model
-    def list_letters(self, limit=None, offset=None):
+    @api.multi
+    def list_letters(self):
         """ API call to fetch letters to translate """
-        letters = self.search(
-            [("state", "=", "Global Partner translation queue")],
-            limit=limit, offset=offset)
-        return [l.get_letter_info() for l in letters]
+        return [letter.get_letter_info() for letter in self]
 
     @api.multi
     def get_letter_info(self):
+        """ Translation Platform API for fetching letter data. """
         self.ensure_one()
         return {
             "id": self.id,
