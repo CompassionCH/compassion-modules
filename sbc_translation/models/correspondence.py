@@ -251,7 +251,7 @@ class Correspondence(models.Model):
         for element in letter_elements:
             if element.get("type") == "pageBreak":
                 # Clean existing paragraphs
-                current_page.paragraph_ids[paragraph_index + 1:].clean_paragraphs()
+                current_page.paragraph_ids[paragraph_index:].clean_paragraphs()
                 page_index += 1
                 paragraph_index = 0
                 if page_index >= len(self.page_ids):
@@ -271,7 +271,8 @@ class Correspondence(models.Model):
                 paragraph_index += 1
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
-        current_page.paragraph_ids[paragraph_index + 1:].clean_paragraphs()
+        current_page.paragraph_ids[paragraph_index:].clean_paragraphs()
+        self.page_ids[page_index + 1:].mapped("paragraph_ids").clean_paragraphs()
         self.write(letter_vals)
         return True
 
