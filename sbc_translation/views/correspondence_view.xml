@@ -17,6 +17,7 @@
                         attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
             </button>
             <field name="translator" position="after">
+                <field name="translation_supervisor_id"/>
                 <field name="new_translator_id"/>
                 <field name="translate_date"/>
                 <field name="translate_done"/>
