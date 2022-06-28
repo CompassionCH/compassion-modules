@@ -25,6 +25,8 @@ class RestController(http.Controller):
 
         translator = request.env["translation.user"].sudo().browse(int(translator_id)).exists()
         correspondence = request.env["correspondence"].sudo(translator.user_id.id).browse(object_id).exists()
+        if correspondence.translator_id != translator:
+            raise BadRequest()
         binary = correspondence and correspondence.get_image()
 
         if not binary:
