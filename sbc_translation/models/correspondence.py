@@ -272,6 +272,7 @@ class Correspondence(models.Model):
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
         current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
+        self.page_ids[page_index + 1:].mapped("paragraph_ids").clear_paragraphs()
         self.clear_pages()
         self.write(letter_vals)
         return True
@@ -354,6 +355,7 @@ class Correspondence(models.Model):
     def get_letter_info(self):
         """ Translation Platform API for fetching letter data. """
         self.ensure_one()
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         return {
             "id": self.id,
             "status": self.translation_status or "None",
@@ -377,24 +379,32 @@ class Correspondence(models.Model):
                 "lastName": self.partner_id.lastname,
                 "sex": self.partner_id.gmc_gender[0],
                 "age": self.partner_id.age
-            }
+            },
+            "pdfUrl": f"{base_url}/web/pdf/correspondence/{self.id}",
         }
 
     @api.multi
     def get_translated_elements(self):
         res = []
+        last_paragraph_readonly = False
         for page in self.page_ids:
             if res:
+                first_paragraph = page.paragraph_ids[:1]
                 res.append({
                     "type": "pageBreak",
-                    "id": page.id
+                    "id": page.id,
+                    "readonly": last_paragraph_readonly and (first_paragraph.english_text
+                                                             or first_paragraph.original_text)
                 })
             for paragraph in page.paragraph_ids:
+                last_paragraph_readonly = bool(paragraph.english_text or paragraph.original_text)
                 res.append({
                     "type": "paragraph",
                     "id": paragraph.id,
                     "content": paragraph.translated_text,
                     "comments": paragraph.comments,
+                    "source": paragraph.english_text or paragraph.original_text or "",
+                    "readonly": last_paragraph_readonly
                 })
         return res
 
