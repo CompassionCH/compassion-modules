@@ -251,7 +251,7 @@ class Correspondence(models.Model):
         for element in letter_elements:
             if element.get("type") == "pageBreak":
                 # Clean existing paragraphs
-                current_page.paragraph_ids[paragraph_index:].clean_paragraphs()
+                current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
                 page_index += 1
                 paragraph_index = 0
                 if page_index >= len(self.page_ids):
@@ -271,10 +271,14 @@ class Correspondence(models.Model):
                 paragraph_index += 1
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
-        current_page.paragraph_ids[paragraph_index:].clean_paragraphs()
-        self.page_ids[page_index + 1:].mapped("paragraph_ids").clean_paragraphs()
+        current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
+        self.clear_pages()
         self.write(letter_vals)
         return True
+
+    @api.multi
+    def clear_pages(self):
+        self.page_ids.filtered(lambda p: not (p.original_text or p.english_text or p.translated_text)).unlink()
 
     @api.multi
     def submit_translation(self, letter_elements, translator_id=None):
