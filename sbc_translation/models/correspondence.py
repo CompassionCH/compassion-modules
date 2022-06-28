@@ -8,11 +8,10 @@
 #
 ##############################################################################
 import logging
-
+from random import randint
 
 from odoo import models, api, fields, _
 from odoo.exceptions import UserError
-from odoo.addons.sbc_compassion.models.correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
@@ -28,6 +27,7 @@ class Correspondence(models.Model):
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
+    translation_supervisor_id = fields.Many2one("res.users", "Translation supervisor")
     translation_competence_id = fields.Many2one(
         "translation.competence", compute="_compute_competence", store=True, inverse="_inverse_competence"
     )
@@ -46,6 +46,10 @@ class Correspondence(models.Model):
         ("3", "3"),
         ("4", "4")
     ], index=True)
+    translation_issue = fields.Selection(
+        "get_translation_issue_list", help="Issue about the letter reported by the translator")
+    translation_issue_comments = fields.Html()
+    translation_url = fields.Char(compute="_compute_translation_url")
     unread_comments = fields.Boolean()
 
     @api.depends("src_translation_lang_id", "translation_language_id")
@@ -64,6 +68,25 @@ class Correspondence(models.Model):
                 "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
                 "translation_language_id": letter.translation_competence_id.dest_language_id.id
             })
+
+    def _compute_translation_url(self):
+        # TODO
+        for letter in self:
+            letter.translation_url = f"http://localhost:8069/translation/{letter.id}"
+
+    @api.model
+    def get_translation_issue_list(self):
+        # TODO validate the list with SDS
+        return [
+            ("broken_pdf", _("PDF not showing")),
+            ("text_unreadable", _("Cannot read properly")),
+            ("wrong_language", _("Letter in wrong language queue")),
+            ("child_protection", _("Child protection issue")),
+            ("content_inappropriate", _("Inappropriate content")),
+            ("wrong_child_name", _("Child name different than expected")),
+            ("wrong_sponsor_name", _("Sponsor name different than expected")),
+            ("other", _("Other issue"))
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -143,6 +166,52 @@ class Correspondence(models.Model):
         return True
 
     @api.multi
+    def assign_supervisor(self):
+        """
+        This method assigns a supervisor for a letter.
+        Can be inherited to customize by who the letters need to be checked.
+        Here it picks one manager randomly.
+        """
+        manager_group = self.env.ref("sbc_translation.group_manager")
+        supervisors = self.env["res.users"].search([("groups_id", "=", manager_group.id)])
+        for letter in self:
+            letter.translation_supervisor_id = supervisors[randint(0, len(supervisors)-1)]
+        return True
+
+    @api.multi
+    def raise_translation_issue(self, issue_type, body_html):
+        """
+        TP API for translator to raise an issue with the letter
+        """
+        self.ensure_one()
+        self.write({
+            "translation_issue": issue_type,
+            "translation_issue_comments": body_html
+        })
+        self.assign_supervisor()
+        template = self.env.ref("sbc_translation.translation_issue_notification")
+        self.message_post_with_template(template.id)
+        return True
+
+    @api.multi
+    def reply_to_comments(self, body_html):
+        """
+        TP API for sending to the translator a message regarding his or her comments.
+        """
+        self.ensure_one()
+        reply_template = self.env.ref("sbc_translation.comments_reply")
+        self.message_post_with_view(reply_template, partner_ids=[(4, self.new_translator_id.partner_id.id)], values={
+            "reply": body_html,
+        })
+        return True
+
+    @api.multi
+    def mark_comments_read(self):
+        return self.write({
+            "unread_comments": False
+        })
+
+    @api.multi
     def remove_local_translate(self):
         """
         Remove a letter from local translation platform and change state of
@@ -179,11 +248,10 @@ class Correspondence(models.Model):
             "new_translator_id": translator_id,
             "translation_status": "in progress"
         }
-        text_field = "translated_text"
-        if self.direction == "Supporter To Beneficiary" and self.translation_language_id.code_iso == "eng":
-            text_field = "english_text"
         for element in letter_elements:
             if element.get("type") == "pageBreak":
+                # Clean existing paragraphs
+                current_page.paragraph_ids[paragraph_index + 1:].clean_paragraphs()
                 page_index += 1
                 paragraph_index = 0
                 if page_index >= len(self.page_ids):
@@ -192,8 +260,8 @@ class Correspondence(models.Model):
             elif element.get("type") == "paragraph":
                 paragraph_vals = {
                     "page_id": current_page.id,
-                    "index": paragraph_index,
-                    text_field: element.get("content"),
+                    "sequence": paragraph_index,
+                    "translated_text": element.get("content"),
                     "comments": element.get("comments")
                 }
                 if paragraph_index >= len(current_page.paragraph_ids):
@@ -203,8 +271,9 @@ class Correspondence(models.Model):
                 paragraph_index += 1
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
-                # TODO notification?
-        return self.write(letter_vals)
+        current_page.paragraph_ids[paragraph_index + 1:].clean_paragraphs()
+        self.write(letter_vals)
+        return True
 
     @api.multi
     def submit_translation(self, letter_elements, translator_id=None):
@@ -220,19 +289,27 @@ class Correspondence(models.Model):
         is_s2b = self.direction == "Supporter To Beneficiary"
         letter_vals = {
             "translate_done": fields.Datetime.now(),
-            "translation_status": "done" if user_skill.verified else "to validate",
+            "translation_status": "done" if user_skill.verified and not self.unread_comments else "to validate",
             "state": "Received in the system" if is_s2b else "Published to Global Partner"
         }
-
         self.write(letter_vals)
+        self._post_process_translation()
+        return True
 
-        # Send to GMC
-        if self.direction == "Supporter To Beneficiary":
-            self.create_commkit()
-        else:
-            # Recompose the letter image and process letter
-            if super().process_letter():
-                self.send_communication()
+    @api.multi
+    def approve_translation(self):
+        for letter in self:
+            skill_to_validate = letter.new_translator_id.translation_skills.filtered(
+                lambda s: s.competence_id == letter.translation_competence_id and not s.verified)
+            if skill_to_validate:
+                skill_to_validate.verified = True
+        self.write({
+            "translation_issue": False,
+            "translation_issue_comments": False,
+            "translation_supervisor_id": self.env.uid,
+            "translation_status": "done",
+        })
+        self._post_process_translation()
         return True
 
     @api.multi
@@ -248,6 +325,20 @@ class Correspondence(models.Model):
                 "state": "Received in the system"
             })
             letter.send_local_translate()
+
+    @api.multi
+    def _post_process_translation(self):
+        for letter in self.filtered(lambda l: l.translation_status == "done"):
+            if letter.direction == "Supporter To Beneficiary":
+                if self.translation_language_id.code_iso == "eng":
+                    # Copy translation text into english text field
+                    letter.english_text = letter.translated_text
+                # Send to GMC
+                letter.create_commkit()
+            else:
+                # Recompose the letter image and process letter
+                if super(Correspondence, letter).process_letter():
+                    letter.send_communication()
 
     @api.multi
     def list_letters(self):
