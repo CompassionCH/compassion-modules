@@ -58,3 +58,11 @@ class CorrespondenceParagraph(models.Model):
         if not self.env.context.get("from_correspondence_text"):
             self.mapped("page_id").sync_text_from_paragraphs()
         return True
+
+    @api.multi
+    def unlink(self):
+        pages = self.mapped("page_id")
+        res = super().unlink()
+        if not self.env.context.get("from_correspondence_text"):
+            pages.sync_text_from_paragraphs()
+        return res
