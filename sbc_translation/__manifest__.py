@@ -43,6 +43,7 @@
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
         "security/access_rules.xml",
+        "data/mail_template.xml",
         "views/translation_user_view.xml",
         "views/translation_competence_view.xml",
         "views/correspondence_view.xml",
