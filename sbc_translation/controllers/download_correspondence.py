@@ -8,8 +8,7 @@
 ##############################################################################
 import logging
 
-from odoo.addons.web.controllers.main import content_disposition
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
 from odoo import http
 from odoo.http import request
@@ -19,16 +18,16 @@ _logger = logging.getLogger(__name__)
 
 class RestController(http.Controller):
     @http.route("/web/pdf/correspondence/<int:object_id>", type="http", methods=["GET"])
-    def generate_correspondence_pdf(self, object_id, translator_id=None):
-        if not object_id or not translator_id:
+    def generate_correspondence_pdf(self, object_id, api_key=None):
+        if not object_id:
             raise BadRequest()
+        if not api_key or api_key != request.env["ir.config_parameter"].sudo().get_param("sbc_translation.api_key"):
+            raise Unauthorized()
 
-        translator = request.env["translation.user"].sudo().browse(int(translator_id)).exists()
-        correspondence = request.env["correspondence"].sudo(translator.user_id.id).browse(object_id).exists()
-        if correspondence.translator_id != translator:
-            raise BadRequest()
+        correspondence = request.env["correspondence"].sudo().browse(object_id).exists()
+        if not correspondence:
+            raise NotFound()
         binary = correspondence and correspondence.get_image()
-
         if not binary:
             raise NotFound()
 
@@ -36,6 +35,5 @@ class RestController(http.Controller):
             binary,
             [
                 ("Content-Type", "application/pdf"),
-                ("Content-Disposition", content_disposition(correspondence.file_name)),
             ],
         )
