@@ -150,7 +150,8 @@ class TranslationUser(models.Model):
                 "source": skill.competence_id.source_language_id.name,
                 "target": skill.competence_id.dest_language_id.name,
                 "verified": skill.verified
-            } for skill in self.translation_skills.with_context(lang="en_US")] or "None"
+            } for skill in self.translation_skills.with_context(lang="en_US")] or "None",
+            "api_key": self.env["ir.config_parameter"].sudo().get_param("sbc_translation.api_key"),
         }
 
     @api.model
