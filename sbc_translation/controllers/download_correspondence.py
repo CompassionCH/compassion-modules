@@ -36,6 +36,5 @@ class RestController(http.Controller):
             binary,
             [
                 ("Content-Type", "application/pdf"),
-                ("Content-Disposition", content_disposition(correspondence.file_name)),
             ],
         )
