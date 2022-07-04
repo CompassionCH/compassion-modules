@@ -8,7 +8,6 @@
 ##############################################################################
 import logging
 
-from odoo.addons.web.controllers.main import content_disposition
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
 from odoo import http
@@ -36,6 +35,5 @@ class RestController(http.Controller):
             binary,
             [
                 ("Content-Type", "application/pdf"),
-                ("Content-Disposition", content_disposition(correspondence.file_name)),
             ],
         )
