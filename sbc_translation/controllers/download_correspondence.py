@@ -8,7 +8,6 @@
 ##############################################################################
 import logging
 
-from odoo.addons.web.controllers.main import content_disposition
 from werkzeug.exceptions import BadRequest, NotFound, Unauthorized
 
 from odoo import http
