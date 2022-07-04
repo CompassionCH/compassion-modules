@@ -220,7 +220,7 @@ class Main extends React.Component {
             }else{
                 window.getChildTimeout = setTimeout(() => {
                 this.getChild();
-                }, 1000);
+                }, 5000);
                 ++this.count_try;
             }
         }

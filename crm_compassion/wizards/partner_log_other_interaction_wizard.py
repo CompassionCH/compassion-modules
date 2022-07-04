@@ -29,4 +29,4 @@ class OtherInteractions(models.Model):
     _inherit = ["mail.activity.mixin", "mail.thread", "partner.log.other.interaction.wizard"]
     _description = "Logging for other interactions"
     _rec_name = "subject"
-
+    _transient = False
