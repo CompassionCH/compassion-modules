@@ -27,7 +27,8 @@ class Correspondence(models.Model):
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
     )
-    translation_supervisor_id = fields.Many2one("res.users", "Translation supervisor")
+    translation_supervisor_id = fields.Many2one(
+        "res.users", "Translation supervisor", domain=[("share", "=", False)])
     translation_competence_id = fields.Many2one(
         "translation.competence", compute="_compute_competence", store=True, inverse="_inverse_competence"
     )
@@ -38,19 +39,27 @@ class Correspondence(models.Model):
         ("in progress", "In progress"),
         ("to validate", "To validate"),
         ("done", "Done")
-    ], index=True)
+    ], index=True, group_expand="_read_group_translation_status")
     translation_priority = fields.Selection([
-        ("0", "0"),
-        ("1", "1"),
-        ("2", "2"),
-        ("3", "3"),
-        ("4", "4")
+        ("0", "Low"),
+        ("1", "Medium"),
+        ("2", "High"),
+        ("3", "Very high"),
+        ("4", "Urgent")
     ], index=True)
+    translation_priority_name = fields.Char(compute="_compute_translation_priority_name", store=True)
     translation_issue = fields.Selection(
         "get_translation_issue_list", help="Issue about the letter reported by the translator")
     translation_issue_comments = fields.Html()
     translation_url = fields.Char(compute="_compute_translation_url")
     unread_comments = fields.Boolean()
+    paragraph_ids = fields.One2many(
+        "correspondence.paragraph", string="Paragraphs",
+        compute="_compute_paragraph_ids", inverse="_inverse_paragraph_ids"
+    )
+
+    def _read_group_translation_status(self, values, domain, order):
+        return ["to do", "in progress", "to validate", "done"]
 
     @api.depends("src_translation_lang_id", "translation_language_id")
     def _compute_competence(self):
@@ -64,15 +73,41 @@ class Correspondence(models.Model):
 
     def _inverse_competence(self):
         for letter in self:
+            if letter.translation_status != "to do":
+                raise UserError(_(
+                    "You cannot change the translation language of a letter that is being or already translated."))
             letter.write({
                 "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
                 "translation_language_id": letter.translation_competence_id.dest_language_id.id
             })
 
+    @api.depends("translation_priority")
+    def _compute_translation_priority_name(self):
+        for correspondence in self:
+            us_record = correspondence.with_context(lang="en_US")
+            correspondence.translation_priority_name = us_record.translate("translation_priority")
+
     def _compute_translation_url(self):
         # TODO
         for letter in self:
             letter.translation_url = f"http://localhost:8069/translation/{letter.id}"
+
+    def _compute_paragraph_ids(self):
+        for correspondence in self:
+            correspondence.paragraph_ids = correspondence.mapped("page_ids.paragraph_ids")
+
+    def _inverse_paragraph_ids(self):
+        # If both deletion and creation is made, creation is not working. I couldn't figure it out...
+        for correspondence in self:
+            # Propagate deletions
+            (correspondence.page_ids.mapped("paragraph_ids") - correspondence.paragraph_ids).unlink()
+            # Propagate paragraph creation, we must associate it to a page. We take the last page by default
+            last_page = correspondence.page_ids[-1:]
+            last_sequence = last_page.paragraph_ids[-1].sequence
+            for new_paragraph in correspondence.paragraph_ids.filtered(lambda p: not p.page_id):
+                new_paragraph.sequence = last_sequence + 1
+                last_page.paragraph_ids += new_paragraph
+                last_sequence += 1
 
     @api.model
     def get_translation_issue_list(self):
@@ -123,6 +158,16 @@ class Correspondence(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     @api.multi
+    def open_full_view(self):
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "views": [[False, "form"]],
+            "res_id": self.id,
+            "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"}
+        }
+
+    @api.multi
     def process_letter(self):
         """ Called when B2S letter is Published. Check if translation is
          needed and upload to translation platform. """
@@ -153,7 +198,10 @@ class Correspondence(models.Model):
                 "translation_priority": "0",
                 "translation_status": "to do",
                 "translate_date": fields.Datetime.now(),
-                "translation_language_id": dst_lang.id
+                "translation_language_id": dst_lang.id,
+                "translation_issue": False,
+                "translation_issue_comments": False,
+                "unread_comments": False,
             }
         )
 
