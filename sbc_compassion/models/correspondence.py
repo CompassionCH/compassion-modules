@@ -296,11 +296,11 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
                 letter.name = (
-                    letter.communication_type_ids[0].name
+                    (letter.communication_type_ids[0].name or "")
                     + " ("
-                    + letter.sponsorship_id.partner_id.ref
+                    + (letter.sponsorship_id.partner_id.ref or "")
                     + " - "
-                    + letter.child_id.local_id
+                    + (letter.child_id.local_id or "")
                     + ")"
                 )
             else:
