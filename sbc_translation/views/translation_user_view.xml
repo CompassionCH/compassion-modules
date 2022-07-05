@@ -63,6 +63,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="partner_id"/>
+                <field name="search_competence_id" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
                 <field name="search_source_lang" string="Source language" filter_domain="[('translation_skills.competence_id.source_language_id', '=', self)]"/>
                 <field name="search_dest_lang" string="Destination language" filter_domain="[('translation_skills.competence_id.dest_language_id', '=', self)]"/>
                 <separator />
@@ -80,5 +81,5 @@
     </record>
 
     <menuitem id="menu_translation_platform" parent="sbc_compassion.menu_correspondence" sequence="4" name="Translation Platform"/>
-    <menuitem id="menu_translation_user" parent="menu_translation_platform" name="Translators" action="action_compassion_translation_user_form" sequence="1"/>
+    <menuitem id="menu_translation_user" parent="menu_translation_platform" name="Translators" action="action_compassion_translation_user_form" sequence="2"/>
 </odoo>

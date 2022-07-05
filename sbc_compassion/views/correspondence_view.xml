@@ -190,8 +190,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Partner" name="partner" domain="[]" context="{'group_by': 'partner_id'}" />
                     <filter string="Sponsorship" name="sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
-                    <filter string="State" name="state" domain="[]" context="{'group_by': 'state'}" />
-                    <filter string="Translator" name="translator" domain="[]" context="{'group_by': 'translator_id'}" />
+                    <filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}" />
                 </group>
             </search>
         </field>

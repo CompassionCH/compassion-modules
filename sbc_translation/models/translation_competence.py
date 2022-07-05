@@ -4,6 +4,7 @@ from odoo import api, models, fields
 class TranslationCompetence(models.Model):
     _name = "translation.competence"
     _description = "Compassion Translation Competence"
+    _order = "number_current_letters desc"
 
     source_language_id = fields.Many2one(
         "res.lang.compassion", "Source language", domain=[("translatable", "=", True)], required=True, index=True
@@ -12,6 +13,15 @@ class TranslationCompetence(models.Model):
         "res.lang.compassion", "Destination language", domain=[("translatable", "=", True)], required=True, index=True
     )
     name = fields.Char(compute="_compute_name")
+    all_letter_ids = fields.One2many(
+        "correspondence", "translation_competence_id", "All letters"
+    )
+    current_letter_ids = fields.One2many(
+        "correspondence", string="Current letters", compute="_compute_current_letters")
+    number_current_letters = fields.Integer(compute="_compute_current_letters", store=True)
+    skill_ids = fields.One2many("translation.user.skill", "competence_id", "Translator skills")
+    number_translators = fields.Integer(compute="_compute_number_translators", store=True)
+    number_active_translators = fields.Integer(compute="_compute_number_translators")
 
     _sql_constraints = [
         ("unique_competence", "unique(source_language_id,dest_language_id)", "This competence already exists.")
@@ -20,6 +30,23 @@ class TranslationCompetence(models.Model):
     def _compute_name(self):
         for competence in self:
             competence.name = competence.source_language_id.name + " -> " + competence.dest_language_id.name
+
+    @api.depends("all_letter_ids")
+    def _compute_current_letters(self):
+        for competence in self:
+            current_letters = self.env["correspondence"].search([
+                ("state", "=", "Global Partner translation queue"),
+                ("translation_competence_id", "=", competence.id)
+            ])
+            competence.current_letter_ids = current_letters
+            competence.number_current_letters = len(current_letters)
+
+    @api.depends("skill_ids", "skill_ids.translator_id.active")
+    def _compute_number_translators(self):
+        for competence in self:
+            translators = competence.skill_ids.mapped("translator_id").filtered("active")
+            competence.number_translators = len(translators)
+            competence.number_active_translators = len(translators.filtered("nb_translated_letters_this_year"))
 
     @api.model
     def get_translation_languages(self):
