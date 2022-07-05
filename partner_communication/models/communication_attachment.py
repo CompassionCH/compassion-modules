@@ -83,8 +83,10 @@ class CommunicationAttachment(models.Model):
 
     @api.multi
     def unlink(self):
-        self.mapped("attachment_id").unlink()
-        return super().unlink()
+        attachments = self.mapped("attachment_id")
+        super().unlink()
+        attachments.unlink()
+        return True
 
     @api.multi
     def print_attachments(self, output_tray=None):
