@@ -44,6 +44,7 @@
         "security/ir.model.access.csv",
         "security/access_rules.xml",
         "data/mail_template.xml",
+        "data/increment_translation_priority_cron.xml",
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
