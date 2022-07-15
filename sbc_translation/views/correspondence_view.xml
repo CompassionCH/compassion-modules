@@ -84,7 +84,7 @@
         </field>
     </record>
 
-    <record id="view_correnspondence_translation_tree" model="ir.ui.view">
+    <record id="view_correspondence_translation_tree" model="ir.ui.view">
         <field name="name">correspondence.translation.tree</field>
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
@@ -204,7 +204,7 @@
         <field name="view_id" ref="correspondence_translation_kanban"/>
         <field name="context">{
             'form_view_ref': 'sbc_translation.correspondence_simple_translation_form',
-            'tree_view_ref': 'sbc_translation.view_correnspondence_translation_tree',
+            'tree_view_ref': 'sbc_translation.view_correspondence_translation_tree',
             'search_default_translation_pending': 1
         }</field>
     </record>
