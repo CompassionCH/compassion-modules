@@ -46,7 +46,7 @@ class Correspondence(models.Model):
         ("2", "High"),
         ("3", "Very high"),
         ("4", "Urgent")
-    ], index=True)
+    ], default="0", index=True)
     translation_priority_name = fields.Char(compute="_compute_translation_priority_name", store=True)
     translation_issue = fields.Selection(
         "get_translation_issue_list", help="Issue about the letter reported by the translator")
@@ -460,15 +460,17 @@ class Correspondence(models.Model):
     def increment_priority_cron(self):
         """
         Increment priority of letters to translate, maximum
-        priority is 5.
+        priority is 4.
         """
-        letters = self.search([
-            ("translation_priority", "!=", False),
-            ("translation_priority", "!=", 5)])
-        for letter in letters:
-            old_priority = letter.translation_priority
-            new_priority = str(int(old_priority) + 1)
-            letter.write({"translation_priority": new_priority})
+        letters_to_translate = self.search([("translation_status", "!=", "done")])
+
+        for letter in letters_to_translate:
+            old_priority = int(letter.translation_priority)
+            if old_priority == 4:
+                continue
+            new_priority = old_priority + 1
+
+            letter.write({"translation_priority": str(new_priority)})
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
