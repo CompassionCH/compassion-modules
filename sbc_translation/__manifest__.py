@@ -43,6 +43,7 @@
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
         "security/access_rules.xml",
+        "wizards/reply_to_comments_view.xml",
         "data/mail_template.xml",
         "data/increment_translation_priority_cron.xml",
         "views/translation_user_view.xml",
