@@ -41,9 +41,13 @@
                     <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
                             states="Published to Global Partner,Received in the system"/>
                     <button name="resubmit_to_translation" type="object"
-                        string="Put back into translation"
+                        string="Return to translation"
                         attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
                     <button name="open_full_view" type="object" string="Open full view"/>
+                    <button name="%(sbc_translation.reply_to_comments_wizard)d" type="action" string="Reply to comments"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('unread_comments', '!=', True)]}"/>
+<!--                        context="{'comments': comments}"/>-->
                 </header>
                 <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
                     <h4 class="alert-heading" role="status"><field name="translation_issue"/></h4>
