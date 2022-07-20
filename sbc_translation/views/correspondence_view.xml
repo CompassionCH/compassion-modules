@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="sbc_compassion.view_correspondence_form" />
         <field name="arch" type="xml">
             <button name="compose_letter_button" position="before">
-                <button name="remove_local_translate" type="object" string="Remove from translation" class="oe_highlight"
-                        states="Global Partner translation queue"/>
+                <button name="remove_local_translate" type="object" string="Remove from translation"
+                        class="oe_highlight" states="Global Partner translation queue"/>
                 <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
                         states="Published to Global Partner,Received in the system"/>
             </button>
@@ -36,18 +36,20 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <field name="translation_status" widget="statusbar" readonly="0"/>
-                    <button name="remove_local_translate" type="object" string="Remove from translation" class="oe_highlight"
-                        states="Global Partner translation queue"/>
+                    <button name="remove_local_translate" type="object"
+                            string="Remove from translation" class="oe_highlight"
+                            states="Global Partner translation queue"/>
                     <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
                             states="Published to Global Partner,Received in the system"/>
                     <button name="resubmit_to_translation" type="object"
                         string="Return to translation"
                         attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
                     <button name="open_full_view" type="object" string="Open full view"/>
-                    <button name="%(sbc_translation.reply_to_comments_wizard)d" type="action" string="Reply to comments"
+                    <button name="%(sbc_translation.reply_to_comments_wizard)d"
+                            type="action" string="Reply to comments"
                         class="oe_highlight"
-                        attrs="{'invisible': [('unread_comments', '!=', True)]}"/>
-<!--                        context="{'comments': comments}"/>-->
+                        attrs="{'invisible': [('unread_comments', '!=', True)]}"
+                        context="{'default_paragraph_ids': paragraph_ids}"/>
                 </header>
                 <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
                     <h4 class="alert-heading" role="status"><field name="translation_issue"/></h4>
@@ -84,6 +86,9 @@
                         </field>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
