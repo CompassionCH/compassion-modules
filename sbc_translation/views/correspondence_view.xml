@@ -49,8 +49,7 @@
                             type="action" string="Reply to comments"
                         class="oe_highlight"
                         attrs="{'invisible': [('unread_comments', '!=', True)]}"
-                        context="{'default_paragraph_ids': paragraph_ids,
-                                  'translator': partner_id}"/>
+                        context="{'default_paragraph_ids': paragraph_ids}"/>
                 </header>
                 <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
                     <h4 class="alert-heading" role="status"><field name="translation_issue"/></h4>
