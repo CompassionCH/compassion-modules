@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--    <record id="reply_to_comments_tree" model="ir.ui.view">-->
-<!--        <field name="name">reply.to.comments.wizard</field>-->
-<!--        <field name="model">reply.to.comments</field>-->
-<!--        <field name="paragraph_ids">-->
-<!--            <tree default_order="page_id asc,sequence asc">-->
-<!--                <field name="original_text"/>-->
-<!--                <field name="translated_text"/>-->
-<!--                <field name="comments"/>-->
-<!--            </tree>-->
-<!--        </field>-->
-<!--    </record>-->
     <record id="reply_to_comments_form" model="ir.ui.view">
         <field name="name">reply.to.comments.wizard</field>
         <field name="model">reply.to.comments</field>
@@ -18,7 +7,7 @@
             <form string="Reply to comments">
                 <group>
                     <field name="paragraph_ids">
-                        <tree default_order="page_id asc,sequence asc">
+                        <tree default_order="page_id asc, sequence asc">
                             <field name="original_text"/>
                             <field name="translated_text"/>
                             <field name="comments"/>
