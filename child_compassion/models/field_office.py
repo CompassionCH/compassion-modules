@@ -74,16 +74,16 @@ class FieldOffice(models.Model):
     disaster_alert_ids = fields.Many2many(
         "fo.disaster.alert", string="Disaster alerts", readonly=False
     )
-    fcp_hours_week = fields.Integer("Hours/week", default=8, oldname="icp_hours_week")
-    fcp_meal_week = fields.Integer("Meals/week", default=1, oldname="icp_meal_week")
+    fcp_hours_week = fields.Integer("Hours/week", default=8)
+    fcp_meal_week = fields.Integer("Meals/week", default=1)
     fcp_medical_check = fields.Integer(
-        "Medical check/year", default=1, oldname="icp_medical_check"
+        "Medical check/year", default=1
     )
     fcp_ids = fields.One2many(
         "compassion.project",
         "field_office_id",
         "FCP",
-        oldname="icp_ids",
+
         readonly=False,
     )
 

@@ -34,7 +34,7 @@ class ProjectLifecycle(models.Model):
 
     # Reactivation
     ##############
-    fcp_improvement_desc = fields.Text(readonly=True, oldname="icp_improvement_desc")
+    fcp_improvement_desc = fields.Text(readonly=True)
 
     # Suspension
     ############

@@ -13,6 +13,7 @@ from odoo import models, api, _
 class ChildReservationWizard(models.TransientModel):
     _name = "child.reservation.wizard"
     _inherit = "compassion.abstract.hold"
+    _description = "Child Reservation Wizard"
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

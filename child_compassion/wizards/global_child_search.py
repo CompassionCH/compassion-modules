@@ -25,6 +25,7 @@ class GlobalChildSearch(models.TransientModel):
 
     _name = "compassion.childpool.search"
     _inherit = ["compassion.mapped.model"]
+    _description = "Compassion Child Search"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -47,7 +48,6 @@ class GlobalChildSearch(models.TransientModel):
         "compassion.project",
         "childpool_project_search_rel",
         string="Projects",
-        oldname="icp_ids",
         readonly=False,
     )
     fcp_name = fields.Char()

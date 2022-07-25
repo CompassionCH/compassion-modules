@@ -18,6 +18,8 @@ class ChildProperty(models.AbstractModel):
 
     _name = "child.property"
     _inherit = "connect.multipicklist"
+    _description = "Child Property"
+
     res_model = "compassion.child"
     value = fields.Char(translate=True)
 

@@ -41,7 +41,7 @@ class CompassionProject(models.Model):
 
     # General Information
     #####################
-    fcp_id = fields.Char(required=True, oldname="icp_id")
+    fcp_id = fields.Char(required=True)
     name = fields.Char(readonly=True)
     child_center_original_name = fields.Char(readonly=True)
     local_church_name = fields.Char(readonly=True)
@@ -295,7 +295,6 @@ class CompassionProject(models.Model):
         "fcp.disaster.impact",
         "project_id",
         "FCP Disaster Impacts",
-        oldname="icp_disaster_impact_ids",
         readonly=False,
     )
     current_weather = fields.Selection(
@@ -323,7 +322,7 @@ class CompassionProject(models.Model):
 
     # Partnership
     #############
-    partnership_start_date = fields.Date(oldname="start_date", readonly=True)
+    partnership_start_date = fields.Date( readonly=True)
     program_start_date = fields.Date(readonly=True)
     program_end_date = fields.Date(readonly=True)
 
@@ -364,7 +363,6 @@ class CompassionProject(models.Model):
         "Last reviewed date",
         tracking=True,
         readonly=True,
-        oldname="status_date",
     )
     status_comment = fields.Text(related="lifecycle_ids.details", store=True)
     hold_cdsp_funds = fields.Boolean(related="lifecycle_ids.hold_cdsp_funds")

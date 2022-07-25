@@ -25,7 +25,7 @@ class ICPDisasterImpact(models.Model):
         "fo.disaster.alert", "Disaster Alert", ondelete="cascade", readonly=False
     )
     project_fcp_id = fields.Char(required=True)
-    impact_on_fcp_program = fields.Char(oldname="impact_on_icp_program")
+    impact_on_fcp_program = fields.Char()
     disaster_impact_description = fields.Char()
     state = fields.Selection(related="disaster_id.state")
     infrastructure = fields.Char()
@@ -200,15 +200,9 @@ class FieldOfficeDisasterAlert(models.Model):
     field_office_impact_description = fields.Char()
 
     impact_description = fields.Char()
-    impact_on_fcp_infrastructure_damaged = fields.Integer(
-        oldname="impact_on_icp_infrastructure_damaged"
-    )
-    impact_on_fcp_infrastructure_destroyed = fields.Integer(
-        oldname="impact_on_icp_infrastructure_destroyed"
-    )
-    impact_on_fcp_program_temporarily_closed = fields.Integer(
-        oldname="impact_on_icp_program_temporarily_closed"
-    )
+    impact_on_fcp_infrastructure_damaged = fields.Integer(    )
+    impact_on_fcp_infrastructure_destroyed = fields.Integer()
+    impact_on_fcp_program_temporarily_closed = fields.Integer()
     impact_to_field_office_operations = fields.Char()
 
     is_additional_funds_requested = fields.Boolean()
@@ -219,9 +213,7 @@ class FieldOfficeDisasterAlert(models.Model):
     reported_loss_of_life_caregivers = fields.Integer()
     reported_loss_of_life_siblings = fields.Integer()
     reported_number_beneficiaries_impacted = fields.Integer()
-    reported_number_of_fcps_impacted = fields.Integer(
-        oldname="reported_number_of_icps_impacted"
-    )
+    reported_number_of_fcps_impacted = fields.Integer()
     reported_serious_injuries_beneficiaries = fields.Integer()
     reported_serious_injuries_caregivers = fields.Integer()
     reported_serious_injuries_siblings = fields.Integer()

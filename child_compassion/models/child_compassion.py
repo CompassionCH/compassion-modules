@@ -43,7 +43,7 @@ class CompassionChild(models.Model):
     #####################
     local_id = fields.Char(tracking=True)
     code = fields.Char(help="Old child reference")
-    compass_id = fields.Char("Compass ID", oldname="unique_id")
+    compass_id = fields.Char("Compass ID")
     estimated_birthdate = fields.Boolean(readonly=True)
     cognitive_age_group = fields.Char(readonly=True)
     cdsp_type = fields.Selection(
@@ -113,7 +113,7 @@ class CompassionChild(models.Model):
         "child.project.activity",
         string="Project activities",
         readonly=True,
-        oldname="activity_ids",
+
     )
     subject_ids = fields.Many2many(
         "child.school.subject", string="School subjects", readonly=True
@@ -177,7 +177,7 @@ class CompassionChild(models.Model):
             ("Medical/ Health Services", "Medical / Health services"),
             ("Medical / Health Services", "Medical / Health services"),
             ("Not Enrolled", "Not enrolled"),
-            ("Not enrolled", "Not enrolled"),
+            ("Not enrolled ", "Not enrolled"),
             ("Other", "Other"),
             ("Para-Medical / Medical / Health Services", "Medical / Health services"),
             ("Telecommunication", "Telecommunication"),

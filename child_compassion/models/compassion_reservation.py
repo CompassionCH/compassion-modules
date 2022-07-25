@@ -35,7 +35,7 @@ class CompassionReservation(models.Model):
         tracking=True,
     )
     fcp_id = fields.Many2one(
-        "compassion.project", "Project", oldname="icp_id", readonly=False
+        "compassion.project", "Project",  readonly=False
     )
     child_id = fields.Many2one(
         "compassion.child",

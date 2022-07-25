@@ -103,13 +103,14 @@
                         <field name="missing_dates" style="color: red" readonly="1"/>
                     </div>
                     <separator/>
+                    <field name="global_child_ids" invisible="True"/>
                     <label for="global_child_ids"/>
 
                     <!-- Kanban View for the selected Children -->
                     <field name="global_child_ids" mode="kanban" domain="[('search_view_id', '=', active_id)]">
                         <search>
                             <group expand="0" name="group_by" string="Group By">
-                                <filter name="field_office" string="Salesperson" domain="[]" context="{'group_by' : 'field_office_id'}" />
+                                <filter name="field_office" string="Salesperson" domain="[]" context="{'group_by' : 'field_office_ids'}" />
                             </group>
                         </search>
                         <kanban default_order="field_office_id asc" default_group_by="gender">

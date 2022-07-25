@@ -18,6 +18,8 @@ class FCPProperty(models.AbstractModel):
 
     _name = "fcp.property"
     _inherit = ["connect.multipicklist", "compassion.mapped.model"]
+    _description = "FCP Property"
+
     res_model = "compassion.project"
     value = fields.Char(translate=True)
 

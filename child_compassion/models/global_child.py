@@ -26,6 +26,7 @@ class GenericChild(models.AbstractModel):
 
     _name = "compassion.generic.child"
     _inherit = ["compassion.mapped.model"]
+    _description = "Generic Child"
 
     # General Information
     #####################

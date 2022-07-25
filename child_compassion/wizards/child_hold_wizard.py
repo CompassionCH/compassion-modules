@@ -18,6 +18,7 @@ _logger = logging.getLogger(__name__)
 class ChildHoldWizard(models.TransientModel):
     _name = "child.hold.wizard"
     _inherit = "compassion.abstract.hold"
+    _description = "CHild Hold Wizard"
 
     return_action = fields.Selection(
         [
