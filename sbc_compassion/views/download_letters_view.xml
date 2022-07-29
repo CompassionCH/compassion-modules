@@ -20,8 +20,13 @@
         </field>
     </record>
 
-    <act_window id="action_download_letter"
-                name="Download archive"
-                res_model="correspondence.download.wizard" src_model="correspondence"
-                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+    <record id="action_download_letter" model="ir.actions.act_window">
+        <field name="name">Download archive</field>
+        <field name="res_model">correspondence.download.wizard</field>
+        <field name="binding_model">correspondence</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_type">form</field>
+        <field name="key2">client_action_multi</field>
+    </record>
 </odoo>

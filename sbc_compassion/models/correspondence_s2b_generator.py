@@ -122,7 +122,6 @@ class CorrespondenceS2bGenerator(models.Model):
                 domain.append(month_select)
             self.selection_domain = str(domain)
 
-    @api.multi
     def preview(self):
         """ Generate a picture for preview.
         """
@@ -146,13 +145,11 @@ class CorrespondenceS2bGenerator(models.Model):
             {"state": "preview", "preview_image": preview, "preview_pdf": pdf_image, }
         )
 
-    @api.multi
     def edit(self):
         """ Generate a picture for preview.
         """
         return self.write({"state": "draft"})
 
-    @api.multi
     def generate_letters(self, utms=None):
         """
         Launch S2B Creation job
@@ -161,7 +158,6 @@ class CorrespondenceS2bGenerator(models.Model):
         self.with_delay().generate_letters_job(utms)
         return True
 
-    @api.multi
     def generate_letters_job(self, utms=None):
         """
         Create S2B Letters
@@ -204,7 +200,6 @@ class CorrespondenceS2bGenerator(models.Model):
         self.letter_ids = letters
         return self.write({"state": "done", "date": fields.Datetime.now()})
 
-    @api.multi
     def open_letters(self):
         letters = self.letter_ids
         return {

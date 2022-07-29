@@ -67,7 +67,6 @@
     <record id="action_compassion_correspondence_template_form" model="ir.actions.act_window">
         <field name="name">Correspondence Templates</field>
         <field name="res_model">correspondence.template</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 

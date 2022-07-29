@@ -147,7 +147,6 @@ class Contracts(models.Model):
                     else:
                         sponsorship.reading_language = english
 
-    @api.multi
     def open_letters(self):
         return {
             "name": _("Letters"),
@@ -164,7 +163,6 @@ class Contracts(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.multi
     def contract_active(self):
         """ Send letters that were on hold. """
         super().contract_active()

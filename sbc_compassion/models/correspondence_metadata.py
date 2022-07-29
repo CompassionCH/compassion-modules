@@ -49,7 +49,6 @@ class CorrespondenceMetadata(models.AbstractModel):
             "source",
         ]
 
-    @api.multi
     def get_correspondence_metadata(self):
         """ Get the field values of one record.
         :return: Dictionary of values for the fields
