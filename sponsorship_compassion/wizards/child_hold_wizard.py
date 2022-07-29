@@ -38,7 +38,6 @@ class ChildHoldWizard(models.TransientModel):
             ).env.context
         return action
 
-    @api.multi
     def send(self):
         if self.return_action == "sponsor":
             return super(ChildHoldWizard, self.with_context(async_mode=False)).send()

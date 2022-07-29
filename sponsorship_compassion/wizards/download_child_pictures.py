@@ -48,7 +48,6 @@ class DownloadChildPictures(models.TransientModel):
     def get_file_name(self):
         return str(fields.Date.context_today(self)) + "_child_pictures.zip"
 
-    @api.multi
     def get_picture_url(self, raw_url, pic_type, width, height):
         if pic_type.lower() == "headshot":
             cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(width)
@@ -61,7 +60,6 @@ class DownloadChildPictures(models.TransientModel):
         url = "/".join(image_split)
         return url
 
-    @api.multi
     def get_pictures(self):
         """ Create the zip archive from the selected letters. """
         children = self._get_children()
@@ -146,7 +144,6 @@ class DownloadChildPictures(models.TransientModel):
         else:
             self._width_change -= 1
 
-    @api.multi
     def _compute_preview(self):
         children = self._get_children()
 
@@ -161,7 +158,6 @@ class DownloadChildPictures(models.TransientModel):
             except:
                 logger.error("Image cannot be fetched : " + url)
 
-    @api.multi
     def _check_picture_availability(self):
         children = self._get_children()
 
@@ -192,7 +188,6 @@ class DownloadChildPictures(models.TransientModel):
                 children_with_invalid_url
             )
 
-    @api.multi
     def _get_children(self):
         context = self.env.context["active_model"]
         if context == "res.partner":

@@ -57,14 +57,12 @@ class PartnerSponsorshipReport(models.Model):
     sr_total_donation = fields.Monetary("Invoices", compute="_compute_total_donation")
     sr_total_gift = fields.Integer("Gift", compute="_compute_total_gift")
 
-    @api.multi
     def _compute_related_sponsorship(self):
         for partner in self:
             sponsorships = partner.sponsorship_ids
             sponsorships |= partner.member_ids.mapped("sponsorship_ids")
             partner.related_sponsorships = sponsorships
 
-    @api.multi
     def _compute_s2b_letter(self):
         def get_nb_letter(_partner):
             return self.env['correspondence'].search_count(
@@ -80,7 +78,6 @@ class PartnerSponsorshipReport(models.Model):
                     nb_letter += get_nb_letter(member)
             partner.sr_nb_s2b_letter = nb_letter
 
-    @api.multi
     def _compute_b2s_letter(self):
         def get_nb_letter(_partner):
             return self.env['correspondence'].search_count(
@@ -96,30 +93,25 @@ class PartnerSponsorshipReport(models.Model):
                     nb_letter += get_nb_letter(member)
             partner.sr_nb_b2s_letter = nb_letter
 
-    @api.multi
     def _compute_related_active_sponsorship(self):
         for partner in self:
             sponsorships = partner.related_sponsorships
             partner.related_active_sponsorships = sponsorships.filtered("is_active")
 
-    @api.multi
     def _compute_start_period(self):
         for partner in self:
             end = partner.end_period
             partner.start_period = fields.Date.to_string(end - relativedelta(months=12))
 
-    @api.multi
     def _compute_end_period(self):
         today = fields.Date.today()
         for partner in self:
             partner.end_period = today
 
-    @api.multi
     def _compute_sr_sponsorship(self):
         for partner in self:
             partner.sr_sponsorship = len(partner.related_active_sponsorships)
 
-    @api.multi
     def _compute_boy(self):
         for partner in self:
             partner.sr_nb_boy = len(
@@ -128,7 +120,6 @@ class PartnerSponsorshipReport(models.Model):
                 )
             )
 
-    @api.multi
     def _compute_girl(self):
         for partner in self:
             partner.sr_nb_girl = len(
@@ -137,7 +128,6 @@ class PartnerSponsorshipReport(models.Model):
                 )
             )
 
-    @api.multi
     def _compute_time_scp(self):
         def get_time_in_scp(sponsorship):
             nb_weeks = sponsorship.contract_duration // 7.0
@@ -148,7 +138,6 @@ class PartnerSponsorshipReport(models.Model):
             total_day = sum(partner.related_sponsorships.mapped(get_time_in_scp))
             partner.sr_time_fcp = total_day
 
-    @api.multi
     def _compute_meal(self):
         def get_nb_meal(sponsorship):
             nb_weeks = sponsorship.contract_duration // 7.0
@@ -161,7 +150,6 @@ class PartnerSponsorshipReport(models.Model):
             )
             partner.sr_nb_meal = total_meal
 
-    @api.multi
     def _compute_medic_check(self):
         def get_nb_check(sponsorship):
             nb_year = sponsorship.contract_duration // 365
@@ -174,13 +162,11 @@ class PartnerSponsorshipReport(models.Model):
             )
             partner.sr_nb_medic_check = total_check
 
-    @api.multi
     def _compute_nb_bible(self):
         for partner in self:
             total_bible = len(partner.related_sponsorships.filtered("global_id"))
             partner.sr_nb_bible = total_bible
 
-    @api.multi
     def _compute_total_donation(self):
         def get_sum_invoice(_partner):
             invoices = self.env["account.invoice"].search(
@@ -202,7 +188,6 @@ class PartnerSponsorshipReport(models.Model):
                     sr_total_donation += get_sum_invoice(member)
             partner.sr_total_donation = sr_total_donation
 
-    @api.multi
     def _compute_total_gift(self):
         def get_nb_gift(_partner):
             return self.env["account.invoice"].search_count(
@@ -223,7 +208,6 @@ class PartnerSponsorshipReport(models.Model):
                     sr_total_gift += get_nb_gift(member)
             partner.sr_total_gift = sr_total_gift
 
-    @api.multi
     def open_sponsorship_report(self):
         self.ensure_one()
         return {
@@ -238,7 +222,6 @@ class PartnerSponsorshipReport(models.Model):
             "res_id": self.id,
         }
 
-    @api.multi
     def open_donation_details(self):
         self.ensure_one()
         return {

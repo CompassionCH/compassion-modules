@@ -104,7 +104,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     def _compute_related_contracts(self):
         """ Returns the contracts of the sponsor of given type
         ('fully_managed', 'correspondent' or 'payer')
@@ -145,7 +144,6 @@ class ResPartner(models.Model):
                 order="start_date desc",
             ).ids
 
-    @api.multi
     def _compute_count_items(self):
         move_line_obj = self.env["account.move.line"]
         for partner in self:
@@ -161,7 +159,6 @@ class ResPartner(models.Model):
                 [("partner_id", "=", partner.id), ("account_id.code", "=", "1050")]
             )
 
-    @api.multi
     def set_privacy_statement(self, origin):
         for partner in self:
             p_statement = self.env["compassion.privacy.statement"].get_current()
@@ -186,7 +183,6 @@ class ResPartner(models.Model):
                     }
                 )
 
-    @api.multi
     def update_number_sponsorships(self):
         for partner in self:
             partner.number_sponsorships = self.env["recurring.contract"].search_count(
@@ -195,7 +191,6 @@ class ResPartner(models.Model):
             partner.has_sponsorships = partner.number_sponsorships
         return True
 
-    @api.multi
     @api.depends("category_id", "member_ids")
     def _compute_is_church(self):
         """ Tell if the given Partners are Church Partners
@@ -215,7 +210,6 @@ class ResPartner(models.Model):
             record.church_member_count = len(record.member_ids)
             record.is_church = is_church
 
-    @api.multi
     def _compute_gmc_gender(self):
         male = 'Male'
         female = 'Female'
@@ -252,7 +246,6 @@ class ResPartner(models.Model):
             )
         return partner
 
-    @api.multi
     def write(self, vals):
         if "firstname" in vals and "preferred_name" not in vals:
             vals["preferred_name"] = vals["firstname"]
@@ -281,7 +274,6 @@ class ResPartner(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def show_lines(self):
         action = {
             "name": _("Related invoice lines"),
@@ -303,7 +295,6 @@ class ResPartner(models.Model):
 
         return action
 
-    @api.multi
     def show_move_lines(self):
         tree_view_id = self.env.ref("account.view_move_line_tree").id
         form_view_id = self.env.ref("account.view_move_line_form").id
@@ -322,7 +313,6 @@ class ResPartner(models.Model):
         }
         return action
 
-    @api.multi
     def create_contract(self):
         self.ensure_one()
         context = self.with_context(
@@ -338,20 +328,17 @@ class ResPartner(models.Model):
             "context": context,
         }
 
-    @api.multi
     def unreconciled_transaction_items(self):
         return self.with_context(
             search_default_unreconciled=1
         ).receivable_transaction_items()
 
-    @api.multi
     def receivable_transaction_items(self):
         account_ids = self.env["account.account"].search([("code", "=", "1050")]).ids
         return self.with_context(
             search_default_account_id=account_ids[0]
         ).show_move_lines()
 
-    @api.multi
     def open_contracts(self):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """
@@ -364,7 +351,6 @@ class ResPartner(models.Model):
             "domain": self._get_active_sponsorships_domain(),
         }
 
-    @api.multi
     def open_sponsored_children(self):
         self.ensure_one()
         children = (
@@ -385,7 +371,6 @@ class ResPartner(models.Model):
     def onchange_preferred_name(self):
         self.preferred_name = self.firstname or self.name
 
-    @api.multi
     def forget_me(self):
         """ Anonymize partner and delete sensitive data.
         This will call the GDPR Data Protection Request on Connect,

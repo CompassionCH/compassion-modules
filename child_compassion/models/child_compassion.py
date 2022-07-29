@@ -78,7 +78,7 @@ class CompassionChild(models.Model):
     sponsor_id = fields.Many2one(
         "res.partner", "Sponsor", tracking=True, readonly=True
     )
-    partner_id = fields.Many2one("res.partner", related="sponsor_id", readonly=False)
+    partner_id = fields.Many2one("res.partner", string='Partner', related="sponsor_id", readonly=False)
     sponsor_ref = fields.Char("Sponsor reference", related="sponsor_id.ref")
     has_been_sponsored = fields.Boolean()
     exit_reason = fields.Char(compute="_compute_exit_reason")
@@ -91,7 +91,7 @@ class CompassionChild(models.Model):
     # Hold Information
     ##################
     hold_id = fields.Many2one("compassion.hold", "Hold", readonly=True)
-    hold_type = fields.Selection(related="hold_id.type", store=True)
+    hold_type = fields.Selection(related="hold_id.type", string='Hold type', store=True)
     hold_channel = fields.Selection(related="hold_id.channel", store=True)
     hold_owner = fields.Many2one(
         related="hold_id.primary_owner", store=True, readonly=False

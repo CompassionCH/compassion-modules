@@ -35,7 +35,6 @@ class PrivacyStatement(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("version")
     def _compute_name(self):
         for rd in self:
@@ -68,7 +67,6 @@ class PrivacyStatementAgreement(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def open_contract(self):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """

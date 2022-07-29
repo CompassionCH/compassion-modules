@@ -26,12 +26,10 @@ class ChildCompassion(models.Model):
     )
     has_been_sponsored = fields.Boolean(compute="_compute_has_been_sponsored")
 
-    @api.multi
     def _compute_has_been_sponsored(self):
         for child in self:
             child.has_been_sponsored = child.sponsorship_ids
 
-    @api.multi
     def _compute_related_contracts(self):
         con_obj = self.env["recurring.contract"]
         for child in self:
@@ -39,7 +37,6 @@ class ChildCompassion(models.Model):
                 [("child_id", "=", child.id), ("type", "like", "S")]
             )
 
-    @api.multi
     def child_released(self, state="R"):
         """
         Cancel waiting sponsorships when child is released:

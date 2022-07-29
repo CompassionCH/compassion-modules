@@ -34,7 +34,7 @@ class GmcAction(models.Model):
     _name = "gmc.action"
     _description = "GMC Action"
 
-    name = fields.Char("GMC Message", required=True)
+    name = fields.Char("GMC name", required=True)
     direction = fields.Selection(
         [("in", _("Incoming Message")), ("out", _("Outgoing Message"))],
         "Message Direction",

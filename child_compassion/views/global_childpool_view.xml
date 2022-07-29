@@ -109,6 +109,7 @@
                     <!-- Kanban View for the selected Children -->
                     <field name="global_child_ids" mode="kanban" domain="[('search_view_id', '=', active_id)]">
                         <search>
+                            <field name="is_orphan"/>
                             <group expand="0" name="group_by" string="Group By">
                                 <filter name="field_office" string="Salesperson" domain="[]" context="{'group_by' : 'field_office_ids'}" />
                             </group>
@@ -124,7 +125,9 @@
                                         <a name="unlink" type="object" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
                                         <div class="oe_module_vignette">
                                             <a type="open">
-                                                <img t-att-src="record.thumbnail_url.raw_value" class="oe_avatar oe_kanban_avatar_smallbox"/>
+                                                <img t-att-src="record.thumbnail_url.raw_value"
+                                                     class="oe_avatar oe_kanban_avatar_smallbox"
+                                                     alt="child"/>
                                             </a>
 
                                             <div class="oe_module_desc">

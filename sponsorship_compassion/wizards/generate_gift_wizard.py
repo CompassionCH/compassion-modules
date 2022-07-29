@@ -37,7 +37,6 @@ class GenerateGiftWizard(models.TransientModel):
         help="Creates the gift even if one was already " "made the same year.",
     )
 
-    @api.multi
     def generate_invoice(self):
         # Read data in english
         self.ensure_one()
@@ -103,7 +102,6 @@ class GenerateGiftWizard(models.TransientModel):
             "type": "ir.actions.act_window",
         }
 
-    @api.multi
     def _setup_invoice(self, contract, invoice_date):
         journal_id = (
             self.env["account.journal"]
@@ -133,7 +131,6 @@ class GenerateGiftWizard(models.TransientModel):
             ],
         }
 
-    @api.multi
     def _setup_invoice_line(self, contract):
         self.ensure_one()
         product = self.product_id

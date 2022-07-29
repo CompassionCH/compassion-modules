@@ -24,7 +24,7 @@ class GmcActionConnect(models.Model):
         "gmc.action", "GMC Action", required=False, readonly=False
     )
     ignored = fields.Boolean(
-        help="True if the received connect_schema sould be ignored"
+        help="True if the received connect_schema should be ignored"
     )
 
     _sql_constraints = [

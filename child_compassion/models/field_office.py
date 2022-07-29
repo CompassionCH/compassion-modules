@@ -29,7 +29,7 @@ class FieldOffice(models.Model):
     phone_number = fields.Char()
     website = fields.Char()
     social_media_site = fields.Char()
-    country = fields.Char()
+    country = fields.Char(string="country")
     country_id = fields.Many2one("res.country", "Country", readonly=False)
     country_code = fields.Char(related="country_id.code")
     street = fields.Char()
