@@ -41,7 +41,6 @@ class PartnerCommunication(models.Model):
     add_success_story = fields.Boolean(related="config_id.add_success_story")
     amount = fields.Float(compute="_compute_donation_amount", store=True)
 
-    @api.multi
     @api.depends("object_ids")
     def _compute_donation_amount(self):
         for communication in self:
@@ -67,7 +66,6 @@ class PartnerCommunication(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def set_success_story(self):
         """
         Takes the less used active success story and attach it
@@ -102,7 +100,6 @@ class PartnerCommunication(models.Model):
 
         return True
 
-    @api.multi
     def refresh_text(self, refresh_uid=False):
         """
         Refresh the success story as well
@@ -115,7 +112,6 @@ class PartnerCommunication(models.Model):
         super().refresh_text(refresh_uid)
         return True
 
-    @api.multi
     def send(self):
         """
         Update the count of succes story prints when sending a receipt.
@@ -130,7 +126,6 @@ class PartnerCommunication(models.Model):
 
         return res
 
-    @api.multi
     def _get_min_used_story(self, stories):
         """
         Given success stories, returns the one that the partner has received

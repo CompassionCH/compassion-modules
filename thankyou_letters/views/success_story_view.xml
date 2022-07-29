@@ -67,7 +67,6 @@
     <record id="action_success_story" model="ir.actions.act_window">
         <field name="name">Success Stories</field>
         <field name="res_model">success.story</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 

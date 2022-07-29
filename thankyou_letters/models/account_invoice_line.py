@@ -18,7 +18,6 @@ _logger = logging.getLogger(__name__)
 class AccountInvoiceLine(models.Model):
     _inherit = "account.invoice.line"
 
-    @api.multi
     def get_donations(self):
         """
         Gets a tuple for thank_you communication
@@ -35,7 +34,6 @@ class AccountInvoiceLine(models.Model):
 
         return total_string, res_name
 
-    @api.multi
     def generate_thank_you(self):
         """
         Creates a thank you letter communication.

@@ -1,11 +1,11 @@
 <odoo>
     <!-- Report for printing a donation on paper -->
-    <report id="report_donation"
-            model="partner.communication.job"
-            string="A4 Donation"
-            report_type="qweb-pdf"
-            name="thankyou_letters.donation"
-    />
+    <record id="report_donation" model="ir.actions.report">
+        <field name="model">partner.communication.job</field>
+        <field name="name">A4 Donation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">thankyou_letters.donation</field>
+    </record>
     <record id="report_donation" model="ir.actions.report">
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>

@@ -76,7 +76,6 @@
     <record id="action_thank_you" model="ir.actions.act_window">
         <field name="name">Donation Receipts</field>
         <field name="res_model">partner.communication.job</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"/>
