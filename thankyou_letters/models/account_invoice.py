@@ -32,7 +32,6 @@ class AccountInvoice(models.Model):
         help="Check to disable thank you letter for donation",
     )
 
-    @api.multi
     def action_invoice_paid(self):
         """ Generate a Thank you Communication when invoice is a donation
             (no sponsorship product inside)
@@ -43,7 +42,6 @@ class AccountInvoice(models.Model):
             invoices.generate_thank_you()
         return res
 
-    @api.multi
     def write(self, vals):
         """ When invoice is open again, remove it from donation receipt. """
         if vals.get("state") == "open":
@@ -69,7 +67,6 @@ class AccountInvoice(models.Model):
                     remaining_lines.generate_thank_you()
         return super().write(vals)
 
-    @api.multi
     def group_by_partner(self):
         """ Returns a dict with {partner_id: invoices}"""
         res = dict()
@@ -117,7 +114,6 @@ class AccountInvoice(models.Model):
             )
         return True
 
-    @api.multi
     def generate_thank_you(self):
         """
         Creates a thank you letter communication.
@@ -131,7 +127,6 @@ class AccountInvoice(models.Model):
             )
             invoice_lines.with_delay().generate_thank_you()
 
-    @api.multi
     def _filter_invoice_to_thank(self):
         """
         Given a recordset of paid invoices, return only those that have

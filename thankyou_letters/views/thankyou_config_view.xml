@@ -17,7 +17,6 @@
     <record id="action_thank_you_config" model="ir.actions.act_window">
         <field name="name">Thankyou Config</field>
         <field name="res_model">thankyou.config</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{}</field>
     </record>

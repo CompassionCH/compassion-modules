@@ -28,7 +28,6 @@ class ThankYouConfig(models.Model):
                             help="If specified will only be used with partners that have the same language.")
     user_id = fields.Many2one("res.users", string="Thanker", readonly=False)
 
-    @api.multi
     def for_donation(self, invoice_lines):
         """
         Returns the thankyou.config to use given the invoice lines.

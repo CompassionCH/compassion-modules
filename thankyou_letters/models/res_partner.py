@@ -37,7 +37,6 @@ class ResPartner(models.Model):
     short_address = fields.Char(compute="_compute_address")
     date_communication = fields.Char(compute="_compute_date_communication")
 
-    @api.multi
     def _compute_salutation(self):
         """ Define a method _get_salutation_<lang_code> for using a specific salutation based on partner language
             or salutation_language if defined in context
@@ -58,12 +57,10 @@ class ResPartner(models.Model):
         else:
             return "Dear friends of Compassion"
 
-    @api.multi
     def _compute_full_name(self):
         for partner in self.filtered("firstname"):
             partner.full_name = partner.firstname + " " + partner.lastname
 
-    @api.multi
     def _compute_address(self):
         # Replace line returns
         p = re.compile("\\n+")
@@ -78,7 +75,6 @@ class ResPartner(models.Model):
             res += t_partner.contact_address
             partner.short_address = p.sub("<br/>", res)
 
-    @api.multi
     def _compute_date_communication(self):
         """City and date displayed in the top right of a letter"""
         today = datetime.today()
@@ -94,7 +90,6 @@ class ResUsers(models.Model):
 
     signature_letter = fields.Html(compute="_compute_signature_letter")
 
-    @api.multi
     def _compute_signature_letter(self):
         for user in self:
             employee = user.employee_ids.sudo()

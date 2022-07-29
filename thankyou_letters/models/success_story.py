@@ -53,7 +53,6 @@ class SuccessStory(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("is_active")
     def _compute_state(self):
         for story in self:
@@ -62,7 +61,6 @@ class SuccessStory(models.Model):
             else:
                 story.state = "used" if story.print_count else "new"
 
-    @api.multi
     def _compute_current_usage(self):
         for story in self:
             story.current_usage_count = self.env[
@@ -71,7 +69,6 @@ class SuccessStory(models.Model):
                 [("success_story_id", "=", story.id), ("state", "!=", "cancel")]
             )
 
-    @api.multi
     @api.constrains("date_start", "date_stop")
     def _check_dates(self):
         for story in self.filtered(lambda s: s.type == "story"):

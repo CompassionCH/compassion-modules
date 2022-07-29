@@ -22,7 +22,6 @@ class GenerateCommunicationWizard(models.TransientModel):
     print_subject = fields.Boolean(default=True)
     print_header = fields.Boolean()
 
-    @api.multi
     def generate(self):
         return super(
             GenerateCommunicationWizard,
