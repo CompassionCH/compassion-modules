@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Onramp Simulator",
-    "version": "12.0.1.0.0",
+    "version": "14.0.1.0.0",
     "category": "Other",
     "summary": "Send messages to Compassion Onramps",
     "sequence": 150,

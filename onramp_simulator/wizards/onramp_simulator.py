@@ -26,7 +26,6 @@ class GetLetterImageWizard(models.Model):
     result = fields.Text()
     result_code = fields.Text()
 
-    @api.multi
     def send_message(self):
         connector = TestOnrampConnector()
         connector.test_message(self)
