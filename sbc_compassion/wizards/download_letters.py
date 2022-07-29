@@ -32,12 +32,10 @@ class DownloadLetters(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def _compute_filename(self):
         self.fname = fields.Date.context_today(self).strftime("%d-%m-%Y") \
             + _("_letters.zip")
 
-    @api.multi
     def _compute_data(self):
         """ Create the zip archive from the selected letters. """
         letters = (
@@ -54,7 +52,6 @@ class DownloadLetters(models.TransientModel):
         zip_buffer.seek(0)
         self.download_data = base64.b64encode(zip_buffer.read())
 
-    @api.multi
     def get_letters(self):
         self._compute_data()
         return {

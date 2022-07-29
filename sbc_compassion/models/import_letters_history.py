@@ -42,7 +42,7 @@ class ImportLettersHistory(models.Model):
         ],
         compute="_compute_state",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
     )
     import_completed = fields.Boolean()
     nber_letters = fields.Integer(
@@ -63,7 +63,6 @@ class ImportLettersHistory(models.Model):
         "import.letter.config", "Import settings", readonly=False
     )
 
-    @api.multi
     @api.depends(
         "import_line_ids",
         "import_line_ids.status",
@@ -116,13 +115,11 @@ class ImportLettersHistory(models.Model):
                 )
         return super().create(vals)
 
-    @api.multi
     def button_import(self):
         for letters_import in self:
             letters_import.with_delay().run_analyze()
         return True
 
-    @api.multi
     def button_save(self):
         # check if all the imports are OK
         for letters_h in self:
@@ -137,7 +134,6 @@ class ImportLettersHistory(models.Model):
             letters.import_line_ids.unlink()
         return True
 
-    @api.multi
     def button_review(self):
         """ Returns a form view for import lines in order to browse them """
         self.ensure_one()

@@ -35,14 +35,12 @@ class ResPartner(models.Model):
     )
     last_writing_date = fields.Date(compute="_compute_last_writing_date")
 
-    @api.multi
     def _compute_nb_letters(self):
         for partner in self:
             partner.nb_letters = self.env["correspondence"].search_count(
                 [("partner_id", "=", partner.id)]
             )
 
-    @api.multi
     def _compute_last_writing_date(self):
         for partner in self:
             last_letter = self.env["correspondence.last.writing.report"].search(
@@ -71,7 +69,6 @@ class ResPartner(models.Model):
                 vals["spoken_lang_ids"] = spoken_languages
         return super().create(vals)
 
-    @api.multi
     def open_letters(self):
         """ Open the tree view correspondence of partner """
         self.ensure_one()
@@ -95,7 +92,6 @@ class ResPartner(models.Model):
         if spoken_lang:
             self.spoken_lang_ids += spoken_lang
 
-    @api.multi
     def forget_me(self):
         super().forget_me()
         # Delete correspondence

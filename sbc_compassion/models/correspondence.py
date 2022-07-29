@@ -66,7 +66,7 @@ class Correspondence(models.Model):
         "Sponsorship",
         required=True,
         domain=[("state", "not in", ["draft", "cancelled"])],
-        track_visibility="onchange",
+        tracking=True,
         readonly=False,
     )
     name = fields.Char(compute="_compute_name")
@@ -78,7 +78,7 @@ class Correspondence(models.Model):
     )
     # Field used for identifying correspondence by GMC
     kit_identifier = fields.Char(
-        "Kit id", copy=False, readonly=True, track_visibility="onchange")
+        "Kit id", copy=False, readonly=True, tracking=True)
     direction = fields.Selection(
         selection=[
             ("Supporter To Beneficiary", _("Supporter to beneficiary")),
@@ -135,7 +135,7 @@ class Correspondence(models.Model):
         compute="_compute_states",
     )
     state = fields.Selection(
-        "get_states", default="Received in the system", track_visibility="onchange"
+        "get_states", default="Received in the system", tracking=True
     )
     email_read = fields.Datetime()
 
@@ -261,7 +261,6 @@ class Correspondence(models.Model):
             | set(self._fields["b2s_state"].selection)
         )
 
-    @api.multi
     def _compute_states(self):
         """ Sets the internal states (s2b and b2s). """
         for letter in self:
@@ -270,7 +269,6 @@ class Correspondence(models.Model):
             else:
                 letter.b2s_state = letter.state
 
-    @api.multi
     @api.depends("sponsorship_id")
     def _compute_is_first(self):
         """ Sets the value at true if is the first letter\
@@ -301,7 +299,6 @@ class Correspondence(models.Model):
             ("Supporter Letter", _("Supporter Letter")),
         ]
 
-    @api.multi
     def _compute_name(self):
         for letter in self:
             if letter.sponsorship_id and letter.communication_type_ids:
@@ -342,19 +339,15 @@ class Correspondence(models.Model):
         for letter in self:
             letter.nbr_pages = len(letter.page_ids)
 
-    @api.multi
     def _inverse_original(self):
         self._set_text("original_text", self.original_text)
 
-    @api.multi
     def _inverse_english(self):
         self._set_text("english_text", self.english_text)
 
-    @api.multi
     def _inverse_translated(self):
         self._set_text("translated_text", self.translated_text)
 
-    @api.multi
     def _set_text(self, field, text):
         # Try to put text in correct pages (the text should contain
         # separators).
@@ -389,7 +382,6 @@ class Correspondence(models.Model):
     def _change_language(self):
         return True
 
-    @api.multi
     @api.depends("letter_image")
     def _compute_letter_format(self):
         for letter in self.filtered("letter_image"):
@@ -404,7 +396,6 @@ class Correspondence(models.Model):
             else:
                 letter.letter_format = "pdf"
 
-    @api.multi
     @api.depends("translator")
     def _compute_translator(self):
         partner_obj = self.env["res.partner"]
@@ -431,7 +422,6 @@ class Correspondence(models.Model):
                     if len(partner) == 1:
                         letter.translator_id = partner
 
-    @api.multi
     def _inverse_set_translator(self):
         """ Sets the translator e-mail address. """
         for letter in self:
@@ -450,7 +440,6 @@ class Correspondence(models.Model):
                 or letter.sponsorship_state != "active"
             )
 
-    @api.multi
     def _compute_b64_image(self):
         for letter in self:
             letter.b64image = base64.b64encode(letter.get_image() or b"no_image")
@@ -520,7 +509,6 @@ class Correspondence(models.Model):
 
         return letter
 
-    @api.multi
     def write(self, vals):
         """ Keep track of state changes. """
         if "state" in vals:
@@ -544,7 +532,6 @@ class Correspondence(models.Model):
 
         return super().write(vals)
 
-    @api.multi
     def unlink(self):
         # Remove unsent messages
         gmc_action = self.env.ref("sbc_compassion.create_letter")
@@ -561,7 +548,6 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def create_commkit(self):
         for letter in self:
             action_id = self.env.ref("sbc_compassion.create_letter").id
@@ -587,13 +573,11 @@ class Correspondence(models.Model):
                     )
         return True
 
-    @api.multi
     def compose_letter_button(self):
         """ Remove old images, download original and compose translation. """
         self.attach_original()
         return self.compose_letter_image()
 
-    @api.multi
     def compose_letter_image(self):
         """
         Puts the translated text of a letter inside the original image given
@@ -724,7 +708,6 @@ class Correspondence(models.Model):
                 letter.get_image(), letter.letter_format, base64encoded=False
             )
 
-    @api.multi
     def enrich_letter(self, vals):
         """
         Enrich correspondence data with GMC data after CommKit Submission.
@@ -754,7 +737,6 @@ class Correspondence(models.Model):
             letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
         return res
 
-    @api.multi
     def download_attach_letter_image(self, letter_type="final_letter_url"):
         """ Download letter image from US service and attach to letter. """
         for letter in self:
@@ -775,7 +757,6 @@ class Correspondence(models.Model):
                 {"file_name": letter._get_file_name(), "letter_image": image_data}
             )
 
-    @api.multi
     def attach_original(self):
         self.download_attach_letter_image(letter_type="original_letter_url")
         return True
@@ -884,7 +865,6 @@ class Correspondence(models.Model):
             index += 1
         return True
 
-    @api.multi
     def _get_file_name(self):
         self.ensure_one()
         name = ""
@@ -901,7 +881,6 @@ class Correspondence(models.Model):
         name += "." + (self.letter_format or "pdf")
         return name
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         json_data = super().data_to_json(mapping_name)
 
@@ -987,7 +966,6 @@ class Correspondence(models.Model):
 
         return odoo_data
 
-    @api.multi
     def resubmit_letter(self):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
@@ -1001,7 +979,6 @@ class Correspondence(models.Model):
             })
             letter.create_commkit()
 
-    @api.multi
     def quality_check_failed(self):
         return self.write({
             "state": "Quality check unsuccessful",

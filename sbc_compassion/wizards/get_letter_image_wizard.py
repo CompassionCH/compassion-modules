@@ -38,12 +38,10 @@ class GetLetterImageWizard(models.TransientModel):
             if not 96 <= wizard.dpi <= 1200:
                 raise ValidationError(_("Dpi value must be between 96 and 1200"))
 
-    @api.multi
     def get_image_letter(self, letter_id):
         """ Allows to call get_image and specify a letter id. """
         return self.with_context(active_id=letter_id).get_image()
 
-    @api.multi
     def get_image(self):
         letter = self.env["correspondence"].browse(self.env.context.get("active_id"))
         onramp = SBCConnector()

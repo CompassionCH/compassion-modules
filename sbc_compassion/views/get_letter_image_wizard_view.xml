@@ -23,8 +23,12 @@
         </field>
     </record>
 
-    <act_window id="action_retrieve_image"
-                name="Retrieve image"
-                res_model="letter.image.wizard" src_model="correspondence"
-                view_mode="form" target="new" view_type="form" />
+    <record id="action_retrieve_image" model="ir.actions.act_window">
+        <field name="name">Retrieve image</field>
+        <field name="res_model">letter.image.wizard</field>
+        <field name="binding_model">correspondence</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_type">form</field>
+    </record>
 </odoo>

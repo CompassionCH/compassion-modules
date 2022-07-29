@@ -67,7 +67,6 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("current_line_index")
     def _compute_current_line(self):
         line_ids = self.env.context.get("line_ids")
@@ -96,7 +95,6 @@ class ImportReview(models.TransientModel):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def next(self):
         """ Load the next import line in the view. """
         self.ensure_one()
@@ -110,7 +108,6 @@ class ImportReview(models.TransientModel):
         )
         self.current_line_id.reviewed = True
 
-    @api.multi
     def finish(self):
         """ Return to import view. """
         self.ensure_one()
@@ -126,7 +123,6 @@ class ImportReview(models.TransientModel):
             "target": "current",
         }
 
-    @api.multi
     def postpone(self):
         """ Move the line in another import. """
         self.ensure_one()

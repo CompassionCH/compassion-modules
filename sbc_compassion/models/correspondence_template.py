@@ -96,14 +96,12 @@ class CorrespondenceTemplate(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
     def _compute_usage_count(self):
         for template in self:
             template.usage_count = self.env["correspondence"].search_count(
                 [("template_id", "=", template.id)]
             )
 
-    @api.multi
     def _compute_template_image(self):
         for template in self:
             template.template_image = template.page_ids[:1].background

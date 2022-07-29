@@ -79,7 +79,6 @@ class ImportLetterLine(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
     @api.depends(
         "partner_id",
         "child_id",
@@ -107,7 +106,6 @@ class ImportLetterLine(models.Model):
             else:
                 line.status = "ok"
 
-    @api.multi
     @api.depends("partner_id", "child_id")
     def _compute_sponsorship(self):
         """ From the partner codega and the child code, find the record
@@ -126,7 +124,6 @@ class ImportLetterLine(models.Model):
                     limit=1,
                 )
 
-    @api.multi
     @api.depends("partner_id", "child_id")
     def _compute_name(self):
         for line in self:
@@ -137,7 +134,6 @@ class ImportLetterLine(models.Model):
                     + str(line.child_id.local_id)
                 )
 
-    @api.multi
     def get_letter_data(self):
         """ Create a list of dictionaries in order to create some lines inside
         import_letters_history.
