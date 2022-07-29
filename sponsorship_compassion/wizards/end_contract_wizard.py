@@ -24,7 +24,6 @@ class EndContractWizard(models.TransientModel):
         required=True,
     )
 
-    @api.multi
     def end_contract(self):
         self.ensure_one()
         super().end_contract()

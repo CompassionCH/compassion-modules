@@ -37,7 +37,6 @@ class ContractGroup(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
 
-    @api.multi
     def _compute_contains_sponsorship(self):
         for group in self:
             group.contains_sponsorship = group.mapped("contract_ids").filtered(
@@ -48,14 +47,12 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.multi
     def _generate_invoices(self, invoicer=None, **kwargs):
         """ Add birthday gifts generation. """
         invoicer = self._generate_birthday_gifts(invoicer)
         invoicer = super()._generate_invoices(invoicer, **kwargs)
         return invoicer
 
-    @api.multi
     def _generate_birthday_gifts(self, invoicer=None):
         """ Creates the annual birthday gift for sponsorships that
         have set the option for automatic birthday gift creation. """

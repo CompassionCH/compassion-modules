@@ -35,7 +35,7 @@ class SponsorshipContract(models.Model):
     correspondent_id = fields.Many2one(
         "res.partner",
         string="Correspondent",
-        track_visibility="onchange",
+        tracking=True,
         index=True,
         readonly=False,
     )
@@ -48,7 +48,7 @@ class SponsorshipContract(models.Model):
         help="Set the amount to enable automatic invoice creation each year "
              "for a birthday gift. The invoice is set two months before "
              "child's birthday.",
-        track_visibility="onchange",
+        tracking=True,
     )
     reading_language = fields.Many2one(
         "res.lang.compassion",
@@ -60,7 +60,7 @@ class SponsorshipContract(models.Model):
         "compassion.global.partner", "Transferred to", readonly=False
     )
     global_id = fields.Char(
-        help="Connect global ID", readonly=True, copy=False, track_visibility="onchange"
+        help="Connect global ID", readonly=True, copy=False, tracking=True
     )
     hold_expiration_date = fields.Datetime(
         help="Used for setting a hold after sponsorship cancellation"
@@ -88,7 +88,7 @@ class SponsorshipContract(models.Model):
             "mandate": [("readonly", False)],
         },
         ondelete="restrict",
-        track_visibility="onchange",
+        tracking=True,
         index=True,
     )
     project_id = fields.Many2one(
@@ -116,14 +116,14 @@ class SponsorshipContract(models.Model):
         "recurring.contract.origin",
         "Origin",
         ondelete="restrict",
-        track_visibility="onchange",
+        tracking=True,
         index=True,
         readonly=False,
     )
     parent_id = fields.Many2one(
         "recurring.contract",
         "Previous sponsorship",
-        track_visibility="onchange",
+        tracking=True,
         index=True,
         copy=False,
         readonly=False,
@@ -139,7 +139,7 @@ class SponsorshipContract(models.Model):
         readonly=False,
         states={"terminated": [("readonly", True)]},
         ondelete="restrict",
-        track_visibility="onchange",
+        tracking=True,
     )
     type = fields.Selection(
         [
@@ -241,14 +241,12 @@ class SponsorshipContract(models.Model):
         res.append((0, 0, gen_vals))
         return res
 
-    @api.multi
     @api.depends("partner_id", "correspondent_id")
     def _compute_fully_managed(self):
         """Tells if the correspondent and the payer is the same person."""
         for contract in self:
             contract.fully_managed = contract.partner_id == contract.correspondent_id
 
-    @api.multi
     def _compute_last_paid_invoice(self):
         """ Override to exclude gift invoices. """
         for contract in self:
@@ -262,7 +260,6 @@ class SponsorshipContract(models.Model):
                 or [False]
             )
 
-    @api.multi
     def _compute_invoices(self):
         gift_contracts = self.filtered(lambda c: c.type == "G")
         for contract in gift_contracts:
@@ -276,14 +273,12 @@ class SponsorshipContract(models.Model):
             contract.nb_invoices = len(gift_invoices)
         super(SponsorshipContract, self - gift_contracts)._compute_invoices()
 
-    @api.multi
     def _compute_gift_partner(self):
         for contract in self:
             contract.gift_partner_id = getattr(
                 contract, contract.send_gifts_to, contract.correspondent_id
             )
 
-    @api.multi
     @api.depends(
         "correspondent_id", "correspondent_id.ref", "child_id", "child_id.local_id"
     )
@@ -301,7 +296,6 @@ class SponsorshipContract(models.Model):
                 result.append((contract.id, name))
         return result
 
-    @api.multi
     @api.depends("activation_date", "state")
     def _compute_active(self):
         for contract in self:
@@ -309,7 +303,6 @@ class SponsorshipContract(models.Model):
                 contract.activation_date
             ) and contract.state not in ("terminated", "cancelled")
 
-    @api.multi
     def _compute_frequency(self):
         frequencies = {
             "1 month": _("Monthly"),
@@ -334,7 +327,6 @@ class SponsorshipContract(models.Model):
                 frequency = _("every") + " " + frequency.lower()
             contract.group_freq = frequency
 
-    @api.multi
     def _compute_months_paid(self):
         """This is a query returning the number of months paid for a
         sponsorship."""
@@ -364,7 +356,6 @@ class SponsorshipContract(models.Model):
         for contract in self:
             contract.months_paid = dict_contract_id_paidmonth.get(contract.id)
 
-    @api.multi
     def _compute_contract_duration(self):
         for contract in self:
             if not contract.activation_date:
@@ -460,7 +451,6 @@ class SponsorshipContract(models.Model):
 
         return new_sponsorship
 
-    @api.multi
     def write(self, vals):
         """ Perform various checks on contract modification """
         if "child_id" in vals:
@@ -516,7 +506,6 @@ class SponsorshipContract(models.Model):
 
         return True
 
-    @api.multi
     def unlink(self):
         for contract in self:
             # We can only delete draft sponsorships.
@@ -573,7 +562,6 @@ class SponsorshipContract(models.Model):
                 child.hold_id = hold
         return True
 
-    @api.multi
     def get_inv_lines_data(self):
         """ Contract gifts relate their invoice lines to sponsorship,
             Correspondence sponsorships don't create invoice lines.
@@ -631,7 +619,6 @@ class SponsorshipContract(models.Model):
 
         return res
 
-    @api.multi
     def put_child_on_no_money_hold(self):
         """Convert child to No Money Hold"""
         self.ensure_one()
@@ -668,7 +655,6 @@ class SponsorshipContract(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
 
-    @api.multi
     def open_invoices(self):
         res = super().open_invoices()
         if self.type == "G":
@@ -689,7 +675,6 @@ class SponsorshipContract(models.Model):
         if self.parent_id:
             self.origin_id = self.parent_id.origin_id.id
 
-    @api.multi
     def open_contract(self):
         """ Used to bypass opening a contract in popup mode from
         res_partner view. """
@@ -708,7 +693,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.multi
     def contract_active(self):
         """ Hook for doing something when contract is activated.
         Update child to mark it has been sponsored,
@@ -774,19 +758,16 @@ class SponsorshipContract(models.Model):
             )
         return True
 
-    @api.multi
     def contract_cancelled(self):
         super().contract_cancelled()
         self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
         return True
 
-    @api.multi
     def contract_terminated(self):
         super().contract_terminated()
         self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
         return True
 
-    @api.multi
     def contract_waiting(self):
         contracts = self.filtered(lambda c: c.type == "O")
         if contracts:
@@ -822,7 +803,6 @@ class SponsorshipContract(models.Model):
                 contract.contract_active()
         return True
 
-    @api.multi
     def action_cancel_draft(self):
         """ Set back a cancelled contract to draft state. """
         super().action_cancel_draft()
@@ -836,7 +816,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.multi
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         action = self.env.ref("sponsorship_compassion.create_sponsorship")
@@ -934,7 +913,6 @@ class SponsorshipContract(models.Model):
         self.env.cr.commit()
         return True, ""
 
-    @api.multi
     def _on_sponsorship_finished(self):
         """ Called when a sponsorship is terminated or cancelled:
         Terminate related gift contracts and sync with GMC.
@@ -978,7 +956,6 @@ class SponsorshipContract(models.Model):
         partners = self.mapped("partner_id") | self.mapped("correspondent_id")
         partners.update_number_sponsorships()
 
-    @api.multi
     def _link_unlink_child_to_sponsor(self, vals):
         """Link/unlink child to sponsor
         """
@@ -997,7 +974,6 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    @api.multi
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """
         for invl in invoice.invoice_line_ids:
@@ -1038,7 +1014,6 @@ class SponsorshipContract(models.Model):
             to_activate -= self.filtered(lambda s: "S" in s.type)
         super(SponsorshipContract, to_activate).invoice_paid(invoice)
 
-    @api.multi
     @api.constrains("group_id")
     def _is_a_valid_group(self):
         for contract in self.filtered(lambda c: "S" in c.type):
@@ -1054,7 +1029,6 @@ class SponsorshipContract(models.Model):
                 )
         return True
 
-    @api.multi
     def update_next_invoice_date(self):
         """ Override to force recurring_value to 1
             if contract is a sponsorship, and to bypass ORM for performance.
@@ -1068,7 +1042,6 @@ class SponsorshipContract(models.Model):
             contract.next_invoice_date = next_date
         return True
 
-    @api.multi
     def _get_filtered_invoice_lines(self, invoice_lines):
         # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
@@ -1085,7 +1058,6 @@ class SponsorshipContract(models.Model):
         """ Hook for reactivating gifts. """
         pass
 
-    @api.multi
     def _filter_clean_invoices(self, since_date, to_date):
         """ Exclude gifts from clean invoice method. """
         invl_search = super()._filter_clean_invoices(since_date, to_date)

@@ -32,7 +32,6 @@ class AccountInvoice(models.Model):
         oldname="invoice_type"
     )
 
-    @api.multi
     def _compute_children(self):
         """ View children contained in invoice. """
         for invoice in self:
@@ -46,7 +45,6 @@ class AccountInvoice(models.Model):
                 invoice.children = False
 
     @api.depends("payment_move_line_ids", "state" , "move_id.line_ids.full_reconcile_id")
-    @api.multi
     def _compute_last_payment(self):
         for invoice in self.filtered("payment_move_line_ids"):
             mv_filter = "credit" if invoice.type == "out_invoice" else "debit"
@@ -56,7 +54,6 @@ class AccountInvoice(models.Model):
             invoice.last_payment = max(payment_dates or [False])
 
     @api.depends("invoice_line_ids", "state", "invoice_line_ids.product_id")
-    @api.multi
     def _compute_invoice_category(self):
         sponsorship_cat = self.env.ref(
             "sponsorship_compassion.product_category_sponsorship", False
@@ -101,6 +98,5 @@ class AccountInvoice(models.Model):
                         # last choice -> Other category
                         invoice.invoice_category = "other"
 
-    @api.multi
     def recompute_category(self):
         self._compute_invoice_category()

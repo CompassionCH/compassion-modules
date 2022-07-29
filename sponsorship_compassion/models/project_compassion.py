@@ -26,7 +26,6 @@ class ProjectCompassion(models.Model):
                 ]
             )
 
-    @api.multi
     def open_sponsorships(self):
 
         contract_list = self.env["recurring.contract"].search(

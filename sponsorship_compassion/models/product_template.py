@@ -4,7 +4,6 @@ from odoo import api, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    @api.multi
     def name_get(self):
         """
         We have multiple product template with the same name, one for each company.

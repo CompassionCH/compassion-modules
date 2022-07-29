@@ -10,7 +10,6 @@
         <field name="name">Constituent</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_pending':1, 'search_default_failure':1}</field>
         <field name="domain">[('action_id.model', '=', 'res.partner')]</field>
@@ -24,7 +23,6 @@
         <field name="name">Commitment</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_pending':1, 'search_default_failure':1, 'group_by': 'action_id'}</field>
         <field name="domain">[('action_id.model', '=', 'recurring.contract')]</field>
@@ -38,7 +36,6 @@
         <field name="name">Other</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_pending':1, 'search_default_failure':1, 'group_by': 'action_id'}</field>
         <!-- Add here other message to include -->

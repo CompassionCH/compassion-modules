@@ -29,18 +29,33 @@
         </field>
     </record>
 
-    <act_window id="action_download_child_pictures"
-                name="Download child pictures"
-                res_model="child.pictures.download.wizard" src_model="res.partner"
-                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+    <record id="action_download_child_pictures" model="ir.actions.act_window">
+        <field name="name">Download child pictures</field>
+        <field name="res_model">child.pictures.download.wizard</field>
+        <field name="binding_model">res.partner</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_type">form</field>
+        <field name="key2">client_action_multi</field>
+    </record>
 
-    <act_window id="action_download_child_pictures_2"
-                name="Download child pictures"
-                res_model="child.pictures.download.wizard" src_model="recurring.contract"
-                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+    <record id="action_download_child_pictures_2" model="ir.actions.act_window">
+        <field name="name">Download child pictures</field>
+        <field name="res_model">child.pictures.download.wizard</field>
+        <field name="binding_model">recurring.contract</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_type">form</field>
+        <field name="key2">client_action_multi</field>
+    </record>
 
-    <act_window id="action_download_child_pictures_3"
-                name="Download child pictures"
-                res_model="child.pictures.download.wizard" src_model="compassion.child"
-                view_mode="form" target="new" view_type="form" key2="client_action_multi"/>
+    <record id="action_download_child_pictures_3" model="ir.actions.act_window">
+        <field name="name">Download child pictures</field>
+        <field name="res_model">child.pictures.download.wizard</field>
+        <field name="binding_model">compassion.child</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_type">form</field>
+        <field name="key2">client_action_multi</field>
+    </record>
 </odoo>

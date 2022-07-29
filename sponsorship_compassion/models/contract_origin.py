@@ -66,7 +66,6 @@ class ContractOrigin(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("type")
     def _compute_name(self):
         for origin in self:
@@ -100,7 +99,6 @@ class ContractOrigin(models.Model):
         ]
 
     @api.depends("contract_ids.origin_id", "contract_ids.activation_date")
-    @api.multi
     def _compute_won_sponsorships(self):
         for origin in self.filtered("contract_ids"):
             # not tacking sponsors with parent_id or in cancelled state.

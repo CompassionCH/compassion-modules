@@ -210,7 +210,6 @@
         <field name="name">Contracts</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('type','in',['O','G'])]</field>
         <field name="context">{'default_type':'O'}</field>
@@ -220,7 +219,6 @@
         <field name="name">Sponsorships</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">recurring.contract</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,kanban,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
         <field name="context">{'default_type':'S'}</field>

@@ -44,7 +44,7 @@ class Household(models.Model):
     mother_alive = fields.Selection("_get_yes_no")
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
-    primary_caregiver = fields.Char(compute="_compute_primary_caregiver")
+    primary_caregiver = fields.Char(string="Primary caregiver", compute="_compute_primary_caregiver")
     primary_caregiver_id = fields.Many2one(
         "compassion.household.member",
         compute="_compute_primary_caregiver",

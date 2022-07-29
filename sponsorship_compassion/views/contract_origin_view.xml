@@ -70,7 +70,6 @@
     <record id="open_view_origin_tree" model="ir.actions.act_window">
         <field name="name">Origins</field>
         <field name="res_model">recurring.contract.origin</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form,tree</field>
         <field name="view_id" ref="view_contract_origin_tree"/>
     </record>
