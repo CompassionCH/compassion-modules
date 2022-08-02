@@ -1,0 +1,167 @@
+<odoo>
+    <record model="ir.ui.view" id="communication_job_form">
+        <field name="name">communication.job.form</field>
+        <field name="model">partner.communication.job</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,done"/>
+                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'digital'),('state', '!=', 'pending')]}"/>
+                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'both'),('state', '!=', 'pending')]}" context="{'origin': 'both_email'}"/>
+                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('send_mode', '!=', 'physical'),('state', '!=', 'pending')]}"/>
+                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'both'),('state', '!=', 'pending')]}" context="{'origin': 'both_print'}"/>
+                    <button name="log_call" string="Log call" icon="fa-phone" type="object" attrs="{'invisible': ['|', ('phonecall_id', '!=', False), ('need_call', '=', False)]}"/>
+                    <button name="reset" string="Retry" type="object" states='done,cancel'/>
+                    <button name="cancel" string="Cancel" type="object" states='pending'/>
+                </header>
+                <sheet>
+                    <div class="oe_right oe_button_box" name="buttons">
+                        <button name="preview_pdf" string="Preview" type="object" icon="fa-search-plus" class="oe_stat_button"/>
+                        <button name="open_related" string="Go to records" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model" invisible="1"/>
+                            <field name="config_id" domain="[('model', '=', model)]"/>
+                            <field name="user_id"/>
+                            <field name="partner_id"/>
+                            <field name="email_to"/>
+                            <field name="partner_phone" widget="phone"/>
+                            <field name="partner_mobile" widget="phone"/>
+                        </group>
+                        <group>
+                            <field name="sent_date" readonly="1"/>
+                            <field name="send_mode" required="1"/>
+                            <field name="need_call"/>
+                            <field name="report_id"/>
+                            <field name="auto_send"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="subject"/>
+                            <field name="printer_output_tray_id"
+                                   attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}"/>
+                        </group>
+                        <group attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}">
+                            <field name="omr_enable_marks"/>
+                            <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_single_sided" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_top_mark_x" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_top_mark_y" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
+                        <field name="body_html" widget="html"/>
+                    </group>
+                    <group>
+                        <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />
+                        <field name="ir_attachment_tmp" widget="many2many_binary" string=' ' class="oe_edit_only"/>
+                        <field name="email_id" readonly="1" attrs="{'invisible': ['|', ('send_mode', '!=', 'digital'), ('send_mode', '!=', 'both')]}"/>
+                        <field name="phonecall_id" readonly="1" attrs="{'invisible': [('phonecall_id', '=', False)]}"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="communication_job_tree">
+        <field name="name">communication.job.tree</field>
+        <field name="model">partner.communication.job</field>
+        <field name="arch" type="xml">
+            <tree decoration-primary="state == 'pending'"
+                  decoration-muted="state in ('done', 'cancel')"
+                  decoration-danger="need_call!=False and len(activity_ids) or state == 'failure'">
+                <field name="date"/>
+                <field name="config_id"/>
+                <field name="partner_id"/>
+                <field name="send_mode"/>
+                <field name="email_to"/>
+                <field name="subject"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <field name="need_call"/>
+                <field name="sent_date"/>
+                <field name="activity_ids" invisible="1"/>
+                <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
+                <button name="call" string="Call" type="object" icon="fa-phone" states='pending'/>
+                <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
+                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='pending'/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="communication_job_search">
+        <field name="name">communication.job.search</field>
+        <field name="model">partner.communication.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="My Communications" name="my_communications" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <field name="config_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <filter string="Pending" name="pending" domain="[('state', 'in', ['pending','failure'])]"/>
+                <filter string="To Call" name="call" domain="[('need_call', '!=', False), ('activity_ids', '!=', False)]"/>
+                <separator/>
+                <filter string="Letters" name="digital" domain="[('send_mode', '=', 'physical')]"/>
+                <filter string="E-mails" name="physical" domain="[('send_mode', '=', 'digital')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Communication" name="config" domain="[]" context="{'group_by':'config_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_communication_tree" model="ir.actions.act_window">
+        <field name="name">Communications</field>
+        <field name="res_model">partner.communication.job</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="action_communication_job" model="ir.actions.act_window">
+        <field name="name">Communication Job</field>
+        <field name="res_model">partner.communication.job</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'search_default_config': True, 'default_user_id': uid}</field>
+    </record>
+
+    <record id="action_communication_job_partner" model="ir.actions.act_window">
+        <field name="name">Communication Job</field>
+        <field name="res_model">partner.communication.job</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_user_id': uid}</field>
+        <field name="domain">[('partner_id', '=', active_id)]</field>
+    </record>
+
+    <!-- Send communication actions -->
+    <record id="send_action" model="ir.actions.server">
+        <field name="name">Send communication</field>
+        <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
+        <field name="state">code</field>
+        <field name="code">records.send()</field>
+    </record>
+
+    <!-- Refresh communication actions -->
+    <record id="refresh_action" model="ir.actions.server">
+        <field name="name">Refresh communication</field>
+        <field name="model_id" ref="model_partner_communication_job"/>
+        <field name="binding_model_id" ref="model_partner_communication_job"/>
+        <field name="state">code</field>
+        <field name="code">records.refresh_text(refresh_uid=True)</field>
+    </record>
+
+    <menuitem name="Partner Communication" id="menu_communication" parent="contacts.menu_contacts" sequence="1"/>
+    <menuitem name="Jobs" parent="menu_communication" id="menu_communication_jobs" sequence="1" action="action_communication_job"/>
+</odoo>

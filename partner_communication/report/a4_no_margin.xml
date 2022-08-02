@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report id="report_a4_no_margin"
+                model="partner.communication.job"
+                string="A4 no margin"
+                report_type="qweb-pdf"
+                name="partner_communication.a4_no_margin"
+        />
+        <record id="report_a4_no_margin" model="ir.actions.report">
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+        </record>
+        <template id="a4_no_margin">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <t t-raw="o.body_html"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
