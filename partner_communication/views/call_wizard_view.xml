@@ -1,0 +1,17 @@
+<odoo>
+    <record model="ir.ui.view" id="call_wizard_form">
+        <field name="name">call.wizard.form</field>
+        <field name="model">partner.communication.call.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="comments"/>
+                </group>
+                <footer>
+                    <button name="call_success" string="Log the call" type="object" class="oe_highlight" icon="fa-save"/>
+                    <button name="log_fail" string="Still pending" type="object" icon="fa-ban"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

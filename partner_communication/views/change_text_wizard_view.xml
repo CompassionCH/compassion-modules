@@ -1,0 +1,31 @@
+<odoo>
+    <record model="ir.ui.view" id="change_text_wizard_form">
+        <field name="name">change.text.wizard.form</field>
+        <field name="model">partner.communication.change.text.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="state" invisible="1"/>
+                <div states="edit">
+                    <button name="get_preview" string="Preview" type="object" class="oe_stat_button" icon="fa-search-plus"/>
+                    <separator/>
+                    <field name="template_text"/>
+                </div>
+                <div states="preview">
+                    <button name="edit" string="Edit" type="object" class="oe_stat_button" icon="fa-edit"/>
+                    <separator/>
+                    <field name="preview"/>
+                </div>
+                <footer>
+                    <button name="update" string="Update texts" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_change_text" model="ir.actions.act_window">
+        <field name="name">Change Text</field>
+        <field name="res_model">partner.communication.change.text.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

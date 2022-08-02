@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_server_action_form_template_inherit">
+        <field name="name">ir.actions.server.form.inherit</field>
+        <field name="model">ir.actions.server</field>
+        <field name="inherit_id" ref="mail.view_server_action_form_template"/>
+        <field name="arch" type="xml">
+            <field name="link_field_id" position="after">
+                <field name="config_id"
+                    attrs="{'invisible': [('state', '!=', 'communication')],
+                            'required': [('state', '=', 'communication')]}"/>
+                <field name="partner_field"
+                    attrs="{'invisible': [('state', '!=', 'communication')],
+                            'required': [('state', '=', 'communication')]}"/>
+                <field name="send_mode" attrs="{'invisible': [('state', '!=', 'communication')]}"/>
+                <field name="auto_send" attrs="{'invisible': [('state', '!=', 'communication')]}"/>
+            </field>
+        </field>
+    </record>
+</odoo>
