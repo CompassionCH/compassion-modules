@@ -467,7 +467,7 @@ class Correspondence(models.Model):
         for letter in letters_to_translate:
             old_priority = int(letter.translation_priority)
             if old_priority < 4:
-            letter.translation_priority = str(old_priority + 1)
+                letter.translation_priority = str(old_priority + 1)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
