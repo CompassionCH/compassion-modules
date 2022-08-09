@@ -456,21 +456,18 @@ class Correspondence(models.Model):
                 })
         return res
 
-    @api.multi
+    @api.model
     def increment_priority_cron(self):
         """
         Increment priority of letters to translate, maximum
         priority is 4.
         """
-        letters_to_translate = self.search([("translation_status", "!=", "done")])
+        letters_to_translate = self.search([("translation_status", "not in", [False, "done"])])
 
         for letter in letters_to_translate:
             old_priority = int(letter.translation_priority)
-            if old_priority == 4:
-                continue
-            new_priority = old_priority + 1
-
-            letter.write({"translation_priority": str(new_priority)})
+            if old_priority < 4:
+                letter.translation_priority = str(old_priority + 1)
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
