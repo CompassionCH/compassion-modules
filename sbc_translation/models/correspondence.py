@@ -90,7 +90,7 @@ class Correspondence(models.Model):
     def _compute_translation_url(self):
         # TODO
         for letter in self:
-            letter.translation_url = f"http://localhost:8069/translation/{letter.id}"
+            letter.translation_url = f"http://localhost:3000/letters/letter-edit/{letter.id}"
 
     def _compute_paragraph_ids(self):
         for correspondence in self:
@@ -103,7 +103,9 @@ class Correspondence(models.Model):
             (correspondence.page_ids.mapped("paragraph_ids") - correspondence.paragraph_ids).unlink()
             # Propagate paragraph creation, we must associate it to a page. We take the last page by default
             last_page = correspondence.page_ids[-1:]
-            last_sequence = last_page.paragraph_ids[-1].sequence
+            if not last_page:
+                last_page = last_page.create({"correspondence_id": correspondence.id})
+            last_sequence = max(last_page.paragraph_ids.mapped("sequence") or [0])
             for new_paragraph in correspondence.paragraph_ids.filtered(lambda p: not p.page_id):
                 new_paragraph.sequence = last_sequence + 1
                 last_page.paragraph_ids += new_paragraph
@@ -198,6 +200,7 @@ class Correspondence(models.Model):
                 "translation_priority": "0",
                 "translation_status": "to do",
                 "translate_date": fields.Datetime.now(),
+                "translate_done": False,
                 "translation_language_id": dst_lang.id,
                 "translation_issue": False,
                 "translation_issue_comments": False,
