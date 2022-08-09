@@ -254,7 +254,7 @@ class Correspondence(models.Model):
         self.message_post_with_view(reply_template, partner_ids=[(4, self.new_translator_id.partner_id.id)], values={
             "reply": body_html,
         })
-        return True
+        return self.write({"unread_comments": False})
 
     @api.multi
     def mark_comments_read(self):
