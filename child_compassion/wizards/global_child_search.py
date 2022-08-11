@@ -242,7 +242,7 @@ class GlobalChildSearch(models.TransientModel):
         return {
             "name": _("Specify Attributes"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
+            # "view_type": "form",
             "view_mode": "form",
             "res_model": "child.hold.wizard",
             "context": self.with_context(
@@ -259,7 +259,6 @@ class GlobalChildSearch(models.TransientModel):
         return {
             "name": _("Specify Attributes"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "child.reservation.wizard",
             "context": self.env.context,
