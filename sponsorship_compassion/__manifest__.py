@@ -44,7 +44,6 @@
         "account_invoice_split_invoice",  # compassion-accounting
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
-        "account_analytic_default",
     ],
     "data": [
         "views/sponsorship_contract_view.xml",
