@@ -324,6 +324,8 @@ class CompassionChild(models.Model):
             )
             if exit_details:
                 child.exit_reason = exit_details[0].request_reason
+            else:
+                child.exit_reason = False
 
     @api.model
     def _get_months(self):

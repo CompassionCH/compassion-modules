@@ -22,7 +22,6 @@ class CMSFormSettings(models.TransientModel):
         readonly=False,
     )
 
-    @api.multi
     def set_values(self):
         super().set_values()
         # This is stored in page template for additional B2S pages
