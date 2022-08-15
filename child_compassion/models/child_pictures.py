@@ -59,7 +59,7 @@ class ChildPictures(models.Model):
             except AttributeError:
                 base_url = self.env["ir.config_parameter"].sudo().get_param(
                     "web.external.url")
-            endpoint = base_url + "/web/image/compassion.child.pictures"
+            endpoint = str(base_url) + "/web/image/compassion.child.pictures"
             image.image_url_compassion =\
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
 
