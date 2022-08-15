@@ -30,8 +30,8 @@ access_demand_planning,Full access on demand_planning,model_demand_planning,grou
 read_access_demand_planning,Read only access on demand_planning,model_demand_planning,group_sponsorship,1,0,0,0
 access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_weekly_demand,group_manager,1,1,1,1
 read_access_demand_weekly_demand,Read only access on demand_weekly_demand,model_demand_weekly_demand,group_sponsorship,1,0,0,0
-access_icp_church_facility,Read access on fcp church facility,model_fcp_church_facility,group_sponsorship,1,0,0,0
-access_icp_church_ministry,Read access on fcp church ministry,model_fcp_church_ministry,group_sponsorship,1,0,0,0
+access_icp_church_facility,Read access on fcp church facility,model_fcp_church_facility,group_sponsorship,1,0,1,0
+access_icp_church_ministry,Read access on fcp church ministry,model_fcp_church_ministry,group_sponsorship,1,0,1,0
 access_icp_church_utility,Read access on fcp church utility,model_fcp_church_utility,group_sponsorship,1,0,0,0
 access_icp_cognitive_activity,Write access on fcp cognitive_activity,model_fcp_cognitive_activity,group_sponsorship,1,1,0,0
 access_icp_community_occupation,Write access on fcp community_occupation,model_fcp_community_occupation,group_sponsorship,1,1,0,0
@@ -69,3 +69,4 @@ access_compassion_child_description,access_compassion_child_description,model_co
 access_child_hold_wizard,access_child_hold_wizard,model_child_hold_wizard,group_sponsorship,1,1,1,1
 access_compassion_childpool_search,access_compassion_childpool_search,model_compassion_childpool_search,group_sponsorship,1,1,1,1
 access_child_school_subject,access_child_school_subject,model_child_school_subject,group_sponsorship,1,1,1,1
+access_compassion_project_description,access_compassion_project_description,model_compassion_project_description,group_sponsorship, 1,0,1,0
