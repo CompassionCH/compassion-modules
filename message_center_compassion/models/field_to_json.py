@@ -242,7 +242,7 @@ class FieldToJson(models.Model):
 
             # In that case we are in many2many or one2many and will replace
             # relations.
-            record_vals = value if isinstance(value, list) else [value]
+            record_vals = to_create if isinstance(to_create, list) else [to_create]
             # Use dictionary values to create related record
             orm_vals.extend(
                 [(0, 0, vals) for vals in record_vals if isinstance(vals, dict)]

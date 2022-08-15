@@ -7,11 +7,13 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models
+from odoo import fields, models
 
 
 class AccountInvoice(models.Model):
-    _inherit = "account.invoice.line"
+    _inherit = "account.move.line"
+
+    last_payment = fields.Date(related="invoice_id.last_payment", store=True)
 
     def filter_for_contract_rewind(self, filter_state):
         """ Only use sponsorship invoices for sponsorships. """

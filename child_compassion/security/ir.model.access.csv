@@ -7,7 +7,7 @@ access_future_hopes,Read access on child future hopes,model_child_future_hope,gr
 access_child_hobby,Write access on child hoby,model_child_hobby,group_sponsorship,1,1,0,0
 access_child_household_duty,Write access on household duty,model_child_household_duty,group_sponsorship,1,1,0,0
 access_physical_disability,Write access on child physical disability,model_child_physical_disability,group_sponsorship,1,1,0,0
-access_child_project_activity,Write access on child project activity,model_child_project_activity,group_sponsorship,1,1,0,0
+access_child_project_activity,Write access on child project activity,model_child_project_activity,group_sponsorship,1,1,1,1
 access_child_school_subject,Write access on child school subject,model_child_school_subject,group_sponsorship,1,1,0,0
 access_compassion_child,Full access on compassion_child,model_compassion_child,group_sponsorship,1,1,1,1
 access_child_lifecycle,Full access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,1,1,1
@@ -65,6 +65,7 @@ access_gmc_action,Access gmc.action,message_center_compassion.model_gmc_action,g
 access_compassion_covid_update,Full access on compassion_covid_update,model_compassion_project_covid_update,group_sponsorship,1,1,1,1
 access_compassion_global_child,access_compassion_global_child,model_compassion_global_child,group_sponsorship,1,1,1,1
 access_child_reservation_wizard,access_child_reservation_wizard,model_child_reservation_wizard,group_sponsorship,1,0,0,0
-access_compassion_child_description,access_compassion_child_description,model_compassion_child_description,group_sponsorship,1,0,0,0
+access_compassion_child_description,access_compassion_child_description,model_compassion_child_description,group_sponsorship,1,1,1,1
 access_child_hold_wizard,access_child_hold_wizard,model_child_hold_wizard,group_sponsorship,1,1,1,1
 access_compassion_childpool_search,access_compassion_childpool_search,model_compassion_childpool_search,group_sponsorship,1,1,1,1
+access_child_school_subject,access_child_school_subject,model_child_school_subject,group_sponsorship,1,1,1,1

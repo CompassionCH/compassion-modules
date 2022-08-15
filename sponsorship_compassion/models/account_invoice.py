@@ -16,7 +16,7 @@ from odoo import api, fields, models
 class AccountInvoice(models.Model):
     """Generate automatically a BVR Reference for LSV Invoices"""
 
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     children = fields.Char("Children", compute="_compute_children")
     last_payment = fields.Date(compute="_compute_last_payment", store=True)

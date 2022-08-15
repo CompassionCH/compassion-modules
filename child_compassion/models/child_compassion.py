@@ -176,8 +176,8 @@ class CompassionChild(models.Model):
             ("Manufacturing / Fabrication", "Manufacturing / Fabrication"),
             ("Medical/ Health Services", "Medical / Health services"),
             ("Medical / Health Services", "Medical / Health services"),
-            ("Not Enrolled", "Not enrolled"),
-            ("Not enrolled ", "Not enrolled"),
+            ("Not Enrolled ", "Not enrolled"),
+            ("Not enrolled", "Not enrolled"),
             ("Other", "Other"),
             ("Para-Medical / Medical / Health Services", "Medical / Health services"),
             ("Telecommunication", "Telecommunication"),
@@ -506,7 +506,7 @@ class CompassionChild(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def get_infos(self):
-        """Get the most recent case study, basic informations, updates
+        """Get the most recent case study, basic information, updates
            portrait picture and creates the project if it doesn't exist.
         """
         message_obj = self.env["gmc.message"]
