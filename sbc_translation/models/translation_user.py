@@ -67,7 +67,11 @@ class TranslationUser(models.Model):
         """
         records = super().create(vals_list)
         user_group = self.env.ref("sbc_translation.group_user")
-        records.mapped("user_id").write({"groups_id": [(4, user_group.id)]})
+        for translator in records:
+            translator.user_id.write({
+                "groups_id": [(4, user_group.id)],
+                "translator_id": translator.id
+            })
         return records
 
     @api.multi
@@ -185,3 +189,9 @@ class TranslationUser(models.Model):
                     ("translator_id", "=", partner.id)
                 ]).write({"new_translator_id": new_t.id})
                 self.env.cr.commit()
+
+
+class ResUsers(models.Model):
+    _inherit = "res.users"
+
+    translator_id = fields.Many2one("translation.user", "Translator")

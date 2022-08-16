@@ -400,7 +400,7 @@ class Correspondence(models.Model):
     @api.multi
     def list_letters(self):
         """ API call to fetch letters to translate """
-        return [letter.get_letter_info() for letter in self]
+        return [letter.get_letter_info() for letter in self.sorted("scanned_date")]
 
     @api.multi
     def get_letter_info(self):
@@ -420,16 +420,18 @@ class Correspondence(models.Model):
             "date": fields.Date.to_string(self.scanned_date),
             "translatedElements": self.get_translated_elements() or "None",
             "child": {
-                "firstName": self.child_id.preferred_name,
-                "lastName": self.child_id.lastname,
+                "preferredName": self.child_id.preferred_name,
+                "fullName": self.child_id.name,
                 "sex": self.child_id.gender,
-                "age": self.child_id.age
+                "age": self.child_id.age,
+                "ref": self.child_id.local_id
             },
             "sponsor": {
-                "firstName": self.partner_id.firstname,
-                "lastName": self.partner_id.lastname,
+                "preferredName": self.partner_id.preferred_name,
+                "fullName": self.partner_id.name,
                 "sex": self.partner_id.gmc_gender[0],
-                "age": self.partner_id.age
+                "age": self.partner_id.age,
+                "ref": self.partner_id.ref
             },
             "pdfUrl": f"{base_url}/web/pdf/correspondence/{self.id}",
         }
