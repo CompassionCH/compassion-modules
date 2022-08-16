@@ -18,11 +18,11 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
-                        </button>
                         <button name="open_translated_letters" type="object" icon="fa-pencil" class="oe_stat_button">
                             <field string="Translations" name="nb_translated_letters" widget="statinfo"/>
+                        </button>
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
                         </button>
                     </div>
                     <group>
@@ -32,7 +32,6 @@
                             <field name="translator_since"/>
                         </group>
                         <group>
-                            <field name="nb_translated_letters"/>
                             <field name="nb_translated_letters_this_year"/>
                             <field name="nb_translated_letters_last_year"/>
                         </group>

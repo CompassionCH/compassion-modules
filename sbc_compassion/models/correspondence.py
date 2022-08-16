@@ -214,6 +214,11 @@ class Correspondence(models.Model):
     final_letter_url = fields.Char()
     import_id = fields.Many2one("import.letters.history", readonly=False)
     translator = fields.Char()
+    translator_id = fields.Many2one(  # TODO remove me after migration
+        "res.partner",
+        "Local translator",
+        readonly=True,
+    )
     email = fields.Char(related="partner_id.email")
     sponsorship_state = fields.Selection(
         related="sponsorship_id.state", string="Sponsorship state", readonly=True

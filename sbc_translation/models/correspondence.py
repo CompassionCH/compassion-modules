@@ -22,7 +22,6 @@ class Correspondence(models.Model):
         """
     _inherit = "correspondence"
 
-    translator_id = fields.Many2one("res.partner", "Local translator")  # TODO remove me
     new_translator_id = fields.Many2one("translation.user", "Local translator")
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
@@ -73,7 +72,7 @@ class Correspondence(models.Model):
 
     def _inverse_competence(self):
         for letter in self:
-            if letter.translation_status != "to do":
+            if letter.translation_status and letter.translation_status != "to do":
                 raise UserError(_(
                     "You cannot change the translation language of a letter that is being or already translated."))
             letter.write({
@@ -88,9 +87,9 @@ class Correspondence(models.Model):
             correspondence.translation_priority_name = us_record.translate("translation_priority")
 
     def _compute_translation_url(self):
-        # TODO
+        host = self.env.ref("sbc_translation.translation_website").sudo().domain
         for letter in self:
-            letter.translation_url = f"http://localhost:3000/letters/letter-edit/{letter.id}"
+            letter.translation_url = f"https://{host}/letters/letter-edit/{letter.id}"
 
     def _compute_paragraph_ids(self):
         for correspondence in self:
@@ -113,7 +112,6 @@ class Correspondence(models.Model):
 
     @api.model
     def get_translation_issue_list(self):
-        # TODO validate the list with SDS
         return [
             ("broken_pdf", _("PDF not showing")),
             ("text_unreadable", _("Cannot read properly")),
@@ -197,7 +195,7 @@ class Correspondence(models.Model):
             {
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
-                "translation_priority": "0",
+                "translation_priority": str(min((fields.Date.today() - self.scanned_date).days // 7, 4)),
                 "translation_status": "to do",
                 "translate_date": fields.Datetime.now(),
                 "translate_done": False,

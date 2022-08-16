@@ -96,8 +96,10 @@
     <record id="view_correspondence_translation_tree" model="ir.ui.view">
         <field name="name">correspondence.translation.tree</field>
         <field name="model">correspondence</field>
+        <field name="priority">30</field>
         <field name="arch" type="xml">
             <tree decoration-bf="unread_comments" decoration-danger="translation_issue" decoration-muted="state != 'Global Partner translation queue'" default_order="translate_date">
+                <field name="scanned_date"/>
                 <field name="translate_date"/>
                 <field name="name"/>
                 <field name="translation_competence_id"/>
@@ -182,6 +184,7 @@
         <field name="arch" type="xml">
             <field name="sponsorship_id" position="after">
                 <field name="translation_competence_id"/>
+                <field name="new_translator_id"/>
             </field>
             <filter name="state_published" position="after">
                 <filter name="translation_pending" string="In Translation" domain="[('state', '=', 'Global Partner translation queue')]"/>
