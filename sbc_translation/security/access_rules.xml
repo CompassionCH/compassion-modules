@@ -3,7 +3,7 @@
     <record id="translator_letters_rule" model="ir.rule">
         <field name="name">Translator Letters</field>
         <field name="model_id" ref="model_correspondence"/>
-        <field name="domain_force">[('state', 'in', ['Global Partner translation queue', 'Received in the system', 'Printed and sent to ICP'])]</field>
+        <field name="domain_force">[('state', 'in', ['Global Partner translation queue', 'Received in the system', 'Printed and sent to ICP']), ("translation_competence_id", "in", user.translator_id.translation_skills.mapped('competence_id').ids),"|", ("new_translator_id.user_id", "=", user.id), ("new_translator_id", "=", False)]</field>
         <field name="groups" eval="[(4, ref('group_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
