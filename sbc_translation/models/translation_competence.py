@@ -36,7 +36,8 @@ class TranslationCompetence(models.Model):
         for competence in self:
             current_letters = self.env["correspondence"].search([
                 ("state", "=", "Global Partner translation queue"),
-                ("translation_competence_id", "=", competence.id)
+                ("translation_competence_id", "=", competence.id),
+                ("translation_competence_id", "!=", False)
             ])
             competence.current_letter_ids = current_letters
             competence.number_current_letters = len(current_letters)
@@ -44,9 +45,14 @@ class TranslationCompetence(models.Model):
     @api.depends("skill_ids", "skill_ids.translator_id.active")
     def _compute_number_translators(self):
         for competence in self:
-            translators = competence.skill_ids.mapped("translator_id").filtered("active")
-            competence.number_translators = len(translators)
-            competence.number_active_translators = len(translators.filtered("nb_translated_letters_this_year"))
+            competence.number_translators = self.env["translation.user"].search_count([
+                ("translation_skills.competence_id", "=", competence.id),
+                ("translation_skills.competence_id", "!=", False)
+            ])
+            competence.number_active_translators = self.env["translation.user"].search_count([
+                ("translation_skills.competence_id", "=", competence.id),
+                ("translation_skills.competence_id", "!=", False),
+                ("nb_translated_letters_this_year", "!=", False)])
 
     @api.model
     def get_translation_languages(self):

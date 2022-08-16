@@ -1,14 +1,8 @@
-import logging
 from openupgradelib import openupgrade
-
-_logger = logging.getLogger(__name__)
 
 
 @openupgrade.migrate()
 def migrate(env, version):
-    """
-    Careful! Install sbc_translation before performing this module update.
-    """
     if not version:
         return
 
@@ -18,12 +12,3 @@ def migrate(env, version):
                             "Quality check unsuccessful"]
     )])
     correspondence.create_text_boxes()
-
-    # Update translation done
-    env.cr.execute("""
-        UPDATE correspondence SET translate_done = translate_date
-        WHERE translate_date IS NOT NULL;
-        UPDATE correspondence SET translate_date = write_date
-        WHERE state = 'Global Partner translation queue'
-        AND translate_date IS NULL;
-    """)

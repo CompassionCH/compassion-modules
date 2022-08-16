@@ -57,7 +57,7 @@ class TranslationUser(models.Model):
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_last_year(self):
         for translator in self:
-            translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
+            translator.nb_translated_letters_last_year = len(translator.translated_letter_ids.filtered(
                 lambda it: it.translate_date.year == fields.Datetime.now().year - 1))
 
     @api.model
@@ -103,7 +103,9 @@ class TranslationUser(models.Model):
             "res_model": "correspondence",
             "view_type": "form",
             "view_mode": "tree,form",
-            "context": {"search_default_translator_id": self.partner_id.id},
+            "context": {"search_default_new_translator_id": self.id,
+                        "form_view_ref": "sbc_translation.view_correspondence_form_translation",
+                        "tree_view_ref": "sbc_translation.view_correspondence_translation_tree"},
         }
 
     @api.multi
@@ -130,7 +132,7 @@ class TranslationUser(models.Model):
         return self.env["translation.user.skill"].create([{
             "translator_id": translator.id,
             "competence_id": competence_id,
-        } for translator in self])
+        } for translator in self]).id
 
     @api.multi
     def get_user_info(self):
@@ -161,34 +163,6 @@ class TranslationUser(models.Model):
             } for skill in self.translation_skills.with_context(lang="en_US")] or "None",
             "api_key": self.env["ir.config_parameter"].sudo().get_param("sbc_translation.api_key"),
         }
-
-    @api.model
-    def migrate_translators(self):
-        # TODO move in sbc_switzerland/post_migration script
-        translators = self.env["advocate.details"].search([
-            ("engagement_ids", "=", 2),
-        ])
-        for translator in translators:
-            partner = translator.partner_id
-            user = self.env["res.users"].search([
-                "|", ("partner_id", "=", partner.id), ("login", "=", partner.email)
-            ], limit=1)
-            if not user:
-                # TODO Create a specific communication to warn the translator about the new account
-                user = self.env["res.users"].create({
-                    "partner_id": partner.id,
-                    "login": partner.email or partner.ref
-                })
-            if not self.search([("user_id", "=", user.id)]):
-                new_t = self.create([{
-                    "user_id": user.id,
-                    "translator_since": translator.active_since or translator.create_date,
-                    "active": not translator.state == "inactive"
-                }])
-                self.env["correspondence"].search([
-                    ("translator_id", "=", partner.id)
-                ]).write({"new_translator_id": new_t.id})
-                self.env.cr.commit()
 
 
 class ResUsers(models.Model):

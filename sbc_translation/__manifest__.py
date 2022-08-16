@@ -34,7 +34,7 @@
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://www.compassion.ch",
     "depends": [
         "sbc_compassion",
         "partner_contact_birthdate"
@@ -46,6 +46,7 @@
         "wizards/reply_to_comments_view.xml",
         "data/mail_template.xml",
         "data/increment_translation_priority_cron.xml",
+        "data/website.xml",
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
@@ -53,4 +54,5 @@
     "demo": [],
     "installable": True,
     "auto_install": False,
+    "post_init_hook": "post_init_hook"
 }
