@@ -11,7 +11,6 @@
 from . import contract_group
 from . import contracts
 from . import contracts_report
-from . import invoice_line
 from . import res_partner
 from . import privacy_statement
 from . import project_compassion

@@ -23,12 +23,10 @@
 
     <!-- Generate Gift -->
     <record id="action_generate_gift" model="ir.actions.act_window">
-        <field name="key2">client_action_multi</field>
         <field name="name">Generate Gift</field>
         <field name="res_model">generate.gift.wizard</field>
-        <field name="binding_model">recurring.contract</field>
+        <field name="binding_model_id" ref="model_recurring_contract"/>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="view_type">form</field>
     </record>
 </odoo>

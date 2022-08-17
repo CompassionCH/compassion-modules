@@ -6,10 +6,8 @@ access_recurring_contract_line,Full access on recurring.contract.line,recurring_
 access_recurring_contract_group,Full access on recurring.contract.group,recurring_contract.model_recurring_contract_group,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_contract_origin,Full access on recurring.contract.origin,model_recurring_contract_origin,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_invoicer,Full access on recurring.invoicer,recurring_contract.model_recurring_invoicer,child_compassion.group_sponsorship,1,1,1,1
-acces_account_invoice,Write access on account.invoice,account.model_account_invoice,child_compassion.group_sponsorship,1,1,0,0
-acces_account_invoice_line,Full access on account.invoice.line,account.model_account_invoice_line,child_compassion.group_sponsorship,1,1,1,1
-acces_account_move,Full access on account.move,account.model_account_move,child_compassion.group_sponsorship,1,1,1,1
-acces_account_move_line,Full access on account.move.line,account.model_account_move_line,child_compassion.group_sponsorship,1,1,1,1
-acces_account_journal,Read access on account.journal,account.model_account_journal,child_compassion.group_sponsorship,1,0,0,0
-acces_account_account_type,Read access on account.account.type,account.model_account_account_type,child_compassion.group_sponsorship,1,0,0,0
+access_account_move,Full access on account.move,account.model_account_move,child_compassion.group_sponsorship,1,1,1,1
+access_account_move_line,Full access on account.move.line,account.model_account_move_line,child_compassion.group_sponsorship,1,1,1,1
+access_account_journal,Read access on account.journal,account.model_account_journal,child_compassion.group_sponsorship,1,0,0,0
+access_account_account_type,Read access on account.account.type,account.model_account_account_type,child_compassion.group_sponsorship,1,0,0,0
 full_access_end_reason,Full access on recurring.contract.end.reason for SDS,recurring_contract.model_recurring_contract_end_reason,child_compassion.group_manager,1,1,1,1

@@ -36,14 +36,17 @@
     "website": "http://www.compassion.ch",
     "depends": [
         "recurring_contract",  # compassion-accounting
-        "cms_form_compassion",  # compassion-modules
+        # "cms_form_compassion",  # compassion-modules
         "utm",
         "crm",
         "child_compassion",
         "web_m2x_options",  # oca/web
         "account_invoice_split_invoice",  # compassion-accounting
         "partner_firstname",  # oca/partner-contact
+        # "partner_compassion",
         "account_analytic_attribution",  # compassion-accounting
+        "sale",
+
     ],
     "data": [
         "views/sponsorship_contract_view.xml",
@@ -72,7 +75,6 @@
         "data/res_partner_sequence.xml",
         "data/queue_job.xml",
         "security/ir.model.access.csv",
-        "security/record_rules.xml",
         "views/product_views.xml",
     ],
     "demo": ["demo/demo_data.xml", ],

@@ -13,7 +13,7 @@ from odoo import fields, models
 class AccountInvoice(models.Model):
     _inherit = "account.move.line"
 
-    last_payment = fields.Date(related="invoice_id.last_payment", store=True)
+    last_payment = fields.Date(related="move_id.last_payment", store=True)
 
     def filter_for_contract_rewind(self, filter_state):
         """ Only use sponsorship invoices for sponsorships. """
