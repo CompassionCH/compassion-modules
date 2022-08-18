@@ -11,3 +11,4 @@ access_admin_gmc_action_connect,Full access on gmc.action.connect,model_gmc_acti
 access_admin_query_operator,Full access on query operators,model_compassion_query_operator,group_gmc_manager,1,1,1,1
 access_admin_compassion_field_to_json,Full access_compassion_field_to_json,model_compassion_field_to_json,group_gmc_manager,1,1,1,1
 access_admin_compassion_mapping,Full access_compassion_mapping,model_compassion_mapping,group_gmc_manager,1,1,1,1
+access_compassion_query_filter,access_compassion_query_filter,model_compassion_query_filter,group_gmc_user,1,0,1,0

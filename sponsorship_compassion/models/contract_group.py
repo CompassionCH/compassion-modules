@@ -82,7 +82,7 @@ class ContractGroup(models.Model):
         for contract in contracts:
             invl_ids = invl_obj.search(
                 [
-                    ("state", "=", "open"),
+                    ("state", "=", "posted"),
                     ("contract_id", "=", contract.id),
                     ("product_id", "=", product_id),
                 ]

@@ -139,7 +139,7 @@ class PartnerSponsorshipReport(models.Model):
                 [
                     ("partner_id", "=", _partner.id),
                     ("move_type", "=", "out_invoice"),
-                    ("state", "=", "paid"),
+                    ("payment_state", "=", "paid"),
                     ("invoice_category", "in", ["gift", "sponsorship", "fund"]),
                     ("last_payment", "<", _partner.end_period),
                     ("last_payment", ">", _partner.start_period),
@@ -161,7 +161,7 @@ class PartnerSponsorshipReport(models.Model):
                     ("partner_id", "=", _partner.id),
                     ("invoice_category", "=", "gift"),
                     ("move_type", "=", "out_invoice"),
-                    ("state", "=", "paid"),
+                    ("payment_state", "=", "paid"),
                     ("last_payment", "<", _partner.end_period),
                     ("last_payment", ">=", _partner.start_period),
                 ]
@@ -180,7 +180,6 @@ class PartnerSponsorshipReport(models.Model):
             "type": "ir.actions.act_window",
             "name": "Sponsorship Report",
             "res_model": "res.partner",
-            "view_type": "form",
             "view_mode": "form",
             "context": self.with_context(
                 form_view_ref="sponsorship_compassion.sponsorship_report_form"
@@ -211,9 +210,9 @@ class PartnerSponsorshipReport(models.Model):
                 "|",
                 ("partner_id", "=", self.id),
                 ("partner_id.church_id", "=", self.id),
-                ("invoice_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
-                ("invoice_id.move_type", "=", "out_invoice"),
-                ("state", "=", "paid"),
+                ("move_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
+                ("move_type", "=", "out_invoice"),
+                ("payment_state", "=", "paid"),
                 ("last_payment", "<", self.end_period),
                 ("last_payment", ">=", self.start_period),
             ],

@@ -26,7 +26,7 @@
     <record id="action_retrieve_image" model="ir.actions.act_window">
         <field name="name">Retrieve image</field>
         <field name="res_model">letter.image.wizard</field>
-        <field name="binding_model">correspondence</field>
+        <field name="binding_model_id" ref="model_correspondence"/>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
