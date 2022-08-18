@@ -253,10 +253,10 @@ class SponsorshipContract(models.Model):
             contract.last_paid_invoice_date = max(
                 contract.invoice_line_ids.with_context(lang="en_US")
                 .filtered(
-                    lambda l: l.state == "paid"
+                    lambda l: l.payment_state == "paid"
                     and l.product_id.categ_name != GIFT_CATEGORY
                 )
-                .mapped("invoice_id.date_invoice")
+                .mapped("move_id.invoice_date")
                 or [False]
             )
 
@@ -264,7 +264,7 @@ class SponsorshipContract(models.Model):
         gift_contracts = self.filtered(lambda c: c.type == "G")
         for contract in gift_contracts:
             invoices = contract.mapped(
-                "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
+                "contract_line_ids.sponsorship_id.invoice_line_ids.move_id"
             )
             gift_invoices = invoices.filtered(
                 lambda i: i.invoice_category == "gift"
@@ -338,8 +338,8 @@ class SponsorshipContract(models.Model):
             " - COALESCE(due.total, 0) as paidmonth "
             "FROM recurring_contract c left join ("
             # Open invoices to find how many months are due
-            "   select contract_id, count(distinct invoice_id) as total "
-            "   from account_invoice_line l join product_product p on "
+            "   select contract_id, count(distinct move_id) as total "
+            "   from account_move_line l join product_product p on "
             "       l.product_id = p.id "
             "   where state='open' and "
             # Exclude gifts from count
@@ -660,7 +660,7 @@ class SponsorshipContract(models.Model):
         if self.type == "G":
             # Include gifts of related sponsorship for gift contracts
             sponsorship_invoices = self.mapped(
-                "contract_line_ids.sponsorship_id.invoice_line_ids.invoice_id"
+                "contract_line_ids.sponsorship_id.invoice_line_ids.move_id"
             )
             gift_invoices = sponsorship_invoices.filtered(
                 lambda i: i.invoice_category == "gift"
@@ -1074,7 +1074,7 @@ class SponsorshipContract(models.Model):
            If the invoice has only one contract -> cancel
            Else -> draft to modify the invoice and validate
         """
-        invoice_line_obj = self.env["account.invoice.line"]
+        invoice_line_obj = self.env["account.move.line"]
         paid_invl = invoice_line_obj.search(
             [("contract_id", "in", self.ids), ("state", "=", "paid")],
             order="due_date asc",
@@ -1088,7 +1088,7 @@ class SponsorshipContract(models.Model):
             ]
         )
 
-        invoices = invoice_lines.mapped("invoice_id")
+        invoices = invoice_lines.mapped("move_id")
 
         for invoice in invoices:
             invoice_lines = invoice.invoice_line_ids

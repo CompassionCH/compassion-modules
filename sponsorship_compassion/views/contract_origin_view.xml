@@ -34,7 +34,7 @@
                                options="{'create': false, 'm2o_dialog': false}"/>
                         <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner', 'event'))],
                                                           'required': [('type', 'in', ('marketing', 'event'))]}"
-                               domain="[('parent_id.name','=','Campaign')]"/>
+                               domain="[('partner_id.parent_id.name','=','Campaign')]"/>
                         <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
                                                          'required': [('type','=','transfer')]}"/>
                         <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>

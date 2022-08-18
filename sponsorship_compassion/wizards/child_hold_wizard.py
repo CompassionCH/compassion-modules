@@ -15,7 +15,8 @@ class ChildHoldWizard(models.TransientModel):
 
     _inherit = "child.hold.wizard"
 
-    return_action = fields.Selection(selection_add=[("sponsor", "Sponsor the child")])
+    return_action = fields.Selection(selection_add=[("sponsor", "Sponsor the child")],
+                                     ondelete={"sponsor": "set default"})
 
     def _get_action(self, holds):
         action = super()._get_action(holds)

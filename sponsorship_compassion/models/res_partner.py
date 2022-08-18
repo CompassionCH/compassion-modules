@@ -278,14 +278,13 @@ class ResPartner(models.Model):
         action = {
             "name": _("Related invoice lines"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree,form",
             "views": [
                 (self.env.ref(
                     "sponsorship_compassion.view_invoice_line_partner_tree").id,
                  "tree"),
                 (False, "form")],
-            "res_model": "account.invoice.line",
+            "res_model": "account.move.line",
             "target": "current",
             "context": self.with_context(
                 search_default_partner_id=self.ids
@@ -301,7 +300,6 @@ class ResPartner(models.Model):
         action = {
             "name": _("1050 move lines"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree",
             "res_model": "account.move.line",
             "view_id": tree_view_id,
@@ -321,7 +319,6 @@ class ResPartner(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("New Sponsorship"),
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "recurring.contract",
             "target": "current",

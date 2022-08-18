@@ -184,7 +184,7 @@
                 </button>
             </xpath>
             <!-- We want to hide the Sales menu in this context -->
-            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>
+<!--            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>-->
         </field>
     </record>
 </odoo>

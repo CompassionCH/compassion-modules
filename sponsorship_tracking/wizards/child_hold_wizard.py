@@ -19,7 +19,8 @@ class ChildHoldWizard(models.TransientModel):
 
     _inherit = "child.hold.wizard"
 
-    return_action = fields.Selection(selection_add=[("sub", "Make SUB Sponsorship")])
+    return_action = fields.Selection(selection_add=[("sub", "Make SUB Sponsorship")],
+                                     ondelete={"sub": "set default"})
 
     @api.multi
     def send(self):

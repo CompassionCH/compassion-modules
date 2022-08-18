@@ -2,8 +2,8 @@
 <odoo>
     <record id="view_invoice_line_child_tree" model="ir.ui.view">
         <field name="name">account.invoice.line.child.tree</field>
-        <field name="model">account.invoice.line</field>
-        <field name="inherit_id" ref="account.view_invoice_line_tree" />
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree" />
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
@@ -16,8 +16,8 @@
 
     <record id="view_invoice_child_form" model="ir.ui.view">
         <field name="name">account.invoice.child.form</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_form" />
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
             <xpath expr="//tree/field[@name='product_id']" position="attributes">
@@ -33,7 +33,7 @@
 
     <record id="view_invoice_line_partner_tree" model="ir.ui.view">
         <field name="name">account.invoice.line.partner.tree</field>
-        <field name="model">account.invoice.line</field>
+        <field name="model">account.move.line</field>
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
             <tree string="Invoice lines" decoration-info="state == 'draft'" decoration-bf="state in ('proforma','proforma2','open')" decoration-muted="state == 'cancel'">
@@ -52,12 +52,12 @@
 
     <record id="view_invoice_line_compassion_filter" model="ir.ui.view">
         <field name="name">invoice.line.compassion.select</field>
-        <field name="model">account.invoice.line</field>
+        <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <search string="Search invoice lines">
                 <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft invoice lines"/>
-                <filter name="open" string="Open" domain="[('state','=','open')]" help="Open invoice lines"/>
-                <filter name="paid" string="Paid" domain="[('state','=','paid')]" help="Paid invoice lines"/>
+                <filter name="open" string="Open" domain="[('state','=','posted')]" help="Open invoice lines"/>
+                <filter name="paid" string="Paid" domain="[('payment_state','=','paid')]" help="Paid invoice lines"/>
                 <filter name="cancel" string="Cancelled" domain="[('state','=','cancel')]" help="Cancelled invoice lines"/>
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner"/>
@@ -67,7 +67,7 @@
                     <filter name="group_contract" string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
                     <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Last payment" name="last_payment" domain="[]" context="{'group_by':'last_payment'}"/>
-                    <filter string="Invoice" name="invoice" domain="[]" context="{'group_by':'invoice_id'}" />
+                    <filter string="Invoice" name="invoice" domain="[]" context="{'group_by':'move_id'}" />
                 </group>
             </search>
         </field>
@@ -75,19 +75,19 @@
 
     <record model="ir.ui.view" id="invoice_tree_compassion">
         <field name="name">account.invoice.tree.compassion.ch</field>
-        <field name="model">account.invoice</field>
+        <field name="model">account.move</field>
         <field name="inherit_id"
-               ref="account.invoice_tree"/>
-        <field name="arch" type="xml">
-            <field name="state" position="before">
-                <field name="invoice_category"/>
-            </field>
-        </field>
+               ref="account.view_move_tree"/>
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="state" position="before">-->
+<!--                <field name="invoice_category"/>-->
+<!--            </field>-->
+<!--        </field>-->
     </record>
 
     <record id="view_account_invoice_sponsorship_filter" model="ir.ui.view">
         <field name="name">account.invoice.sponsorship.filter</field>
-        <field name="model">account.invoice</field>
+        <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_account_invoice_filter"/>
         <field name="arch" type="xml">
             <field name="date" position="after">
@@ -104,14 +104,14 @@
 
     <!-- View children contained in invoice -->
     <record model="ir.ui.view" id="invoice_tree_sponsorship_compassion">
-        <field name="name">account.invoice.tree.compassion</field>
-        <field name="model">account.invoice</field>
-        <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="name">account.move.tree.compassion</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_tree"/>
         <field name="priority">12</field>
-        <field name="arch" type="xml">
-            <field name="number" position="after">
-                <field name="children"/>
-            </field>
-        </field>
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="number">-->
+<!--                <field name="children"/>-->
+<!--            </field>-->
+<!--        </field>-->
     </record>
 </odoo>
