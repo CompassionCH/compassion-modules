@@ -195,13 +195,11 @@ class SponsorshipContract(models.Model):
         sponsorship_product = self.env["product.template"].search(
             [
                 ("default_code", "=", "sponsorship"),
-                ("company_id", "=", self.env.user.company_id.id),
             ]
         )
         gen_product = self.env["product.template"].search(
             [
                 ("default_code", "=", "fund_gen"),
-                ("company_id", "=", self.env.user.company_id.id),
             ]
         )
 

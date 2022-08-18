@@ -30,7 +30,6 @@ class LastWritingReport(models.Model):
     last_write_date = fields.Date()
     time_to_first_writing = fields.Integer(help="In days")
 
-    @api.model_cr
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         self.env.cr.execute(

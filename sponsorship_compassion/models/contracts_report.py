@@ -37,11 +37,6 @@ class PartnerSponsorshipReport(models.Model):
              "are fully managed or those who are "
              "paid (not the correspondent).",
     )
-
-    sr_nb_b2s_letter = fields.Integer('Number of letters to sponsor',
-                                      compute='_compute_b2s_letter')
-    sr_nb_s2b_letter = fields.Integer('Number of letters to beneficiary',
-                                      compute='_compute_s2b_letter')
     sr_nb_boy = fields.Integer("Number of boys", compute="_compute_boy")
     sr_nb_girl = fields.Integer("Number of girls", compute="_compute_girl")
     sr_time_fcp = fields.Integer(
@@ -62,36 +57,6 @@ class PartnerSponsorshipReport(models.Model):
             sponsorships = partner.sponsorship_ids
             sponsorships |= partner.member_ids.mapped("sponsorship_ids")
             partner.related_sponsorships = sponsorships
-
-    def _compute_s2b_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Supporter To Beneficiary'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_s2b_letter = nb_letter
-
-    def _compute_b2s_letter(self):
-        def get_nb_letter(_partner):
-            return self.env['correspondence'].search_count(
-                [('partner_id', '=', _partner.id),
-                 ('direction', '=', 'Beneficiary To Supporter'),
-                 ('scanned_date', '>', _partner.start_period),
-                 ('scanned_date', '<=', _partner.end_period)])
-
-        for partner in self:
-            nb_letter = get_nb_letter(partner)
-            if partner.is_church:
-                for member in partner.member_ids:
-                    nb_letter += get_nb_letter(member)
-            partner.sr_nb_b2s_letter = nb_letter
 
     def _compute_related_active_sponsorship(self):
         for partner in self:
@@ -169,11 +134,11 @@ class PartnerSponsorshipReport(models.Model):
 
     def _compute_total_donation(self):
         def get_sum_invoice(_partner):
-            invoices = self.env["account.invoice"].search(
+            invoices = self.env["account.move"].search(
                 [
                     ("partner_id", "=", _partner.id),
-                    ("type", "=", "out_invoice"),
-                    ("state", "=", "paid"),
+                    ("move_type", "=", "out_invoice"),
+                    ("payment_state", "=", "paid"),
                     ("invoice_category", "in", ["gift", "sponsorship", "fund"]),
                     ("last_payment", "<", _partner.end_period),
                     ("last_payment", ">", _partner.start_period),
@@ -190,12 +155,12 @@ class PartnerSponsorshipReport(models.Model):
 
     def _compute_total_gift(self):
         def get_nb_gift(_partner):
-            return self.env["account.invoice"].search_count(
+            return self.env["account.move"].search_count(
                 [
                     ("partner_id", "=", _partner.id),
                     ("invoice_category", "=", "gift"),
-                    ("type", "=", "out_invoice"),
-                    ("state", "=", "paid"),
+                    ("move_type", "=", "out_invoice"),
+                    ("payment_state", "=", "paid"),
                     ("last_payment", "<", _partner.end_period),
                     ("last_payment", ">=", _partner.start_period),
                 ]
@@ -214,7 +179,6 @@ class PartnerSponsorshipReport(models.Model):
             "type": "ir.actions.act_window",
             "name": "Sponsorship Report",
             "res_model": "res.partner",
-            "view_type": "form",
             "view_mode": "form",
             "context": self.with_context(
                 form_view_ref="sponsorship_compassion.sponsorship_report_form"
@@ -227,7 +191,7 @@ class PartnerSponsorshipReport(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Donations details",
-            "res_model": "account.invoice.line",
+            "res_model": "account.move.line",
             "views": [
                 [
                     self.env.ref(
@@ -245,9 +209,9 @@ class PartnerSponsorshipReport(models.Model):
                 "|",
                 ("partner_id", "=", self.id),
                 ("partner_id.church_id", "=", self.id),
-                ("invoice_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
-                ("invoice_id.type", "=", "out_invoice"),
-                ("state", "=", "paid"),
+                ("move_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
+                ("move_type", "=", "out_invoice"),
+                ("payment_state", "=", "paid"),
                 ("last_payment", "<", self.end_period),
                 ("last_payment", ">=", self.start_period),
             ],

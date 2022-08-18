@@ -11,7 +11,7 @@ import logging
 
 from odoo import models, fields, _
 from odoo.exceptions import UserError
-from odoo.tools.safe_eval import safe_eval
+from odoo.tools.safe_eval import safe_eval, wrap_module
 
 _logger = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ class FieldToJson(models.Model):
         if self.to_json_conversion:
             res[self.json_name] = safe_eval(
                 self.to_json_conversion,
-                {"odoo_value": odoo_value, "self": self, "fields": fields},
+                {"odoo_value": odoo_value, "self": self, "fields": wrap_module(fields, ["Date", "Datetime"])},
             )
         elif (
                 self.field_id.ttype not in ("boolean", "float", "integer", "monetary")
