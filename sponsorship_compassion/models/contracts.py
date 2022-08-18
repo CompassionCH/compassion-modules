@@ -195,13 +195,11 @@ class SponsorshipContract(models.Model):
         sponsorship_product = self.env["product.template"].search(
             [
                 ("default_code", "=", "sponsorship"),
-                ("company_id", "=", self.env.user.company_id.id),
             ]
         )
         gen_product = self.env["product.template"].search(
             [
                 ("default_code", "=", "fund_gen"),
-                ("company_id", "=", self.env.user.company_id.id),
             ]
         )
 
@@ -605,7 +603,7 @@ class SponsorshipContract(models.Model):
                     )
                     analytic = a_default and a_default.analytic_id
                 if analytic:
-                    invl_data.update({"account_analytic_id": analytic.id})
+                    invl_data.update({"analytic_account_id": analytic.id})
                     a_default = self.env["account.analytic.default"].account_get(
                         product_id, partner_id, date=fields.Date.today()
                     )

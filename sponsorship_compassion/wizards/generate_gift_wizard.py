@@ -153,7 +153,7 @@ class GenerateGiftWizard(models.TransientModel):
             product.id, contract.partner_id.id, date=fields.Date.today()
         )
         if analytic.analytic_id:
-            inv_line_data["account_analytic_id"] = analytic.analytic_id.id
+            inv_line_data["analytic_account_id"] = analytic.analytic_id.id
         if analytic.analytic_tag_ids:
             inv_line_data["analytic_tag_ids"] = [(6, 0, analytic.analytic_tag_ids.ids)]
 
