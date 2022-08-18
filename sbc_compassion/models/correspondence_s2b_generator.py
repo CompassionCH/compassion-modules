@@ -12,8 +12,6 @@ import logging
 from collections import defaultdict
 from io import BytesIO
 
-from odoo.addons.queue_job.job import job, related_action
-
 from odoo import api, fields, models, _
 from odoo.tools.safe_eval import safe_eval
 

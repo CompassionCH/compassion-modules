@@ -74,7 +74,6 @@ class PrivacyStatementAgreement(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Contract",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": self._name,
             "res_id": self.id,
