@@ -35,7 +35,6 @@ class ProjectCompassion(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Sponsorships",
-            "view_type": "form",
             "view_mode": "tree,form",
             "res_model": "recurring.contract",
             "domain": [("id", "in", contract_list.ids)],
