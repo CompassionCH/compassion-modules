@@ -17,7 +17,6 @@ from . import project_compassion
 from . import child_compassion
 from . import product_names
 from . import account_invoice
-from . import product_template
 from . import contract_origin
 from . import product
 from . import recurring_contract_line
