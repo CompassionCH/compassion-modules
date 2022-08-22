@@ -42,6 +42,7 @@
         "web_m2x_options",  # oca/web
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
+        "sale",
     ],
     "data": [
         "views/sponsorship_contract_view.xml",
