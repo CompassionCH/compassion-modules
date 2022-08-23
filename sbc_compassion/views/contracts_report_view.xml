@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_contracts_report" model="ir.ui.view">
+        <field name="name">Contracts Report View</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="sponsorship_compassion.sponsorship_report_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sr_total_donation']" position="before">
+                <field name="sr_nb_b2s_letter"/>
+                <field name="sr_nb_s2b_letter"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

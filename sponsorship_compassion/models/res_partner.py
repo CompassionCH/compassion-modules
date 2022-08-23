@@ -117,7 +117,7 @@ class ResPartner(models.Model):
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
-            ).ids
+            ).contract_line_ids.contract_id
             partner.contracts_paid = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
@@ -125,7 +125,7 @@ class ResPartner(models.Model):
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
-            ).ids
+            ).contract_line_ids.contract_id
             partner.contracts_fully_managed = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
@@ -133,16 +133,17 @@ class ResPartner(models.Model):
                     ("fully_managed", "=", True),
                 ],
                 order="start_date desc",
-            ).ids
+            ).contract_line_ids.contract_id
             partner.sponsorship_ids = (
                 partner.contracts_correspondant
                 + partner.contracts_paid
                 + partner.contracts_fully_managed
             )
-            partner.other_contract_ids = contract_obj.search(
-                [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC", "SWP"])],
-                order="start_date desc",
-            ).ids
+            partner.other_contract_ids = False #contract_obj.search(
+        #        [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC", "SWP"])],
+        #        order="start_date desc",
+        #    ).ids
+
 
     def _compute_count_items(self):
         move_line_obj = self.env["account.move.line"]

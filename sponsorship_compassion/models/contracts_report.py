@@ -37,6 +37,7 @@ class PartnerSponsorshipReport(models.Model):
              "are fully managed or those who are "
              "paid (not the correspondent).",
     )
+
     sr_nb_boy = fields.Integer("Number of boys", compute="_compute_boy")
     sr_nb_girl = fields.Integer("Number of girls", compute="_compute_girl")
     sr_time_fcp = fields.Integer(
