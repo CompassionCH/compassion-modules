@@ -53,7 +53,7 @@ class AccountInvoice(models.Model):
             )
             invoice.last_payment = max(payment_dates or [False])
 
-    @api.depends("line_ids", "state", "line_ids.product_id")
+    @api.depends("line_ids", "payment_state", "line_ids.product_id")
     def _compute_invoice_category(self):
         sponsorship_cat = self.env.ref(
             "sponsorship_compassion.product_category_sponsorship", False
