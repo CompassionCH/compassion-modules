@@ -24,10 +24,6 @@
                             <field name="sr_nb_bible"/>
                             <field name="sr_nb_medic_check"/>
                         </group>
-                        <group string="During the last 12 months">
-                            <field name="sr_total_donation" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                            <field name="sr_total_gift"/>
-                        </group>
                     </group>
                 </sheet>
             </form>

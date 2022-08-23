@@ -199,11 +199,16 @@ class CompassionMappedModel(models.AbstractModel):
             search_count = relation_obj.search_count(search_vals)
             # if not exist, then create it
             if not search_count:
-                value_record = (
-                    relation_obj.create({field_name: value, "value": value})
-                )
                 if not hasattr(relation_obj, "value"):
+                    value_record = (
+                        relation_obj.create({field_name: value})
+                    )
                     return
+                else:
+                    value_record = (
+                        relation_obj.create({field_name: value, "value": value})
+                    )
+
                 # fetch translations for connect.multipicklist values
                 must_manually_translate = False
                 for lang_literal, lang_context in languages_map.items():
