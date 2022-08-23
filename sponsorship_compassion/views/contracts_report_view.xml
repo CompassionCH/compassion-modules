@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record model="ir.ui.view"
-            id="sponsorship_report_form">
+    <record model="ir.ui.view" id="sponsorship_report_form">
         <field name="name">Sponsorship Report Form View</field>
         <field name="model">res.partner</field>
-        <field name="arch"
-               type="xml">
+        <field name="arch" type="xml">
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

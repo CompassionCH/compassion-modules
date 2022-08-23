@@ -135,6 +135,9 @@ class GenericChild(models.AbstractModel):
         preferred_name = odoo_data.get("preferred_name")
         if not preferred_name:
             odoo_data["preferred_name"] = odoo_data.get("firstname")
+        if 'hold_expiration_date' in odoo_data:
+            odoo_data['hold_expiration_date'] = odoo_data['hold_expiration_date'].replace('T', ' ')
+            odoo_data['hold_expiration_date'] = odoo_data['hold_expiration_date'].replace('Z', '')
         return odoo_data
 
     def _load_image(self, thumb=False, binar=False):

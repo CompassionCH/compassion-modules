@@ -63,6 +63,7 @@
         "views/get_letter_image_wizard_view.xml",
         "views/correspondence_s2b_generator_view.xml",
         "views/last_writing_report_view.xml",
+        "views/contracts_report_view.xml",
         "data/correspondence_template_data.xml",
         "data/correspondence_type.xml",
         "data/child_layouts.xml",
