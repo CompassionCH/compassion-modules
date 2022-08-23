@@ -47,7 +47,7 @@ class OnrampConnector(object):
                 OnrampConnector.__instance._connect_url = connect_url
                 OnrampConnector.__instance._api_key = api_key
                 session = requests.Session()
-                session.params.update({"api_key": api_key, "gpid": "CH"})
+                session.params.update({"api_key": api_key, "gpid": config.get('connect_gpid')})
                 OnrampConnector.__instance._session = session
             else:
                 raise UserError(
