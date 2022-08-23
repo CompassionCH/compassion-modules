@@ -166,13 +166,12 @@
 
         </field>
     </record>
-    <record id="compassion_partner_view_buttons" model="ir.ui.view">
-        <!--pylint:disable=dangerous-view-replace-wo-priority-->
+    <!--   <record id="compassion_partner_view_buttons" model="ir.ui.view">
         <field name="name">compassion.partner.view.buttons</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="sale.res_partner_view_buttons" />
-        <field name="arch" type="xml">
-            <!-- to change icone of smart button, you can find tag here:http://fortawesome.github.io/Font-Awesome/icons/ -->
+		-   <field name="inherit_id" ref="sale.res_partner_view_buttons" />
+	-   <field name="arch" type="xml">
+             to change icone of smart button, you can find tag here:http://fortawesome.github.io/Font-Awesome/icons/ >
             <xpath expr="//div[@name='button_box']/button[1]" position="before">
                 <button name="unreconciled_transaction_items" type='object' groups="account.group_account_user" class="oe_inline oe_stat_button"
                         icon="fa-exchange">
@@ -183,8 +182,8 @@
                     <field name="receivable_items" string="1050 Items" widget="statinfo"/>
                 </button>
             </xpath>
-            <!-- We want to hide the Sales menu in this context -->
-<!--            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>-->
-        </field>
-    </record>
+            - We want to hide the Sales menu in this context 
+-            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>
+	</field> >
+    </record> -->
 </odoo>

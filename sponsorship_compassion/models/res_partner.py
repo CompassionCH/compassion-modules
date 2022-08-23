@@ -139,10 +139,11 @@ class ResPartner(models.Model):
                 + partner.contracts_paid
                 + partner.contracts_fully_managed
             )
-            partner.other_contract_ids = contract_obj.search(
-                [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC", "SWP"])],
-                order="start_date desc",
-            ).contract_line_ids.contract_id
+            partner.other_contract_ids = False #contract_obj.search(
+        #        [("partner_id", "=", partner.id), ("type", "not in", ["S", "SC", "SWP"])],
+        #        order="start_date desc",
+        #    ).ids
+
 
     def _compute_count_items(self):
         move_line_obj = self.env["account.move.line"]

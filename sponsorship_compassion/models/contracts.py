@@ -603,7 +603,8 @@ class SponsorshipContract(models.Model):
                     )
                     analytic = a_default and a_default.analytic_id
                 if analytic:
-                    invl_data.update({"account_id": analytic.id})
+
+                    invl_data.update({"analytic_account_id": analytic.id})
                     a_default = self.env["account.analytic.default"].account_get(
                         product_id, partner_id, date=fields.Date.today()
                     )
