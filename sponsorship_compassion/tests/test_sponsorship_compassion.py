@@ -433,9 +433,9 @@ class TestSponsorship(BaseSponsorshipTest):
         invoices = sponsorship1.button_generate_invoices().invoice_ids
         for invoice in reversed(invoices):
             self._pay_invoice(invoice)
-            invoiced = self.env["account.invoice"].browse(invoice.id)
+            invoiced = self.env["account.move"].browse(invoice.id)
             self.assertEqual(invoiced.amount_total, total_price)
-            self.assertEqual(invoiced.state, "paid")
+            self.assertEqual(invoiced.payment_state, "paid")
         child3.child_departed()
         self.assertEqual(child3.state, "F")
         self.assertEqual(child3.sponsor_id.id, False)
