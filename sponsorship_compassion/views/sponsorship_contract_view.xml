@@ -158,6 +158,7 @@
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
                 <field name="child_code" />
+                <field name="company_id" groups="base.group_multi_company" />
             </field>
             <field name="reference" position="replace" />
         </field>
