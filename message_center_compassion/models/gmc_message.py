@@ -157,7 +157,6 @@ class GmcMessage(models.Model):
                 "type": "ir.actions.act_window",
                 "res_model": self.action_id.model,
                 "res_id": self.object_id,
-                "view_type": "form",
                 "view_mode": "form",
             }
         else:
@@ -168,7 +167,6 @@ class GmcMessage(models.Model):
                 "type": "ir.actions.act_window",
                 "res_model": self.action_id.model,
                 "domain": [("id", "in", res_ids)],
-                "view_type": "form",
                 "view_mode": "tree,form",
             }
 

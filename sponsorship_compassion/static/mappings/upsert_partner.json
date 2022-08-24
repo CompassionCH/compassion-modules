@@ -29,7 +29,7 @@
       "field": "lastname"
     },
     "GlobalPartner": {
-      "to_json_conversion": "'Compassion Switzerland'"
+      "to_json_conversion": "config.get('connect_gpname')"
     },
     "Status": {
       "to_json_conversion": "'Active'"
