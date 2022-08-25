@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add a gift shortcut -->
+    <record id="view_sponsorship_contract_gift_form" model="ir.ui.view">
+        <field name="name">sponsorship.contract.gift.form</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"/>
+        <field name="arch" type="xml">
+            <button name="open_invoices" position="after">
+                <button name="open_gifts" type="object" class="oe_inline oe_stat_button" icon="fa-gift">
+                    <field string="Gifts" name="number_gifts" widget="statinfo"/>
+                </button>
+            </button>
+        </field>
+    </record>
+</odoo>
