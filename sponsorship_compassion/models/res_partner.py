@@ -12,6 +12,7 @@ import random
 import string
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools.config import config
 
 
 # For more flexibility we have split "res.partner" by functionality

@@ -37,7 +37,7 @@ class SBCConnector(OnrampConnector):
                 SBCConnector.__instance._connect_url = connect_url
                 SBCConnector.__instance._api_key = api_key
                 session = requests.Session()
-                session.params.update({"api_key": api_key, "gpid": "CH"})
+                session.params.update({"api_key": api_key, "gpid": config.get('connect_gpid')})
                 SBCConnector.__instance._session = session
             else:
                 raise UserError(
