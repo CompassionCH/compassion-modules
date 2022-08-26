@@ -9,7 +9,7 @@
 ##############################################################################
 
 from odoo import api, fields, models
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 
 
 class CollectGiftWizard(models.TransientModel):
@@ -23,7 +23,7 @@ class CollectGiftWizard(models.TransientModel):
     )
     domain = fields.Char(
         default="[('product_id.name', '=', 'Child gift'),"
-                " ('state', '=', 'paid'),"
+                " ('payment_state', '=', 'paid'),"
                 " ('gift_id', '=', False)]"
     )
 
