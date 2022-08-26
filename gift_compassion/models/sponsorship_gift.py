@@ -57,7 +57,7 @@ class SponsorshipGift(models.Model):
         readonly=False,
     )
     invoice_line_ids = fields.One2many(
-        "account.invoice.line", "gift_id", string="Invoice lines", readonly=True
+        "account.move.line", "gift_id", string="Invoice lines", readonly=True
     )
     payment_id = fields.Many2one(
         "account.move", "GMC Payment", copy=False, readonly=False
@@ -256,7 +256,7 @@ class SponsorshipGift(models.Model):
     def _search_for_similar_pending_gifts(self, vals):
         gift_date = vals.get("gift_date")
         if not gift_date:
-            invl = self.env["account.invoice.line"]
+            invl = self.env["account.move.line"]
             dates = []
             default = fields.Date.today()
             for invl_write in vals.get("invoice_line_ids", [[3]]):

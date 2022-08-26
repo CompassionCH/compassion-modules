@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sponsorship_gift,Full access on sponsorship gifts,model_sponsorship_gift,child_compassion.group_sponsorship,1,1,1,1
 access_gift_threshold,Read access on gift thresholds,model_gift_threshold_settings,child_compassion.group_sponsorship,1,0,0,0
 access_gift_threshold_admin,Full access on gift thresholds,model_gift_threshold_settings,child_compassion.group_manager,1,1,1,1
+access_gift_collect_wizard,access_gift_collect_wizard,model_gift_collect_wizard,child_compassion.group_manager,1,1,1,1
