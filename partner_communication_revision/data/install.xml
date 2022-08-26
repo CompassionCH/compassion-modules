@@ -1,0 +1,5 @@
+<odoo>
+    <data noupdate="1">
+        <function name="install" model="partner.communication.revision.install"/>
+    </data>
+</odoo>

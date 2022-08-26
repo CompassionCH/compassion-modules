@@ -1,0 +1,30 @@
+<odoo>
+    <record model="ir.ui.view" id="validate_revision_wizard_form">
+        <field name="name">communication.validate.proposition.wizard.form</field>
+        <field name="model">partner.communication.validate.proposition</field>
+        <field name="arch" type="xml">
+            <form>
+                <h3>Well done!</h3>
+                <field name="translation_revision_id" invisible="1"/>
+                <div attrs="{'invisible': [('translation_revision_id', '=', False)]}">
+                    <p>Now you can select responsible people for the translations.</p>
+                    <group>
+                        <field name="lang"/>
+                        <field name="translator_user_id" attrs="{'required': [('translation_revision_id', '!=', False)]}"/>
+                    </group>
+                </div>
+                <footer>
+                    <button string="Set translator" class="oe_highlight" type="object" name="set_translator" attrs="{'invisible': [('translation_revision_id', '=', False)]}"/>
+                    <button string="Approve text" class="oe_highlight" type="object" name="approve" attrs="{'invisible': [('translation_revision_id', '!=', False)]}"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_validate_proposition" model="ir.actions.act_window">
+        <field name="name">New proposition</field>
+        <field name="res_model">partner.communication.validate.proposition</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

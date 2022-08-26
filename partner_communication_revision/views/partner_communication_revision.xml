@@ -1,0 +1,8 @@
+<!--pylint:disable=file-not-used-->
+<odoo>
+    <template id="assets_backend" name="partner_communication_revision assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/partner_communication_revision/static/src/js/communication_revision.js"></script>
+        </xpath>
+    </template>
+</odoo>
