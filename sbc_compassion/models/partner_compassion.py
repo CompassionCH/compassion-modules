@@ -30,9 +30,6 @@ class ResPartner(models.Model):
     nb_letters = fields.Integer(
         compute="_compute_nb_letters", groups="child_compassion.group_sponsorship"
     )
-    translated_letter_ids = fields.One2many(
-        "correspondence", "translator_id", "Translated letters", readonly=False
-    )
     last_writing_date = fields.Date(compute="_compute_last_writing_date")
 
     @api.multi
