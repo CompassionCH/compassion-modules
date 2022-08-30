@@ -18,7 +18,6 @@ class SponsorshipLine(models.Model):
     _inherit = "recurring.contract.line"
 
     contract_type = fields.Selection(
-        [("G", "Child Gift"), ("S", "Sponsorship"), ("SC", "Correspondence"), ("SWP", "Write&Pray")],
         related="contract_id.type",
         readonly=True,
     )

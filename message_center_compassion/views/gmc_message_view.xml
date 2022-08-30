@@ -141,21 +141,16 @@
             <search>
                 <field name="action_id"/>
                 <field name="partner_id"/>
-                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]"
-                        context="{'group_by':'action_id'}"/>
-                <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]"
-                        context="{'group_by':'action_id'}"/>
+                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]"/>
+                <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]"/>
                 <separator/>
                 <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]"/>
                 <filter string="Failed" name="failure" domain="[('state','in',('failure','odoo_failure'))]"/>
                 <filter string="Success" name="success" domain="[('state','=','success')]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Status" name="status" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Date" name="date" domain="[]" context="{'group_by':'date'}"/>
-                    <filter string="Process Date" name="process_date" domain="[]"
-                            context="{'group_by':'process_date'}"/>
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Message Type" name="message_type" domain="[]" context="{'group_by':'action_id'}"/>
+                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'action_id'}"/>
                 </group>
             </search>
         </field>
@@ -180,7 +175,7 @@
         <field name="res_model">gmc.message</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_incoming': 1, 'search_default_pending': 1,
-                               'search_default_failure': 1}</field>
+                               'search_default_failure': 1, 'search_default_group_type': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -194,7 +189,7 @@
         <field name="res_model">gmc.message</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{'search_default_outgoing': 1, 'search_default_pending': 1,
-                               'search_default_failure': 1}</field>
+                               'search_default_failure': 1, 'search_default_group_type': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -223,7 +218,7 @@
               sequence="1"/>
     <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
     <menuitem id="menu_message_outgoing_all" parent="menu_message_outgoing" action="action_gmc_message_outgoing_form"
-              sequence="2"/>
+              sequence="20"/>
     <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="group_gmc_manager"/>
     <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
     <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
@@ -251,5 +246,7 @@
         <field name="res_model">gmc.message.process</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="binding_model_id" ref="model_gmc_message"/>
+        <field name="binding_view_types">list</field>
     </record>
 </odoo>

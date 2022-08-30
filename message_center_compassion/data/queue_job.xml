@@ -6,7 +6,7 @@
     </record>
 
     <!-- Job functions -->
-    <record id="unlink_job" model="queue.job.function">
+    <record id="process_message_job" model="queue.job.function">
         <field name="model_id" ref="model_gmc_message"/>
         <field name="method">_process_messages</field>
         <field name="channel_id" ref="channel_gmc_pool"/>

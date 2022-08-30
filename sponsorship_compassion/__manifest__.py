@@ -45,9 +45,9 @@
         "sale",
     ],
     "data": [
-        "views/sponsorship_contract_view.xml",
         "views/invoice_line_view.xml",
         "views/res_partner_view.xml",
+        "views/sponsorship_contract_view.xml",
         "views/privacy_statement.xml",
         "views/generate_gift_view.xml",
         "views/account_invoice_split_wizard_view.xml",
@@ -73,6 +73,7 @@
         "security/ir.model.access.csv",
         "security/security.xml",
         "views/product_views.xml",
+        "views/res_config_settings_view.xml",
     ],
     "demo": ["demo/demo_data.xml", ],
     "installable": True,

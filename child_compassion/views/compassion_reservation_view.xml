@@ -13,15 +13,15 @@
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="buttons">
+                        <button name="show_reserved_children" type="object" icon="fa-child" class="oe_stat_button">
+                            <field name="number_reserved" widget="statinfo" string="Allocated children"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="reservation_id" />
                         </h1>
-                    </div>
-                    <div class="oe_right oe_button_box" name="buttons">
-                        <button name="show_reserved_children" type="object" icon="fa-child" class="oe_stat_button">
-                            <field name="number_reserved" widget="statinfo" string="Allocated children"/>
-                        </button>
                     </div>
                     <group>
                         <group>

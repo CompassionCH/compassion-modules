@@ -36,7 +36,6 @@
     "website": "http://www.compassion.ch",
     "development_status": "Stable",
     "depends": [
-        "mail_tracking",  # social/mail_tracking
         "message_center_compassion",
         "advanced_translation",
     ],

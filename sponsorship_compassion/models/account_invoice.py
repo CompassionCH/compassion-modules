@@ -29,7 +29,6 @@ class AccountInvoice(models.Model):
         ],
         compute="_compute_invoice_category",
         store=True,
-        oldname="invoice_type"
     )
 
     def _compute_children(self):

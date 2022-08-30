@@ -24,12 +24,20 @@ class ResPartner(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
+    portal_sponsorships = fields.Selection([
+            ("all", "All (partner is the correspondent and/or the payer)"),
+            ("all_info", "All + correspondence info shown to payer only."),
+            ("correspondent", "Correspondent (Children the partner corresponds with)"),
+        ],
+        "Sponsorships accessible from the portal",
+        default="correspondent",
+        required=True,
+    )
     global_id = fields.Char(copy=False, readonly=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Fully managed sponsorships",
-        order="state asc",
     )
     contracts_paid = fields.One2many(
         "recurring.contract",
@@ -45,44 +53,34 @@ class ResPartner(models.Model):
         "recurring.contract",
         compute="_compute_related_contracts",
     )
-    mandatory_review = fields.Boolean(
-        help="Indicates that we should review the letters of this sponsor "
-             "before sending them to GMC.",
-    )
     other_contract_ids = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Other contracts",
     )
     unrec_items = fields.Integer(
-        compute="_compute_count_items", groups="child_compassion.group_sponsorship"
+        compute="_compute_count_items"
     )
     receivable_items = fields.Integer(
-        compute="_compute_count_items", groups="child_compassion.group_sponsorship"
+        compute="_compute_count_items"
     )
     has_sponsorships = fields.Boolean()
     number_sponsorships = fields.Integer(
         string="Number of sponsorships", copy=False
-    )
-    send_original = fields.Boolean(
-        help="Indicates that we request the original letters for this sponsor",
     )
     preferred_name = fields.Char()
     sponsored_child_ids = fields.One2many(
         "compassion.child",
         "sponsor_id",
         "Sponsored children",
-        groups="child_compassion.group_sponsorship",
         readonly=False,
     )
     number_children = fields.Integer(
         string="Number of children", related="number_sponsorships",
-        groups="child_compassion.group_sponsorship"
     )
     privacy_statement_ids = fields.One2many(
         "privacy.statement.agreement",
         "partner_id",
-        groups="child_compassion.group_sponsorship",
         copy=False,
         readonly=False,
     )
@@ -261,8 +259,6 @@ class ResPartner(models.Model):
             "lastname",
             "name",
             "preferred_name",
-            "mandatory_review",
-            "send_original",
             "title",
         ]
         notify = functools.reduce(
@@ -361,7 +357,6 @@ class ResPartner(models.Model):
             "type": "ir.actions.act_window",
             "name": "Children",
             "res_model": "compassion.child",
-            "view_type": "form",
             "view_mode": "tree,form",
             "domain": [("id", "in", children.ids)],
         }
@@ -409,7 +404,7 @@ class ResPartner(models.Model):
                 "firstname": False,
                 "preferred_name": False,
                 "parent_id": False,
-                "image": False,
+                "image_1920": False,
                 "phone": False,
                 "mobile": False,
                 "email": False,
@@ -482,3 +477,22 @@ class ResPartner(models.Model):
             del connect_data["GlobalID"]
 
         return connect_data
+
+    def get_portal_sponsorships(self, states=None):
+        """
+        Returns the sponsorships that can be displayed in the portal for the sponsor.
+        :param states: Optional desired states of sponsorships displayed
+        :return: recurring.contract recordset
+        """
+        self.ensure_one()
+        if self.portal_sponsorships in ["all", "all_info"]:
+            sponsorships = self.sponsorship_ids
+        else:
+            sponsorships = (
+                    self.contracts_correspondant + self.contracts_fully_managed
+            )
+        if states is not None:
+            if not isinstance(states, list):
+                states = [states]
+            sponsorships = sponsorships.filtered(lambda s: s.state in states)
+        return sponsorships

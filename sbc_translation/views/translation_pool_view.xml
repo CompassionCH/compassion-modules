@@ -1,0 +1,80 @@
+<odoo>
+    <record id="view_translation_competence_tree" model="ir.ui.view">
+        <field name="name">translation.competence.tree</field>
+        <field name="model">translation.competence</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="source_language_id"/>
+                <field name="dest_language_id"/>
+                <field name="number_current_letters"/>
+                <field name="number_translators"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_translation_competence_form" model="ir.ui.view">
+        <field name="name">translation.competence.form</field>
+        <field name="model">translation.competence</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="source_language_id"/>
+                        </group>
+                        <group>
+                            <field name="dest_language_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="translation_competence_kanban" model="ir.ui.view">
+        <field name="name">translation.competence.kanban</field>
+        <field name="model">translation.competence</field>
+        <field name="arch" type="xml">
+            <kanban default_order="number_current_letters desc">
+                <field name="name"/>
+                <field name="number_current_letters"/>
+                <field name="number_translators"/>
+                <field name="number_active_translators"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="o_primary">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <a type="action" name="%(sbc_translation.action_letters_kanban)d" context="{'search_default_translation_competence_id': active_id, 'search_default_group_translation_status': 1}">
+                                <br/>
+                                <span>Letters in translation: </span>
+                                <field name="number_current_letters"/>
+                            </a>
+                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id}">
+                                <br/>
+                                <span>Total translators: </span>
+                                <field name="number_translators"/>
+                            </a>
+                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id, 'search_default_translated_this_year': 1}">
+                                <br/>
+                                <span>Translators active this year: </span>
+                                <field name="number_active_translators"/>
+                            </a>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_compassion_translation_competence_form" model="ir.actions.act_window">
+        <field name="name">Competences</field>
+        <field name="res_model">translation.competence</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="menu_translation_pool" parent="menu_translation_platform" name="Translation Pool" action="action_letters_kanban" sequence="1"/>
+    <menuitem id="menu_translation_competence" parent="menu_translation_platform" name="Competences" action="action_compassion_translation_competence_form" sequence="3"/>
+</odoo>

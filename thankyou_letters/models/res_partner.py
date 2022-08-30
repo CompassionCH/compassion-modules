@@ -71,7 +71,7 @@ class ResPartner(models.Model):
                 res = t_partner.title.shortcut + " "
                 if partner.firstname:
                     res += partner.firstname + " "
-                res += partner.lastname + "<br/>"
+                res += (partner.lastname or '') + "<br/>"
             res += t_partner.contact_address
             partner.short_address = p.sub("<br/>", res)
 

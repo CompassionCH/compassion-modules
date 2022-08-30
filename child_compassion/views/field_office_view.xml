@@ -5,16 +5,16 @@
         <field name="name">compassion.field.office.form</field>
         <field name="model">compassion.field.office</field>
         <field name="arch" type="xml">
-            <form string="Field Office">
+            <form>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                    </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>
                             <field name="name"/>
                         </h1>
-                    </div>
-                    <div class="oe_right oe_button_box" name="button_box">
-                        <button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                     </div>
                     <group>
                         <group>

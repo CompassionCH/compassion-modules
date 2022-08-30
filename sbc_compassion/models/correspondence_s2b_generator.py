@@ -61,7 +61,6 @@ class CorrespondenceS2bGenerator(models.Model):
              "* %age%: child age (1, 2, 3, ...)\n"
              "* %firstname%: sponsor firstname\n"
              "* %lastname%: sponsor lastname\n",
-        oldname="body_html",
     )
     letter_ids = fields.One2many(
         "correspondence", "generator_id", "Letters", readonly=False

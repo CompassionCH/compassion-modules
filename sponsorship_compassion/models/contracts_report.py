@@ -50,7 +50,7 @@ class PartnerSponsorshipReport(models.Model):
     sr_nb_medic_check = fields.Integer(
         "Number of given medical checks", compute="_compute_medic_check"
     )
-    sr_total_donation = fields.Monetary("Invoices", compute="_compute_total_donation")
+    sr_total_donation = fields.Monetary("Total donations", compute="_compute_total_donation")
     sr_total_gift = fields.Integer("Gift", compute="_compute_total_gift")
 
     def _compute_related_sponsorship(self):
@@ -196,7 +196,7 @@ class PartnerSponsorshipReport(models.Model):
             "views": [
                 [
                     self.env.ref(
-                        "sponsorship_compassion" ".view_invoice_line_partner_tree"
+                        "sponsorship_compassion.view_invoice_line_partner_tree"
                     ).id,
                     "list",
                 ]
@@ -211,7 +211,7 @@ class PartnerSponsorshipReport(models.Model):
                 ("partner_id", "=", self.id),
                 ("partner_id.church_id", "=", self.id),
                 ("move_id.invoice_category", "in", ["gift", "sponsorship", "fund"]),
-                ("move_type", "=", "out_invoice"),
+                ("move_id.move_type", "=", "out_invoice"),
                 ("payment_state", "=", "paid"),
                 ("last_payment", "<", self.end_period),
                 ("last_payment", ">=", self.start_period),

@@ -12,7 +12,7 @@
                      class="app_settings_block"
                      data-string="Compassion"
                      string="Compassion"
-                     data-key="compassion">
+                     data-key="sponsorship_compassion">
                 </div>
             </xpath>
         </field>

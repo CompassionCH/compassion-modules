@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino
 #
@@ -9,8 +9,7 @@
 ##############################################################################
 import base64
 import logging
-import urllib.error
-import urllib.request
+import requests
 from io import BytesIO
 from zipfile import ZipFile
 
@@ -20,11 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class DownloadChildPictures(models.TransientModel):
-    """
-    Utility to select multiple letters and download the attachments
-    as a zip archive.
-    """
-
     _name = "child.pictures.download.wizard"
     _description = "Child Picture Download Wizard"
 
@@ -35,10 +29,11 @@ class DownloadChildPictures(models.TransientModel):
     type = fields.Selection(
         [("headshot", "Headshot"), ("fullshot", "Fullshot")], default="headshot"
     )
+    child_ids = fields.Many2many("compassion.child", default=lambda s: s._get_children())
     height = fields.Integer()
     width = fields.Integer()
     download_data = fields.Binary(readonly=True)
-    preview = fields.Binary(compute="_compute_preview")
+    preview = fields.Char(compute="_compute_preview", store=True)
     information = fields.Text(readonly=True)
 
     ##########################################################################
@@ -62,13 +57,10 @@ class DownloadChildPictures(models.TransientModel):
 
     def get_pictures(self):
         """ Create the zip archive from the selected letters. """
-        children = self._get_children()
-
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, "w") as zip_data:
             found = 0
-
-            for child in children.filtered("image_url"):
+            for child in self.child_ids.filtered("image_url"):
                 child_code = child.local_id
                 url = self.get_picture_url(
                     raw_url=child.image_url,
@@ -76,16 +68,10 @@ class DownloadChildPictures(models.TransientModel):
                     height=self.height,
                     width=self.width,
                 )
-                try:
-                    data = base64.encodestring(urllib.request.urlopen(url).read())
-                except urllib.error.URLError:
-                    # Not good, the url doesn't lead to an image
-                    logger.error("Image cannot be fetched: " + str(url))
-                    continue
+                data = base64.encodebytes(requests.get(url).content)
 
                 _format = url.split(".")[-1]
-                sponsor_ref = child.sponsor_ref
-                fname = sponsor_ref + "_" + child_code + "." + _format
+                fname = f"{child.sponsor_ref or ''}_{child_code}.{_format}"
 
                 zip_data.writestr(fname, base64.b64decode(data))
                 found += 1
@@ -98,7 +84,6 @@ class DownloadChildPictures(models.TransientModel):
         self._check_picture_availability()
         return {
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_id": self.id,
             "res_model": self._name,
@@ -106,11 +91,7 @@ class DownloadChildPictures(models.TransientModel):
             "target": "new",
         }
 
-    _height_change = 0
-    _width_change = 0
-
-    @api.onchange("type")  # if these fields are changed,
-    # call method
+    @api.onchange("type")
     def _type_onchange(self):
         if self.type == "headshot":
             self.height = 400
@@ -118,51 +99,19 @@ class DownloadChildPictures(models.TransientModel):
         else:
             self.height = 1200
             self.width = 800
-        self._height_change += 1
-        self._width_change += 1
-        self._compute_preview()
 
-    @api.onchange("height")  # if these fields are changed,
-    # call method
-    def _height_onchange(self):
-        if self._height_change == 0:
-            if self.type == "fullshot":
-                self.width = round(self.height * 800 // 1200)
-                self._width_change += 1
-            self._compute_preview()
-        else:
-            self._height_change -= 1
-
-    @api.onchange("width")  # if these fields are changed,
-    # call method
-    def _width_onchange(self):
-        if self._width_change == 0:
-            if self.type == "fullshot":
-                self.height = round(self.width * 1200 // 800)
-                self._height_change += 1
-            self._compute_preview()
-        else:
-            self._width_change -= 1
-
+    @api.depends("height", "width")
     def _compute_preview(self):
-        children = self._get_children()
-
-        for child in children.filtered("image_url"):
-            url = child.image_url
-            try:
-                url = self.get_picture_url(url, self.type, self.width, self.height)
-                self.preview = base64.encodestring(
-                    urllib.request.urlopen(url[0]).read()
-                )
+        for child in self.child_ids.filtered("image_url"):
+            self.preview = self.get_picture_url(child.image_url, self.type, self.width, self.height)
+            if self.preview:
                 break
-            except:
-                logger.error("Image cannot be fetched : " + url)
+        else:
+            self.preview = False
 
     def _check_picture_availability(self):
-        children = self._get_children()
-
         # Search children having a 'image_url' returning False
-        children_with_no_url = children.filtered(lambda c: not c.image_url)
+        children_with_no_url = self.child_ids.filtered(lambda c: not c.image_url)
         # If there is some, we will print their corresponding childe_code
         if children_with_no_url:
             child_codes = children_with_no_url.mapped("local_id")
@@ -172,15 +121,12 @@ class DownloadChildPictures(models.TransientModel):
             )
 
         # Now we want children having an invalid 'image_url'.
-        # To find them, we have to try to open their url and catch exceptions.
         children_with_invalid_url = []
-        for child in children.filtered("image_url"):
+        for child in self.child_ids.filtered("image_url"):
             url = self.get_picture_url(
                 raw_url=child.image_url, pic_type="fullshot", height=1, width=1
             )
-            try:
-                urllib.request.urlopen(url)
-            except urllib.error.URLError:
+            if not requests.get(url).content:
                 # Not good, the url doesn't lead to an image
                 children_with_invalid_url += [child.local_id]
         if children_with_invalid_url:
@@ -189,30 +135,16 @@ class DownloadChildPictures(models.TransientModel):
             )
 
     def _get_children(self):
-        context = self.env.context["active_model"]
-        if context == "res.partner":
-            partners = self.env[context].browse(self.env.context["active_ids"])
-            contracts = self.env["recurring.contract"].search(
-                [
-                    "|",
-                    ("correspondent_id", "in", partners.ids),
-                    ("partner_id", "in", partners.ids),
-                    ("type", "in", ["S", "SC", "SWP"]),
-                    ("state", "!=", "cancelled"),
-                ]
-            )
-        elif context == "recurring.contract":
-            contracts = self.env[context].browse(self.env.context["active_ids"])
-
-        elif context == "compassion.child":
-            childrens = self.env[context].browse(self.env.context["active_ids"])
-            contracts = self.env["recurring.contract"].search(
-                [
-                    ("child_id", "in", childrens.ids),
-                    ("type", "in", ["S", "SC", "SWP"]),
-                    ("state", "!=", "cancelled"),
-                ]
-            )
-
-        children = contracts.mapped("child_id")
+        res_model = self.env.context.get("active_model")
+        res_ids = self.env.context.get("active_ids")
+        children = self.env["compassion.child"]
+        if not res_model or not res_ids:
+            return children
+        res_obj = self.env[res_model].browse(res_ids)
+        if res_model == "res.partner":
+            children = res_obj.mapped("sponsored_child_ids")
+        elif res_model == "recurring.contract":
+            children = res_obj.mapped("child_id")
+        elif res_model == "compassion.child":
+            children = res_obj
         return children
