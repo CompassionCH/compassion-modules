@@ -67,12 +67,12 @@ class CompassionChild(models.Model):
             ("P", "Sponsored"),
             ("F", "Departed"),
             ("R", "Released"),
-            ("S", "For SMS"),
         ],
         readonly=True,
         required=True,
         tracking=True,
         default="W",
+        index=True
     )
     is_available = fields.Boolean(compute="_compute_available")
     sponsor_id = fields.Many2one(
@@ -364,7 +364,6 @@ class CompassionChild(models.Model):
             + [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value],
             "F": no_hold,
             "R": no_hold,
-            "S": consignment_holds,
         }
         for child in self.filtered("hold_id"):
             if child.hold_type not in valid_states[child.state]:

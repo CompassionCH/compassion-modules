@@ -166,6 +166,14 @@ class SponsorshipContract(models.Model):
     hold_id = fields.Many2one(
         "compassion.hold", related="child_id.hold_id", readonly=False
     )
+    can_make_gift = fields.Boolean(
+        compute="_compute_can_make_gift",
+        help="Whether gift to the child is possible at the moment or not"
+    )
+    can_write_letter = fields.Boolean(
+        compute="_compute_can_write_letter",
+        help="Whether letter to the child is possible at the moment or not"
+    )
 
     _sql_constraints = [
         (
@@ -381,6 +389,30 @@ class SponsorshipContract(models.Model):
                             "please choose a unique one"
                         )
                     )
+
+    def _compute_can_make_gift(self):
+        days_allowed = self.env["ir.config_parameter"].sudo().get_param(
+            "sponsorship_compassion.time_allowed_for_gifts", 90)
+        now = fields.Datetime.now()
+        for sponsorship in self:
+            hold_gifts = sponsorship.project_id.hold_gifts and not \
+                self.env.context.get("allow_during_suspension")
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_gifts
+            if sponsorship.state == "terminated" and not hold_gifts:
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
+            sponsorship.can_make_gift = is_allowed
+
+    def _compute_can_write_letter(self):
+        days_allowed = self.env["ir.config_parameter"].sudo().get_param(
+            "sponsorship_compassion.time_allowed_for_letters", 90)
+        now = fields.Datetime.now()
+        for sponsorship in self:
+            hold_letters = sponsorship.project_id.hold_s2b_letters and not \
+                self.env.context.get("allow_during_suspension")
+            is_allowed = sponsorship.state not in ["terminated", "cancelled", "draft"] and not hold_letters
+            if sponsorship.state == "terminated" and not hold_letters:
+                is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
+            sponsorship.can_write_letter = is_allowed
 
     ##########################################################################
     #                              ORM METHODS                               #

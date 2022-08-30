@@ -15,7 +15,7 @@ from odoo import models, fields
 class ProjectCovidStatus(models.Model):
     _name = "compassion.project.covid_update"
     _description = "Project covid status"
-    _order = "update_date,id desc"
+    _order = "update_date desc,id desc"
 
     fcp_id = fields.Many2one(
         "compassion.project", required=True, ondelete="cascade"

@@ -82,9 +82,12 @@ class CommunicationAttachment(models.Model):
         return res
 
     def unlink(self):
-        self.mapped("attachment_id").unlink()
-        return super().unlink()
+        attachments = self.mapped("attachment_id")
+        super().unlink()
+        attachments.unlink()
+        return True
 
+    @api.multi
     def print_attachments(self, output_tray=None):
         total_attachment_with_omr = len(self.filtered("attachment_id.enable_omr"))
         count_attachment_with_omr = 1

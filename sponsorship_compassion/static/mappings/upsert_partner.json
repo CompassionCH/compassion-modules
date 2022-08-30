@@ -12,15 +12,8 @@
     "Gender": {
       "field": "gmc_gender"
     },
-    "MandatoryReviewRequired": {
-      "field": "mandatory_review"
-    },
     "PreferredName": {
       "field": "preferred_name"
-    },
-    "CorrespondenceDeliveryPreference": {
-      "field": "send_original",
-      "to_json_conversion": "'Physical' if odoo_value else 'Digital'"
     },
     "FirstName": {
       "field": "firstname"

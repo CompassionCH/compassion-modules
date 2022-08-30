@@ -11,6 +11,7 @@ from . import partner_compassion
 from . import correspondence_metadata
 from . import correspondence
 from . import correspondence_page
+from . import correspondence_paragraph
 from . import correspondence_template_page
 from . import correspondence_template
 from . import import_config

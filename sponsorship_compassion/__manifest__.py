@@ -73,6 +73,7 @@
         "security/ir.model.access.csv",
         "security/security.xml",
         "views/product_views.xml",
+        "views/res_config_settings_view.xml",
     ],
     "demo": ["demo/demo_data.xml", ],
     "installable": True,
