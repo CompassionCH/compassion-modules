@@ -345,9 +345,10 @@ class SponsorshipContract(models.Model):
             "FROM recurring_contract c left join ("
             # Open invoices to find how many months are due
             "   select contract_id, count(distinct move_id) as total "
-            "   from account_move_line l join product_product p on "
-            "       l.product_id = p.id "
-            "   where state='open' and "
+            "   from account_move_line l "
+            "   join account_move m on m.id=l.move_id"
+            "   join product_product p on l.product_id = p.id "
+            "   where m.state='open' and "
             # Exclude gifts from count
             "   categ_name != 'Sponsor gifts'"
             "   group by contract_id"
