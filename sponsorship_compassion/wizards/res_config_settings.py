@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class StaffNotificationSettings(models.TransientModel):
@@ -25,7 +25,6 @@ class StaffNotificationSettings(models.TransientModel):
              "are still allowed"
     )
 
-    @api.multi
     def set_values(self):
         super().set_values()
         self.env["ir.config_parameter"].sudo().set_param(
@@ -45,7 +44,6 @@ class StaffNotificationSettings(models.TransientModel):
             ),
         )
 
-    @api.model
     def get_values(self):
         res = super().get_values()
         param_obj = self.env["ir.config_parameter"].sudo()

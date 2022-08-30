@@ -32,14 +32,12 @@ class ResPartner(models.Model):
         "Sponsorships accessible from the portal",
         default="correspondent",
         required=True,
-        oldname="app_displayed_sponsorships"
     )
     global_id = fields.Char(copy=False, readonly=True)
     contracts_fully_managed = fields.One2many(
         "recurring.contract",
         compute="_compute_related_contracts",
         string="Fully managed sponsorships",
-        order="state asc",
     )
     contracts_paid = fields.One2many(
         "recurring.contract",
@@ -359,7 +357,6 @@ class ResPartner(models.Model):
             "type": "ir.actions.act_window",
             "name": "Children",
             "res_model": "compassion.child",
-            "view_type": "form",
             "view_mode": "tree,form",
             "domain": [("id", "in", children.ids)],
         }
@@ -407,7 +404,7 @@ class ResPartner(models.Model):
                 "firstname": False,
                 "preferred_name": False,
                 "parent_id": False,
-                "image": False,
+                "image_1920": False,
                 "phone": False,
                 "mobile": False,
                 "email": False,

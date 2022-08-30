@@ -33,8 +33,8 @@ class ChildPictures(models.Model):
     child_id = fields.Many2one(
         "compassion.child", "Child", required=True, ondelete="cascade", readonly=False
     )
-    fullshot = fields.Binary(attachment=True)
-    headshot = fields.Binary(attachment=True)
+    fullshot = fields.Image()
+    headshot = fields.Image()
     image_url = fields.Char()
     image_url_compassion = fields.Char(compute="_compute_image_url_compassion")
     date = fields.Date("Date of pictures", default=fields.Date.today)
@@ -57,8 +57,8 @@ class ChildPictures(models.Model):
             try:
                 base_url = request.website.domain
             except AttributeError:
-                base_url = self.env["ir.config_parameter"].sudo().get_param(
-                    "web.external.url")
+                config = self.env["ir.config_parameter"].sudo()
+                base_url = config.get_param("web.external.url", config.get_param("web.base.url"))
             endpoint = str(base_url) + "/web/image/compassion.child.pictures"
             image.image_url_compassion =\
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"

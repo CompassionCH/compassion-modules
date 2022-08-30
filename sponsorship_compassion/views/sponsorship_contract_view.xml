@@ -275,7 +275,7 @@
     <menuitem id="menu_sponsorship_contract_form" parent="child_compassion.menu_sponsorship_section"
               name="Sponsorships" sequence="2" action="action_sponsorship_contract"/>
     <menuitem id="open_customers" parent="child_compassion.menu_sponsorship_section"
-              name="Supporters" action="base.action_partner_customer_form" sequence="0"/>
+              name="Supporters" action="action_partner_supporter" sequence="0"/>
 
     <!-- Delete useless menu entries in the Accounting section -->
     <record model="ir.ui.menu" id="recurring_contract.menu_contracts_section">

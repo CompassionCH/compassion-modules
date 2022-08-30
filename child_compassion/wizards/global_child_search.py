@@ -38,11 +38,11 @@ class GlobalChildSearch(models.TransientModel):
         string="Field Offices",
         readonly=False,
     )
-    min_age = fields.Integer(size=2)
-    max_age = fields.Integer(size=2)
-    birthday_month = fields.Integer(size=2)
-    birthday_day = fields.Integer(size=2)
-    birthday_year = fields.Integer(size=4)
+    min_age = fields.Integer()
+    max_age = fields.Integer()
+    birthday_month = fields.Integer()
+    birthday_day = fields.Integer()
+    birthday_year = fields.Integer()
     child_name = fields.Char()
     fcp_ids = fields.Many2many(
         "compassion.project",
@@ -54,7 +54,7 @@ class GlobalChildSearch(models.TransientModel):
     hiv_affected_area = fields.Boolean()
     is_orphan = fields.Boolean()
     has_special_needs = fields.Boolean()
-    min_days_waiting = fields.Integer(size=4)
+    min_days_waiting = fields.Integer()
     source_code = fields.Char()
 
     # Advanced Search parameters
@@ -102,8 +102,8 @@ class GlobalChildSearch(models.TransientModel):
     # Pagination
     # By default : skip 50000 children to take less priority
     # Leave high priority children for bigger countries
-    skip = fields.Integer(size=4, default=50000)
-    take = fields.Integer(default=80, size=4)
+    skip = fields.Integer(default=50000)
+    take = fields.Integer(default=80)
 
     # Returned children
     nb_found = fields.Integer("Number of matching children", readonly=True)

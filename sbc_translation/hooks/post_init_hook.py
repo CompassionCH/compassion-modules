@@ -8,15 +8,6 @@ logger = logging.getLogger(__name__)
 def post_init_hook(cr, registry):
     logger.info("SBC Translation Init Hook: create missing competences")
 
-    # Update translation done
-    cr.execute("""
-            UPDATE correspondence SET translate_done = translate_date
-            WHERE translate_date IS NOT NULL;
-            UPDATE correspondence SET translate_date = write_date
-            WHERE state = 'Global Partner translation queue'
-            AND translate_date IS NULL;
-        """)
-
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
         # Update correspondence competence

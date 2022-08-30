@@ -53,7 +53,7 @@ class SponsorshipContract(models.Model):
     reading_language = fields.Many2one(
         "res.lang.compassion",
         "Preferred language",
-        track_visiblity="onchange",
+        tracking=True,
         readonly=False,
     )
     transfer_partner_id = fields.Many2one(
@@ -108,9 +108,7 @@ class SponsorshipContract(models.Model):
              "contract was activated.",
     )
     # Field used for identifying gifts from sponsor
-    commitment_number = fields.Integer(
-        "Partner Contract Number", required=True, copy=False,
-    )
+    commitment_number = fields.Integer(copy=False)
     months_paid = fields.Integer(compute="_compute_months_paid")
     origin_id = fields.Many2one(
         "recurring.contract.origin",
