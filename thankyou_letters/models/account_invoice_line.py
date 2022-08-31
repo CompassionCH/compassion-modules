@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 
 class AccountInvoiceLine(models.Model):
-    _inherit = "account.invoice.line"
+    _inherit = "account.move.line"
 
     def get_donations(self):
         """
@@ -119,4 +119,4 @@ class AccountInvoiceLine(models.Model):
                 existing_comm = existing_comm.create(comm_vals)
 
             if new_communication_config == communication_config:
-                self.mapped("invoice_id").write({"communication_id": existing_comm.id})
+                self.mapped("move_id").write({"communication_id": existing_comm.id})

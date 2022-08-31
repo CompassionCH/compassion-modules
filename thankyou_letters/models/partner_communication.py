@@ -44,7 +44,7 @@ class PartnerCommunication(models.Model):
     @api.depends("object_ids")
     def _compute_donation_amount(self):
         for communication in self:
-            if communication.model == "account.invoice.line":
+            if communication.model == "account.move.line":
                 try:
                     invoice_lines = communication.get_objects().exists()
                     if not invoice_lines:

@@ -3,12 +3,12 @@
         <field name="name">generate.communication.wizard.thanks.form</field>
         <field name="model">partner.communication.generate.wizard</field>
         <field name="inherit_id" ref="partner_communication.generate_communication_wizard_form"/>
-        <field name="arch" type="xml">
-            <field name="report_id" position="after">
-                <field name="print_subject" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
-                <field name="print_header" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>
-                <field name="success_story_id"/>
-            </field>
-        </field>
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="report_id" position="after">-->
+<!--                <field name="print_subject" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>-->
+<!--                <field name="print_header" attrs="{'invisible': [('send_mode', '=', 'digital')]}"/>-->
+<!--                <field name="success_story_id"/>-->
+<!--            </field>-->
+<!--        </field>-->
     </record>
 </odoo>

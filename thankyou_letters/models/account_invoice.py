@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     communication_id = fields.Many2one(
         "partner.communication.job",
@@ -46,7 +46,7 @@ class AccountInvoice(models.Model):
         """ When invoice is open again, remove it from donation receipt. """
         if vals.get("state") == "open":
             for invoice in self.filtered(
-                    lambda i: i.state == "paid"
+                    lambda i: i.paymen_state == "paid"
                     and i.communication_id
                     and i.communication_id.state == "pending"
             ):
@@ -62,7 +62,7 @@ class AccountInvoice(models.Model):
                     )
                 if object_ids:
                     # Refresh donation receipt
-                    remaining_lines = self.env["account.invoice.line"].browse(
+                    remaining_lines = self.env["account.move.line"].browse(
                         [int(i) for i in object_ids.split(",")])
                     remaining_lines.generate_thank_you()
         return super().write(vals)
@@ -98,8 +98,8 @@ class AccountInvoice(models.Model):
             partner = self.env["res.users"].browse(int(user_id)).mapped("partner_id")
             invoices = self.search(
                 [
-                    ("type", "=", "out_invoice"),
-                    ("state", "=", "paid"),
+                    ("move_type", "=", "out_invoice"),
+                    ("payment_state", "=", "paid"),
                     ("last_payment", ">=", last_month),
                     ("last_payment", "<", first),
                 ]
@@ -134,7 +134,7 @@ class AccountInvoice(models.Model):
         :return: account.invoice recordset
         """
         return self.filtered(
-            lambda i: i.type == "out_invoice"
+            lambda i: i.move_type == "out_invoice"
             and not i.avoid_thankyou_letter
             and (
                 not i.communication_id
