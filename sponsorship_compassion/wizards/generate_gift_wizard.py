@@ -121,14 +121,14 @@ class GenerateGiftWizard(models.TransientModel):
             "recurring_invoicer_id": self.env.context.get(
                 "recurring_invoicer_id", False
             ),
-            "line_ids": [
+            "invoice_line_ids": [
                 (
                     0,
                     0,
                     self.with_context(journal_id=journal_id)._setup_invoice_line(
                         contract
                     ),
-                )
+                ),
             ],
         }
 
@@ -138,7 +138,7 @@ class GenerateGiftWizard(models.TransientModel):
 
         inv_line_data = {
             "name": self.description,
-            "account_id": product.property_account_income_id.id or False,
+            "account_id": product.with_company(contract.company_id.id).property_account_income_id.id or False,
             "price_unit": self.amount,
             "quantity": 1,
             "product_id": product.id,
