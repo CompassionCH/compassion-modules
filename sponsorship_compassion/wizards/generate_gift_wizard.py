@@ -85,7 +85,7 @@ class GenerateGiftWizard(models.TransientModel):
             inv_data = self._setup_invoice(contract, invoice_date)
             invoice = self.env["account.move"].create(inv_data)
             invoice.partner_bank_id = contract.partner_id.bank_ids[:1].id
-            invoice.action_invoice_open()
+            invoice.action_post()
             # Commit at each invoice creation. This does not break
             # the state
             if not test_mode:

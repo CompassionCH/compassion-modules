@@ -1107,14 +1107,14 @@ class SponsorshipContract(models.Model):
         """
         invoice_line_obj = self.env["account.move.line"]
         paid_invl = invoice_line_obj.search(
-            [("contract_id", "in", self.ids), ("state", "=", "paid")],
+            [("contract_id", "in", self.ids), ("payment_state", "=", "paid")],
             order="due_date asc",
             limit=1,
         )
         invoice_lines = invoice_line_obj.search(
             [
                 ("contract_id", "in", self.ids),
-                ("state", "=", "open"),
+                ("payment_state", "=", "not_paid"),
                 ("due_date", "<", paid_invl.due_date),
             ]
         )
@@ -1127,10 +1127,10 @@ class SponsorshipContract(models.Model):
             inv_lines = self._get_filtered_invoice_lines(invoice_lines)
 
             if len(inv_lines) == len(invoice_lines):
-                invoice.action_invoice_cancel()
+                invoice.button_draft()
+                invoice.button_cancel()
             else:
-                invoice.action_invoice_cancel()
-                invoice.action_invoice_draft()
+                invoice.button_draft()
                 invoice.env.clear()
                 inv_lines.unlink()
-                invoice.action_invoice_open()
+                invoice.action_post()
