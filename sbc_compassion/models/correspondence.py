@@ -934,7 +934,6 @@ class Correspondence(models.Model):
             "state": "Quality check unsuccessful",
         })
 
-    @api.multi
     def create_text_boxes(self):
         self.mapped("page_ids.paragraph_ids").unlink()
         paragraphs = self.env["correspondence.paragraph"].with_context(from_correspondence_text=True)

@@ -52,14 +52,12 @@ class CorrespondenceParagraph(models.Model):
             res.mapped("page_id").sync_text_from_paragraphs()
         return res
 
-    @api.multi
     def write(self, vals):
         super().write(vals)
         if not self.env.context.get("from_correspondence_text"):
             self.mapped("page_id").sync_text_from_paragraphs()
         return True
 
-    @api.multi
     def unlink(self):
         pages = self.mapped("page_id")
         res = super().unlink()

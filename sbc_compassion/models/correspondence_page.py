@@ -54,7 +54,6 @@ class CorrespondencePage(models.Model):
         ),
     ]
 
-    @api.multi
     def sync_text_from_paragraphs(self):
         _fields = ["original_text", "english_text", "translated_text"]
         for page in self:
