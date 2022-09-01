@@ -35,7 +35,7 @@ class RecurringContract(models.Model):
             ("cancelled", _("Cancelled")),
         ],
         "SDS Status",
-        track_visibility="onchange",
+        tracking=True,
         index=True,
         copy=False,
         readonly=True,
@@ -68,7 +68,6 @@ class RecurringContract(models.Model):
         contract.parent_id._trigger_sub()
         return contract
 
-    @api.multi
     def write(self, vals):
         if "sds_state" in vals:
             vals["sds_state_date"] = fields.Datetime.now()
@@ -77,7 +76,6 @@ class RecurringContract(models.Model):
 
         return super().write(vals)
 
-    @api.multi
     def unlink(self):
         """ Put parent in SUB Reject. """
         is_sub = self.filtered(lambda s: s.parent_id.sds_state == "sub")
@@ -115,18 +113,16 @@ class RecurringContract(models.Model):
     @api.onchange("child_id")
     def onchange_child_id(self):
         """ Put back in SUB state if needed. """
-        res = super().onchange_child_id()
+        res = super().onchange_child_id()  # Warning: onchange_child_id() does not exist
         self.parent_id._trigger_sub()
         return res
 
-    @api.multi
     def switch_contract_view(self):
         ir_model_data = self.env["ir.model.data"]
         view_id = ir_model_data.get_object_reference(
             "sponsorship_tracking", self.env.context["view_id"]
         )[1]
         return {
-            "view_type": "form",
             "view_mode": "form",
             "views": [(view_id, "form")],
             "res_model": self._name,
@@ -135,15 +131,12 @@ class RecurringContract(models.Model):
             "res_id": self.ids[0],
         }
 
-    @api.multi
     def action_no_sub(self):
         return self.with_context(default_state="no_sub").sub_wizard()
 
-    @api.multi
     def action_sub(self):
         return self.with_context(default_state="sub").sub_wizard()
 
-    @api.multi
     def action_sub_reject(self):
         sub_reject = self.env.ref("sponsorship_compassion.end_reason_subreject")
         for contract in self:
@@ -157,7 +150,7 @@ class RecurringContract(models.Model):
             elif sub:
                 sub.end_reason_id = sub_reject
                 self.env["end.contract.wizard"].create(
-                    {"contract_id": sub.id}
+                    {"contract_ids": sub.id}
                 ).end_contract()
         return self.write({"sds_state": "sub_reject"})
 
@@ -166,7 +159,6 @@ class RecurringContract(models.Model):
         wizard_id = self.env[sub_model].create({}).id
         return {
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": sub_model,
             "target": "new",
@@ -214,7 +206,6 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    @api.multi
     def contract_waiting(self):
         """ Make contract SDS status in active mode. """
         to_transition = self.filtered(lambda s: s.sds_state == "draft")
@@ -224,21 +215,18 @@ class RecurringContract(models.Model):
             )
         return super().contract_waiting()
 
-    @api.multi
     def contract_cancelled(self):
         """ Change SDS Follower """
         res = super().contract_cancelled()
         self._check_need_sub()
         return res
 
-    @api.multi
     def contract_terminated(self):
         """ Change SDS Follower """
         res = super().contract_terminated()
         self._check_need_sub()
         return res
 
-    @api.multi
     def contract_active(self):
         """ Change color of parent Sponsorship. """
         res = super().contract_active()
@@ -246,7 +234,6 @@ class RecurringContract(models.Model):
             sub.parent_id.color_id = 10  # Green
         return res
 
-    @api.multi
     def check_sub_state(self):
         """ Called from base_action_rule to verify subs. """
         for sponsorship in self:
@@ -320,7 +307,6 @@ class RecurringContract(models.Model):
                 parent = self.browse(parent_id)
                 parent._trigger_sub()
 
-    @api.multi
     def _trigger_sub(self):
         """ Triggers the transition to SUB state if the sponsorship is in
         valid state (either sub waiting or no sub since less than 50 days)
