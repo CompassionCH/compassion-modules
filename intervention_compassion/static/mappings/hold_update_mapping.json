@@ -1,0 +1,35 @@
+{
+  "name": "Hold Update",
+  "model": "compassion.intervention",
+  "mapping": {
+    "Intervention_ID": {
+      "field": "intervention_id"
+    },
+    "HoldID": {
+      "field": "hold_id"
+    },
+    "ExpirationDate": {
+      "field": "expiration_date"
+    },
+    "HoldAmount": {
+      "field": "hold_amount",
+      "to_json_conversion": "str(odoo_value)"
+    },
+    "NextYearOptIn": {
+      "field": "next_year_opt_in"
+    },
+    "PrimaryOwner": {
+      "field": "user_id.name",
+      "search_relational_record": true
+    },
+    "SecondaryOwner": {
+      "field": "secondary_owner"
+    },
+    "ServiceLevelAgreement": {
+      "field": "service_level"
+    },
+    "GlobalPartner_ID": {
+      "to_json_conversion": "'CH'"
+    }
+  }
+}
