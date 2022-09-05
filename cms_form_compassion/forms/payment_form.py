@@ -47,7 +47,7 @@ class PaymentForm(models.AbstractModel):
     def generate_invoice(self):
         """Inherit this method in order to create the invoice that will
         be used for the web payment."""
-        return self.env["account.invoice"]
+        return self.env["account.move"]
 
     def form_after_create_or_update(self, values, extra_values):
         """ Dismiss status message, as the client will be redirected
@@ -61,4 +61,4 @@ class PaymentForm(models.AbstractModel):
                 line._onchange_product_id()
                 line.write(line_vals)
             if "skip_invoice_validation" not in extra_values:
-                invoice.action_invoice_open()
+                invoice.action_post()

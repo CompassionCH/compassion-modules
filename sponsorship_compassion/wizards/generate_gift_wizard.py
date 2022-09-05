@@ -69,7 +69,7 @@ class GenerateGiftWizard(models.TransientModel):
                 begin_year = self.invoice_date.replace(month=1, day=1)
                 end_year = begin_year.replace(month=12, day=31)
                 # If a gift was already made for the year, abort
-                invoice_line_ids = self.env["account.invoice.line"].search(
+                invoice_line_ids = self.env["account.move.line"].search(
                     [
                         ("product_id", "=", self.product_id.id),
                         ("due_date", ">=", begin_year),
@@ -83,9 +83,9 @@ class GenerateGiftWizard(models.TransientModel):
             else:
                 invoice_date = self.invoice_date
             inv_data = self._setup_invoice(contract, invoice_date)
-            invoice = self.env["account.invoice"].create(inv_data)
+            invoice = self.env["account.move"].create(inv_data)
             invoice.partner_bank_id = contract.partner_id.bank_ids[:1].id
-            invoice.action_invoice_open()
+            invoice.action_post()
             # Commit at each invoice creation. This does not break
             # the state
             if not test_mode:
@@ -94,11 +94,10 @@ class GenerateGiftWizard(models.TransientModel):
 
         return {
             "name": _("Generated Invoices"),
-            "view_mode": "tree,form",
-            "view_type": "form",
-            "res_model": "account.invoice",
+            "view_mode": "list,form",
+            "res_model": "account.move",
             "domain": [("id", "in", invoice_ids)],
-            "context": {"form_view_ref": "account.invoice_form"},
+            # "context": {"form_view_ref": "sponsorship_compassion.view_invoice_child_form"},
             "type": "ir.actions.act_window",
         }
 
@@ -112,11 +111,13 @@ class GenerateGiftWizard(models.TransientModel):
             .id
         )
         return {
-            "type": "out_invoice",
+            "move_type": "out_invoice",
             "partner_id": contract.gift_partner_id.id,
             "journal_id": journal_id,
-            "date_invoice": invoice_date,
+            'currency_id': contract.gift_partner_id.property_product_pricelist.currency_id.id,
+            "invoice_date": invoice_date,
             "payment_mode_id": contract.payment_mode_id.id,
+            "company_id": contract.mapped('company_id')[:1].id,
             "recurring_invoicer_id": self.env.context.get(
                 "recurring_invoicer_id", False
             ),
@@ -127,21 +128,17 @@ class GenerateGiftWizard(models.TransientModel):
                     self.with_context(journal_id=journal_id)._setup_invoice_line(
                         contract
                     ),
-                )
+                ),
             ],
         }
 
     def _setup_invoice_line(self, contract):
         self.ensure_one()
         product = self.product_id
-        account = (
-            product.property_account_income_id.id
-            or self.env["account.invoice.line"]._default_account()
-        )
 
         inv_line_data = {
             "name": self.description,
-            "account_id": account,
+            "account_id": product.with_company(contract.company_id.id).property_account_income_id.id or False,
             "price_unit": self.amount,
             "quantity": 1,
             "product_id": product.id,

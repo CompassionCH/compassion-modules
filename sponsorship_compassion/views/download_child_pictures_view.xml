@@ -13,7 +13,7 @@
                     <group>
                         <field name="height" />
                         <field name="width" />
-                        <field name="preview" widget='image' />
+                        <field name="preview" widget="image_url"/>
                     </group>
                     <group>
                         <field name="download_data" filename="fname"/>

@@ -5,31 +5,30 @@
     The licence is in the file __manifest__.py
 -->
 <odoo>
-<!--    <record id="view_gift_tree" model="ir.ui.view">-->
-<!--        <field name="name">sponsorship.gift.tree</field>-->
-<!--        <field name="model">sponsorship.gift</field>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <tree string="Gifts" colors="blue:state == 'draft';-->
-<!--                                         black:state in ['open','fund_due'];-->
-<!--                                         green:state == 'verify';-->
-<!--                                         red:state == 'error';-->
-<!--                                         grey:state == 'fund_delivered'">-->
-<!--                <field name="gmc_gift_id"/>-->
-<!--                <field name="create_date"/>-->
-<!--                <field name="gift_date"/>-->
-<!--                <field name="partner_id"/>-->
-<!--                <field name="child_id"/>-->
-<!--                <field name="gift_type"/>-->
-<!--                <field name="sponsorship_gift_type"/>-->
-<!--                <field name="amount" sum="Amount"/>-->
-<!--                <field name="amount_us_dollars"/>-->
-<!--                <field name="instructions"/>-->
-<!--                <field name="date_sent"/>-->
-<!--                <field name="state"/>-->
-<!--                <field name="project_suspended"/>-->
-<!--            </tree>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="view_gift_tree" model="ir.ui.view">
+        <field name="name">sponsorship.gift.tree</field>
+        <field name="model">sponsorship.gift</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'"
+                  decoration-success="state == 'verify'"
+                  decoration-danger="state == 'error'"
+                  decoration-muted="state == 'fund_delivered'">
+                <field name="gmc_gift_id"/>
+                <field name="create_date"/>
+                <field name="gift_date"/>
+                <field name="partner_id"/>
+                <field name="child_id"/>
+                <field name="gift_type"/>
+                <field name="sponsorship_gift_type"/>
+                <field name="amount" sum="Amount"/>
+                <field name="amount_us_dollars"/>
+                <field name="instructions"/>
+                <field name="date_sent"/>
+                <field name="state"/>
+                <field name="project_suspended"/>
+            </tree>
+        </field>
+    </record>
 
     <record id="view_gift_form" model="ir.ui.view">
         <field name="name">sponsorship.gift.form</field>
@@ -58,7 +57,7 @@
                             confirm="This will cancel the message for GMC and put the gift in Delivered state. Are you sure?"/>
                 </header>
                 <sheet>
-                    <div class="oe_right oe_button_box" name="buttons">
+                    <div class="oe_button_box" name="buttons">
                         <button name="%(action_collect_invoices)d"
                                 string="Collect invoices"
                                 type="action"

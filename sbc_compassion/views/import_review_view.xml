@@ -35,8 +35,6 @@
                             <field name="letter_file" filename="fname"/>
                         </group>
                         <group>
-                            <field name="is_encourager"/>
-                            <field name="mandatory_review"/>
                             <field name="physical_attachments"/>
                             <field name="attachments_description"/>
                         </group>

@@ -204,7 +204,7 @@ class TestThankYouLetters(SavepointCase):
                 "account_id": self.account_revenue.id,
             }
         )
-        invoice.action_invoice_open()
+        invoice.action_post()
         return invoice
 
     def pay_invoice(self, invoices):

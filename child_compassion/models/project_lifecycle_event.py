@@ -63,7 +63,6 @@ class ProjectLifecycle(models.Model):
     )
     extension_2 = fields.Boolean(
         help="Suspension is extended by additional 30 days (60 in total)",
-        relation="compassion_project_ile_sus_extension2_rel",
         readonly=True,
     )
     extension_2_reason_ids = fields.Many2many(

@@ -12,3 +12,4 @@ access_account_journal,Read access on account.journal,account.model_account_jour
 access_account_account_type,Read access on account.account.type,account.model_account_account_type,child_compassion.group_sponsorship,1,0,0,0
 full_access_end_reason,Full access on recurring.contract.end.reason for SDS,recurring_contract.model_recurring_contract_end_reason,child_compassion.group_manager,1,1,1,1
 access_generate_gift_wizard,access_generate_gift_wizard,model_generate_gift_wizard,account.group_account_manager,1,1,1,1,1,1,1,1
+access_child_pictures_download_wizard,access_child_pictures_download_wizard,model_child_pictures_download_wizard,child_compassion.group_sponsorship,1,1,1,1

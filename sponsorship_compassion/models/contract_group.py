@@ -75,6 +75,7 @@ class ContractGroup(models.Model):
         invl_obj = self.env["account.move.line"]
         product_id = (
             self.env["product.product"]
+                .with_company(contracts.company_id.id)
                 .search([("default_code", "=", GIFT_REF[0])], limit=1)
                 .id
         )

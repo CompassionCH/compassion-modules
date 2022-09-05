@@ -375,7 +375,7 @@ class SponsorshipGift(models.Model):
                 {
                     "sponsorship_id": sponsorship.id,
                     "invoice_line_ids": [(4, invoice_line.id)],
-                    "instructions": invoice_line.invoice_id.comment,
+                    "instructions": invoice_line.name,
                 }
             )
 
@@ -577,7 +577,7 @@ class SponsorshipGift(models.Model):
         )
         move_data["line_ids"] = [(0, False, line_data) for line_data in move_lines_data]
         move = self.env["account.move"].create(move_data)
-        move.post()
+        move.action_post()
         data["payment_id"] = move.id
         self.write(data)
 
@@ -620,19 +620,11 @@ class SponsorshipGift(models.Model):
     def view_invoices(self):
         return {
             "name": _("Invoices"),
-            "domain": [("id", "in", self.invoice_line_ids.mapped("invoice_id").ids)],
+            "domain": [("id", "in", self.invoice_line_ids.mapped("move_id").ids)],
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree,form",
-            "views": [
-                (self.env.ref("account.invoice_tree").id, "tree"),
-                (self.env.ref("account.invoice_form").id, "form"),
-            ],
-            "res_model": "account.invoice",
+            "res_model": "account.move",
             "target": "current",
-            "context": self.with_context(
-                {"form_view_ref": "account.invoice_form", }
-            ).env.context,
         }
 
     def action_ok(self):
@@ -661,11 +653,7 @@ class SponsorshipGift(models.Model):
 
     def action_cancel(self):
         """ Cancel Invoices and delete Gifts. """
-        invoices = self.mapped("invoice_line_ids.invoice_id")
-        invoices.mapped(
-            "payment_ids.move_line_ids.full_reconcile_id.reconciled_line_ids"
-        ).remove_move_reconcile()
-        invoices.action_invoice_cancel()
+        self.mapped("invoice_line_ids.move_id").button_draft()
         self.mapped("message_id").unlink()
         return self.unlink()
 

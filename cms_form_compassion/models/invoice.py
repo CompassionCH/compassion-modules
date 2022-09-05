@@ -10,7 +10,7 @@ from odoo import models, fields, api
 
 
 class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     auto_cancel_date = fields.Datetime(
         string="Auto cancel date",
@@ -22,7 +22,8 @@ class AccountInvoice(models.Model):
     def auto_cancel(self):
         invoices = self.search([
             ("auto_cancel_date", "<=", fields.Datetime.now()),
-            ("state", "in", ["draft", "open"])
+            ("state", "in", ["draft", "posted"])
         ])
-        invoices.action_invoice_cancel()
+        invoices.button_draft()
+        invoices.button_cancel()
         return True

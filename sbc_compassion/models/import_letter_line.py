@@ -156,9 +156,6 @@ class ImportLetterLine(models.Model):
                     "import_id": line.import_id.id,
                 }
             )
-            if line.is_encourager:
-                vals["relationship"] = "Encourager"
-            del vals["is_encourager"]
 
             if line.source == "website":
                 # To save disk space, we prefer storing the text, images and template_id

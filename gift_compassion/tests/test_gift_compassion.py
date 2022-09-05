@@ -134,7 +134,7 @@ class TestGifts(BaseSponsorshipTest):
         )
         self.assertFalse(gift)
 
-        account_invoice.action_invoice_open()
+        account_invoice.action_post()
 
         # after gift creation
         gift = self.env["sponsorship.gift"].search(

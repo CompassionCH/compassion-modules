@@ -1,19 +1,18 @@
 <odoo>
-<!--    <record id="view_partner_form_sbc" model="ir.ui.view">-->
-<!--        <field name="name">res.partner.form.sbc</field>-->
-<!--        <field name="model">res.partner</field>-->
-<!--        <field name="inherit_id" ref="base.view_partner_form"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            &lt;!&ndash; Add correspondence options &ndash;&gt;-->
-<!--            <xpath expr="//div[@name='button_box']/button[1]" position="after">-->
-<!--                <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil" groups="child_compassion.group_sponsorship">-->
-<!--                    <field string="Letters" name="nb_letters" widget="statinfo" groups="child_compassion.group_sponsorship"/>-->
-<!--                </button>-->
-<!--            </xpath>-->
-<!--            <field name="lang" position="after">-->
-<!--                <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer_rank', '>', 0)]}" groups="child_compassion.group_sponsorship"/>-->
-<!--                <field name="mandatory_review" groups="child_compassion.group_sponsorship"/>-->
-<!--            </field>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="view_partner_form_sbc" model="ir.ui.view">
+        <field name="name">res.partner.form.sbc</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Add correspondence options -->
+            <xpath expr="//div[@name='button_box']/button[1]" position="after">
+                <button class="oe_inline oe_stat_button" type="object" name="open_letters" icon="fa-pencil" groups="child_compassion.group_sponsorship">
+                    <field string="Letters" name="nb_letters" widget="statinfo" groups="child_compassion.group_sponsorship"/>
+                </button>
+            </xpath>
+            <field name="lang" position="after">
+                <field name="spoken_lang_ids" widget="many2many_tags" options="{'create':False}" attrs="{'required': [('is_company', '=', False), ('customer', '=', True)]}" groups="child_compassion.group_sponsorship"/>
+            </field>
+        </field>
+    </record>
 </odoo>

@@ -33,16 +33,17 @@ class SBCConnector(OnrampConnector):
             SBCConnector.__instance = object.__new__(cls)
             connect_url = config.get("connect_url")
             api_key = config.get("connect_api_key")
-            if connect_url and api_key:
+            gpid = config.get("connect_gpid")
+            if connect_url and api_key and gpid:
                 SBCConnector.__instance._connect_url = connect_url
                 SBCConnector.__instance._api_key = api_key
                 session = requests.Session()
-                session.params.update({"api_key": api_key, "gpid": config.get('connect_gpid')})
+                session.params.update({"api_key": api_key, "gpid": gpid})
                 SBCConnector.__instance._session = session
             else:
                 raise UserError(
                     _(
-                        "Please give connect_url and connect_api_key values "
+                        "Please give connect_url, connect_api_key and connect_gpid values "
                         "in your Odoo configuration file."
                     )
                 )

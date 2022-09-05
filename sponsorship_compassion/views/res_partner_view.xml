@@ -3,41 +3,39 @@
     <record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
         <field name="name">res.partner.sponsorships.form</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="mail_tracking.view_partner_form"/>
+        <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
             <!-- Add the church-->
-            <field name="email_bounced" position="after">
+            <field name="email" position="after">
                 <field name="is_church" invisible="1"/>
-                <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"
-                       context="{'tree_view_ref' : 'partner_compassion.view_partner_tree_compassion',
-                                 'default_is_company': True, 'default_category_id': [(4, 20)]}"/>
+                <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"/>
             </field>
 
             <field name="ref" position="after">
                 <field name="global_id"/>
             </field>
 
-            <!-- Redefine how contracts are shown. -->
-            <xpath expr="//div[@name='button_box']/button[1]" position="after">
+            <xpath expr="//div[@name='button_box']" position="inside">
                 <button class="oe_inline oe_stat_button" type="object" name="open_contracts" icon="fa-book" groups="child_compassion.group_sponsorship">
                     <field string="Sponsorships" name="number_sponsorships" widget="statinfo"/>
                 </button>
-            </xpath>
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button class="oe_inline oe_stat_button" string="Forget me" groups="child_compassion.group_sponsorship" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
+                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
+                    <field string="Sponsored children" name="number_children" widget="statinfo"/>
+                </button>
                 <button class="oe_inline oe_stat_button" type="object"
                         string="Sponsorship impact"
                         groups="child_compassion.group_sponsorship"
                         name="open_sponsorship_report" icon="fa-file-text-o "/>
-                <button class="oe_inline oe_stat_button" type="object" name="open_sponsored_children" icon="fa-child" groups="child_compassion.group_sponsorship">
-                    <field string="Sponsored children" name="number_children" widget="statinfo"/>
-                </button>
+                <button class="oe_inline oe_stat_button" string="Forget me" groups="child_compassion.group_sponsorship" confirm="This will erase all data of the partner and will anonymize its name. This is not reversible. Do you confirm you want to do that?" type="object" name="forget_me" icon="fa-eraser"/>
             </xpath>
             <xpath expr="//page[1]" position="before">
                 <page string="Sponsorships" groups="child_compassion.group_sponsorship" autofocus="autofocus">
-                    <button name="create_contract" string="Add" type="object"
-                            groups="child_compassion.group_sponsorship"/>
+                    <group>
+                        <field name="portal_sponsorships"/>
+                    </group>
+                    <button name="create_contract" string="New sponsorship" type="object"
+                            groups="child_compassion.group_sponsorship" class="my-2 btn-primary"/>
                     <div groups="child_compassion.group_sponsorship"
                          attrs="{'invisible' : [('contracts_paid','=', [])]}">
                         <h3>Sponsorships as payer only</h3>
@@ -160,30 +158,26 @@
                     </group>
                 </page>
             </xpath>
-            <field name="website" position="after">
-                <field name="send_original" groups="child_compassion.group_sponsorship"/>
-            </field>
-
         </field>
     </record>
-    <!--   <record id="compassion_partner_view_buttons" model="ir.ui.view">
-        <field name="name">compassion.partner.view.buttons</field>
+
+    <record id="view_res_partner_search" model="ir.ui.view">
+        <field name="name">res.partner.supporter.search</field>
         <field name="model">res.partner</field>
-		-   <field name="inherit_id" ref="sale.res_partner_view_buttons" />
-	-   <field name="arch" type="xml">
-             to change icone of smart button, you can find tag here:http://fortawesome.github.io/Font-Awesome/icons/ >
-            <xpath expr="//div[@name='button_box']/button[1]" position="before">
-                <button name="unreconciled_transaction_items" type='object' groups="account.group_account_user" class="oe_inline oe_stat_button"
-                        icon="fa-exchange">
-                    <field name="unrec_items" string="Unreconciled Items" widget="statinfo"/>
-                </button>
-                <button name="receivable_transaction_items" type='object' groups="account.group_account_user"
-                        class="oe_inline oe_stat_button" icon="fa-exchange">
-                    <field name="receivable_items" string="1050 Items" widget="statinfo"/>
-                </button>
-            </xpath>
-            - We want to hide the Sales menu in this context 
--            <xpath expr="//div[@name='button_box']/button[@name='%(sale.act_res_partner_2_sale_order)d']" position="replace"/>
-	</field> >
-    </record> -->
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <filter name="type_supporter" string="Supporters" domain="[('has_sponsorships', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_partner_supporter" model="ir.actions.act_window">
+            <field name="name">Supporters</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'res_partner_search_mode': 'customer', 'search_default_type_supporter': 1}</field>
+        </record>
 </odoo>

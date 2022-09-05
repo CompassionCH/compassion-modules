@@ -199,7 +199,7 @@ class TestSponsorship(BaseSponsorshipTest):
             active_ids=[sponsorship.id]
         ).generate_invoice()["domain"][0][2]
         gift_inv = self.env["account.invoice"].browse(gift_inv_ids)
-        gift_inv[0].action_invoice_open()
+        gift_inv[0].action_post()
         self._pay_invoice(gift_inv[0])
         self.assertEqual(gift_inv[0].state, "paid")
 
@@ -686,7 +686,7 @@ class TestSponsorship(BaseSponsorshipTest):
             active_ids=[contract.id]
         ).generate_invoice()["domain"][0][2]
         gift_inv = self.env["account.invoice"].browse(gift_inv_ids)
-        gift_inv[0].action_invoice_open()
+        gift_inv[0].action_post()
 
         contract_group.with_context(async_mode=False).write(
             {"advance_billing_months": 3})

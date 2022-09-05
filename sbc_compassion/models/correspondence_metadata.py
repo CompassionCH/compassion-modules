@@ -27,7 +27,6 @@ class CorrespondenceMetadata(models.AbstractModel):
     )
     attachments_description = fields.Char()
     template_id = fields.Many2one("correspondence.template", "Template", readonly=False)
-    mandatory_review = fields.Boolean()
     source = fields.Selection(
         selection=[
             ("letter", _("Letter")),
@@ -45,7 +44,6 @@ class CorrespondenceMetadata(models.AbstractModel):
             "physical_attachments",
             "attachments_description",
             "template_id",
-            "mandatory_review",
             "source",
         ]
 

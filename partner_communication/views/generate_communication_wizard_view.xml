@@ -47,5 +47,6 @@
                 res_model="partner.communication.generate.wizard" binding_model="res.partner"
                 view_mode="form" target="new"
                 context="{'default_selection_domain': [('id', 'in', active_ids)]}"
+                context="{'default_selection_domain': [('id', 'in', active_ids)]}"
     />
 </odoo>

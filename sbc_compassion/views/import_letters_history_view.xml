@@ -22,8 +22,6 @@
                         </div>
                         <field name="config_id" widget="radio"/>
                         <field name="nber_letters"/>
-                        <field name="mandatory_review"/>
-                        <field name="is_encourager"/>
                         <field name="physical_attachments"/>
                         <field name="attachments_description"/>
                         <field name="template_id" states="draft,open"/>
@@ -37,9 +35,7 @@
                                 <field name="child_id"/>
                                 <field name="template_id"/>
                                 <field name="letter_language_id"/>
-                                <field name="is_encourager"/>
                                 <field name="original_text"/>
-                                <field name="mandatory_review"/>
                                 <field name="physical_attachments"/>
                                 <field name="attachments_description"/>
                                 <field name="letter_image_preview"
@@ -73,7 +69,6 @@
                 <field name="write_date"/>
                 <field name="nber_letters"/>
                 <field name="config_id"/>
-                <field name="mandatory_review"/>
                 <field name="state"/>
             </tree>
         </field>
