@@ -42,7 +42,6 @@ class SdsFollowerSettings(models.TransientModel):
         readonly=False,
     )
 
-    @api.multi
     def set_values(self):
         super().set_values()
         config = self.env["ir.config_parameter"].sudo()

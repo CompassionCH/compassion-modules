@@ -15,7 +15,6 @@ from odoo.tools.safe_eval import safe_eval
 class IrUiMenu(models.Model):
     _inherit = "ir.ui.menu"
 
-    @api.multi
     def get_needaction_data(self):
         """ add manually the counter for only one menu an not for all
         menus of a model, doesn't use _needaction_count method """

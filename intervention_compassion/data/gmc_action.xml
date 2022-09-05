@@ -1,0 +1,223 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Get Intervention Kit -->
+        <record id="intervention_details_request" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionDetailsRequest</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="description">GET Intervention Kit</field>
+            <field name="connect_service">interventions/${object.intervention_id}/kits/InterventionKit</field>
+            <field name="connect_answer_wrapper">InterventionDetailsRequest</field>
+            <field name="request_type">GET</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- update Intervention Kit -->
+        <record id="update_intervention_details" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">UpdateInterventionDetailsRequest</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">update_intervention_details_request</field>
+            <field name="description">Update Intervention Kit</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- create Intervention Kit -->
+        <record id="create_intervention_details" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">GPInitiatedInterventionHoldNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">create_intervention</field>
+            <field name="description">Create Intervention Kit</field>
+            <field name="auto_process">1</field>
+        </record>
+        <record id="create_intervention_opt_in" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionOptInHoldNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">create_intervention</field>
+            <field name="description">Create Intervention Because Opt-In was set</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Search Intervention -->
+        <record id="intervention_search_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionSearch</field>
+            <field name="model">compassion.intervention.search</field>
+            <field name="mapping_id" ref="mapping_intervention_search"/>
+            <field name="description">This will send a search query for Interventions.</field>
+            <field name="connect_service">interventions/availabilityquery</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Create Hold -->
+        <record id="intervention_create_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldCreate</field>
+            <field name="model">compassion.intervention.hold.wizard</field>
+            <field name="mapping_id" ref="mapping_hold_create"/>
+            <field name="description">This will create a hold for Interventions.</field>
+            <field name="connect_service">interventions/holds</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldList</field>
+            <field name="connect_answer_wrapper">InterventionHoldResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Update Hold -->
+        <record id="intervention_update_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldUpdate</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_id" ref="mapping_hold_update"/>
+            <field name="description">This will update a hold for Interventions.</field>
+            <field name="connect_service">interventions/${object.intervention_id}/holds/${object.hold_id}</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldList</field>
+            <field name="connect_answer_wrapper">InterventionHoldResponse</field>
+            <field name="success_method">hold_sent</field>
+            <field name="request_type">PUT</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Cancel Hold -->
+        <record id="intervention_cancel_hold_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionHoldCancel</field>
+            <field name="model">compassion.intervention</field>
+            <field name="mapping_id" ref="mapping_hold_cancel"/>
+            <field name="description">This will cancel a hold for Interventions.</field>
+            <field name="connect_service">interventions/holds/release</field>
+            <field name="connect_outgoing_wrapper">InterventionHoldCancellationList</field>
+            <field name="connect_answer_wrapper">InterventionHoldCancellationResponseList</field>
+            <field name="success_method">hold_cancelled</field>
+            <field name="auto_process">1</field>
+            <field name="request_type">POST</field>
+        </record>
+
+        <!-- Remove Intervention Hold -->
+        <record id="intervention_hold_removal_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionHoldRemovalNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">intervention_hold_removal_notification</field>
+            <field name="description">Notification sent to GP when a intervention hold is cancelled</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- MileStonesMessage -->
+        <record id="intervention_reporting_milestone" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionReportingMilestoneRequestList</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">intervention_reporting_milestone</field>
+            <field name="description">Notification send to follower of an intervention when it has an update</field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Intervention Amendment Commitment Notification -->
+        <record id="intervention_amendment_commitment_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionAmendmentCommitmentNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">intervention_amendement_commitment</field>
+            <field name="description">Notification send to follower of an intervention when a modification is made, and
+                update this intervention
+            </field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <!-- Create Commitment -->
+        <record id="intervention_create_commitment_action" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">InterventionCreateCommitment</field>
+            <field name="model">compassion.intervention.commitment.wizard</field>
+            <field name="mapping_id" ref="mapping_create_commitment"/>
+            <field name="description">This will create a commitment for an Intervention</field>
+            <field name="connect_service">interventions/commitments</field>
+            <field name="connect_outgoing_wrapper">InterventionCommitmentList</field>
+            <field name="connect_answer_wrapper">InterventionCommitmentResponseList</field>
+            <field name="success_method">commitment_created</field>
+            <field name="request_type">POST</field>
+            <field name="auto_process">0</field>
+        </record>
+
+        <!-- Commitment percent change notification -->
+        <record id="commitment_percent_change_notification" model="gmc.action">
+            <field name="direction">in</field>
+            <field name="name">InterventionCommittedPercentChangeNotification</field>
+            <field name="mapping_id" ref="mapping_intervention"/>
+            <field name="model">compassion.intervention</field>
+            <field name="incoming_method">commited_percent_change</field>
+            <field name="description">Notification sent to GP when the commited funding percentage has changed for an
+                intervention.
+            </field>
+            <field name="auto_process">1</field>
+        </record>
+
+        <record id="intervention_hold_removal_connect" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionHoldRemovalNotification
+            </field>
+            <field name="action_id" ref="intervention_hold_removal_notification"/>
+        </record>
+
+        <record id="intervention_create_connect" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/interventions/2016/04/GPInitiatedInterventionHoldNotification
+            </field>
+            <field name="action_id" ref="create_intervention_details"/>
+        </record>
+        <record id="intervention_create_connect_2" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/availability/2016/04/GPInitiatedInterventionHoldNotification
+            </field>
+            <field name="action_id" ref="create_intervention_details"/>
+        </record>
+
+        <record id="intervention_create_opt_in_connect" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionOptInHoldNotification
+            </field>
+            <field name="action_id" ref="create_intervention_opt_in"/>
+        </record>
+
+        <record id="intervention_reporting_milestone_connect" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messages/interventions/2016/04/ReportingMilestonesKit
+            </field>
+            <field name="action_id" ref="intervention_reporting_milestone"/>
+        </record>
+
+        <record id="intervention_amendment_commitment_notification_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionAmendmentCommitmentNotification</field>
+            <field name="action_id" ref="intervention_amendment_commitment_notification"/>
+        </record>
+
+        <record id="intervention_update_connect" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/InterventionKit</field>
+            <field name="action_id" ref="update_intervention_details"/>
+        </record>
+
+        <record id="intervention_amend" model="gmc.action.connect">
+            <field name="connect_schema">http://schemas.ci.org/ci/messages/interventions/2016/04/AmendmentKit</field>
+            <field name="action_id" ref="intervention_amendment_commitment_notification"/>
+        </record>
+
+        <record id="intervention_commited_percent_connect" model="gmc.action.connect">
+            <field name="connect_schema">
+                http://schemas.ci.org/ci/messaging/availability/2016/04/InterventionCommittedPercentChangeNotification
+            </field>
+            <field name="action_id" ref="commitment_percent_change_notification"/>
+        </record>
+    </data>
+</odoo>

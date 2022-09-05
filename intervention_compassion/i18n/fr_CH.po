@@ -1,0 +1,1115 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* intervention_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-18 15:40+0000\n"
+"PO-Revision-Date: 2017-01-18 15:40+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:38
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "Active"
+msgstr "Active"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,actual_duration:0
+msgid "Actual duration"
+msgstr "Actual duration"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,actual_duration:0
+msgid "Actual duration in months"
+msgstr "Actual duration in months"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,end_date:0
+msgid "Actual end date"
+msgstr "Actual end date"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,local_contribution:0
+msgid "Actual local contribution"
+msgstr "Actual local contribution"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,impacted_beneficiaries:0
+msgid "Actual number of impacted beneficiaries"
+msgstr "Actual number of impacted beneficiaries"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Actual numbers"
+msgstr "Actual numbers"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,start_date:0
+msgid "Actual start date"
+msgstr "Actual start date"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Add"
+msgstr "Add"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.commitment.wizard:intervention_compassion.view_intervention_commitment_wizard_form
+msgid "Additional fundings were requested by the Field Office for this Intervention:"
+msgstr "Additional fundings were requested by the Field Office for this Intervention:"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,additional_marketing_information:0
+#: field:compassion.global.intervention,additional_marketing_information:0
+#: field:compassion.intervention,additional_marketing_information:0
+#: field:compassion.intervention.commitment.wizard,additional_info:0
+msgid "Additional marketing information"
+msgstr "Additional marketing information"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Advanced Search"
+msgstr "Advanced Search"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,amount_on_hold:0
+msgid "Amount on hold"
+msgstr "Amount on hold"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:47
+#: selection:compassion.intervention,intervention_status:0
+#, python-format
+msgid "Approved"
+msgstr "Approved"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,approved_sla_costs:0
+msgid "Approved sla costs"
+msgstr "Approved sla costs"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:67
+#, python-format
+msgid "Available"
+msgstr "Available"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,background_information:0
+msgid "Background information"
+msgstr "Background information"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Budget"
+msgstr "Budget"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,can_be_funded:0
+msgid "Can be funded"
+msgstr "Can be funded"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Cancel Hold"
+msgstr "Cancel Hold"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,cancel_reason:0
+msgid "Cancel reason"
+msgstr "Cancel reason"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:40
+#: code:addons/intervention_compassion/models/compassion_intervention.py:48
+#: selection:compassion.intervention,intervention_status:0
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#. module: intervention_compassion
+#: field:compassion.inter.subcat,category_ids:0
+msgid "Categories"
+msgstr "Categories"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,category_id:0
+#: view:compassion.global.intervention:intervention_compassion.view_compassion_global_intervention_filter
+#: field:compassion.global.intervention,category_id:0
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+#: field:compassion.intervention,category_id:0
+#: field:compassion.intervention.search,category_id:0
+msgid "Category"
+msgstr "Category"
+
+#. module: intervention_compassion
+#: sql_constraint:compassion.intervention.category:0
+msgid "Category name and type must be unique!"
+msgstr "Category name and type must be unique!"
+
+#. module: intervention_compassion
+#: sql_constraint:compassion.inter.subcat:0
+msgid "Category name must be unique!"
+msgstr "Category name must be unique!"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:39
+#: code:addons/intervention_compassion/models/compassion_intervention.py:49
+#: selection:compassion.intervention,intervention_status:0
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "Closed"
+msgstr "Closed"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Commit Funds"
+msgstr "Commit Funds"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.commitment.wizard,commit_to_additional_fund:0
+msgid "Commit to additional fund"
+msgstr "Commit to additional fund"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,commitment_amount:0
+#: field:compassion.intervention.commitment.wizard,commitment_amount:0
+msgid "Commitment amount"
+msgstr "Commitment amount"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:37
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "Committed"
+msgstr "Committed"
+
+#. module: intervention_compassion
+#: view:compassion.global.intervention:intervention_compassion.view_compassion_global_intervention_form
+msgid "Costs"
+msgstr "Costs"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.hold.wizard:intervention_compassion.view_intervention_hold_wizard_form
+msgid "Create Hold"
+msgstr "Create Hold"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,create_uid:0
+#: field:compassion.intervention,create_uid:0
+#: field:compassion.intervention.category,create_uid:0
+#: field:compassion.intervention.commitment.wizard,create_uid:0
+#: field:compassion.intervention.deliverable,create_uid:0
+#: field:compassion.intervention.hold.wizard,create_uid:0
+#: field:compassion.intervention.search,create_uid:0
+#: field:compassion.inter.subcat,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.hold.wizard,created_intervention_id:0
+msgid "Created intervention id"
+msgstr "Created intervention id"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,create_date:0
+#: field:compassion.intervention,create_date:0
+#: field:compassion.intervention.category,create_date:0
+#: field:compassion.intervention.commitment.wizard,create_date:0
+#: field:compassion.intervention.deliverable,create_date:0
+#: field:compassion.intervention.hold.wizard,create_date:0
+#: field:compassion.intervention.search,create_date:0
+#: field:compassion.inter.subcat,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,currency_usd:0
+#: field:compassion.global.intervention,currency_usd:0
+#: field:compassion.intervention,currency_usd:0
+#: field:compassion.intervention.commitment.wizard,usd:0
+#: field:compassion.intervention.hold.wizard,usd:0
+msgid "Currency usd"
+msgstr "Currency usd"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,message_last_post:0
+msgid "Date of the last message posted on the record."
+msgstr "Date of the last message posted on the record."
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,description:0
+#: field:compassion.global.intervention,description:0
+#: field:compassion.intervention,description:0
+msgid "Description"
+msgstr "Description"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Details"
+msgstr "Details"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,display_name:0
+#: field:compassion.global.intervention,display_name:0
+#: field:compassion.intervention,display_name:0
+#: field:compassion.intervention.category,display_name:0
+#: field:compassion.intervention.commitment.wizard,display_name:0
+#: field:compassion.intervention.deliverable,display_name:0
+#: field:compassion.intervention.hold.wizard,display_name:0
+#: field:compassion.intervention.search,display_name:0
+#: field:compassion.inter.subcat,display_name:0
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:50
+#: selection:compassion.intervention,intervention_status:0
+#, python-format
+msgid "Draft"
+msgstr "Draft"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "End"
+msgstr "End"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,end_date:0
+msgid "End date"
+msgstr "End date"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,estimated_costs:0
+#: field:compassion.global.intervention,estimated_costs:0
+#: field:compassion.intervention,estimated_costs:0
+msgid "Estimated costs"
+msgstr "Estimated costs"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,estimated_impacted_beneficiaries:0
+#: field:compassion.global.intervention,estimated_impacted_beneficiaries:0
+#: field:compassion.intervention,estimated_impacted_beneficiaries:0
+msgid "Estimated impacted beneficiaries"
+msgstr "Estimated impacted beneficiaries"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,estimated_local_contribution:0
+msgid "Estimated local contribution"
+msgstr "Estimated local contribution"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,expected_duration:0
+#: field:compassion.global.intervention,expected_duration:0
+#: field:compassion.intervention,expected_duration:0
+msgid "Expected duration"
+msgstr "Expected duration"
+
+#. module: intervention_compassion
+#: help:compassion.generic.intervention,expected_duration:0
+#: help:compassion.global.intervention,expected_duration:0
+#: help:compassion.intervention,expected_duration:0
+msgid "Expected duration in months"
+msgstr "Expected duration in months"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,expiration_date:0
+#: field:compassion.intervention.hold.wizard,expiration_date:0
+msgid "Expiration date"
+msgstr "Expiration date"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:89
+#: selection:compassion.intervention,sla_negotiation_status:0
+#, python-format
+msgid "FO Costs Proposed"
+msgstr "FO Costs Proposed"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,field_office_id:0
+#: field:compassion.global.intervention,field_office_id:0
+#: field:compassion.intervention,field_office_id:0
+msgid "Field Office"
+msgstr "Field Office"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,field_office_ids:0
+msgid "Field offices"
+msgstr "Field offices"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,search_filter_ids:0
+msgid "Filters"
+msgstr "Filters"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,fo_proposed_sla_costs:0
+msgid "Fo proposed sla costs"
+msgstr "Fo proposed sla costs"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:71
+#, python-format
+msgid "Fully committed"
+msgstr "Fully committed"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:69
+#, python-format
+msgid "Fully held"
+msgstr "Fully held"
+
+#. module: intervention_compassion
+#: view:compassion.global.intervention:intervention_compassion.view_compassion_global_intervention_filter
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+msgid "Funding Status"
+msgstr "Funding Status"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,funding_global_partners:0
+msgid "Funding global partners"
+msgstr "Funding global partners"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,funding_status:0
+#: field:compassion.global.intervention,funding_status:0
+#: field:compassion.intervention,funding_status:0
+msgid "Funding status"
+msgstr "Funding status"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:90
+#: selection:compassion.intervention,sla_negotiation_status:0
+#, python-format
+msgid "GP Accepted Costs"
+msgstr "GP Accepted Costs"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:91
+#: selection:compassion.intervention,sla_negotiation_status:0
+#, python-format
+msgid "GP Preferences Submitted"
+msgstr "GP Preferences Submitted"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:92
+#: selection:compassion.intervention,sla_negotiation_status:0
+#, python-format
+msgid "GP Rejected Costs"
+msgstr "GP Rejected Costs"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_global_intervention
+msgid "Global Intervention"
+msgstr "Global Intervention"
+
+#. module: intervention_compassion
+#: view:compassion.global.intervention:intervention_compassion.view_compassion_global_intervention_filter
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+msgid "Group By..."
+msgstr "Group By..."
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Hold Information"
+msgstr "Hold Information"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,hold_amount:0
+#: field:compassion.intervention.hold.wizard,hold_amount:0
+msgid "Hold amount"
+msgstr "Hold amount"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,hold_id:0
+#: field:compassion.intervention.commitment.wizard,hold_id:0
+msgid "Hold id"
+msgstr "Hold id"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:359
+#, python-format
+msgid "Hold not cancelled"
+msgstr "Hold not cancelled"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:314
+#, python-format
+msgid "Hold not updated"
+msgstr "Hold not updated"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,fcp_id:0
+#: field:compassion.global.intervention,fcp_id:0
+#: field:compassion.intervention,fcp_id:0
+msgid "FCP"
+msgstr "FCP"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,fcp_ids:0
+msgid "FCPs"
+msgstr "FCPs"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,id:0
+#: field:compassion.global.intervention,id:0
+#: field:compassion.intervention,id:0
+#: field:compassion.intervention.category,id:0
+#: field:compassion.intervention.commitment.wizard,id:0
+#: field:compassion.intervention.deliverable,id:0
+#: field:compassion.intervention.hold.wizard,id:0
+#: field:compassion.intervention.search,id:0
+#: field:compassion.inter.subcat,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
+
+#. module: intervention_compassion
+#: field:compassion.intervention,impacted_beneficiaries:0
+msgid "Impacted beneficiaries"
+msgstr "Impacted beneficiaries"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,implementation_risks:0
+msgid "Implementation risks"
+msgstr "Implementation risks"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:72
+#, python-format
+msgid "Inactive"
+msgstr "Inactive"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:44
+#, python-format
+msgid "Individual CIV"
+msgstr "Individual CIV"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:73
+#, python-format
+msgid "Ineligible"
+msgstr "Ineligible"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,initial_planned_end_date:0
+msgid "Initial planned end date"
+msgstr "Initial planned end date"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/wizards/hold_wizard.py:83
+#: field:compassion.intervention.commitment.wizard,intervention_id:0
+#: field:compassion.intervention.hold.wizard,intervention_id:0
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention
+#, python-format
+msgid "Intervention"
+msgstr "Intervention"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_category
+msgid "Intervention Category"
+msgstr "Intervention Category"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:366
+#, python-format
+msgid "Intervention Commitment Request"
+msgstr "Intervention Commitment Request"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_intervention_commitment_wizard
+msgid "Intervention Commitment Wizard"
+msgstr "Intervention Commitment Wizard"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:138
+#, python-format
+msgid "Intervention Hold Request"
+msgstr "Intervention Hold Request"
+
+#. module: intervention_compassion
+#: model:ir.model,name:intervention_compassion.model_compassion_inter_subcat
+msgid "Intervention Subcategory"
+msgstr "Intervention Subcategory"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,intervention_id:0
+#: field:compassion.global.intervention,intervention_id:0
+#: field:compassion.intervention,intervention_id:0
+#: field:compassion.intervention.search,intervention_id:0
+msgid "Intervention id"
+msgstr "Intervention id"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,intervention_status:0
+msgid "Intervention status"
+msgstr "Intervention status"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/wizards/intervention_search.py:177
+#: field:compassion.intervention.search,intervention_ids:0
+#: model:ir.actions.act_window,name:intervention_compassion.open_view_intervention_tree
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions
+#, python-format
+msgid "Interventions"
+msgstr "Interventions"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,is_fo_priority:0
+#: field:compassion.global.intervention,is_fo_priority:0
+#: field:compassion.intervention,is_fo_priority:0
+msgid "Is Field Office priority"
+msgstr "Is Field Office priority"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_last_post:0
+msgid "Last Message Date"
+msgstr "Last Message Date"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,__last_update:0
+#: field:compassion.global.intervention,__last_update:0
+#: field:compassion.intervention,__last_update:0
+#: field:compassion.intervention.category,__last_update:0
+#: field:compassion.intervention.commitment.wizard,__last_update:0
+#: field:compassion.intervention.deliverable,__last_update:0
+#: field:compassion.intervention.hold.wizard,__last_update:0
+#: field:compassion.intervention.search,__last_update:0
+#: field:compassion.inter.subcat,__last_update:0
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,write_uid:0
+#: field:compassion.intervention,write_uid:0
+#: field:compassion.intervention.category,write_uid:0
+#: field:compassion.intervention.commitment.wizard,write_uid:0
+#: field:compassion.intervention.deliverable,write_uid:0
+#: field:compassion.intervention.hold.wizard,write_uid:0
+#: field:compassion.intervention.search,write_uid:0
+#: field:compassion.inter.subcat,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,write_date:0
+#: field:compassion.intervention,write_date:0
+#: field:compassion.intervention.category,write_date:0
+#: field:compassion.intervention.commitment.wizard,write_date:0
+#: field:compassion.intervention.deliverable,write_date:0
+#: field:compassion.intervention.hold.wizard,write_date:0
+#: field:compassion.intervention.search,write_date:0
+#: field:compassion.inter.subcat,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Let's find an Intervention!"
+msgstr "Let's find an Intervention!"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:127
+#: code:addons/intervention_compassion/wizards/hold_wizard.py:38
+#: selection:compassion.intervention,service_level:0
+#: selection:compassion.intervention.hold.wizard,service_level:0
+#, python-format
+msgid "Level 1"
+msgstr "Level 1"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,deliverable_level_1_ids:0
+msgid "Level 1 Deliverables"
+msgstr "Level 1 Deliverables"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:128
+#: code:addons/intervention_compassion/wizards/hold_wizard.py:39
+#: selection:compassion.intervention,service_level:0
+#: selection:compassion.intervention.hold.wizard,service_level:0
+#, python-format
+msgid "Level 2"
+msgstr "Level 2"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,deliverable_level_2_ids:0
+msgid "Level 2 Deliverables"
+msgstr "Level 2 Deliverables"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:129
+#: code:addons/intervention_compassion/wizards/hold_wizard.py:40
+#: selection:compassion.intervention,service_level:0
+#: selection:compassion.intervention.hold.wizard,service_level:0
+#, python-format
+msgid "Level 3"
+msgstr "Level 3"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,deliverable_level_3_ids:0
+msgid "Level 3 Deliverables"
+msgstr "Level 3 Deliverables"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,local_contribution:0
+msgid "Local contribution"
+msgstr "Local contribution"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,holding_partner_id:0
+msgid "Major holding partner"
+msgstr "Major holding partner"
+
+#. module: intervention_compassion
+#: model:res.groups,name:intervention_compassion.group_intervention
+msgid "Manage Interventions"
+msgstr "Manage Interventions"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages and communication history"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,name:0
+#: field:compassion.global.intervention,name:0
+#: field:compassion.intervention,name:0
+#: field:compassion.intervention.category,name:0
+#: field:compassion.intervention.deliverable,name:0
+#: field:compassion.inter.subcat,name:0
+msgid "Name"
+msgstr "Name"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,next_year_opt_in:0
+#: field:compassion.intervention.hold.wizard,next_year_opt_in:0
+msgid "Next year opt in"
+msgstr "Next year opt in"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/wizards/intervention_search.py:174
+#, python-format
+msgid "No intervention found"
+msgstr "No intervention found"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:88
+#: selection:compassion.intervention,sla_negotiation_status:0
+#, python-format
+msgid "None"
+msgstr "None"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,not_funded_implications:0
+msgid "Not funded implications"
+msgstr "Not funded implications"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,objectives:0
+msgid "Objectives"
+msgstr "Objectives"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:35
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "On Hold"
+msgstr "On Hold"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:42
+#, python-format
+msgid "Ongoing CIV"
+msgstr "Ongoing CIV"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:43
+#, python-format
+msgid "Ongoing CIV FY Details"
+msgstr "Ongoing CIV FY Details"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,parent_id:0
+msgid "Parent Intervention"
+msgstr "Parent Intervention"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,parent_id:0
+msgid "Parent id"
+msgstr "Parent id"
+
+#. module: intervention_compassion
+#: field:compassion.global.intervention,parent_intervention:0
+msgid "Parent intervention"
+msgstr "Parent intervention"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:70
+#, python-format
+msgid "Partially committed"
+msgstr "Partially committed"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/global_intervention.py:68
+#, python-format
+msgid "Partially held"
+msgstr "Partially held"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,pdc_costs:0
+#: field:compassion.global.intervention,pdc_costs:0
+#: field:compassion.intervention,pdc_costs:0
+msgid "Pdc costs"
+msgstr "Pdc costs"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,planned_end_date:0
+msgid "Planned end date"
+msgstr "Planned end date"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Previsions"
+msgstr "Previsions"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,primary_owner:0
+#: field:compassion.intervention.hold.wizard,primary_owner:0
+msgid "Primary owner"
+msgstr "Primary owner"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,problem_statement:0
+msgid "Problem statement"
+msgstr "Problem statement"
+
+#. module: intervention_compassion
+#: help:compassion.generic.intervention,pdc_costs:0
+#: help:compassion.global.intervention,pdc_costs:0
+#: help:compassion.intervention,pdc_costs:0
+msgid "Program development costs"
+msgstr "Program development costs"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,proposed_start_date:0
+#: field:compassion.global.intervention,proposed_start_date:0
+#: field:compassion.intervention,proposed_start_date:0
+msgid "Proposed start date"
+msgstr "Proposed start date"
+
+#. module: intervention_compassion
+#: view:compassion.global.intervention:intervention_compassion.view_compassion_global_intervention_form
+msgid "Put a hold"
+msgstr "Put a hold"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Quick Search"
+msgstr "Quick Search"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:51
+#: selection:compassion.intervention,intervention_status:0
+#, python-format
+msgid "Rejected"
+msgstr "Rejected"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,remaining_amount_equal:0
+msgid "Remaining amount equal"
+msgstr "Remaining amount equal"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,remaining_amount_greater:0
+msgid "Remaining amount greater than"
+msgstr "Remaining amount greater than"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,remaining_amount_lower:0
+msgid "Remaining amount lower than"
+msgstr "Remaining amount lower than"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,remaining_amount_to_raise:0
+#: field:compassion.global.intervention,remaining_amount_to_raise:0
+#: field:compassion.intervention,remaining_amount_to_raise:0
+msgid "Remaining amount to raise"
+msgstr "Remaining amount to raise"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,requested_additional_funding:0
+#: field:compassion.global.intervention,requested_additional_funding:0
+#: field:compassion.intervention,requested_additional_funding:0
+#: field:compassion.intervention.commitment.wizard,additional_fund_amount:0
+msgid "Requested additional funding"
+msgstr "Requested additional funding"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Reset"
+msgstr "Reset"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:36
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+#: selection:compassion.intervention,state:0
+#, python-format
+msgid "SLA Negotiation"
+msgstr "SLA Negotiation"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Schedule"
+msgstr "Schedule"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Search"
+msgstr "Search"
+
+#. module: intervention_compassion
+#: model:ir.actions.act_window,name:intervention_compassion.search_intervention
+#: model:ir.ui.menu,name:intervention_compassion.menu_interventions_search
+msgid "Search Interventions"
+msgstr "Search Interventions"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,secondary_owner:0
+#: field:compassion.intervention.hold.wizard,secondary_owner:0
+msgid "Secondary owner"
+msgstr "Secondary owner"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.commitment.wizard:intervention_compassion.view_intervention_commitment_wizard_form
+msgid "Send Commitment"
+msgstr "Send Commitment"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,service_level:0
+#: field:compassion.intervention.hold.wizard,service_level:0
+msgid "Service level"
+msgstr "Service level"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,sla_comments:0
+msgid "Sla comments"
+msgstr "Sla comments"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,sla_negotiation_status:0
+msgid "Sla negotiation status"
+msgstr "Sla negotiation status"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,sla_selection_complete:0
+msgid "Sla selection complete"
+msgstr "Sla selection complete"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,solutions:0
+msgid "Solutions"
+msgstr "Solutions"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:47
+#, python-format
+msgid "Sponsorship Launch"
+msgstr "Sponsorship Launch"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "Start"
+msgstr "Start"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,start_date:0
+msgid "Start date"
+msgstr "Start date"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,start_no_later_than:0
+#: field:compassion.global.intervention,start_no_later_than:0
+#: field:compassion.intervention,start_no_later_than:0
+msgid "Start no later than"
+msgstr "Start no later than"
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+#: field:compassion.intervention,state:0
+msgid "State"
+msgstr "State"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,status_chooser:0
+msgid "Status chooser"
+msgstr "Status chooser"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,status_selected:0
+msgid "Status selected"
+msgstr "Status selected"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Status selection"
+msgstr "Status selection"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.category,subcategory_ids:0
+msgid "Subcategories"
+msgstr "Subcategories"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,subcategory_id:0
+#: field:compassion.global.intervention,subcategory_id:0
+#: field:compassion.intervention,subcategory_id:0
+msgid "Subcategory"
+msgstr "Subcategory"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:52
+#: selection:compassion.intervention,intervention_status:0
+#, python-format
+msgid "Submitted"
+msgstr "Submitted"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,success_factors:0
+msgid "Success factors"
+msgstr "Success factors"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_summary:0
+msgid "Summary"
+msgstr "Summary"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:45
+#, python-format
+msgid "Survival (CSP)"
+msgstr "Survival (CSP)"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/intervention_category.py:46
+#, python-format
+msgid "Survival FY Details"
+msgstr "Survival FY Details"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,fo_proposed_sla_costs:0
+msgid "The costs proposed by the Field Office for the SLA"
+msgstr "The costs proposed by the Field Office for the SLA"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,approved_sla_costs:0
+msgid "The final approved Service Level Agreement Cost"
+msgstr "The final approved Service Level Agreement Cost"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,total_cost:0
+#: field:compassion.global.intervention,total_cost:0
+#: field:compassion.intervention,total_cost:0
+msgid "Total cost"
+msgstr "Total cost"
+
+#. module: intervention_compassion
+#: field:compassion.generic.intervention,type:0
+#: field:compassion.global.intervention,type:0
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_filter
+#: field:compassion.intervention,type:0
+#: field:compassion.intervention.category,type:0
+msgid "Type"
+msgstr "Type"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,type_chooser:0
+msgid "Type chooser"
+msgstr "Type chooser"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,type_selected:0
+msgid "Type selected"
+msgstr "Type selected"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Type selection"
+msgstr "Type selection"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: intervention_compassion
+#: view:compassion.intervention.search:intervention_compassion.view_compassion_intervention_search_form
+msgid "Update from quick search selection"
+msgstr "Update from quick search selection"
+
+#. module: intervention_compassion
+#: field:compassion.intervention.search,use_advanced_search:0
+msgid "Use advanced search"
+msgstr "Use advanced search"
+
+#. module: intervention_compassion
+#: field:compassion.intervention,website_message_ids:0
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: intervention_compassion
+#: help:compassion.intervention,website_message_ids:0
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: intervention_compassion
+#: code:addons/intervention_compassion/models/compassion_intervention.py:264
+#, python-format
+msgid "You can only delete cancelled Interventions."
+msgstr "You can only delete cancelled Interventions."
+
+#. module: intervention_compassion
+#: view:compassion.intervention:intervention_compassion.view_compassion_intervention_form
+msgid "get infos"
+msgstr "get infos"
+
+#. module: intervention_compassion
+#: model:res.groups,comment:intervention_compassion.group_intervention
+msgid "the user will have access to all interventions and related data."
+msgstr "the user will have access to all interventions and related data."
+

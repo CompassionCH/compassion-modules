@@ -8,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: David Coninckx
+#    Copyright (C) 2016-2017 Compassion CH (http://www.compassion.ch)
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,23 +28,34 @@
 
 # pylint: disable=C8101
 {
-    "name": "Compassion Sponsorships Tracking",
+    "name": "Compassion Interventions",
     "version": "14.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
-    "depends": ["sponsorship_compassion", "base_automation"],
+    "depends": [
+        "child_compassion",  # modules/child_compassion
+        "base_automation",
+    ],
+    "external_dependencies": {},
     "data": [
-        "views/sub_sponsorship_wizard_view.xml",
-        "views/contract_view.xml",
-        "views/settings_view.xml",
-        "views/end_reason_view.xml",
-        "data/sponsorship_action_rules.xml",
-        "data/install.xml",
+        "data/compassion.intervention.category.csv",
+        "data/compassion.intervention.subcategory.csv",
+        "data/compassion.intervention.deliverable.csv",
+        "data/install_category_rel.xml",
+        "data/intervention_action_rules.xml",
+        "data/compassion_mapping.xml",
+        "data/gmc_action.xml",
+        "security/intervention_groups.xml",
         "security/ir.model.access.csv",
+        "views/compassion_intervention_view.xml",
+        "views/global_intervention_view.xml",
+        "views/intervention_search_view.xml",
+        "views/project_view.xml",
     ],
     "demo": [],
     "installable": True,
     "auto_install": False,
+    "post_init_hook": "load_mappings",
 }

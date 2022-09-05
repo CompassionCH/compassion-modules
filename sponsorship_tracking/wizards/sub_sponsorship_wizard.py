@@ -40,7 +40,6 @@ class SubSponsorshipWizard(models.TransientModel):
         for record in self:
             record.is_other = record.no_sub_default_reasons == other
 
-    @api.multi
     def create_subsponsorship(self):
         """ Creates a subsponsorship. """
         self.ensure_one()
@@ -104,7 +103,6 @@ class SubSponsorshipWizard(models.TransientModel):
                 ).env.context,
             }
 
-    @api.multi
     def no_sub(self):
         """ No SUB for the sponsorship. """
         self.ensure_one()

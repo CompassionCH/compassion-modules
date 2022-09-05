@@ -35,7 +35,6 @@
     <record model="ir.actions.act_window" id="action_create_sub_sponsorship">
         <field name="name">Create SUB Sponsorship</field>
         <field name="res_model">sds.subsponsorship.wizard</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
