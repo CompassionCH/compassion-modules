@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class AvailabilitySettings(models.TransientModel):
@@ -17,85 +17,21 @@ class AvailabilitySettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     # Hold default durations
-    consignment_hold_duration = fields.Integer(help="In Days")
-    e_commerce_hold_duration = fields.Integer(help="In Minutes")
-    no_money_hold_duration = fields.Integer(help="In Days")
-    no_money_hold_extension = fields.Integer(help="In Days")
-    reinstatement_hold_duration = fields.Integer(help="In Days")
-    reservation_duration = fields.Integer(help="In Days")
-    reservation_hold_duration = fields.Integer(help="In Days")
-    sponsor_cancel_hold_duration = fields.Integer(help="In Days")
-    sub_child_hold_duration = fields.Integer(help="In Days")
-
-    def set_values(self):
-        super().set_values()
-        config = self.env["ir.config_parameter"]
-        config.set_param(
-            "child_compassion.consignment_hold_duration",
-            str(self.consignment_hold_duration),
-        )
-        config.set_param(
-            "child_compassion.e_commerce_hold_duration",
-            str(self.e_commerce_hold_duration),
-        )
-        config.set_param(
-            "child_compassion.no_money_hold_duration", str(self.no_money_hold_duration)
-        )
-        config.set_param(
-            "child_compassion.no_money_hold_extension",
-            str(self.no_money_hold_extension),
-        )
-        config.set_param(
-            "child_compassion.reinstatement_hold_duration",
-            str(self.reinstatement_hold_duration),
-        )
-        config.set_param(
-            "child_compassion.reservation_duration", str(self.reservation_duration)
-        )
-        config.set_param(
-            "child_compassion.reservation_hold_duration",
-            str(self.reservation_hold_duration),
-        )
-        config.set_param(
-            "child_compassion.sponsor_cancel_hold_duration",
-            str(self.sponsor_cancel_hold_duration),
-        )
-        config.set_param(
-            "child_compassion.sub_child_hold_duration",
-            str(self.sub_child_hold_duration),
-        )
-
-    @api.model
-    def get_values(self):
-        res = super().get_values()
-        param_obj = self.env["ir.config_parameter"].sudo()
-
-        res["consignment_hold_duration"] = int(
-            param_obj.get_param("child_compassion.consignment_hold_duration", "14")
-        )
-        res["e_commerce_hold_duration"] = int(
-            param_obj.get_param("child_compassion.e_commerce_hold_duration", "15")
-        )
-        res["no_money_hold_duration"] = int(
-            param_obj.get_param("child_compassion.no_money_hold_duration", "30")
-        )
-        res["no_money_hold_extension"] = int(
-            param_obj.get_param("child_compassion.no_money_hold_extension", "15")
-        )
-        res["reinstatement_hold_duration"] = int(
-            param_obj.get_param("child_compassion.reinstatement_hold_duration", "15")
-        )
-        res["reservation_duration"] = int(
-            param_obj.get_param("child_compassion.reservation_duration", "30")
-        )
-        res["reservation_hold_duration"] = int(
-            param_obj.get_param("child_compassion.reservation_hold_duration", "7")
-        )
-        res["sponsor_cancel_hold_duration"] = int(
-            param_obj.get_param("child_compassion.sponsor_cancel_hold_duration", "7")
-        )
-        res["sub_child_hold_duration"] = int(
-            param_obj.get_param("child_compassion.sub_child_hold_duration", "30")
-        )
-
-        return res
+    consignment_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.consignment_hold_duration", default=14)
+    e_commerce_hold_duration = fields.Integer(
+        help="In Minutes", config_parameter="child_compassion.e_commerce_hold_duration", default=15)
+    no_money_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.no_money_hold_duration", default=30)
+    no_money_hold_extension = fields.Integer(
+        help="In Days", config_parameter="child_compassion.no_money_hold_extension", default=15)
+    reinstatement_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.reinstatement_hold_duration", default=15)
+    reservation_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.reservation_duration", default=30)
+    reservation_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.reservation_hold_duration", default=7)
+    sponsor_cancel_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.sponsor_cancel_hold_duration", default=7)
+    sub_child_hold_duration = fields.Integer(
+        help="In Days", config_parameter="child_compassion.sub_child_hold_duration", default=30)

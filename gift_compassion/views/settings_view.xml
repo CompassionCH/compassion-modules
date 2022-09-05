@@ -56,9 +56,46 @@
         <field name="inherit_id" ref="message_center_compassion.notification_settings"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']">
-                <div name="gift_undeliverable">
-                    <label for="gift_notify_ids" class="o_light_label"/>
+                <div class="row" name="gift_undeliverable">
+                    <label for="gift_notify_ids" class="col-md-5 o_light_label"/>
                     <field name="gift_notify_ids" widget="many2many_tags"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="gift_accounting_settings_form" model="ir.ui.view">
+        <field name="name">gift.accounting.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='compassion_settings']" position="inside">
+                <h2>Accounting</h2>
+                <div class="row mt16 o_settings_container" name="accounting_configuration">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div name="left_group" class="o_setting_right_pane">
+                            <div class="row">
+                                <label for="gift_income_account_id" class="col-md-5 o_light_label"/>
+                                <field name="gift_income_account_id" domain="[('company_id', '=', context.company_id)]"/>
+                            </div>
+                            <div class="row">
+                                <label for="gift_expense_account_id" class="col-md-5 o_light_label"/>
+                                <field name="gift_expense_account_id" domain="[('company_id', '=', context.company_id)]"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div name="right_group" class="o_setting_right_pane">
+                            <div class="row">
+                                <label for="gift_analytic_id" class="col-md-5 o_light_label"/>
+                                <field name="gift_analytic_id"/>
+                            </div>
+                            <div class="row">
+                                <label for="gift_analytic_tag_id" class="col-md-5 o_light_label"/>
+                                <field name="gift_analytic_tag_id"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </xpath>
         </field>

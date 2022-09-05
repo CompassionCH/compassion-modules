@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2020 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2020-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -11,9 +11,8 @@
 from odoo import api, models, fields
 
 
-class StaffNotificationSettings(models.TransientModel):
-    """ Settings configuration for any Notifications."""
-
+class Settings(models.TransientModel):
+    """ Settings configuration."""
     _inherit = "res.config.settings"
 
     # Users to notify for translating GMC values
@@ -23,8 +22,12 @@ class StaffNotificationSettings(models.TransientModel):
         domain=[("share", "=", False)],
         compute="compute_relation_translate_notify_ids",
         inverse="_inverse_relation_translate_notify_ids",
-        readonly=False,
     )
+    connect_api_key = fields.Char("Api Key", config_parameter="message_center_compassion.connect_api_key")
+    connect_gpid = fields.Char("GP ID", config_parameter="message_center_compassion.connect_gpid")
+    connect_gpname = fields.Char("GP Name", config_parameter="message_center_compassion.connect_gpname")
+    connect_client = fields.Char("Client", config_parameter="message_center_compassion.connect_client")
+    connect_secret = fields.Char("Secret", config_parameter="message_center_compassion.connect_secret")
 
     def compute_relation_translate_notify_ids(self):
         self.translate_notify_ids = self._get_translate_notify_ids()
@@ -52,6 +55,6 @@ class StaffNotificationSettings(models.TransientModel):
         return res
 
     @api.model
-    def get_param(self, param):
+    def get_param(self, param, default=None):
         """Get a single param from ['res.config.settings']"""
-        return self.sudo().get_values().get(param)
+        return self.sudo().default_get([param]).get(param, default)

@@ -510,9 +510,13 @@ class SponsorshipGift(models.Model):
         data.update(
             {"state": "In Progress", "amount_us_dollars": exchange_rate * self.amount}
         )
-        account_credit = self.env["account.account"].search([("code", "=", "2002")])
-        account_debit = self.env["account.account"].search([("code", "=", "5003")])
-        journal = self.env["account.journal"].search([("code", "=", "OD")])
+        company = self.sponsorship_id.company_id
+        param_obj = self.env["res.config.settings"].with_company(company)
+        account_credit = param_obj.get_param("gift_income_account_id")
+        account_debit = param_obj.get_param("gift_expense_account_id")
+        if not account_credit or not account_debit:
+            raise UserError(_("Please setup income and expense accounts for gifts before sending them to GMC."))
+        journal = self.env["account.journal"].search([("code", "=", "OD"), ("company_id", "=", company.id)])
         maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
         move_data = {
             "journal_id": journal.id,
@@ -520,11 +524,8 @@ class SponsorshipGift(models.Model):
             "date": maturity,
         }
         move_lines_data = list()
-        analytic = self.env["account.analytic.account"].search(
-            [("code", "=", "ATT_CD")]
-        )
-        analytic_tag = self.env["account.analytic.tag"].search(
-            [("name", "=", "CD pgm")], limit=1)
+        analytic = param_obj.get_param("gift_analytic_id")
+        analytic_tag = param_obj.get_param("gift_analytic_tag_id")
         # Create the debit lines from the Gift Account
         invoiced_amount = sum(self.invoice_line_ids.mapped("price_subtotal") or [0])
         if invoiced_amount:
@@ -532,16 +533,16 @@ class SponsorshipGift(models.Model):
                 move_lines_data.append(
                     {
                         "partner_id": invl.partner_id.id,
-                        "account_id": account_debit.id,
+                        "account_id": account_debit,
                         "name": invl.name,
                         "debit": invl.price_subtotal,
                         "credit": 0.0,
-                        "analytic_account_id": analytic.id,
+                        "analytic_account_id": analytic,
                         "date": maturity,
                         "date_maturity": maturity,
                         "currency_id": self.currency_usd.id,
                         "amount_currency": invl.price_subtotal * exchange_rate,
-                        "analytic_tag_ids": [(4, analytic_tag.id)]
+                        "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
                     }
                 )
         if invoiced_amount < self.amount:
@@ -550,15 +551,15 @@ class SponsorshipGift(models.Model):
             move_lines_data.append(
                 {
                     "partner_id": self.partner_id.id,
-                    "account_id": account_debit.id,
+                    "account_id": account_debit,
                     "name": self.name,
                     "debit": amount,
-                    "analytic_account_id": analytic.id,
+                    "analytic_account_id": analytic,
                     "date": maturity,
                     "date_maturity": maturity,
                     "currency_id": self.currency_usd.id,
                     "amount_currency": amount * exchange_rate,
-                    "analytic_tag_ids": [(4, analytic_tag.id)]
+                    "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
                 }
             )
 
@@ -566,7 +567,7 @@ class SponsorshipGift(models.Model):
         move_lines_data.append(
             {
                 "partner_id": self.partner_id.id,
-                "account_id": account_credit.id,
+                "account_id": account_credit,
                 "name": self.name,
                 "date": maturity,
                 "date_maturity": maturity,
@@ -711,17 +712,11 @@ class SponsorshipGift(models.Model):
         Create an inverse move
         Notify users defined in settings.
         """
-        inverse_credit_account = self.env["account.account"].search(
-            [("code", "=", "5003")]
-        )
-        inverse_debit_account = self.env["account.account"].search(
-            [("code", "=", "2001")]
-        )
-        analytic = self.env["account.analytic.account"].search(
-            [("code", "=", "ATT_CD")]
-        )
-        analytic_tag = self.env["account.analytic.tag"].search(
-            [("name", "=", "CD pgm")], limit=1)
+        param_obj = self.env["res.config.settings"]
+        inverse_credit_account = param_obj.get_param("gift_expense_account_id")
+        inverse_debit_account = param_obj.get_param("gift_income_account_id")
+        analytic = param_obj.get_param("gift_analytic_id")
+        analytic_tag = param_obj.get_param("gift_analytic_tag_id")
         for gift in self.filtered("payment_id"):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({"date": fields.Date.today()})
@@ -730,22 +725,22 @@ class SponsorshipGift(models.Model):
                 if line.debit > 0:
                     line.write(
                         {
-                            "account_id": inverse_debit_account.id,
+                            "account_id": inverse_debit_account,
                             "analytic_account_id": False,
                         }
                     )
                 elif line.credit > 0:
                     line.write(
                         {
-                            "account_id": inverse_credit_account.id,
-                            "analytic_account_id": analytic.id,
-                            "analytic_tag_ids": [(4, analytic_tag.id)]
+                            "account_id": inverse_credit_account,
+                            "analytic_account_id": analytic,
+                            "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
                         }
                     )
-            inverse_move.post()
+            inverse_move.action_post()
             gift.inverse_payment_id = inverse_move
 
-        notify_ids = self.env["res.config.settings"].sudo().get_param("gift_notify_ids")
+        notify_ids = self.env["res.config.settings"].get_param("gift_notify_ids")
         if notify_ids:
             for gift in self:
                 partner = gift.partner_id

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -14,7 +14,8 @@ from json.decoder import JSONDecodeError
 
 import requests
 
-from odoo import _
+from odoo import api, registry, SUPERUSER_ID, _
+from odoo.http import db_monodb
 from odoo.exceptions import UserError
 from odoo.tools.config import config
 
@@ -37,25 +38,32 @@ class OnrampConnector(object):
     # Requests headers for sending messages
     _headers = None
 
+    # For accessing odoo system parameters
+    _res_config = None
+
     def __new__(cls):
         """ Inherit method to ensure a single instance exists. """
         if OnrampConnector.__instance is None:
             OnrampConnector.__instance = object.__new__(cls)
-            connect_url = config.get("connect_url")
-            api_key = config.get("connect_api_key")
-            if connect_url and api_key:
-                OnrampConnector.__instance._connect_url = connect_url
-                OnrampConnector.__instance._api_key = api_key
-                session = requests.Session()
-                session.params.update({"api_key": api_key, "gpid": config.get('connect_gpid')})
-                OnrampConnector.__instance._session = session
-            else:
-                raise UserError(
-                    _(
-                        "Please give connect_url and connect_api_key values "
-                        "in your Odoo configuration file."
+            db_registry = registry(db_monodb())
+            with api.Environment.manage():
+                env = api.Environment(db_registry.cursor(), SUPERUSER_ID, {})
+                res_config = env["res.config.settings"]
+                connect_url = config.get("connect_url")
+                api_key = res_config.get_param("connect_api_key")
+                if connect_url and api_key:
+                    OnrampConnector.__instance._connect_url = connect_url
+                    cls._res_config = res_config
+                    session = requests.Session()
+                    session.params.update({"api_key": api_key, "gpid": res_config.get_param('connect_gpid')})
+                    OnrampConnector.__instance._session = session
+                else:
+                    raise UserError(
+                        _(
+                            "Please give connect_url and connect_api_key values "
+                            "in your Odoo configuration file."
+                        )
                     )
-                )
         return OnrampConnector.__instance
 
     def __init__(self):
@@ -114,8 +122,8 @@ class OnrampConnector(object):
         Class method that fetches a token from GMC OAuth server.
         :return: dict: Authorisation header.
         """
-        client = config.get("connect_client")
-        secret = config.get("connect_secret")
+        client = cls._res_config.get_param("connect_client")
+        secret = cls._res_config.get_param("connect_secret")
         provider = config.get("connect_token_server")
         if not client or not secret or not provider:
             raise UserError(

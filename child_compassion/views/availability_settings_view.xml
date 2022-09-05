@@ -7,68 +7,50 @@
         <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']" position='inside'>
-                <h2>Default hold durations</h2>
-                <div class="row mt16 o_settings_container">
-                    <div class="col-xs-12 col-md-12 o_setting_box">
-                        <div name="availability_management_settings">
-                            <div class="o_setting_right_pane">
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="consignment_hold_duration"/>
-                                    <field name="consignment_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="e_commerce_hold_duration"/>
-                                    <field name="e_commerce_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="no_money_hold_duration"/>
-                                    <field name="no_money_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="no_money_hold_extension"/>
-                                    <field name="no_money_hold_extension"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="reinstatement_hold_duration"/>
-                                    <field name="reinstatement_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="reservation_duration"/>
-                                    <field name="reservation_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="reservation_hold_duration"/>
-                                    <field name="reservation_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="sponsor_cancel_hold_duration"/>
-                                    <field name="sponsor_cancel_hold_duration"/>
-                                </div>
-
-                                <div class="row">
-                                    <label class="col-md-3 o_light_label"
-                                           for="sub_child_hold_duration"/>
-                                    <field name="sub_child_hold_duration"/>
-                                </div>
-
+                <h2>Default hold duration in days</h2>
+                <div class="row mt16 o_settings_container" name="availability_management_settings">
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div name="left_group" class="o_setting_right_pane">
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="consignment_hold_duration"/>
+                                <field name="consignment_hold_duration" class="w-25"/>
                             </div>
-
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="no_money_hold_duration"/>
+                                <field name="no_money_hold_duration" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="no_money_hold_extension"/>
+                                <field name="no_money_hold_extension" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="sponsor_cancel_hold_duration"/>
+                                <field name="sponsor_cancel_hold_duration" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="sub_child_hold_duration"/>
+                                <field name="sub_child_hold_duration" class="w-25"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 o_setting_box">
+                        <div name="right_group" class="o_setting_right_pane">
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="e_commerce_hold_duration"/>
+                                <field name="e_commerce_hold_duration" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="reinstatement_hold_duration"/>
+                                <field name="reinstatement_hold_duration" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="reservation_duration"/>
+                                <field name="reservation_duration" class="w-25"/>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-6 o_light_label" for="reservation_hold_duration"/>
+                                <field name="reservation_hold_duration" class="w-25"/>
+                            </div>
                         </div>
                     </div>
                 </div>

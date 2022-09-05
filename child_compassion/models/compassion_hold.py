@@ -98,7 +98,7 @@ class AbstractHold(models.AbstractModel):
         """
         config_obj = self.env["res.config.settings"]
         hold_param = hold_type.name.lower() + "_duration"
-        duration = config_obj.sudo().get_param(hold_param)
+        duration = config_obj.sudo().get_param(hold_param, 15)
         diff = (
             timedelta(days=duration)
             if hold_type != HoldType.E_COMMERCE_HOLD

@@ -3,7 +3,13 @@ iso639
 iso639-lang
 jwt
 langdetect
+pdfminer
+PyMuPDF
+PyPDF2
 pyquery
 pytesseract
+python-magic
 pytz
+pyzbar
 timezonefinder
+wand

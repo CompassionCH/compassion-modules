@@ -22,10 +22,17 @@ class CollectGiftWizard(models.TransientModel):
         "account.move.line", string="Invoice lines", readonly=False
     )
     domain = fields.Char(
-        default="[('product_id.name', '=', 'Child gift'),"
-                " ('payment_state', '=', 'paid'),"
-                " ('gift_id', '=', False)]"
+        default=lambda s: s._get_domain()
     )
+
+    @api.model
+    def _get_domain(self):
+        category = self.env.ref("sponsorship_compassion.product_category_gift")
+        return str([
+            ("product_id.categ_id", "=", category.id),
+            ("payment_state", "=", "paid"),
+            ("gift_id", "=", False)
+        ])
 
     @api.onchange("domain")
     def apply_domain(self):

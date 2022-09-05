@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class StaffNotificationSettings(models.TransientModel):
@@ -29,7 +29,6 @@ class StaffNotificationSettings(models.TransientModel):
     def _compute_relation_disaster_notify_ids(self):
         self.disaster_notify_ids = self._get_disaster_notify_ids()
 
-    @api.model
     def _get_disaster_notify_ids(self):
         param_obj = self.env["ir.config_parameter"].sudo()
         partners = param_obj.get_param("child_compassion.disaster_notify_ids", False)
@@ -44,7 +43,6 @@ class StaffNotificationSettings(models.TransientModel):
             ",".join(map(str, self.disaster_notify_ids.ids)),
         )
 
-    @api.model
     def get_values(self):
         res = super().get_values()
         res["disaster_notify_ids"] = self._get_disaster_notify_ids()
