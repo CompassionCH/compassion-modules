@@ -50,6 +50,7 @@ class Correspondence(models.Model):
         "correspondence.metadata",
         "translatable.model",
         "compassion.mapped.model",
+        "utm.mixin"
     ]
     _description = "Letter"
     _order = "status_date desc"

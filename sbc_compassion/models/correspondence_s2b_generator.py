@@ -53,7 +53,11 @@ class CorrespondenceS2bGenerator(models.Model):
     sponsorship_ids = fields.Many2many(
         "recurring.contract", string="Sponsorships", required=True, readonly=False
     )
-    language_id = fields.Many2one("res.lang.compassion", "Language", readonly=False)
+    language_id = fields.Many2one(
+        "res.lang.compassion", "Language", readonly=False,
+        default=lambda s: s.env.ref("advanced_translation.lang_compassion_english").id,
+        required=True
+    )
     body = fields.Text(
         required=True,
         help="You can use the following tags to replace with values :\n\n"
@@ -66,7 +70,7 @@ class CorrespondenceS2bGenerator(models.Model):
         "correspondence", "generator_id", "Letters", readonly=False
     )
     nb_letters = fields.Integer(compute="_compute_nb_letters")
-    preview_image = fields.Binary(readonly=True)
+    preview_image = fields.Image(readonly=True)
     preview_pdf = fields.Binary(readonly=True)
     filename = fields.Char(compute="_compute_filename")
     month = fields.Selection("_get_months")
@@ -133,7 +137,7 @@ class CorrespondenceS2bGenerator(models.Model):
             out_data.seek(0)
             pdf = out_data.read()
 
-        with Image(blob=pdf) as pdf_image:
+        with Image(blob=pdf, resolution=96) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 
         pdf_image = base64.b64encode(pdf)
@@ -202,7 +206,6 @@ class CorrespondenceS2bGenerator(models.Model):
         return {
             "name": letters._description,
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree,form",
             "res_model": letters._name,
             "context": self.env.context,
