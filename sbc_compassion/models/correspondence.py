@@ -261,8 +261,10 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.direction == "Supporter To Beneficiary":
                 letter.s2b_state = letter.state
+                letter.b2s_state = False
             else:
                 letter.b2s_state = letter.state
+                letter.s2b_state = False
 
     @api.depends("sponsorship_id")
     def _compute_is_first(self):
@@ -554,11 +556,9 @@ class Correspondence(models.Model):
                     if len(text.strip()) < 5:
                         images.append(pages.pop(i.index - len(images)))
 
-        self.letter_image = base64.b64encode(
-            template.generate_pdf(
-                self.name, {}, {"Translation": text_boxes}, images, pages
-            )
-        )
+        pdf_out = template.generate_pdf(self.name, {}, {"Translation": text_boxes}, images, pages)
+        if pdf_out:
+            self.letter_image = base64.b64encode(pdf_out)
 
         return True
 

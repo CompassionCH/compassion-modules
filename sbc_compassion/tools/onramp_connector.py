@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2015-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -8,46 +8,16 @@
 #
 ##############################################################################
 import base64
-import logging
 
-import requests
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from odoo import _
 from odoo.exceptions import UserError
-from odoo.tools.config import config
-
-logger = logging.getLogger(__name__)
 
 
-class SBCConnector(OnrampConnector):
-    """ Singleton class to connect to U.S. Onramp in order to send
-    messages. """
-
-    # Private instance of the class
-    __instance = None
-
-    def __new__(cls):
-        """ Inherit method to ensure a single instance exists. """
-        if SBCConnector.__instance is None:
-            SBCConnector.__instance = object.__new__(cls)
-            connect_url = config.get("connect_url")
-            api_key = config.get("connect_api_key")
-            gpid = config.get("connect_gpid")
-            if connect_url and api_key and gpid:
-                SBCConnector.__instance._connect_url = connect_url
-                SBCConnector.__instance._api_key = api_key
-                session = requests.Session()
-                session.params.update({"api_key": api_key, "gpid": gpid})
-                SBCConnector.__instance._session = session
-            else:
-                raise UserError(
-                    _(
-                        "Please give connect_url, connect_api_key and connect_gpid values "
-                        "in your Odoo configuration file."
-                    )
-                )
-        return SBCConnector.__instance
+class SBCConnector(object):
+    def __init__(self):
+        self.connector = OnrampConnector()
 
     def send_letter_image(self, image_data, image_type, base64encoded=True):
         """ Sends an image of a Letter to Onramp U.S. Image Upload Service.
@@ -56,38 +26,31 @@ class SBCConnector(OnrampConnector):
 
         Returns the uploaded image URL.
         """
-        content_type = ""
         if image_type == "pdf":
             content_type = "application"
         else:
             content_type = "image"
         headers = {f"Content-type": f"{content_type}/{image_type}"}
         params = {"doctype": "s2bletter"}
-        url = self._connect_url + "images/documents"
-        OnrampConnector.log_message(
-            "POST", url, headers, message="{image binary data not shown}"
-        )
+        url = "images/documents"
         if base64encoded:
             data = base64.b64decode(image_data)
         else:
             data = image_data
-        r = self._session.post(url, params=params, headers=headers, data=data)
-        status = r.status_code
-        if status == 201:
-            letter_url = r.text
-        else:
-            raise UserError(_("[%s] %s") % (str(r.status_code), r.text))
+        r = self.connector.send_message(url, "POST", params=params, headers=headers, body=data)
+        status = r.get("code")
+        letter_url = r.get("content")
+        if status != 201:
+            raise UserError(_("[%s] %s") % (str(status), letter_url))
         return letter_url
 
     def get_letter_image(self, letter_url, img_type="jpeg", pages=0, dpi=96):
         """ Calls Letter Image Service from Onramp U.S. and get the data
-        http://developer.compassion.com/docs/read/compassion_connect2/
-        service_catalog/Image_Retrieval
+        http://developer.compassion.com/docs/read/compassion_connect2/service_catalog/Image_Retrieval
         """
         params = {"format": img_type, "pg": pages, "dpi": dpi}
-        OnrampConnector.log_message("GET", letter_url)
-        r = self._session.get(letter_url, params=params)
+        r = self.connector.send_message(letter_url, "GET", params=params, full_url=True)
         letter_data = None
-        if r.status_code == 200:
-            letter_data = base64.b64encode(r.content)
+        if r.get("code") == 200:
+            letter_data = base64.b64encode(r.get("raw_content"))
         return letter_data

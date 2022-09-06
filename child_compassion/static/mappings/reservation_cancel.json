@@ -4,7 +4,7 @@
   "mapping": {
     "Reservation_ID": "reservation_id",
     "GlobalPartner_ID": {
-      "to_json_conversion": "config.get('connect_gpid')"
+      "to_json_conversion": "gpid"
     }
   }
 }

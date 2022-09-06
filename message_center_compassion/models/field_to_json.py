@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2019 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2019-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Flückiger Nathan, Emanuel Cino
 #
@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import tools, models, fields, _
+from odoo import models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval, wrap_module
 
@@ -121,10 +121,12 @@ class FieldToJson(models.Model):
         self.ensure_one()
         res = {self.json_name: odoo_value}
         if self.to_json_conversion:
+            gpid = self.env["res.config.settings"].get_param("connect_gpid")
+            gpname = self.env["res.config.settings"].get_param("connect_gpname")
             res[self.json_name] = safe_eval(
                 self.to_json_conversion,
                 {"odoo_value": odoo_value, "self": self, "fields": wrap_module(fields, ["Date", "Datetime"]),
-                 "tools": wrap_module(tools, ["config"])},
+                 "gpid": gpid, "gpname": gpname},
             )
         elif (
                 self.field_id.ttype not in ("boolean", "float", "integer", "monetary")

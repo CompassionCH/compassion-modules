@@ -67,16 +67,16 @@
       "field": "end_date"
     },
     "CorrespondentGlobalPartnerID": {
-      "to_json_conversion": "config.get('connect_gpid')"
+      "to_json_conversion": "gpid"
     },
     "IsSponsorCorrespondent": {
       "to_json_conversion": "True"
     },
     "SponsorGlobalPartnerID": {
-      "to_json_conversion": "config.get('connect_gpid')"
+      "to_json_conversion": "gpid"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "config.get('connect_gpid')"
+      "to_json_conversion": "gpid"
     }
   }
 }

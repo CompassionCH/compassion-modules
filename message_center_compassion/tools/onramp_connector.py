@@ -72,21 +72,25 @@ class OnrampConnector(object):
         if not self._token_time or self._token_time + timedelta(hours=1) <= now:
             self._retrieve_token()
 
-    def send_message(self, service_name, message_type, body=None, params=None):
+    def send_message(self, service_name, message_type, body=None, params=None, headers=None, full_url=False):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
         :param message_type: GET, POST or PUT
         :param body: Body of the message to send.
         :param params: Optional Dictionary of HTTP Request parameters
                                 (put inside the url)
+        :param headers: Optional headers for the request
+        :param full_url: Optional boolean to indicate the service_name is a full url that should be called as it is.
 
         :returns: A dictionary with the content of the answer to the message.
                   {'code': http_status_code, 'content': response,
                    'Error': error_message, 'request_id': request id header}
         """
-        headers = {"Content-type": "application/json"}
-        url = self._connect_url + service_name
-        self.log_message(message_type, url, headers, body, self._session)
+        if headers is None:
+            headers = {"Content-type": "application/json"}
+        url = self._connect_url + service_name if not full_url else service_name
+        log_body = body if body and len(body) < 500 else body and (body[:500] + "...[truncated]")
+        self.log_message(message_type, url, headers, log_body, self._session)
         if message_type == "GET":
             r = self._session.get(url, headers=headers, params=params)
         elif message_type == "POST":
@@ -99,6 +103,7 @@ class OnrampConnector(object):
         result = {
             "code": status,
             "request_id": r.headers.get("cf-request-id"),
+            "raw_content": r.content
         }
         self.log_message(status, "RESULT", message=r.text)
         try:

@@ -10,7 +10,7 @@
       "to_json_conversion": "'65-' + odoo_value"
     },
     "GP_ID": {
-      "to_json_conversion": "config.get('connect_gpid')"
+      "to_json_conversion": "gpid"
     },
     "DataProtection_Type": {
       "to_json_conversion": "'ForgetMe'"

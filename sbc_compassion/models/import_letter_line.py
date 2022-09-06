@@ -133,6 +133,8 @@ class ImportLetterLine(models.Model):
                     + " - "
                     + str(line.child_id.local_id)
                 )
+            else:
+                line.name = line.file_name
 
     def get_letter_data(self):
         """ Create a list of dictionaries in order to create some lines inside

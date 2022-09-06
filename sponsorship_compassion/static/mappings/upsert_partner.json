@@ -22,7 +22,7 @@
       "field": "lastname"
     },
     "GlobalPartner": {
-      "to_json_conversion": "config.get('connect_gpname')"
+      "to_json_conversion": "gpname"
     },
     "Status": {
       "to_json_conversion": "'Active'"

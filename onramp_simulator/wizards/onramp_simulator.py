@@ -20,7 +20,7 @@ class GetLetterImageWizard(models.Model):
 
     name = fields.Char()
     action_id = fields.Many2one("gmc.action.connect", "Message Type", readonly=False)
-    server_url = fields.Char(default="http://localhost:8069/onramp")
+    server_url = fields.Char(default=lambda s: s.env["ir.config_parameter"].sudo().get_param("web.base.url"))
     message_type_url = fields.Char(related="action_id.connect_schema")
     body_json = fields.Text()
     result = fields.Text()
