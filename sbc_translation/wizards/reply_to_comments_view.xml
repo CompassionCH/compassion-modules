@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="reply_to_comments_form" model="ir.ui.view">
+        <field name="name">reply.to.comments.wizard</field>
+        <field name="model">sbc.reply.to.comments.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reply to comments">
+                <group>
+                    <field name="paragraph_ids">
+                        <tree default_order="page_id asc, sequence asc">
+                            <field name="original_text"/>
+                            <field name="translated_text"/>
+                            <field name="comments"/>
+                        </tree>
+                    </field>
+                </group>
+                <group>
+                    <field name="answer"/>
+                </group>
+                <footer>
+                    <button name="send_reply" string="Send reply" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="reply_to_comments_wizard" model="ir.actions.act_window">
+        <field name="name">Reply to comments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sbc.reply.to.comments.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="reply_to_comments_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>
