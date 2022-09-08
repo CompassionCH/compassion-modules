@@ -10,7 +10,7 @@
 import base64
 import json
 
-from odoo import models, fields, api
+from odoo import models, fields
 
 
 class ImportJsonMapping(models.TransientModel):
@@ -19,7 +19,6 @@ class ImportJsonMapping(models.TransientModel):
 
     file = fields.Binary()
 
-    
     def import_json_mapping(self):
         self.ensure_one()
         dec = str(base64.decodebytes(self.file), "utf-8")

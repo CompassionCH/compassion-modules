@@ -26,7 +26,6 @@ class QueueJob(models.Model):
             "type": "ir.actions.act_window",
             "res_model": model,
             "domain": [("id", "in", records)],
-            "view_type": "form",
             "view_mode": "tree,form",
         }
         return action

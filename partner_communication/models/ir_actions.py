@@ -22,8 +22,7 @@ class IrActionsServer(models.Model):
         "partner.communication.config", "Communication type", readonly=False,
         domain="[('model_id', '=', model_id)]",
     )
-    partner_field = fields.Char("Partner field name",
-                                help="'self' for record itself")
+    partner_field = fields.Char("Partner field name", help="'self' for record itself")
     send_mode = fields.Selection("send_mode_select")
     auto_send = fields.Boolean()
 
@@ -31,20 +30,16 @@ class IrActionsServer(models.Model):
         return self.env["partner.communication.job"].send_mode_select()
 
     @api.model
-    def run_action_communication(self, action, eval_context=None):
-        if not action.config_id or not self._context.get('active_id') or \
-                self._is_recompute(action):
+    def _run_action_communication(self, action, eval_context=None):
+        if not action.config_id or not self._context.get('active_id') or self._is_recompute(action):
             return False
 
         model_name = action.model_name
         if "records" in eval_context:
 
             for raw_record in eval_context["records"]:
-
                 is_self = action.partner_field == "self"
-
                 partner = raw_record if is_self else raw_record[action.partner_field]
-
                 children = eval_context["records"]
                 records = self.env[model_name].search([
                     (action.partner_field, "=", partner.id),

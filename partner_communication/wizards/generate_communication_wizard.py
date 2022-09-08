@@ -17,13 +17,14 @@ _logger = logging.getLogger(__name__)
 
 class GenerateCommunicationWizard(models.TransientModel):
     _name = "partner.communication.generate.wizard"
+    _inherit = "partner.communication.defaults"
     _description = "Partner Communication Generation Wizard"
 
     state = fields.Selection(
         [("edit", "edit"), ("preview", "preview"), ("generation", "generation")],
         default="edit",
     )
-    selection_domain = fields.Char()
+    selection_domain = fields.Char(default=lambda s: f"[('id', 'in', {s.env.context.get('active_ids')})]")
     partner_ids = fields.Many2many(
         "res.partner",
         string="Recipients",
@@ -93,7 +94,6 @@ class GenerateCommunicationWizard(models.TransientModel):
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",
-            "view_type": "form",
             "context": self._context,
             "target": "new",
         }
@@ -105,19 +105,16 @@ class GenerateCommunicationWizard(models.TransientModel):
             "res_model": "partner.communication.job",
             "domain": [("id", "in", self.communication_ids.ids)],
             "view_mode": "tree,form",
-            "view_type": "form",
             "context": self._context,
         }
 
     def generate_communications(self, async_mode=True):
         """ Create the communication records """
-        default = self.env.ref("partner_communication.default_communication")
-        model = self.model_id or default
         for partner in self.partner_ids:
             vals = {
                 "partner_id": partner.id,
                 "object_ids": partner.id,
-                "config_id": model.id,
+                "config_id": self.model_id.id,
             }
             if self.send_mode:
                 vals.update({
@@ -133,7 +130,6 @@ class GenerateCommunicationWizard(models.TransientModel):
     def create_communication(self, vals):
         """ Generate partner communication """
         communication = self.env["partner.communication.job"].create(vals)
-        communication.print_header = self.print_header
         if self.force_language:
             model = self.model_id
             template = model.email_template_id.with_context(

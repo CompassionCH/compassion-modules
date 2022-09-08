@@ -29,7 +29,7 @@ class GetLetterImageWizard(models.TransientModel):
     )
     dpi = fields.Integer(default=96)
     page_number = fields.Integer(default=0)
-    image_preview = fields.Binary(readonly=True)
+    image_preview = fields.Image(readonly=True)
     image_download = fields.Binary(readonly=True)
 
     @api.constrains("dpi")

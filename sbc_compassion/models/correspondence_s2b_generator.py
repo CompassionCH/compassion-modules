@@ -46,7 +46,7 @@ class CorrespondenceS2bGenerator(models.Model):
     s2b_template_id = fields.Many2one(
         "correspondence.template", "S2B Template", required=True, readonly=False
     )
-    background = fields.Binary(related="s2b_template_id.template_image")
+    background = fields.Image(related="s2b_template_id.template_image")
     selection_domain = fields.Char(
         default=[('state', '=', 'active'), ('child_id', '!=', False)]
     )
@@ -188,7 +188,6 @@ class CorrespondenceS2bGenerator(models.Model):
                         0,
                         0,
                         {
-                            "datas_fname": atchmt.datas_fname,
                             "datas": atchmt.datas,
                             "name": atchmt.name,
                             "res_model": letters._name,

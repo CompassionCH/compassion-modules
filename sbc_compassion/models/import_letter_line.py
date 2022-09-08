@@ -18,6 +18,7 @@ class ImportLetterLine(models.Model):
     _name = "import.letter.line"
     _inherit = "import.letter.config"
     _order = "reviewed,status"
+    _description = "S2B Import Letter Line"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -35,10 +36,10 @@ class ImportLetterLine(models.Model):
     letter_language_id = fields.Many2one(
         "res.lang.compassion", "Language", readonly=False
     )
-    letter_image = fields.Binary(attachment=True, readonly=True)
+    letter_image = fields.Binary(readonly=True)
     file_name = fields.Char(readonly=True)
-    letter_image_preview = fields.Binary(attachment=True, readonly=True)
-    import_id = fields.Many2one("import.letters.history", readonly=False)
+    letter_image_preview = fields.Image(readonly=True)
+    import_id = fields.Many2one("import.letters.history", readonly=False, ondelete="cascade")
     reviewed = fields.Boolean()
     status = fields.Selection(
         [
@@ -58,7 +59,6 @@ class ImportLetterLine(models.Model):
         "res_id",
         domain=[("res_model", "=", _name)],
         readonly=True,
-        ondelete="cascade",
         string="Attached images",
     )
 
@@ -170,7 +170,6 @@ class ImportLetterLine(models.Model):
                             0,
                             0,
                             {
-                                "datas_fname": atchmt.datas_fname,
                                 "datas": atchmt.datas,
                                 "name": atchmt.name,
                                 "res_model": "correspondence",

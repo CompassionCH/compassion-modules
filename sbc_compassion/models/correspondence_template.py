@@ -15,17 +15,10 @@ import os.path
 import subprocess
 import tempfile
 
-from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import fields, models, _
 from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
-
-try:
-    import numpy
-    import cv2
-except ImportError:
-    _logger.warning("Please install numpy, and cv2 to use SBC module")
 
 
 class Style:
@@ -72,7 +65,7 @@ class CorrespondenceTemplate(models.Model):
             ("CH-A-6S11-1", "Layout 6"),
         ]
     )
-    template_image = fields.Binary(compute="_compute_template_image")
+    template_image = fields.Image(compute="_compute_template_image")
     page_width = fields.Integer(help="Width of the template in pixels")
     page_height = fields.Integer(help="Height of the template in pixels")
     usage_count = fields.Integer(compute="_compute_usage_count")
@@ -109,13 +102,6 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-
-    def get_template_size(self, resize_factor=1.0):
-        """ Returns the width and height of the template in a numpy array. """
-        wh = numpy.array([self.page_width, self.page_height])
-        wh *= resize_factor
-        return wh
-
     def generate_pdf(self, pdf_name, header, text, image_data, background_list=None):
         """
         Generate a pdf file

@@ -1,7 +1,7 @@
 import logging
 from io import BytesIO
 
-from odoo import models, api
+from odoo import models
 
 _logger = logging.getLogger(__name__)
 
@@ -14,17 +14,16 @@ except ImportError:
 class OmrAwareReport(models.Model):
     _inherit = "ir.actions.report"
 
-    @api.model
-    def render_qweb_pdf(self, docids, data=None):
+    def _render_qweb_pdf(self, res_ids=None, data=None):
         communication_job_model = "partner.communication.job"
         if self.model == communication_job_model:
-            jobs = self.env[communication_job_model].browse(docids)
+            jobs = self.env[communication_job_model].browse(res_ids)
             if jobs.filtered("omr_enable_marks"):
                 # Add OMR marks on pages of the jobs :
                 # We must reconstruct the PDF job by job.
                 output = PdfFileWriter()
                 for job in jobs:
-                    document, document_type = super().render_qweb_pdf(
+                    document, document_type = super()._render_qweb_pdf(
                         job.ids, data=data)
                     if job.omr_enable_marks:
                         is_latest_document = not job.attachment_ids.filtered(
@@ -41,4 +40,4 @@ class OmrAwareReport(models.Model):
                 res = out_buffer.getvalue()
                 return res, document_type
 
-        return super().render_qweb_pdf(docids, data=data)
+        return super()._render_qweb_pdf(res_ids, data=data)

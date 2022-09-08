@@ -31,6 +31,7 @@ class ImportLettersHistory(models.Model):
     _inherit = ["import.letter.config", "mail.thread"]
     _order = "create_date desc"
     _rec_name = "create_date"
+    _description = "S2B Letter Import"
 
     state = fields.Selection(
         [
@@ -53,7 +54,6 @@ class ImportLettersHistory(models.Model):
         "import.letter.line",
         "import_id",
         "Files to process",
-        ondelete="cascade",
         readonly=False,
     )
     letters_ids = fields.One2many(

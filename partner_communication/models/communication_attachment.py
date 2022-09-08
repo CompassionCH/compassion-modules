@@ -42,6 +42,11 @@ class CommunicationAttachment(models.Model):
         "ir.attachment", string="Attachments", required=True, readonly=False, ondelete="cascade"
     )
     data = fields.Binary(compute="_compute_data")
+    printed_pdf_data = fields.Binary(
+        help="Technical field used when the report was not sent to printer but to client "
+             "in order to download the result afterwards."
+    )
+    printed_pdf_name = fields.Char(related="attachment_id.name")
 
     def _compute_data(self):
         for attachment in self:
@@ -67,7 +72,6 @@ class CommunicationAttachment(models.Model):
             name = vals["name"]
             attachment = self.env["ir.attachment"].create(
                 {
-                    "datas_fname": name,
                     "res_model": "partner.communication.job",
                     "datas": vals["data"],
                     "name": name,
@@ -82,42 +86,35 @@ class CommunicationAttachment(models.Model):
         return res
 
     def unlink(self):
-        attachmentxs = self.mapped("attachment_id")
+        attachments = self.mapped("attachment_id")
         super().unlink()
         attachments.unlink()
         return True
 
     def print_attachments(self, output_tray=None):
-        total_attachment_with_omr = len(self.filtered("attachment_id.enable_omr"))
-        count_attachment_with_omr = 1
         for attachment in self:
-            # add omr to pdf if needed
-            if (
-                    attachment.communication_id.omr_enable_marks
-                    and attachment.attachment_id.enable_omr
-            ):
-                is_latest_document = (
-                    count_attachment_with_omr >= total_attachment_with_omr
-                )
-                to_print = attachment.communication_id.add_omr_marks(
-                    attachment.data, is_latest_document
-                )
-                count_attachment_with_omr += 1
-            else:
-                to_print = attachment.data
-
             report = self.env["ir.actions.report"]._get_report_from_name(
                 attachment.report_name
             ).with_context(
                 lang=attachment.communication_id.partner_id.lang)
             behaviour = report.behaviour()
             printer = behaviour.pop("printer", False)
+            data = attachment._get_attachment_data()
             if behaviour.pop("action", "client") != "client" and printer:
                 print_options = {opt: value for opt, value in behaviour.items() if
                                  value}
                 if output_tray:
                     print_options["output_tray"] = output_tray
                 printer.with_context(
-                    print_name=self.env.user.firstname[:3] + " " + attachment.name,
-                ).print_document(attachment.report_name, to_print, **print_options)
+                    print_name=self.env.user.name[:3] + " " + attachment.name,
+                ).print_document(attachment.report_name, data, **print_options)
+            else:
+                attachment.printed_pdf_data = base64.b64encode(data)
         return True
+
+    def _get_attachment_data(self):
+        """
+        Hook for retrieving what we want to print for each communication attachment.
+        """
+        self.ensure_one()
+        return self.data

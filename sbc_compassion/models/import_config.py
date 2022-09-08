@@ -12,9 +12,8 @@ from odoo import models, fields
 
 
 class ImportConfig(models.Model):
-    """ This class defines all metadata of a correspondence"""
-
     _name = "import.letter.config"
     _inherit = "correspondence.metadata"
+    _description = "S2B Letter Import Config"
 
     name = fields.Char()

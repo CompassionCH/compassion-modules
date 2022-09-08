@@ -33,8 +33,8 @@ class CorrespondenceTemplatePage(models.Model):
     )
     page_index = fields.Integer(required=True, default=1)
     name = fields.Char(compute="_compute_name")
-    background = fields.Binary(
-        "Page background", attachment=True, help="Use 300 DPI images"
+    background = fields.Image(
+        "Page background", help="Use 300 DPI images"
     )
     header_box_id = fields.Many2one(
         "correspondence.text.box", string="Header", readonly=False

@@ -49,12 +49,11 @@ class ImportReview(models.TransientModel):
     template_id = fields.Many2one(related="current_line_id.template_id", readonly=False)
     language_id = fields.Many2one(
         related="current_line_id.letter_language_id",
-        order="translatable desc, id asc",
         readonly=False,
     )
     physical_attachments = fields.Selection(
         related="current_line_id.physical_attachments",
-            readonly=False
+        readonly=False
     )
     attachments_description = fields.Char(
         related="current_line_id.attachments_description",

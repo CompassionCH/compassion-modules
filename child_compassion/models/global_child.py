@@ -175,8 +175,8 @@ class GlobalChild(models.TransientModel):
     _inherit = "compassion.generic.child"
     _description = "Global Child"
 
-    portrait = fields.Binary(compute="_compute_image_portrait")
-    fullshot = fields.Binary(compute="_compute_image_fullshot")
+    portrait = fields.Image(compute="_compute_image_portrait")
+    fullshot = fields.Image(compute="_compute_image_fullshot")
 
     color = fields.Integer(compute="_compute_color")
     is_special_needs = fields.Boolean()

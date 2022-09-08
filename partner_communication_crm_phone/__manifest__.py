@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2022 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -28,38 +28,25 @@
 
 # pylint: disable=C8101
 {
-    "name": "Partner Communication",
+    "name": "Partner Communication CRM Phone",
     "version": "14.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "depends": [
-        "base_report_to_printer",  # OCA/report-print-send
-        "contacts",
-        "queue_job",  # OCA/queue
-        "utm",
+        "partner_communication",
+        "crm_phone",  # OCA/connector-telephony
     ],
-    "external_dependencies": {"python": ["phonenumbers", "PyPDF2", "wand"]},
+    "external_dependencies": {"python": ["phonenumbers"]},
     "data": [
         "security/ir.model.access.csv",
-        "security/communication_job_security.xml",
-        "report/a4_no_margin.xml",
-        "views/communication_job_view.xml",
-        "views/communication_config_view.xml",
-        "views/res_partner_view.xml",
-        "views/change_text_wizard_view.xml",
-        "views/pdf_wizard_view.xml",
-        "views/generate_communication_wizard_view.xml",
-        "views/ir_attachment_view.xml",
-        "views/ir_actions_view.xml",
-        "views/download_print_wizard_view.xml",
-        "views/settings_view.xml",
-        "data/default_communication.xml",
-        "data/queue_job.xml",
+        "views/call_wizard_view.xml",
+        "views/crm_phone_view.xml",
+        "views/communication_job.xml",
     ],
     "qweb": [],
-    "demo": ["demo/demo_data.xml"],
+    "demo": [],
     "installable": True,
-    "auto_install": False,
+    "auto_install": True,
 }

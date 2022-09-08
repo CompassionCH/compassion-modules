@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -10,46 +10,9 @@
 import logging
 
 from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 logger = logging.getLogger(__name__)
-
-
-class OmrConfig(models.AbstractModel):
-    _name = "partner.communication.orm.config.abstract"
-    _description = "Partner Communication - ORM Config"
-
-    omr_enable_marks = fields.Boolean(
-        string="Enable OMR",
-        help="If set to True, the OMR marks are displayed in the " "communication.",
-    )
-    omr_should_close_envelope = fields.Boolean(
-        string="OMR should close the envelope",
-        help="If set to True, the OMR mark for closing the envelope is added "
-        "to the communication.",
-    )
-    omr_add_attachment_tray_1 = fields.Boolean(
-        string="Attachment from tray 1",
-        help="If set to True, the OMR mark for adding an "
-        "attachment from back 1 is added to the communication.",
-    )
-    omr_add_attachment_tray_2 = fields.Boolean(
-        string="Attachment from tray 2",
-        help="If set to True, the OMR mark for adding an "
-        "attachment from tray 2 is added to the communication.",
-    )
-    omr_top_mark_x = fields.Float(
-        default=7, help="X position in millimeters of the first OMR mark in the page"
-    )
-    omr_top_mark_y = fields.Float(
-        default=190,
-        help="Y position in millimeters of the first OMR mark in the page, "
-        "computed from the bottom of the page.",
-    )
-    omr_single_sided = fields.Boolean(
-        help="Will put the OMR marks on every page if the document is printed "
-        "single-sided."
-    )
 
 
 class CommunicationDefaults(models.AbstractModel):
@@ -57,10 +20,9 @@ class CommunicationDefaults(models.AbstractModel):
     and communication job. """
 
     _name = "partner.communication.defaults"
-    _description = "Partner Communication Defaults"
 
     user_id = fields.Many2one(
-        "res.users", "From", domain=[("share", "=", False)], readonly=False
+        "res.users", "From", domain=[("share", "=", False)]
     )
     need_call = fields.Selection(
         "get_need_call",
@@ -72,10 +34,12 @@ class CommunicationDefaults(models.AbstractModel):
     )
     report_id = fields.Many2one(
         "ir.actions.report",
-        "Letter template",
+        "Print report",
         domain=[("model", "=", "partner.communication.job")],
         readonly=False,
     )
+    # printer_input_tray_id = fields.Many2one("printing.tray.input", "Paper Source")
+    # printer_output_tray_id = fields.Many2one("printing.tray.output", "Output Bin")
 
     @api.model
     def get_need_call(self):
@@ -85,30 +49,26 @@ class CommunicationDefaults(models.AbstractModel):
         ]
 
 
-class CommunicationOmrConfig(models.Model):
-    _name = "partner.communication.omr.config"
-    _inherit = "partner.communication.orm.config.abstract"
-    _description = "Communication OMR config"
+class CommunicationDefaultConfig(models.Model):
 
-    config_id = fields.Many2one("partner.communication.config", "Communication type",
-                                readonly=False
-                                )
-    lang_id = fields.Many2one("res.lang", "Language", readonly=False)
-    user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)],
-                              readonly=False
-                              )
-
-
-class CommunicationPrinterConfig(models.Model):
-
-    _name = "partner.communication.printer.config"
-    _description = "Communication Printer Config"
+    _name = "partner.communication.default.config"
+    _inherit = "partner.communication.defaults"
+    _description = "Communication Default Config"
 
     config_id = fields.Many2one("partner.communication.config", "Communication type")
-    lang_id = fields.Many2one("res.lang", "Language")
+    lang_id = fields.Many2one(
+        "res.lang", "Language",
+        help="This config will only apply to communications in selected language.")
+    user_id = fields.Many2one(
+       string="User", help="This config will only apply for communications from this user")
 
-    printer_input_tray_id = fields.Many2one("printing.tray.input", "Paper Source")
-    printer_output_tray_id = fields.Many2one("printing.tray.output", "Output Bin")
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("user_id") and not vals.get("lang_id"):
+                raise UserError(_(
+                    "The config should apply at least for a user or a language, otherwise you can "
+                    "simply change the settings in the general configuration."))
+        return super().create(vals_list)
 
 
 class CommunicationConfig(models.Model):
@@ -160,16 +120,10 @@ class CommunicationConfig(models.Model):
         "report_name is the name of the report used for printing,"
         "b64_data is the binary of the attachment"
     )
-    omr_config_ids = fields.One2many(
-        comodel_name="partner.communication.omr.config",
+    default_config_ids = fields.One2many(
+        comodel_name="partner.communication.default.config",
         inverse_name="config_id",
-        string="OMR Configuration",
-        readonly=False,
-    )
-    printer_config_ids = fields.One2many(
-        comodel_name="partner.communication.printer.config",
-        inverse_name="config_id",
-        string="Printer Configuration",
+        string="Custom Configuration",
         readonly=False
     )
     active = fields.Boolean(default=True)
@@ -216,18 +170,12 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def get_config_for_lang(self, lang):
-        omr_config = self.omr_config_ids.filtered(lambda c: not c.lang_id)[:1]
-        for config in self.omr_config_ids:
+    def get_default_config(self, lang):
+        default_config = self.default_config_ids.filtered(lambda c: not c.lang_id)[:1]
+        for config in self.default_config_ids:
             if config.lang_id == lang:
-                omr_config = config
-
-        printer_config = self.printer_config_ids.filtered(lambda c: not c.lang_id)[:1]
-        for config in self.printer_config_ids:
-            if config.lang_id == lang:
-                printer_config = config
-
-        return omr_config, printer_config
+                default_config = config
+        return default_config
 
     @api.model
     def get_send_mode(self):

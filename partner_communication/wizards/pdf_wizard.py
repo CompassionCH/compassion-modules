@@ -31,19 +31,20 @@ class PdfPreviewWizard(models.TransientModel):
     communication_id = fields.Many2one(
         "partner.communication.job", required=True, ondelete="cascade", readonly=False
     )
-    preview = fields.Binary(compute="_compute_pdf")
+    preview = fields.Image(compute="_compute_pdf")
     state = fields.Selection(related="communication_id.send_mode")
     send_state = fields.Selection(related="communication_id.state")
     body_html = fields.Html(compute="_compute_html")
 
     def _compute_pdf(self):
         if self.state != "physical":
+            self.preview = False
             return
         comm = self.communication_id
         report = comm.report_id.with_context(
             lang=comm.partner_id.lang, must_skip_send_to_printer=True, bin_size=False
         )
-        data = report.render_qweb_pdf(comm.ids)
+        data = report._render_qweb_pdf(comm.ids)
         with Image(blob=data[0], resolution=150) as pdf_image:
             preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
 

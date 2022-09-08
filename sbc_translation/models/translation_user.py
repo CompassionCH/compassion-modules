@@ -34,7 +34,7 @@ class TranslationUser(models.Model):
     search_competence_id = fields.Many2one(
         "translation.competence", help="Utility field only used for the search view"
     )
-    avatar = fields.Binary(related="partner_id.image_small")
+    avatar = fields.Image(related="partner_id.image_128")
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")

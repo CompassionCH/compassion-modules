@@ -6,16 +6,17 @@
             <form>
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="pending,done"/>
+                    <field name="printed_pdf_data" invisible="1"/>
                     <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'digital'),('state', '!=', 'pending')]}"/>
                     <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'both'),('state', '!=', 'pending')]}" context="{'origin': 'both_email'}"/>
                     <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'physical'),('state', '!=', 'pending')]}"/>
                     <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('send_mode', '!=', 'both'),('state', '!=', 'pending')]}" context="{'origin': 'both_print'}"/>
-                    <button name="log_call" string="Log call" icon="fa-phone" type="object" attrs="{'invisible': ['|', ('phonecall_id', '!=', False), ('need_call', '=', False)]}"/>
+                    <button name="download_data" string="Download printed file" type="object" icon="fa-download" attrs="{'invisible': [('printed_pdf_data', '=', False)]}"/>
                     <button name="reset" string="Retry" type="object" states='done,cancel'/>
                     <button name="cancel" string="Cancel" type="object" states='pending'/>
                 </header>
                 <sheet>
-                    <div class="oe_right oe_button_box" name="buttons">
+                    <div class="oe_button_box" name="buttons">
                         <button name="preview_pdf" string="Preview" type="object" icon="fa-search-plus" class="oe_stat_button"/>
                         <button name="open_related" string="Go to records" type="object" icon="fa-folder-open-o" class="oe_stat_button"/>
                     </div>
@@ -25,49 +26,40 @@
                             <field name="config_id" domain="[('model', '=', model)]"/>
                             <field name="user_id"/>
                             <field name="partner_id"/>
-                            <field name="email_to"/>
-                            <field name="partner_phone" widget="phone"/>
-                            <field name="partner_mobile" widget="phone"/>
                         </group>
                         <group>
                             <field name="sent_date" readonly="1"/>
                             <field name="send_mode" required="1"/>
-                            <field name="need_call"/>
-                            <field name="report_id"/>
-                            <field name="auto_send"/>
+                            <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
                         </group>
                     </group>
+                    <a class="btn btn-sm btn-light fa fa-plus" icon="fa-gear" data-toggle="collapse" href=".config" role="button" aria-expanded="false" aria-controls="advancedConfig">
+                        <span>Advanced options</span>
+                    </a>
+                    <notebook class="collapse config" id="advancedConfig">
+                        <page string="Various">
+                            <group>
+                                <group>
+                                    <field name="need_call"/>
+                                    <field name="report_id"/>
+                                    <field name="auto_send"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
                     <group>
-                        <group>
-                            <field name="subject"/>
-                            <field name="printer_output_tray_id"
-                                   attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}"/>
-                        </group>
-                        <group attrs="{'invisible': ['|', ('send_mode', '!=', 'physical'), ('send_mode', '!=', 'both')]}">
-                            <field name="omr_enable_marks"/>
-                            <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_single_sided" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_top_mark_x" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_top_mark_y" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                        </group>
-                    </group>
-                    <group>
-                        <field name="pdf_page_count" attrs="{'invisible': [('send_mode', '!=', 'physical')]}"/>
+                        <field name="subject"/>
                         <field name="body_html" widget="html"/>
                     </group>
                     <group>
-                        <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" />
-                        <field name="ir_attachment_tmp" widget="many2many_binary" string=' ' class="oe_edit_only"/>
                         <field name="email_id" readonly="1" attrs="{'invisible': ['|', ('send_mode', '!=', 'digital'), ('send_mode', '!=', 'both')]}"/>
-                        <field name="phonecall_id" readonly="1" attrs="{'invisible': [('phonecall_id', '=', False)]}"/>
+                        <field name="ir_attachment_ids" context="{'default_res_model': 'partner.communication.job', 'default_res_id': active_id}" mode="kanban"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -84,7 +76,6 @@
                 <field name="config_id"/>
                 <field name="partner_id"/>
                 <field name="send_mode"/>
-                <field name="email_to"/>
                 <field name="subject"/>
                 <field name="user_id"/>
                 <field name="state"/>
@@ -92,7 +83,6 @@
                 <field name="sent_date"/>
                 <field name="activity_ids" invisible="1"/>
                 <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
-                <button name="call" string="Call" type="object" icon="fa-phone" states='pending'/>
                 <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
                 <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='pending'/>
             </tree>
@@ -150,7 +140,7 @@
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">records.send()</field>
+        <field name="code">action = records.send()</field>
     </record>
 
     <!-- Refresh communication actions -->

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -8,10 +8,4 @@
 #
 ##############################################################################
 
-from . import mail_compose_message
-from . import change_text_wizard
-from . import email_template_preview_view
-from . import pdf_wizard
-from . import generate_communication_wizard
-from . import settings
-from . import download_print_job_wizard
+from . import call_wizard
