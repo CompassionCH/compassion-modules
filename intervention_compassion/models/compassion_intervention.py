@@ -477,7 +477,7 @@ class CompassionIntervention(models.Model):
                     body=_("The information of this intervention have been updated"),
                     subject=(_(intervention.name + "got an Update")),
                     message_type="email",
-                    subtype="mail.mt_comment",
+                    subtype_xmlid="mail.mt_comment",
                 )
 
         return intervention_local_ids
@@ -512,9 +512,7 @@ class CompassionIntervention(models.Model):
             ) % (self.name, self.intervention_id),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
-            type="comment",
-            subtype="mail.mt_comment",
-            content_subtype="html",
+            subtype_xmlid="mail.mt_comment",
         )
 
     @api.model
@@ -543,7 +541,7 @@ class CompassionIntervention(models.Model):
             intervention.message_post(
                 body=_("The commitment percentage has changed."),
                 message_type="email",
-                subtype="mail.mt_comment",
+                subtype_xmlid="mail.mt_comment",
             )
         return intervention.ids
 
@@ -775,7 +773,7 @@ class CompassionIntervention(models.Model):
                     body=body,
                     subject=(_(intervention.name + ": New milestone " "received.")),
                     message_type="email",
-                    subtype="mail.mt_comment",
+                    subtype_xmlid="mail.mt_comment",
                 )
         return intervention_local_ids
 
@@ -827,7 +825,7 @@ class CompassionIntervention(models.Model):
                 body=body,
                 subject=_(intervention.name + ": Amendment received"),
                 message_type="email",
-                subtype="mail.mt_comment",
+                subtype_xmlid="mail.mt_comment",
             )
 
         return intervention_local_ids

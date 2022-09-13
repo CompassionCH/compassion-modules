@@ -482,7 +482,7 @@ class CompassionProject(models.Model):
             project.message_post(
                 body=_("The project was suspended."),
                 subject=_("Project Suspended"),
-                message_type="comment",
+                subtype_xmlid="mail.mt_comment",
             )
         return True
 
@@ -637,7 +637,7 @@ class CompassionProject(models.Model):
             project.message_post(
                 body=_("The project is reactivated."),
                 subject=_("Project Reactivation"),
-                message_type="comment",
+                subtype_xmlid="mail.mt_comment",
             )
         return True
 

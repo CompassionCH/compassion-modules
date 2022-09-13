@@ -490,8 +490,7 @@ class CommunicationRevision(models.Model):
         self.message_post(
             body=body,
             subject=subject,
-            type="comment",
-            subtype="mail.mt_comment",
+            subtype_xmlid="mail.mt_comment",
             content_subtype="html",
         )
 
@@ -593,10 +592,10 @@ class CommunicationRevision(models.Model):
         return {
             "type": "ir.actions.act_window",
             "view_mode": "form",
+            "view_id": self.env.ref(form_view).id,
             "res_id": self.id,
             "res_model": self._name,
             "target": "current",
-            "context": self.with_context(form_view_ref=form_view).env.context,
         }
 
     def _simplify_text(self):

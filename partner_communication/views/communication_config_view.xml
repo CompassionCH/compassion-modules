@@ -6,15 +6,15 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-            <field name="active" invisible="1" />
-            <widget
-                name="web_ribbon"
-                title="Archived"
-                bg_color="bg-danger"
-                attrs="{'invisible': [('active', '=', True)]}"
-            />
+                        <field name="active" invisible="1" />
+                        <widget
+                            name="web_ribbon"
+                            title="Archived"
+                            bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"
+                        />
                     </div>
-                    <group string="General configuration">
+                    <group string="General configuration" name="general_config">
                         <group>
                             <field name="name"/>
                             <field name="send_mode"/>

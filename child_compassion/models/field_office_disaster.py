@@ -269,9 +269,7 @@ class FieldOfficeDisasterAlert(models.Model):
                     body=_("The Disaster Alert was just updated."),
                     subject=_("Disaster Alert Update"),
                     partner_ids=notify_ids,
-                    type="comment",
-                    subtype="mail.mt_comment",
-                    content_subtype="plaintext",
+                    subtype_xmlid="mail.mt_comment",
                 )
         else:
             disaster = super().create(vals)
@@ -280,9 +278,7 @@ class FieldOfficeDisasterAlert(models.Model):
                     body=_("The disaster alert has just been received."),
                     subject=_("New Disaster Alert"),
                     partner_ids=notify_ids,
-                    type="comment",
-                    subtype="mail.mt_comment",
-                    content_subtype="plaintext",
+                    subtype_xmlid="mail.mt_comment",
                 )
         return disaster
 

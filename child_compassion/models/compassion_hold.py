@@ -341,8 +341,7 @@ class CompassionHold(models.Model):
                 ),
                 subject=_("%s - Reservation converted to hold") % child.local_id,
                 partner_ids=hold.primary_owner.partner_id.ids,
-                type="comment",
-                subtype="mail.mt_comment",
+                subtype_xmlid="mail.mt_comment",
                 content_subtype="plaintext",
             )
 
@@ -481,7 +480,8 @@ class CompassionHold(models.Model):
             }
             hold.message_post(
                 body=_(body.format(**values)),
-                subject=_("No money hold extension"), type="comment",
+                subject=_("No money hold extension"),
+                subtype_xmlid="mail.mt_comment",
             )
             # Commit after hold is updated
             if not test_mode:

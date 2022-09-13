@@ -697,7 +697,7 @@ class CompassionChild(models.Model):
             self.message_post(
                 body=_("The picture has been updated."),
                 subject=_("Picture update"),
-                message_type="comment",
+                subtype="mail.mt_comment",
             )
 
         return pictures

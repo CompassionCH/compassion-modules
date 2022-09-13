@@ -177,7 +177,7 @@ class CompassionReservation(models.Model):
         self.message_post(
             subject=_("Reservation failed"),
             body=_("[" + str(vals["Code"]) + "] " + vals["Message"]),
-            message_type="comment",
+            subtype_xmlid="mail.mt_comment",
         )
 
     def reservation_cancel_answer(self, vals):

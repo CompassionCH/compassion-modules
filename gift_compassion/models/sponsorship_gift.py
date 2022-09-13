@@ -761,7 +761,5 @@ class SponsorshipGift(models.Model):
                     body=body,
                     subject=_("Gift Undeliverable Notification"),
                     partner_ids=notify_ids,
-                    type="comment",
-                    subtype="mail.mt_comment",
-                    content_subtype="plaintext",
+                    subtype_xmlid="mail.mt_comment",
                 )

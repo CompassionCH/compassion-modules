@@ -10,10 +10,10 @@
                     <field name="state" widget="statusbar"/>
                 </header>
             </xpath>
-<!--            <button name="toggle_active" position="before">-->
-<!--                <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit raw translations" type="object" groups="base.group_system"/>-->
-<!--            </button>-->
-            <group name="printer_config" position="before">
+            <xpath expr="//div[@name='button_box']">
+                <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit raw translations" type="object" groups="base.group_system"/>
+            </xpath>
+            <group name="general_config" position="after">
                 <group string="Revisions">
                     <group colspan="4">
                         <field name="revision_number"/>
@@ -53,9 +53,9 @@
             <field name="report_id" position="after">
                 <field name="state"/>
             </field>
-<!--            <xpath expr="//tree" position="attributes">-->
-<!--                <attribute name="colors">blue: state=='pending'</attribute>-->
-<!--            </xpath>-->
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-info">state=='pending'</attribute>
+            </xpath>
         </field>
     </record>
 
