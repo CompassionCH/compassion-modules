@@ -38,7 +38,7 @@
     </record>
 
     <record id="open_settings_communication" model="ir.actions.act_window">
-        <field name="name">Settings</field>
+        <field name="name">General settings</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.config.settings</field>
         <field name="view_id" ref="communication_settings_view"/>
@@ -47,5 +47,5 @@
         <field name="context">{'module' : 'partner_communication'}</field>
     </record>
 
-    <menuitem id="menu_communication_settings" action="open_settings_communication" parent="menu_communication" sequence="10"/>
+    <menuitem id="menu_communication_settings" action="open_settings_communication" parent="menu_communication_settings_root" sequence="50"/>
 </odoo>

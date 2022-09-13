@@ -4,7 +4,6 @@
         <field name="name">Success Story 1</field>
         <field name="type">story</field>
         <field name="is_active">True</field>
-        <field name="report_id" ref="report_donation"/>
         <field name="body" type="xml">
             <h1>Success Story 1</h1>
             <p>Hello</p>
@@ -16,7 +15,6 @@
         <field name="type">story</field>
         <field name="is_active">True</field>
         <field name="only_when_chosen">True</field>
-        <field name="report_id" ref="report_donation"/>
         <field name="body" type="xml">
             <h1>Success Story 2</h1>
             <p>Only used for Macbooks</p>
@@ -27,7 +25,6 @@
         <field name="name">Success Sentence 1</field>
         <field name="type">sentence</field>
         <field name="is_active">True</field>
-        <field name="report_id" ref="report_donation"/>
         <field name="body_text">Success Sentence 1.</field>
     </record>
 

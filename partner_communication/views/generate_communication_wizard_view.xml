@@ -42,6 +42,6 @@
         <field name="binding_model_id" ref="model_res_partner"/>
     </record>
 
-    <menuitem name="Generate Communications" parent="menu_communication" id="menu_communication_generate" sequence="2"
+    <menuitem name="Generate communications" parent="menu_communication" id="menu_communication_generate" sequence="30"
               action="action_generate_communication"/>
 </odoo>

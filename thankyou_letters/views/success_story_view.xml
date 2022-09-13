@@ -70,15 +70,11 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_donation_sales"
-              name="Communications"
-              parent="account.menu_finance"
-              sequence="5"/>
-
     <!-- Add menu in Sales-->
     <menuitem id="menu_donation_success_story_sales"
               name="Success Stories"
-              parent="menu_donation_sales"
+              parent="partner_communication.menu_communication_settings_root"
+              sequence="30"
               action="action_success_story"/>
 
 </odoo>

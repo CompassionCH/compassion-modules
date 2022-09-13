@@ -36,7 +36,6 @@
     "depends": [
         "partner_communication",  # compassion-modules
         "advanced_translation",  # compassion-modules
-        "web_widget_digitized_signature",  # oca_addons/web
         "account",  # source/addons
     ],
     "external_dependencies": {"python": ["babel", ]},
@@ -51,7 +50,6 @@
         "views/communication_job_view.xml",
         "views/account_invoice_view.xml",
         "views/product_view.xml",
-        "views/res_partner_view.xml",
         "views/thankyou_config_view.xml",
         "views/generate_communication_wizard_view.xml",
     ],

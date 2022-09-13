@@ -153,5 +153,5 @@
     </record>
 
     <menuitem name="Partner Communication" id="menu_communication" parent="contacts.menu_contacts" sequence="1"/>
-    <menuitem name="Jobs" parent="menu_communication" id="menu_communication_jobs" sequence="1" action="action_communication_job"/>
+    <menuitem name="Communication Jobs" parent="menu_communication" id="menu_communication_jobs" sequence="10" action="action_communication_job"/>
 </odoo>

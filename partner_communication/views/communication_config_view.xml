@@ -107,5 +107,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem name="Rules" id="menu_communication_config" parent="menu_communication" sequence="2" action="action_communication_config"/>
+    <menuitem id="menu_communication_settings_root" parent="menu_communication" name="Settings" sequence="50"/>
+    <menuitem name="Communication Templates" id="menu_communication_config" parent="menu_communication_settings_root" sequence="10" action="action_communication_config"/>
 </odoo>

@@ -126,7 +126,6 @@
                 }
             </style>
             <t t-if="o.print_header">
-<!--                <t t-call="report.external_layout_header"/>-->
                 <t t-call="web.external_layout"/>
             </t>
             <div id="letter">
@@ -160,7 +159,7 @@
                         <span t-raw="o.body_html" class="body_text"/>
                         <div class="right" style="margin-top: 10mm">
                             <img t-if="o.show_signature and o.user_id.signature_image" t-attf-src="data:image/jpg;base64,{{ o.user_id.signature_image }}"/>
-                            <t t-raw="o.user_id.signature_letter"/>
+                            <t t-raw="o.user_id.signature"/>
                         </div>
                     </div>
                 </div>

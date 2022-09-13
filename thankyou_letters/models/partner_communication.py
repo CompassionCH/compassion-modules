@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -147,17 +147,3 @@ class PartnerCommunication(models.Model):
             usage_count[usage] = s
         min_used = min(usage_count.keys())
         return usage_count[min_used], min_used
-
-
-class HrDepartment(models.Model):
-    _inherit = "hr.department"
-
-    # Translate name of department for signatures
-    name = fields.Char(translate=True)
-
-
-class ResCompany(models.Model):
-    _inherit = "res.company"
-
-    # Translate name of Company for signatures
-    address_name = fields.Char(translate=True)

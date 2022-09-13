@@ -37,7 +37,6 @@
                 <field name="config_id"/>
                 <field name="partner_id"/>
                 <field name="send_mode"/>
-                <field name="email_to"/>
                 <field name="subject"/>
                 <field name="success_story_id"/>
                 <field name="success_sentence_id"/>
@@ -48,7 +47,6 @@
                 <field name="activity_ids" invisible="1"/>
                 <field name="sent_date"/>
                 <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
-                <button name="call" string="Call" type="object" icon="fa-phone" states='pending'/>
                 <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
                 <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='pending'/>
             </tree>
@@ -87,7 +85,8 @@
 
     <!-- add Menu in Sales-->
     <menuitem id="menu_donation_general"
-              name="General Donations"
-              parent="menu_donation_sales"
+              name="Thank you Letters"
+              parent="partner_communication.menu_communication"
+              sequence="11"
               action="action_thank_you"/>
 </odoo>

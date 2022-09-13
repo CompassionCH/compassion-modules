@@ -83,20 +83,3 @@ class ResPartner(models.Model):
             date = format_date(today, format="long", locale=partner.lang)
             formatted_date = f"le {date}" if "fr" in partner.lang else date
             partner.date_communication = f"{city}, {formatted_date}"
-
-
-class ResUsers(models.Model):
-    _inherit = "res.users"
-
-    signature_letter = fields.Html(compute="_compute_signature_letter")
-
-    def _compute_signature_letter(self):
-        for user in self:
-            employee = user.employee_ids.sudo()
-            signature = ""
-            if len(employee) == 1:
-                signature = employee.name + "<br/>"
-                if employee.department_id:
-                    signature += employee.department_id.name + "<br/>"
-            signature += user.sudo().company_id.name
-            user.signature_letter = signature
