@@ -15,16 +15,11 @@
 
 account-financial-tools
 bank-payment
-compassion-accounting https://github.com/CompassionCH/compassion-accounting 12.0
+compassion-accounting https://github.com/CompassionCH/compassion-accounting
 connector-telephony
-crm
-geospatial https://github.com/CompassionCH/geospatial 12.0-everything-migrated
-hr
 partner-contact
 queue
 report-print-send
 server-ux
 social
 web
-website
-website-cms https://github.com/CompassionCH/website-cms 12.0

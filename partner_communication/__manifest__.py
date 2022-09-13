@@ -40,7 +40,7 @@
         "queue_job",  # OCA/queue
         "utm",
     ],
-    "external_dependencies": {"python": ["phonenumbers", "PyPDF2", "wand"]},
+    "external_dependencies": {"python": ["wand"]},
     "data": [
         "security/ir.model.access.csv",
         "security/communication_job_security.xml",

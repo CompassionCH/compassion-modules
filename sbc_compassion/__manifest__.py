@@ -44,8 +44,7 @@
             "wand",
             "pyzbar",
             "pdfminer",
-            "PyPDF2",
-            "fitz",  # PyMuPDF
+            "PyMuPDF",
         ]
     },
     "data": [
