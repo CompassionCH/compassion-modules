@@ -632,7 +632,8 @@ class CompassionChild(models.Model):
         for child in self:
             values = {"sponsor_id": False}
             update_hold = False
-            if child.hold_id.type == HoldType.NO_MONEY_HOLD.value:
+            hold_types_to_consigned = [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value]
+            if child.hold_id.type in hold_types_to_consigned:
                 update_hold = True
                 values["state"] = "N"
             else:
