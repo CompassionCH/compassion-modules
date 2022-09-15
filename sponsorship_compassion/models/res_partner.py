@@ -236,8 +236,6 @@ class ResPartner(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        # Use a sequence for references
-        vals["ref"] = self.env["ir.sequence"].get("partner.ref")
         # Put a preferred name
         partner = super().create(vals)
         if not partner.preferred_name:
