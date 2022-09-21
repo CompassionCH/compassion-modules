@@ -122,19 +122,8 @@ class SmsChildRequest(models.Model):
     @api.multi
     @api.depends("date")
     def _compute_event(self):
-        limit_date = datetime.today() - relativedelta(days=7)
-        for request in self.filtered(lambda r: r.source == "SMS" and r.date):
-            event_id = self.env["crm.event.compassion"].search(
-                [
-                    ("accepts_sms_booking", "=", True),
-                    ("start_date", "<=", request.date),
-                    ("start_date", ">=", limit_date),
-                ],
-                order="start_date desc",
-                limit=1,
-            )
-            # event_id is None if start_date of most recent event is>1 week old
-            request.event_id = event_id
+        for request in self:
+            request.event_id = self.child_id.hold_event
 
     def _inverse_event(self):
         # Allows to manually set an event
