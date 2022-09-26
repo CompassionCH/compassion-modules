@@ -52,11 +52,11 @@ class OnrampConnector(object):
                 connect_url = config.get("connect_url")
                 api_key = res_config.get_param("connect_api_key")
                 if connect_url and api_key:
-                    OnrampConnector.__instance._connect_url = connect_url
+                    cls._connect_url = connect_url
                     cls._res_config = res_config
                     session = requests.Session()
                     session.params.update({"api_key": api_key, "gpid": res_config.get_param('connect_gpid')})
-                    OnrampConnector.__instance._session = session
+                    cls._session = session
                 else:
                     raise UserError(
                         _(

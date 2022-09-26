@@ -43,7 +43,6 @@ class ConnectMultipicklist(models.AbstractModel):
             "views": [[False, "tree"], [False, "form"]],
             "domain": [["id", "in", res_ids]],
         }
-
     
     def get_res_ids(self):
         """
