@@ -215,7 +215,7 @@ class SmsChildRequest(models.Model):
         """ Release current child and take another."""
         self.hold_id.write({"sms_request_id": False})
         self.write(
-            {"state": "new", "child_id": False, "is_trying_to_fetch_child": True}
+            {"state": "new", "is_trying_to_fetch_child": True}
         )
         return self.reserve_child()
 
