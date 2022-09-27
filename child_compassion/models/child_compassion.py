@@ -305,6 +305,14 @@ class CompassionChild(models.Model):
         ("global_id", "unique(global_id)", "The child already exists in database."),
     ]
 
+    @property
+    def translated_fields(self):
+        return [
+            "hobby_ids", "christian_activity_ids", "project_activity_ids", "duty_ids", "subject_ids",
+            "chronic_illness_ids", "physical_disability_ids", "correspondence_language_id",
+            "education_level", "vocational_training_type", "academic_performance", "major_course_study"
+        ]
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -486,7 +494,7 @@ class CompassionChild(models.Model):
         }
         return number_dict.get(len(self), str(len(self))) + " " + self.get("child")
 
-    def json_to_data(self, json, mapping_name=None):
+    def json_to_data(self, json, mapping_name=None, update_household=True):
         data = super().json_to_data(json, mapping_name)
         # Update household
         household_data = data.pop("household_id", {})
@@ -495,11 +503,19 @@ class CompassionChild(models.Model):
             [("household_id", "=", household_id)]
         )
         if household:
-            household.write(household_data)
+            if update_household:
+                household.write(household_data)
             data["household_id"] = household.id
         elif household_data:
             data["household_id"] = household.create(household_data).id
         return data
+
+    def fetch_translations(self):
+        """
+        Contact GMC service in all installed languages in order to fetch all terms used in child description.
+        """
+        self._fetch_translations(self.env.ref("child_compassion.beneficiaries_details"))
+        return self.edit_translations()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #

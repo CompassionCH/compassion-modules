@@ -23,7 +23,7 @@
     },
     "HoldID": {
       "field": "hold_id.hold_id",
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "HoldType": {
       "field": null,
@@ -31,11 +31,13 @@
     },
     "PrimaryHoldOwner": {
       "field": "write_uid.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "SecondaryHoldOwner": {
       "field": "create_uid.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "SponsorCorrespondenceLanguage": {
       "field": "reading_language.name",
@@ -43,11 +45,13 @@
     },
     "SponsorSupporterGlobalID": {
       "field": "correspondent_id.global_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "Beneficiary_GlobalID": {
       "field": "child_id.global_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "HoldExpirationDate": {
       "field": "hold_expiration_date",

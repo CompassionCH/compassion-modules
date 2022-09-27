@@ -10,8 +10,7 @@
     "BeneficiaryState": "beneficiary_state",
     "ICP_ID": {
       "field": "project_id.fcp_id",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "BirthDate": "birthdate",
     "Gender": {
@@ -21,7 +20,8 @@
     "Beneficiary_GlobalID": "global_id",
     "HoldingGlobalPartnerID": {
       "field": "holding_global_partner_id.code",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "HoldExpirationDate": "hold_expiration_date",
     "PreferredName": "preferred_name",

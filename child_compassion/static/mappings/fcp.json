@@ -74,8 +74,7 @@
     "ChildDevelopmentCenterNameLocalLanguage": "child_center_original_name",
     "ChurchMinistry": {
       "field": "ministry_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "City": "city",
     "Cluster": "cluster",
@@ -93,8 +92,7 @@
     },
     "CommunityInvolvement": {
       "field": "involvement_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "ComputersForBeneficiaryUse": "nb_child_computers",
     "ComputersForStaffUse": "nb_staff_computers",
@@ -102,8 +100,7 @@
     "ElectricalPowerAvailability": "electrical_power",
     "Facilities": {
       "field": "facility_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "FacilityOwnershipStatus": "church_ownership",
     "FirstLetterWritingMonth": "first_scheduled_letter",
@@ -117,12 +114,12 @@
     "ICP_ID": "fcp_id",
     "ImplementedProgram": {
       "field": "implemented_program_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "InterestedGlobalPartnerName": {
       "field": "interested_partner_ids.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "InternationalDenominationAffiliation": "international_affiliation",
     "InternetAccess": "church_internet_access",
@@ -155,14 +152,12 @@
     "ProgramStartDate": "program_start_date",
     "ProgramsOfInterest": {
       "field": "interested_program_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "ProjectActivitiesForFamilies": "activities_for_parents",
     "SchoolCostPaidByICP": {
       "field": "school_cost_paid_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "SecondLetterWritingMonth": "second_scheduled_letter",
     "SocialMedia": "social_media_site",
@@ -193,8 +188,7 @@
     "Territory": "territory",
     "UtilitiesOnSite": {
       "field": "utility_ids.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "Website": "website",
     "WeeklyChildAttendance": "weekly_child_attendance"

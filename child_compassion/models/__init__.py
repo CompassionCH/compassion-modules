@@ -20,3 +20,4 @@ from . import child_note
 from . import demand_planning
 from . import weekly_demand
 from . import field_office_learning
+from . import compassion_mapped_model

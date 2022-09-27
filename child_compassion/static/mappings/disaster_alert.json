@@ -4,7 +4,6 @@
   "mapping": {
     "ICPDisasterImpacts": {
       "field": "fcp_disaster_impact_ids",
-      "allow_relational_creation": true,
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "project_fcp_id",
@@ -21,7 +20,6 @@
     },
     "BeneficiaryDisasterImpacts": {
       "field": "child_disaster_impact_ids",
-      "allow_relational_creation": true,
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "child_global_id",
@@ -37,8 +35,7 @@
           "HouseCondition": "house_condition",
           "LostPersonalEffects": {
             "field": "loss_ids.name",
-            "search_relational_record": true,
-            "allow_relational_creation": true
+            "search_relational_record": true
           },
           "SiblingsDiedNumber": "siblings_died_number",
           "SiblingsSeriouslyInjuredNumber": "siblings_seriously_injured_number",
@@ -50,7 +47,6 @@
     },
     "DisasterCommunicationUpdates": {
       "field": "fo_disaster_update_ids",
-      "allow_relational_creation": true,
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "fodu_id",
@@ -65,7 +61,8 @@
           },
           "FieldOffice_Name": {
             "field": "fo_id.name",
-            "search_relational_record": true
+            "search_relational_record": true,
+            "allow_relational_creation": false
           }
         }
       }
@@ -108,7 +105,7 @@
     "FieldOffice_Name": {
       "field": "field_office_id.name",
       "search_relational_record": true,
-      "relational_raise_if_not_found": false
+      "allow_relational_creation": false
     },
     "SourceKitName": "source_kit_name"
   }
