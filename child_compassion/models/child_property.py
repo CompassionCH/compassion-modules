@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2016-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -19,6 +19,7 @@ class ChildProperty(models.AbstractModel):
     _name = "child.property"
     _inherit = "connect.multipicklist"
     _description = "Child Property"
+    _rec_name = "value"
 
     res_model = "compassion.child"
     value = fields.Char(translate=True)

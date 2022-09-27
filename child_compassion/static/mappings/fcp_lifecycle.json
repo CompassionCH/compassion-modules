@@ -49,7 +49,7 @@
     "ICP_ID": {
       "field": "project_id.fcp_id",
       "search_relational_record": true,
-      "allow_relational_creation": true
+      "allow_relational_creation": false
     }
   }
 }

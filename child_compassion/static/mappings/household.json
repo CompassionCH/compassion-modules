@@ -5,7 +5,7 @@
     "BeneficiaryHouseholdMemberList": {
       "field": "member_ids",
       "sub_mapping": "Household Member",
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "FemaleGuardianEmploymentStatus": "female_guardian_job_type",
     "FemaleGuardianOccupation": "female_guardian_job",
@@ -21,7 +21,7 @@
     "ParentsTogether": "parents_together",
     "RevisedValues": {
       "field": "revised_value_ids.name",
-      "allow_relational_creation": true
+      "search_relational_record": true
     }
   }
 }

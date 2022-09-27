@@ -30,13 +30,11 @@
     },
     "ICPID": {
       "field": "project_id.fcp_id",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "ICP_ID": {
       "field": "project_id.fcp_id",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "IsHivAffectedArea": "is_area_hiv_affected",
     "IsInHIVAffectedArea": "is_area_hiv_affected",

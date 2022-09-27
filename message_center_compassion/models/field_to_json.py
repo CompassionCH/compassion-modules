@@ -16,15 +16,6 @@ from odoo.tools.safe_eval import safe_eval, wrap_module
 _logger = logging.getLogger(__name__)
 
 
-class RelationNotFound(UserError):
-    def __init__(self, msg, **kwargs):
-        super().__init__(msg)
-        self.field_relation = kwargs['field_relation']
-        self.value = kwargs['value']
-        self.json_name = kwargs['json_name']
-        self.field_name = kwargs['field_name']
-
-
 class FieldToJson(models.Model):
     """ This model is used to make a link between odoo
         field and GMC Connect Json field name for the compassion mapping
@@ -73,11 +64,8 @@ class FieldToJson(models.Model):
     )
     allow_relational_creation = fields.Boolean(
         help="If set to true, new records will be created if no matching "
-             "records are found with the given JSON values"
-    )
-    relational_raise_if_not_found = fields.Boolean(
-        default=True,
-        help="Set to false if you don't care finding the relational field."
+             "records are found with the given JSON values",
+        default=True
     )
     relational_write_mode = fields.Selection(
         [("overwrite", "Overwrite"), ("append", "Append")],
@@ -265,25 +253,13 @@ class FieldToJson(models.Model):
             return value
 
         # No records found given the values
-        _logger.warning(
+        raise UserError(
             "Associated object not found using mapping %s, "
             "JSON Key %s, JSON value %s",
             self.mapping_id.name,
             self.json_name,
             value,
         )
-        if self.relational_raise_if_not_found:
-            raise RelationNotFound(
-                _(
-                    "Trying to find a %s "
-                    "that has the following values, but nothing was found: %s"
-                ) % (relational_model._description, value),
-                field_relation=field.relation,
-                value=value,
-                json_name=self.json_name,
-                field_name=self.field_name
-            )
-        return False
 
     def _get_relational_creation_values(self, field_values):
         """

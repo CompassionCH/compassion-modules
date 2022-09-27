@@ -30,8 +30,7 @@
     "PrimaryAddressStreet": "street",
     "PrimaryLanguage": {
       "field": "primary_language_id.name",
-      "search_relational_record": true,
-      "allow_relational_creation": true
+      "search_relational_record": true
     },
     "RegionName": "region",
     "SocialMedia": "social_media_site",
