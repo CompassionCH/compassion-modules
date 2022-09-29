@@ -32,7 +32,7 @@ class CompassionProject(models.Model):
 
     _name = "compassion.project"
     _rec_name = "fcp_id"
-    _inherit = ["mail.thread", "translatable.model", "compassion.mapped.model"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "translatable.model", "compassion.mapped.model"]
     _description = "Frontline Church Partner"
 
     ##########################################################################
@@ -380,6 +380,22 @@ class CompassionProject(models.Model):
                                     tracking=True,
                                     )
 
+    @property
+    def translated_fields(self):
+        return [
+            "involvement_ids", "ministry_ids", "implemented_program_ids", "interested_program_ids", "facility_ids",
+            "mobile_device_ids", "utility_ids", "spiritual_activity_babies_ids", "spiritual_activity_kids_ids",
+            "spiritual_activity_ados_ids", "cognitive_activity_babies_ids", "cognitive_activity_kids_ids",
+            "cognitive_activity_ados_ids", "physical_activity_babies_ids", "physical_activity_kids_ids",
+            "physical_activity_ados_ids", "socio_activity_babies_ids", "socio_activity_kids_ids",
+            "socio_activity_ados_ids", "primary_adults_occupation_ids", "school_cost_paid_ids", "rainy_month_ids",
+            "planting_month_ids", "harvest_month_ids", "hunger_month_ids", "primary_diet_ids",
+            "preferred_lang_id", "primary_language_id",
+            "church_ownership", "electrical_power", "school_year_begins", "typical_roof_material",
+            "typical_floor_material", "typical_wall_material", "coolest_month", "warmest_month", "current_weather",
+            "first_scheduled_letter", "second_scheduled_letter",
+        ]
+
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
@@ -595,6 +611,13 @@ class CompassionProject(models.Model):
                 # Weird value received, we prefer to ignore it.
                 del odoo_data["monthly_income"]
         return odoo_data
+
+    def fetch_translations(self):
+        """
+        Contact GMC service in all installed languages in order to fetch all terms used in child description.
+        """
+        self._fetch_translations(self.env.ref("child_compassion.icp_details"))
+        return self.edit_translations()
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
