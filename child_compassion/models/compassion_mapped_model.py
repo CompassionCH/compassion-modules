@@ -29,7 +29,11 @@ class MappedModel(models.AbstractModel):
             for translated_record in self.with_context(lang=lang.lang_id.code):
                 service_url = translated_record._get_service_url(gmc_action)
                 english_record = translated_record.with_context(lang="en_US")
-                gmc_data = onramp.send_message(service_url + f"?FinalLanguage={lang.name}", "GET").get("content")
+                gmc_result = onramp.send_message(service_url + f"?FinalLanguage={lang.name}", "GET")
+                if gmc_result.get("code") != 200:
+                    _logger.warning("Language not available at GMC: %s", lang.name)
+                    continue
+                gmc_data = gmc_result.get("content")
                 gmc_english_data = onramp.send_message(service_url, "GET").get("content")
                 if gmc_action.connect_answer_wrapper:
                     gmc_data = gmc_data[gmc_action.connect_answer_wrapper]
@@ -45,8 +49,13 @@ class MappedModel(models.AbstractModel):
                     f_type = t_attrs["type"]
                     if f_type in ("one2many", "many2many"):
                         # connect.multipicklist related objects
-                        english_vals = english_vals.mapped("value")
-                        translated_vals = translated_vals.mapped("value")
+                        try:
+                            english_vals = english_vals.mapped("value")
+                            translated_vals = translated_vals.mapped("value")
+                        except KeyError:
+                            _logger.warning("Not a multipicklist relation, using name field: %s", t_field)
+                            english_vals = english_vals.mapped("name")
+                            translated_vals = translated_vals.mapped("name")
                         gmc_terms = gmc_terms.mapped("name")
                     elif f_type == "many2one":
                         english_vals = english_vals.mapped("name")
@@ -80,12 +89,13 @@ class MappedModel(models.AbstractModel):
                                               gmc_terms[i], str(gmc_english_vals))
                             if new_translation == english_val:
                                 to_translate_manually += english_record
-                            if f_type in ("one2many", "many2many"):
-                                # This should be a connect.multipicklist for which we update the value field.
-                                translated_record.mapped(t_field)[i].value = new_translation
-                            elif f_type == "many2one":
-                                # In that case we update the name field of the relation.
-                                translated_record.mapped(t_field).name = new_translation
+                            if f_type in ("one2many", "many2many", "many2one"):
+                                # This could be a connect.multipicklist for which we update the value field.
+                                try:
+                                    translated_record.mapped(t_field)[i].value = new_translation
+                                except AttributeError:
+                                    # In that case we update the name field of the relation.
+                                    translated_record.mapped(t_field)[i].name = new_translation
                             elif f_type == "selection":
                                 # Update selection label translation.
                                 o_field = lang.env["ir.model.fields"].search([  # Fetch in English
