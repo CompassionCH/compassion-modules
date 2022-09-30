@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reconcile_split_payment_form" model="ir.ui.view">
+        <field name="name">reconcile.split.payment.wizard.form</field>
+        <field name="model">reconcile.split.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Split Payment and Reconcile" version="7.0">
+                <sheet>
+                    <p>
+                        This will separate the payment in two move_lines, reconcile the open invoices
+                        and put the leftover in the client balance.
+                    </p>
+                    <group>
+                        <field name="comment" />
+                        <field name="contract_ids" context="{'tree_view_ref' : 'account_reconcile_compassion.view_contracts_tree_simplified'}"/>
+                    </group>
+                </sheet>
+
+                <footer>
+                    <button name="reconcile_split_payment" type="object" string="Reconcile" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+<!--    <act_window id="action_reconcile_split_payment_wizard"-->
+<!--        multi="True"-->
+<!--        key2="client_action_multi" name="Split Payment + Reconcile"-->
+<!--        res_model="reconcile.split.payment.wizard" src_model="account.move.line"-->
+<!--        view_mode="form" target="new" view_type="form"-->
+<!--    />-->
+</odoo>

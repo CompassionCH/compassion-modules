@@ -1,0 +1,439 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* account_advanced_reconcile_compassion
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0-20140602-231022\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-15 15:42+0000\n"
+"PO-Revision-Date: 2015-09-17 15:40+0100\n"
+"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"Language-Team: \n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.6.4\n"
+
+#. module: account_reconcile_compassion
+#: code:addons/account_reconcile_compassion/model/bank_statement_line.py:211
+#, python-format
+msgid "A field is required"
+msgstr "Un champ est requis"
+
+#. module: account_reconcile_compassion
+#: code:addons/account_reconcile_compassion/model/bank_statement_line.py:212
+#, python-format
+msgid "Add a Sponsorship"
+msgstr "Ajouter un Parrainage"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:117
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:123
+#, python-format
+msgid "Ambassador"
+msgstr "Ambassadeur"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:18
+#, python-format
+msgid "Automatic reconcile"
+msgstr "Lettrage par la force!"
+
+#. module: account_reconcile_compassion
+#: model:ir.model,name:account_reconcile_compassion.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Ligne de relevé"
+
+#. module: account_reconcile_compassion
+#: view:unreconcile.change.attribution.wizard:account_reconcile_compassion.view_change_attribution_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: account_reconcile_compassion
+#: selection:unreconcile.change.attribution.wizard,state:0
+msgid "Change Lines"
+msgstr "Lignes à modifier"
+
+#. module: account_reconcile_compassion
+#: model:ir.actions.act_window,name:account_reconcile_compassion.action_change_attribution
+#: model:ir.actions.act_window,name:account_reconcile_compassion.action_change_attribution_invoice
+msgid "Change attribution"
+msgstr "Changer l'attribution"
+
+#. module: account_reconcile_compassion
+#: view:unreconcile.change.attribution.wizard:account_reconcile_compassion.view_change_attribution_form
+msgid "Change attribution of payment"
+msgstr "Changer l'attribution du versement"
+
+#. module: account_reconcile_compassion
+#: view:reconcile.fund.wizard:account_reconcile_compassion.view_reconcile_fund_form
+msgid "Choose your fund"
+msgstr "Choisissez un fond"
+
+#. module: account_reconcile_compassion
+#: field:unreconcile.change.attribution.wizard,comment:0
+msgid "Comment"
+msgstr "Commentaire"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,create_uid:0
+#: field:reconcile.split.payment.wizard,create_uid:0
+#: field:unreconcile.change.attribution.wizard,create_uid:0
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,create_date:0
+#: field:reconcile.split.payment.wizard,create_date:0
+#: field:unreconcile.change.attribution.wizard,create_date:0
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: account_reconcile_compassion
+#: help:unreconcile.change.attribution.wizard,comment:0
+msgid "Explain why you changed the attribution."
+msgstr "Expliquez pourquoi vous avez changé cette attribution."
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,fund_id:0
+msgid "Fund"
+msgstr "Fond"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,id:0 field:reconcile.split.payment.wizard,id:0
+#: field:unreconcile.change.attribution.wizard,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.split.payment.wizard,comment:0
+msgid "Indications on left amount"
+msgstr "Indications sur le montant restant à attribuer"
+
+#. module: account_reconcile_compassion
+#: model:ir.model,name:account_reconcile_compassion.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: account_reconcile_compassion
+#: model:ir.model,name:account_reconcile_compassion.model_account_move_line
+msgid "Journal Items"
+msgstr "Transactions"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,write_uid:0
+#: field:reconcile.split.payment.wizard,write_uid:0
+#: field:unreconcile.change.attribution.wizard,write_uid:0
+msgid "Last Updated by"
+msgstr "Modifié par"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,write_date:0
+#: field:reconcile.split.payment.wizard,write_date:0
+#: field:unreconcile.change.attribution.wizard,write_date:0
+msgid "Last Updated on"
+msgstr "Modifié le"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:13
+#, python-format
+msgid "Open Partner"
+msgstr "Voir partenaire"
+
+#. module: account_reconcile_compassion
+#: model:ir.model,name:account_reconcile_compassion.model_account_statement_operation_template
+msgid ""
+"Preset for the lines that can be created in a bank statement reconciliation"
+msgstr ""
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: field:account.operation.template,product_id:0
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:87
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:93
+#, python-format
+msgid "Product"
+msgstr "Produit"
+
+#. module: account_reconcile_compassion
+#: view:account.invoice:account_reconcile_compassion.view_invoice_change_attribution
+#: view:reconcile.fund.wizard:account_reconcile_compassion.view_reconcile_fund_form
+#: view:reconcile.split.payment.wizard:account_reconcile_compassion.view_reconcile_split_payment_form
+#: selection:unreconcile.change.attribution.wizard,state:0
+msgid "Reconcile"
+msgstr "Lettrer"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:7
+#: model:ir.actions.act_window,name:account_reconcile_compassion.action_reconcile_fund_wizard
+#, python-format
+msgid "Reconcile + Put in Fund"
+msgstr "Lettrer + Attribuer au Fond"
+
+#. module: account_reconcile_compassion
+#: field:reconcile.fund.wizard,contract_ids:0
+#: field:reconcile.split.payment.wizard,contract_ids:0
+msgid "Related contracts"
+msgstr "Contrats concernés"
+
+#. module: account_reconcile_compassion
+#: field:unreconcile.change.attribution.wizard,invoice_line_ids:0
+msgid "Related invoice lines"
+msgstr "Lignes de factures concernées"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/xml/account_move_reconciliation.xml:9
+#: model:ir.actions.act_window,name:account_reconcile_compassion.action_reconcile_split_payment_wizard
+#, python-format
+msgid "Split Payment + Reconcile"
+msgstr "Lettrer + Attribuer à la Balance Client"
+
+#. module: account_reconcile_compassion
+#: view:reconcile.split.payment.wizard:account_reconcile_compassion.view_reconcile_split_payment_form
+msgid "Split Payment and Reconcile"
+msgstr "Séparer le paiement et lettrer"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:101
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:107
+#, python-format
+msgid "Sponsorship"
+msgstr "Parrainage"
+
+#. module: account_reconcile_compassion
+#: view:recurring.contract:account_reconcile_compassion.view_contracts_tree_simplified
+msgid "Sponsorships"
+msgstr "Parrainages"
+
+#. module: account_reconcile_compassion
+#: code:addons/account_reconcile_compassion/model/move_line.py:42
+#, python-format
+msgid "This can only be done for one credit line"
+msgstr "Cela ne se fait que pour une ligne de crédit"
+
+#. module: account_reconcile_compassion
+#: code:addons/account_reconcile_compassion/model/move_line.py:37
+#, python-format
+msgid "This can only be done if credits > debits"
+msgstr "Cela ne se fait que si les crédits > débits"
+
+#. module: account_reconcile_compassion
+#: view:unreconcile.change.attribution.wizard:account_reconcile_compassion.view_change_attribution_form
+msgid ""
+"This will cancel the following invoice lines, for letting you changing them. "
+"Please verify the validity of your selection"
+msgstr ""
+"Cela annulera les factures, afin de vous laisser faire les modifications. "
+"Veuillez vérifier la validité de cette sélection."
+
+#. module: account_reconcile_compassion
+#: view:reconcile.split.payment.wizard:account_reconcile_compassion.view_reconcile_split_payment_form
+msgid ""
+"This will separate the payment in two move_lines, reconcile the open "
+"invoices\n"
+"                            and put the leftover in the client balance."
+msgstr ""
+"Cela va séparer le paiement en deux écritures, payer et lettrer la facture "
+"ouverte, et mettre le montant résiduel dans la balance du partenaire."
+
+#. module: account_reconcile_compassion
+#: field:account.invoice,to_reconcile:0
+msgid "To reconcile"
+msgstr "A lettrer"
+
+#. module: account_reconcile_compassion
+#: selection:unreconcile.change.attribution.wizard,state:0
+msgid "Unreconcile"
+msgstr "Délettrer"
+
+#. module: account_reconcile_compassion
+#: view:unreconcile.change.attribution.wizard:account_reconcile_compassion.view_change_attribution_form
+msgid "Unreconcile payment"
+msgstr "Délettrer le versement"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:236
+#, python-format
+msgid "Warning"
+msgstr "Avertissement"
+
+#. module: account_reconcile_compassion
+#. openerp-web
+#: code:addons/account_reconcile_compassion/static/src/js/account_move_reconciliation.js:235
+#, python-format
+msgid "You must choose at least two records."
+msgstr "Vous devez choisir au moins deux transactions."
+
+#. module: account_reconcile_compassion
+#: field:unreconcile.change.attribution.wizard,state:0
+msgid "state"
+msgstr "Etat"
+
+#~ msgid ""
+#~ "Please take care to have the same total amount at the end of the process."
+#~ msgstr ""
+#~ "Faites attention à ce que le montant total soit le même à la fin du "
+#~ "processus."
+
+#~ msgid "easy.reconcile.advanced.bvr_ref"
+#~ msgstr "easy.reconcile.advanced.bvr_ref"
+
+#~ msgid "Is operation valid"
+#~ msgstr "Operation valide"
+
+#~ msgid "invoice type"
+#~ msgstr "Type de facture"
+
+#~ msgid ""
+#~ "You can directly edit the invoice lines from here if you want to change "
+#~ "the attribution of the payment."
+#~ msgstr ""
+#~ "Vous pouvez éditer les lignes de factures afin de changer l'attribution "
+#~ "du versement."
+
+#~ msgid "currency id"
+#~ msgstr "Devise"
+
+#~ msgid "New invoice"
+#~ msgstr "Nouvelle facture"
+
+#~ msgid "company id"
+#~ msgstr "Société"
+
+#~ msgid ""
+#~ "You can directly edit the contracts from here if you want to change the "
+#~ "next invoice date of one contract so that they are not charged in a same "
+#~ "invoice."
+#~ msgstr ""
+#~ "Vous pouvez directement modifier les contrats depuis ici si vous désirez "
+#~ "changer la date de facturation d'un parrainage afin d'éviter de le "
+#~ "grouper avec d'autres contrats dans une facture à l'avenir."
+
+#~ msgid ""
+#~ "Match multiple debit vs multiple credit entries. The credit entry "
+#~ "reference is matched vs the debit entry reference. The matching is done "
+#~ "only if the amount of the credit corresponds or if it is a multiple of an "
+#~ "invoice move lines amount. If many invoices match, the first reconciled "
+#~ "invoice is the current invoice (last invoice that is not in future). Then "
+#~ "it reconciles the other invoices from last invoice to first."
+#~ msgstr ""
+#~ "Rapprocher plusieurs lignes de crédits à plusieurs lignes de débit. Le "
+#~ "rapprochement est fait selon la référence BVR qui doit être identique.Le "
+#~ "rapprochement est fait uniquement si le montant du crédit correspond à "
+#~ "une combinaison des montants au débit afin de ne faire que du lettrage "
+#~ "complet.Si plusieurs factures sont payées, la première a être rapprochée "
+#~ "est celle qui est actuelle. Ensuite cela rapproche les écritures des plus "
+#~ "anciennes aux plus récentes."
+
+#~ msgid ""
+#~ "The total is no more matching the payment. You cannot reconcile from here."
+#~ msgstr ""
+#~ "Le total ne correspond pas au versement. La réconciliation automatique "
+#~ "n'est pas possible"
+
+#~ msgid "unknown"
+#~ msgstr "Inconnu"
+
+#~ msgid "Account Profit"
+#~ msgstr "Compte Profit"
+
+#~ msgid "reconcile.fund.wizard"
+#~ msgstr "reconcile.fund.wizard"
+
+#~ msgid "Restrict on partners"
+#~ msgstr "Restreindre aux partenaires"
+
+#~ msgid "fiscal position"
+#~ msgstr "Position fiscale"
+
+#~ msgid "Analytic account for the write-off"
+#~ msgstr "Compte analytique pour le write-off"
+
+#~ msgid "Validate"
+#~ msgstr "Valider"
+
+#~ msgid "partner id"
+#~ msgstr "Partenaire"
+
+#~ msgid "Account"
+#~ msgstr "Compte"
+
+#~ msgid "reconcile.split.payment.wizard"
+#~ msgstr "reconcile.split.payment.wizard"
+
+#~ msgid "Everything seems fine ! You can now reconcile the payment."
+#~ msgstr "Tout semble bon ! Vous pouvez réconcilier le versement."
+
+#~ msgid ""
+#~ "You can here edit invoice lines to change the attribution of the payment."
+#~ msgstr ""
+#~ "Vous pouvez éditer les lignes de factures afin de changer l'attribution "
+#~ "du versement."
+
+#~ msgid "Gain Exchange Rate Account"
+#~ msgstr "Gain Exchange Rate Account"
+
+#~ msgid "Filter"
+#~ msgstr "Filtre"
+
+#~ msgid "(update)"
+#~ msgstr "(mise à jour)"
+
+#~ msgid "reconcile method for account_easy_reconcile"
+#~ msgstr "Méthode de lettrage avancée pour le module account_easy_reconcile"
+
+#~ msgid "Advanced. Compassion Rules"
+#~ msgstr "Avancé. Règles Compassion"
+
+#~ msgid "Project %s is fund-suspended."
+#~ msgstr "Le centre de développement de l’enfant %s est en suspension avec retenue des fonds."
+
+#~ msgid "Account Lost"
+#~ msgstr "Compte des pertes"
+
+#~ msgid ""
+#~ "You can directly edit the contracts from here if you want to add a line "
+#~ "for the fund."
+#~ msgstr ""
+#~ "Vous pouvez directement modifier les contrats depuis ici afin d'ajouter "
+#~ "une ligne pour le fond sélectionné."
+
+#~ msgid "Write off allowed"
+#~ msgstr "Ajustement autorisé"
+
+#~ msgid "Payment Total"
+#~ msgstr "Total du versement"
+
+#~ msgid "Loss Exchange Rate Account"
+#~ msgstr "Loss Exchange Rate Account"
+
+#~ msgid "unreconcile.change.attribution.wizard"
+#~ msgstr "unreconcile.change.attribution.wizard"
+
+#~ msgid "Analytic Account"
+#~ msgstr "Compte Analytique"
+
+#~ msgid "Date of reconciliation"
+#~ msgstr "Date de lettrage"
+
+#~ msgid "Close"
+#~ msgstr "Fermer"
+
+#~ msgid "Total"
+#~ msgstr "Total"
+
+#~ msgid "Contracts"
+#~ msgstr "Contrats"
+
+#~ msgid "Advanced. Partner and BVR Ref"
+#~ msgstr "Avancé. Régles de Compassion"

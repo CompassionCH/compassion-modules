@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    
+    <t t-name="AccountReconciliationCompassion">
+        <button class="oe_account_recon_reconcile_fund oe_button oe_highlight" href="javascript:void(0)"
+                disabled="">Reconcile + Put in Fund</button>
+        <button class="oe_account_recon_reconcile_split oe_button oe_highlight" href="javascript:void(0)"
+                disabled="">Split Payment + Reconcile</button>
+    </t>
+
+    <t t-name="AccountReconciliationOpenPartner">
+        <button class="oe_account_recon_open_partner oe_button" href="javascript:void(0)">Open Partner</button>
+    </t>
+
+    <!-- Add BVR ref if found in line label -->
+    <t t-extend="reconciliation.line">
+        <t t-jquery="td.cell_label" t-operation="inner">
+            <t t-if="state.st_line.name" t-esc="state.st_line.name"/>
+            <t t-if="state.st_line.amount_currency_str"> (<t t-esc="state.st_line.amount_currency_str"/>)</t>
+            <t t-if="state.st_line.ref">
+                <br/>
+                <t t-esc="state.st_line.ref"/>
+            </t>
+            <t t-if="state.st_line.note"><i t-esc="state.st_line.note" style="float:right;"></i></t>
+        </t>
+
+        <!-- Add sponsor reference -->
+        <t t-jquery="span.partner_name span" t-operation="before">
+            (<t t-esc="state.st_line.partner_ref"/>)
+        </t>
+  </t>
+
+    <t t-extend="reconciliation.line.create">
+        <t t-jquery="tr.create_account_id" t-operation="after">
+            <tr class="create_product_id">
+                <td class="o_td_label">Product</td>
+                <td class="o_td_field"></td>
+            </tr>
+           <tr class="create_sponsorship_id">
+                <td class="o_td_label">Sponsorship</td>
+                <td class="o_td_field"></td>
+            </tr>
+            <tr class="create_user_id">
+                <td class="o_td_label">Ambassador</td>
+                <td class="o_td_field"></td>
+            </tr>
+        </t>
+
+        <t t-jquery="tr.create_amount" t-operation="after">
+            <tr class="create_comment">
+                <td class="o_td_label">Gift instructions</td>
+                <td class="o_td_field"></td>
+            </tr>
+            <tr class="create_avoid_thankyou_letter">
+                <td class="o_td_label">Disable thank you letter</td>
+                <td class="o_td_field"></td>
+            </tr>
+        </t>
+
+    </t>
+
+    <t t-extend="bank_statement_reconciliation_statement_line_details">
+
+        <t t-jquery="table.details > tr:nth-child(2)" t-operation="after">
+            <tr t-if="line.communication_partner_name"><td>Partner name</td><td><t t-esc="line.communication_partner_name"/></td></tr>
+        </t>
+    </t>
+
+</templates>
+
