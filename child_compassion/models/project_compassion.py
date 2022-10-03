@@ -253,7 +253,7 @@ class CompassionProject(models.Model):
     time_to_medical_facility = fields.Char(readonly=True)
     community_locale = fields.Char(readonly=True)
     community_climate = fields.Char(readonly=True)
-    community_terrain = fields.Char(readonly=True)
+    community_terrain = fields.Char(readonly=True, translate=True)
     typical_roof_material = fields.Selection("_get_materials", readonly=True)
     typical_floor_material = fields.Selection("_get_materials", readonly=True)
     typical_wall_material = fields.Selection("_get_materials", readonly=True)
@@ -383,17 +383,21 @@ class CompassionProject(models.Model):
     @property
     def translated_fields(self):
         return [
-            "involvement_ids", "ministry_ids", "implemented_program_ids", "interested_program_ids", "facility_ids",
-            "mobile_device_ids", "utility_ids", "spiritual_activity_babies_ids", "spiritual_activity_kids_ids",
-            "spiritual_activity_ados_ids", "cognitive_activity_babies_ids", "cognitive_activity_kids_ids",
-            "cognitive_activity_ados_ids", "physical_activity_babies_ids", "physical_activity_kids_ids",
-            "physical_activity_ados_ids", "socio_activity_babies_ids", "socio_activity_kids_ids",
-            "socio_activity_ados_ids", "primary_adults_occupation_ids", "school_cost_paid_ids", "rainy_month_ids",
-            "planting_month_ids", "harvest_month_ids", "hunger_month_ids", "primary_diet_ids",
-            "preferred_lang_id", "primary_language_id",
+            "involvement_ids.value", "ministry_ids.value", "implemented_program_ids.value",
+            "interested_program_ids.value", "facility_ids.value", "mobile_device_ids.value", "utility_ids.value",
+            "spiritual_activity_babies_ids.value", "spiritual_activity_kids_ids.value",
+            "spiritual_activity_ados_ids.value", "cognitive_activity_babies_ids.value",
+            "cognitive_activity_kids_ids.value", "cognitive_activity_ados_ids.value",
+            "physical_activity_babies_ids.value", "physical_activity_kids_ids.value",
+            "physical_activity_ados_ids.value", "socio_activity_babies_ids.value", "socio_activity_kids_ids.value",
+            "socio_activity_ados_ids.value", "primary_adults_occupation_ids.value", "school_cost_paid_ids.value",
+            "rainy_month_ids.name", "planting_month_ids.name", "harvest_month_ids.name", "hunger_month_ids.name",
+            "primary_diet_ids.value",
+            "preferred_lang_id.name", "primary_language_id.name",
             "church_ownership", "electrical_power", "school_year_begins", "typical_roof_material",
             "typical_floor_material", "typical_wall_material", "coolest_month", "warmest_month", "current_weather",
             "first_scheduled_letter", "second_scheduled_letter",
+            "community_terrain",
         ]
 
     ##########################################################################

@@ -308,9 +308,11 @@ class CompassionChild(models.Model):
     @property
     def translated_fields(self):
         return [
-            "hobby_ids", "christian_activity_ids", "project_activity_ids", "duty_ids", "subject_ids",
-            "chronic_illness_ids", "physical_disability_ids", "correspondence_language_id",
-            "education_level", "vocational_training_type", "academic_performance", "major_course_study"
+            "hobby_ids.value", "christian_activity_ids.value", "project_activity_ids.value", "duty_ids.value",
+            "subject_ids.value", "chronic_illness_ids.value", "physical_disability_ids.value",
+            "correspondence_language_id.name",
+            "education_level", "vocational_training_type", "academic_performance", "major_course_study", "gender",
+            "household_id.member_ids.role"
         ]
 
     ##########################################################################
