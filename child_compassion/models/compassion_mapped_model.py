@@ -4,6 +4,7 @@ import re
 from odoo import models, _
 
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
+from odoo.tools import flatten
 
 _logger = logging.getLogger(__name__)
 
@@ -17,6 +18,22 @@ class MappedModel(models.AbstractModel):
         Should return all fields that contain terms translated.
         """
         return []
+
+    def _get_ir_translated_fields(self):
+        """
+        Returns an augmented dict from the fields_get method with the full field relation.
+        """
+        res = dict()
+        for full_field_name in self.translated_fields:
+            relation, sep, f_name = full_field_name.rpartition(".")
+            record = self
+            if relation:
+                record = self.mapped(relation)
+            res[full_field_name] = self.env["ir.model.fields"].search([
+                ("model", "=", record._name),
+                ("name", "=", f_name)
+            ])
+        return res
 
     def _fetch_translations(self, gmc_action):
         """
@@ -38,77 +55,46 @@ class MappedModel(models.AbstractModel):
                 if gmc_action.connect_answer_wrapper:
                     gmc_data = gmc_data[gmc_action.connect_answer_wrapper]
                     gmc_english_data = gmc_english_data[gmc_action.connect_answer_wrapper]
-                if isinstance(gmc_data, list):
-                    gmc_data = gmc_data[0]
-                    gmc_english_data = gmc_english_data[0]
-                for t_field, t_attrs in translated_record.fields_get(
-                        self.translated_fields, ["type", "relation"]).items():
-                    english_vals = english_record.mapped(t_field)
-                    translated_vals = translated_record.mapped(t_field)
+                # We want to deal with all possible received values, there can be multiple.
+                if not isinstance(gmc_data, list):
+                    gmc_data = [gmc_data]
+                    gmc_english_data = [gmc_english_data]
+                for full_field_name, t_field in translated_record._get_ir_translated_fields().items():
+                    english_vals = english_record.mapped(full_field_name)
+                    translated_vals = translated_record.mapped(full_field_name)
                     gmc_terms = english_vals
-                    f_type = t_attrs["type"]
-                    if f_type in ("one2many", "many2many"):
-                        # connect.multipicklist related objects
-                        try:
-                            english_vals = english_vals.mapped("value")
-                            translated_vals = translated_vals.mapped("value")
-                        except KeyError:
-                            _logger.warning("Not a multipicklist relation, using name field: %s", t_field)
-                            english_vals = english_vals.mapped("name")
-                            translated_vals = translated_vals.mapped("name")
-                        gmc_terms = gmc_terms.mapped("name")
-                    elif f_type == "many2one":
-                        english_vals = english_vals.mapped("name")
-                        gmc_terms = english_vals
-                        translated_vals = translated_vals.mapped("name")
+                    if full_field_name.endswith(".value"):
+                        # Exception for multipicklist records where the gmc_terms are stored in "name" field
+                        gmc_terms = english_record.mapped(full_field_name.replace(".value", ".name"))
+                    f_type = t_field.ttype
                     for i, english_val in enumerate(english_vals):
                         # Update term only if English is the same as the translated
                         if english_val and english_val == translated_vals[i]:
-                            json_names = gmc_action.mapping_id.json_spec_ids.filtered(
-                                lambda m: t_field == m.field_name or (
-                                        t_field == m.relational_field_id.name and
-                                        t_attrs.get("relation") == m.field_id.model)
-                            ).mapped("json_name")
-                            gmc_translated_vals = list()
-                            gmc_english_vals = list()
-                            for jname in json_names:
-                                t_val = gmc_data.get(jname, [])
-                                e_val = gmc_english_data.get(jname, [])
-                                if not isinstance(e_val, list):
-                                    t_val = [t_val]
-                                    e_val = [e_val]
-                                gmc_translated_vals += t_val
-                                gmc_english_vals += e_val
-                            if not gmc_translated_vals:
-                                continue
-                            try:
-                                translation_index = gmc_english_vals.index(gmc_terms[i])
-                                new_translation = gmc_translated_vals[translation_index]
-                            except ValueError:
-                                _logger.error("English term \"%s\" not found in data received from GMC: %s",
-                                              gmc_terms[i], str(gmc_english_vals))
+                            new_translation = self._find_translation(
+                                full_field_name, gmc_terms[i], gmc_action, gmc_data, gmc_english_data)
                             if new_translation == english_val:
                                 to_translate_manually += english_record
-                            if f_type in ("one2many", "many2many", "many2one"):
-                                # This could be a connect.multipicklist for which we update the value field.
-                                try:
-                                    translated_record.mapped(t_field)[i].value = new_translation
-                                except AttributeError:
-                                    # In that case we update the name field of the relation.
-                                    translated_record.mapped(t_field)[i].name = new_translation
-                            elif f_type == "selection":
+                            if f_type == "selection":
                                 # Update selection label translation.
-                                o_field = lang.env["ir.model.fields"].search([  # Fetch in English
-                                    ("model", "=", self._name),
-                                    ("name", "=", t_field)
-                                ])
                                 s_field = lang.env["ir.model.fields.selection"].search([
-                                    ("field_id", "=", o_field.id),
+                                    ("field_id", "=", t_field.id),
                                     ("name", "=", english_val)
                                 ])
-                                s_field.with_context(lang=lang.lang_id.code).name = new_translation
+                                if s_field:
+                                    s_field.with_context(lang=lang.lang_id.code).name = new_translation
+                                else:
+                                    # The selection is not stored, maybe it's translated in the code.
+                                    lang.env["ir.translation"].search([
+                                        ("lang", "=", lang.lang_id.code),
+                                        ("src", "=ilike", english_val)
+                                    ]).value = new_translation
                             else:
-                                translated_record.write({t_field: new_translation})
+                                # Write the value inside the correct relation
+                                record = translated_record
+                                relation, sep, f_name = full_field_name.rpartition(".")
+                                if relation:
+                                    record = translated_record.mapped(relation)[i]
+                                record.write({t_field.name: new_translation})
         if to_translate_manually:
             to_translate_manually.assign_translation()
         return True
@@ -118,17 +104,22 @@ class MappedModel(models.AbstractModel):
         Returns action with domain for translating all values of the record
         """
         domain_parts = []
-        for t_field, attrs in self.fields_get(self.translated_fields, ["type"]).items():
-            if attrs["type"] in ["one2many", "many2many", "many2one"]:
-                recs = self.mapped(t_field)
-                if recs:
-                    domain_parts += [["&", ("res_id", "in", recs.ids), ("name", "=ilike", f"{recs._name},%")]]
-            elif attrs["type"] == "selection":
-                f_sel = self.env["ir.model.fields"].search([
-                    ("name", "=", t_field), ("model", "=", self._name)
-                ]).selection_ids.filtered(lambda s: s.value in self.mapped(t_field))
+        for f_name, t_field in self._get_ir_translated_fields().items():
+            if t_field.ttype == "selection":
+                f_sel = t_field.selection_ids.filtered(lambda s: s.value in self.mapped(t_field.name))
                 if f_sel:
                     domain_parts += [["&", ("res_id", "in", f_sel.ids), ("name", "like", "ir.model.fields.selection,")]]
+                else:
+                    srcs = self.with_context(lang="en_US").mapped(f_name)
+                    if any(srcs):
+                        domain_parts.append([("src", "in", srcs)])
+            else:
+                recs = self
+                model_name = f_name.rpartition(".")[0]
+                if model_name:
+                    recs = self.mapped(model_name)
+                if recs:
+                    domain_parts += [["&", ("res_id", "in", recs.ids), ("name", "=ilike", f"{recs._name},%")]]
         domain = ["|"] * (len(domain_parts) - 1)
         for d in domain_parts:
             domain += d
@@ -179,3 +170,62 @@ class MappedModel(models.AbstractModel):
                 url_endpoint,
             )
         return url_endpoint
+
+    def _find_translation(self, field_name, gmc_term, gmc_action, gmc_data, gmc_english_data):
+        """
+        Find a translation inside received GMC data. It will traverse the data in order to extract the desired values.
+
+        :param field_name: full field_name (in Odoo) used to lookup inside gmc_data
+        :param gmc_term: english value of the term expected from GMC
+        :param gmc_action: GMC action providing the data
+        :param gmc_data: Received GMC data in the desired language (list of data)
+        :param gmc_english_data: Received GMC data in English (list of data)
+        """
+        field_path = field_name.split(".")
+        field_mappings = gmc_action.mapping_id.json_spec_ids
+        for field_part in field_path:
+            field_mappings = field_mappings.filtered(
+                lambda m: m.field_name == field_part or m.relational_field_id.name == field_part)
+            keys_to_keep = field_mappings.mapped("json_name")
+            gmc_data = self._filter_gmc_data(gmc_data, keys_to_keep)
+            gmc_english_data = self._filter_gmc_data(gmc_english_data, keys_to_keep)
+            if field_mappings.filtered("sub_mapping_id"):
+                field_mappings = field_mappings.mapped("sub_mapping_id.json_spec_ids")
+            else:
+                break
+
+        # Flatten the list of dictionaries in case the terms are spread into multiple fields
+        gmc_data = flatten(map(lambda d: d.values() if isinstance(d, dict) else d, gmc_data))
+        gmc_english_data = flatten(map(lambda d: d.values() if isinstance(d, dict) else d, gmc_english_data))
+        try:
+            translation_index = gmc_english_data.index(gmc_term)
+            return gmc_data[translation_index]
+        except (ValueError, IndexError):
+            _logger.error("English term \"%s\" not found in data received from GMC: %s",
+                          gmc_term, str(gmc_english_data))
+            return gmc_term
+
+    def _filter_gmc_data(self, gmc_data, keys_to_keep):
+        """
+        Utility for extracting values from JSON data from GMC.
+        The data itself can be recursive lists and dictionaries, so the filtering
+        process needs to find the keys inside the complex structure.
+
+        :param gmc_data: JSON dict values or list of dicts.
+        :param keys_to_keep: list of keys found in gmc_data
+        :return: filtered list of dicts that contain given keys.
+        """
+        res = list()
+        if not isinstance(gmc_data, list):
+            gmc_data = [gmc_data]
+        for item in gmc_data:
+            if isinstance(item, dict):
+                extract = dict()
+                for key, value in item.items():
+                    if key in keys_to_keep:
+                        extract[key] = value
+                    elif isinstance(value, (list, dict)):
+                        res.extend(self._filter_gmc_data(value, keys_to_keep))
+                if extract:
+                    res.append(extract)
+        return res
