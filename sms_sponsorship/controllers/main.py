@@ -88,7 +88,7 @@ class SmsSponsorshipWebsite(Controller, FormControllerMixin):
             return {"invalid_sms_child_request": True}
         if (sms_child_request.sponsorship_confirmed or
                 has_child_active_sms_request_procedure(sms_child_request.child_id.id)):
-            return {"sponsorship_confirmed": True}
+            return {"sponsorship_confirmed": True, "request_source": sms_child_request.source}
 
         # No child for this request, we try to fetch one
         child = sms_child_request.child_id
