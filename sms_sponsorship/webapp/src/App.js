@@ -169,6 +169,12 @@ class Main extends React.Component {
         window.location.href = url;
     }
 
+    getOtherChildRequest = () => {
+        let url = '/sponsor_a_child?source=QR&child_id=';
+        window.location.href = url;
+    };
+
+
     render() {
         const { t } = this.props;
         document.title = t("cardTitle");
@@ -240,7 +246,18 @@ class Main extends React.Component {
                                 <div>
                                     {child.sponsorship_confirmed ? (
                                         <div>
-                                            <Message text={t('error_sponsorshipAlreadyMade')}/>
+                                            {child.request_source == 'SMS' ? (
+                                                <Message text={t('error_sponsorshipAlreadyMadeSMS')}/>
+                                            ):(
+                                                <div>
+                                                    <Message text={t('error_sponsorshipAlreadyMadeQR')}/>
+                                                    <div style={{textAlign: 'center'}}>
+                                                        <Button onClick={this.getOtherChildRequest} color="primary" variant="outlined">
+                                                            {t('chooseTitle')}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ):(
                                         <div>
