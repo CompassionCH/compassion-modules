@@ -125,20 +125,21 @@ class SmsChildRequest(models.Model):
         for request in self:
             if request.child_id.hold_event:
                 request.event_id = request.child_id.hold_event
-            else:
+            elif request.source == "SMS" and request.date:
                 limit_date = datetime.today() - relativedelta(days=7)
-                for sms_request in self.filtered(lambda r: r.source == "SMS" and r.date):
-                    event_id = self.env["crm.event.compassion"].search(
-                        [
-                            ("accepts_sms_booking", "=", True),
-                            ("start_date", "<=", sms_request.date),
-                            ("start_date", ">=", limit_date),
-                        ],
-                        order="start_date desc",
-                        limit=1,
-                    )
-                    # event_id is None if start_date of most recent event is > 1 week old
-                    sms_request.event_id = event_id
+                event_id = self.env["crm.event.compassion"].search(
+                    [
+                        ("accepts_sms_booking", "=", True),
+                        ("start_date", "<=", request.date),
+                        ("start_date", ">=", limit_date),
+                    ],
+                    order="start_date desc",
+                    limit=1,
+                )
+                # event_id is None if start_date of most recent event is > 1 week old
+                request.event_id = event_id
+            else:
+                request.event_id = False
 
 
     def _inverse_event(self):
