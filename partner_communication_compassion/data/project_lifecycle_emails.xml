@@ -6,6 +6,7 @@
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Project Suspension</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -70,6 +71,7 @@
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Extension of the project suspension</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -106,6 +108,7 @@
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Extension of the project suspension</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -143,6 +146,7 @@
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Project Reactivation</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -175,6 +179,7 @@
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="use_default_to" eval="True"/>
             <field name="subject">Project Closure</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()

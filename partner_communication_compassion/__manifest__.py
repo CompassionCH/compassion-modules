@@ -55,6 +55,7 @@
         "views/contract_view.xml",
         "views/correspondence_view.xml",
         "views/res_country_view.xml",
+        "views/generate_communication_wizard_view.xml",
     ],
     "demo": [],
     "installable": True,

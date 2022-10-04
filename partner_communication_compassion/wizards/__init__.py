@@ -8,5 +8,4 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizards
+from . import generate_communication_wizard

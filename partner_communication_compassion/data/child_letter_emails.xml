@@ -4,8 +4,8 @@
         <record id="final_letter" model="mail.template">
             <field name="name">B2S Final Letter</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Last letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">
@@ -37,7 +37,7 @@
                     <br/>
                     <br/>
                     Thanks to the collaboration between the sponsors and Compassion, we are grateful to be able to give hope to the children in need.
-                    We are at your service for any questions or comments, by calling 031 552 21 25 or by email at <a href="mailto:info@compassion.ch">info@compassion.ch</a>
+                    We are at your service for any questions or comments, by calling 031 552 21 25 or by email at <a href="mailto:${object.user_id.company_id.email}">${object.user_id.company_id.email}</a>
                     <br/>
                     <br/>
                 </p>
@@ -48,8 +48,8 @@
         <record id="new_letter" model="mail.template">
             <field name="name">B2S New letter</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">
@@ -80,8 +80,8 @@
         <record id="old_letter" model="mail.template">
             <field name="name">B2S Old letter published</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">
@@ -115,8 +115,8 @@
         <record id="b2s_email_not_read" model="mail.template">
             <field name="name">B2S e-mail not read</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="use_default_to" eval="True"/>
             <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">

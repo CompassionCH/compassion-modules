@@ -4,8 +4,8 @@
         <record id="email_hold_removal" model="mail.template">
             <field name="name">Beneficiary Hold Removal</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Child ${object.get_objects().child_id.local_id} removal notification</field>
             <field name="body_html" type="html">
@@ -35,8 +35,8 @@
         <record id="email_biennial" model="mail.template">
             <field name="name">New Biennial</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">New photo for ${object.get_objects().get_list('firstname', 3, 'your children')}</field>
             <field name="body_html" type="html">
@@ -74,8 +74,8 @@
         <record id="email_child_notes" model="mail.template">
             <field name="name">New Child Notes</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">New notes for ${object.get_objects().get_list('firstname', 3, 'your children')}</field>
             <field name="body_html" type="html">
@@ -103,8 +103,8 @@
         <record id="email_disaster_alert" model="mail.template">
             <field name="name">Disaster Alert</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Disaster alert in ${object.get_objects()[0].child_id.project_id.country_id.name}</field>
             <field name="body_html" type="html">

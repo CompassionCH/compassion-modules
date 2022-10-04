@@ -5,8 +5,8 @@
         <record id="email_birthdate" model="mail.template">
             <field name="name">Major Revision - Birthdate</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -26,8 +26,8 @@
         <record id="email_disability" model="mail.template">
             <field name="name">Major Revision - Chronic Disabilities</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -47,8 +47,8 @@
         <record id="email_illness" model="mail.template">
             <field name="name">Major Revision - Chronic Illness</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -68,8 +68,8 @@
         <record id="email_name" model="mail.template">
             <field name="name">Major Revision - Name</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().old_firstname}</field>
             <field name="body_html" type="html">
@@ -95,8 +95,8 @@
         <record id="email_gender" model="mail.template">
             <field name="name">Major Revision - Gender</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -119,8 +119,8 @@
         <record id="email_completion_date_change" model="mail.template">
             <field name="name">Major Revision - Planned Completion Date</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -140,8 +140,8 @@
         <record id="email_parent_alive" model="mail.template">
             <field name="name">Major Revision - Parent Alive</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -163,8 +163,8 @@
         <record id="email_caregiver_change" model="mail.template">
             <field name="name">Major Revision - Primary Caregiver</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -191,8 +191,8 @@
         <record id="email_multiple_changes" model="mail.template">
             <field name="name">Major Revision - Multiple Changes</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Revision for ${object.get_objects().old_firstname}</field>
             <field name="body_html" type="html">

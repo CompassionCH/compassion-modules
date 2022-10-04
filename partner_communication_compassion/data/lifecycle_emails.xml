@@ -6,8 +6,8 @@
         <record id="email_sponsorship_dossier" model="mail.template">
             <field name="name">Sponsorship - New Dossier</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Your new sponsorship</field>
             <field name="body_html" type="html">
@@ -68,8 +68,8 @@
         <record id="email_child_transfer" model="mail.template">
             <field name="name">Child Lifecycle - Transfer</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Change of reference for your child ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
@@ -96,8 +96,8 @@
         <record id="email_sponsorship_transfer_dossier" model="mail.template">
             <field name="name">Sponsorship Transfer - New Dossier</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="use_default_to" eval="True"/>
         </record>
 
@@ -105,8 +105,8 @@
         <record id="email_child_transition" model="mail.template">
             <field name="name">Child Lifecycle - Transition</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Your child ${object.get_objects().firstname} transitioned to ${object.get_objects().cdsp_type} Sponsorship</field>
             <field name="body_html" type="html">
@@ -135,8 +135,8 @@
         <record id="email_child_reinstatement" model="mail.template">
             <field name="name">Child Lifecycle - Reinstatement</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Your child ${object.get_objects().firstname} is back in project.</field>
             <field name="body_html" type="html">
@@ -160,8 +160,8 @@
         <record id="email_sponsorship_cancellation" model="mail.template">
             <field name="name">Sponsorship Cancellation</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
-            <field name="reply_to">info@compassion.ch</field>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field name="reply_to">${object.user_id.company_id.email}</field>
             <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Sponsorship Cancellation</field>
             <field name="body_html" type="html">
