@@ -254,6 +254,7 @@ class ChildLifecycleEvent(models.Model):
     new_project = fields.Char(readonly=True)
     new_program = fields.Char(readonly=True)
     previously_active_program = fields.Char(readonly=True)
+    new_beneficiary_local_number = fields.Char(readonly=True)
 
     # Transition fields
     ###################

@@ -345,7 +345,7 @@
                         <field name="child_death_category"/>
                         <field name="child_death_subcategory"/>
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Reinstatement/Return')]}"/>
+                    <group attrs="{'invisible': [('type', '!=', 'Reinstatement')]}"/>
                     <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
                         <field name="old_project_id"/>
                         <field name="transfer_arrival_date"/>
@@ -356,6 +356,7 @@
                         <field name="new_project"/>
                         <field name="new_program"/>
                         <field name="previously_active_program"/>
+                        <field name="new_beneficiary_local_number"/>
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
                         <field name="transition_type"/>

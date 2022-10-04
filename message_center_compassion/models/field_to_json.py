@@ -255,10 +255,8 @@ class FieldToJson(models.Model):
         # No records found given the values
         raise UserError(
             "Associated object not found using mapping %s, "
-            "JSON Key %s, JSON value %s",
-            self.mapping_id.name,
-            self.json_name,
-            value,
+            "JSON Key %s, JSON value %s"
+            % (self.mapping_id.name, self.json_name, value)
         )
 
     def _get_relational_creation_values(self, field_values):

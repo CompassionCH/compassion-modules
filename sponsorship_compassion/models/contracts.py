@@ -486,7 +486,6 @@ class SponsorshipContract(models.Model):
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
         super().write(vals)
-        self.env.cr.commit()
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -887,13 +886,12 @@ class SponsorshipContract(models.Model):
         answer = json.loads(message.answer)
         if not isinstance(answer, dict) or "Code" not in answer:
             raise UserError(_("Invalid GMC answer"))
-        if "failure" in message.state:
-            if answer["Code"] in [5000, ]:
-                logger.warning(message.answer)
-            else:
-                error_message = answer["Message"]
-                logger.error(error_message)
-                raise UserError(_("GMC returned an error :") + "\n" + error_message)
+        if message.state == "failure":
+            error_message = answer["Message"]
+            logger.error(message.failure_reason)
+            raise UserError(_("GMC returned an error :") + "\n" + error_message)
+        elif message.state == "odoo_failure":
+            logger.warning(message.failure_reason)
 
         self.global_id = False
         self.state = "terminated"
@@ -927,7 +925,6 @@ class SponsorshipContract(models.Model):
                             "the following error: ") + "\n" + error_message
 
         self.correspondent_id.update_number_sponsorships()
-        self.env.cr.commit()
         return True, ""
 
     def _on_sponsorship_finished(self):

@@ -27,11 +27,7 @@
       "from_json_conversion": "json_value and json_value.lower()"
     },
     "ExpectedArrivalDate": "transfer_arrival_date",
-    "NewBeneficiaryLocalNumber": {
-      "field": "child_id.local_id",
-      "search_relational_record": true,
-      "allow_relational_creation": false
-    },
+    "NewBeneficiaryLocalNumber": "new_beneficiary_local_number",
     "NewICPID": "new_project",
     "OtherReasonForTransfer": "other_transfer_reason",
     "BeneficiaryTransitionType": "transition_type",
