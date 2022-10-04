@@ -39,6 +39,7 @@
         "sponsorship_compassion",
     ],
     "external_dependencies": {
+        "bin": ["php"],
         "python": [
             "magic",
             "wand",

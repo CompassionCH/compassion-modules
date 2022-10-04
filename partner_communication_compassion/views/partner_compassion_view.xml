@@ -1,0 +1,14 @@
+<odoo>
+    <!-- Add letter delivery preference -->
+    <record id="view_partner_letter_delivery" model="ir.ui.view">
+        <field name="name">res.partner.letter.delivery</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_communication.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="global_communication_delivery_preference" position="after">
+                <field name="letter_delivery_preference"/>
+                <field name="photo_delivery_preference"/>
+            </field>
+        </field>
+    </record>
+</odoo>

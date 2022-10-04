@@ -1,0 +1,39 @@
+<odoo>
+    <!-- Add menu for editing e-mail templates of communications -->
+    <record id="action_communication_template" model="ir.actions.act_window">
+        <field name="name">Communication templates</field>
+        <field name="res_model">mail.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('model_id.model', '=', 'partner.communication.job')]</field>
+    </record>
+
+    <!-- Change tree view of e-mails -->
+    <record model="ir.ui.view" id="view_mail_tree">
+        <field name="name">mail.mail.tree.compassion</field>
+        <field name="model">mail.mail</field>
+        <field name="inherit_id" ref="mail.view_mail_tree"/>
+        <field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="decoration-muted">state in ('received', 'cancel')</attribute>
+                <attribute name="decoration-info">state=='outgoing'</attribute>
+                <attribute name="decoration-danger">state=='exception'</attribute>
+                <attribute name="decoration-success">state=='sent'</attribute>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Communication menus -->
+    <menuitem id="menu_donation"
+              name="Communications"
+              parent="child_compassion.menu_sponsorship_root"
+              sequence="6"/>
+
+    <!-- Move Partner Communication Section -->
+    <menuitem id="partner_communication.menu_communication_jobs" parent="menu_donation" name="Partner Communications" sequence="1"/>
+    <menuitem id="partner_communication.menu_communication_generate" parent="menu_donation" name="Generate Communications" sequence="2"/>
+    <menuitem name="Templates" id="menu_communication_templates" parent="child_compassion.menu_communication_config" sequence="4" action="action_communication_template"/>
+    <menuitem id="partner_communication.menu_communication_config" parent="menu_donation" name="Communication Rules" sequence="3"/>
+
+    <!-- Add Emails entry in Sponsorship Settings-->
+    <menuitem name="Emails" id="menu_mail_mail" parent="child_compassion.menu_communication_config" action="mail.action_view_mail_mail" sequence="2"/>
+</odoo>

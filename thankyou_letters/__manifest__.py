@@ -34,9 +34,10 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "depends": [
-        "partner_communication",  # compassion-modules
-        "advanced_translation",  # compassion-modules
-        "account",  # source/addons
+        "partner_communication",
+        "advanced_translation",
+        "partner_salutation",
+        "account",
     ],
     "external_dependencies": {"python": ["babel", ]},
     "data": [

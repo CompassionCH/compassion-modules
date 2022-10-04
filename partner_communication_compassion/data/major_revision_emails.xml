@@ -1,0 +1,222 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Major Revision Email Templates -->
+        <!-- Birthdate changed -->
+        <record id="email_birthdate" model="mail.template">
+            <field name="name">Major Revision - Birthdate</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.firstname} was born in ${child.get_date('birthdate', 'date_full')}.
+                </p>
+            </field>
+        </record>
+
+        <!-- Disability changed -->
+        <record id="email_disability" model="mail.template">
+            <field name="name">Major Revision - Chronic Disabilities</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.firstname} has ${child.current_values}.
+                </p>
+            </field>
+        </record>
+
+        <!-- Illnesses changed -->
+        <record id="email_illness" model="mail.template">
+            <field name="name">Major Revision - Chronic Illness</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.firstname} has ${child.current_values}.
+                </p>
+            </field>
+        </record>
+
+        <!-- Name changed -->
+        <record id="email_name" model="mail.template">
+            <field name="name">Major Revision - Name</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().old_firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.old_firstname} is now called <b>${child.firstname} ${child.lastname}</b>.
+                    <br/>
+                    <br/>
+                    ${child.get('he').title()} likes to be called ${child.preferred_name}.
+                    <br/>
+                    <br/>
+                    You don't need new stickers for that change, but if you would like we can still send you a new page of stickers. Just tell us!
+                </p>
+            </field>
+        </record>
+
+        <!-- Gender changed -->
+        <record id="email_gender" model="mail.template">
+            <field name="name">Major Revision - Gender</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.firstname} is not a ${'boy' if child.old_values == 'M' else 'girl'}, but a ${'boy' if child.gender == 'M' else 'girl'}.
+                    <br/>
+                    <br/>
+                    This change is because of a mistake the staff at the field office made. We apologize.
+                </p>
+            </field>
+        </record>
+
+        <!-- Completion date changed -->
+        <record id="email_completion_date_change" model="mail.template">
+            <field name="name">Major Revision - Planned Completion Date</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.firstname} will finish the Compassion program on ${child.get_date('completion_date', 'date_full')}.
+                </p>
+            </field>
+        </record>
+
+        <!-- Parent alive changed -->
+        <record id="email_parent_alive" model="mail.template">
+            <field name="name">Major Revision - Parent Alive</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                    % set role = 'mother' if child.household_id.revised_value_ids.name == 'Natural Mother Alive' else 'father'
+                    % set status = 'alive' if child.household_id.revised_value_ids.get_field_value() == 'True' else 'dead'
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that the ${role} of ${child.firstname} is ${status}.
+                </p>
+            </field>
+        </record>
+
+        <!-- Caregiver changed -->
+        <record id="email_caregiver_change" model="mail.template">
+            <field name="name">Major Revision - Primary Caregiver</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                    % set caregiver = child.household_id.primary_caregiver
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that the primary caregiver of ${child.firstname} is now ${child.get('his')}
+                    % if 'Beneficiary' not in caregiver:
+                        ${caregiver}
+                    % else:
+                        ${'sister' if 'Female' in caregiver else 'brother'}
+                    % endif
+                    .
+                </p>
+            </field>
+        </record>
+
+        <!-- Multiple changes -->
+        <record id="email_multiple_changes" model="mail.template">
+            <field name="name">Major Revision - Multiple Changes</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="subject">Revision for ${object.get_objects().old_firstname}</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set child = object.get_objects()
+                </div>
+                <p>
+                    ${object.partner_id.salutation},
+                    <br/>
+                    <br/>
+                    We learned that ${child.old_firstname} had some mistakes in his info. Here is what changed:
+                    <br/>
+                    <ul>
+                        % for revision in child.revised_value_ids:
+                            <li>${revision.name} : ${revision.old_value} -> ${revision.get_field_value()}</li>
+                            <br/>
+                        % endfor
+                        % for revision in child.household_id.revised_value_ids:
+                            <li>${revision.name} : ${revision.old_value} -> ${revision.get_field_value()}</li>
+                            <br/>
+                        % endfor
+                    </ul>
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2017 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<openerp>
+    <data>
+        <record id="disaster_impact_view_form" model="ir.ui.view">
+            <field name="name">child.disaster.impact.communication.form</field>
+            <field name="model">child.disaster.impact</field>
+            <field name="inherit_id" ref="child_compassion.view_child_disaster_impact_form"/>
+            <field name="arch" type="xml">
+                <field name="child_id" position="after">
+                    <field name="communication_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="disaster_impact_view_tree" model="ir.ui.view">
+            <field name="name">child.disaster.impact.communication.tree</field>
+            <field name="model">child.disaster.impact</field>
+            <field name="inherit_id" ref="child_compassion.view_child_disaster_impact_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="decoration-primary">state=='pending'</attribute>
+                    <attribute name="decoration-muted">state in ('done','cancel')</attribute>
+                    <attribute name="decoration-danger">state=='call'</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

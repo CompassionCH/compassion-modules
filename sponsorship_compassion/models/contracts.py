@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2019 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
@@ -109,7 +109,6 @@ class SponsorshipContract(models.Model):
     )
     # Field used for identifying gifts from sponsor
     commitment_number = fields.Integer(copy=False)
-    months_paid = fields.Integer(compute="_compute_months_paid")
     origin_id = fields.Many2one(
         "recurring.contract.origin",
         "Origin",
@@ -153,6 +152,7 @@ class SponsorshipContract(models.Model):
     group_freq = fields.Char(
         string="Payment frequency", compute="_compute_frequency", readonly=True
     )
+    is_first_sponsorship = fields.Boolean(readonly=True)
     sponsorship_line_id = fields.Integer(
         help="Identifies the active sponsorship line of a sponsor."
              "When sponsorship is ended but a SUB is made, the SUB will have"
@@ -331,36 +331,6 @@ class SponsorshipContract(models.Model):
                 frequency = _("every") + " " + frequency.lower()
             contract.group_freq = frequency
 
-    def _compute_months_paid(self):
-        """This is a query returning the number of months paid for a
-        sponsorship."""
-        self._cr.execute(
-            "SELECT c.id as contract_id, "
-            "12 * (EXTRACT(year FROM next_invoice_date) - "
-            "      EXTRACT(year FROM current_date))"
-            " + EXTRACT(month FROM c.next_invoice_date) - 1"
-            " - COALESCE(due.total, 0) as paidmonth "
-            "FROM recurring_contract c left join ("
-            # Open invoices to find how many months are due
-            "   select contract_id, count(distinct move_id) as total "
-            "   from account_move_line l "
-            "   join account_move m on m.id=l.move_id"
-            "   join product_product p on l.product_id = p.id "
-            "   where m.state='open' and "
-            # Exclude gifts from count
-            "   categ_name != 'Sponsor gifts'"
-            "   group by contract_id"
-            ") due on due.contract_id = c.id "
-            "WHERE c.id = ANY (%s)",
-            [self.ids],
-        )
-        res = self._cr.dictfetchall()
-        dict_contract_id_paidmonth = {
-            row["contract_id"]: int(row["paidmonth"] or 0) for row in res
-        }
-        for contract in self:
-            contract.months_paid = dict_contract_id_paidmonth.get(contract.id)
-
     def _compute_contract_duration(self):
         for contract in self:
             if not contract.activation_date:
@@ -412,6 +382,17 @@ class SponsorshipContract(models.Model):
             if sponsorship.state == "terminated" and not hold_letters:
                 is_allowed = (now - sponsorship.end_date).days <= int(days_allowed)
             sponsorship.can_write_letter = is_allowed
+
+    def _filter_due_invoices(self):
+        # Gifts should not be counted in due invoices
+        # Fund-suspended projects are also excluded
+        # Correspondence and gift contracts are also excluded
+        invoices = super()._filter_due_invoices()
+        return invoices.filtered(
+            lambda i: i.invoice_category != "gift"
+            and not any(i.mapped("invoice_line_ids.contract_id.child_id.project_id.hold_cdsp_funds"))
+            and not (set(i.mapped("invoice_line_ids.contract_id.type")) & {"G", "SC", "SWP"})
+        )
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -806,6 +787,11 @@ class SponsorshipContract(models.Model):
         for contract in self - contracts:
             if not contract.start_date:
                 contract.start_date = fields.Datetime.now()
+            old_sponsorships = contract.correspondent_id.sponsorship_ids.filtered(
+                lambda c: c.state != "cancelled" and c.start_date
+                and c.start_date < contract.start_date)
+            contract.is_first_sponsorship = not old_sponsorships
+
             if contract.type == "G":
                 # Activate directly if sponsorship is already active
                 for line in contract.contract_line_ids:
