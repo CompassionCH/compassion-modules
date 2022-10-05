@@ -86,6 +86,8 @@ class GenerateCommunicationWizard(models.TransientModel):
         if self.res_model == "recurring.contract" and self.selection_domain:
             self.sponsorship_ids = self.env["recurring.contract"].search(
                 safe_eval(self.selection_domain))
+        else:
+            self.sponsorship_ids = False
 
     def generate_communications(self, async_mode=True):
         """ Create the communication records """
