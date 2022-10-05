@@ -205,12 +205,16 @@ class ResPartner(models.Model):
         church_category = (
             self.env["res.partner.category"]
                 .with_context(lang="en_US").sudo()
-                .search([("name", "=", "Church")], limit=1)
+                .search(['|',
+                        ("name", "=", "Church"),
+                        ("name", "=", "state church")],
+                        limit=2)
         )
         for record in self:
             is_church = False
-            if church_category in record.category_id:
-                is_church = True
+            for category in church_category:
+                if category in record.category_id:
+                    is_church = True
 
             record.church_member_count = len(record.member_ids)
             record.is_church = is_church
