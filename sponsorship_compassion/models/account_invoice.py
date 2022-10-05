@@ -45,12 +45,15 @@ class AccountInvoice(models.Model):
 
     @api.depends("state", "line_ids.full_reconcile_id")
     def _compute_last_payment(self):
-        for invoice in self.filtered("line_ids.full_reconcile_id"):
-            mv_filter = "credit" if invoice.move_type == "out_invoice" else "debit"
-            payment_dates = invoice.line_ids.filtered(mv_filter).mapped(
-                "date"
-            )
-            invoice.last_payment = max(payment_dates or [False])
+        for invoice in self:
+            if invoice.line_ids.full_reconcile_id:
+                mv_filter = "credit" if invoice.move_type == "out_invoice" else "debit"
+                payment_dates = invoice.line_ids.filtered(mv_filter).mapped(
+                    "date"
+                )
+                invoice.last_payment = max(payment_dates or [False])
+            else:
+                invoice.last_payment = False
 
     @api.depends("line_ids", "payment_state", "line_ids.product_id")
     def _compute_invoice_category(self):
@@ -62,7 +65,10 @@ class AccountInvoice(models.Model):
         # At module installation, the categories are not yet loaded.
         if not sponsorship_cat or not fund_cat or not gift_cat:
             return
-        for invoice in self.search([('state', '=', 'posted'), ('payment_state', '=', 'paid')]):
+        for invoice in self:
+            # if invoice.payment_state != "paid":
+            #     invoice.invoice_category = False
+            #     continue
             # check if child_of Sponsorship category
             category_lines = self.env["account.move.line"].search(
                 [
