@@ -122,19 +122,25 @@ class SmsChildRequest(models.Model):
     @api.multi
     @api.depends("date")
     def _compute_event(self):
-        limit_date = datetime.today() - relativedelta(days=7)
-        for request in self.filtered(lambda r: r.source == "SMS" and r.date):
-            event_id = self.env["crm.event.compassion"].search(
-                [
-                    ("accepts_sms_booking", "=", True),
-                    ("start_date", "<=", request.date),
-                    ("start_date", ">=", limit_date),
-                ],
-                order="start_date desc",
-                limit=1,
-            )
-            # event_id is None if start_date of most recent event is>1 week old
-            request.event_id = event_id
+        for request in self:
+            if request.child_id.hold_event:
+                request.event_id = request.child_id.hold_event
+            elif request.source == "SMS" and request.date:
+                limit_date = datetime.today() - relativedelta(days=7)
+                event_id = self.env["crm.event.compassion"].search(
+                    [
+                        ("accepts_sms_booking", "=", True),
+                        ("start_date", "<=", request.date),
+                        ("start_date", ">=", limit_date),
+                    ],
+                    order="start_date desc",
+                    limit=1,
+                )
+                # event_id is None if start_date of most recent event is > 1 week old
+                request.event_id = event_id
+            else:
+                request.event_id = False
+
 
     def _inverse_event(self):
         # Allows to manually set an event
@@ -210,7 +216,7 @@ class SmsChildRequest(models.Model):
         """ Release current child and take another."""
         self.hold_id.write({"sms_request_id": False})
         self.write(
-            {"state": "new", "child_id": False, "is_trying_to_fetch_child": True}
+            {"state": "new", "is_trying_to_fetch_child": True}
         )
         return self.reserve_child()
 
