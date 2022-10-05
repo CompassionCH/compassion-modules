@@ -39,16 +39,16 @@
     "CompassID": "compass_id",
     "CorrespondenceLanguage": {
       "field": "correspondence_language_id.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "CurrentUniversityYearOfStudy": "university_year",
     "FavoriteProjectActivity": {
       "field": "project_activity_ids.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "FavoriteSchoolSubject": {
       "field": "subject_ids.name",
-      "search_relational_record": true,
+      "search_relational_record": true
     },
     "FirstName": "firstname",
     "FormalEducationLevel": "education_level",
