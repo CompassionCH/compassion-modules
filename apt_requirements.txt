@@ -1,0 +1,5 @@
+cups
+libcups2-dev
+libzbar0
+php
+tesseract-ocr
