@@ -3,8 +3,9 @@
   "model": "compassion.field.office",
   "mapping": {
     "BeneficiaryHighRisk_Name": {
-      "field": "high_risk_ids.name",
-      "search_relational_record": true
+      "field": "high_risk_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "ActiveDate": "date_start",
     "AlternateAddressCountry": "country",

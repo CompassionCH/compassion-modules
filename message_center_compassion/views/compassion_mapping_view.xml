@@ -23,12 +23,12 @@
                     <field name="mapping_id"/>
                     <field name="model"/>
                     <field name="json_name"/>
-                    <field name="field_id"/>
-                    <field name="relational_field_id" domain="[('model_id.model', '=', model)]"/>
-                    <field name="search_relational_record" attrs="{'invisible': [('relational_field_id', '=', False)]}"/>
-                    <field name="search_key" attrs="{'invisible': [('search_relational_record', '=', False)]}"/>
-                    <field name="allow_relational_creation" attrs="{'invisible': [('relational_field_id', '=', False)]}"/>
-                    <field name="relational_write_mode" attrs="{'invisible': [('relational_field_id', '=', False)]}"/>
+                    <field name="odoo_field"/>
+                    <field name="relational_field" invisible="1"/>
+                    <field name="search_relational_record" attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"/>
+                    <field name="search_key" attrs="{'invisible': [('search_relational_record', '=', False), ('sub_mapping_id', '=', False)]}"/>
+                    <field name="allow_relational_creation" attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"/>
+                    <field name="relational_write_mode" attrs="{'invisible': [('relational_field', '=', False), ('sub_mapping_id', '=', False)]}"/>
                     <field name="sub_mapping_id"/>
                     <field name="exclude_from_json"/>
                     <field name="to_json_conversion" widget="ace" options="{'mode': 'python'}" attrs="{'invisible': [('sub_mapping_id', '!=', False)]}"/>
@@ -44,7 +44,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="json_name" />
-                <field name="field_id" />
+                <field name="odoo_field" />
                 <field name="sub_mapping_id"/>
             </tree>
         </field>

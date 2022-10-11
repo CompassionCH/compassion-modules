@@ -8,8 +8,9 @@
     "EducationPlan": "education_plan",
     "FamilyImpact": "family_impact",
     "FutureHopes": {
-      "field": "future_hope_ids.name",
+      "field": "future_hope_ids.value",
       "search_relational_record": true,
+      "search_key": "name",
       "from_json_conversion": "json_value and json_value.split(';')"
     },
     "IsFinalLetterSent": "final_letter_sent",

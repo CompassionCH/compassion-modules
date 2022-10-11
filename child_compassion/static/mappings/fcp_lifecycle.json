@@ -6,8 +6,9 @@
     "ActualSuspensionEndDate": "suspension_end_date",
     "ActualTransitionDate": "date",
     "FutureInvolvement": {
-      "field": "future_involvement_ids.name",
-      "search_relational_record": true
+      "field": "future_involvement_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "ICPImprovementDescription": "fcp_improvement_desc",
     "ICPLifecycleEventType": "type",
@@ -24,23 +25,27 @@
     "ProjectedTransitionDate": "projected_transition_date",
     "ReactivationDate": "reactivation_date",
     "ReasonForFirstExtension": {
-      "field": "extension_1_reason_ids.name",
-      "search_relational_record": true
+      "field": "extension_1_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "ReasonforSecondExtension": {
-      "field": "extension_2_reason_ids.name",
-      "search_relational_record": true
+      "field": "extension_2_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "SuspensionDetailsGPAUse": "suspension_detail",
     "SuspensionReason": {
-      "field": "suspension_reason_ids.name",
-      "search_relational_record": true
+      "field": "suspension_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "SuspensionStartDate": "suspension_start_date",
     "TransitionDetailsGPAUse": "details",
     "TransitionReason": {
-      "field": "transition_reason_ids.name",
-      "search_relational_record": true
+      "field": "transition_reason_ids.value",
+      "search_relational_record": true,
+      "search_key": "name"
     },
     "ICPStatus": {
       "field": "project_status",

@@ -50,7 +50,6 @@ class CompassionMapping(models.Model):
         mapping.load_from_json(json["mapping"])
         return mapping
 
-    
     def load_from_json(self, json):
         """
         Function used to import JSON file to create/update a mapping
@@ -93,44 +92,29 @@ class CompassionMapping(models.Model):
             field_name = odoo_spec if short_spec else odoo_spec.pop("field", False)
             if field_name:
                 relational_count = field_name.count(".")
-                if relational_count > 1:
-                    raise UserError(
-                        _(
-                            "Mapping supports only direct relations. You cannot "
-                            "link a value to further relational fields like you "
-                            "did for field %s: %s"
-                        ) % (json_name, field_name)
-                    )
                 if relational_count:
                     # Relational field
-                    relational_field = self.env["ir.model.fields"].search(
-                        [
-                            ("model_id", "=", self.model_id.id),
-                            ("name", "=", field_name.split(".")[0]),
-                        ]
-                    )
+                    field_traversal, sep, last_field_name = field_name.rpartition(".")
+                    current_model = self.model_id
+                    for field_path in field_traversal.split("."):
+                        relational_field = self.env["ir.model.fields"].search(
+                            [
+                                ("model_id", "=", current_model.id),
+                                ("name", "=", field_path),
+                            ]
+                        )
+                        current_model = self.env["ir.model"].search([("model", "=", relational_field.relation)])
                     field = self.env["ir.model.fields"].search(
                         [
-                            ("model_id", "=", relational_field.relation),
-                            ("name", "=", field_name.split(".")[-1]),
+                            ("model_id", "=", current_model.id),
+                            ("name", "=", last_field_name),
                         ]
-                    )
-                    field_spec_vals.update(
-                        {"relational_field_id": relational_field.id, }
                     )
                 else:
                     # Regular field
                     field = self.env["ir.model.fields"].search(
                         [("model_id", "=", self.model_id.id), ("name", "=", field_name)]
                     )
-                    # If the spec indicates relational search, we copy
-                    # it in relational field, to make sure JSON conversion
-                    # will work.
-                    if not short_spec and (
-                            odoo_spec.get("search_relational_record")
-                            or odoo_spec.get("allow_relational_creation")
-                    ):
-                        field_spec_vals["relational_field_id"] = field.id
                 # We should have found a valid field
                 try:
                     field.ensure_one()
@@ -151,7 +135,7 @@ class CompassionMapping(models.Model):
                             "[%s] Invalid mapping: field %s in %s doesn't exist"
                         ) % (self.name, field, model)
                     )
-                field_spec_vals["field_id"] = field.id
+                field_spec_vals["odoo_field"] = field_name
             if not short_spec:
                 field_spec_vals.update(odoo_spec)
             self.env["compassion.field.to.json"].create(field_spec_vals)
