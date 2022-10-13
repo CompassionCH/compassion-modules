@@ -988,16 +988,16 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    def invoice_paid(self, invoice):
+    def invoice_paid(self, invoice, bypass_state=False):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """
         for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
                 contract = invl.contract_id
 
                 # Check contract is active or terminated recently.
-                if contract.state == "cancelled":
+                if contract.state == "cancelled" and not bypass_state:
                     raise UserError(f"The contract {contract.name} is not active.")
-                if contract.state == "terminated" and contract.end_date:
+                if contract.state == "terminated" and contract.end_date and not bypass_state:
                     limit = datetime.now() - relativedelta(days=180)
                     ended_since = contract.end_date
                     if ended_since < limit:
