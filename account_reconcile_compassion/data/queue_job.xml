@@ -1,0 +1,14 @@
+<odoo>
+    <!-- Channels -->
+    <record id="channel_reconcile" model="queue.job.channel">
+        <field name="name">reconcile_compassion</field>
+        <field name="parent_id" ref="queue_job.channel_root"/>
+    </record>
+
+    <!-- Job functions -->
+    <record id="process_reconcile_job" model="queue.job.function">
+        <field name="model_id" ref="model_account_bank_statement_line"/>
+        <field name="method">_process_reconciliation</field>
+        <field name="channel_id" ref="channel_reconcile"/>
+    </record>
+</odoo>

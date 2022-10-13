@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="view_reconcile_fund_form" model="ir.ui.view">
+            <field name="name">reconcile.fund.wizard.form</field>
+            <field name="model">reconcile.fund.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Choose your fund" version="7.0">
+                    <sheet>
+                        <group>
+                            <field name="fund_id" />
+                            <field name="contract_ids" context="{'tree_view_ref': 'account_reconcile_compassion.view_contracts_tree_simplified'}" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="reconcile_with_fund" type="object" string="Reconcile" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+<!--        <act_window id="action_reconcile_fund_wizard"-->
+<!--                    multi="True"-->
+<!--                    key2="client_action_multi" name="Reconcile + Put in Fund"-->
+<!--                    res_model="reconcile.fund.wizard" src_model="account.move.line"-->
+<!--                    view_mode="form" target="new" view_type="form"-->
+<!--        />-->
+
+        <!-- Custom Tree view for the contracts -->
+        <record id="view_contracts_tree_simplified" model="ir.ui.view">
+            <field name="name">view.contracts.simplified.tree</field>
+            <field name="model">recurring.contract</field>
+            <field eval="20" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Sponsorships" delete="false" create="false">
+                    <field name="partner_id" />
+                    <field name="child_code" />
+                    <field name="payment_mode_id" />
+                    <field name="total_amount" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

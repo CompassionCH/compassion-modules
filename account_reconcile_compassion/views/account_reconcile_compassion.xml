@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="account assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/account_reconcile_compassion/static/src/scss/custom.scss"/>
+            <script type="text/javascript" src="/account_reconcile_compassion/static/src/js/relational_fields.js"></script>
+            <script type="text/javascript" src="/account_reconcile_compassion/static/src/js/account_move_reconciliation.js"></script>
+        </xpath>
+    </template>
+</odoo>
