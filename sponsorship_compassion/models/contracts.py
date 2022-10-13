@@ -988,8 +988,9 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    def invoice_paid(self, invoice, bypass_state=False):
+    def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """
+        bypass_state = self.env.context.get("bypass_state", False)
         for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
                 contract = invl.contract_id
