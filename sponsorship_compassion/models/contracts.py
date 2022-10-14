@@ -190,6 +190,11 @@ class SponsorshipContract(models.Model):
             return self._get_sponsorship_standard_lines(False)
         return []
 
+    @api.onchange("company_id")
+    def _get_correct_pricelist(self):
+        if "S" in self.env.context.get("default_type", "O"):
+            self.contract_line_ids = self._get_sponsorship_standard_lines(False)
+
     @api.onchange("type")
     def _create_empty_lines_for_correspondence(self):
         self.contract_line_ids = self._get_sponsorship_standard_lines(self.type in ["SC", "SWP"])
@@ -229,6 +234,15 @@ class SponsorshipContract(models.Model):
 
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
+        if self.company_id:
+            pricelist = self.env['product.pricelist'].search([("company_id", "=", self.company_id.id)], limit=1)
+            sponsorship_product.with_context(
+                {'pricelist': pricelist.id, 'partner': self.partner_id.id}) \
+                ._compute_product_price()
+            gen_product.with_context(
+                {'pricelist': pricelist.id, 'partner': self.partner_id.id}) \
+                ._compute_product_price()
+
         sponsorship_vals = {
             "product_id": sponsorship_product.id,
             "quantity": 0 if correspondence else 1,
@@ -258,7 +272,7 @@ class SponsorshipContract(models.Model):
                 contract.invoice_line_ids.with_context(lang="en_US")
                 .filtered(
                     lambda l: l.payment_state == "paid"
-                    and l.product_id.categ_name != GIFT_CATEGORY
+                              and l.product_id.categ_name != GIFT_CATEGORY
                 )
                 .mapped("move_id.invoice_date")
                 or [False]
@@ -272,7 +286,7 @@ class SponsorshipContract(models.Model):
             )
             gift_invoices = invoices.filtered(
                 lambda i: i.invoice_category == "gift"
-                and i.state not in ("cancel", "draft")
+                          and i.state not in ("cancel", "draft")
             )
             contract.nb_invoices = len(gift_invoices)
         super(SponsorshipContract, self - gift_contracts)._compute_invoices()
@@ -390,8 +404,8 @@ class SponsorshipContract(models.Model):
         invoices = super()._filter_due_invoices()
         return invoices.filtered(
             lambda i: i.invoice_category != "gift"
-            and not any(i.mapped("invoice_line_ids.contract_id.child_id.project_id.hold_cdsp_funds"))
-            and not (set(i.mapped("invoice_line_ids.contract_id.type")) & {"G", "SC", "SWP"})
+                      and not any(i.mapped("invoice_line_ids.contract_id.child_id.project_id.hold_cdsp_funds"))
+                      and not (set(i.mapped("invoice_line_ids.contract_id.type")) & {"G", "SC", "SWP"})
         )
 
     ##########################################################################
@@ -614,7 +628,6 @@ class SponsorshipContract(models.Model):
                     )
                     analytic = a_default and a_default.analytic_id
                 if analytic:
-
                     invl_data.update({"analytic_account_id": analytic.id})
                     a_default = self.env["account.analytic.default"].account_get(
                         product_id, partner_id, date=fields.Date.today()
@@ -763,7 +776,7 @@ class SponsorshipContract(models.Model):
         if self.mapped("partner_id.activity_ids").filtered(
                 lambda l: l.activity_type_id.id == check_duplicate_activity_id) \
                 or self.mapped("correspondent_id.activity_ids").filtered(
-                lambda l: l.activity_type_id.id == check_duplicate_activity_id):
+            lambda l: l.activity_type_id.id == check_duplicate_activity_id):
             raise UserError(
                 _("Please verify the partner before validating the sponsorship")
             )
@@ -788,7 +801,7 @@ class SponsorshipContract(models.Model):
                 contract.start_date = fields.Datetime.now()
             old_sponsorships = contract.correspondent_id.sponsorship_ids.filtered(
                 lambda c: c.state != "cancelled" and c.start_date
-                and c.start_date < contract.start_date)
+                          and c.start_date < contract.start_date)
             contract.is_first_sponsorship = not old_sponsorships
 
             if contract.type == "G":
@@ -874,13 +887,13 @@ class SponsorshipContract(models.Model):
 
         # Cancel sponsorship at GMC
         message = message_obj.create(
-                {
-                    "action_id": cancel_action.id,
-                    "child_id": self.child_id.id,
-                    "partner_id": self.correspondent_id.id,
-                    "object_id": self.id,
-                }
-            )
+            {
+                "action_id": cancel_action.id,
+                "child_id": self.child_id.id,
+                "partner_id": self.correspondent_id.id,
+                "object_id": self.id,
+            }
+        )
         message.process_messages()
 
         answer = json.loads(message.answer)
@@ -1061,7 +1074,7 @@ class SponsorshipContract(models.Model):
         # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
             lambda invl: invl.contract_id.id in self.ids
-            and invl.product_id.categ_name != GIFT_CATEGORY
+                         and invl.product_id.categ_name != GIFT_CATEGORY
         )
         return res
 

@@ -14,7 +14,6 @@
             <field name="last_paid_invoice_date" position="before">
                 <field name="type"/>
                 <field name="group_freq"/>
-                <field name="months_paid"/>
             </field>
 
             <!-- Add correspondant field for sponsorships -->
