@@ -16,9 +16,9 @@ class ResPartnerTitle(models.Model):
     Adds salutation and gender fields.
     """
 
-    _inherit = "res.partner.title"
+    _inherit = ["res.partner.title", "translatable.model"]
+    _name = "res.partner.title"
     _order = "order_index ASC, name ASC"
 
-    gender = fields.Selection([("M", "Male"), ("F", "Female"), ])
     plural = fields.Boolean()
     order_index = fields.Integer()

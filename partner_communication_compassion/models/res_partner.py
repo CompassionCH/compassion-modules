@@ -19,8 +19,7 @@ class ResPartner(models.Model):
     Add method to send all planned communication of sponsorships.
     """
 
-    _name = "res.partner"
-    _inherit = ["res.partner", "translatable.model"]
+    _inherit = "res.partner"
 
     letter_delivery_preference = fields.Selection(
         selection="_get_delivery_preference",

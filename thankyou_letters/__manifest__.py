@@ -35,7 +35,6 @@
     "website": "http://www.compassion.ch",
     "depends": [
         "partner_communication",
-        "advanced_translation",
         "partner_salutation",
         "account",
     ],
