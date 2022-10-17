@@ -16,8 +16,8 @@ from odoo.exceptions import UserError
 
 
 class SBCConnector(object):
-    def __init__(self):
-        self.connector = OnrampConnector()
+    def __init__(self, env):
+        self.connector = OnrampConnector(env)
 
     def send_letter_image(self, image_data, image_type, base64encoded=True):
         """ Sends an image of a Letter to Onramp U.S. Image Upload Service.

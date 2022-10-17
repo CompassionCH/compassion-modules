@@ -14,8 +14,7 @@ from json.decoder import JSONDecodeError
 
 import requests
 
-from odoo import api, registry, SUPERUSER_ID, _
-from odoo.http import db_monodb
+from odoo import _
 from odoo.exceptions import UserError
 from odoo.tools.config import config
 
@@ -41,32 +40,29 @@ class OnrampConnector(object):
     # For accessing odoo system parameters
     _res_config = None
 
-    def __new__(cls):
+    def __new__(cls, env):
         """ Inherit method to ensure a single instance exists. """
         if OnrampConnector.__instance is None:
             OnrampConnector.__instance = object.__new__(cls)
-            db_registry = registry(db_monodb())
-            with api.Environment.manage():
-                env = api.Environment(db_registry.cursor(), SUPERUSER_ID, {})
-                res_config = env["res.config.settings"]
-                connect_url = config.get("connect_url")
-                api_key = res_config.get_param("connect_api_key")
-                if connect_url and api_key:
-                    cls._connect_url = connect_url
-                    cls._res_config = res_config
-                    session = requests.Session()
-                    session.params.update({"api_key": api_key, "gpid": res_config.get_param('connect_gpid')})
-                    cls._session = session
-                else:
-                    raise UserError(
-                        _(
-                            "Please give connect_url and connect_api_key values "
-                            "in your Odoo configuration file."
-                        )
+            res_config = env["res.config.settings"]
+            connect_url = config.get("connect_url")
+            api_key = res_config.get_param("connect_api_key")
+            if connect_url and api_key:
+                cls._connect_url = connect_url
+                cls._res_config = res_config
+                session = requests.Session()
+                session.params.update({"api_key": api_key, "gpid": res_config.get_param('connect_gpid')})
+                cls._session = session
+            else:
+                raise UserError(
+                    _(
+                        "Please give connect_url and connect_api_key values "
+                        "in your Odoo configuration file."
                     )
+                )
         return OnrampConnector.__instance
 
-    def __init__(self):
+    def __init__(self, env):
         """ Get a fresh token if needed. """
         now = datetime.now()
         if not self._token_time or self._token_time + timedelta(hours=1) <= now:

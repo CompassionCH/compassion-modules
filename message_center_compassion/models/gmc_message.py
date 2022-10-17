@@ -309,7 +309,7 @@ class GmcMessage(models.Model):
     def _send_message(self, message_data):
         """Sends the prepared message and gets the answer from GMC."""
         action = self.mapped("action_id")
-        onramp = OnrampConnector()
+        onramp = OnrampConnector(self.env)
         url_endpoint = self._get_url_endpoint()
         if action.request_type == "GET":
             onramp_answer = onramp.send_message(

@@ -642,7 +642,7 @@ class CompassionProject(models.Model):
         return True
 
     def get_lifecycle_event(self):
-        onramp = OnrampConnector()
+        onramp = OnrampConnector(self.env)
         endpoint = "churchpartners/{}/kits/icplifecycleeventkit"
         lifecylcle_ids = list()
         for project in self:

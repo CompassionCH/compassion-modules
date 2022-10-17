@@ -544,7 +544,7 @@ class GlobalChildSearch(models.TransientModel):
         :return:
         """
         params = self.data_to_json(mapping_name)
-        onramp = OnrampConnector()
+        onramp = OnrampConnector(self.env)
         if method == "POST":
             result = onramp.send_message(service_name, method, params)
         else:

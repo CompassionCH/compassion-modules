@@ -12,8 +12,8 @@ from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampC
 
 
 class TestOnrampConnector(OnrampConnector):
-    def __init__(self):
-        self.connector = OnrampConnector()
+    def __init__(self, env):
+        self.connector = OnrampConnector(env)
 
     def test_message(self, test_message):
         """ Sends a message to any onramp.

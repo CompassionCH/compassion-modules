@@ -39,7 +39,7 @@ class MappedModel(models.AbstractModel):
         """
         Contact GMC service in all installed languages in order to fetch all terms used in record description.
         """
-        onramp = OnrampConnector()
+        onramp = OnrampConnector(self.env)
         to_translate_manually = self.env[self._name]
         for lang in self.env["res.lang.compassion"].with_context(lang="en_US").search([
                 ("translatable", "=", True), ("code_iso", "!=", "eng")]):

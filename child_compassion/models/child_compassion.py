@@ -554,7 +554,7 @@ class CompassionChild(models.Model):
         pass
 
     def get_lifecycle_event(self):
-        onramp = OnrampConnector()
+        onramp = OnrampConnector(self.env)
         endpoint = "beneficiaries/{}/kits/beneficiarylifecycleeventkit"
         lifecylcle_ids = list()
         for child in self:
