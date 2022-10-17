@@ -15,7 +15,7 @@ class ResPartner(models.Model):
     _name = "res.partner"
 
     salutation = fields.Char(compute="_compute_salutation")
-    gender = fields.Selection(related="title.gender", store=True)
+    gender = fields.Selection(related="title.gender", store=True, readonly=False)
 
     def _compute_salutation(self):
         """ Define a method _get_salutation_<lang_code> for using a specific salutation based on partner language
