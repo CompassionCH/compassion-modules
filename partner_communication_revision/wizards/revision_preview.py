@@ -95,9 +95,7 @@ class RevisionPreview(models.TransientModel):
                 config.write({"attachments_function": attachments_function})
         elif self.state == "active_revision":
             self.preview_job_id.write(job_vals)
-            self.preview_job_id.with_context(
-                {"lang_preview": job_vals["lang"]}
-            ).quick_refresh()
+            self.preview_job_id.quick_refresh()
 
         if config.report_id:
             # Create a PDF preview
