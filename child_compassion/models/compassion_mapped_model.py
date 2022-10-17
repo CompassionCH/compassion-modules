@@ -21,7 +21,7 @@ class MappedModel(models.AbstractModel):
 
     def _get_ir_translated_fields(self):
         """
-        Returns an augmented dict from the fields_get method with the full field relation.
+        Returns a dict with key the full field name and value the corresponding ir.model.field record.
         """
         res = dict()
         for full_field_name in self.translated_fields:
@@ -29,7 +29,7 @@ class MappedModel(models.AbstractModel):
             record = self
             if relation:
                 record = self.mapped(relation)
-            res[full_field_name] = self.env["ir.model.fields"].search([
+            res[full_field_name] = self.env["ir.model.fields"].sudo().search([
                 ("model", "=", record._name),
                 ("name", "=", f_name)
             ])
@@ -76,7 +76,7 @@ class MappedModel(models.AbstractModel):
                                 to_translate_manually += english_record
                             if f_type == "selection":
                                 # Update selection label translation.
-                                s_field = lang.env["ir.model.fields.selection"].search([
+                                s_field = lang.env["ir.model.fields.selection"].sudo().search([
                                     ("field_id", "=", t_field.id),
                                     ("name", "=", english_val)
                                 ])
@@ -115,10 +115,11 @@ class MappedModel(models.AbstractModel):
                         domain_parts.append([("src", "in", srcs)])
             else:
                 recs = self
-                model_name = f_name.rpartition(".")[0]
+                model_name, sep, final_field = f_name.rpartition(".")
                 if model_name:
                     recs = self.mapped(model_name)
                 if recs:
+                    self.env["ir.translation"].insert_missing(self.env[recs._name]._fields[final_field], recs)
                     domain_parts += [["&", ("res_id", "in", recs.ids), ("name", "=ilike", f"{recs._name},%")]]
         domain = ["|"] * (len(domain_parts) - 1)
         for d in domain_parts:

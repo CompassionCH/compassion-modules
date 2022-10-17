@@ -496,22 +496,6 @@ class CompassionChild(models.Model):
         }
         return number_dict.get(len(self), str(len(self))) + " " + self.get("child")
 
-    def json_to_data(self, json, mapping_name=None, update_household=True):
-        data = super().json_to_data(json, mapping_name)
-        # Update household
-        household_data = data.pop("household_id", {})
-        household_id = household_data.get("household_id")
-        household = self.env["compassion.household"].search(
-            [("household_id", "=", household_id)]
-        )
-        if household:
-            if update_household:
-                household.write(household_data)
-            data["household_id"] = household.id
-        elif household_data:
-            data["household_id"] = household.create(household_data).id
-        return data
-
     def fetch_translations(self):
         """
         Contact GMC service in all installed languages in order to fetch all terms used in child description.

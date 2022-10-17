@@ -1,14 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_child_christian_activity,Write access on child christian activity,model_child_christian_activity,group_sponsorship,1,1,0,0
-access_child_chronic_illness,Write access on child chronic illness,model_child_chronic_illness,group_sponsorship,1,1,0,0
+access_child_christian_activity,Write access on child christian activity,model_child_christian_activity,group_sponsorship,1,1,1,0
+access_child_chronic_illness,Write access on child chronic illness,model_child_chronic_illness,group_sponsorship,1,1,1,0
 access_child_disaster_impact,Full access on Child Disaster Impact,model_child_disaster_impact,message_center_compassion.group_gmc_user,1,1,1,1
 access_child_disaster_impact_spo,User access on Child Disaster Impact,model_child_disaster_impact,group_sponsorship,1,0,0,1
 access_future_hopes,Read access on child future hopes,model_child_future_hope,group_sponsorship,1,0,0,0
-access_child_hobby,Write access on child hoby,model_child_hobby,group_sponsorship,1,1,0,0
-access_child_household_duty,Write access on household duty,model_child_household_duty,group_sponsorship,1,1,0,0
-access_physical_disability,Write access on child physical disability,model_child_physical_disability,group_sponsorship,1,1,0,0
+access_child_hobby,Write access on child hoby,model_child_hobby,group_sponsorship,1,1,1,0
+access_child_household_duty,Write access on household duty,model_child_household_duty,group_sponsorship,1,1,1,0
+access_physical_disability,Write access on child physical disability,model_child_physical_disability,group_sponsorship,1,1,1,0
 access_child_project_activity,Write access on child project activity,model_child_project_activity,group_sponsorship,1,1,1,1
-access_child_school_subject,Write access on child school subject,model_child_school_subject,group_sponsorship,1,1,0,0
+access_child_school_subject,Write access on child school subject,model_child_school_subject,group_sponsorship,1,1,1,0
 access_compassion_child,Full access on compassion_child,model_compassion_child,group_sponsorship,1,1,1,1
 access_child_lifecycle,Full access on child lifecycle,model_compassion_child_ble,group_sponsorship,1,1,1,1
 access_child_assessement,Access on child_assessement,model_compassion_child_cdpr,group_sponsorship,1,0,1,1
@@ -32,20 +32,20 @@ access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_wee
 read_access_demand_weekly_demand,Read only access on demand_weekly_demand,model_demand_weekly_demand,group_sponsorship,1,0,0,0
 access_icp_church_facility,Write access on fcp church facility,model_fcp_church_facility,group_sponsorship,1,1,1,0
 access_icp_church_ministry,Write access on fcp church ministry,model_fcp_church_ministry,group_sponsorship,1,1,1,0
-access_icp_church_utility,Write access on fcp church utility,model_fcp_church_utility,group_sponsorship,1,1,0,0
-access_icp_cognitive_activity,Write access on fcp cognitive_activity,model_fcp_cognitive_activity,group_sponsorship,1,1,0,0
-access_icp_community_occupation,Write access on fcp community_occupation,model_fcp_community_occupation,group_sponsorship,1,1,0,0
-access_icp_diet,Write access on fcp diet,model_fcp_diet,group_sponsorship,1,1,0,0
+access_icp_church_utility,Write access on fcp church utility,model_fcp_church_utility,group_sponsorship,1,1,1,0
+access_icp_cognitive_activity,Write access on fcp cognitive_activity,model_fcp_cognitive_activity,group_sponsorship,1,1,1,0
+access_icp_community_occupation,Write access on fcp community_occupation,model_fcp_community_occupation,group_sponsorship,1,1,1,0
+access_icp_diet,Write access on fcp diet,model_fcp_diet,group_sponsorship,1,1,1,0
 access_icp_disaster_impact,Full access on FCP Disaster Impact,model_fcp_disaster_impact,message_center_compassion.group_gmc_user,1,1,1,1
 access_icp_disaster_impact_spo,User access on FCP Disaster Impact,model_fcp_disaster_impact,group_sponsorship,1,0,0,0
-access_project_involvement,Write access on fcp involvement,model_fcp_involvement,group_sponsorship,1,1,0,0
+access_project_involvement,Write access on fcp involvement,model_fcp_involvement,group_sponsorship,1,1,1,0
 access_icp_lifecycle_reason,Read access on fcp lifecycle reason,model_fcp_lifecycle_reason,group_sponsorship,1,0,0,0
-access_icp_mobile_device,Write access on fcp mobile device,model_fcp_mobile_device,group_sponsorship,1,1,0,0
-access_icp_physical_activity,Write access on fcp physical_activity,model_fcp_physical_activity,group_sponsorship,1,1,0,0
-access_icp_program,Write access on fcp program,model_fcp_program,group_sponsorship,1,1,0,0
+access_icp_mobile_device,Write access on fcp mobile device,model_fcp_mobile_device,group_sponsorship,1,1,1,0
+access_icp_physical_activity,Write access on fcp physical_activity,model_fcp_physical_activity,group_sponsorship,1,1,1,0
+access_icp_program,Write access on fcp program,model_fcp_program,group_sponsorship,1,1,1,0
 access_icp_school_cost,Write access on fcp school_cost,model_fcp_school_cost,group_sponsorship,1,1,0,0
-access_icp_sociological,Write access on fcp sociological,model_fcp_sociological_activity,group_sponsorship,1,1,0,0
-access_icp_spiritual_activity,Write access on fcp spiritual activity,model_fcp_spiritual_activity,group_sponsorship,1,1,0,0
+access_icp_sociological,Write access on fcp sociological,model_fcp_sociological_activity,group_sponsorship,1,1,1,0
+access_icp_spiritual_activity,Write access on fcp spiritual activity,model_fcp_spiritual_activity,group_sponsorship,1,1,1,0
 access_suspension_extension_reason,Read access on suspension extension reason,model_fcp_suspension_extension_reason,group_sponsorship,1,0,0,0
 access_learning_info,access_user_learning_info,model_field_office_learning,group_sponsorship,1,0,0,0
 access_fo_disaster_alert,Full access on Field Office Disaster Alert,model_fo_disaster_alert,message_center_compassion.group_gmc_user,1,1,1,1
@@ -57,7 +57,7 @@ access_fo_disaster_update_spo,User access on Field Office Disaster Update,model_
 access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc_user,1,1,1,1
 access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
 access_res_lang_compassion,Read only access on res_lang_compassion,advanced_translation.model_res_lang_compassion,,1,0,0,0
-write_access_res_lang_compassion,Write access on res_lang_compassion,advanced_translation.model_res_lang_compassion,group_sponsorship,1,1,0,0
+write_access_res_lang_compassion,Write access on res_lang_compassion,advanced_translation.model_res_lang_compassion,group_sponsorship,1,1,1,0
 access_gmc_message,Access gmc.message,message_center_compassion.model_gmc_message,group_sponsorship,1,1,1,0
 access_gmc_mapping,Access compassion.mapping,message_center_compassion.model_compassion_mapping,group_sponsorship,1,0,0,0
 access_gmc_field_to_json,Access field.to.json,message_center_compassion.model_compassion_field_to_json,group_sponsorship,1,0,0,0

@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014-2019 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2022 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -28,28 +28,20 @@
 
 # pylint: disable=C8101
 {
-    "name": "Compassion CH Message Center",
-    "version": "14.0.1.0.2",
+    "name": "REST Json API",
+    "version": "14.0.1.0.0",
     "category": "Other",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
-    "development_status": "Stable",
-    "depends": ["base", "queue_job"],
-    "external_dependencies": {"python": ["jwt"], },
-    "data": [
-        "security/gmc_groups.xml",
-        "security/ir.model.access.csv",
-        "data/query_operators.xml",
-        "views/gmc_message_view.xml",
-        "views/advanced_query_view.xml",
-        "views/compassion_mapping_view.xml",
-        "views/import_json_mapping_view.xml",
-        "views/compassion_settings_view.xml",
-        "data/queue_job.xml",
+    "depends": [
+        "base",
     ],
-    "demo": ["demo/res_users.xml"],
+    "external_dependencies": {"python": []},
+    "data": [
+    ],
+    "demo": [],
     "installable": True,
     "auto_install": False,
-    "post_init_hook": "load_mappings",
+    "post_load": "post_load",
 }

@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, fields, _
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval, wrap_module
 
@@ -32,9 +32,12 @@ class FieldToJson(models.Model):
         readonly=False,
     )
     model = fields.Char(related="mapping_id.model_id.model", readonly=True)
+    odoo_field = fields.Char(help="Full name to the odoo value (ex: child_id.household_id.member_ids.role")
     field_id = fields.Many2one(
         "ir.model.fields",
         "Odoo field",
+        compute="_compute_odoo_field",
+        store=True,
         index=True,
         help="Set in which field the Odoo value will be retrieved/stored. "
              "If not set, the JSON value won't be converted into Odoo data."
@@ -44,13 +47,15 @@ class FieldToJson(models.Model):
         ondelete="cascade",
         readonly=False,
     )
+    relational_field = fields.Char(
+        compute="_compute_odoo_field", help="Field name to use for fetching relational records (with mapped function)",
+        store=True
+    )
     relational_field_id = fields.Many2one(
         "ir.model.fields",
         "Relational field",
-        help="In case the JSON value points to relational value, specify "
-             "here where is the relation stored.",
-        ondelete="cascade",
-        readonly=False,
+        compute="_compute_odoo_field",
+        store=True
     )
     search_relational_record = fields.Boolean(
         help="When converting JSON to data, set to true if you should lookup "
@@ -60,7 +65,7 @@ class FieldToJson(models.Model):
     search_key = fields.Char(
         help="Odoo field name that will be used to search for an existing relational "
              "record. If not specified, it will assume a single value is given and "
-             "will search according the the relational_field_id set."
+             "will search according the relational_field set."
     )
     allow_relational_creation = fields.Boolean(
         help="If set to true, new records will be created if no matching "
@@ -72,7 +77,7 @@ class FieldToJson(models.Model):
         default="overwrite",
         help="Either overwrite relations or add the new values to the relation"
     )
-    field_name = fields.Char(related="field_id.name", readonly=True)
+    field_name = fields.Char(compute="_compute_odoo_field", store=True)
     json_name = fields.Char("Json Field Name", required=True, index=True)
     sub_mapping_id = fields.Many2one(
         "compassion.mapping",
@@ -100,6 +105,30 @@ class FieldToJson(models.Model):
     _sql_constraints = [
         ("unique", "unique(mapping_id,json_name)", _("This field is already mapped"))
     ]
+
+    @api.depends("odoo_field")
+    def _compute_odoo_field(self):
+        for spec in self:
+            if spec.odoo_field:
+                rel_field, sep, field_name = spec.odoo_field.rpartition(".")
+                rel_model = self.env[spec.model]
+                if rel_field:
+                    rel_model = self.env[spec.model].mapped(rel_field)
+                field = self.env["ir.model.fields"].search([
+                    ("model_id.model", "=", rel_model._name),
+                    ("name", "=", field_name)])
+                spec.field_id = field
+                spec.relational_field = rel_field or False
+                spec.relational_field_id = self.env["ir.model.fields"].search([
+                    ("model_id.model", "=", spec.model),
+                    ("name", "=", spec.odoo_field.split(".")[0])
+                ])
+                spec.field_name = spec.relational_field_id.name or field_name
+            else:
+                spec.field_id = False
+                spec.field_name = False
+                spec.relational_field = False
+                spec.relational_field_id = False
 
     def to_json(self, odoo_value):
         """
@@ -156,9 +185,12 @@ class FieldToJson(models.Model):
                 self.from_json_conversion,
                 {"json_value": json_value, "self": self},
             )
-        if self.relational_field_id:
+        if self.relational_field or self.sub_mapping_id:
             converted_value = self._json_to_relational_value(converted_value)
-            field_name = self.relational_field_id.name
+            if converted_value == "deep_relation":
+                # We cannot handle data for a complex relational field (only one descendent).
+                _logger.warning("Cannot handle JSON conversion of field %s:%s", self.model, self.odoo_field)
+                return {}
         return {field_name: converted_value}
 
     def _json_to_relational_value(self, value):
@@ -175,10 +207,11 @@ class FieldToJson(models.Model):
         :return: odoo value for a relational field
         """
         self.ensure_one()
-        field = self.relational_field_id
-        relational_model = self.env[field.relation]
+        field = self.field_id
+        relational_model = self.env[field.relation or field.model]
         orm_vals = [(5, 0, 0)] if self.relational_write_mode == "overwrite" else []
         to_create = []
+        search_field = self.search_key or field.name
         if self.search_relational_record:
             # Lookup for records that match the values received
             values = value if isinstance(value, list) else [value]
@@ -192,19 +225,17 @@ class FieldToJson(models.Model):
                         "unknown",
                 ):
                     continue
-                search_field = self.field_name
                 search_val = val
                 to_update = self.search_key and isinstance(val, dict)
                 if to_update:
                     # In that case we receive several values for the relation record
                     # and use one value in particular to find a matching record.
-                    search_field = self.search_key
-                    search_val = val.get(self.search_key)
+                    search_val = val.get(search_field)
                 records = relational_model.search([
                     "|", (search_field, "=", search_val),
                     (search_field, "=ilike", str(search_val))
                 ]) if search_val else relational_model
-                if field.ttype == "many2one":
+                if self.relational_field_id.ttype == "many2one":
                     record = records[:1]  # Only take one relation
                     if not record and self.allow_relational_creation:
                         to_create.append(val)
@@ -224,12 +255,12 @@ class FieldToJson(models.Model):
 
         if self.allow_relational_creation and to_create:
             # Replace relations with new associated records
-            if field.ttype == "many2one":
+            if self.relational_field_id.ttype == "many2one":
                 # We must create the record and return its id
                 if isinstance(value, dict):
-                    return relational_model.create(value).id
+                    return relational_model.create([value]).id
                 else:
-                    return relational_model.create({self.field_name: value}).id
+                    return relational_model.create([{field.name: value, search_field: value}]).id
 
             # In that case we are in many2many or one2many and will replace
             # relations.
@@ -240,9 +271,12 @@ class FieldToJson(models.Model):
             )
             # Use simple field to create related record
             orm_vals.extend(
-                [(0, 0, {self.field_name: vals}) for vals in record_vals
+                [(0, 0, {field.name: vals, search_field: vals}) for vals in record_vals
                  if not isinstance(vals, dict)]
             )
+
+        if self.relational_field_id.relation != field.model and not self.sub_mapping_id:
+            return "deep_relation"
 
         if orm_vals:
             return orm_vals

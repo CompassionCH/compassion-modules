@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import models, fields, _
+from odoo import api, models, fields, _
 
 
 class ConnectMultipicklist(models.AbstractModel):
@@ -28,6 +28,22 @@ class ConnectMultipicklist(models.AbstractModel):
             _("You cannot have two picklist values with same name."),
         )
     ]
+
+    @api.model
+    def create(self, vals_list):
+        """Sometimes we get from Connect a same value in several fields trying to create at the same time.
+        We therefore try to find an already existing record before creating a new one, to avoid errors."""
+        res = self
+        if not isinstance(vals_list, list):
+            vals_list = [vals_list]
+        for vals in vals_list:
+            name = vals["name"]
+            rec = self.search([("name", "=", name)])
+            if rec:
+                res += rec
+            else:
+                res += super().create(vals)
+        return res
 
     def get_res_view(self):
         """

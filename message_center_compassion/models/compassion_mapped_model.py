@@ -47,7 +47,7 @@ class CompassionMappedModel(models.AbstractModel):
                     if json_spec.field_name:
                         # Take the relational field as base for mapping
                         # conversion
-                        sub_record = record.mapped(json_spec.field_name)
+                        sub_record = record.mapped(json_spec.relational_field)
                         if not hasattr(sub_record, "data_to_json"):
                             raise UserError(
                                 _(
@@ -61,11 +61,7 @@ class CompassionMappedModel(models.AbstractModel):
                     )
                 else:
                     # Calls the conversion function defined in field_to_json
-                    odoo_field = json_spec.field_name
-                    if json_spec.relational_field_id:
-                        odoo_field = (
-                            json_spec.relational_field_id.name + "." + odoo_field
-                        )
+                    odoo_field = json_spec.odoo_field
                     value = None
                     if odoo_field:
                         value = record.mapped(odoo_field)
