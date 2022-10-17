@@ -1,0 +1,25 @@
+<odoo>
+    <record model="ir.ui.view" id="title_tree_view">
+        <field name="name">title.gender.salutation.tree.view</field>
+        <field name="model">res.partner.title</field>
+        <field name="inherit_id" ref="base.view_partner_title_tree"/>
+        <field name="arch" type="xml">
+            <field name="shortcut" position="after">
+                <field name="gender"/>
+                <field name="plural"/>
+                <field name="order_index" widget="handle"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="partner_form_title_view">
+        <field name="name">res.partner.title.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="title" position="after">
+                <field name="gender"/>
+            </field>
+        </field>
+    </record>
+</odoo>
