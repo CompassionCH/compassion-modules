@@ -662,20 +662,22 @@ class CommunicationJob(models.Model):
         output = PdfFileWriter()
         total_pages = existing_pdf.getNumPages()
 
-        def lastpair(a):
-            b = a - 1
-            if self.omr_single_sided or b % 2 == 0:
-                return b
-            return lastpair(b)
+        # the latest page number is the same as the number of total_pages if the document is 1-sided (recto)
+        latest_omr_page = total_pages
 
-        # print latest omr mark on latest pair page (recto)
-        latest_omr_page = lastpair(total_pages)
+        # if omr_single_sided is false, the document is 2-sided (recto-verso)
+        if not self.omr_single_sided:
+            # modulo to check if the total_pages number is even or odd
+            if total_pages % 2 == 0:
+                # latest_omr_page on 2-sided document with a pair total page number is the last front page
+                latest_omr_page = total_pages - 1
 
         for page_number in range(total_pages):
             page = existing_pdf.getPage(page_number)
             # only print omr marks on pair pages (recto)
             if self.omr_single_sided or page_number % 2 == 0:
-                is_latest_page = is_latest_document and page_number == latest_omr_page
+                # latest_omr_page is not starting from 0 as page_number that's why we need + 1
+                is_latest_page = is_latest_document and latest_omr_page == page_number + 1
                 marks = self._compute_marks(is_latest_page)
                 omr_layer = self._build_omr_layer(marks)
                 page.mergePage(omr_layer)
