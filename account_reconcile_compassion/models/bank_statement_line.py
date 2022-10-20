@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2018 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
@@ -39,7 +39,7 @@ class BankStatementLine(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    def _process_reconciliation(
+    def process_reconciliation(
         self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None
     ):
         """ Create invoice if product_id is set in move_lines
@@ -110,14 +110,6 @@ class BankStatementLine(models.Model):
             counterpart_aml_dicts, payment_aml_rec, new_aml_dicts
         )
 
-    # Always process reconciliations in a job
-    def process_reconciliation(
-            self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None
-    ):
-        self.with_delay()._process_reconciliation(
-            counterpart_aml_dicts, payment_aml_rec, new_aml_dicts
-        )
-
     def _create_invoice_from_mv_lines(self, mv_line_dicts, invoice=None):
         # Generate a unique bvr_reference
         if self.ref:
@@ -148,18 +140,13 @@ class BankStatementLine(models.Model):
                 return True
 
             # Setup a new invoice if no existing invoice is found
-            inv_data = self._get_invoice_data(ref, mv_line_dicts)
-            invoice = self.env["account.move"].create(inv_data)
+            invoice = self.env["account.move"].create(self._get_invoice_data(ref, mv_line_dicts))
 
-        for mv_line_dict in mv_line_dicts:
-            inv_line_data = self._get_invoice_line_data(mv_line_dict, invoice)
-            self.env["account.move.line"].create(inv_line_data)
-
-        invoice.action_invoice_open()
+        invoice.action_post()
         self.ref = ref
 
         # Update move_lines data
-        counterpart = invoice.move_id.line_ids.filtered(lambda ml: ml.debit > 0)
+        counterpart = invoice.line_ids.filtered(lambda ml: ml.debit > 0)
         return counterpart
 
     def _get_invoice_data(self, ref, mv_line_dicts):
@@ -170,26 +157,29 @@ class BankStatementLine(models.Model):
         :return: dict of account.move vals
         """
         journal_id = (
-            self.env["account.journal"].search([("type", "=", "sale")], limit=1).id
+            self.env["account.journal"].search([
+                ("type", "=", "sale"),
+                ("company_id", "=", self.company_id.id)
+            ], limit=1).id
         )
+        avoid_thankyou = any(map(lambda mvl: mvl.pop("avoid_thankyou_letter"), mv_line_dicts))
         return {
-            "account_id": self.partner_id.property_account_receivable_id.id,
             "move_type": "out_invoice",
             "partner_id": self.partner_id.id,
             "journal_id": journal_id,
             "invoice_date": self.date,
             "ref": ref,
             "invoice_origin": ";".join([d.get("comment", "") for d in mv_line_dicts]),
-            "currency_id": self.journal_currency_id.id,
+            "currency_id": self.currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
-            "avoid_thankyou_letter": mv_line_dicts[0]["avoid_thankyou_letter"]
+            "avoid_thankyou_letter": avoid_thankyou,
+            "invoice_line_ids": [(0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts]
         }
 
-    def _get_invoice_line_data(self, mv_line_dict, invoice):
+    def _get_invoice_line_data(self, mv_line_dict):
         """
         Setup invoice line data
         :param mv_line_dict: values from the move_line reconciliation
-        :param invoice: destination invoice
         :return: dict of account.invoice.line vals
         """
         amount = mv_line_dict["credit"]
@@ -199,12 +189,11 @@ class BankStatementLine(models.Model):
             "account_id": account_id,
             "price_unit": amount,
             "price_subtotal": amount,
-            "user_id": mv_line_dict.get("user_id"),
+            # "user_id": mv_line_dict.get("user_id"),
             "quantity": 1,
             "product_id": mv_line_dict["product_id"],
-            "account_analytic_id": mv_line_dict["analytic_account_id"],
+            "analytic_account_id": mv_line_dict["analytic_account_id"],
             "analytic_tag_ids": mv_line_dict["analytic_tag_ids"],
-            "move_id": invoice.id,
         }
         # Remove analytic account from bank journal item:
         # it is only useful in the invoice journal item
@@ -213,11 +202,7 @@ class BankStatementLine(models.Model):
             invl_vals["account_analytic_id"] = analytic
 
         # Find sponsorship
-        sponsorship_id = mv_line_dict.get("sponsorship_id")
-        if not sponsorship_id:
-            related_contracts = invoice.mapped("invoice_line_ids.contract_id")
-            if related_contracts:
-                sponsorship_id = related_contracts[0].id
+        sponsorship_id = mv_line_dict.pop("sponsorship_id")
         contract = self.env["recurring.contract"].browse(sponsorship_id)
         invl_vals["contract_id"] = contract.id
 

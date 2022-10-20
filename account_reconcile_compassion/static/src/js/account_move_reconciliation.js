@@ -132,11 +132,11 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                             ["state", "!=", "draft"],
                         ],
                     },
-                    {
-                        relation: "res.partner",
-                        type: "many2one",
-                        name: "user_id",
-                    },
+//                    {
+//                        relation: "res.partner",
+//                        type: "many2one",
+//                        name: "user_id",
+//                    },
                     {
                         type: "char",
                         name: "comment",
@@ -166,9 +166,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                     sponsorship_id: {
                         string: _t("Sponsorship"),
                     },
-                    user_id: {
-                        string: _t("Ambassador"),
-                    },
+//                    user_id: {
+//                        string: _t("Ambassador"),
+//                    },
                     comment: {
                         string: _t("Gift instructions"),
                     },
@@ -270,14 +270,14 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                         }
                     );
 
-                    self.fields.user_id = new relational_fields.FieldMany2One(
-                        self,
-                        "user_id",
-                        record,
-                        {
-                            mode: "edit",
-                        }
-                    );
+//                    self.fields.user_id = new relational_fields.FieldMany2One(
+//                        self,
+//                        "user_id",
+//                        record,
+//                        {
+//                            mode: "edit",
+//                        }
+//                    );
 
                     self.fields.comment = new basic_fields.FieldChar(self, "comment", record, {
                         mode: "edit",
@@ -326,7 +326,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                     self.fields.sponsorship_id.appendTo(
                         $create.find(".create_sponsorship_id .o_td_field")
                     );
-                    self.fields.user_id.appendTo($create.find(".create_user_id .o_td_field"));
+//                    self.fields.user_id.appendTo($create.find(".create_user_id .o_td_field"));
                     self.fields.comment.appendTo($create.find(".create_comment .o_td_field"));
                     self.fields.avoid_thankyou_letter.appendTo(
                     $create.find(".create_avoid_thankyou_letter .o_td_field"));
@@ -345,7 +345,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
         quickCreateFields: [
             "product_id",
             "sponsorship_id",
-            "user_id",
+//            "user_id",
             "comment",
             "account_id",
             "amount",
@@ -428,9 +428,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                     model: "account.reconcile.model",
                     method: "product_changed",
                     args: [
-                        {
-                            product_id: values.product_id.id,
-                        },
+                        values.product_id.id,
+                        self.statement.statement_id
                     ],
                 }).then(function (changes) {
                     if (changes) {
@@ -506,7 +505,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             var result = this._super(line, prop);
             result.product_id = prop.product_id ? prop.product_id.id : null;
             result.sponsorship_id = prop.sponsorship_id ? prop.sponsorship_id.id : null;
-            result.user_id = prop.user_id ? prop.user_id.id : null;
+//            result.user_id = prop.user_id ? prop.user_id.id : null;
             result.comment = prop.comment;
             result.avoid_thankyou_letter = prop.avoid_thankyou_letter ? prop.avoid_thankyou_letter : false;
             result.analytic_account_id = prop.analytic_account_id ? prop.analytic_account_id.id : null;

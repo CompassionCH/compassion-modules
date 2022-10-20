@@ -26,7 +26,7 @@ class ChangeAttributionWizard(models.TransientModel):
     #                                 FIELDS                                 #
     ##########################################################################
     invoice_line_ids = fields.Many2many(
-        "account.invoice.line",
+        "account.move.line",
         "change_attribution_wizard_line_rel",
         string="Related invoice lines",
         default=lambda self: self._get_invoice_lines(),
@@ -44,7 +44,7 @@ class ChangeAttributionWizard(models.TransientModel):
         """
         active_ids = self.env.context.get("active_ids")
         model = self.env.context.get("active_model")
-        invoices = self.env["account.invoice"]
+        invoices = self.env["account.move"]
 
         if model == "account.move.line":
             invoices = self._get_invoices_from_mvl_ids(active_ids)
@@ -68,7 +68,7 @@ class ChangeAttributionWizard(models.TransientModel):
             )
 
         # Unreconcile payments
-        payment_ids = self.invoice_line_ids.mapped("invoice_id.payment_move_line_ids")
+        payment_ids = self.invoice_line_ids.mapped("move_id.")
         move_lines = payment_ids.mapped("full_reconcile_id.reconciled_line_ids")
         move_lines.remove_move_reconcile()
 
