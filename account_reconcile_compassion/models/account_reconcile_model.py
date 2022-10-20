@@ -3,6 +3,8 @@ from odoo.exceptions import UserError
 
 from dateutil.relativedelta import relativedelta
 from odoo.osv.expression import get_unaccent_wrapper
+
+
 class AccountReconcileModel(models.Model):
     _inherit = "account.reconcile.model"
 

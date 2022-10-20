@@ -40,6 +40,7 @@
         "recurring_contract",
         "analytic",
         "sponsorship_compassion",
+        "thankyou_letters",
         "account_statement_import_camt",  # OCA/bank-statement-import
     ],
     "data": [

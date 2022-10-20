@@ -14,6 +14,7 @@
 # To provide both the URL and a branch, use:
 
 account-financial-tools
+account-reconcile
 bank-payment
 compassion-accounting https://github.com/CompassionCH/compassion-accounting
 connector-telephony

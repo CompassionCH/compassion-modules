@@ -10,7 +10,7 @@
 
 import logging
 
-from odoo import api, models, _
+from odoo import models, _
 from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_CATEGORY,
     SPONSORSHIP_CATEGORY,
@@ -28,24 +28,6 @@ class BankStatementLine(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    def write(self, vals):
-        """
-        Override write method to link partner to bank when a statement line
-        is added or updated
-        """
-        if "partner_id" in vals:
-            for line in self.filtered("partner_account"):
-                partner_bank = self.env["res.partner.bank"].search(
-                    [
-                        ("partner_id", "=", 1),
-                        "|",
-                        ("acc_number", "like", line.partner_account),
-                        ("sanitized_acc_number", "like", line.partner_account),
-                    ]
-                )
-                partner_bank.write({"partner_id": vals["partner_id"]})
-        return super().write(vals)
-
     def get_statement_line_for_reconciliation_widget(self):
         # Add partner reference for reconcile view
         res = super(
@@ -138,10 +120,8 @@ class BankStatementLine(models.Model):
 
     def _create_invoice_from_mv_lines(self, mv_line_dicts, invoice=None):
         # Generate a unique bvr_reference
-        if self.ref and len(self.ref) == 27:
+        if self.ref:
             ref = self.ref
-        elif self.ref and len(self.ref) > 27:
-            ref = mod10r(self.ref[:26])
         else:
             ref = mod10r(
                 str(self.date).replace("-", "")
@@ -150,9 +130,7 @@ class BankStatementLine(models.Model):
             ).ljust(26, "0")
 
         if invoice:
-            invoice.action_invoice_cancel()
-            invoice.action_invoice_draft()
-            invoice.env.clear()
+            invoice.button_draft()
             invoice.write({"origin": self.statement_id.name})
 
         else:
@@ -161,21 +139,21 @@ class BankStatementLine(models.Model):
             if invoices:
                 # Get the bvr reference of the invoice or set it
                 invoice = invoices[0]
-                invoice.write({"origin": self.statement_id.name})
+                invoice.write({"invoice_origin": self.statement_id.name})
                 if invoice.reference and not self.ref:
                     ref = invoice.reference
                 else:
-                    invoice.write({"reference": ref})
-                self.write({"ref": ref, "invoice_id": invoice.id})
+                    invoice.write({"ref": ref})
+                self.write({"ref": ref})
                 return True
 
             # Setup a new invoice if no existing invoice is found
             inv_data = self._get_invoice_data(ref, mv_line_dicts)
-            invoice = self.env["account.invoice"].create(inv_data)
+            invoice = self.env["account.move"].create(inv_data)
 
         for mv_line_dict in mv_line_dicts:
             inv_line_data = self._get_invoice_line_data(mv_line_dict, invoice)
-            self.env["account.invoice.line"].create(inv_line_data)
+            self.env["account.move.line"].create(inv_line_data)
 
         invoice.action_invoice_open()
         self.ref = ref
@@ -189,19 +167,19 @@ class BankStatementLine(models.Model):
         Sets the invoice
         :param ref: reference of the statement line
         :param mv_line_dicts: all data for reconciliation
-        :return: dict of account.invoice vals
+        :return: dict of account.move vals
         """
         journal_id = (
             self.env["account.journal"].search([("type", "=", "sale")], limit=1).id
         )
         return {
             "account_id": self.partner_id.property_account_receivable_id.id,
-            "type": "out_invoice",
+            "move_type": "out_invoice",
             "partner_id": self.partner_id.id,
             "journal_id": journal_id,
-            "date_invoice": self.date,
-            "reference": ref,
-            "comment": ";".join([d.get("comment", "") for d in mv_line_dicts]),
+            "invoice_date": self.date,
+            "ref": ref,
+            "invoice_origin": ";".join([d.get("comment", "") for d in mv_line_dicts]),
             "currency_id": self.journal_currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
             "avoid_thankyou_letter": mv_line_dicts[0]["avoid_thankyou_letter"]
@@ -226,7 +204,7 @@ class BankStatementLine(models.Model):
             "product_id": mv_line_dict["product_id"],
             "account_analytic_id": mv_line_dict["analytic_account_id"],
             "analytic_tag_ids": mv_line_dict["analytic_tag_ids"],
-            "invoice_id": invoice.id,
+            "move_id": invoice.id,
         }
         # Remove analytic account from bank journal item:
         # it is only useful in the invoice journal item
@@ -261,19 +239,20 @@ class BankStatementLine(models.Model):
     def _find_open_invoice(self, mv_line_dicts):
         """ Find an open invoice that matches the statement line and which
         could be reconciled with. """
-        invoice_line_obj = self.env["account.invoice.line"]
+        invoice_line_obj = self.env["account.move.line"]
         inv_lines = invoice_line_obj
         for mv_line_dict in mv_line_dicts:
             amount = mv_line_dict["credit"]
             inv_lines |= invoice_line_obj.search(
                 [
                     ("partner_id", "child_of", mv_line_dict.get("partner_id")),
-                    ("invoice_id.state", "in", ("open", "draft")),
+                    ("move_id.state", "=", "posted"),
+                    ("move_id.payment_state", "=", "not_paid"),
                     ("product_id", "=", mv_line_dict.get("product_id")),
                     ("price_subtotal", "=", amount),
                 ]
             )
 
-        return inv_lines.mapped("invoice_id").filtered(
+        return inv_lines.mapped("move_id").filtered(
             lambda i: i.amount_total == self.amount
         )
