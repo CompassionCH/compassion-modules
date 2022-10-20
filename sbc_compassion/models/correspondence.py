@@ -646,7 +646,7 @@ class Correspondence(models.Model):
         Method called before Letter is sent to GMC.
         Upload the image to Persistence if not already done.
         """
-        onramp = SBCConnector()
+        onramp = SBCConnector(self.env)
         for letter in self.filtered(lambda l: not l.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
                 letter.get_image(), letter.letter_format, base64encoded=False
@@ -688,7 +688,7 @@ class Correspondence(models.Model):
             letter_url = getattr(letter, letter_type)
             image_data = None
             if letter_url:
-                image_data = SBCConnector().get_letter_image(
+                image_data = SBCConnector(self.env).get_letter_image(
                     letter_url, "pdf", dpi=300
                 )  # resolution
             if image_data is None:

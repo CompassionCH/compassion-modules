@@ -44,7 +44,7 @@ class GetLetterImageWizard(models.TransientModel):
 
     def get_image(self):
         letter = self.env["correspondence"].browse(self.env.context.get("active_id"))
-        onramp = SBCConnector()
+        onramp = SBCConnector(self.env)
         image_data = None
         if self.image == "original" and letter.original_letter_url:
             image_data = onramp.get_letter_image(
