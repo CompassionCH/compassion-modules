@@ -18,12 +18,11 @@
                 </form>
             </field>
         </record>
-<!--        <act_window id="action_reconcile_fund_wizard"-->
-<!--                    multi="True"-->
-<!--                    key2="client_action_multi" name="Reconcile + Put in Fund"-->
-<!--                    res_model="reconcile.fund.wizard" src_model="account.move.line"-->
-<!--                    view_mode="form" target="new" view_type="form"-->
-<!--        />-->
+        <act_window id="action_reconcile_fund_wizard"
+                    name="Reconcile + Put in Fund"
+                    res_model="reconcile.fund.wizard" binding_model="account.move.line"
+                    view_mode="form" target="new"
+        />
 
         <!-- Custom Tree view for the contracts -->
         <record id="view_contracts_tree_simplified" model="ir.ui.view">

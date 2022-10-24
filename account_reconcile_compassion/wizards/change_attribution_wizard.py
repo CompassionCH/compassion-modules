@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields, exceptions, _
+from odoo import models, fields, exceptions, _
 
 
 class ChangeAttributionWizard(models.TransientModel):
@@ -48,7 +48,7 @@ class ChangeAttributionWizard(models.TransientModel):
 
         if model == "account.move.line":
             invoices = self._get_invoices_from_mvl_ids(active_ids)
-        elif model == "account.invoice":
+        elif model == "account.move":
             invoices = invoices.browse(active_ids)
 
         return invoices.mapped("invoice_line_ids.id")
@@ -68,8 +68,7 @@ class ChangeAttributionWizard(models.TransientModel):
             )
 
         # Unreconcile payments
-        payment_ids = self.invoice_line_ids.mapped("move_id.")
-        move_lines = payment_ids.mapped("full_reconcile_id.reconciled_line_ids")
+        move_lines = self.invoice_line_ids.mapped("full_reconcile_id.reconciled_line_ids")
         move_lines.remove_move_reconcile()
 
         # Cancel paid invoices and move invoice lines to a new
@@ -99,17 +98,15 @@ class ChangeAttributionWizard(models.TransientModel):
                 for line in invoice.invoice_line_ids:
                     line.copy({"invoice_id": new_invoice.id})
 
-        self = self.with_context(payment_ids=payment_ids.ids)
-        new_invoice.to_reconcile = sum(payment_ids.mapped("credit"))
+        new_invoice.to_reconcile = sum(move_lines.mapped("credit"))
 
         return {
             "name": _("Change attribution"),
             "type": "ir.actions.act_window",
-            "res_model": "account.invoice",
+            "res_model": "account.move",
             "res_id": new_invoice.id,
             "view_mode": "form",
-            "view_type": "form",
-            "view_id": self.env.ref("account.invoice_form").id,
+            "view_id": self.env.ref("account.view_move_form").id,
             "context": self.env.context,
         }
 
@@ -118,49 +115,15 @@ class ChangeAttributionWizard(models.TransientModel):
     ##########################################################################
     def _get_invoices_from_mvl_ids(self, mvl_ids):
         mvl_obj = self.env["account.move.line"]
-        invoice_obj = self.env["account.invoice"]
+        invoice_obj = self.env["account.move"]
         move_lines = mvl_obj.browse(mvl_ids).filtered(lambda mvl: mvl.credit > 0)
         reconcile_ids = move_lines.mapped("full_reconcile_id.id")
         # Find related reconciled invoices
         invoices = invoice_obj.search(
             [
-                ("move_id.line_id.full_reconcile_id", "in", reconcile_ids),
-                ("state", "=", "paid"),
-                ("residual", "=", 0.0),
+                ("line_ids.full_reconcile_id", "in", reconcile_ids),
+                ("payment_state", "=", "paid"),
+                ("amount_residual", "=", 0.0),
             ]
         )
         return invoices
-
-
-class AccountInvoice(models.Model):
-    _inherit = "account.move"
-
-    to_reconcile = fields.Float()
-
-    def change_attribution(self):
-        self.ensure_one()
-        move_line_obj = self.env["account.move.line"]
-        if self.amount_total != self.to_reconcile:
-            raise exceptions.UserError(
-                _(
-                    "The invoice total amount should be equal to %s in order to"
-                    " be reconciled against the payment."
-                )
-                % self.to_reconcile
-            )
-
-        self.action_invoice_open()
-
-        # Reconcile all related move lines
-        mvl_ids = self.env.context.get("payment_ids")
-        if mvl_ids:
-            move_lines = move_line_obj.search(
-                [
-                    ("move_id", "=", self.move_id.id),
-                    ("account_id", "=", self.account_id.id),
-                ]
-            )
-            move_lines |= move_line_obj.browse(mvl_ids)
-            move_lines.reconcile("manual")
-        self.to_reconcile = 0.0
-        return True

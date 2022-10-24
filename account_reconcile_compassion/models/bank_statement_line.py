@@ -55,7 +55,7 @@ class BankStatementLine(models.Model):
         partner_id = self.partner_id.id
         counterparts = [data["move_line"] for data in counterpart_aml_dicts]
         counterparts = reduce(
-            lambda m1, m2: m1 + m2.filtered("invoice_id"),
+            lambda m1, m2: m1 + m2.filtered("move_id"),
             counterparts,
             self.env["account.move.line"],
         )
@@ -75,7 +75,7 @@ class BankStatementLine(models.Model):
             if counterparts:
                 # An invoice exists for that partner, we will use it
                 # to put leftover amount in it, if any exists.
-                invoice = counterparts[0].invoice_id
+                invoice = counterparts[0].move_id
                 partner_invoices[partner_id] = invoice
                 old_counterparts[invoice.id] = counterparts[0]
 
@@ -106,6 +106,13 @@ class BankStatementLine(models.Model):
                     data["move_line"] = new_counterpart
                     counterpart_aml_dicts.append(data)
 
+        # Consume invalid fields for move creation
+        for mv_line_dict in counterpart_aml_dicts:
+            mv_line_dict.pop("avoid_thankyou_letter", False)
+            mv_line_dict.pop("sponsorship_id", False)
+        for mv_line_dict in new_aml_dicts:
+            mv_line_dict.pop("avoid_thankyou_letter", False)
+            mv_line_dict.pop("sponsorship_id", False)
         return super().process_reconciliation(
             counterpart_aml_dicts, payment_aml_rec, new_aml_dicts
         )
@@ -173,7 +180,8 @@ class BankStatementLine(models.Model):
             "currency_id": self.currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
             "avoid_thankyou_letter": avoid_thankyou,
-            "invoice_line_ids": [(0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts]
+            "invoice_line_ids": [(0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts],
+            "bank_statement_id": self.statement_id.id
         }
 
     def _get_invoice_line_data(self, mv_line_dict):

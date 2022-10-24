@@ -22,10 +22,9 @@
             </form>
         </field>
     </record>
-<!--    <act_window id="action_reconcile_split_payment_wizard"-->
-<!--        multi="True"-->
-<!--        key2="client_action_multi" name="Split Payment + Reconcile"-->
-<!--        res_model="reconcile.split.payment.wizard" src_model="account.move.line"-->
-<!--        view_mode="form" target="new" view_type="form"-->
-<!--    />-->
+    <act_window id="action_reconcile_split_payment_wizard"
+        name="Split Payment + Reconcile"
+        res_model="reconcile.split.payment.wizard" binding_model="account.move.line"
+        view_mode="form" target="new"
+    />
 </odoo>

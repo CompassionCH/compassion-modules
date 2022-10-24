@@ -41,10 +41,10 @@
                 <td class="o_td_label">Sponsorship</td>
                 <td class="o_td_field"></td>
             </tr>
-            <tr class="create_user_id">
-                <td class="o_td_label">Ambassador</td>
-                <td class="o_td_field"></td>
-            </tr>
+<!--            <tr class="create_user_id">-->
+<!--                <td class="o_td_label">Ambassador</td>-->
+<!--                <td class="o_td_field"></td>-->
+<!--            </tr>-->
         </t>
 
         <t t-jquery="tr.create_amount" t-operation="after">

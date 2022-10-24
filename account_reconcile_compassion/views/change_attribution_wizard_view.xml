@@ -23,14 +23,14 @@
 
 
     <!-- Actions : call wizard from either invoices or move lines -->
-<!--    <act_window id="action_change_attribution"-->
-<!--                multi="True"-->
-<!--                key2="client_action_multi" name="Change attribution"-->
-<!--                res_model="unreconcile.change.attribution.wizard" src_model="account.move.line"-->
-<!--                view_mode="form" target="new" view_type="form"/>-->
+    <act_window id="action_change_attribution"
+                name="Change attribution"
+                res_model="unreconcile.change.attribution.wizard" binding_model="account.move.line"
+                view_mode="form" target="new"/>
 
-<!--    <act_window id="action_change_attribution_invoice"-->
-<!--                key2="client_action_multi" name="Change attribution"-->
-<!--                res_model="unreconcile.change.attribution.wizard" src_model="account.invoice"-->
-<!--                view_mode="form" target="new" view_type="form"/>-->
+    <act_window id="action_change_attribution_invoice"
+                name="Change attribution"
+                res_model="unreconcile.change.attribution.wizard" binding_model="account.move"
+               view_mode="form" target="new"
+    />
 </odoo>

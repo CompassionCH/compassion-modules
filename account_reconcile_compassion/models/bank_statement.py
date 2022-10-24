@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class AccountStatement(models.Model):
@@ -21,35 +21,20 @@ class AccountStatement(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(default=lambda b: b._default_name())
-    invoice_ids = fields.Many2many(
+    invoice_ids = fields.One2many(
         "account.move",
+        "bank_statement_id",
         string="Invoices",
-        compute="_compute_invoices",
         readonly=False,
     )
-    generated_invoices_count = fields.Integer("Invoices", compute="_compute_invoices")
+    generated_invoices_count = fields.Integer("Number invoices", compute="_compute_invoices")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.model
-    def _default_name(self):
-        """ Find the appropriate sequence """
-        journal_id = self.env.context.get("default_journal_id")
-        if journal_id:
-            journal = self.env["account.journal"].browse(journal_id)
-            sequence = self.env["ir.sequence"].search([("name", "=", journal.name)])
-            if sequence:
-                return sequence.next_by_id()
-        return ""
-
     def _compute_invoices(self):
-        invoice_obj = self.env["account.move"]
         for stmt in self:
-            invoices = invoice_obj.search([("name", "=", stmt.name)])
-            stmt.invoice_ids = invoices
-            stmt.generated_invoices_count = len(invoices)
+            stmt.generated_invoices_count = len(stmt.invoice_ids)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -60,21 +45,29 @@ class AccountStatement(models.Model):
         return {
             "name": "Generated Invoices",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "account.move",
             "type": "ir.actions.act_window",
             "target": "current",
             "context": {
-                "form_view_ref": "account.invoice_form",
+                "form_view_ref": "account.view_move_form",
                 "journal_type": "sale",
             },
+            "domain": [("id", "in", self.invoice_ids.ids)]
         }
 
     def unlink(self):
-        # self.mapped("invoice_ids").filtered(
-        #     lambda i: i.state in ("draft", "open")
-        # ).action_invoice_cancel()
+        invoices = self.mapped("invoice_ids").filtered(lambda i: i.payment_state != "paid")
+        invoices.button_draft()
+        invoices.button_cancel()
         return super(AccountStatement, self).unlink()
+
+    def button_reopen(self):
+        self.invoice_ids.filtered(lambda i: i.payment_state != "paid").button_draft()
+        return super().button_reopen()
+
+    def button_post(self):
+        self.invoice_ids.filtered(lambda i: i.state == "draft").action_post()
+        return super().button_post()
 
     def auto_reconcile(self):
         """ Auto reconcile matching invoices through jobs to avoid timeouts

@@ -60,123 +60,126 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
         // superclass function and then add the field as basic_model.js doesn't
         // have a method to add fields to an existing record, only makeRecord.
         _renderCreate: function (state) {
+
             var self = this;
-            this.model.makeRecord(
-                "account.bank.statement.line",
-                [
+            return this.model
+                .makeRecord(
+                    "account.bank.statement.line",
+                    [
+                        {
+                            relation: "account.account",
+                            type: "many2one",
+                            name: "account_id",
+                            domain: [
+                                ["company_id", "=", state.st_line.company_id],
+                                ["deprecated", "=", false],
+                            ],
+                        },
+                        {
+                            relation: "account.journal",
+                            type: "many2one",
+                            name: "journal_id",
+                            domain: [["company_id", "=", state.st_line.company_id]],
+                        },
+                        {
+                            relation: "account.tax",
+                            type: "many2many",
+                            name: "tax_ids",
+                            domain: [["company_id", "=", state.st_line.company_id]],
+                        },
+                        {
+                            relation: "account.analytic.account",
+                            type: "many2one",
+                            name: "analytic_account_id",
+                        },
+                        {
+                            relation: "account.analytic.tag",
+                            type: "many2many",
+                            name: "analytic_tag_ids",
+                        },
+                        {
+                            type: "boolean",
+                            name: "force_tax_included",
+                        },
+                        {
+                            type: "char",
+                            name: "label",
+                        },
+                        {
+                            type: "char",
+                            name: "ref",
+                        },
+                        {
+                            type: "float",
+                            name: "amount",
+                        },
+                        {
+                            type: "char", // TODO is it a bug or a feature when type date exists ?
+                            name: "date",
+                        },
+                        {
+                            type: "boolean",
+                            name: "to_check",
+                        },
+                        // CHANGE: Product, sponsorship, user_id and comment
+                        // added from original function
+                        {
+                            relation: "product.product",
+                            type: "many2one",
+                            name: "product_id",
+                        },
+                        {
+                            relation: "recurring.contract",
+                            type: "many2one",
+                            name: "sponsorship_id",
+                            domain: [
+                                "|",
+                                "|",
+                                ["partner_id", "=", state.st_line.partner_id],
+                                ["partner_id.parent_id", "=", state.st_line.partner_id],
+                                ["correspondent_id", "=", state.st_line.partner_id],
+                                ["state", "!=", "draft"],
+                            ],
+                        },
+    //                    {
+    //                        relation: "res.partner",
+    //                        type: "many2one",
+    //                        name: "user_id",
+    //                    },
+                        {
+                            type: "char",
+                            name: "comment",
+                        },
+                        {
+                            type: "boolean",
+                            name: "avoid_thankyou_letter",
+                        }
+                    ],
                     {
-                        relation: "account.account",
-                        type: "many2one",
-                        name: "account_id",
-                        domain: [
-                            ["company_id", "=", state.st_line.company_id],
-                            ["deprecated", "=", false],
-                        ],
-                    },
-                    {
-                        relation: "account.journal",
-                        type: "many2one",
-                        name: "journal_id",
-                        domain: [["company_id", "=", state.st_line.company_id]],
-                    },
-                    {
-                        relation: "account.tax",
-                        type: "many2one",
-                        name: "tax_id",
-                        domain: [["company_id", "=", state.st_line.company_id]],
-                    },
-                    {
-                        relation: "account.analytic.account",
-                        type: "many2one",
-                        name: "analytic_account_id",
-                    },
-                    {
-                        relation: "account.analytic.tag",
-                        type: "many2many",
-                        name: "analytic_tag_ids",
-                    },
-                    {
-                        type: "boolean",
-                        name: "force_tax_included",
-                    },
-                    {
-                        type: "char",
-                        name: "label",
-                    },
-                    {
-                        type: "float",
-                        name: "amount",
-                    },
-                    {
-                        type: "char",
-                        name: "date",
-                    },
-
-                    // CHANGE: Product, sponsorship, user_id and comment
-                    // added from original function
-                    {
-                        relation: "product.product",
-                        type: "many2one",
-                        name: "product_id",
-                    },
-                    {
-                        relation: "recurring.contract",
-                        type: "many2one",
-                        name: "sponsorship_id",
-                        domain: [
-                            "|",
-                            "|",
-                            ["partner_id", "=", state.st_line.partner_id],
-                            ["partner_id.parent_id", "=", state.st_line.partner_id],
-                            ["correspondent_id", "=", state.st_line.partner_id],
-                            ["state", "!=", "draft"],
-                        ],
-                    },
-//                    {
-//                        relation: "res.partner",
-//                        type: "many2one",
-//                        name: "user_id",
-//                    },
-                    {
-                        type: "char",
-                        name: "comment",
-                    },
-                    {
-                        type: "boolean",
-                        name: "avoid_thankyou_letter",
+                        account_id: {
+                            string: _t("Account"),
+                        },
+                        label: {string: _t("Label")},
+                        amount: {string: _t("Account")},
+                        // CHANGE: Product, sponsorship, user_id and comment
+                        // added from original function
+                        product_id: {
+                            string: _t("Product"),
+                        },
+                        sponsorship_id: {
+                            string: _t("Sponsorship"),
+                        },
+    //                    user_id: {
+    //                        string: _t("Ambassador"),
+    //                    },
+                        comment: {
+                            string: _t("Gift instructions"),
+                        },
+                        avoid_thankyou_letter: {
+                            string: _t("Disable thank you letter")
+                        }
                     }
-                ],
-
-                {
-                    account_id: {
-                        string: _t("Account"),
-                    },
-                    label: {
-                        string: _t("Label"),
-                    },
-                    amount: {
-                        string: _t("Account"),
-                    },
-
-                    // CHANGE: Product, sponsorship, user_id and comment
-                    // added from original function
-                    product_id: {
-                        string: _t("Product"),
-                    },
-                    sponsorship_id: {
-                        string: _t("Sponsorship"),
-                    },
-//                    user_id: {
-//                        string: _t("Ambassador"),
-//                    },
-                    comment: {
-                        string: _t("Gift instructions"),
-                    },
-                    avoid_thankyou_letter: {
-                        string: _t("Disable thank you letter")
-                    }
-                }
-            )
+                )
                 .then(function (recordID) {
                     self.handleCreateRecord = recordID;
                     var record = self.model.get(self.handleCreateRecord);
@@ -185,29 +188,23 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                         self,
                         "account_id",
                         record,
-                        {
-                            mode: "edit",
-                        }
+                        {mode: "edit", attrs: {can_create: false}}
                     );
 
                     self.fields.journal_id = new relational_fields.FieldMany2One(
                         self,
                         "journal_id",
                         record,
-                        {
-                            mode: "edit",
-                        }
+                        {mode: "edit"}
                     );
 
-                    self.fields.tax_id = new relational_fields.FieldMany2One(
+                    self.fields.tax_ids = new relational_fields.FieldMany2ManyTags(
                         self,
-                        "tax_id",
+                        "tax_ids",
                         record,
                         {
                             mode: "edit",
-                            additionalContext: {
-                                append_type_to_tax_name: true,
-                            },
+                            additionalContext: {append_type_to_tax_name: true},
                         }
                     );
 
@@ -215,40 +212,50 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                         self,
                         "analytic_account_id",
                         record,
-                        {
-                            mode: "edit",
-                        }
+                        {mode: "edit"}
                     );
 
                     self.fields.analytic_tag_ids = new relational_fields.FieldMany2ManyTags(
                         self,
                         "analytic_tag_ids",
                         record,
-                        {
-                            mode: "edit",
-                        }
+                        {mode: "edit"}
                     );
 
                     self.fields.force_tax_included = new basic_fields.FieldBoolean(
                         self,
                         "force_tax_included",
                         record,
-                        {
-                            mode: "edit",
-                        }
+                        {mode: "edit"}
                     );
 
-                    self.fields.label = new basic_fields.FieldChar(self, "label", record, {
-                        mode: "edit",
-                    });
+                    self.fields.label = new basic_fields.FieldChar(
+                        self,
+                        "label",
+                        record,
+                        {mode: "edit"}
+                    );
 
-                    self.fields.amount = new basic_fields.FieldFloat(self, "amount", record, {
-                        mode: "edit",
-                    });
+                    self.fields.amount = new basic_fields.FieldFloat(
+                        self,
+                        "amount",
+                        record,
+                        {mode: "edit"}
+                    );
 
-                    self.fields.date = new basic_fields.FieldDate(self, "date", record, {
-                        mode: "edit",
-                    });
+                    self.fields.date = new basic_fields.FieldDate(
+                        self,
+                        "date",
+                        record,
+                        {mode: "edit"}
+                    );
+
+                    self.fields.to_check = new basic_fields.FieldBoolean(
+                        self,
+                        "to_check",
+                        record,
+                        {mode: "edit"}
+                    );
 
                     // CHANGE: Product, sponsorship, user_id and comment
                     // added from original function
@@ -290,17 +297,22 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                     var $create = $(
                         qweb.render("reconciliation.line.create", {
                             state: state,
-                            group_tags: self.group_tags,
-                            group_acc: self.group_acc,
                         })
                     );
+
+                    function addRequiredStyle(widget) {
+                        widget.$el.addClass("o_required_modifier");
+                    }
+
                     self.fields.account_id
                         .appendTo($create.find(".create_account_id .o_td_field"))
                         .then(addRequiredStyle.bind(self, self.fields.account_id));
                     self.fields.journal_id.appendTo(
                         $create.find(".create_journal_id .o_td_field")
                     );
-                    self.fields.tax_id.appendTo($create.find(".create_tax_id .o_td_field"));
+                    self.fields.tax_ids.appendTo(
+                        $create.find(".create_tax_id .o_td_field")
+                    );
                     self.fields.analytic_account_id.appendTo(
                         $create.find(".create_analytic_account_id .o_td_field")
                     );
@@ -317,7 +329,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                         .appendTo($create.find(".create_amount .o_td_field"))
                         .then(addRequiredStyle.bind(self, self.fields.amount));
                     self.fields.date.appendTo($create.find(".create_date .o_td_field"));
-
+                    self.fields.to_check.appendTo(
+                        $create.find(".create_to_check .o_td_field")
+                    );
                     // CHANGE: Product, sponsorship, user_id and comment
                     // added from original function
                     self.fields.product_id.appendTo(
@@ -329,13 +343,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
 //                    self.fields.user_id.appendTo($create.find(".create_user_id .o_td_field"));
                     self.fields.comment.appendTo($create.find(".create_comment .o_td_field"));
                     self.fields.avoid_thankyou_letter.appendTo(
-                    $create.find(".create_avoid_thankyou_letter .o_td_field"));
-
+                        $create.find(".create_avoid_thankyou_letter .o_td_field"));
                     self.$(".create").append($create);
-
-                    function addRequiredStyle(widget) {
-                        widget.$el.addClass("o_required_modifier");
-                    }
                 });
         },
     });
