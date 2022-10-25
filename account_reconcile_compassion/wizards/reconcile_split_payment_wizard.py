@@ -36,7 +36,7 @@ class ReconcileSplitPaymentWizard(models.TransientModel):
             contract_ids = (
                 move_line_obj.browse(active_ids)
                 .filtered(lambda mvl: mvl.debit > 0)
-                .mapped("invoice_id.invoice_line_ids.contract_id.id")
+                .mapped("move_id.invoice_line_ids.contract_id.id")
                 or False
             )
         return contract_ids

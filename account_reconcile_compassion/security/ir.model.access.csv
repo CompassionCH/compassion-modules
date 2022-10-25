@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reconcile_fund_wizard,access_reconcile_fund_wizard,model_reconcile_fund_wizard,base.group_user,1,1,1,1
+access_reconcile_split_payment_wizard,access_reconcile_split_payment_wizard,model_reconcile_split_payment_wizard,base.group_user,1,1,1,1
+access_unreconcile_change_attribution_wizard,access_unreconcile_change_attribution_wizard,model_unreconcile_change_attribution_wizard,base.group_user,1,1,1,1

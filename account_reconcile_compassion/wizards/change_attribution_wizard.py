@@ -76,7 +76,7 @@ class ChangeAttributionWizard(models.TransientModel):
         new_invoice = False
         invoice_ids = list()
         for invoice_line in self.invoice_line_ids:
-            invoice = invoice_line.invoice_id
+            invoice = invoice_line.move_id
             if invoice.id not in invoice_ids:
                 invoice_ids.append(invoice.id)
                 if not new_invoice:
@@ -84,19 +84,21 @@ class ChangeAttributionWizard(models.TransientModel):
                     # all modifications. The other invoices will be cancelled.
                     new_invoice = invoice.copy(
                         {
-                            "date_invoice": invoice.date_invoice,
-                            "comment": self.comment
+                            "invoice_date": invoice.invoice_date,
+                            "invoice_origin": self.comment
                             or "New invoice after payment attribution changed.",
                             "invoice_line_ids": False,
                         }
                     )
 
-                invoice.action_invoice_cancel()
+                invoice.button_draft()
                 invoice.write(
-                    {"comment": self.comment or "Payment attribution changed."}
+                    {"invoice_origin": self.comment or "Payment attribution changed."}
                 )
-                for line in invoice.invoice_line_ids:
-                    line.copy({"invoice_id": new_invoice.id})
+                invoice.button_cancel()
+                new_invoice.write({
+                    "invoice_line_ids": [(0, 0, invl_vals) for invl_vals in invoice.invoice_line_ids.read()]
+                })
 
         new_invoice.to_reconcile = sum(move_lines.mapped("credit"))
 

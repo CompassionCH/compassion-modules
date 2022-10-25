@@ -1,6 +1,6 @@
 ﻿##############################################################################
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2022 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester <csester@compassion.ch>
 #
@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields, exceptions, _
+from odoo import models, fields, exceptions, _
 
 
 class ReconcileFundWizard(models.TransientModel):
@@ -41,7 +41,7 @@ class ReconcileFundWizard(models.TransientModel):
             contract_ids = (
                 move_line_obj.browse(active_ids)
                 .filtered(lambda mvl: mvl.debit > 0)
-                .mapped("invoice_id.invoice_line_ids.contract_id.id")
+                .mapped("move_id.invoice_line_ids.contract_id.id")
                 or False
             )
         return contract_ids
@@ -74,8 +74,8 @@ class ReconcileFundWizard(models.TransientModel):
         for line in move_line_obj.browse(active_ids):
             residual += line.credit - line.debit
             if not invoice and line.debit > 0:
-                invoice = line.invoice_id
-                account_id = invoice.account_id.id
+                invoice = line.move_id
+                account_id = line.account_id.id
                 partner_id = line.partner_id.id
                 active_ids.remove(line.id)
 
@@ -83,16 +83,14 @@ class ReconcileFundWizard(models.TransientModel):
             raise exceptions.UserError(_("This can only be done if credits > debits"))
 
         if invoice:
-            invoice.action_invoice_cancel()
-            invoice.action_invoice_draft()
-            invoice.env.clear()
+            invoice.button_draft()
 
             self._generate_invoice_line(invoice.id, residual, partner_id)
 
             # Validate the invoice
-            invoice.action_invoice_open()
+            invoice.action_post()
             move_lines = move_line_obj.search(
-                [("move_id", "=", invoice.move_id.id), ("account_id", "=", account_id)]
+                [("move_id", "=", invoice.id), ("account_id", "=", account_id)]
             )
             move_lines |= move_line_obj.browse(active_ids)
             move_lines.reconcile("manual")
@@ -120,6 +118,6 @@ class ReconcileFundWizard(models.TransientModel):
 
         for contract_id in self.contract_ids.ids:
             inv_line_data["contract_id"] = contract_id
-            self.env["account.invoice.line"].create(inv_line_data)
+            self.env["account.move.line"].create(inv_line_data)
 
         return True
