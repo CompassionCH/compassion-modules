@@ -57,43 +57,43 @@ class ChildDescription(models.TransientModel):
 
     home_based_lang = {
         "en_US": {
-            "M": u"{preferred_name} follows the home based program for " u"small kids.",
-            "F": u"{preferred_name} follows the home based program for " u"small kids.",
+            "M": "{preferred_name} participates in the homebased program for the youngest children.",
+            "F": "{preferred_name} participates in the homebased program for the youngest children.",
         }
     }
 
     school_no_lang = {
         "en_US": {
-            "M": u"{preferred_name} doesn't attend school.",
-            "F": u"{preferred_name} doesn't attend school.",
+            "M": "{preferred_name} does not go to school.",
+            "F": "{preferred_name} does not go to school.",
         }
     }
 
     duties_intro_lang = {
         "en_US": {
-            "M": u"He helps with the following duties at home:",
-            "F": u"She helps with the following duties at home:",
+            "M": "At home, he helps with the following tasks:",
+            "F": "At home, she helps with the following tasks:",
         }
     }
 
     church_intro_lang = {
         "en_US": {
-            "M": u"He is engaged with his church in the following activities:",
-            "F": u"She is engaged with her church in the following " u"activities:",
+            "M": "At church, he participates in the following activities:",
+            "F": "At church, she participates in the following activities:",
         }
     }
 
     hobbies_intro_lang = {
         "en_US": {
-            "M": u"{preferred_name}'s favourite interests include:",
-            "F": u"{preferred_name}'s favourite interests include:",
+            "M": "His favorite activities are:",
+            "F": "Her favorite activities are:",
         }
     }
 
     handicap_intro_lang = {
         "en_US": {
-            "M": u"{preferred_name} suffers from:",
-            "F": u"{preferred_name} suffers from:",
+            "M": "{preferred_name} suffers from:",
+            "F": "{preferred_name} suffers from:",
         }
     }
 

@@ -11,8 +11,8 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="update_informations" type="object" string="get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        <button name="update_informations" type="object" string="Get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        <button name="get_lifecycle_event" string="Get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                         <button name="edit_translations" string="Edit translations" type="object" icon="fa-globe" class="oe_stat_button"/>
                     </div>
                     <div class="oe_title">
@@ -303,6 +303,14 @@
         <field name="binding_model_id" ref="model_compassion_project"/>
         <field name="state">code</field>
         <field name="code">action = records.fetch_translations()</field>
+    </record>
+
+    <record model="ir.actions.server" id="get_info_project_action">
+        <field name="name">Get info</field>
+        <field name="model_id" ref="model_compassion_project"/>
+        <field name="binding_model_id" ref="model_compassion_project"/>
+        <field name="state">code</field>
+        <field name="code">records.update_informations()</field>
     </record>
 
     <menuitem id="menu_sponsorship_project" parent="menu_field_section" name="Projects" action="open_view_project_tree" sequence="3"/>

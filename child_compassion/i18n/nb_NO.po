@@ -1,0 +1,1377 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Compassion Odoo\n"
+"Language: no\n"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "* The birthday is an estimation."
+msgstr "*Fødselsdatoen er et estimat"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_contests
+msgid "Age graded contests"
+msgstr "Konkurranser (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_education
+msgid "Age graded health education"
+msgstr "Helseundervisning (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_remedial
+msgid "Age graded remedial classes"
+msgstr "Ekstraundervisning (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_retreats
+msgid "Age graded retreats"
+msgstr "Retreat (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_workshops
+msgid "Age graded workshops"
+msgstr "Seminarer (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_herding
+msgid "Animal herding"
+msgstr "Gjetere"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_apr
+msgid "Apr"
+msgstr "Apr."
+
+#. module: child_compassion
+#: model:child.school.subject,value:child_compassion.school_art
+msgid "Art"
+msgstr "Kunst og Håndverk"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_art
+msgid "Art and music"
+msgstr "Art And Music"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_art
+msgid "Art or drawing"
+msgstr "Kunst og håndverk eller tegning"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_athletics
+msgid "Athletics"
+msgstr "Friidrett"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_aug
+msgid "Aug"
+msgstr "Aug."
+
+#. module: child_compassion
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__electrical_power__available_most_of_the_time
+msgid "Available Most of the Time"
+msgstr "Stort sett tilgjengelig"
+
+#. module: child_compassion
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__electrical_power__available_sometimes
+msgid "Available Sometimes"
+msgstr "Tilgjengelig noen ganger"
+
+#. module: child_compassion
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__academic_performance__average
+msgid "Average"
+msgstr "Normalt"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_bananas
+msgid "Bananas"
+msgstr "Bananer"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_barley
+msgid "Barley"
+msgstr "Bygg"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_basic
+msgid "Basic life-skill training"
+msgstr "Grunnleggende livsferdighetstrening"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_beans
+msgid "Beans"
+msgstr "Bønner"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_beef
+msgid "Beef"
+msgstr "Oksekjøtt"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Best school subject"
+msgstr "Favorittfag"
+
+#. module: child_compassion
+#: model:child.christian.activity,value:child_compassion.christian_activity_bible
+msgid "Bible class"
+msgstr "Bibelundervisning"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_drama
+msgid "Bible dramas / acting"
+msgstr "Bibeldrama"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_drills
+msgid "Bible drills"
+msgstr "Bibelundervisning"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_memory
+msgid "Bible memory verse club"
+msgstr "Bibelmemorering"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_stories
+msgid "Bible stories"
+msgstr "Bibelfortellinger"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_bible_study
+msgid "Bible study"
+msgstr "Bibelstudier"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_bread
+msgid "Bread"
+msgstr "Brød"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_cabbage
+msgid "Cabbage"
+msgstr "Kål"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_camps
+msgid "Camps"
+msgstr "Leirer"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_career
+msgid "Career guidance"
+msgstr "Yrkesveiledning"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_bonding
+msgid "Caregiver bonding with child"
+msgstr "Caregiver Bonding With Child"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_water
+msgid "Carrying water"
+msgstr "Bære vann"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_cassava
+msgid "Cassava"
+msgstr "Kassava"
+
+#. module: child_compassion
+#: model:fcp.program,value:child_compassion.program_csp
+msgid "Center Based Sponsorship"
+msgstr "Senterbasert fadderskap"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_cereal
+msgid "Cereal"
+msgstr "Korn"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_chickens
+msgid "Chickens"
+msgstr "Kylling"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_childcare
+msgid "Child care"
+msgstr "Passe yngre søsken"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_fellowship
+msgid "Children Fellowship"
+msgstr "Barneklubb"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_worship
+msgid "Children Worship Service"
+msgstr "Barnemøte"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_reconciliation
+msgid "Children and caregiver reconciliation"
+msgstr "Forsoningsarbeid barn - omsorgsperson"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_child_conference
+msgid "Children conferences"
+msgstr "Barnekonferanser"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_outreach
+msgid "Children's Outreach"
+msgstr "Utadrettet barnearbeid"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_biblestudy
+msgid "Children/Youth Bible Study"
+msgstr "Bibelundervisning for barn/ungdom"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_clap
+msgid "Clapping hands to rhythm"
+msgstr "Klappe hender til rytme"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_classrooms
+msgid "Classrooms"
+msgstr "Klasserom"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_cleaning
+msgid "Cleaning"
+msgstr "Vaske"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Closest city"
+msgstr "Nærmeste by"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_community
+msgid "Community service"
+msgstr "Frivillighetstjeneste"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_computer_lab
+msgid "Computer Lab"
+msgstr "Datarom"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_computer
+msgid "Computer classes"
+msgstr "Datakurs"
+
+#. module: child_compassion
+#: model:ir.model,name:child_compassion.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfigurasjonsinnstillinger"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_counseling_hiv
+msgid "Counseling and testing for hiv / aids"
+msgstr "Counseling And Testing For HIV / AIDS"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_creativity
+msgid "Creativity club"
+msgstr "Kunst og håndverk"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_birthday
+msgid "Cultural and birthday celebrations"
+msgstr "Cultural And Birthday Celebrations"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_day_labor
+msgid "Day labor"
+msgstr "Dagarbeidere"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_debate
+msgid "Debate clubs"
+msgstr "Debattklubb"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_dec
+msgid "Dec"
+msgstr "Des."
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "December"
+msgstr "Desember"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_class
+msgid "Discipleship classes"
+msgstr "Discipleship classes / sessions"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_discipleship_caregiver
+msgid "Discipleship of caregivers"
+msgstr "Discipleship Of Caregivers"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_chronic_illness__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_future_hope__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_hobby__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_household_duty__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_physical_disability__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_project_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_property__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_reservation_wizard__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_child_school_subject__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_abstract_hold__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_cdpr__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_description__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_note__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_global_partner__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_hold__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_household__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_household_member__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_major_revision__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_mapped_model__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_covid_update__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_description__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_reservation__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_connect_month__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_demand_planning__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_demand_weekly_demand__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_facility__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_ministry__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_utility__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_cognitive_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_community_occupation__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_diet__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_disaster_impact__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_involvement__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_lifecycle_reason__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_mobile_device__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_physical_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_program__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_property__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_school_cost__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_fo_high_risk__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_gmc_message__display_name
+#: model:ir.model.fields,field_description:child_compassion.field_res_config_settings__display_name
+msgid "Display Name"
+msgstr "Visningsnavn"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_dolls
+msgid "Dolls"
+msgstr "Dukker"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_domestic
+msgid "Domestic services"
+msgstr "Hushjelper"
+
+#. module: child_compassion
+#: model:fcp.church.utility,value:child_compassion.church_utility_drainage
+msgid "Drainage"
+msgstr "Avløp"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_mentorship_early
+msgid "Early mentorship programs"
+msgstr "Mentorprogram (Introduksjon)"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_stimultation_baby
+msgid "Early stimulation for baby"
+msgstr "Early Stimulation For Baby"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_educ_assistance
+msgid "Educational assistance"
+msgstr "Pedagogisk støtte"
+
+#. module: child_compassion
+#: model:fcp.church.utility,value:child_compassion.church_utility_electricity
+msgid "Electricity"
+msgstr "Elektrisitet"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_evangelism
+msgid "Evangelism"
+msgstr "Evangelisering"
+
+#. module: child_compassion
+#: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
+msgid "FCP Activities"
+msgstr "Aktiviteter på senteret"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_factory
+msgid "Factory work"
+msgstr "Fabrikkarbeidere"
+
+#. module: child_compassion
+#: model_terms:ir.ui.view,arch_db:child_compassion.view_child_household_form
+msgid "Father"
+msgstr "Pappa"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Father alive"
+msgstr "Faren lever"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Father job"
+msgstr "Mannlig foresatt:"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_feb
+msgid "Feb"
+msgstr "Feb."
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_feeding
+msgid "Feeding Program"
+msgstr "Matutdeling"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_fish
+msgid "Fish"
+msgstr "Fisk"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_fishing
+msgid "Fishing"
+msgstr "Fiskere"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_gardening
+msgid "Gardening"
+msgstr "Hagearbeid"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_greengram
+msgid "Green Gram"
+msgstr "Grønne bønner"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_groups
+msgid "Group games"
+msgstr "Leke med andre barn"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_group_play
+msgid "Group play"
+msgstr "Gruppeleker"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_grow_camps
+msgid "Growing up camps"
+msgstr "Leir"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_growth_monitoring
+msgid "Growth monitoring"
+msgstr "Måling og veiing"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_guidance
+msgid "Guidance and counselling"
+msgstr "Guidance And Counselling"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_guineapig
+msgid "Guinea Pig"
+msgstr "Marsvin"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_kits
+msgid "Health kits"
+msgstr "Førstehjelpsmappe"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_referral
+msgid "Health referral"
+msgstr "Helseopplysning"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_health_screening
+msgid "Health screening"
+msgstr "Helseundersøkelse"
+
+#. module: child_compassion
+#: model:fcp.program,value:child_compassion.program_cdsp
+msgid "Home Based Sponsorship"
+msgstr "Hjemmebasert fadderskap"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_hygiene_training
+msgid "Hygiene training"
+msgstr "Hygieneopplæring"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_immunization
+msgid "Immunization"
+msgstr "Immunisering"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_indoor_outdoor_games
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_indoor_outdoor
+msgid "Indoor and outdoor games"
+msgstr "Indoor And Outdoor Games"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_injera
+msgid "Injera"
+msgstr "Injera-brød"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_jan
+msgid "Jan"
+msgstr "Jan."
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "January"
+msgstr "Januar"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_jul
+msgid "Jul"
+msgstr "Juli"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "July"
+msgstr "Juli"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_jun
+msgid "Jun"
+msgstr "Juni"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "June"
+msgstr "Juni"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_kitchen
+msgid "Kitchen Facilities"
+msgstr "Kjøkken"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_kitchen
+msgid "Kitchen help"
+msgstr "Kjøkkenoppgaver"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+#: model:child.school.subject,value:child_compassion.school_language
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__major_course_study__language
+msgid "Language"
+msgstr "Språk"
+
+#. module: child_compassion
+#: model:ir.model.fields,field_description:child_compassion.field_child_christian_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_chronic_illness____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_disaster_impact____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_future_hope____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_hobby____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_hold_wizard____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_household_duty____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_physical_disability____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_project_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_property____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_reservation_wizard____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_child_school_subject____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_abstract_hold____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_ble____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_cdpr____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_description____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_note____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_child_pictures____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_childpool_search____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_field_office____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_generic_child____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_global_child____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_global_partner____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_hold____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_household____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_household_member____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_major_revision____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_mapped_model____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_covid_update____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_description____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_project_ile____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_compassion_reservation____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_connect_month____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_demand_planning____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_demand_weekly_demand____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_facility____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_ministry____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_church_utility____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_cognitive_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_community_occupation____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_diet____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_disaster_impact____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_involvement____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_lifecycle_reason____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_mobile_device____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_physical_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_program____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_property____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_school_cost____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_sociological_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_spiritual_activity____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fcp_suspension_extension_reason____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_field_office_learning____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_alert____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_loss____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fo_disaster_update____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_fo_high_risk____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_gmc_message____last_update
+#: model:ir.model.fields,field_description:child_compassion.field_res_config_settings____last_update
+msgid "Last Modified on"
+msgstr "Sist endret"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_latrines
+msgid "Latrines"
+msgstr "Latriner/Utedo"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_leaders
+msgid "Leaders trainings days"
+msgstr "Leaders/Prefects trainings Days"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_leadership
+msgid "Leadership training"
+msgstr "Ledertrening"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_lentils
+msgid "Lentils"
+msgstr "Linser"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_livelihood
+msgid "Livelihood skills development"
+msgstr "Ferdighetstrening innen praktiske områder man kan livnære seg av"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Local community"
+msgstr "Lokalsamfunnet"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_maize
+msgid "Maize"
+msgstr "Mais"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_makingbed
+msgid "Making beds"
+msgstr "Re opp senger"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_mar
+msgid "Mar"
+msgstr "Mars"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_marbles
+msgid "Marbles"
+msgstr "Klinkekuler"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "March"
+msgstr "Mars"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_market_trading
+msgid "Market trading"
+msgstr "Torghandlere"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: model:connect.month,name:child_compassion.connect_month_may
+msgid "May"
+msgstr "Mai"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_medical_camps
+msgid "Medical camps"
+msgstr "Førstehjelpskurs"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_medical_checkups
+msgid "Medical checkups"
+msgstr "Helsekontroller"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_mentorship
+msgid "Mentorship"
+msgstr "Mentorskap"
+
+#. module: child_compassion
+#: model_terms:ir.ui.view,arch_db:child_compassion.view_child_household_form
+msgid "Mother"
+msgstr "Mamma"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Mother alive"
+msgstr "Moren lever"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Mother job"
+msgstr "Kvinnlig foresatt:"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_multi_sensory_play
+msgid "Multi-sensory play"
+msgstr "Lek med flere sanser"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_music
+#: model:child.school.subject,value:child_compassion.school_music
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_music
+msgid "Music"
+msgstr "Musikk"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_no_activities
+#: model:fcp.physical.activity,value:child_compassion.physical_act_no
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_no_activities
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_no_activities
+msgid "No activities available at this time"
+msgstr "No Activities Available at This Time"
+
+#. module: child_compassion
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_project__electrical_power__not_available
+msgid "Not Available"
+msgstr "Ikke tilgjengelig"
+
+#. module: child_compassion
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__vocational_training_type__not_enrolled
+#: model:ir.model.fields.selection,name:child_compassion.selection__compassion_child__vocational_training_type__not_enrolled_
+msgid "Not enrolled"
+msgstr "Studerer ikke"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_nov
+msgid "Nov"
+msgstr "Nov."
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Number of brothers"
+msgstr "Antall brødre"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Number of children"
+msgstr "Antall fadderbarn"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Number of sisters"
+msgstr "Antall søstre"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_nutrition_caregivers
+msgid "Nutrition education for caregivers"
+msgstr "Nutrition Education For Caregivers"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_nutrition
+msgid "Nutritional lessons"
+msgstr "Ernæringsopplæring"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_oct
+msgid "Oct"
+msgstr "Okt."
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/fcp_property.py:0
+#: code:addons/child_compassion/models/fcp_property.py:0
+msgid "October"
+msgstr "Oktober"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_office
+msgid "Office(s)"
+msgstr "Kontor(er)"
+
+#. module: child_compassion
+#: model:child.christian.activity,value:child_compassion.christian_activity_nothing
+msgid "Only attends project"
+msgstr "Deltar bare i prosjektet"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_panel_discussion
+msgid "Panel discussion"
+msgstr "Samlingsstund"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_parsonage
+msgid "Parsonage"
+msgstr "Prestebolig"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_peer_counselling
+msgid "Peer counselling"
+msgstr "Samtalegrupper"
+
+#. module: child_compassion
+#: model:fcp.church.utility,value:child_compassion.church_utility_phone
+msgid "Phone"
+msgstr "Telefon"
+
+#. module: child_compassion
+#: model:child.school.subject,value:child_compassion.school_physicaleducation
+msgid "Physical education"
+msgstr "Kroppsøving"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_picnics
+msgid "Picnics"
+msgstr "Pikniker"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_plantain
+msgid "Plantains"
+msgstr "Kokebananer"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_plantation
+msgid "Plantation work"
+msgstr "Plantasjearbeidere"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_playground
+msgid "Playground"
+msgstr "Lekeplass"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_instruments
+msgid "Playing instruments"
+msgstr "Spille på instrument"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Population"
+msgstr "Innbyggere"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_pork
+msgid "Pork"
+msgstr "Svinekjøtt"
+
+#. module: child_compassion
+#: model:fcp.church.utility,value:child_compassion.church_utility_water
+msgid "Potable Water"
+msgstr "Drikkevann"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_potato
+msgid "Potato"
+msgstr "Poteter"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer
+msgid "Prayer"
+msgstr "Bønn"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_prayer_group
+msgid "Prayer group"
+msgstr "Bønnegruppe"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_pre_literacy_games
+msgid "Pre-literacy games"
+msgstr "Leker for å stimulere lesning"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_pre_numeracy_games
+msgid "Pre-numeracy games"
+msgstr "Leker for å stimulere tallforståelse"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_prize_giving
+msgid "Prize giving days"
+msgstr "Prisutdelning"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Project name"
+msgstr "Senterets navn"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_puppets
+msgid "Puppet shows"
+msgstr "Dukketeater"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_retreats
+msgid "Retreats"
+msgstr "Retreat"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_rice
+msgid "Rice"
+msgstr "Ris"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_rite_passage
+msgid "Rite of passages"
+msgstr "Overgangsriter"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_ball
+msgid "Rolling a ball"
+msgstr "Trille ball"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_errands
+msgid "Running errands"
+msgstr "Løpe ærend"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_sago
+msgid "Sago"
+msgstr "Sago-gryn"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_sanitation
+msgid "Sanitation demonstration units"
+msgstr "Sanitærundervisning"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_school
+#: model_terms:ir.ui.view,arch_db:child_compassion.view_compassion_project_form
+msgid "School"
+msgstr "Skole"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "School begins in"
+msgstr "Skolen begynner i"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "School level"
+msgstr "Klassetrinn"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_science_congress
+msgid "Science congresses"
+msgstr "Naturvitenskap"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_self_control
+msgid "Self-control and emotions"
+msgstr "Self-Control And Emotions"
+
+#. module: child_compassion
+#: model:connect.month,name:child_compassion.connect_month_sep
+msgid "Sep"
+msgstr "Sep."
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_service
+msgid "Service opportunities"
+msgstr "Muligheter for frivillig engasjement"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_singing
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_singing
+msgid "Singing"
+msgstr "Synge"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_foot
+msgid "Soccer or football"
+msgstr "Fotball"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_soccer
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_games
+msgid "Soccer tournaments"
+msgstr "Fotballturneringer"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_social_clubs
+msgid "Social clubs"
+msgstr "Sosiale klubber"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_conventions
+msgid "Spiritual conventions"
+msgstr "Spiritual conventions / conferences"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_sports
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_sports
+msgid "Sports"
+msgstr "Sportstilbud"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_street_vending
+msgid "Street vending"
+msgstr "Gateselgere"
+
+#. module: child_compassion
+#: model:fcp.community.occupation,value:child_compassion.icp_occupation_farming
+msgid "Subsistence farming"
+msgstr "Småbønder"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_sundayschool
+msgid "Sunday School"
+msgstr "Søndagsskole"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_sunday_school_room
+msgid "Sunday School Room(s)"
+msgstr "Søndagsskolerom"
+
+#. module: child_compassion
+#: model:child.christian.activity,value:child_compassion.christian_activity_sundayschool
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_sunday_school
+msgid "Sunday school"
+msgstr "Søndagsskolen/Menigheten"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_supplement_feeding
+msgid "Supplemental feeding"
+msgstr "Næringsrike måltider"
+
+#. module: child_compassion
+#: model:fcp.program,value:child_compassion.program_survival
+msgid "Survival"
+msgstr "Overlevelse"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_sweetpotato
+msgid "Sweet Potato"
+msgstr "Søtpotet"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_swimming
+#: model:fcp.physical.activity,value:child_compassion.physical_act_swimming
+msgid "Swimming"
+msgstr "Svømming"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_talent_development
+msgid "Talent development"
+msgstr "Talentutvikling"
+
+#. module: child_compassion
+#: model:fcp.sociological.activity,value:child_compassion.socio_act_team_building
+msgid "Team building"
+msgstr "Teambygging"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_team_building
+msgid "Team building activities"
+msgstr "Teambyggingsaktiviteter (alderstilpasset)"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_teff
+msgid "Teff"
+msgstr "Teff-korn"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "The project has no electricity."
+msgstr "Senteret har ikke strøm."
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_therapeutic_feeding
+msgid "Therapeutic feeding"
+msgstr "Behandling av underernæring"
+
+#. module: child_compassion
+#: model:child.hobby,value:child_compassion.child_hobby_toycars
+msgid "Toy cars"
+msgstr "Lekebiler"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_trade_fairs
+msgid "Trade fairs"
+msgstr "Varemesser"
+
+#. module: child_compassion
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_tutoring
+msgid "Tutoring"
+msgstr "Leksehjelp"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Typical food"
+msgstr "Typisk mat"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/project_description.py:0
+msgid "Typical job"
+msgstr "Vanligste jobb"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_ushering
+msgid "Ushering"
+msgstr "Møtevert"
+
+#. module: child_compassion
+#: model:fcp.church.ministry,value:child_compassion.ministry_vacationschool
+msgid "Vacation Bible School"
+msgstr "Bibelleir"
+
+#. module: child_compassion
+#: model:child.christian.activity,value:child_compassion.christian_activity_vacationbibleschool
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_vacation_bible
+msgid "Vacation bible school"
+msgstr "Bibelleir"
+
+#. module: child_compassion
+#: model:fcp.physical.activity,value:child_compassion.physical_act_vaccinations
+msgid "Vaccinations"
+msgstr "Vaksinasjoner"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_ex
+#: model:fcp.cognitive.activity,value:child_compassion.cognitive_act_vocational_in
+msgid "Vocational training"
+msgstr "Yrkesopplæring (i menigheten)"
+
+#. module: child_compassion
+#: model:child.household.duty,value:child_compassion.household_duty_clothes
+msgid "Washing clothes"
+msgstr "Vaske klær"
+
+#. module: child_compassion
+#: model:fcp.diet,value:child_compassion.icp_diet_wheat
+msgid "Wheat"
+msgstr "Hvete"
+
+#. module: child_compassion
+#: model:fcp.church.facility,value:child_compassion.facility_worship_hall
+msgid "Worship Hall"
+msgstr "Kirkerom"
+
+#. module: child_compassion
+#: model:fcp.spiritual.activity,value:child_compassion.spiritual_act_worship
+msgid "Worship team"
+msgstr "Lovsangsteam"
+
+#. module: child_compassion
+#: model:child.christian.activity,value:child_compassion.christian_activity_youthgroup
+msgid "Youth group"
+msgstr "Ungdomsgruppe"
+
+#. module: child_compassion
+#: model:fcp.involvement,value:child_compassion.involvement_advocacy
+msgid "advocacy"
+msgstr "Advocacy"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_books
+msgid "books"
+msgstr "Bøker"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/household.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "brother"
+msgstr "Bror"
+
+#. module: child_compassion
+#: model:fcp.involvement,value:child_compassion.involvement_church
+msgid "church mobilization"
+msgstr "Church Mobilization"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_supplies
+msgid "educational supplies"
+msgstr "Skolemateriell"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/household.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "father"
+msgstr "Pappa"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "in an institution."
+msgstr "på et barnehjem."
+
+#. module: child_compassion
+#: model:child.project.activity,value:child_compassion.project_activity_god
+msgid "learning about god"
+msgstr "Høre på bibelhistorier"
+
+#. module: child_compassion
+#: model:child.project.activity,value:child_compassion.project_activity_bible
+msgid "listening to bible stories"
+msgstr "Lære om Gud"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "lives"
+msgstr "bor"
+
+#. module: child_compassion
+#: model:fcp.involvement,value:child_compassion.involvement_mentoring
+msgid "mentoring"
+msgstr "Mentoring"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/household.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "mother"
+msgstr "Mamma"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "parents"
+msgstr "foreldre"
+
+#. module: child_compassion
+#: model:child.project.activity,value:child_compassion.project_activity_games
+msgid "playing games"
+msgstr "Drive med idrett"
+
+#. module: child_compassion
+#: model:child.project.activity,value:child_compassion.project_activity_sports
+msgid "playing sports"
+msgstr "Leke"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_fees
+msgid "school fees"
+msgstr "Skoleavgifter"
+
+#. module: child_compassion
+#: code:addons/child_compassion/models/household.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "sister"
+msgstr "Søster"
+
+#. module: child_compassion
+#: model:child.project.activity,value:child_compassion.project_activity_friends
+msgid "spending time with friends"
+msgstr "Være sammen med venner"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_tutoring
+msgid "supplemental tutoring"
+msgstr "Leksehjelp"
+
+#. module: child_compassion
+#: model:fcp.involvement,value:child_compassion.involvement_training
+msgid "training"
+msgstr "Training"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_uniforms
+msgid "uniforms"
+msgstr "Skoleuniformer"
+
+#. module: child_compassion
+#: model:fcp.school.cost,value:child_compassion.icp_school_cost_vocational
+msgid "vocational training"
+msgstr "Yrkesopplæring"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "with"
+msgstr "med"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "{preferred_name} participates in the homebased program for the youngest children."
+msgstr "{preferred_name} deltar i det hjemmebaserte programmet for de minste barna."
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "{preferred_name} does not go to school."
+msgstr "{preferred_name} går ikke i skole."
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "At home, he helps with the following tasks:"
+msgstr "Hjemme hjelper han til med følgende gjøremål:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "At home, she helps with the following tasks:"
+msgstr "Hjemme hjelper hun til med følgende gjøremål:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "At church, he participates in the following activities:"
+msgstr "I kirken deltar han i følgende aktiviteter:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "At church, she participates in the following activities:"
+msgstr "I kirken deltar hun i følgende aktiviteter:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "His favorite activities are:"
+msgstr "Hans favorittaktiviteter er:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "Her favorite activities are:"
+msgstr "Hendes favorittaktiviteter er:"
+
+#. module: child_compassion
+#: code:addons/child_compassion/wizards/child_description.py:0
+msgid "{preferred_name} suffers from:"
+msgstr "{preferred_name} lider av:"
+

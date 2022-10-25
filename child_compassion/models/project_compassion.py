@@ -631,13 +631,14 @@ class CompassionProject(models.Model):
             them accordingly. """
         message_obj = self.env["gmc.message"]
         action_id = self.env.ref("child_compassion.icp_details").id
-        message_vals = {
-            "action_id": action_id,
-            "object_id": self.id,
-        }
-        message = message_obj.create(message_vals)
-        if "failure" in message.state:
-            raise UserError(message.failure_reason)
+        for project in self:
+            message_vals = {
+                "action_id": action_id,
+                "object_id": project.id,
+            }
+            message = message_obj.create(message_vals)
+            if "failure" in message.state and not self.env.context.get("async_mode"):
+                raise UserError(message.failure_reason)
 
         return True
 

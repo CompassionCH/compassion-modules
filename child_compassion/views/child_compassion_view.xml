@@ -80,9 +80,9 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="buttons">
-                        <button name="get_infos" string="get info" type="object" icon="fa-refresh" class="oe_stat_button"
+                        <button name="get_infos" string="Get info" type="object" icon="fa-refresh" class="oe_stat_button"
                                 context="{'async_mode': False}"/>
-                        <button name="get_lifecycle_event" string="get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
+                        <button name="get_lifecycle_event" string="Get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
                         <button name="edit_translations" string="Edit translations" type="object" icon="fa-globe" class="oe_stat_button"/>
                     </div>
                     <div class="row">
@@ -445,5 +445,13 @@
               name="Children"
               action="open_view_children_tree"
               sequence="1"/>
+
+    <record model="ir.actions.server" id="get_info_action">
+        <field name="name">Get info</field>
+        <field name="model_id" ref="model_compassion_child"/>
+        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="state">code</field>
+        <field name="code">records.get_infos()</field>
+    </record>
 
 </odoo>
