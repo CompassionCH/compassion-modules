@@ -68,6 +68,7 @@ class CommunicationJob(models.Model):
     _description = "Communication Job"
     _rec_name = "subject"
     _order = "date desc,sent_date desc"
+    _check_company_auto = True
     _inherit = [
         "partner.communication.defaults",
         "mail.activity.mixin",
@@ -89,10 +90,10 @@ class CommunicationJob(models.Model):
     model = fields.Char(related="config_id.model", store=True, index=True)
     partner_id = fields.Many2one(
         "res.partner", "Send to", required=True, ondelete="cascade", readonly=False,
-        index=True
+        index=True, check_company=True
     )
     company_id = fields.Many2one(
-        "res.company", related="partner_id.company_id", store=True, index=True)
+        "res.company", compute="_compute_company", store=True, index=True)
     country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
     parent_id = fields.Many2one(related="partner_id.parent_id", readonly=False)
     object_ids = fields.Char("Resource ids", required=True)
@@ -202,6 +203,17 @@ class CommunicationJob(models.Model):
             job.attachment_ids.filtered(
                 lambda a: a.attachment_id not in job.ir_attachment_ids
             ).unlink()
+
+    @api.depends("partner_id")
+    def _compute_company(self):
+        for job in self:
+            company = job.partner_id.company_id
+            if not company:
+                country = job.partner_id.country_id
+                company = self.env["res.company"].search([("country_id", "=", country.id)], limit=1)
+                if not company:
+                    company = self.env.company
+            job.company_id = company
 
     @api.model
     def send_mode_select(self):

@@ -13,6 +13,7 @@
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
         <field name="dpi">96</field>
+        <field name="custom_params" eval="[(0, 0, {'name': '--disable-smart-shrinking'})]"/>
     </record>
 
     <report id="report_child_picture"
@@ -29,12 +30,14 @@
         <t t-call="web.html_container">
             <div class="article">
                 <t t-foreach="docs" t-as="o">
-                    <div class="page" style="position: relative">
+                    <div class="page">
                         <style type="text/css">
                             img {
                                 width: 101mm;
                                 height: 153mm;
                                 object-fit: cover;
+                                position: absolute;
+                                left: 0mm;
                             }
                             #child-ref {
                                 position: absolute;

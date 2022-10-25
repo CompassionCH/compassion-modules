@@ -21,6 +21,7 @@ connector-telephony
 partner-contact
 queue
 report-print-send
+reporting-engine
 server-ux
 social
 web
