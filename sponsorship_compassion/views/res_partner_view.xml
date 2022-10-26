@@ -172,7 +172,7 @@
             <field name="name">Supporters</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{'res_partner_search_mode': 'customer', 'search_default_type_supporter': 1}</field>
         </record>
