@@ -53,7 +53,7 @@
       "to_json_conversion": "self.env.user.currency_id.name"
     },
     "Supporter_GlobalPartnerSupporterID": {
-      "to_json_conversion": "self.env.user.company_id.country_id.code"
+      "to_json_conversion": "gpid"
     }
   }
 }
