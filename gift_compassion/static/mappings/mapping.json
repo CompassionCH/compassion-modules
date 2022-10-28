@@ -16,7 +16,7 @@
     "GiftType": "attribution",
     "GlobalPartnerNote": {
       "field": "instructions",
-      "to_json_conversion": "odoo_value.replace('\"', ' ').replace(\"'\", \" \") if odoo_value else None"
+      "to_json_conversion": "odoo_value.replace('\"', ' ').replace(\"'\", \" \").replace('[', ' ').replace(']', ' ') if odoo_value else None"
     },
     "PartnerGiftDate": "gift_date",
     "PartnerGiftID": {
@@ -50,10 +50,11 @@
     "StatusChangeDate": "status_change_date",
     "UndeliverableReason": "undeliverable_reason",
     "CurrencyCode": {
-      "to_json_conversion": "self.env.user.currency_id.name"
+      "field": "currency_id.name",
+      "to_json_conversion": "odoo_value or None"
     },
     "Supporter_GlobalPartnerSupporterID": {
-      "to_json_conversion": "self.env.user.company_id.country_id.code"
+      "to_json_conversion": "gpid"
     }
   }
 }
