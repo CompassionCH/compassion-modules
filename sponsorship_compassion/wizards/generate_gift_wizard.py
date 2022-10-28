@@ -114,7 +114,7 @@ class GenerateGiftWizard(models.TransientModel):
             "move_type": "out_invoice",
             "partner_id": contract.gift_partner_id.id,
             "journal_id": journal_id,
-            'currency_id': contract.gift_partner_id.property_product_pricelist.currency_id.id,
+            'currency_id': contract.company_id.currency_id.id,
             "invoice_date": invoice_date,
             "payment_mode_id": contract.payment_mode_id.id,
             "company_id": contract.mapped('company_id')[:1].id,
