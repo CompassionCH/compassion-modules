@@ -66,7 +66,7 @@ class OnrampConnector(object):
         """ Get a fresh token if needed. """
         now = datetime.now()
         if not self._token_time or self._token_time + timedelta(hours=1) <= now:
-            self._retrieve_token()
+            self._retrieve_token(env)
 
     def send_message(self, service_name, message_type, body=None, params=None, headers=None, full_url=False):
         """ Sends a message to Compassion Connect.
@@ -112,19 +112,19 @@ class OnrampConnector(object):
             result["content"] = r.text
         return result
 
-    def _retrieve_token(self):
+    def _retrieve_token(self, env):
         """ Retrieves the token from Connect. """
         self._token_time = datetime.now()
-        self._session.headers.update(self.get_gmc_token())
+        self._session.headers.update(self.get_gmc_token(env))
 
     @classmethod
-    def get_gmc_token(cls):
+    def get_gmc_token(cls, env):
         """
         Class method that fetches a token from GMC OAuth server.
         :return: dict: Authorisation header.
         """
-        client = cls._res_config.get_param("connect_client")
-        secret = cls._res_config.get_param("connect_secret")
+        client = env["res.config.settings"].get_param("connect_client")
+        secret = env["res.config.settings"].get_param("connect_secret")
         provider = config.get("connect_token_server")
         if not client or not secret or not provider:
             raise UserError(
