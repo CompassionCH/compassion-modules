@@ -13,25 +13,44 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
     var _t = core._t;
 
     statement_action.StatementAction.include({
-        // Event which allows to modify fields programmaticaly The
-        // update_proposition event handled by _onAction uses the target of the
-        // event to get the handle, which won't be available if the event is
-        // triggered programmaticaly. Therefore the handle is passed in data
-        custom_events: _.extend(
-            {},
-            statement_action.StatementAction.prototype.custom_events,
-            {
-                update_proposition_programmaticaly: "_onUpdatePropositionProgrammaticaly",
-            }
-        ),
+        // Restrict displayed lines, for better performance. (10 is the default in parent module)
+        // config: _.extend(
+        //     {},
+        //     statement_action.StatementAction.prototype.config,
+        //     {
+        //         defaultDisplayQty: 10
+        //     }
+        // ),
 
-        _onUpdatePropositionProgrammaticaly: function (event) {
+        // BUG FIX in module reconciliation_widget when some lines are not visible.
+        // Code copied from there.
+        _openFirstLine: function (previous_handle) {
             var self = this;
-            var handle = event.data.data.handle;
-            var line = this.model.getLine(handle);
-            this.model.updateProposition(handle, event.data.data).always(function () {
-                self._getWidget(handle).update(line);
-            });
+            previous_handle = previous_handle || "rline0";
+            var handle = _.compact(
+                _.map(this.model.lines, function (line, handle) {
+                    // This is the FIX: !line.visible ||
+                    return !line.visible || line.reconciled ||
+                        parseInt(handle.substr(5)) < parseInt(previous_handle.substr(5))
+                        ? null
+                        : handle;
+                })
+            )[0];
+            if (handle) {
+                var line = this.model.getLine(handle);
+                this.model
+                    .changeMode(handle, "default")
+                    .then(function () {
+                        self._getWidget(handle).update(line);
+                    })
+                    .guardedCatch(function () {
+                        self._getWidget(handle).update(line);
+                    })
+                    .then(function () {
+                        self._getWidget(handle).$el.focus();
+                    });
+            }
+            return handle;
         },
     });
 

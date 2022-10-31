@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 class BankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"
+    _order = "statement_id asc,is_reconciled desc,partner_id asc,id asc"
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

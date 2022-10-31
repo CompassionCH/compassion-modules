@@ -75,7 +75,6 @@ class AccountReconcileModel(models.Model):
         :return:                (query, params)
         '''
         self.ensure_one()
-        print("icit")
         if self.rule_type != 'invoice_matching':
             raise UserError(
                 _('Programmation Error: Can\'t call _get_invoice_matching_query() for different rules than \'invoice_matching\''))

@@ -1,5 +1,8 @@
 from odoo import api, models
 
+# Careful: This limit should be set the same as in account_move_reconciliation.js:31
+MAX_LINES_FOR_RECONCILE_WIDGET = 10
+
 
 class AccountReconciliationWidget(models.AbstractModel):
     _inherit = "account.reconciliation.widget"
@@ -7,14 +10,12 @@ class AccountReconciliationWidget(models.AbstractModel):
     @api.model
     def get_bank_statement_line_data(self, st_line_ids, excluded_ids=None):
         """
-        Reorder the results by partner_id. This avoid having statements lines from the
-        same partner at different place in the tree view.
+        Limit the number of visible lines for performance reason.
         """
         results = super().get_bank_statement_line_data(st_line_ids, excluded_ids)
-        results["lines"] = sorted(
-            results["lines"],
-            key=lambda l: l["st_line"].get("partner_id", l["st_line"]["id"] * 500000)
-        )
+        lines = results["lines"]
+        for i in range(min(MAX_LINES_FOR_RECONCILE_WIDGET, len(lines)), len(lines)):
+            lines[i]["visible"] = False
         return results
 
     @api.model
@@ -61,16 +62,3 @@ class AccountReconciliationWidget(models.AbstractModel):
         move_lines = move_lines.sorted(_sort_move_line)
         return super()._prepare_move_lines(
             move_lines, target_currency, target_date, recs_count)
-
-    def _domain_move_lines_for_reconciliation(self, st_line, aml_accounts, partner_id,
-                                              excluded_ids=None, search_str=False, mode=None):
-        """
-        Restrict propositions to move lines that don't have the same account
-        """
-        domain = super()._domain_move_lines_for_reconciliation(
-            st_line, aml_accounts, partner_id, excluded_ids, search_str
-        )
-        # domain = expression.AND([domain, [
-        #     ("account_id", "!=", st_line.journal_id.default_credit_account_id.id)
-        # ]])
-        return domain
