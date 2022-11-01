@@ -204,7 +204,7 @@ class SponsorshipGift(models.Model):
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
-        self.currency_id = self.invoice_line_ids.move_id.currency_id
+        self.currency_id = self.mapped("invoice_line_ids.move_id.currency_id")[:1]
 
     def _compute_name(self):
         for gift in self:
