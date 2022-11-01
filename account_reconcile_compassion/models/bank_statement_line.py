@@ -131,7 +131,7 @@ class BankStatementLine(models.Model):
 
         if invoice:
             invoice.button_draft()
-            invoice.write({"origin": self.statement_id.name})
+            invoice.write({"invoice_origin": self.statement_id.name})
 
         else:
             # Lookup for an existing open invoice matching the criterias
