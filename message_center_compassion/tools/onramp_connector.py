@@ -9,6 +9,7 @@
 ##############################################################################
 import json
 import logging
+import urllib
 from datetime import datetime, timedelta
 from json.decoder import JSONDecodeError
 
@@ -166,6 +167,8 @@ class OnrampConnector(object):
         if session is not None:
             complete_headers = headers.copy()
             complete_headers.update(session.headers)
+            if session.params:
+                url += "?" + urllib.parse.urlencode(session.params)
         else:
             complete_headers = headers
         _logger.debug(
