@@ -705,7 +705,6 @@ class SponsorshipContract(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Contract",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": self._name,
             "res_id": self.id,
@@ -810,7 +809,6 @@ class SponsorshipContract(models.Model):
                     sponsorship = line.sponsorship_id
                     if sponsorship.state == "active":
                         contract.contract_active()
-                contract.group_id.generate_invoices()
             elif contract.type == "S" or (contract.type in ["SC", "SWP"] and contract.total_amount > 0):
                 # Update the expiration date of the No Money Hold
                 hold = contract.hold_id
@@ -826,7 +824,6 @@ class SponsorshipContract(models.Model):
                         _("You cannot validate a sponsorship without any amount")
                     )
                 contract.state = "waiting"
-                contract.group_id.generate_invoices()
             elif contract.type in ["SC", "SWP"]:
                 # Activate directly correspondence sponsorships
                 contract.contract_active()
