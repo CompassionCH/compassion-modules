@@ -36,6 +36,9 @@ class GiftNotificationSettings(models.TransientModel):
     gift_analytic_tag_id = fields.Many2one(
         "account.analytic.tag", "Gift analytic tag", config_parameter="gift_compassion.analytic_tag_id"
     )
+    gift_journal_id = fields.Many2one(
+        "account.journal", "Gift journal id",
+    )
 
     def _compute_gift_notify_ids(self):
         for rec in self:
@@ -57,6 +60,8 @@ class GiftNotificationSettings(models.TransientModel):
                 f"gift_compassion.gift_expense_account_{company_id}", 0)),
             "gift_income_account_id": int(param_obj.get_param(
                 f"gift_compassion.gift_income_account_{company_id}", 0)),
+            "gift_journal_id": int(param_obj.get_param(
+                f"gift_compassion.gift_journal_id{company_id}", 0)),
         })
         return res
 
@@ -67,6 +72,9 @@ class GiftNotificationSettings(models.TransientModel):
         )
         self.env["ir.config_parameter"].set_param(
             f"gift_compassion.gift_income_account_{company_id}", str(self.gift_income_account_id.id)
+        )
+        self.env["ir.config_parameter"].set_param(
+            f"gift_compassion.gift_journal_id{company_id}", str(self.gift_journal_id.id)
         )
         super().set_values()
 

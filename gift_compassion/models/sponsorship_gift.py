@@ -90,7 +90,7 @@ class SponsorshipGift(models.Model):
     )
     currency_id = fields.Many2one(
         "res.currency",
-        default=lambda s: s.env.user.company_id.currency_id,
+        compute="_compute_currency",
         readonly=False,
     )
     currency_usd = fields.Many2one(
@@ -201,6 +201,10 @@ class SponsorshipGift(models.Model):
                 gift.gift_date = max([d for d in inv_dates])
 
             gift.amount = sum(amounts)
+
+    def _compute_currency(self):
+        # Set gift currency depending on its invoice currency
+        self.currency_id = self.mapped("invoice_line_ids.move_id.currency_id")[:1]
 
     def _compute_name(self):
         for gift in self:
@@ -514,12 +518,12 @@ class SponsorshipGift(models.Model):
         param_obj = self.env["res.config.settings"].with_company(company)
         account_credit = param_obj.get_param("gift_income_account_id")
         account_debit = param_obj.get_param("gift_expense_account_id")
+        journal_id = param_obj.get_param("gift_journal_id")
         if not account_credit or not account_debit:
             raise UserError(_("Please setup income and expense accounts for gifts before sending them to GMC."))
-        journal = self.env["account.journal"].search([("code", "=", "OD"), ("company_id", "=", company.id)])
         maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
         move_data = {
-            "journal_id": journal.id,
+            "journal_id": journal_id,
             "ref": "Gift payment to GMC",
             "date": maturity,
         }
