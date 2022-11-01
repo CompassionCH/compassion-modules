@@ -72,9 +72,11 @@ class AccountStatement(models.Model):
     def auto_reconcile(self):
         """ Auto reconcile matching invoices through jobs to avoid timeouts
         Inspired by the `if model.auto_reconcile` part of _apply_rules()"""
-        reconcile_model = self.env["account.reconcile.model"].search(
-            [("rule_type", "!=", "writeoff_button")]
-        )
+        reconcile_model = self.env["account.reconcile.model"].search([
+            ("rule_type", "!=", "writeoff_button"),
+            "|", ("company_id", "=", self.journal_id.company_id.id),
+            ("company_id", "=", False)
+        ], limit=1)
 
         for bank_statement in self.filtered("line_ids"):
             matching_amls = reconcile_model._apply_rules(bank_statement.line_ids)
