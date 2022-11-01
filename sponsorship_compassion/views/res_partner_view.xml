@@ -12,7 +12,10 @@
                 <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"/>
             </field>
 
-            <field name="ref" position="after">
+            <!-- Replace parent position of reference and global numbers -->
+            <field name="ref" position="replace"/>
+            <field name="type" position="before">
+                <field name="ref" string="Internal Reference"/>
                 <field name="global_id"/>
             </field>
 
@@ -172,7 +175,7 @@
             <field name="name">Supporters</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{'res_partner_search_mode': 'customer', 'search_default_type_supporter': 1}</field>
         </record>
