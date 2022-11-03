@@ -220,7 +220,7 @@
         <field name="model_id" ref="model_correspondence"/>
         <field name="binding_model_id" ref="model_correspondence"/>
         <field name="state">code</field>
-        <field name="code">records.attach_original()</field>
+        <field name="code">records.attach_final()</field>
     </record>
 
     <menuitem id="menu_message_letter_create" parent="message_center_compassion.menu_message_outgoing" action="action_gmc_message_create_letter" sequence="9"/>
