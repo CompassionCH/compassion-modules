@@ -151,7 +151,6 @@ class Contracts(models.Model):
         return {
             "name": _("Letters"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree,form",
             "res_model": "correspondence",
             "context": self.with_context(

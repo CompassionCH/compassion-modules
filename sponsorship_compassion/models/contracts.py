@@ -514,7 +514,7 @@ class SponsorshipContract(models.Model):
                     continue
                 success, error_msg = record.add_correspondent()
                 if success is False:
-                    record.message_post(error_msg)
+                    self.env.user.notify_danger(error_msg)
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -725,17 +725,7 @@ class SponsorshipContract(models.Model):
             # UpsertConstituent Message
             partner = contract.correspondent_id
             partner.upsert_constituent()
-
-            message_obj = self.env["gmc.message"]
-            action_id = self.env.ref("sponsorship_compassion.create_sponsorship").id
-
-            message_vals = {
-                "partner_id": contract.correspondent_id.id,
-                "child_id": contract.child_id.id,
-                "action_id": action_id,
-                "object_id": contract.id,
-            }
-            message_obj.create(message_vals)
+            contract.upsert_sponsorship()
 
         not_active = self.filtered(lambda c: not c.is_active)
         if not_active:
@@ -839,35 +829,37 @@ class SponsorshipContract(models.Model):
                 contract.child_id = False
         return True
 
+    def upsert_sponsorship(self):
+        """ Creates and returns upsert messages for sponsorships. """
+        messages = self.env["gmc.message"]
+        action = self.env.ref("sponsorship_compassion.create_sponsorship")
+        if self.env.context.get("no_upsert"):
+            return messages
+        for sponsorship in self:
+            messages += messages.create({
+                "action_id": action.id,
+                "child_id": sponsorship.child_id.id,
+                "partner_id": sponsorship.correspondent_id.id,
+                "object_id": sponsorship.id,
+            })
+        return messages
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
-        action = self.env.ref("sponsorship_compassion.create_sponsorship")
-        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
-        for sponsorship in self.filtered(
-                lambda s: s.global_id and s.state not in ("cancelled", "terminated")
-        ):
+        messages = self.upsert_sponsorship().with_context({"async_mode": False})
+        error_msg = "Error when updating sponsorship language. You may be out of sync with GMC - please try again."
+        for message in messages:
             try:
-                message = message_obj.create(
-                    {
-                        "action_id": action.id,
-                        "child_id": sponsorship.child_id.id,
-                        "partner_id": sponsorship.correspondent_id.id,
-                        "object_id": sponsorship.id,
-                    }
-                )
                 message.process_messages()
                 if "failure" in message.state:
-                    failure = message.failure_reason
-                    sponsorship.message_post(failure, _("Language update failed."))
+                    failure = message.failure_reason or error_msg
+                    self.env.user.notify_danger(failure, "Language update failed.")
             except:
-                logger.error(
-                    "Error when updating sponsorship language. "
-                    "You may be out of sync with GMC - please try again.",
-                    exc_info=True,
-                )
+                self.env.user.notify_danger(error_msg, "Language update failed.")
+                logger.error(error_msg, exc_info=True)
 
     def _remove_correspondent(self):
         self.ensure_one()
@@ -910,19 +902,10 @@ class SponsorshipContract(models.Model):
 
     def add_correspondent(self):
         self.ensure_one()
-        message_obj = self.env["gmc.message"].with_context({"async_mode": False})
-        create_action = self.env.ref("sponsorship_compassion.create_sponsorship")
         self.correspondent_id.upsert_constituent().process_messages()
 
         # Create new sponsorships at GMC
-        message = message_obj.create(
-            {
-                "action_id": create_action.id,
-                "child_id": self.child_id.id,
-                "partner_id": self.correspondent_id.id,
-                "object_id": self.id,
-            }
-        )
+        message = self.upsert_sponsorship()
         message.process_messages()
 
         answer = json.loads(message.answer)

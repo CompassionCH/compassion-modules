@@ -40,6 +40,7 @@
         "crm",
         "child_compassion",
         "web_m2x_options",  # oca/web
+        "web_notify",  # oca/web
         "partner_firstname",  # oca/partner-contact
         "account_analytic_attribution",  # compassion-accounting
         "sale",

@@ -11,6 +11,10 @@
                 <field name="name" readonly="True"/>
             </field>
 
+            <field name="comment" position="after">
+                <field name="reading_language"/>
+            </field>
+
             <field name="last_paid_invoice_date" position="before">
                 <field name="type"/>
                 <field name="group_freq"/>
