@@ -56,9 +56,6 @@
                     <button type="object" name="compose_letter_button"
                             string="Compose letter"
                             attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"/>
-                    <button name="attach_original" type="object"
-                            string="Replace by original"
-                            attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"/>
                     <button name="download_pdf" type="object"
                             string="Download PDF"
                             attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"/>
@@ -209,6 +206,21 @@
                 No messages.
             </p>
         </field>
+    </record>
+
+    <record id="replace_by_original_action" model="ir.actions.server">
+        <field name="name">Replace PDF by original</field>
+        <field name="model_id" ref="model_correspondence"/>
+        <field name="binding_model_id" ref="model_correspondence"/>
+        <field name="state">code</field>
+        <field name="code">records.attach_original()</field>
+    </record>
+    <record id="replace_by_final_action" model="ir.actions.server">
+        <field name="name">Replace PDF by final</field>
+        <field name="model_id" ref="model_correspondence"/>
+        <field name="binding_model_id" ref="model_correspondence"/>
+        <field name="state">code</field>
+        <field name="code">records.attach_original()</field>
     </record>
 
     <menuitem id="menu_message_letter_create" parent="message_center_compassion.menu_message_outgoing" action="action_gmc_message_create_letter" sequence="9"/>

@@ -72,7 +72,9 @@ class OnrampConnector(object):
     def send_message(self, service_name, message_type, body=None, params=None, headers=None, full_url=False):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
-        :param message_type: GET, POST or PUT
+        :param message_type: GET, POST, PUT or GET_RAW.
+                             GET_RAW is a special type used to fetch files and binary data that should be returned
+                             as it is.
         :param body: Body of the message to send.
         :param params: Optional Dictionary of HTTP Request parameters
                                 (put inside the url)
@@ -87,8 +89,8 @@ class OnrampConnector(object):
             headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name if not full_url else service_name
         log_body = body if body and len(body) < 500 else body and (body[:500] + "...[truncated]")
-        self.log_message(message_type, url, headers, log_body, self._session)
-        if message_type == "GET":
+        self.log_message(message_type, url, headers, log_body, self._session, params)
+        if message_type in ("GET", "GET_RAW"):
             r = self._session.get(url, headers=headers, params=params)
         elif message_type == "POST":
             r = self._session.post(url, headers=headers, json=body, params=params)
@@ -96,13 +98,17 @@ class OnrampConnector(object):
             r = self._session.put(url, headers=headers, json=body, params=params)
         else:
             return {"code": 404, "Error": "No valid HTTP verb used"}
+        if message_type == "GET_RAW":
+            # Simply return the result
+            return r.content
         status = r.status_code
         result = {
             "code": status,
             "request_id": r.headers.get("cf-request-id"),
             "raw_content": r.content
         }
-        self.log_message(status, "RESULT", message=r.text)
+        log_body = r.text if r.text and len(r.text) < 500 else r.text and (r.text[:500] + "...[truncated]")
+        self.log_message(status, "RESULT", message=log_body)
         try:
             # Receiving some weird encoded strings
             result["content"] = json.JSONDecoder(strict=False).decode(
@@ -150,7 +156,7 @@ class OnrampConnector(object):
             raise UserError(_("Token validation failed."))
 
     @classmethod
-    def log_message(cls, req_type, url, headers=None, message=None, session=None):
+    def log_message(cls, req_type, url, headers=None, message=None, session=None, params=None):
         """
         Used to format GMC messages for console log
         :param req_type: type of request (post/get/etc...)
@@ -158,19 +164,24 @@ class OnrampConnector(object):
         :param headers: headers of request
         :param message: content of request
         :param session: session of request
+        :param params: params of request
         :return: None
         """
         if headers is None:
             headers = dict()
         if message is None:
             message = "{empty}"
+        if params is None:
+            params = dict()
         if session is not None:
             complete_headers = headers.copy()
             complete_headers.update(session.headers)
             if session.params:
-                url += "?" + urllib.parse.urlencode(session.params)
+                params.update(session.params)
         else:
             complete_headers = headers
+        if params:
+            url += "?" + urllib.parse.urlencode(params)
         _logger.debug(
             "[%s] %s %s %s",
             req_type,

@@ -49,8 +49,4 @@ class SBCConnector(object):
         http://developer.compassion.com/docs/read/compassion_connect2/service_catalog/Image_Retrieval
         """
         params = {"format": img_type, "pg": pages, "dpi": dpi}
-        r = self.connector.send_message(letter_url, "GET", params=params, full_url=True)
-        letter_data = None
-        if r.get("code") == 200:
-            letter_data = base64.b64encode(r.get("raw_content"))
-        return letter_data
+        return base64.b64encode(self.connector.send_message(letter_url, "GET_RAW", params=params, full_url=True))

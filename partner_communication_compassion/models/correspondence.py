@@ -15,6 +15,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import models, api, fields
 
+from odoo.addons.sbc_compassion.models.correspondence import DEFAULT_LETTER_DPI
 from odoo.addons.sbc_compassion.models.correspondence_page import (
     BOX_SEPARATOR,
     PAGE_SEPARATOR,
@@ -22,6 +23,9 @@ from odoo.addons.sbc_compassion.models.correspondence_page import (
 from functools import reduce
 
 _logger = logging.getLogger(__name__)
+
+
+PHYSICAL_LETTER_DPI = 300
 
 
 class Correspondence(models.Model):
@@ -90,6 +94,13 @@ class Correspondence(models.Model):
                     letter.has_valid_language = (
                         lang and lang in letter.supporter_languages_ids
                     )
+
+    def _compute_preferred_dpi(self):
+        """ Compute DPI based on letter delivery preference """
+        for letter in self:
+            letter.preferred_dpi =\
+                DEFAULT_LETTER_DPI if "digital" in letter.letter_delivery_preference and letter.email \
+                else PHYSICAL_LETTER_DPI
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

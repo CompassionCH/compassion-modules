@@ -56,11 +56,10 @@ class GetLetterImageWizard(models.TransientModel):
             )
         if image_data is None:
             raise UserError(_("Image requested was not found remotely."))
-        self.write({"image_preview": image_data, "image_download": image_data})
+        self.write({"image_preview": image_data if self.format != "pdf" else None, "image_download": image_data})
         return {
             "name": _("Retrieve letter image"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "letter.image.wizard",
             "res_id": self.id,

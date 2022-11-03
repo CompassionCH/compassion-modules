@@ -30,6 +30,9 @@ except ImportError:
     _logger.error("Please install magic, PyPDF2 and wand in order to use SBC module")
 
 
+DEFAULT_LETTER_DPI = 100
+
+
 class CorrespondenceType(models.Model):
     _name = "correspondence.type"
     _description = "Type of correspondence"
@@ -150,6 +153,7 @@ class Correspondence(models.Model):
         compute="_compute_letter_format",
         store=True,
     )
+    preferred_dpi = fields.Integer(compute="_compute_preferred_dpi", help="Resolution of fetched PDF")
 
     # 3. Letter language, text information, attached images
     #######################################################
@@ -392,6 +396,10 @@ class Correspondence(models.Model):
                 "Final Letter" in letter.communication_type_ids.mapped("name")
                 or letter.sponsorship_state != "active"
             )
+
+    def _compute_preferred_dpi(self):
+        for letter in self:
+            letter.preferred_dpi = DEFAULT_LETTER_DPI
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -689,8 +697,8 @@ class Correspondence(models.Model):
             image_data = None
             if letter_url:
                 image_data = SBCConnector(self.env).get_letter_image(
-                    letter_url, "pdf", dpi=300
-                )  # resolution
+                    letter_url, "pdf", dpi=letter.preferred_dpi
+                )
             if image_data is None:
                 raise UserError(
                     _(
@@ -703,6 +711,10 @@ class Correspondence(models.Model):
 
     def attach_original(self):
         self.download_attach_letter_image(letter_type="original_letter_url")
+        return True
+
+    def attach_final(self):
+        self.download_attach_letter_image(letter_type="final_letter_url")
         return True
 
     def get_image(self):
