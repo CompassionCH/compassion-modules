@@ -509,7 +509,7 @@ class SponsorshipContract(models.Model):
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
-        if "correspondent_id" in vals:
+        if "correspondent_id" in vals and not self.env.context.get("no_upsert"):
             for record, previous_state in zip(self, previous_states):
                 if previous_state not in ["active"]:
                     continue
