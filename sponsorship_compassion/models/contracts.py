@@ -489,8 +489,9 @@ class SponsorshipContract(models.Model):
         if "correspondent_id" in vals:
             previous_states.extend([r.state for r in self])
             updated_correspondents = self.filtered("global_id")
-            for record in updated_correspondents:
-                record._remove_correspondent()
+            if not self.env.context.get("no_upsert"):
+                for record in updated_correspondents:
+                    record._remove_correspondent()
 
             for child in self.mapped("child_id"):
                 child.child_sponsored(vals["correspondent_id"])
