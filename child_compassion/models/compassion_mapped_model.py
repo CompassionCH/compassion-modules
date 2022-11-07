@@ -139,7 +139,7 @@ class MappedModel(models.AbstractModel):
     def assign_translation(self):
         """Assign an activity for manually translating the value."""
         # Remove previous todos
-        self.activity_unlink("mail.mail_activity_data_todo")
+        self.activity_unlink(["mail.mail_activity_data_todo"])
         notify_ids = self.env["res.config.settings"].sudo().get_param("translate_notify_ids")
         if notify_ids:  # check if not False
             for user_id in notify_ids[0][2]:
