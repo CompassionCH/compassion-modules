@@ -73,7 +73,7 @@ class MappedModel(models.AbstractModel):
                             new_translation = self._find_translation(
                                 full_field_name, gmc_terms[i], gmc_action, gmc_data, gmc_english_data)
                             if new_translation == english_val:
-                                to_translate_manually += english_record
+                                to_translate_manually |= english_record
                             if f_type == "selection":
                                 # Update selection label translation.
                                 s_field = lang.env["ir.model.fields.selection"].sudo().search([
