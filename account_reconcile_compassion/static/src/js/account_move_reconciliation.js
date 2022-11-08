@@ -366,6 +366,18 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
                     self.$(".create").append($create);
                 });
         },
+
+        update: function (state) {
+            this._super(state);
+            var new_partner_id = state.st_line.partner_id;
+            var sponsorship_field = this.fields.sponsorship_id;
+            if (sponsorship_field !== undefined) {
+                sponsorship_field.field["domain"] = [
+                    "|", ["correspondent_id", "=", new_partner_id], ["partner_id", "=", new_partner_id],
+                    ["state", "!=", "draft"]
+                ];
+            }
+        }
     });
 
 
