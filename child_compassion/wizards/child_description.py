@@ -165,12 +165,12 @@ class ChildDescription(models.TransientModel):
             desc(".mother").remove()
         self._job(desc(".mother_job"), "mother")
 
-        if household.nb_brothers:
+        if household.nb_brothers > 0:
             desc(".brothers")[0].text = _("Number of brothers")
             desc(".brothers")[1].text = str(household.nb_brothers)
         else:
             desc(".brothers").remove()
-        if household.nb_sisters:
+        if household.nb_sisters > 0:
             desc(".sisters")[0].text = _("Number of sisters")
             desc(".sisters")[1].text = str(household.nb_sisters)
         else:
