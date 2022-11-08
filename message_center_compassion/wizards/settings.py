@@ -9,6 +9,7 @@
 ##############################################################################
 
 from odoo import api, models, fields
+from odoo.tools import ormcache
 
 
 class Settings(models.TransientModel):
@@ -54,6 +55,7 @@ class Settings(models.TransientModel):
         res["translate_notify_ids"] = self._get_translate_notify_ids()
         return res
 
+    @ormcache()
     @api.model
     def get_param(self, param, default=None):
         """Get a single param from ['res.config.settings']"""
