@@ -113,7 +113,7 @@
                         </group>
                         <group>
                             <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
-                            <field name="translation_language_id" string="Destination language" options="{'create':False}"/>
+                            <field name="translation_language_id" options="{'create':False}"/>
                         </group>
                     </group>
                     <field name="page_ids" context="{'default_correspondence_id': active_id}">
