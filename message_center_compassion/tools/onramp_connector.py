@@ -88,7 +88,7 @@ class OnrampConnector(object):
         if headers is None:
             headers = {"Content-type": "application/json"}
         url = self._connect_url + service_name if not full_url else service_name
-        log_body = body if body and len(body) < 500 else body and (body[:500] + "...[truncated]")
+        log_body = body if body and len(body) < 500 else body and (str(body[:500]) + "...[truncated]")
         self.log_message(message_type, url, headers, log_body, self._session, params)
         if message_type in ("GET", "GET_RAW"):
             r = self._session.get(url, headers=headers, params=params)
