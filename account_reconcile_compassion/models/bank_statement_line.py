@@ -140,8 +140,8 @@ class BankStatementLine(models.Model):
                 # Get the bvr reference of the invoice or set it
                 invoice = invoices[0]
                 invoice.write({"invoice_origin": self.statement_id.name})
-                if invoice.reference and not self.ref:
-                    ref = invoice.reference
+                if invoice.payment_reference and not self.ref:
+                    ref = invoice.payment_reference
                 else:
                     invoice.write({"ref": ref})
                 self.write({"ref": ref})
