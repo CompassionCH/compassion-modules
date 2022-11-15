@@ -401,12 +401,9 @@ class SponsorshipContract(models.Model):
         # Gifts should not be counted in due invoices
         # Fund-suspended projects are also excluded
         # Correspondence and gift contracts are also excluded
-        invoices = super()._filter_due_invoices()
-        return invoices.filtered(
-            lambda i: i.invoice_category != "gift"
-                      and not any(i.mapped("invoice_line_ids.contract_id.child_id.project_id.hold_cdsp_funds"))
-                      and not (set(i.mapped("invoice_line_ids.contract_id.type")) & {"G", "SC", "SWP"})
-        )
+        valid_contracts = self.filtered(lambda s: s.type in ("S", "O") and not s.child_id.project_id.hold_cdsp_funds)
+        invoices = super(SponsorshipContract, valid_contracts)._filter_due_invoices()
+        return invoices.filtered(lambda i: i.invoice_category != "gift")
 
     ##########################################################################
     #                              ORM METHODS                               #

@@ -57,51 +57,23 @@ class AccountInvoice(models.Model):
 
     @api.depends("line_ids", "payment_state", "line_ids.product_id")
     def _compute_invoice_category(self):
+        categ_obj = self.env["product.category"]
         sponsorship_cat = self.env.ref(
-            "sponsorship_compassion.product_category_sponsorship", False
+            "sponsorship_compassion.product_category_sponsorship", categ_obj
         )
-        fund_cat = self.env.ref("sponsorship_compassion.product_category_fund", False)
-        gift_cat = self.env.ref("sponsorship_compassion.product_category_gift", False)
-        # At module installation, the categories are not yet loaded.
-        if not sponsorship_cat or not fund_cat or not gift_cat:
-            return
+        fund_cat = self.env.ref("sponsorship_compassion.product_category_fund", categ_obj)
+        gift_cat = self.env.ref("sponsorship_compassion.product_category_gift", categ_obj)
         for invoice in self:
-            # if invoice.payment_state != "paid":
-            #     invoice.invoice_category = False
-            #     continue
-            # check if child_of Sponsorship category
-            category_lines = self.env["account.move.line"].search(
-                [
-                    ("move_id", "=", invoice.id),
-                    ("product_id.categ_id", "=", sponsorship_cat.id),
-                ]
-            )
-
-            if category_lines:
+            categories = invoice.invoice_line_ids.mapped("product_id.categ_id")
+            if sponsorship_cat and sponsorship_cat in categories:
                 invoice.invoice_category = "sponsorship"
+            elif gift_cat and gift_cat in categories:
+                invoice.invoice_category = "gift"
+            elif fund_cat and fund_cat in categories:
+                invoice.invoice_category = "fund"
             else:
-                # check if child_of Gift category
-                category_lines = self.env["account.move.line"].search(
-                    [
-                        ("move_id", "=", invoice.id),
-                        ("product_id.categ_id", "=", gift_cat.id),
-                    ]
-                )
-                if category_lines:
-                    invoice.invoice_category = "gift"
-                else:
-                    # check if child_of Fund category
-                    category_lines = self.env["account.move.line"].search(
-                        [
-                            ("move_id", "=", invoice.id),
-                            ("product_id.categ_id", "=", fund_cat.id),
-                        ]
-                    )
-                    if category_lines:
-                        invoice.invoice_category = "fund"
-                    else:
-                        # last choice -> Other category
-                        invoice.invoice_category = "other"
+                # last choice -> Other category
+                invoice.invoice_category = "other"
 
     def recompute_category(self):
         self._compute_invoice_category()
