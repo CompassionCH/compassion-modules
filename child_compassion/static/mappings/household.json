@@ -17,6 +17,7 @@
     "MaleGuardianEmploymentStatus": "male_guardian_job_type",
     "MaleGuardianOccupation": "male_guardian_job",
     "NaturalMotherAlive": "mother_alive",
+    "NaturalFatherAlive": "father_alive",
     "NumberOfSiblingBeneficiaries": "number_beneficiaries",
     "ParentsMaritalStatus": "marital_status",
     "ParentsTogether": "parents_together",
