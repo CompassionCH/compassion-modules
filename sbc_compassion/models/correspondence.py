@@ -886,39 +886,17 @@ class Correspondence(models.Model):
             odoo_data["template_id"] = template.id
 
         if "child_id" in odoo_data and "partner_id" in odoo_data:
-            partner = odoo_data.pop("partner_id")
+            partner = odoo_data.get("partner_id")
             child = odoo_data.pop("child_id")
             sponsorship = self.env["recurring.contract"].search(
                 [
-                    ("correspondent_id.global_id", "=", partner.get("global_id")),
-                    ("child_id.global_id", "=", child.get("global_id")),
+                    ("correspondent_id", "=", partner),
+                    ("child_id", "=", child),
                 ],
                 limit=1,
             )
             if sponsorship:
                 odoo_data["sponsorship_id"] = sponsorship.id
-
-        # Replace dict by a tuple for the ORM update/create
-        if "page_ids" in odoo_data:
-            pages = list()
-            for page in odoo_data["page_ids"]:
-                page_url = page.get("original_page_url")
-                if not page_url:
-                    # We don't need to save pages not accessible
-                    continue
-                page_id = (
-                    self.env["correspondence.page"]
-                    .search([("original_page_url", "=", page_url)], limit=1)
-                    .id
-                )
-                # if page_url already exist update it
-                if page_id:
-                    orm_tuple = (1, page_id, page)
-                # else create a new one
-                else:
-                    orm_tuple = (0, 0, page)
-                pages.append(orm_tuple)
-            odoo_data["page_ids"] = pages or False
 
         return odoo_data
 

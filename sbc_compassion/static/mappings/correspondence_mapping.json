@@ -149,7 +149,10 @@
             "field": null
           }
         }
-      }
+      },
+      "search_relational_record": true,
+      "allow_relational_creation": false,
+      "search_key": "global_id"
     },
     "SourceSystem": {
       "to_json_conversion": "'Odoo'"
