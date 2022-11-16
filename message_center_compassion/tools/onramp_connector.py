@@ -69,7 +69,7 @@ class OnrampConnector(object):
         if not self._token_time or self._token_time + timedelta(hours=1) <= now:
             self._retrieve_token(env)
 
-    def send_message(self, service_name, message_type, body=None, params=None, headers=None, full_url=False):
+    def send_message(self, service_name, message_type, body=None, params=None, headers=None, full_url=False, data=None):
         """ Sends a message to Compassion Connect.
         :param service_name: The service name to reach inside Connect
         :param message_type: GET, POST, PUT or GET_RAW.
@@ -80,6 +80,7 @@ class OnrampConnector(object):
                                 (put inside the url)
         :param headers: Optional headers for the request
         :param full_url: Optional boolean to indicate the service_name is a full url that should be called as it is.
+        :param data: Post messages with a non json format
 
         :returns: A dictionary with the content of the answer to the message.
                   {'code': http_status_code, 'content': response,
@@ -93,9 +94,9 @@ class OnrampConnector(object):
         if message_type in ("GET", "GET_RAW"):
             r = self._session.get(url, headers=headers, params=params)
         elif message_type == "POST":
-            r = self._session.post(url, headers=headers, json=body, params=params)
+            r = self._session.post(url, headers=headers, json=body, params=params, data=data)
         elif message_type == "PUT":
-            r = self._session.put(url, headers=headers, json=body, params=params)
+            r = self._session.put(url, headers=headers, json=body, params=params, data=data)
         else:
             return {"code": 404, "Error": "No valid HTTP verb used"}
         if message_type == "GET_RAW":

@@ -37,7 +37,7 @@ class SBCConnector(object):
             data = base64.b64decode(image_data)
         else:
             data = image_data
-        r = self.connector.send_message(url, "POST", params=params, headers=headers, body=data)
+        r = self.connector.send_message(url, "POST", params=params, headers=headers, data=data)
         status = r.get("code")
         letter_url = r.get("content")
         if status != 201:
