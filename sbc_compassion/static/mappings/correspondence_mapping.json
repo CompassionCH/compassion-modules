@@ -3,7 +3,7 @@
   "model": "correspondence",
   "mapping": {
     "Beneficiary": {
-      "field" : "child_id",
+      "field" : "child_id.id",
       "sub_mapping": {
         "name": "Beneficiary Correspondence",
         "model": "compassion.child",
@@ -42,7 +42,7 @@
       "to_json_conversion": "self.env.user.company_id.country_id.code"
       },
     "Pages": {
-      "field": "page_ids",
+      "field": "page_ids.id",
       "sub_mapping": "Correspondence Page"
     },
     "Direction": {
@@ -128,7 +128,7 @@
       "search_relational_record": true
     },
     "Supporter": {
-      "field": "partner_id",
+      "field": "partner_id.id",
       "sub_mapping": {
         "name": "Supporter mapping",
         "model": "res.partner",
