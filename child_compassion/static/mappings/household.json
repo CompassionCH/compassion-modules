@@ -3,7 +3,7 @@
   "model": "compassion.household",
   "mapping": {
     "BeneficiaryHouseholdMemberList": {
-      "field": "member_ids",
+      "field": "member_ids.id",
       "sub_mapping": "Household Member",
       "search_relational_record": true,
       "search_key": "name"

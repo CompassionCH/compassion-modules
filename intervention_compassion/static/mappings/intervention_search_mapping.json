@@ -3,7 +3,7 @@
   "model": "compassion.intervention.search",
   "mapping": {
     "InterventionFilter": {
-      "field": "search_filter_ids",
+      "field": "search_filter_ids.id",
       "sub_mapping": {
         "name": "Intervention Advanced Search Query",
         "model": "compassion.query.filter",
@@ -20,7 +20,7 @@
       }
     },
     "InterventionQueryResponseList": {
-      "field": "intervention_ids",
+      "field": "intervention_ids.id",
       "sub_mapping": "Compassion Global Intervention"
     }
   }

@@ -7,7 +7,7 @@
     "ActiveProgram": "type",
     "Age": "age",
     "BeneficiaryHouseholdList": {
-      "field": "household_id",
+      "field": "household_id.id",
       "sub_mapping": "Household"
     },
     "BeneficiaryState": "beneficiary_state",
