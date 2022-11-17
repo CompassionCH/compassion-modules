@@ -1,49 +1,5 @@
 <odoo>
     <data noupdate="1">
-        <!-- Final letter -->
-        <record id="final_letter" model="mail.template">
-            <field name="name">B2S Final Letter</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Last letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set letter = object.get_objects()
-                    % set child = letter.mapped('child_id')
-                    % set firstname = child.get_list('firstname', 3, 'your children')
-                    % set s = '' if len(child) == 1 else 's'
-                </div>
-                <p>
-                    Herewith, you will find the last sent letter from ${firstname}!
-                    <br/>
-                    <br/>
-                    % if object.send_mode == 'digital':
-                        Download your letter${s} here:
-                        <ul>
-                            % for l in list(set(letter.filtered('read_url').mapped('read_url'))):
-                           <li>
-                               <a href='${l}'>${l}</a>
-                           </li>
-                           % endfor
-                        </ul>
-                        <br/>
-                    % endif
-                    The sponsorship is terminated but we encourage you to continue praying for ${firstname} protection and blessing.
-                    <br/>
-                    <br/>
-                    Again, we express all our gratitude for the love and the support you testified towards ${firstname} during the sponsorship.
-                    <br/>
-                    <br/>
-                    Thanks to the collaboration between the sponsors and Compassion, we are grateful to be able to give hope to the children in need.
-                    We are at your service for any questions or comments, by calling 031 552 21 25 or by email at <a href="mailto:${object.user_id.company_id.email}">${object.user_id.company_id.email}</a>
-                    <br/>
-                    <br/>
-                </p>
-            </field>
-        </record>
-
         <!-- New letter -->
         <record id="new_letter" model="mail.template">
             <field name="name">B2S New letter</field>
@@ -75,40 +31,12 @@
                 </p>
             </field>
         </record>
-
-        <!-- Old letter -->
-        <record id="old_letter" model="mail.template">
-            <field name="name">B2S Old letter published</field>
+        <record id="mail_onboarding_first_letter" model="mail.template">
+            <field name="name">Sponsorship Onboarding - First B2S Letter</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
-            <field name="body_html" type="html">
-                <div>
-                    % set letter = object.get_objects()
-                    % set child = letter.mapped('child_id')
-                    % set s = '' if len(child) == 1 else 's'
-                </div>
-                <p>
-                    ${object.partner_id.salutation}
-                    You received a letter from ${child.get_list('firstname', 3, child.get_number())} some time ago.
-                    Due to technical issues on our side, we are not sure that you received the e-mail we sent and are therefore sending it again.
-                    We apologize for the inconvenience and hope you will enjoy reading the letter${s}.
-                    <br/>
-                    % if object.send_mode == 'digital':
-                        Download your letters here:
-                        <ul>
-                            % for l in letter.filtered('read_url').mapped('read_url')[:1]:
-                            <li>
-                                <a href='${l.read_url}'>${l.read_url}</a>
-                            </li>
-                            % endfor
-                        </ul>
-                        <br/>
-                    % endif
-                </p>
-            </field>
+            <field name="use_default_to" eval="True"/>
         </record>
 
         <!-- B2S email not read -->

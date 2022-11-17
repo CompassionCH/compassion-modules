@@ -681,13 +681,10 @@ class Correspondence(models.Model):
         """ Method called when new B2S letter is Published. """
         base_url = self.env["ir.config_parameter"].sudo().get_param(
             "web.external.url", "")
-        self.download_attach_letter_image(letter_type="original_letter_url")
-        res = True
+        self.download_attach_letter_image(letter_type="final_letter_url")
         for letter in self:
-            if letter.original_language_id not in letter.supporter_languages_ids:
-                res = res and letter.compose_letter_image()
             letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
-        return res
+        return True
 
     def download_attach_letter_image(self, letter_type="final_letter_url"):
         """ Download letter image from US service and attach to letter. """
