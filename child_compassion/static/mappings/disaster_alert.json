@@ -3,7 +3,7 @@
   "model": "fo.disaster.alert",
   "mapping": {
     "ICPDisasterImpacts": {
-      "field": "fcp_disaster_impact_ids",
+      "field": "fcp_disaster_impact_ids.id",
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "project_fcp_id",
@@ -19,7 +19,7 @@
       }
     },
     "BeneficiaryDisasterImpacts": {
-      "field": "child_disaster_impact_ids",
+      "field": "child_disaster_impact_ids.id",
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "child_global_id",
@@ -46,7 +46,7 @@
       }
     },
     "DisasterCommunicationUpdates": {
-      "field": "fo_disaster_update_ids",
+      "field": "fo_disaster_update_ids.id",
       "relational_write_mode": "append",
       "search_relational_record": true,
       "search_key": "fodu_id",

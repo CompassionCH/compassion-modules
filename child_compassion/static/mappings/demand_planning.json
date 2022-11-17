@@ -3,7 +3,7 @@
   "model": "demand.planning",
   "mapping": {
     "GlobalPartnerWeeklyDemandRequestList": {
-      "field": "weekly_demand_ids",
+      "field": "weekly_demand_ids.id",
       "sub_mapping": {
         "name": "WeeklyDemandCreateMapping",
         "model": "demand.weekly.demand",

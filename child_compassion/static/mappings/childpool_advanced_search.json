@@ -13,7 +13,7 @@
             "to_json_conversion": "'PriorityScore'"
           },
           "Filter": {
-            "field": "search_filter_ids.",
+            "field": "search_filter_ids.id",
             "sub_mapping": {
               "name": "Childpool Advanced Search Query",
               "model": "compassion.query.filter",
