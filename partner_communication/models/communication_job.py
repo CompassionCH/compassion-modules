@@ -210,7 +210,7 @@ class CommunicationJob(models.Model):
             company = job.partner_id.company_id
             if not company:
                 country = job.partner_id.country_id
-                company = self.env["res.company"].search([("country_id", "=", country.id)], limit=1)
+                company = self.env["res.company"].search([("partner_id.country_id", "=", country.id)], limit=1)
                 if not company:
                     company = self.env.company
             job.company_id = company
