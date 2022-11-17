@@ -183,7 +183,7 @@ class FieldToJson(models.Model):
             # Calls a conversion method defined in mapping
             converted_value = safe_eval(
                 self.from_json_conversion,
-                {"json_value": json_value, "self": self},
+                {"json_value": json_value, "self": self, "fields": wrap_module(fields, ["Date", "Datetime"])},
             )
         if self.relational_field or self.sub_mapping_id:
             converted_value = self._json_to_relational_value(converted_value)
