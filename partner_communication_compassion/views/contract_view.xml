@@ -10,4 +10,16 @@
             </xpath>
         </field>
      </record>
+
+    <record id="contract_filter" model="ir.ui.view">
+        <field name="name">recurring.contract.search</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_compassion_filter"/>
+        <field name="arch" type="xml">
+            <filter name="last_3_months" position="after">
+                <separator/>
+                <filter name="new_picture" domain="[('new_picture', '=', True)]" string="New picture"/>
+            </filter>
+        </field>
+    </record>
 </odoo>

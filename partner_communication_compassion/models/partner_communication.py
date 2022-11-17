@@ -153,3 +153,12 @@ class PartnerCommunication(models.Model):
         else:
             base64.encodebytes(report_str.encode())
         return output
+
+    def send(self):
+        res = super().send()
+        biennial = self.env.ref("partner_communication_compassion.biennial")
+        biennials = self.filtered(lambda j: j.state == "done" and j.config_id == biennial)
+        if biennials:
+            for child in biennials.get_objects():
+                child.sponsorship_ids[0].new_picture = False
+        return res

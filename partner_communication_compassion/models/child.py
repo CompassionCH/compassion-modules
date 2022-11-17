@@ -104,7 +104,7 @@ class CompassionChild(models.Model):
             delivery = sponsor.photo_delivery_preference
             if "physical" in delivery or delivery == "both":
                 # Mark sponsorship for order the picture
-                child.sponsorship_ids[0].order_photo = True
+                child.sponsorship_ids[0].new_picture = True
 
             job_obj.create(
                 {
