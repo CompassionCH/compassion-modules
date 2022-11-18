@@ -38,7 +38,8 @@ class RestJSONRequest(JsonRequest):
             if error_message:
                 error_code = re.search(r"^\d{3}", error_message).group() # match 3 digits (int)
                 if error_code:
-                    error['code'] = error_code
+                    error['code'] = int(error_code)
+                    error['http_status'] = int(error_code)
                 error['message'] = error.get("message", "") + " " + error_message
         odoo_result = super()._json_response(result, error)
         if result is not None and error is None:
