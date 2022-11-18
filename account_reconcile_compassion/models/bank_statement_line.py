@@ -131,7 +131,10 @@ class BankStatementLine(models.Model):
 
         if invoice:
             invoice.button_draft()
-            invoice.write({"invoice_origin": self.statement_id.name})
+            invoice.write({
+                "invoice_origin": self.statement_id.name,
+                "invoice_line_ids": [(0, 0, self._get_invoice_line_data(vals)) for vals in mv_line_dicts]
+            })
 
         else:
             # Lookup for an existing open invoice matching the criterias
