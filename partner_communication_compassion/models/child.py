@@ -111,7 +111,6 @@ class CompassionChild(models.Model):
                     "config_id": communication_config.id,
                     "partner_id": child.sponsor_id.id,
                     "object_ids": child.id,
-                    "user_id": communication_config.user_id.id,
                 }
             )
         return True

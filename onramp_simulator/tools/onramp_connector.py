@@ -11,7 +11,9 @@ import json
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
-class TestOnrampConnector(OnrampConnector):
+class TestOnrampConnector(object):
+    def __init__(self, env):
+        self.connector = OnrampConnector(env)
 
     def test_message(self, test_message):
         """ Sends a message to any onramp.
@@ -26,5 +28,5 @@ class TestOnrampConnector(OnrampConnector):
         url = test_message.server_url
         body = test_message.body_json
 
-        r = self.send_message(url, "POST", headers=headers, body=json.loads(body), full_url=True)
+        r = self.connector.send_message(url, "POST", headers=headers, body=json.loads(body), full_url=True)
         test_message.write({"result": str(r.get("content")), "result_code": r.get("code")})

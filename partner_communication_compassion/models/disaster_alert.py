@@ -64,7 +64,6 @@ class ChildImpact(models.Model):
                         "partner_id": partner.id,
                         "config_id": communication_config.id,
                         "object_ids": sponsorships.ids,
-                        "user_id": communication_config.user_id.id,
                     }
                 )
                 impact.communication_id = comm

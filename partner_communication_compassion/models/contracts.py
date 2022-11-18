@@ -77,7 +77,6 @@ class RecurringContract(models.Model):
                         "object_ids": self.env.context.get(
                             "default_object_ids", contract.id
                         ),
-                        "user_id": communication.user_id.id,
                     }
                 )
                 if contract.correspondent_id != contract.partner_id:
@@ -88,7 +87,6 @@ class RecurringContract(models.Model):
                             "object_ids": self.env.context.get(
                                 "default_object_ids", contract.id
                             ),
-                            "user_id": communication.user_id.id,
                         }
                     )
         else:
@@ -105,7 +103,6 @@ class RecurringContract(models.Model):
                         "object_ids": self.env.context.get(
                             "default_object_ids", objects.ids
                         ),
-                        "user_id": communication.user_id.id,
                     }
                 )
         return communications
