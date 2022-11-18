@@ -35,6 +35,7 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "depends": [
+        "account_banking_mandate",  # oca_addons/bank-payment
         "base_report_to_printer",  # OCA/report-print-send
         "contacts",
         "queue_job",  # OCA/queue
