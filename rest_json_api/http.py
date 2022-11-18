@@ -3,7 +3,7 @@ from werkzeug.exceptions import BadRequest
 
 from odoo.http import JsonRequest
 from odoo.tools import date_utils
-
+import re
 
 class RestJSONRequest(JsonRequest):
     """
@@ -33,6 +33,10 @@ class RestJSONRequest(JsonRequest):
                 raise
 
     def _json_response(self, result=None, error=None):
+        if error:
+            if error['code'] == 200:
+                error['code'] = re.search(r"^\d{3}", error['data']['message']).group() # match 3 digits (int)
+                error['message'] += f": {error['data']['message']}"
         odoo_result = super()._json_response(result, error)
         if result is not None and error is None:
             odoo_result.data = json.dumps(result, default=date_utils.json_default)
