@@ -162,3 +162,12 @@ class PartnerCommunication(models.Model):
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False
         return res
+
+    def cancel(self):
+        res = super().cancel()
+        biennial = self.env.ref("partner_communication_compassion.biennial")
+        biennials = self.filtered(lambda j: j.config_id == biennial)
+        if biennials:
+            for child in biennials.get_objects():
+                child.sponsorship_ids[0].new_picture = False
+        return res

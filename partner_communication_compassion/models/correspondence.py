@@ -224,7 +224,6 @@ class Correspondence(models.Model):
             "config_id": config.id,
             "object_ids": self.ids,
             "auto_send": auto_send and partner.email,  # Don't print auto
-            "user_id": config.user_id.id,
         }
 
         if "comm_vals" in self.env.context:

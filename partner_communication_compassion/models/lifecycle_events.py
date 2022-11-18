@@ -31,8 +31,6 @@ class ChildLifecycle(models.Model):
                     [
                         ("name", "ilike", lifecycle.type),
                         ("name", "like", "Beneficiary"),
-                        ("name", "not like", "Exit")  # Departures are treated
-                        # when sub is created.
                     ]
                 )
                 if communication_type:
@@ -42,7 +40,6 @@ class ChildLifecycle(models.Model):
                             "config_id": communication_type.id,
                             "partner_id": sponsor.id,
                             "object_ids": lifecycle.child_id.id,
-                            "user_id": communication_type.user_id.id,
                         }
                     )
         return ids
@@ -86,7 +83,6 @@ class ProjectLifecycle(models.Model):
                             "config_id": communication_type.id,
                             "partner_id": child.sponsor_id.id,
                             "object_ids": child.id,
-                            "user_id": communication_type.user_id.id,
                         }
                     )
         return ids
