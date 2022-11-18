@@ -379,7 +379,7 @@ class SponsorshipGift(models.Model):
                 {
                     "sponsorship_id": sponsorship.id,
                     "invoice_line_ids": [(4, invoice_line.id)],
-                    "instructions": invoice_line.name,
+                    "instructions": invoice_line.move_id.narration,
                 }
             )
 

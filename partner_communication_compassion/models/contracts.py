@@ -31,6 +31,9 @@ class RecurringContract(models.Model):
     send_introduction_letter = fields.Boolean(
         string="Send B2S intro letter to sponsor", default=True
     )
+    new_picture = fields.Boolean(
+        help="Indicates a new picture was received and not yet transmitted to the sponsor."
+    )
 
     @api.onchange("origin_id")
     def _do_not_send_letter_to_transfer(self):

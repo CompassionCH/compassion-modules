@@ -16,7 +16,7 @@
             <field name="send_mode">digital</field>
             <field name="send_mode_pref_field">letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="final_letter"/>
+            <field name="email_template_id" ref="new_letter"/>
             <field name="report_id" ref="partner_communication.report_a4_communication"/>
             <field name="model_id" ref="model_correspondence"/>
             <field name="attachments_function">get_correspondence_attachments</field>
@@ -26,9 +26,18 @@
             <field name="send_mode">digital</field>
             <field name="send_mode_pref_field">letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="old_letter"/>
+            <field name="email_template_id" ref="new_letter"/>
             <field name="report_id" ref="partner_communication.report_a4_communication"/>
             <field name="model_id" ref="model_correspondence"/>
+            <field name="attachments_function">get_correspondence_attachments</field>
+        </record>
+        <record id="config_onboarding_first_letter" model="partner.communication.config">
+            <field name="name">Sponsorship Onboarding - First B2S Letter</field>
+            <field name="send_mode">digital</field>
+            <field name="send_mode_pref_field">letter_delivery_preference</field>
+            <field name="email_template_id" ref="mail_onboarding_first_letter"/>
+            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="model_id" ref="sbc_compassion.model_correspondence"/>
             <field name="attachments_function">get_correspondence_attachments</field>
         </record>
         <record id="child_letter_unread" model="partner.communication.config">

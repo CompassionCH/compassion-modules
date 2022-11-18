@@ -12,8 +12,6 @@ from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampC
 
 
 class TestOnrampConnector(OnrampConnector):
-    def __init__(self, env):
-        self.connector = OnrampConnector(env)
 
     def test_message(self, test_message):
         """ Sends a message to any onramp.
@@ -23,10 +21,10 @@ class TestOnrampConnector(OnrampConnector):
             "Content-type": "application/json",
             "x-cim-MessageType": test_message.message_type_url,
             "x-cim-FromAddress": "CHTest",
-            "x-cim-ToAddress": "CH",
+            "x-cim-ToAddress": "SC",
         }
         url = test_message.server_url
         body = test_message.body_json
 
-        r = self.connector.send_message(url, "POST", headers=headers, body=json.loads(body), full_url=True)
+        r = self.send_message(url, "POST", headers=headers, body=json.loads(body), full_url=True)
         test_message.write({"result": str(r.get("content")), "result_code": r.get("code")})

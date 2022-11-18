@@ -148,6 +148,12 @@ class Correspondence(models.Model):
             self.communication_id.refresh_text()
         return res
 
+    def process_letter(self):
+        # Prepare the communication when a letter is published
+        res = super().process_letter()
+        self.send_communication()
+        return res
+
     def send_communication(self):
         """
         Sends the communication to the partner. By default it won't do

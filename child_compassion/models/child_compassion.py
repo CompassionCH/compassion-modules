@@ -534,7 +534,7 @@ class CompassionChild(models.Model):
         for child in self:
             # last_picture return false is there is no new pictures
             if child._get_last_pictures() and len(child.pictures_ids) > 1:
-                pictures = child.pictures_ids
+                pictures = child.pictures_ids.sorted()
                 today = date.today()
                 last_photo = pictures[1].date
                 new_photo = pictures[0].date

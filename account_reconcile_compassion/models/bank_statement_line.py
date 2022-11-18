@@ -170,14 +170,17 @@ class BankStatementLine(models.Model):
                 ("company_id", "=", self.company_id.id)
             ], limit=1).id
         )
+
         avoid_thankyou = any(map(lambda mvl: mvl.pop("avoid_thankyou_letter"), mv_line_dicts))
+        comment = ";".join([d.pop("comment", "") for d in mv_line_dicts])
+
         return {
             "move_type": "out_invoice",
             "partner_id": self.partner_id.id,
             "journal_id": journal_id,
             "invoice_date": self.date,
             "ref": ref,
-            "invoice_origin": ";".join([d.get("comment", "") for d in mv_line_dicts]),
+            "narration": comment,
             "currency_id": self.currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
             "avoid_thankyou_letter": avoid_thankyou,
