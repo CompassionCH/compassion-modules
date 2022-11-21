@@ -218,7 +218,9 @@ class Correspondence(models.Model):
 
         partner = self.mapped("partner_id")
         auto_send = [l._can_auto_send() for l in self]
-        auto_send = reduce(lambda l1, l2: l1 and l2, auto_send)
+        auto_send = reduce(lambda l1, l2: l1 and l2, auto_send) and (
+            "auto" in config.send_mode or config.send_mode in ["partner_preference", "both"]
+        )
         comm_vals = {
             "partner_id": partner.id,
             "config_id": config.id,
