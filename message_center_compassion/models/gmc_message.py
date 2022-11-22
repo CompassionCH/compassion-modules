@@ -331,7 +331,8 @@ class GmcMessage(models.Model):
                     results = results.get(wrapper, results)
         except (AttributeError, KeyError):
             logger.error("Unexpected answer: %s", results)
-        if onramp_answer.get("code", 0) != 200:
+
+        if onramp_answer.get("code", 0) != 200 and not results:
             self._answer_failure(content_data, onramp_answer)
             return
 
