@@ -622,7 +622,6 @@ class CommunicationJob(models.Model):
                 "subject": self.subject,
                 "attachment_ids": [(6, 0, self.ir_attachment_ids.ids)],
                 "auto_delete": False,
-                "reply_to": (self.email_template_id.reply_to or self.user_id.email),
             }
             if "default_email_vals" in self.env.context:
                 email_vals.update(self.env.context["default_email_vals"])
