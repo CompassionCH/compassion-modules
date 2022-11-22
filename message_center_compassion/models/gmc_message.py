@@ -331,7 +331,7 @@ class GmcMessage(models.Model):
                     results = results.get(wrapper, results)
         except (AttributeError, KeyError):
             logger.error("Unexpected answer: %s", results)
-        if not results:
+        if onramp_answer.get("code", 0) != 200:
             self._answer_failure(content_data, onramp_answer)
             return
 
@@ -437,6 +437,8 @@ class GmcMessage(models.Model):
             error_message = onramp_answer.get(
                 "content", {"Error": onramp_answer.get("Error", "None")}
             )
+        if isinstance(onramp_answer.get('raw_content'), bytes):
+            onramp_answer['raw_content'] = onramp_answer['raw_content'].decode(encoding='ascii', errors='strict')
         self.write(
             {
                 "state": "failure",
