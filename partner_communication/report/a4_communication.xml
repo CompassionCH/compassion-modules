@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <data noupdate="1">
         <record id="report_a4_communication" model="ir.actions.report">
             <field name="paperformat_id" ref="base.paperformat_euro"/>
             <field name="model">partner.communication.job</field>
