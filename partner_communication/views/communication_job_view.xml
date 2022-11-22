@@ -150,7 +150,7 @@
         <field name="model_id" ref="model_partner_communication_job"/>
         <field name="binding_model_id" ref="model_partner_communication_job"/>
         <field name="state">code</field>
-        <field name="code">records.refresh_text(refresh_uid=True)</field>
+        <field name="code">records.refresh_text()</field>
     </record>
 
     <menuitem name="Partner Communication" id="menu_communication" parent="contacts.menu_contacts" sequence="1"/>

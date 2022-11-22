@@ -100,16 +100,15 @@ class PartnerCommunication(models.Model):
 
         return True
 
-    def refresh_text(self, refresh_uid=False):
+    def refresh_text(self):
         """
         Refresh the success story as well
-        :param refresh_uid: User that refresh
         :return: True
         """
         for job in self:
             if not job.success_story_id.only_when_chosen:
                 job.set_success_story()
-        super().refresh_text(refresh_uid)
+        super().refresh_text()
         return True
 
     def send(self):
