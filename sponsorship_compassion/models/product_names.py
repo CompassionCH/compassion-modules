@@ -9,13 +9,20 @@
 ##############################################################################
 
 # Name of gifts products
-GIFT_REF = [
+GIFT_PRODUCTS_REF = [
     "gift_birthday",
     "gift_gen",
     "gift_family",
     "gift_project",
     "gift_graduation",
 ]
+
+# Generation options depending on the field name in sponsorships
+CHRISTMAS_GIFT = "christmas"
+BIRTHDAY_GIFT = "birthday"
+
+# Name of gift product
+PRODUCT_GIFT_CHRISTMAS = "Christmas"
 
 # Name of gift category
 GIFT_CATEGORY = "Sponsor gifts"

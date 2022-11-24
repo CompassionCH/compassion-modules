@@ -9,12 +9,13 @@
 ##############################################################################
 
 import logging
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models, _
 from odoo.tools import config
-from ..models.product_names import GIFT_REF
+from ..models.product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 test_mode = config.get("test_enable")
@@ -48,37 +49,35 @@ class GenerateGiftWizard(models.TransientModel):
         # Ids of contracts are stored in context
         for contract in (
                 self.env["recurring.contract"]
-                .browse(self.env.context.get("active_ids", list()))
-                .filtered(lambda c: "S" in c.type and c.state in gen_states)
+                        .browse(self.env.context.get("active_ids", list()))
+                        .filtered(lambda c: "S" in c.type and c.state in gen_states)
         ):
-            if self.product_id.default_code == GIFT_REF[0]:
-                # Birthday Gift
-                if not contract.child_id.birthdate:
-                    logger.error("The birthdate of the child is missing!")
-                    continue
-                # This is set in the view in order to let the user
-                # choose the invoice date. Otherwise (called from code)
-                # the invoice date will be computed based on the
-                # birthday of the child.
+            if self.product_id.default_code in (GIFT_PRODUCTS_REF[0], PRODUCT_GIFT_CHRISTMAS):
                 if self.env.context.get("force_date"):
                     invoice_date = self.invoice_date
                 else:
-                    invoice_date, late = self.compute_date_birthday_invoice(
-                        contract.child_id.birthdate, self.invoice_date
-                    )
-                begin_year = self.invoice_date.replace(month=1, day=1)
-                end_year = begin_year.replace(month=12, day=31)
-                # If a gift was already made for the year, abort
-                invoice_line_ids = self.env["account.move.line"].search(
-                    [
-                        ("product_id", "=", self.product_id.id),
-                        ("due_date", ">=", begin_year),
-                        ("due_date", "<=", end_year),
-                        ("contract_id", "=", contract.id),
-                        ("state", "!=", "cancel"),
-                    ]
-                )
-                if invoice_line_ids and not self.force:
+                    invoice_date = False
+
+                if self.product_id.default_code == GIFT_PRODUCTS_REF[0]:
+                    # Birthday Gift
+                    if not contract.child_id.birthdate:
+                        logger.error("The birthdate of the child is missing!")
+                        continue
+                    # This is set in the view in order to let the user
+                    # choose the invoice date. Otherwise (called from code)
+                    # the invoice date will be computed based on the
+                    # birthday of the child.
+                    if not invoice_date:
+                        invoice_date, late = self.compute_date_birthday_invoice(
+                            contract.child_id.birthdate, self.invoice_date
+                        )
+                else:
+                    if not invoice_date:
+                        invoice_date = datetime.strptime(self.env["ir.config_parameter"].sudo().get_param(
+                            "sponsorship_compassion.christmas_inv_due_date"),
+                                                         '%m/%d/%Y'
+                                                         ).date()
+                if self._is_inv_already_gen(contract) and not self.force:
                     continue
             else:
                 invoice_date = self.invoice_date
@@ -104,7 +103,7 @@ class GenerateGiftWizard(models.TransientModel):
     def _setup_invoice(self, contract, invoice_date):
         journal_id = (
             self.env["account.journal"]
-                .search(
+            .search(
                 [("type", "=", "sale"), ("company_id", "=", contract.company_id.id)],
                 limit=1,
             )
@@ -172,3 +171,20 @@ class GenerateGiftWizard(models.TransientModel):
             new_date = max(new_date, inv_date)
             late = True
         return new_date, late
+
+    def _is_inv_already_gen(self, contract):
+        """In case the gift has already been generated we return true
+           :param contract for which the invoice has been generated
+        """
+        begin_year = self.invoice_date.replace(month=1, day=1)
+        end_year = begin_year.replace(month=12, day=31)
+        invoice_line_ids = self.env["account.move.line"].search(
+            [
+                ("product_id", "=", self.product_id.id),
+                ("due_date", ">=", begin_year),
+                ("due_date", "<=", end_year),
+                ("contract_id", "=", contract.id),
+                ("state", "!=", "cancel"),
+            ]
+        )
+        return invoice_line_ids
