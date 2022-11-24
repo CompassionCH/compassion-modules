@@ -81,14 +81,7 @@ class ContractGroup(models.Model):
         )
 
         for contract in contracts:
-            invl_ids = invl_obj.search(
-                [
-                    ("state", "=", "posted"),
-                    ("contract_id", "=", contract.id),
-                    ("product_id", "=", product_id),
-                ]
-            )
-            if contract.project_id.hold_gifts or invl_ids:
+            if contract.project_id.hold_gifts:
                 contracts -= contract
 
         if contracts:
