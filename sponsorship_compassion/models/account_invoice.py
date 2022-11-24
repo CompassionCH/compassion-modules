@@ -77,3 +77,31 @@ class AccountInvoice(models.Model):
 
     def recompute_category(self):
         self._compute_invoice_category()
+
+    def update_invoices(self, updt_val):
+        """ Method that update given invoices in self with the value of updt_val
+            :param updt_val dict    is a dictionnary of invoices value with the invoice name
+            { 'SLE/289482' : { 'amount': XXX }}
+        """
+        for invoice in self:
+            invoice.button_draft()
+            val_to_modify = updt_val.get(invoice.name)
+            # Simplify for the caller by transforming amount into a account.move.line
+            final_val = dict()
+            if "amount" in val_to_modify:
+                amt = val_to_modify.get("amount")
+                if amt == 0:
+                    invoice._cancel_invoice()
+                    continue
+                else:
+                    final_val["invoice_line_ids"] = invoice._build_invoice_line(val_to_modify.get("amount"))
+            invoice.write(final_val)
+            invoice.action_post()
+
+    def _build_invoice_line(self, amt):
+        self.ensure_one()
+        return [(1, self.invoice_line_ids.id, {"price_unit": amt})]
+
+    def _cancel_invoice(self):
+        self.ensure_one()
+        self.button_cancel()
