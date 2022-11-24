@@ -234,14 +234,17 @@ class ResPartner(models.Model):
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
-    def create(self, vals):
+    def create(self, vals_list):
         # Put a preferred name
-        partner = super().create(vals)
-        if not partner.preferred_name:
-            partner.preferred_name = (
-                partner.firstname or partner.lastname or partner.name
-            )
-        return partner
+        partners = super().create(vals_list)
+        for partner in partners:
+            if not partner.preferred_name:
+                partner.preferred_name = (
+                    partner.firstname or partner.lastname or partner.name
+                )
+            if not partner.ref:
+                partner.ref = self.env["ir.sequence"].next_by_code("partner.ref")
+        return partners
 
     def write(self, vals):
         if "firstname" in vals and "preferred_name" not in vals:
@@ -437,7 +440,7 @@ class ResPartner(models.Model):
         action_id = self.env.ref("sponsorship_compassion.upsert_partner").id
         for partner in self.filtered("has_sponsorships"):
             if not partner.ref:
-                partner.ref = self.env["ir.sequence"].get("partner.ref")
+                partner.ref = self.env["ir.sequence"].next_by_code("partner.ref")
             # UpsertConstituent Message if not one already pending
             message_vals = {
                 "action_id": action_id,
