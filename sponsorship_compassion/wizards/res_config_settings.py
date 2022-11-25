@@ -34,5 +34,5 @@ class StaffNotificationSettings(models.TransientModel):
              "are still allowed",
         config_parameter="sponsorship_compassion.christmas_inv_due_date",
         # Default invoices for christmas gift are due for two months beofre christmas
-        default=f"10/25/{fields.Datetime.now().year}"
+        default=fields.Date.to_string(fields.date.today().replace(day=25, month=10))
     )

@@ -85,22 +85,39 @@ class AccountInvoice(models.Model):
         """
         for invoice in self:
             invoice.button_draft()
-            val_to_modify = updt_val.get(invoice.name)
-            # Simplify for the caller by transforming amount into a account.move.line
-            final_val = dict()
-            if "amount" in val_to_modify:
-                amt = val_to_modify.get("amount")
-                if amt == 0:
-                    invoice._cancel_invoice()
-                    continue
-                else:
-                    final_val["invoice_line_ids"] = invoice._build_invoice_line(val_to_modify.get("amount"))
-            invoice.write(final_val)
+            # Retrieve the value for a specific invoice
+            val_to_updt = updt_val.get(invoice.name)
+            # If the invoice is defined to_cancel we update it state
+            if "to_cancel" in val_to_updt["invoice_line_ids"]:
+                invoice._cancel_invoice()
+                continue
+            else:
+                invoice.write(val_to_updt)
             invoice.action_post()
+
+    def _build_invoice_data(self, amt, due_date):
+        """ Method to be called when we want to build an invoice dictionnary
+            for the invoice to be updated created
+            :param amt float amount of the invoice
+            :param due_date date date at the one the invoice should be payed
+        """
+        # Ensure that the function receive only one invoice
+        self.ensure_one()
+        # Build the dictionnary
+        inv_val_dict = dict()
+        inv_val_dict[self.name] = {
+            'invoice_line_ids':  self._build_invoice_line(amt) if amt != 0 else "to_cancel",
+            'date': due_date
+        }
+        return inv_val_dict
 
     def _build_invoice_line(self, amt):
         self.ensure_one()
-        return [(1, self.invoice_line_ids.id, {"price_unit": amt})]
+        return [(1, self.invoice_line_ids.id,
+                 {
+                     "price_unit": amt
+                 }
+                 )]
 
     def _cancel_invoice(self):
         self.ensure_one()

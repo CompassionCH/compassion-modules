@@ -75,16 +75,24 @@ class ContractGroup(models.Model):
         contracts = contract_obj.search(contract_search)
 
         # Exclude sponsorship if a gift is already open
-        invl_obj = self.env["account.move.line"]
         product_id = (
             self.env["product.product"]
                 .with_company(contracts.company_id.id)
                 .search([("default_code", "=", GIFT_PRODUCTS_REF[0] if gift_type == BIRTHDAY_GIFT else PRODUCT_GIFT_CHRISTMAS)], limit=1)
                 .id
         )
-
+        invl_obj = self.env['account.move.line']
         for contract in contracts:
-            if contract.project_id.hold_gifts:
+            invl_ids = invl_obj.search(
+                [
+                    ("state", "=", "posted"),
+                    ("contract_id", "=", contract.id),
+                    ("product_id", "=", product_id),
+                    ("due_date", ">=", fields.date.today().replace(day=1, month=1)),
+                    ("due_date", "<=", fields.date.today().replace(day=31, month=12))
+                ]
+            )
+            if contract.project_id.hold_gifts or invl_ids:
                 contracts -= contract
 
         if contracts:
