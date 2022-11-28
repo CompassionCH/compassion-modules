@@ -592,6 +592,7 @@ class CommunicationJob(models.Model):
             "view_mode": "tree,form",
             "res_model": self._name,
             "domain": [("id", "in", self.ids)],
+            "name": _("Send result"),
         }
         to_download = self.filtered("printed_pdf_data")
         if to_download:
