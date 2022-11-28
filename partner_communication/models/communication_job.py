@@ -418,7 +418,7 @@ class CommunicationJob(models.Model):
                 job.with_user(job.user_id.id).schedule_call()
         if to_print:
             return to_print._print_report()
-        return True
+        return self.download_data()
 
     def schedule_call(self):
         self.ensure_one()
@@ -587,19 +587,25 @@ class CommunicationJob(models.Model):
         }
 
     def download_data(self):
+        action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "res_model": self._name,
+            "domain": [("id", "in", self.ids)],
+        }
         to_download = self.filtered("printed_pdf_data")
         if to_download:
             # Redirect user for fetching the printed data
             res_wizard = self.env["partner.communication.download.print.job.wizard"].create({
                 "communication_job_ids": [(6, 0, to_download.ids)]})
-            return {
-                "type": "ir.actions.act_window",
+            action.update({
                 "view_mode": "form",
                 "res_model": "partner.communication.download.print.job.wizard",
                 "res_id": res_wizard.id,
                 "target": "new",
-            }
-        return True
+                "domain": []
+            })
+        return action
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
