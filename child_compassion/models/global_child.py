@@ -133,7 +133,7 @@ class GenericChild(models.AbstractModel):
 
         # Put firstname in preferred_name if not defined
         preferred_name = odoo_data.get("preferred_name")
-        if not preferred_name:
+        if not preferred_name and "firstname" in odoo_data:
             odoo_data["preferred_name"] = odoo_data.get("firstname")
         if 'hold_expiration_date' in odoo_data:
             odoo_data['hold_expiration_date'] = odoo_data['hold_expiration_date'].replace('T', ' ')
