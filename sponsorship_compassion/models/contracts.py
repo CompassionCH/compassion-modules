@@ -8,9 +8,9 @@
 #
 ##############################################################################
 
+import json
 import logging
 import os
-import json
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -1075,6 +1075,11 @@ class SponsorshipContract(models.Model):
         pass
 
     def _gift_invoices_updates(self, vals):
+        """
+        It updates the invoice data for the invoice that have a gift_birthday or Christmas product
+
+        :param vals: the values that are being passed to the function
+        """
         inv_cat = list()
         BDAY_INV = "birthday_invoice"
         if BDAY_INV in vals:
@@ -1101,22 +1106,26 @@ class SponsorshipContract(models.Model):
                     for invoice in invoices:
                         amt = 0
                         due_date = fields.date.today()
+                        product_id = invoice.invoice_line_ids[0].product_id
                         # Get the data we want to update depending on the gift type
-                        if invoice.invoice_line_ids[0].product_id.default_code == PRODUCT_GIFT_CHRISTMAS:
+                        if product_id.default_code == PRODUCT_GIFT_CHRISTMAS:
                             amt = vals.get(XMAS_INV)
                             due_date, late = self.env['generate.gift.wizard'].compute_date_gift_invoice(
                                 datetime.strptime(
-                                    self.env["ir.config_parameter"].sudo().get_param("sponsorship_compassion.christmas_inv_due_date"),
+                                    self.env["ir.config_parameter"].sudo().get_param(
+                                        "sponsorship_compassion.christmas_inv_due_date"),
                                     '%Y-%m-%d'
                                 ).date(), invoice.date)
-                        elif invoice.invoice_line_ids[0].product_id.default_code == GIFT_PRODUCTS_REF[0]:
+                        elif product_id.default_code == GIFT_PRODUCTS_REF[0]:
                             amt = vals.get(BDAY_INV)
                             due_date, late = self.env['generate.gift.wizard'].compute_date_gift_invoice(
                                 invoice.invoice_line_ids[0].contract_id.child_id.birthdate,
                                 invoice.date
                             )
                         # Build the dictionnary to update all invoices
-                        data_invs.update(invoice._build_invoice_data(amt=amt, due_date=due_date))
+                        tmp_dict = dict()
+                        tmp_dict[product_id] = {"amt": amt}
+                        data_invs.update(invoice._build_invoice_data(inv_lines=tmp_dict, due_date=due_date))
                     # Update the invoices values
                     invoices.update_invoices(data_invs)
 

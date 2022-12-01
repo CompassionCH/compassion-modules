@@ -9,11 +9,6 @@
 ##############################################################################
 from datetime import date, timedelta
 
-from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_REF,
-    GIFT_CATEGORY,
-)
-
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 
@@ -193,7 +188,7 @@ class SponsorshipGift(models.Model):
             if gift.sponsorship_gift_type == "Birthday":
                 gift.gift_date, late = self.env[
                     "generate.gift.wizard"
-                ].compute_date_birthday_invoice(gift.child_id.birthdate, inv_dates[0])
+                ].compute_date_gift_invoice(gift.child_id.birthdate, inv_dates[0])
                 if late:
                     gift.state = "verify"
                     gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")

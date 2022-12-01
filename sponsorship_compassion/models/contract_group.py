@@ -11,7 +11,7 @@
 import logging
 from datetime import datetime
 
-from odoo import api, fields, models
+from odoo import fields, models
 from .product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class ContractGroup(models.Model):
         default=lambda s: s.env.context.get("default_type", None)
         and "S" in s.env.context.get("default_type", "O"),
     )
-    change_method = fields.Selection(default="clean_invoices")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -55,10 +54,16 @@ class ContractGroup(models.Model):
         return invoicer
 
     def _generate_gifts(self, invoicer=None, gift_type=None):
-        """ Creates the annual gifts for sponsorships that
-        have set the option for automatic birthday or christmas gifts creation. """
+        """
+        It generates a gift for a sponsor if the sponsor has a birthday or Christmas gift set up in their contract
+
+        :param invoicer: This is the invoicer object that is used to generate the invoices
+        :param gift_type: This is the type of gift you want to generate. It can be either BIRTHDAY_GIFT or CHRISTMAS_GIFT
+        :return: The invoicer object is being returned.
+        """
         if not gift_type:
-            raise Exception(f"Can't be called with an invalid gift type {gift_type}. The value should either be {CHRISTMAS_GIFT} or {BIRTHDAY_GIFT}")
+            raise Exception(
+                f"Can't be called with an invalid gift type {gift_type}. The value should either be {CHRISTMAS_GIFT} or {BIRTHDAY_GIFT}")
         logger.debug(f"Automatic {gift_type} Gift Generation Started.")
 
         if invoicer is None:
@@ -127,5 +132,13 @@ class ContractGroup(models.Model):
         return invoicer
 
     def _generate_gift(self, gift_wizard, contract, gift_type):
-        gift_wizard.write({"amount": contract.christmas_invoice if gift_type == CHRISTMAS_GIFT else contract.birthday_invoice})
+        """
+        It creates a gift invoice for a contract
+
+        :param gift_wizard: the wizard object
+        :param contract: the contract object
+        :param gift_type: This is a string that can be either "christmas" or "birthday"
+        """
+        gift_wizard.write(
+            {"amount": contract.christmas_invoice if gift_type == CHRISTMAS_GIFT else contract.birthday_invoice})
         gift_wizard.with_context(active_ids=contract.id).generate_invoice()
