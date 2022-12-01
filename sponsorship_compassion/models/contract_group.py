@@ -11,8 +11,8 @@
 import logging
 from datetime import datetime
 
-from odoo import api, fields, models
-from .product_names import GIFT_REF
+from odoo import fields, models
+from .product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class ContractGroup(models.Model):
         default=lambda s: s.env.context.get("default_type", None)
         and "S" in s.env.context.get("default_type", "O"),
     )
-    change_method = fields.Selection(default="clean_invoices")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -48,15 +47,24 @@ class ContractGroup(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _generate_invoices(self, invoicer=None, **kwargs):
-        """ Add birthday gifts generation. """
-        invoicer = self._generate_birthday_gifts(invoicer)
+        """ Generates gifts invoices """
+        invoicer = self._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        invoicer = self._generate_gifts(invoicer, BIRTHDAY_GIFT)
         invoicer = super()._generate_invoices(invoicer, **kwargs)
         return invoicer
 
-    def _generate_birthday_gifts(self, invoicer=None):
-        """ Creates the annual birthday gift for sponsorships that
-        have set the option for automatic birthday gift creation. """
-        logger.debug("Automatic Birthday Gift Generation Started.")
+    def _generate_gifts(self, invoicer=None, gift_type=None):
+        """
+        It generates a gift for a sponsor if the sponsor has a birthday or Christmas gift set up in their contract
+
+        :param invoicer: This is the invoicer object that is used to generate the invoices
+        :param gift_type: This is the type of gift you want to generate. It can be either BIRTHDAY_GIFT or CHRISTMAS_GIFT
+        :return: The invoicer object is being returned.
+        """
+        if not gift_type:
+            raise Exception(
+                f"Can't be called with an invalid gift type {gift_type}. The value should either be {CHRISTMAS_GIFT} or {BIRTHDAY_GIFT}")
+        logger.debug(f"Automatic {gift_type} Gift Generation Started.")
 
         if invoicer is None:
             invoicer = (
@@ -65,36 +73,44 @@ class ContractGroup(models.Model):
 
         # Search active Sponsorships with automatic birthday gift
         gen_states = self._get_gen_states()
-        contract_search = [("birthday_invoice", ">", 0.0), ("state", "in", gen_states)]
+        contract_search = [(f"{gift_type}_invoice", ">", 0.0), ("state", "in", gen_states)]
         if self.ids:
-            contract_search.append(("group_id", "in", self.ids))
+             contract_search.append(("group_id", "in", self.ids))
         contract_obj = self.env["recurring.contract"]
         contracts = contract_obj.search(contract_search)
 
         # Exclude sponsorship if a gift is already open
-        invl_obj = self.env["account.move.line"]
         product_id = (
             self.env["product.product"]
                 .with_company(contracts.company_id.id)
-                .search([("default_code", "=", GIFT_REF[0])], limit=1)
+                .search([("default_code", "=", GIFT_PRODUCTS_REF[0] if gift_type == BIRTHDAY_GIFT else PRODUCT_GIFT_CHRISTMAS)], limit=1)
                 .id
         )
-
+        invl_obj = self.env['account.move.line']
         for contract in contracts:
-            if contract.project_id.hold_gifts:
+            invl_ids = invl_obj.search(
+                [
+                    ("state", "=", "posted"),
+                    ("contract_id", "=", contract.id),
+                    ("product_id", "=", product_id),
+                    ("due_date", ">=", fields.date.today().replace(day=1, month=1)),
+                    ("due_date", "<=", fields.date.today().replace(day=31, month=12))
+                ]
+            )
+            if contract.project_id.hold_gifts or invl_ids:
                 contracts -= contract
 
         if contracts:
             total = str(len(contracts))
             count = 1
-            logger.debug(f"Found {total} Birthday Gifts to generate.")
+            logger.debug(f"Found {total} {gift_type} Gifts to generate.")
 
             gift_wizard = (
                 self.env["generate.gift.wizard"]
                     .with_context(recurring_invoicer_id=invoicer.id)
                     .create(
                     {
-                        "description": "Automatic birthday gift",
+                        "description": f"Automatic {gift_type} gift",
                         "invoice_date": datetime.today().date(),
                         "product_id": product_id,
                         "amount": 0.0,
@@ -104,17 +120,25 @@ class ContractGroup(models.Model):
 
             # Generate invoices
             for contract in contracts:
-                logger.debug(f"Birthday Gift Generation: {count}/{total} ")
+                logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
                 try:
-                    self._generate_birthday_gift(gift_wizard, contract)
-                except:
-                    logger.error("Gift generation failed")
+                    self._generate_gift(gift_wizard, contract, gift_type)
+                except Exception as e:
+                    logger.error(f"Gift generation failed. {e}")
                 finally:
                     count += 1
 
-        logger.debug("Automatic Birthday Gift Generation Finished !!")
+        logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
         return invoicer
 
-    def _generate_birthday_gift(self, gift_wizard, contract):
-        gift_wizard.write({"amount": contract.birthday_invoice})
+    def _generate_gift(self, gift_wizard, contract, gift_type):
+        """
+        It creates a gift invoice for a contract
+
+        :param gift_wizard: the wizard object
+        :param contract: the contract object
+        :param gift_type: This is a string that can be either "christmas" or "birthday"
+        """
+        gift_wizard.write(
+            {"amount": contract.christmas_invoice if gift_type == CHRISTMAS_GIFT else contract.birthday_invoice})
         gift_wizard.with_context(active_ids=contract.id).generate_invoice()
