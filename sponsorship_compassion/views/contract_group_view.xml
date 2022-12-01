@@ -18,6 +18,8 @@
                     <field name="payment_mode_id"/>
                 </group>
             </group>
+            <!-- Remove change_method (we always use clean_invoices) -->
+            <field name="change_method" position="replace"/>
 
             <group name="info" position="inside">
                 <field name="contains_sponsorship" invisible="1"/>

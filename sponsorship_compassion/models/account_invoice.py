@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from datetime import date
 
 from odoo import api, fields, models
 
@@ -76,3 +77,48 @@ class AccountInvoice(models.Model):
 
     def recompute_category(self):
         self._compute_invoice_category()
+
+    def update_invoices(self, updt_val):
+        """ Method that update given invoices in self with the value of updt_val
+            :param updt_val dict    is a dictionnary of invoices value with the invoice name
+            { 'SLE/289482' : { 'amount': XXX }}
+        """
+        for invoice in self:
+            invoice.button_draft()
+            # Retrieve the value for a specific invoice
+            val_to_updt = updt_val.get(invoice.name)
+            # If the invoice is defined to_cancel we update it state
+            if "to_cancel" in val_to_updt["invoice_line_ids"]:
+                invoice._cancel_invoice()
+                continue
+            else:
+                invoice.write(val_to_updt)
+            invoice.action_post()
+
+    def _build_invoice_data(self, amt, due_date):
+        """ Method to be called when we want to build an invoice dictionnary
+            for the invoice to be updated created
+            :param amt float amount of the invoice
+            :param due_date date date at the one the invoice should be payed
+        """
+        # Ensure that the function receive only one invoice
+        self.ensure_one()
+        # Build the dictionnary
+        inv_val_dict = dict()
+        inv_val_dict[self.name] = {
+            'invoice_line_ids':  self._build_invoice_line(amt) if amt != 0 else "to_cancel",
+            'date': due_date
+        }
+        return inv_val_dict
+
+    def _build_invoice_line(self, amt):
+        self.ensure_one()
+        return [(1, self.invoice_line_ids.id,
+                 {
+                     "price_unit": amt
+                 }
+                 )]
+
+    def _cancel_invoice(self):
+        self.ensure_one()
+        self.button_cancel()

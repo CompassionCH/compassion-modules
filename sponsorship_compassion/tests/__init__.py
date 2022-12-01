@@ -8,6 +8,7 @@
 #
 ##############################################################################
 
+from . import test_account_invoice
 # Test in errors to debug later
 #from . import test_sponsorship_compassion
 #from . import test_sponsorship_impact
