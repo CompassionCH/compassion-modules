@@ -10,7 +10,8 @@
 from datetime import date, timedelta
 
 from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_CATEGORY,
+    GIFT_PRODUCTS_REF,
+    GIFT_CATEGORY
 )
 
 from odoo import fields, models, api, _
