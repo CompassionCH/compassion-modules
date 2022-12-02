@@ -10,7 +10,6 @@
 from datetime import date, timedelta
 
 from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_REF,
     GIFT_CATEGORY,
 )
 
@@ -459,7 +458,7 @@ class SponsorshipGift(models.Model):
         :return: dictionary of sponsorship.gift values
         """
         gift_type_vals = dict()
-        if product.default_code == GIFT_REF[0]:
+        if product.default_code == GIFT_PRODUCTS_REF[0]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -467,7 +466,7 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "Birthday",
                 }
             )
-        elif product.default_code == GIFT_REF[1]:
+        elif product.default_code == GIFT_PRODUCTS_REF[1]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -475,18 +474,18 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "General",
                 }
             )
-        elif product.default_code == GIFT_REF[2]:
+        elif product.default_code == GIFT_PRODUCTS_REF[2]:
             gift_type_vals.update(
                 {"gift_type": "Family Gift", "attribution": "Sponsored Child Family", }
             )
-        elif product.default_code == GIFT_REF[3]:
+        elif product.default_code == GIFT_PRODUCTS_REF[3]:
             gift_type_vals.update(
                 {
                     "gift_type": "Project Gift",
                     "attribution": "Center Based Programming",
                 }
             )
-        elif product.default_code == GIFT_REF[4]:
+        elif product.default_code == GIFT_PRODUCTS_REF[4]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
