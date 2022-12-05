@@ -50,7 +50,7 @@ class Email(models.Model):
                         {
                             "config_id": config.id,
                             "partner_id": partner.id,
-                            "user_id": email.author_id.user_ids.id,
+                            "user_id": email.author_id.user_ids[:1].id,
                             "object_ids": email.recipient_ids.ids,
                             "state": "done",
                             "auto_send": False,
