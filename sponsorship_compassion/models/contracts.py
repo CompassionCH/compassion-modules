@@ -719,12 +719,6 @@ class SponsorshipContract(models.Model):
         and activate gift contracts.
         Send messages to GMC.
         """
-        for contract in self.filtered(lambda c: "S" in c.type):
-            # UpsertConstituent Message
-            partner = contract.correspondent_id
-            partner.upsert_constituent()
-            contract.upsert_sponsorship()
-
         not_active = self.filtered(lambda c: not c.is_active)
         if not_active:
             not_active.write({"activation_date": fields.Datetime.now()})
@@ -767,6 +761,12 @@ class SponsorshipContract(models.Model):
             raise UserError(
                 _("Please verify the partner before validating the sponsorship")
             )
+        # Creating the messages to send to GMC when a sponsorship is activated
+        for contract in self.filtered(lambda c: "S" in c.type):
+            # UpsertConstituent Message
+            partner = contract.correspondent_id
+            partner.upsert_constituent()
+            contract.upsert_sponsorship()
         return True
 
     def contract_cancelled(self):
