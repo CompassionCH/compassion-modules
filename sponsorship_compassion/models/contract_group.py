@@ -11,7 +11,7 @@
 import logging
 from datetime import datetime
 
-from odoo import api, fields, models
+from odoo import fields, models
 from .product_names import GIFT_REF
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class ContractGroup(models.Model):
         default=lambda s: s.env.context.get("default_type", None)
         and "S" in s.env.context.get("default_type", "O"),
     )
-    change_method = fields.Selection(default="clean_invoices")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
