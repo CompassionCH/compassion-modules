@@ -8,7 +8,3 @@
 #
 ##############################################################################
 
-# Test in errors to debug later
-#from . import test_sponsorship_compassion
-#from . import test_sponsorship_impact
-#from . import test_contract_compassion

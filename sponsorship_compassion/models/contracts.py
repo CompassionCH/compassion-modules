@@ -18,7 +18,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
-from .product_names import GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF
+from .product_names import GIFT_CATEGORY
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -48,12 +48,6 @@ class SponsorshipContract(models.Model):
         help="Set the amount to enable automatic invoice creation each year "
              "for a birthday gift. The invoice is set two months before "
              "child's birthday.",
-        tracking=True,
-    )
-    christmas_invoice = fields.Float(
-        "Annual christmas gift",
-        help="Set the amount to enable automatic invoice creation each year "
-             "for a christmas gift. The invoice is set depending christmas invoice setting",
         tracking=True,
     )
     reading_language = fields.Many2one(
@@ -526,10 +520,6 @@ class SponsorshipContract(models.Model):
                 parent = sponsorship.parent_id
                 parent.sub_sponsorship_id = sponsorship
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
-
-        # In case birthday_invoice has been modified or christmas_invoice has been modified.
-        # We should adapt the invoices and maybe close them
-        self._gift_invoices_updates(vals)
 
         if any([k in vals for k in ["partner_id", "correspondent_id"]]):
             self.on_change_partner_correspondent_id()
@@ -1074,61 +1064,6 @@ class SponsorshipContract(models.Model):
         """ Hook for reactivating gifts. """
         pass
 
-    def _gift_invoices_updates(self, vals):
-        """
-        It updates the invoice data for the invoice that have a gift_birthday or Christmas product
-
-        :param vals: the values that are being passed to the function
-        """
-        inv_cat = list()
-        BDAY_INV = "birthday_invoice"
-        if BDAY_INV in vals:
-            inv_cat.append("gift")  # birthday invoices are categorised as gift
-        XMAS_INV = "christmas_invoice"
-        if XMAS_INV in vals:
-            inv_cat.append("fund")  # christmas invoices are categorised as fund
-        if inv_cat:
-            for sponsorship in self:
-                # The partner should maximally have two invoices open.
-                # One for the birthday and one for the christmas.
-                invoices = self.env['account.move'].search([("partner_id", "=", sponsorship.partner_id.id),
-                                                            ("move_type", "=", "out_invoice"),
-                                                            ("payment_state", "=", "not_paid"),
-                                                            ("invoice_category", "in", inv_cat),
-                                                            ("invoice_line_ids.product_id.default_code",
-                                                             "in",
-                                                             [PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF[0]]
-                                                             ),
-                                                            ("invoice_line_ids.contract_id", "=", sponsorship.id)
-                                                            ], limit=2)
-                if invoices:
-                    data_invs = dict()
-                    for invoice in invoices:
-                        amt = 0
-                        due_date = fields.date.today()
-                        product_id = invoice.invoice_line_ids[0].product_id
-                        # Get the data we want to update depending on the gift type
-                        if product_id.default_code == PRODUCT_GIFT_CHRISTMAS:
-                            amt = vals.get(XMAS_INV)
-                            due_date, late = self.env['generate.gift.wizard'].compute_date_gift_invoice(
-                                datetime.strptime(
-                                    self.env["ir.config_parameter"].sudo().get_param(
-                                        "sponsorship_compassion.christmas_inv_due_date"),
-                                    '%Y-%m-%d'
-                                ).date(), invoice.date)
-                        elif product_id.default_code == GIFT_PRODUCTS_REF[0]:
-                            amt = vals.get(BDAY_INV)
-                            due_date, late = self.env['generate.gift.wizard'].compute_date_gift_invoice(
-                                invoice.invoice_line_ids[0].contract_id.child_id.birthdate,
-                                invoice.date
-                            )
-                        # Build the dictionnary to update all invoices
-                        tmp_dict = dict()
-                        tmp_dict[product_id] = {"amt": amt}
-                        data_invs.update(invoice._build_invoice_data(inv_lines=tmp_dict, due_date=due_date))
-                    # Update the invoices values
-                    invoices.update_invoices(data_invs)
-
     def _filter_clean_invoices(self, since_date, to_date):
         """ Exclude gifts from clean invoice method. """
         invl_search = super()._filter_clean_invoices(since_date, to_date)
@@ -1136,8 +1071,8 @@ class SponsorshipContract(models.Model):
         return invl_search
 
     def _get_invoice_lines_to_clean(self, since_date, to_date):
-        return super()._get_invoice_lines_to_clean(since_date, to_date)
-
+        res = super()._get_invoice_lines_to_clean(since_date, to_date)
+        return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
 
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
