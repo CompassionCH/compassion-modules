@@ -9,6 +9,11 @@
 ##############################################################################
 from datetime import date, timedelta
 
+from odoo.addons.sponsorship_compassion.models.product_names import (
+    GIFT_REF,
+    GIFT_CATEGORY,
+)
+
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
 
