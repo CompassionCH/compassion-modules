@@ -10,9 +10,10 @@
 
 import logging
 from datetime import date
-from dateutil.relativedelta import relativedelta
 
 import mock
+from dateutil.relativedelta import relativedelta
+
 from odoo import fields
 from .test_contract_compassion import BaseContractCompassionTest
 
@@ -327,7 +328,6 @@ class TestSponsorship(BaseSponsorshipTest):
         quantity = [1, 20]
         contract_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -391,7 +391,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child3 = self.create_child("SA12311013")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "advance_billing_months": 1,
                 "payment_mode_id": self.payment_mode.id,
@@ -453,7 +452,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child2 = self.create_child("UG28320016")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "advance_billing_months": 1,
                 "payment_mode_id": self.payment_mode.id,
@@ -502,7 +500,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child2 = self.create_child("UG08320018")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -548,7 +545,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child1 = self.create_child("UG18920017")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -586,7 +582,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group1 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -594,7 +589,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group2 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner2.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -629,7 +623,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group1 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -657,7 +650,6 @@ class TestSponsorship(BaseSponsorshipTest):
         contract_group = self.create_group(
             {
                 "partner_id": self.michel.id,
-                "change_method": "clean_invoices"
             }
         )
         contract = self.create_contract(
@@ -718,7 +710,6 @@ class TestSponsorship(BaseSponsorshipTest):
         contract_group = self.create_group(
             {
                 "partner_id": self.michel.id,
-                "change_method": "clean_invoices"
             }
         )
         contract = self.create_contract(
