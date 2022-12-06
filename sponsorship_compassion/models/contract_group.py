@@ -71,7 +71,6 @@ class ContractGroup(models.Model):
         contracts = contract_obj.search(contract_search)
 
         # Exclude sponsorship if a gift is already open
-        invl_obj = self.env["account.move.line"]
         product_id = (
             self.env["product.product"]
                 .with_company(contracts.company_id.id)
