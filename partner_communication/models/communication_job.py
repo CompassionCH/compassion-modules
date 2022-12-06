@@ -16,7 +16,6 @@ from io import BytesIO
 
 from jinja2 import TemplateSyntaxError
 
-
 from odoo import api, models, fields, _, tools
 from odoo.exceptions import UserError, QWebException
 
@@ -247,12 +246,12 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = str(vals["partner_id"])
 
         same_job_search = [
-            ("partner_id", "=", vals.get("partner_id")),
-            ("config_id", "=", vals.get("config_id")),
-            ("config_id", "!=", self.env.ref(
-                "partner_communication.default_communication").id),
-            ("state", "in", ["pending", "failure"]),
-        ] + self.env.context.get("same_job_search", [])
+                              ("partner_id", "=", vals.get("partner_id")),
+                              ("config_id", "=", vals.get("config_id")),
+                              ("config_id", "!=", self.env.ref(
+                                  "partner_communication.default_communication").id),
+                              ("state", "in", ["pending", "failure"]),
+                          ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search, limit=1)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
@@ -391,7 +390,7 @@ class CommunicationJob(models.Model):
         """ Executes the job. """
         todo = self.filtered(
             lambda j: j.state == "pending" and not (
-                j.need_call == "before_sending" and j.activity_ids))
+                    j.need_call == "before_sending" and j.activity_ids))
         to_print = todo.filtered(lambda j: j.send_mode == "physical")
         for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
             origin = self.env.context.get("origin")
@@ -451,8 +450,8 @@ class CommunicationJob(models.Model):
                 try:
                     fields = (
                         self.env["mail.compose.message"]
-                            .with_context(lang=lang)
-                            .get_generated_fields(job.email_template_id, [job.id])
+                        .with_context(lang=lang)
+                        .get_generated_fields(job.email_template_id, [job.id])
                     )
                     assert fields["body_html"] and fields["subject"]
                     job.write({
@@ -479,8 +478,8 @@ class CommunicationJob(models.Model):
             raise UserError(_("This is only possible for one template at time"))
         values = (
             self.env["mail.compose.message"]
-                .with_context(lang=lang)
-                .get_generated_fields(template, jobs.ids)
+            .with_context(lang=lang)
+            .get_generated_fields(template, jobs.ids)
         )
         if not isinstance(values, list):
             values = [values]
@@ -643,7 +642,7 @@ class CommunicationJob(models.Model):
                     email.send()
             except:
                 _logger.error("Error while sending communication by email to %s ",
-                             partner.email, exc_info=True)
+                              partner.email, exc_info=True)
                 return "failure"
 
             # Subscribe author to thread, so that the reply

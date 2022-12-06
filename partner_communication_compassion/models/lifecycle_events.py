@@ -39,7 +39,7 @@ class ChildLifecycle(models.Model):
                         {
                             "config_id": communication_type.id,
                             "partner_id": sponsor.id,
-                            "object_ids": lifecycle.child_id.id,
+                            "object_ids": lifecycle.child_id.sponsorship_ids.ids,
                         }
                     )
         return ids
@@ -73,10 +73,10 @@ class ProjectLifecycle(models.Model):
             communication_type = self.env["partner.communication.config"].search(search)
             if communication_type and len(communication_type) == 1:
                 for child in self.env["compassion.child"].search(
-                    [
-                        ("project_id", "=", lifecycle.project_id.id),
-                        ("sponsor_id", "!=", False),
-                    ]
+                        [
+                            ("project_id", "=", lifecycle.project_id.id),
+                            ("sponsor_id", "!=", False),
+                        ]
                 ):
                     self.env["partner.communication.job"].create(
                         {
