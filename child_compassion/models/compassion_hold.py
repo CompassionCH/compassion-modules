@@ -223,7 +223,7 @@ class CompassionHold(models.Model):
         a child anymore (child released).
         :return: True
         """
-        active_holds = self.filtered(lambda h: h.state == "active")
+        active_holds = self.filtered(lambda h: h.state == "active" and h.expiration_date > datetime.now())
         active_holds.release_hold()
         inactive_holds = self - active_holds
         super(CompassionHold, inactive_holds).unlink()
@@ -257,8 +257,12 @@ class CompassionHold(models.Model):
             child_to_update = hold.child_id
             if hold.hold_id:
                 hold.state = "active"
-                if not child_to_update.hold_id:
+                old_hold = child_to_update.hold_id
+                if not old_hold:
                     child_to_update.child_consigned(hold.id)
+                elif old_hold.hold_id != hold.hold_id and old_hold.expiration_date < datetime.now():
+                    child_to_update.hold_id = hold
+                    old_hold.unlink()
                 # Always commit after receiving a hold to avoid losing it
                 if not test_mode:
                     self.env.cr.commit()  # pylint: disable=invalid-commit
