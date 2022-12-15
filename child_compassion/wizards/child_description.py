@@ -98,10 +98,10 @@ class ChildDescription(models.TransientModel):
     }
 
     def he(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        return self.he_lang[self.env.lang][gender][number][tense]
+        return self.he_lang.get(self.env.lang, self.he_lang["en_US"])[gender][number][tense]
 
     def his(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        return self.his_lang[self.env.lang][gender][number][tense]
+        return self.his_lang.get(self.env.lang, self.his_lang["en_US"])[gender][number][tense]
 
     @api.model
     def create(self, vals):
@@ -132,7 +132,7 @@ class ChildDescription(models.TransientModel):
         child = self.child_id
         if child.cdsp_type == "Home Based":
             desc(".program_type").html(
-                self.home_based_lang[self.env.lang][child.gender].format(
+                self.home_based_lang.get(self.env.lang, self.home_based_lang["en_US"])[child.gender].format(
                     preferred_name=child.preferred_name
                 )
             )
@@ -203,7 +203,7 @@ class ChildDescription(models.TransientModel):
                 desc("#vocational_training").remove()
         else:
             desc(".school_attending_title").html(
-                self.school_no_lang[self.env.lang][child.gender].format(
+                self.school_no_lang.get(self.env.lang, self.school_no_lang["en_US"])[child.gender].format(
                     preferred_name=child.preferred_name
                 )
             )
@@ -213,7 +213,7 @@ class ChildDescription(models.TransientModel):
         #################
         if child.duty_ids:
             desc("#house_duties_intro").html(
-                self.duties_intro_lang[self.env.lang][child.gender]
+                self.duties_intro_lang.get(self.env.lang, self.duties_intro_lang["en_US"])[child.gender]
             )
             desc("#house_duties_list").html(
                 "".join(["<li>" + duty.value + "</li>" for duty in child.duty_ids[:3]])
@@ -225,7 +225,7 @@ class ChildDescription(models.TransientModel):
         ######################
         if child.christian_activity_ids:
             desc("#church_activities_intro").html(
-                self.church_intro_lang[self.env.lang][child.gender]
+                self.church_intro_lang.get(self.env.lang, self.church_intro_lang["en_US"])[child.gender]
             )
             desc("#church_activities_list").html(
                 "".join(
@@ -242,7 +242,7 @@ class ChildDescription(models.TransientModel):
         ############
         if child.hobby_ids:
             desc("#hobbies_intro").html(
-                self.hobbies_intro_lang[self.env.lang][child.gender].format(
+                self.hobbies_intro_lang.get(self.env.lang, self.hobbies_intro_lang["en_US"])[child.gender].format(
                     preferred_name=child.preferred_name
                 )
             )
@@ -258,7 +258,7 @@ class ChildDescription(models.TransientModel):
         ###########
         if child.physical_disability_ids or child.chronic_illness_ids:
             desc("#handicap_intro").html(
-                self.handicap_intro_lang[self.env.lang][child.gender].format(
+                self.handicap_intro_lang.get(self.env.lang, self.handicap_intro_lang["en_US"])[child.gender].format(
                     preferred_name=child.preferred_name
                 )
             )
