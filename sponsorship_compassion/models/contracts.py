@@ -190,7 +190,7 @@ class SponsorshipContract(models.Model):
             return self._get_sponsorship_standard_lines(False)
         return []
 
-    @api.onchange("company_id")
+    @api.onchange("company_id", "pricelist_id")
     def _get_correct_pricelist(self):
         if "S" in self.env.context.get("default_type", "O"):
             self.contract_line_ids = self._get_sponsorship_standard_lines(False)
@@ -235,7 +235,7 @@ class SponsorshipContract(models.Model):
         sponsorship_product = sponsorship_product.product_variant_id
         gen_product = gen_product.product_variant_id
         if self.company_id:
-            pricelist = self.env['product.pricelist'].search([("company_id", "=", self.company_id.id)], limit=1)
+            pricelist = self.pricelist_id
             sponsorship_product.with_context(
                 {'pricelist': pricelist.id, 'partner': self.partner_id.id}) \
                 ._compute_product_price()
