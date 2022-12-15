@@ -8,7 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import date
 
 from odoo import api, fields, models
 
