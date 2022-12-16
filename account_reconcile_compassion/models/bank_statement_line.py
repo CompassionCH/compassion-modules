@@ -9,15 +9,16 @@
 ##############################################################################
 
 import logging
+from functools import reduce
 
-from odoo import models, _
 from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_CATEGORY,
     SPONSORSHIP_CATEGORY,
 )
+
+from odoo import models, _
 from odoo.exceptions import UserError
 from odoo.tools import mod10r
-from functools import reduce
 
 logger = logging.getLogger(__name__)
 
@@ -184,7 +185,8 @@ class BankStatementLine(models.Model):
             "invoice_date": self.date,
             "ref": ref,
             "narration": comment,
-            "currency_id": self.currency_id.id,
+            # When a foreign currency is set the reconciliation is made on that currency
+            "currency_id": self.foreign_currency_id.id or self.currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
             "avoid_thankyou_letter": avoid_thankyou,
             "invoice_line_ids": [(0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts],
