@@ -100,6 +100,8 @@ class SponsorshipContract(models.Model):
     child_code = fields.Char(
         "Sponsored child code", related="child_id.local_id", readonly=True
     )
+    child_age = fields.Integer(related="child_id.age", readonly=True)
+    child_gender = fields.Selection(related="child_id.gender", readonly=True)
     is_active = fields.Boolean(
         "Contract Active",
         compute="_compute_active",
