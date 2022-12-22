@@ -34,6 +34,7 @@ class InteractionResume(models.TransientModel):
     paper_id = fields.Many2one(
         "partner.communication.job", "Communication"
     )
+    rule_id = fields.Many2one("partner.communication.config", "Communication rule", related="paper_id.config_id")
     email_id = fields.Many2one("mail.mail", "Email")
     mass_mailing_id = fields.Many2one("mail.mass_mailing", "Mass mailing")
     other_interaction_id = fields.Many2one("partner.log.other.interaction", "Logged interaction")
@@ -73,41 +74,45 @@ class InteractionResume(models.TransientModel):
         self.search([("partner_id", "in", partners_with_same_email_ids)]).unlink()
         self.env.cr.execute(
             """
-                    SELECT
-                        'Paper' as communication_type,
+                    -- Partner Communications (both e-mail and physical)
+                    SELECT DISTINCT ON(email_id, subject)
+                        CASE pcj.send_mode
+                            WHEN 'physical' THEN 'Paper' ELSE 'Email'
+                            END
+                        as communication_type,
                         pcj.sent_date as communication_date,
-                        COALESCE(p.contact_id, pcj.partner_id) AS partner_id,
-                        NULL AS email,
-                        COALESCE(source.name, pcj.subject) AS subject,
+                        pcj.partner_id AS partner_id,
+                        COALESCE(pcj.email_to, mt.recipient_address) AS email,
+                        pcj.subject AS subject,
                         '' as other_type,
                         REGEXP_REPLACE(pcj.body_html, '<img[^>]*>', '') AS body,
                         'out' AS direction,
                         0 as phone_id,
-                        0 as email_id,
+                        pcj.email_id as email_id,
                         0 as message_id,
                         false as is_from_employee,
                         pcj.id as paper_id,
-                        NULL as tracking_status,
+                        CASE pcj.send_mode
+                            WHEN 'digital' THEN COALESCE(mt.state, 'error')
+                            ELSE NULL
+                            END
+                        AS tracking_status,
                         0 as mass_mailing_id,
                         0 as other_interaction_id,
-                        false as has_attachment
+                        EXISTS(
+                            SELECT id FROM partner_communication_attachment a WHERE a.communication_id = pcj.id
+                        ) AS has_attachment
                         FROM "partner_communication_job" as pcj
-                        JOIN res_partner p ON pcj.partner_id = p.id
-                        FULL OUTER JOIN partner_communication_config c
-                            ON pcj.config_id = c.id
-                        FULL OUTER JOIN utm_source source
-                            ON c.source_id = source.id
-                            AND source.name not in ('Default communication',
-                                                    'Donation - Thank You')
+                        FULL OUTER JOIN mail_tracking_email mt ON pcj.email_id = mt.mail_id
                         WHERE pcj.state = 'done'
-                        AND pcj.send_mode = 'physical'
-                        AND (p.contact_id = %s OR p.id = %s)
+                        AND pcj.partner_id = ANY(%s)
+                        AND pcj.date BETWEEN (NOW() - interval '3 year') AND NOW()
             -- phonecalls
                     UNION (
                       SELECT
                         'Phone' as communication_type,
                         crmpc.date as communication_date,
-                        COALESCE(p.contact_id, p.id) AS partner_id,
+                        crmpc.partner_id AS partner_id,
                         NULL AS email,
                         crmpc.name as subject,
                         '' as other_type,
@@ -126,17 +131,16 @@ class InteractionResume(models.TransientModel):
                         0 as other_interaction_id,
                         false as has_attachment
                         FROM "crm_phonecall" as crmpc
-                        JOIN res_partner p ON crmpc.partner_id = p.id
-                        WHERE (p.contact_id = %s OR p.id = %s) AND crmpc.state = 'done'
+                        WHERE crmpc.partner_id = %s AND crmpc.state = 'done'
                         )
             -- outgoing e-mails
                     UNION (
                       SELECT DISTINCT ON (email_id)
                         'Email' as communication_type,
                         m.date as communication_date,
-                        COALESCE(p.contact_id, p.id) AS partner_id,
+                        mt.partner_id AS partner_id,
                         mt.recipient_address as email,
-                        COALESCE(source.name, m.subject) as subject,
+                        m.subject as subject,
                         '' as other_type,
                         REGEXP_REPLACE(m.body, '<img[^>]*>', '') AS body,
                         'out' AS direction,
@@ -144,41 +148,30 @@ class InteractionResume(models.TransientModel):
                         mail.id as email_id,
                         0 as message_id,
                         mail.is_from_employee as is_from_employee,
-                        job.id as paper_id,
+                        0 as paper_id,
                         COALESCE(mt.state, 'error') as tracking_status,
                         mt.mass_mailing_id as mass_mailing_id,
                         0 as other_interaction_id,
-                        (nb_attachment is not NULL) as has_attachment
+                        EXISTS(
+                            SELECT a.message_id
+                            FROM message_attachment_rel a WHERE message_id = m.id
+                        ) as has_attachment
                         FROM "mail_mail" as mail
-                        FULL OUTER JOIN (
-                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
-                            FROM mail_message AS m
-                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
-                            GROUP BY m.id
-                        ) AS attachment ON mail.mail_message_id = attachment.id
                         JOIN mail_message m ON mail.mail_message_id = m.id
-                        JOIN mail_mail_res_partner_rel rel
-                        ON rel.mail_mail_id = mail.id
-                        FULL OUTER JOIN mail_tracking_email mt ON mail.id = mt.mail_id
-                        JOIN res_partner p ON rel.res_partner_id = p.id
-                        FULL OUTER JOIN partner_communication_job job
-                            ON job.email_id = mail.id
-                        FULL OUTER JOIN partner_communication_config config
-                            ON job.config_id = config.id
-                        FULL OUTER JOIN utm_source source
-                            ON config.source_id = source.id
-                            AND source.name != 'Default communication'
+                        JOIN mail_tracking_email mt ON mail.id = mt.mail_id
                         WHERE mail.state = ANY (ARRAY ['sent', 'received', 'exception'])
-                        AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
+                        AND mt.partner_id = ANY(%s)
                         AND (mail.direction = 'out' OR mail.direction IS NULL)
+                        AND m.model != 'partner.communication.job'
+                        AND m.date BETWEEN (NOW() - interval '1 year') AND NOW()
                         )
 
             -- mass mailings sent from mailchimp (no associated email)
                     UNION (
-                      SELECT DISTINCT
+                      SELECT DISTINCT ON (email, mass_mailing_id)
                         'Email' as communication_type,
                         mail.sent as communication_date,
-                        COALESCE(tracking.partner_id, p.contact_id, p.id) AS partner_id,
+                        tracking.partner_id AS partner_id,
                         mail.email as email,
                         source.name as subject,
                         '' as other_type,
@@ -197,29 +190,25 @@ class InteractionResume(models.TransientModel):
                         END tracking_status,
                         mm.id as mass_mailing_id,
                         0 as other_interaction_id,
-                        (nb_attachment is not NULL) as has_attachment
+                        EXISTS(
+                            SELECT a.message_id
+                            FROM message_attachment_rel a WHERE a.message_id = tracking.mail_message_id
+                        ) as has_attachment
                         FROM "mail_mail_statistics" as mail
-                        FULL OUTER JOIN (
-                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
-                            FROM mail_message AS m
-                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
-                            GROUP BY m.id
-                        ) AS attachment ON mail.mail_mail_id = attachment.id
-                        FULL OUTER JOIN mail_tracking_email tracking
-                            ON mail.mail_tracking_id = tracking.id
-                        JOIN res_partner p ON p.email = mail.email
+                        JOIN mail_tracking_email tracking ON mail.mail_tracking_id = tracking.id
                         JOIN mail_mass_mailing mm ON mail.mass_mailing_id = mm.id
                         JOIN utm_source source ON mm.source_id = source.id
                         WHERE mail.sent IS NOT NULL
                         AND tracking.mail_id IS NULL  -- skip if it's already in mail
                         AND mail.email = %s
+                        AND mail.create_date BETWEEN (NOW() - interval '1 year') AND NOW()
                         )
             -- incoming messages from partners
                     UNION (
                       SELECT
                         'Email' as communication_type,
                         m.date as communication_date,
-                        COALESCE(p.contact_id, p.id) AS partner_id,
+                        m.author_id AS partner_id,
                         m.email_from as email,
                         m.subject as subject,
                         '' as other_type,
@@ -233,25 +222,22 @@ class InteractionResume(models.TransientModel):
                         NULL as tracking_status,
                         0 as mass_mailing_id,
                         0 as other_interaction_id,
-                        (nb_attachment is not NULL) as has_attachment
+                        EXISTS(
+                            SELECT a.message_id
+                            FROM message_attachment_rel a WHERE message_id = m.id
+                        ) as has_attachment
                         FROM "mail_message" as m
-                        FULL OUTER JOIN (
-                            SELECT m.id AS id, Count(ma.message_id) AS nb_attachment
-                            FROM mail_message AS m
-                            RIGHT JOIN message_attachment_rel ma ON ma.message_id = m.id
-                            GROUP BY m.id
-                        ) AS attachment ON m.id = attachment.id
-                        JOIN res_partner p ON m.author_id = p.id
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
-                        AND (p.contact_id = ANY(%s) OR p.id = ANY(%s))
+                        AND m.author_id = ANY(%s)
+                        AND m.date BETWEEN (NOW() - interval '1 year') AND NOW()
                         )
             -- other interactions
                     UNION (
                       SELECT
                         'Other' as communication_type,
                         o.date as communication_date,
-                        COALESCE(p.contact_id, p.id) AS partner_id,
+                        o.partner_id AS partner_id,
                         '' as email,
                         o.subject as subject,
                         o.other_type as other_type,
@@ -267,25 +253,33 @@ class InteractionResume(models.TransientModel):
                         o.id as other_interaction_id,
                         false as has_attachment
                         FROM "partner_log_other_interaction" as o
-                        JOIN res_partner p ON o.partner_id = p.id
+                        WHERE o.partner_id = %s
                         )
             ORDER BY communication_date desc
-            LIMIT 240
                             """,
             (
-                partner_id,
-                partner_id,
-                partner_id,
-                partner_id,
                 partners_with_same_email_ids,
+                partner_id,
                 partners_with_same_email_ids,
                 email_address or "",
                 partners_with_same_email_ids,
-                partners_with_same_email_ids,
+                partner_id,
             ),
         )
 
         return self.create(self.env.cr.dictfetchall())
+
+    def create(self, vals):
+        res = super().create(vals)
+        filter_res = self
+        emails = self.env["mail.mail"]
+        for record in res:
+            email = record.email_id
+            if not email or email not in emails:
+                emails += email
+                filter_res += record
+        (res - filter_res).unlink()
+        return filter_res
 
     def write(self, vals):
         log_date = vals.get("communication_date")

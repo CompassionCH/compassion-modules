@@ -79,6 +79,8 @@ class Partner(models.Model):
         """
         self.ensure_one()
         self.env["interaction.resume"].populate_resume(self.id)
+        for partner in self.other_contact_ids:
+            self.env["interaction.resume"].populate_resume(partner.id)
         partners_with_same_email_ids = (
             self.env["res.partner"]
                 .search([("email", "!=", False), ("email", "=", self.email)])

@@ -29,6 +29,7 @@ class CommunicationAttachment(models.Model):
         required=True,
         ondelete="cascade",
         readonly=False,
+        index=True,
     )
     report_id = fields.Many2one(
         "ir.actions.report",

@@ -12,7 +12,8 @@
                 <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
                 <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
                 <field name="communication_date"/>
-                <field name="communication_type"/>
+                <field name="communication_type" string="Send mode"/>
+                <field name="rule_id"/>
                 <field name="other_type"/>
                 <field name="state" invisible="1"/>
                 <field name="phone_id" invisible="1"/>
