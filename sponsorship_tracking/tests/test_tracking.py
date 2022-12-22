@@ -23,11 +23,11 @@ mock_get_infos = (
 )
 mock_invoicer = (
     "odoo.addons.recurring_contract.models.contract_group"
-    ".ContractGroup.generate_invoices"
+    ".RecurringContract.generate_invoices"
 )
 mock_cleaner = (
     "odoo.addons.recurring_contract.models.recurring_contract"
-    ".RecurringContract.clean_invoices"
+    ".RecurringContract.cancel_contract_invoices"
 )
 mock_lifecycle = (
     "odoo.addons.child_compassion.models.child_compassion"
