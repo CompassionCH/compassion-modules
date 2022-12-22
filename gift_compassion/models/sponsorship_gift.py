@@ -9,9 +9,9 @@
 ##############################################################################
 from datetime import date, timedelta
 
-from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_REF,
-    GIFT_CATEGORY,
+from odoo.addons.recurring_contract.models.product_names import (
+    GIFT_PRODUCTS_REF,
+    GIFT_CATEGORY
 )
 
 from odoo import fields, models, api, _
@@ -193,7 +193,7 @@ class SponsorshipGift(models.Model):
             if gift.sponsorship_gift_type == "Birthday":
                 gift.gift_date, late = self.env[
                     "generate.gift.wizard"
-                ].compute_date_birthday_invoice(gift.child_id.birthdate, inv_dates[0])
+                ].compute_date_gift_invoice(gift.child_id.birthdate, inv_dates[0])
                 if late:
                     gift.state = "verify"
                     gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")
@@ -459,7 +459,7 @@ class SponsorshipGift(models.Model):
         :return: dictionary of sponsorship.gift values
         """
         gift_type_vals = dict()
-        if product.default_code == GIFT_REF[0]:
+        if product.default_code == GIFT_PRODUCTS_REF[0]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -467,7 +467,7 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "Birthday",
                 }
             )
-        elif product.default_code == GIFT_REF[1]:
+        elif product.default_code == GIFT_PRODUCTS_REF[1]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -475,18 +475,18 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "General",
                 }
             )
-        elif product.default_code == GIFT_REF[2]:
+        elif product.default_code == GIFT_PRODUCTS_REF[2]:
             gift_type_vals.update(
                 {"gift_type": "Family Gift", "attribution": "Sponsored Child Family", }
             )
-        elif product.default_code == GIFT_REF[3]:
+        elif product.default_code == GIFT_PRODUCTS_REF[3]:
             gift_type_vals.update(
                 {
                     "gift_type": "Project Gift",
                     "attribution": "Center Based Programming",
                 }
             )
-        elif product.default_code == GIFT_REF[4]:
+        elif product.default_code == GIFT_PRODUCTS_REF[4]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",

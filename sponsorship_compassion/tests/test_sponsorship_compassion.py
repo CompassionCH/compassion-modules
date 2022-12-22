@@ -255,7 +255,6 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(invoice1.state, "open")
         sponsorship.contract_terminated()
         # Force cleaning invoices immediatley
-        sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, "terminated")
         if invoice_date < today:
             self.assertEqual(invoice.state, "paid")

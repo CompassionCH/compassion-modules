@@ -24,9 +24,9 @@
                 <attribute name="options">{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="contract_id" domain="['|', ('partner_id', '=', parent.partner_id), ('correspondent_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
+                <field name="contract_id" domain="['|', ('partner_id', '=', parent.partner_id), ('state', '!=', 'draft')]"
                        options="{'create_edit':false,'field_color': 'state', 'search_more':true,
-                                     'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/>
+                                     'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/> <!-- ('correspondent_id', '=', parent.partner_id),-->
             </xpath>
         </field>
     </record>
@@ -41,7 +41,7 @@
                 <field name="product_id" />
                 <field name="contract_id" />
                 <field name="due_date" />
-                <field name="last_payment" />
+                <field name="last_payment"/>
                 <field name="quantity" sum="Total"/>
                 <field name="price_unit" />
                 <field name="price_subtotal" sum="Total"/>

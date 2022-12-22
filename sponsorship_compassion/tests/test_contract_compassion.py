@@ -118,7 +118,6 @@ class TestContractCompassion(BaseContractCompassionTest):
         # Cancelling of the contract
         contract.contract_cancelled()
         # Force cleaning invoices immediately
-        contract._clean_invoices()
         self.assertEqual(contract.state, "cancelled")
         self.assertEqual(invoices[0].state, "cancel")
         self.assertEqual(invoices[1].state, "cancel")
@@ -165,14 +164,12 @@ class TestContractCompassion(BaseContractCompassionTest):
             Test the changement of a payment option for a contract.
         """
         contract_group = self.create_group(
-            "do_nothing",
             self.partners.ids[0],
             1,
             self.payment_mode_id,
             other_vals={"recurring_value": 1, "recurring_unit": "month"},
         )
         contract_group2 = self.create_group(
-            "do_nothing",
             self.partners.ids[1],
             1,
             self.payment_mode_id,

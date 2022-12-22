@@ -17,13 +17,22 @@
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div name="left_group" class="o_setting_right_pane">
                             <div name="gift_duration">
-                                <div class="row">
-                                    <label for="time_allowed_for_gifts" class="col-md-5 o_light_label"/>
-                                    <field name="time_allowed_for_gifts" class="w-25"/>
+                                <div class="col">
+                                    <div class="row">
+                                        <label for="time_allowed_for_gifts" class="col-md-5 o_light_label"/>
+                                        <field name="time_allowed_for_gifts" class="w-25"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="time_allowed_for_letters" class="col-md-5 o_light_label"/>
+                                        <field name="time_allowed_for_letters" class="w-25"/>
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <label for="time_allowed_for_letters" class="col-md-5 o_light_label"/>
-                                    <field name="time_allowed_for_letters" class="w-25"/>
+                                <div class="col">
+                                    <div class="row">
+                                        <label for="christmas_inv_due_date" class="col-md-5 o_light_label"/>
+                                        <field name="christmas_inv_due_date" class="w-25"/>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
