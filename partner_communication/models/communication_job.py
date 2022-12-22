@@ -435,7 +435,7 @@ class CommunicationJob(models.Model):
         return self.write({"state": "cancel"})
 
     def reset(self):
-        self.attachment_ids.write({"printed_pdf_data": False})
+        self.mapped("attachment_ids").write({"printed_pdf_data": False})
         self.write(
             {"state": "pending", "sent_date": False, "email_id": False, "printed_pdf_data": False}
         )
