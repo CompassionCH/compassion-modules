@@ -8,16 +8,14 @@
 #
 ##############################################################################
 
+from . import account_invoice
+from . import child_compassion
 from . import contract_group
+from . import contract_origin
 from . import contracts
 from . import contracts_report
-from . import res_partner
 from . import privacy_statement
-from . import project_compassion
-from . import child_compassion
-from . import product_names
-from . import account_invoice
-from . import contract_origin
 from . import product
+from . import project_compassion
 from . import recurring_contract_line
-from . import account_invoice_line
+from . import res_partner

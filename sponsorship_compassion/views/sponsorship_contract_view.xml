@@ -48,9 +48,11 @@
                 <attribute name="context">{'default_type': type}</attribute>
             </xpath>
 
-            <!-- Automatic birthday invoice -->
-            <field name="next_invoice_date" position="after">
+            <!-- Automatic birthday & christmas invoice -->
+            <field name="invoice_suspended_until" position="after">
                 <field name="birthday_invoice"
+                       attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC','SWP'])]}"/>
+                <field name="christmas_invoice"
                        attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC','SWP'])]}"/>
             </field>
 
@@ -60,7 +62,7 @@
             </field>
             <field name="group_id" position="after">
                 <field name="parent_id" domain="[('correspondent_id', '=', correspondent_id), ('id', '!=', active_id), ('sub_sponsorship_id', '=', False), ('sponsorship_line_id', '!=', False)]"
-                                   context="{'default_type':'S'}" attrs="{'invisible': [('type', 'not in', ['S', 'SC','SWP'])]}"/>
+                       context="{'default_type':'S'}" attrs="{'invisible': [('type', 'not in', ['S', 'SC','SWP'])]}"/>
                 <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
             </field>
 
@@ -148,7 +150,7 @@
 
             <filter name="finished" position="after">
                 <filter string="Last 3 Months"  name="last_3_months"
-                    domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
+                        domain="[('start_date', '&gt;=' , (context_today()-relativedelta(months=3)).strftime('%Y-%m-01')),
                              ('start_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]" help="Last 3 months"/>
             </filter>
         </field>

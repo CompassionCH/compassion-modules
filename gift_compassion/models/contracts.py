@@ -10,7 +10,7 @@
 import calendar
 import datetime
 
-from odoo.addons.sponsorship_compassion.models.product_names import GIFT_CATEGORY
+from odoo.addons.recurring_contract.models.product_names import GIFT_CATEGORY
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError

@@ -18,7 +18,8 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
-from .product_names import GIFT_CATEGORY
+
+from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -48,6 +49,12 @@ class SponsorshipContract(models.Model):
         help="Set the amount to enable automatic invoice creation each year "
              "for a birthday gift. The invoice is set two months before "
              "child's birthday.",
+        tracking=True,
+    )
+    christmas_invoice = fields.Float(
+        "Annual christmas gift",
+        help="Set the amount to enable automatic invoice creation each year "
+             "for a christmas gift. The invoice is set depending christmas invoice setting",
         tracking=True,
     )
     reading_language = fields.Many2one(
@@ -592,7 +599,7 @@ class SponsorshipContract(models.Model):
 
         res = list()
         for contract in contracts:
-            invl_datas = super(SponsorshipContract, contract).get_inv_lines_data()
+            invl_datas = super(SponsorshipContract, contract).build_inv_lines_data()
 
             if contract.type == "G":
                 for i in range(0, len(invl_datas)):
@@ -675,7 +682,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-
     def open_invoices(self):
         res = super().open_invoices()
         if self.type == "G":
@@ -979,6 +985,76 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
+    def _generate_invoices(self):
+        invoicer = super()._generate_invoices()
+        for contract in self:
+            if contract.birthday_invoice:
+                self._generate_gifts(invoicer, BIRTHDAY_GIFT)
+            if contract.christmas_invoice:
+                self._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        return invoicer
+
+    def _generate_gifts(self, invoicer, gift_type):
+        """ Creates the annual gifts for sponsorships that
+        have set the option for automatic birthday or christmas gifts creation. """
+        logger.debug(f"Automatic {gift_type} Gift Generation Started.")
+
+        # Search active Sponsorships with automatic birthday gift
+        contracts = self
+
+        # Exclude sponsorship if a gift is already open
+        product_id = (
+            self.env["product.product"]
+            .with_company(contracts.company_id.id)
+            .search(
+                [("default_code", "=", GIFT_PRODUCTS_REF[0] if gift_type == BIRTHDAY_GIFT else PRODUCT_GIFT_CHRISTMAS)],
+                limit=1)
+            .id
+        )
+
+        # Don't generate gift for contract that are holding gifts
+        for contract in contracts:
+            if contract.project_id.hold_gifts:
+                contracts -= contract
+
+        if contracts:
+            total = str(len(contracts))
+            count = 1
+            logger.debug(f"Found {total} {gift_type} Gifts to generate.")
+
+            gift_wizard = (
+                self.env["generate.gift.wizard"]
+                .with_context(recurring_invoicer_id=invoicer.id)
+                .create(
+                    {
+                        "description": f"Automatic {gift_type} gift",
+                        "invoice_date": datetime.today().date(),
+                        "product_id": product_id,
+                        "amount": 0.0,
+                    }
+                )
+            )
+
+            # Generate invoices
+            for contract in contracts:
+                logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
+                try:
+                    self._generate_gift(gift_wizard, contract, invoicer, gift_type)
+                except Exception as e:
+                    logger.error(f"Gift generation failed. {e}")
+                    self.env.context["invoice_err_gen"] = True
+                finally:
+                    count += 1
+
+        logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
+        return invoicer
+
+    def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
+        gift_wizard.write(
+            {"amount": contract.christmas_invoice if gift_type == CHRISTMAS_GIFT else contract.birthday_invoice}
+        )
+        gift_wizard.with_context(active_ids=contract.id, invoicer=invoicer).generate_invoice()
+
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """
         bypass_state = self.env.context.get("bypass_state", False)
@@ -1035,19 +1111,6 @@ class SponsorshipContract(models.Model):
                 )
         return True
 
-    def update_next_invoice_date(self):
-        """ Override to force recurring_value to 1
-            if contract is a sponsorship, and to bypass ORM for performance.
-        """
-        for contract in self:
-            if "S" in contract.type:
-                next_date = contract.next_invoice_date
-                next_date += relativedelta(months=+1)
-            else:
-                next_date = contract._compute_next_invoice_date()
-            contract.next_invoice_date = next_date
-        return True
-
     def _get_filtered_invoice_lines(self, invoice_lines):
         # Exclude gifts from being cancelled
         res = invoice_lines.filtered(
@@ -1064,15 +1127,7 @@ class SponsorshipContract(models.Model):
         """ Hook for reactivating gifts. """
         pass
 
-    def _filter_clean_invoices(self, since_date, to_date):
-        """ Exclude gifts from clean invoice method. """
-        invl_search = super()._filter_clean_invoices(since_date, to_date)
-        invl_search.append(("product_id.categ_name", "!=", GIFT_CATEGORY))
-        return invl_search
 
-    def _get_invoice_lines_to_clean(self, since_date, to_date):
-        res = super()._get_invoice_lines_to_clean(since_date, to_date)
-        return res.filtered(lambda invln: invln.product_id.categ_name != GIFT_CATEGORY)
 
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
