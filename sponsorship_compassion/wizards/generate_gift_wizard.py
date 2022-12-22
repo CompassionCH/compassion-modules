@@ -70,12 +70,15 @@ class GenerateGiftWizard(models.TransientModel):
                 end_year = begin_year.replace(month=12, day=31)
                 # If a gift was already made for the year, abort
                 invoice_line_ids = self.env["account.move.line"].search(
-                    [
-                        ("product_id", "=", self.product_id.id),
+                    [   "|",
+                        ("due_date", "=", invoice_date),
+                        "&",
                         ("due_date", ">=", begin_year),
                         ("due_date", "<=", end_year),
+                        "&", "&",
+                        ("product_id", "=", self.product_id.id),
                         ("contract_id", "=", contract.id),
-                        ("state", "!=", "cancel"),
+                        ("state", "!=", "cancel")
                     ]
                 )
                 if invoice_line_ids and not self.force:
