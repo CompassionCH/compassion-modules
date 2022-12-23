@@ -1002,10 +1002,8 @@ class SponsorshipContract(models.Model):
         # Search active Sponsorships with automatic birthday gift
         contracts = self
 
-        # Exclude sponsorship if a gift is already open
         product_id = (
             self.env["product.product"]
-            .with_company(contracts.company_id.id)
             .search(
                 [("default_code", "=", GIFT_PRODUCTS_REF[0] if gift_type == BIRTHDAY_GIFT else PRODUCT_GIFT_CHRISTMAS)],
                 limit=1)
