@@ -125,8 +125,13 @@ class GenerateGiftWizard(models.TransientModel):
         """Set date of invoice two months before child's birthdate"""
         new_date = invoice_due_date
         late = False
-        if gift_event_date.month >= invoice_due_date.month + 2:
+        # In case the date has been passed we generate for next year
+        if gift_event_date.month < invoice_due_date.month:
+            new_date = invoice_due_date.replace(day=28, month=gift_event_date.month - 2, year=datetime.today().year + 1)
+        # In case the date is not in less than two months
+        elif gift_event_date.month >= invoice_due_date.month + 2:
             new_date = invoice_due_date.replace(day=28, month=gift_event_date.month - 2)
+        # in case we're late on gift generation
         elif gift_event_date.month + 3 < invoice_due_date.month:
             new_date = gift_event_date.replace(
                 day=28, year=invoice_due_date.year + 1
@@ -135,7 +140,7 @@ class GenerateGiftWizard(models.TransientModel):
             late = True
         return new_date, late
 
-    def _build_invoice_gen_data(self, invoicing_date, invoicer):  # TODO optimize and centralize
+    def _build_invoice_gen_data(self, invoicing_date, invoicer):
         """ Setup a dict with data passed to invoice.create.
             If any custom data is wanted in invoice from contract group, just
             inherit this method.
