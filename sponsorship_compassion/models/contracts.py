@@ -904,7 +904,7 @@ class SponsorshipContract(models.Model):
 
         # Create new sponsorships at GMC
         message = self.upsert_sponsorship()
-        message.process_messages()
+        message.with_context({'async_mode': False}).process_messages()
 
         answer = json.loads(message.answer)
         if not isinstance(answer, dict) or "Message" not in answer:
