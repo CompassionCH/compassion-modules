@@ -16,7 +16,7 @@ from dateutil.relativedelta import relativedelta
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, MissingError
 from .compassion_hold import HoldType
 
 logger = logging.getLogger(__name__)
@@ -401,7 +401,10 @@ class CompassionChild(models.Model):
     @api.multi
     def unlink_job(self):
         """ Small wrapper to unlink only released children. """
-        return self.filtered(lambda c: c.state == "R").unlink()
+        try:
+            return self.filtered(lambda c: c.state == "R").unlink()
+        except MissingError:
+            return False
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
