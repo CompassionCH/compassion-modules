@@ -99,7 +99,7 @@ class AccountStatement(models.Model):
                     # if reconcile['open_balance_dict']:
                     #     new_aml_dicts.append(reconcile['open_balance_dict'])
                     #
-                    line.reconcile(reconcile)
+                    line.with_context({"default_journal_id": None}).reconcile(reconcile)
                     # line.process_reconciliation(
                     #     counterpart_aml_dicts=reconcile['counterpart_aml_dicts'],
                     #     payment_aml_rec=reconcile['payment_aml_rec'],
