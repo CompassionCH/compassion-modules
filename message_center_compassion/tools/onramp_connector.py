@@ -91,14 +91,21 @@ class OnrampConnector(object):
         url = self._connect_url + service_name if not full_url else service_name
         log_body = body if body and len(body) < 500 else body and (str(body[:500]) + "...[truncated]")
         self.log_message(message_type, url, headers, log_body, self._session, params)
-        if message_type in ("GET", "GET_RAW"):
-            r = self._session.get(url, headers=headers, params=params)
-        elif message_type == "POST":
-            r = self._session.post(url, headers=headers, json=body, params=params, data=data)
-        elif message_type == "PUT":
-            r = self._session.put(url, headers=headers, json=body, params=params, data=data)
-        else:
-            return {"code": 404, "Error": "No valid HTTP verb used"}
+        count = 0
+        r = False
+        while not r or count < 5:
+            try:
+                if message_type in ("GET", "GET_RAW"):
+                    r = self._session.get(url, headers=headers, params=params)
+                elif message_type == "POST":
+                    r = self._session.post(url, headers=headers, json=body, params=params, data=data)
+                elif message_type == "PUT":
+                    r = self._session.put(url, headers=headers, json=body, params=params, data=data)
+                else:
+                    return {"code": 404, "Error": "No valid HTTP verb used"}
+            except ConnectionError as e:
+                _logger.warning(e)
+            count += 1
         if message_type == "GET_RAW":
             # Simply return the result
             return r.content
