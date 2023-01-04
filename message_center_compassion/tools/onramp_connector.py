@@ -105,6 +105,8 @@ class OnrampConnector(object):
                     return {"code": 404, "Error": "No valid HTTP verb used"}
             except ConnectionError as e:
                 _logger.warning(e)
+            except Exception as e:
+                raise e
             count += 1
         if message_type == "GET_RAW":
             # Simply return the result
