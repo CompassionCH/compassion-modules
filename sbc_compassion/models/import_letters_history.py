@@ -203,7 +203,7 @@ class ImportLettersHistory(models.Model):
         self.import_completed = True
 
     def pdf_to_image(self, pdf_data):
-        pdf = fitz.Document("pdf", pdf_data)
+        pdf = fitz.Document("pdf", pdf_data)  # TODO replace this library with standard Odoo one
         page0 = next(pdf.pages())
         image = self.convert_pdf_page_to_image(page0)
         return image

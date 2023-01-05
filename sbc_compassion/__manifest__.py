@@ -44,8 +44,7 @@
             "magic",
             "wand",
             "pyzbar",
-            "pdfminer",
-            "PyMuPDF",
+            "PyMuPDF",  # TODO replace by Odoo standard library
         ]
     },
     "data": [

@@ -1,8 +1,7 @@
-babel
+beautifulsoup4
 iso639-lang
 jwt
 langdetect
-pdfminer
 phonenumbers
 pycups
 PyMuPDF
