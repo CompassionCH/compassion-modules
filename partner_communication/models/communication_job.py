@@ -248,6 +248,7 @@ class CommunicationJob(models.Model):
         same_job_search = [
                               ("partner_id", "=", vals.get("partner_id")),
                               ("config_id", "=", vals.get("config_id")),
+                              ("auto_send", "=", vals.get("auto_send")),
                               ("config_id", "!=", self.env.ref(
                                   "partner_communication.default_communication").id),
                               ("state", "in", ["pending", "failure"]),

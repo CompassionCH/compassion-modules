@@ -92,15 +92,15 @@ class Correspondence(models.Model):
                         letter.translated_text
                     )
                     letter.has_valid_language = (
-                        lang and lang in letter.supporter_languages_ids
+                            lang and lang in letter.supporter_languages_ids
                     )
 
     def _compute_preferred_dpi(self):
         """ Compute DPI based on letter delivery preference """
         for letter in self:
-            letter.preferred_dpi =\
+            letter.preferred_dpi = \
                 DEFAULT_LETTER_DPI if "digital" in letter.letter_delivery_preference and letter.email \
-                else PHYSICAL_LETTER_DPI
+                    else PHYSICAL_LETTER_DPI
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -179,7 +179,7 @@ class Correspondence(models.Model):
             letters = self.filtered(lambda l: l.partner_id == partner)
             is_first = self.filtered(
                 lambda l: l.communication_type_ids
-                == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
+                          == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
             )
             no_comm = letters.filtered(lambda l: not l.communication_id)
             to_generate = letters if self.env.context.get("overwrite") else no_comm
@@ -219,7 +219,7 @@ class Correspondence(models.Model):
         partner = self.mapped("partner_id")
         auto_send = [l._can_auto_send() for l in self]
         auto_send = reduce(lambda l1, l2: l1 and l2, auto_send) and (
-            "auto" in config.send_mode or config.send_mode in ["partner_preference", "both"]
+                "auto" in config.send_mode or config.send_mode in ["partner_preference", "both"]
         )
         comm_vals = {
             "partner_id": partner.id,
@@ -242,9 +242,9 @@ class Correspondence(models.Model):
         partner_langs = self.supporter_languages_ids
         types = self.communication_type_ids.mapped("name")
         valid = (
-            self.sponsorship_id.state == "active"
-            and "Final Letter" not in types
-            and "auto" in self.partner_id.letter_delivery_preference
+                self.sponsorship_id.state == "active"
+                and "Final Letter" not in types
+                and "auto" in self.partner_id.letter_delivery_preference
         )
         if not (partner_langs & self.beneficiary_language_ids):
             valid &= self.has_valid_language
