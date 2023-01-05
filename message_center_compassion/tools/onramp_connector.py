@@ -92,8 +92,8 @@ class OnrampConnector(object):
         log_body = body if body and len(body) < 500 else body and (str(body[:500]) + "...[truncated]")
         self.log_message(message_type, url, headers, log_body, self._session, params)
         count = 0
-        r = False
-        while not r or count < 5:
+        r = None
+        while not isinstance(r, requests.Response) and count < 5:
             try:
                 if message_type in ("GET", "GET_RAW"):
                     r = self._session.get(url, headers=headers, params=params)
@@ -105,8 +105,9 @@ class OnrampConnector(object):
                     return {"code": 404, "Error": "No valid HTTP verb used"}
             except ConnectionError as e:
                 _logger.warning(e)
-            except Exception as e:
-                raise e
+                session_params = self._session.params
+                self._session = requests.Session()
+                self._session.params = session_params
             count += 1
         if message_type == "GET_RAW":
             # Simply return the result
