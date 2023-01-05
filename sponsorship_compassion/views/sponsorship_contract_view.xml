@@ -49,7 +49,7 @@
             </xpath>
 
             <!-- Automatic birthday & christmas invoice -->
-            <field name="next_invoice_date" position="after">
+            <field name="invoice_suspended_until" position="after">
                 <field name="birthday_invoice"
                        attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC','SWP'])]}"/>
                 <field name="christmas_invoice"

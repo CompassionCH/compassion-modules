@@ -9,7 +9,7 @@
 ##############################################################################
 from datetime import date
 
-from odoo import api, models, fields, _
+from odoo import models, fields, _
 from odoo.exceptions import UserError
 from odoo.tools import relativedelta
 
@@ -51,7 +51,6 @@ class ChildHoldWizard(models.TransientModel):
                     )
                 )
             sub_contract.write({"child_id": child.id})
-            sub_contract.next_invoice_date = self.env.context.get("next_invoice_date")
             action.update(
                 {
                     "res_model": "recurring.contract",
