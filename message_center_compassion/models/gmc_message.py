@@ -121,7 +121,8 @@ class GmcMessage(models.Model):
         new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
         new_messages.write({"state": "pending", "failure_reason": False})
         if self.env.context.get("async_mode", True):
-            new_messages.with_delay()._process_messages()
+            # We define the priority with the first message because we're supposed to have only one actions by messages group
+            new_messages.with_delay(priority=self[0].action_id.priority)._process_messages()
         else:
             new_messages._process_messages()
         return True
@@ -173,7 +174,6 @@ class GmcMessage(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    
     def _process_messages(self):
         """ Process given messages in pool. """
         today = datetime.now()
@@ -182,7 +182,7 @@ class GmcMessage(models.Model):
             messages = messages.filtered(lambda mess: mess.date <= today)
 
         # Verify all messages have the same action (cannot execute multiple
-        # actions at once)
+        # actions at once) If this is modified we should adapt the call of this method
         action = messages.mapped("action_id")
         if len(action) > 1:
             raise UserError(
