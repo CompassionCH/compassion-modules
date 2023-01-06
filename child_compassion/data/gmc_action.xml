@@ -12,6 +12,7 @@
             <field name="success_method">hold_sent</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="priority">50</field>
         </record>
         <!-- Hold Message Release -->
         <record id="release_hold" model="gmc.action">
@@ -25,6 +26,7 @@
             <field name="success_method">hold_released</field>
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
+            <field name="priority">50</field>
         </record>
         <!-- Get beneficiaries details -->
         <record id="beneficiaries_details" model="gmc.action">
@@ -75,6 +77,7 @@
             <field name="batch_send">1</field>
             <field name="success_method">reservation_create_answer</field>
             <field name="failure_method">reservation_create_answer_fail</field>
+            <field name="priority">50</field>
         </record>
         <!-- Reservation Message Creation for Beneficiary -->
         <record id="beneficiary_reservation" model="gmc.action">
@@ -89,6 +92,7 @@
             <field name="batch_send">1</field>
             <field name="success_method">reservation_create_answer</field>
             <field name="failure_method">reservation_create_answer_fail</field>
+            <field name="priority">50</field>
         </record>
         <!-- Reservation Message Release -->
         <record id="cancel_reservation" model="gmc.action">
@@ -102,6 +106,7 @@
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
             <field name="success_method">reservation_cancel_answer</field>
+            <field name="priority">50</field>
         </record>
         <record id="cancel_reservation_child" model="gmc.action">
             <field name="direction">out</field>
@@ -114,6 +119,7 @@
             <field name="request_type">POST</field>
             <field name="batch_send">1</field>
             <field name="success_method">reservation_cancel_answer</field>
+            <field name="priority">50</field>
         </record>
         <!-- Beneficiary Major Revision -->
         <record id="major_revision" model="gmc.action">
@@ -148,6 +154,7 @@
             <field name="mapping_id" ref="mapping_child_cdpr"/>
             <field name="description">This handles the reception of a Beneficiary CDPR.</field>
             <field name="auto_process">1</field>
+            <field name="priority">50</field>
         </record>
         <!-- Reservation Messages -->
         <record id="reservation_to_hold" model="gmc.action">
@@ -157,6 +164,7 @@
             <field name="incoming_method">reservation_to_hold</field>
             <field name="description">This handles the reception of a reserved Beneficiary.</field>
             <field name="auto_process">1</field>
+            <field name="priority">50</field>
         </record>
         <!-- Household Major Revision -->
         <record id="major_revision_household" model="gmc.action">
@@ -234,6 +242,7 @@
             <field name="incoming_method">beneficiary_hold_removal</field>
             <field name="description">This handles the reception of a Beneficiary Hold Removal.</field>
             <field name="auto_process">1</field>
+            <field name="priority">50</field>
         </record>
         <!-- Weekly Planning Message Creation -->
         <record id="create_demand_planning" model="gmc.action">
