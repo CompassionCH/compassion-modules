@@ -38,6 +38,8 @@ class GlobalChildSearch(models.TransientModel):
         string="Field Offices",
         readonly=False,
     )
+    is_exhaustive = fields.Boolean(string="Make exhaustive search",
+                                   help="Get a bit of all children depending on the search criteria")
     min_age = fields.Integer()
     max_age = fields.Integer()
     birthday_month = fields.Integer()
@@ -340,6 +342,15 @@ class GlobalChildSearch(models.TransientModel):
             except UserError:
                 # No children found on that date: displays it.
                 self.missing_dates += current_date.strftime("%d.%m\n")
+
+        # Reset search criteria
+        self.write(
+            {
+                "birthday_day": 0,
+                "birthday_month": 0,
+                "take": 80,
+            }
+        )
 
     def filter(self):
         self.ensure_one()
