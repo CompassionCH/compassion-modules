@@ -528,10 +528,6 @@ class SponsorshipContract(models.Model):
                 parent.sub_sponsorship_id = sponsorship
                 sponsorship.sponsorship_line_id = parent.sponsorship_line_id
 
-        # In case birthday_invoice has been modified or christmas_invoice has been modified.
-        # We should adapt the invoices and maybe close them
-        self._gift_invoices_updates(vals)
-
         if any([k in vals for k in ["partner_id", "correspondent_id"]]):
             self.on_change_partner_correspondent_id()
             self.auto_correspondent_id()
@@ -1126,8 +1122,6 @@ class SponsorshipContract(models.Model):
     def reactivate_gifts(self):
         """ Hook for reactivating gifts. """
         pass
-
-
 
     def cancel_old_invoices(self):
         """Cancel the old open invoices of a contract
