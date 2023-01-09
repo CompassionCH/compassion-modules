@@ -1051,7 +1051,7 @@ class SponsorshipContract(models.Model):
 
     def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
         gift_wizard.write(
-            {"amount": contract.christmas_invoice if gift_type == CHRISTMAS_GIFT else contract.birthday_invoice}
+            {"amount": eval(f"contract.{gift_type}_invoice")}
         )
         gift_wizard.with_context(active_ids=contract.id, invoicer=invoicer).generate_invoice()
 
