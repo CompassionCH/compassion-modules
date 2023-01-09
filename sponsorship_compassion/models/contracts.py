@@ -991,11 +991,8 @@ class SponsorshipContract(models.Model):
 
     def _generate_invoices(self):
         invoicer = super()._generate_invoices()
-        for contract in self:
-            if contract.birthday_invoice:
-                self._generate_gifts(invoicer, BIRTHDAY_GIFT)
-            if contract.christmas_invoice:
-                self._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        self._generate_gifts(invoicer, BIRTHDAY_GIFT)
+        self._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return invoicer
 
     def _generate_gifts(self, invoicer, gift_type):
@@ -1014,9 +1011,10 @@ class SponsorshipContract(models.Model):
             .id
         )
 
-        # Don't generate gift for contract that are holding gifts
+        # Don't generate gift for contract that are holding gifts or if they don't have an amount for the gift
         for contract in contracts:
-            if contract.project_id.hold_gifts:
+            if contract.project_id.hold_gifts\
+               or eval(f"contract.{gift_type}_invoice") <= 0:
                 contracts -= contract
 
         if contracts:
