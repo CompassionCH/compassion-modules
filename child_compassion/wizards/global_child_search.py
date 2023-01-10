@@ -38,8 +38,6 @@ class GlobalChildSearch(models.TransientModel):
         string="Field Offices",
         readonly=False,
     )
-    is_exhaustive = fields.Boolean(string="Make exhaustive search",
-                                   help="Get a bit of all children depending on the search criteria")
     min_age = fields.Integer()
     max_age = fields.Integer()
     birthday_month = fields.Integer()
