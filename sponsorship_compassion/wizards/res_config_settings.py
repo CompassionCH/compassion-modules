@@ -31,8 +31,9 @@ class StaffNotificationSettings(models.TransientModel):
 
     christmas_inv_due_date = fields.Char(
         help="Set date for the generation of the christmas gift invoices "
+             "This date will automatically be set two month in the past "
              "are still allowed",
         config_parameter="sponsorship_compassion.christmas_inv_due_date",
         # Default invoices for christmas gift are due for two months beofre christmas
-        default=fields.Date.to_string(fields.date.today().replace(day=25, month=10))
+        default=fields.Date.to_string(fields.date.today().replace(month=10, day=25))
     )

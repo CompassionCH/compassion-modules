@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+import calendar
 import logging
 import os
 from datetime import datetime
@@ -47,11 +47,16 @@ class GenerateGiftWizard(models.TransientModel):
         invoice_ids = list()
 
         # Ids of contracts are stored in context
-        for contract in (
-                self.env["recurring.contract"]
-                        .browse(self.env.context.get("active_ids", list()))
-                        .filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
-        ):
+        contract_ids = self.env["recurring.contract"].search_read(
+            [
+                ("id", "in", self.env.context.get("active_ids", [])),
+                ("type", "ilike", "S"),
+                ("state", "in", ["active", "waiting"])
+            ],
+            ["child_id"]
+        )
+
+        for contract in contract_ids:
             if self.product_id.default_code in (GIFT_PRODUCTS_REF[0], PRODUCT_GIFT_CHRISTMAS):
                 if self.env.context.get("force_date"):
                     invoice_date = self.invoice_date
@@ -71,8 +76,17 @@ class GenerateGiftWizard(models.TransientModel):
                         invoice_date, late = self.compute_date_gift_invoice(
                             contract.child_id.birthdate, self.invoice_date
                         )
+                else:
+                    if not invoice_date:
+                        invoice_date, late = self.compute_date_gift_invoice(
+                            datetime.strptime(self.env["ir.config_parameter"].sudo().get_param(
+                                "sponsorship_compassion.christmas_inv_due_date") or str(
+                                fields.Date.today().replace(month=12, day=25)),
+                                              '%Y-%m-%d'
+                                              ).date(), self.invoice_date
+                        )
+                if not self.force:
                     date_start = datetime.today().replace(month=1, day=1).date()
-
                     inv_lines = self.env["account.move.line"].search(
                         [
                             "|",
@@ -88,15 +102,6 @@ class GenerateGiftWizard(models.TransientModel):
                     )
                     if inv_lines:
                         continue
-                else:
-                    if not invoice_date:
-                        invoice_date, late = self.compute_date_gift_invoice(
-                            datetime.strptime(self.env["ir.config_parameter"].sudo().get_param(
-                                "sponsorship_compassion.christmas_inv_due_date") or str(
-                                fields.Date.today().replace(month=10, day=25)),
-                                              '%Y-%m-%d'
-                                              ).date(), self.invoice_date
-                        )
             else:
                 invoice_date = self.invoice_date
             inv_data = self.with_context({"invoice_contract": contract})._build_invoice_gen_data(invoice_date,
@@ -110,7 +115,6 @@ class GenerateGiftWizard(models.TransientModel):
             if not test_mode:
                 self.env.cr.commit()  # pylint: disable=invalid-commit
             invoice_ids.append(invoice.id)
-
         return {
             "name": _("Generated Invoices"),
             "view_mode": "list,form",
@@ -122,22 +126,33 @@ class GenerateGiftWizard(models.TransientModel):
 
     @api.model
     def compute_date_gift_invoice(self, gift_event_date, invoice_due_date):
-        """Set date of invoice two months before child's birthdate"""
+        """
+        Set date of invoice two months before gift event
+        :param gift_event_date: date of the gift evemt
+        :param invoice_due_date: due date of the invoice
+        :return: new_date, late (new invoice due date, whether the invoice is late or not)
+        """
         new_date = invoice_due_date
         late = False
-        # In case the date has been passed we generate for next year
-        if gift_event_date.month < invoice_due_date.month:
-            new_date = invoice_due_date.replace(day=28, month=gift_event_date.month - 2, year=datetime.today().year + 1)
-        # In case the date is not in less than two months
-        elif gift_event_date.month >= invoice_due_date.month + 2:
-            new_date = invoice_due_date.replace(day=28, month=gift_event_date.month - 2)
-        # in case we're late on gift generation
-        elif gift_event_date.month + 3 < invoice_due_date.month:
-            new_date = gift_event_date.replace(
-                day=28, year=invoice_due_date.year + 1
-            ) + relativedelta(months=-2)
-            new_date = max(new_date, invoice_due_date)
+        # Calculate the difference in months between the gift event date and invoice due date
+        month_diff = (gift_event_date.month - invoice_due_date.month) % 12
+        if month_diff >= 2:
+            # If the gift event date is more than 2 months after the invoice due date,
+            # set the new date two months before the gift event date
+            new_date = gift_event_date + relativedelta(months=-2)
+        elif month_diff < -2:
+            # If the gift event date is more than 2 months before the invoice due date,
+            # set the new date two months after the gift event date
+            new_date = gift_event_date + relativedelta(months=2)
+        else:
+            new_date = invoice_due_date
+        if month_diff <= -3:
+            # If the gift event date is more than 3 months before the invoice due date,
+            # set the new date one year and two months after the gift event date
+            new_date = gift_event_date + relativedelta(years=1, months=-2)
             late = True
+        # Ensure that the day of the new date is within the range of days in the month
+        new_date = new_date.replace(day=min(new_date.day, calendar.monthrange(new_date.year, new_date.month)[1]))
         return new_date, late
 
     def _build_invoice_gen_data(self, invoicing_date, invoicer):
