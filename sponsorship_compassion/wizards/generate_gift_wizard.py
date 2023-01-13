@@ -10,6 +10,8 @@
 import calendar
 import logging
 import os
+
+from dateutil import parser
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
@@ -40,70 +42,54 @@ class GenerateGiftWizard(models.TransientModel):
     )
 
     def generate_invoice(self):
-        # Read data in english
         self.ensure_one()
         if not self.description:
             self.description = self.product_id.display_name
-        invoice_ids = list()
-
-        # Ids of contracts are stored in context
-        contract_ids = self.env["recurring.contract"].search_read(
-            [
-                ("id", "in", self.env.context.get("active_ids", [])),
-                ("type", "ilike", "S"),
-                ("state", "in", ["active", "waiting"])
-            ],
-            ["child_id"]
-        )
-
-        for contract in contract_ids:
-            if self.product_id.default_code in (GIFT_PRODUCTS_REF[0], PRODUCT_GIFT_CHRISTMAS):
-                if self.env.context.get("force_date"):
-                    invoice_date = self.invoice_date
-                else:
-                    invoice_date = False
-
+        invoice_ids = []
+        for contract in (self.env["recurring.contract"]
+                .browse(self.env.context.get("active_ids", list()))
+                .filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
+        ):
+            # Logs an error if the birthdate is missing and skip iteration
+            if self.product_id.default_code == GIFT_PRODUCTS_REF[0] and not contract.child_id.birthdate:
+                logger.error("The birthdate of the child is missing!")
+                continue
+            # Sets the invoice date to the one in the context if it exists
+            invoice_date = self.invoice_date if self.env.context.get("force_date") else False
+            if not invoice_date:
+                # Computes the invoice date for birthday gifts
                 if self.product_id.default_code == GIFT_PRODUCTS_REF[0]:
-                    # Birthday Gift
-                    if not contract.child_id.birthdate:
-                        logger.error("The birthdate of the child is missing!")
-                        continue
-                    # This is set in the view in order to let the user
-                    # choose the invoice date. Otherwise (called from code)
-                    # the invoice date will be computed based on the
-                    # birthday of the child.
-                    if not invoice_date:
-                        invoice_date, late = self.compute_date_gift_invoice(
-                            contract.child_id.birthdate, self.invoice_date
-                        )
-                else:
-                    if not invoice_date:
-                        invoice_date, late = self.compute_date_gift_invoice(
-                            datetime.strptime(self.env["ir.config_parameter"].sudo().get_param(
-                                "sponsorship_compassion.christmas_inv_due_date") or str(
-                                fields.Date.today().replace(month=12, day=25)),
-                                              '%Y-%m-%d'
-                                              ).date(), self.invoice_date
-                        )
-                if not self.force:
-                    date_start = datetime.today().replace(month=1, day=1).date()
-                    inv_lines = self.env["account.move.line"].search(
-                        [
-                            "|",
-                            ("due_date", "=", invoice_date),
-                            "&",
-                            ("move_id.date", ">=", date_start),
-                            ("move_id.date", "<=", date_start.replace(month=12)),
-                            "&", "&",
-                            ("product_id", "=", self.product_id.id),
-                            ("contract_id", "=", contract.id),
-                            ("state", "!=", "cancel")
-                        ]
+                    invoice_date, late = self.compute_date_gift_invoice(
+                        contract.child_id.birthdate, self.invoice_date
                     )
-                    if inv_lines:
-                        continue
-            else:
-                invoice_date = self.invoice_date
+                # Computes the invoice date for Christmas gifts
+                else:
+                    invoice_date, late = self.compute_date_gift_invoice(
+                        parser.parse(
+                            self.env["ir.config_parameter"].sudo().get_param(
+                                "sponsorship_compassion.christmas_inv_due_date",
+                                default=fields.Date.today().replace(month=12, day=25)
+                            ), fuzzy=True
+                        ).date(), self.invoice_date
+                    )
+            if not self.force:
+                date_start = datetime.today().replace(month=1, day=1).date()
+                inv_lines = self.env["account.move.line"].search(
+                    [
+                        "|",
+                        ("due_date", "=", invoice_date),
+                        "&",
+                        ("move_id.date", ">=", date_start),
+                        ("move_id.date", "<=", date_start.replace(month=12)),
+                        "&", "&",
+                        ("product_id", "=", self.product_id.id),
+                        ("contract_id", "=", contract.id),
+                        ("state", "!=", "cancel")
+                    ]
+                )
+                if inv_lines:
+                    continue
+
             inv_data = self.with_context({"invoice_contract": contract})._build_invoice_gen_data(invoice_date,
                                                                                                  self.env.context.get(
                                                                                                      "invoicer"))
@@ -120,7 +106,6 @@ class GenerateGiftWizard(models.TransientModel):
             "view_mode": "list,form",
             "res_model": "account.move",
             "domain": [("id", "in", invoice_ids)],
-            # "context": {"form_view_ref": "sponsorship_compassion.view_invoice_child_form"},
             "type": "ir.actions.act_window",
         }
 
@@ -133,6 +118,7 @@ class GenerateGiftWizard(models.TransientModel):
         :return: new_date, late (new invoice due date, whether the invoice is late or not)
         """
         new_date = invoice_due_date
+        gift_event_date = gift_event_date.replace(year=datetime.today().year)
         late = False
         # Calculate the difference in months between the gift event date and invoice due date
         month_diff = (gift_event_date.month - invoice_due_date.month) % 12
@@ -140,17 +126,11 @@ class GenerateGiftWizard(models.TransientModel):
             # If the gift event date is more than 2 months after the invoice due date,
             # set the new date two months before the gift event date
             new_date = gift_event_date + relativedelta(months=-2)
-        elif month_diff < -2:
-            # If the gift event date is more than 2 months before the invoice due date,
-            # set the new date two months after the gift event date
-            new_date = gift_event_date + relativedelta(months=2)
+        elif month_diff <= 0:
+            # If the gift date is passed we generate for next year
+            new_date = gift_event_date + relativedelta(months=-2, years=+1)
         else:
             new_date = invoice_due_date
-        if month_diff <= -3:
-            # If the gift event date is more than 3 months before the invoice due date,
-            # set the new date one year and two months after the gift event date
-            new_date = gift_event_date + relativedelta(years=1, months=-2)
-            late = True
         # Ensure that the day of the new date is within the range of days in the month
         new_date = new_date.replace(day=min(new_date.day, calendar.monthrange(new_date.year, new_date.month)[1]))
         return new_date, late
