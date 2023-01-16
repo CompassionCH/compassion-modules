@@ -122,7 +122,7 @@
     </record>
 
     <record id="view_recurring_contract_filter_graph" model="ir.ui.view">
-        <field name="name">sponsorship.compassion.graph.select</field>
+        <field name="name">sponsorship.compassion.select</field>
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
         <field name="arch" type="xml">
@@ -228,35 +228,6 @@
         <field name="view_mode">tree,kanban,form,graph,pivot</field>
         <field name="domain">[('type','like','S')]</field>
         <field name="context">{'default_type':'S'}</field>
-    </record>
-
-    <!--pylint:disable=dangerous-view-replace-wo-priority-->
-    <record id="view_recurring_contract_compassion_filter" model="ir.ui.view">
-        <field name="name">sponsorship.compassion.select</field>
-        <field name="model">recurring.contract</field>
-        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_filter" />
-        <field name="arch" type="xml">
-            <field name="reference" position="attributes">
-                <attribute name="filter_domain">
-                    ['|', '|', '|', '|', '|', '|',
-                    ('reference','ilike',self),
-                    ('partner_id','child_of',self),
-                    ('payment_mode_id', 'ilike', self),
-                    ('partner_codega', 'ilike', self),
-                    ('child_code', 'ilike', self),
-                    ('child_name', 'ilike', self),
-                    ('origin_id', 'ilike', self),
-                    ]
-                </attribute>
-            </field>
-            <field name="payment_mode_id" position="after">
-                <field name="origin_id"/>
-            </field>
-            <xpath expr="//filter[@name='state']" position="after">
-                <separator />
-                <filter name="group_type" string="Origin" domain="[]"  context="{'group_by':'origin_id'}"/>
-            </xpath>
-        </field>
     </record>
 
     <!-- Put Invoicing section in Accounting/Customers Menu -->

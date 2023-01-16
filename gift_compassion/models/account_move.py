@@ -8,9 +8,12 @@
 #
 ##############################################################################
 
-from . import sponsorship_gift
-from . import contracts
-from . import gift_threshold_settings
-from . import account_move
-from . import account_invoice_line
-from . import contract_group
+from odoo import models, fields
+
+
+class AccountMove(models.Model):
+    _inherit = "account.move"
+
+    def button_cancel(self):
+        super().button_cancel()
+        self.mapped("invoice_line_ids.gift_id").unlink()

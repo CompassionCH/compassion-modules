@@ -78,6 +78,11 @@ class GmcAction(models.Model):
     no_outgoing_data = fields.Boolean(
         help="Put to true to force sending empty message"
     )
+    priority = fields.Integer(
+        help="Define the priority at which the messages associated with this action will be treated."
+             "The more you're close to one the faster it will be proceeded.",
+        default=100
+    )
 
     def write(self, vals):
         # prevent writing direction which should not be changed and is performance heavy

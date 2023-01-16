@@ -575,7 +575,7 @@ class SponsorshipContract(models.Model):
         hold_id = vals.get("hold_id")
         hold = self.env["compassion.hold"].search([
             "|", ("hold_id", "=", hold_id), ("id", "=", hold_id)])
-        if self.hold_expiration_date and self.hold_expiration_date > hold.expiration_date:
+        if self.hold_expiration_date and self.hold_expiration_date > fields.Datetime.now():
             hold_expiration = self.hold_expiration_date
             child = self.child_id
             hold.write({

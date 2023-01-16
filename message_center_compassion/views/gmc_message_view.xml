@@ -91,6 +91,7 @@
                         <group>
                             <field name="name"/>
                             <field name="direction"/>
+                            <field name="priority"/>
                             <field name="description"/>
                             <field name="connect_service"/>
                             <field name="request_type"/>
