@@ -984,7 +984,7 @@ class Correspondence(models.Model):
     @api.multi
     def resubmit_letter(self):
         for letter in self:
-            if letter.state != "Translation check unsuccessful":
+            if letter.state not in ("Translation check unsuccessful", "Exception", "Quality check unsuccessful"):
                 raise UserError(
                     _("Letter must be in state 'Translation check unsuccessful'"))
 
