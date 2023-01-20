@@ -9,7 +9,6 @@
 ##############################################################################
 
 from . import mail_compose_message
-from . import call_wizard
 from . import change_text_wizard
 from . import email_template_preview_view
 from . import pdf_wizard
