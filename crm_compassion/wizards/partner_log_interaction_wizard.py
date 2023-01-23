@@ -17,7 +17,7 @@ class LogInteractionWizard(models.TransientModel):
     partner_id = fields.Many2one(
         "res.partner", "Partner", default=lambda s: s._default_partner(), readonly=False
     )
-    subject = fields.Char()
+    subject = fields.Char(required=True)
     date = fields.Datetime(default=fields.Datetime.now)
     body = fields.Html()
     direction = fields.Selection(
