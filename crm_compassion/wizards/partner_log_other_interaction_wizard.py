@@ -9,7 +9,7 @@ class LogOtherInteractionWizard(models.TransientModel):
     subject = fields.Char(required=True)
     other_type = fields.Char(required=True)
     date = fields.Datetime(default=fields.Datetime.now)
-    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing")])
+    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing")], required=True)
     body = fields.Html()
 
     def log_interaction(self):
