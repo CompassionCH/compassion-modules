@@ -16,6 +16,5 @@ from . import email
 from . import ir_attachment
 from . import mail_template
 from . import report_with_omr
-from . import phone_common
 from . import ir_actions
 from . import queue_job
