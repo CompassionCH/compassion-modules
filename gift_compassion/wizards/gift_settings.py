@@ -28,7 +28,7 @@ class GiftNotificationSettings(models.TransientModel):
         "account.account", "Gift expense account",
     )
     gift_income_account_id = fields.Many2one(
-        "account.account", "Gift income account",
+        "account.account", "Payable gift account",
     )
     gift_analytic_id = fields.Many2one(
         "account.analytic.account", "Gift analytic account", config_parameter="gift_compassion.analytic_id"

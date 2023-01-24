@@ -341,6 +341,15 @@ class GlobalChildSearch(models.TransientModel):
                 # No children found on that date: displays it.
                 self.missing_dates += current_date.strftime("%d.%m\n")
 
+        # Reset search criteria
+        self.write(
+            {
+                "birthday_day": 0,
+                "birthday_month": 0,
+                "take": 80,
+            }
+        )
+
     def filter(self):
         self.ensure_one()
         matching = self.global_child_ids.filtered(lambda child: self._does_match(child))
@@ -544,6 +553,7 @@ class GlobalChildSearch(models.TransientModel):
         :return:
         """
         params = self.data_to_json(mapping_name)
+        params["sortBy"] = "PriorityScore"
         onramp = OnrampConnector(self.env)
         if method == "POST":
             result = onramp.send_message(service_name, method, params)
