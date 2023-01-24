@@ -515,7 +515,7 @@ class SponsorshipGift(models.Model):
             {"state": "In Progress", "amount_us_dollars": exchange_rate * self.amount}
         )
         company = self.sponsorship_id.company_id
-        param_obj = self.env["res.config.settings"].with_company(company)
+        param_obj = self.env["res.config.settings"].sudo().with_company(company)
         account_credit = param_obj.get_param("gift_income_account_id")
         account_debit = param_obj.get_param("gift_expense_account_id")
         journal_id = param_obj.get_param("gift_journal_id")
@@ -531,9 +531,9 @@ class SponsorshipGift(models.Model):
         analytic = param_obj.get_param("gift_analytic_id")
         analytic_tag = param_obj.get_param("gift_analytic_tag_id")
         # Create the debit lines from the Gift Account
-        invoiced_amount = sum(self.invoice_line_ids.mapped("price_subtotal") or [0])
+        invoiced_amount = sum(self.sudo().invoice_line_ids.mapped("price_subtotal") or [0])
         if invoiced_amount:
-            for invl in self.invoice_line_ids:
+            for invl in self.sudo().invoice_line_ids:
                 move_lines_data.append(
                     {
                         "partner_id": invl.partner_id.id,
@@ -581,7 +581,7 @@ class SponsorshipGift(models.Model):
             }
         )
         move_data["line_ids"] = [(0, False, line_data) for line_data in move_lines_data]
-        move = self.env["account.move"].create(move_data)
+        move = self.env["account.move"].sudo().create(move_data)
         move.action_post()
         data["payment_id"] = move.id
         self.write(data)
