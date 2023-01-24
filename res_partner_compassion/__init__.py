@@ -8,4 +8,4 @@
 #
 ##############################################################################
 
-from . import models, controllers
+from . import models, controllers, tests
