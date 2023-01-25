@@ -11,6 +11,7 @@
             <field name="connect_answer_wrapper">InterventionDetailsRequest</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
+            <field name="no_outgoing_data" eval="True"/>
         </record>
 
         <!-- update Intervention Kit -->
@@ -22,6 +23,7 @@
             <field name="incoming_method">update_intervention_details_request</field>
             <field name="description">Update Intervention Kit</field>
             <field name="auto_process">1</field>
+            <field name="no_outgoing_data" eval="True"/>
         </record>
 
         <!-- create Intervention Kit -->

@@ -15,7 +15,7 @@ access_child_assessement,Access on child_assessement,model_compassion_child_cdpr
 access_compassion_child_note,Access on child notes,model_compassion_child_note,group_sponsorship,1,0,1,1
 access_compassion_child_pictures,Full access on compassion_child_pictures,model_compassion_child_pictures,group_sponsorship,1,1,1,1
 access_compassion_child_pictures_public,Read access on compassion_child_pictures,model_compassion_child_pictures,,1,0,0,0
-access_field_office,Access on field office,model_compassion_field_office,group_sponsorship,1,1,0,0
+access_field_office,Access on field office,model_compassion_field_office,group_sponsorship,1,1,1,0
 access_global_partner,Read access on global partner,model_compassion_global_partner,group_sponsorship,1,0,0,0
 access_compassion_hold,Full access on compassion hold,model_compassion_hold,group_sponsorship,1,1,1,1
 access_child_household,Full access on child household,model_compassion_household,group_sponsorship,1,1,1,1
@@ -25,7 +25,7 @@ full_access_major_revision,Full access on major revision fields,model_compassion
 access_compassion_project,Access on compassion_project,model_compassion_project,group_sponsorship,1,1,1,0
 access_project_lifecycle,Read access on project_lifecycle,model_compassion_project_ile,group_sponsorship,1,1,1,0
 access_compassion_reservation_spo,Full access on reservations,model_compassion_reservation,group_sponsorship,1,1,1,1
-access_connect_month,Write access on connect_month,model_connect_month,group_sponsorship,1,1,0,0
+access_connect_month,Write access on connect_month,model_connect_month,group_sponsorship,1,1,1,0
 access_demand_planning,Full access on demand_planning,model_demand_planning,group_manager,1,1,1,1
 read_access_demand_planning,Read only access on demand_planning,model_demand_planning,group_sponsorship,1,0,0,0
 access_demand_weekly_demand,Full access on demand_weekly_demand,model_demand_weekly_demand,group_manager,1,1,1,1
