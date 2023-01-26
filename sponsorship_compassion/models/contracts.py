@@ -987,8 +987,10 @@ class SponsorshipContract(models.Model):
 
     def _generate_invoices(self):
         invoicer = super()._generate_invoices()
-        self._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        self._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        # We don't generate gift if the contract isn't active
+        contracts = self.filtered(lambda c: c.state == 'active')
+        contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
+        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return invoicer
 
     def _generate_gifts(self, invoicer, gift_type):

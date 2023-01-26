@@ -191,7 +191,7 @@ class SponsorshipGift(models.Model):
             gift.date_partner_paid = fields.Date.to_string(max([d for d in pay_dates]))
 
             if gift.sponsorship_gift_type == "Birthday":
-                gift.gift_date, late = self.env[
+                gift.gift_date = self.env[
                     "generate.gift.wizard"
                 ].compute_date_gift_invoice(gift.child_id.birthdate, inv_dates[0])
                 if late:
