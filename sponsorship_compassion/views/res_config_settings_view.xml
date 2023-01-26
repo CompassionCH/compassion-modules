@@ -29,8 +29,8 @@
                                 </div>
                                 <div class="col">
                                     <div class="row">
-                                        <label for="christmas_inv_due_date" class="col-md-5 o_light_label"/>
-                                        <field name="christmas_inv_due_date" class="w-25"/>
+                                        <label for="christmas_inv_due_month" class="col-md-5 o_light_label"/>
+                                        <field name="christmas_inv_due_month" class="w-25"/>
                                     </div>
 
                                 </div>
