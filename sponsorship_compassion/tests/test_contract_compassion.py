@@ -12,7 +12,30 @@ from datetime import date
 
 from odoo.addons.recurring_contract.tests.test_recurring_contract import TestRecurringContract
 
+from odoo.exceptions import UserError
 
 """ This class is useful to lauch the parent tests again on the invoices"""
 class BaseContractCompassionTest(TestRecurringContract):
-    pass
+    def test_create_contract_with_invoice_but_wrong_pay_mode(self):
+        with self.assertRaises(UserError):
+            self.contract_obj.create({
+                'reference': "TEST False contract",
+                'partner_id': self.partner.id,
+                'group_id': self.group.id,
+                'pricelist_id': self.env.ref('product.list0').id,
+                'contract_line_ids': [
+                    (0, 0, {'product_id': self.product.id, 'amount': 250, 'quantity': 800})],
+                'invoice_day': '12',
+                "birthday_invoice": 90000
+            })
+        with self.assertRaises(UserError):
+            self.contract_obj.create({
+                'reference': "TEST False contract 1",
+                'partner_id': self.partner.id,
+                'group_id': self.group.id,
+                'pricelist_id': self.env.ref('product.list0').id,
+                'contract_line_ids': [
+                    (0, 0, {'product_id': self.product.id, 'amount': 250, 'quantity': 800})],
+                'invoice_day': '12',
+                "christmas_invoice": 90000
+            })
