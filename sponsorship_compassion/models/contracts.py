@@ -851,6 +851,14 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
+    @api.constrains('birthday_invoice', 'christmas_invoice')
+    def _check_gift_invoice_method(self):
+        for contract in self:
+            if contract.birthday_invoice or contract.christmas_invoice:
+                if not self.is_payment_mode_direct_debit(self, contract.payment_mode_id):
+                    raise UserError("You can't have an amount for 'Birthday Invoice' "
+                                    "or 'Christmas Invoice' if the payment mode isn't a direct debit.")
+
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         messages = self.upsert_sponsorship().with_context({"async_mode": False})
@@ -987,8 +995,10 @@ class SponsorshipContract(models.Model):
 
     def _generate_invoices(self):
         invoicer = super()._generate_invoices()
-        self._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        self._generate_gifts(invoicer, CHRISTMAS_GIFT)
+        # We don't generate gift if the contract isn't active
+        contracts = self.filtered(lambda c: c.state == 'active')
+        contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
+        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return invoicer
 
     def _generate_gifts(self, invoicer, gift_type):
@@ -1009,8 +1019,8 @@ class SponsorshipContract(models.Model):
 
         # Don't generate gift for contract that are holding gifts or if they don't have an amount for the gift
         for contract in contracts:
-            if contract.project_id.hold_gifts\
-               or eval(f"contract.{gift_type}_invoice") <= 0:
+            if contract.project_id.hold_gifts \
+                    or eval(f"contract.{gift_type}_invoice") <= 0:
                 contracts -= contract
 
         if contracts:
@@ -1158,3 +1168,8 @@ class SponsorshipContract(models.Model):
                 invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_post()
+
+    @staticmethod
+    def is_payment_mode_direct_debit(self, pay_mode):
+        if pay_mode in (self.env['account.payment.mode'].search([('payment_method_code', 'like', '%direct_debit')])):
+            return True
