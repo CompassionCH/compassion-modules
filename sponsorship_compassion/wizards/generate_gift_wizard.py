@@ -65,14 +65,13 @@ class GenerateGiftWizard(models.TransientModel):
                     )
                 # Computes the invoice date for Christmas gifts
                 else:
-                    invoice_date = self.compute_date_gift_invoice(date(today().year, 12, 25),
-                                                                  date(today().year,
-                                                                       int(self.env["ir.config_parameter"].sudo().get_param(
-                                                                           "sponsorship_compassion.christmas_inv_due_month"
-                                                                       )),
-                                                                       1
-                                                                       )
-                                                                  )
+                    invoice_date = self.compute_date_gift_invoice(
+                        date(today().year, 12, 25),
+                        date(
+                            today().year,
+                            self.env["res.config.settings"].get_param("christmas_inv_due_month", 10),
+                            1)
+                    )
             if not self.force:
                 date_start = datetime.today().replace(month=1, day=1).date()
                 inv_lines = self.env["account.move.line"].search(
@@ -85,7 +84,7 @@ class GenerateGiftWizard(models.TransientModel):
                         "&", "&",
                         ("product_id", "=", self.product_id.id),
                         ("contract_id", "=", contract.id),
-                        ("state", "!=", "cancel")
+                        ("parent_state", "!=", "cancel")
                     ]
                 )
                 if inv_lines:

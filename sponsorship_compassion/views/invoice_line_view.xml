@@ -36,7 +36,7 @@
         <field name="model">account.move.line</field>
         <field eval="18" name="priority"/>
         <field name="arch" type="xml">
-            <tree string="Invoice lines" decoration-info="state == 'draft'" decoration-bf="state in ('proforma','proforma2','open')" decoration-muted="state == 'cancel'">
+            <tree string="Invoice lines" decoration-info="parent_state == 'draft'" decoration-bf="parent_state == 'open'" decoration-muted="parent_state == 'cancel'">
                 <field name="partner_id" />
                 <field name="product_id" />
                 <field name="contract_id" />
@@ -45,7 +45,7 @@
                 <field name="quantity" sum="Total"/>
                 <field name="price_unit" />
                 <field name="price_subtotal" sum="Total"/>
-                <field name="state" />
+                <field name="parent_state" />
             </tree>
         </field>
     </record>
@@ -55,17 +55,17 @@
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <search string="Search invoice lines">
-                <filter name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft invoice lines"/>
-                <filter name="open" string="Open" domain="[('state','=','posted')]" help="Open invoice lines"/>
+                <filter name="draft" string="Draft" domain="[('parent_state','=','draft')]" help="Draft invoice lines"/>
+                <filter name="open" string="Open" domain="[('parent_state','=','posted')]" help="Open invoice lines"/>
                 <filter name="paid" string="Paid" domain="[('payment_state','=','paid')]" help="Paid invoice lines"/>
-                <filter name="cancel" string="Cancelled" domain="[('state','=','cancel')]" help="Cancelled invoice lines"/>
+                <filter name="cancel" string="Cancelled" domain="[('parent_state','=','cancel')]" help="Cancelled invoice lines"/>
                 <field name="product_id" string="Product" />
                 <field name="partner_id" string="Partner"/>
                 <group expand="0" string="Group By...">
                     <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
                     <filter name="group_product" string="Product" domain="[]" context="{'group_by':'product_id'}"/>
                     <filter name="group_contract" string="Contract" domain="[]"  context="{'group_by':'contract_id'}"/>
-                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="State" name="state" domain="[]" context="{'group_by':'parent_state'}"/>
                     <filter string="Last payment" name="last_payment" domain="[]" context="{'group_by':'last_payment'}"/>
                     <filter string="Invoice" name="invoice" domain="[]" context="{'group_by':'move_id'}" />
                 </group>
