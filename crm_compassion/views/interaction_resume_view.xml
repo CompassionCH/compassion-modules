@@ -49,9 +49,9 @@
                     <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}" readonly="1"/>
                 </group>
                 <group>
-                    <field name="subject" readonly="1"/>
+                    <field name="subject"/>
                     <field name="has_attachment" readonly="1"/>
-                    <field name="body" readonly="1"/>
+                    <field name="body"/>
                 </group>
             </form>
         </field>
