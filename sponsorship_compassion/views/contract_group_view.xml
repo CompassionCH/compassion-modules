@@ -12,13 +12,6 @@
         <field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
         <field eval="10" name="priority"/>
         <field name="arch" type="xml">
-            <group name="partner_info" position="replace">
-                <group name="partner_info">
-                    <field name="partner_id" domain="[('customer_rank', '>', 0)]" readonly="1"/>
-                    <field name="payment_mode_id"/>
-                </group>
-            </group>
-
             <group name="info" position="inside">
                 <field name="contains_sponsorship" invisible="1"/>
             </group>

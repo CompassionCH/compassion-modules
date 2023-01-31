@@ -179,6 +179,10 @@ class SponsorshipContract(models.Model):
         compute="_compute_can_write_letter",
         help="Whether letter to the child is possible at the moment or not"
     )
+    is_direct_debit = fields.Boolean(
+        compute="_compute_is_direct_debit",
+        help="Is paid by direct debit"
+    )
 
     _sql_constraints = [
         (
@@ -412,6 +416,11 @@ class SponsorshipContract(models.Model):
         invoices = super(SponsorshipContract, valid_contracts)._filter_due_invoices()
         return invoices.filtered(lambda i: i.invoice_category != "gift")
 
+    def _compute_is_direct_debit(self):
+        dd_modes = self.env['account.payment.mode'].search([('payment_method_code', 'like', '%direct_debit')])
+        for contract in self:
+            contract.is_direct_debit = contract.payment_mode_id in dd_modes
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -537,7 +546,7 @@ class SponsorshipContract(models.Model):
     def unlink(self):
         for contract in self:
             # We can only delete draft sponsorships.
-            if "S" in contract.type and contract.state != "draft":
+            if "S" in contract.type and contract.state != "draft" and not self.env.context.get("force_delete"):
                 raise UserError(_("You cannot delete a validated sponsorship."))
             # Remove sponsor of child and release it
             if "S" in contract.type and contract.child_id:
@@ -855,7 +864,7 @@ class SponsorshipContract(models.Model):
     def _check_gift_invoice_method(self):
         for contract in self:
             if contract.birthday_invoice or contract.christmas_invoice:
-                if not self.is_payment_mode_direct_debit(self, contract.payment_mode_id):
+                if not contract.is_direct_debit:
                     raise UserError("You can't have an amount for 'Birthday Invoice' "
                                     "or 'Christmas Invoice' if the payment mode isn't a direct debit.")
 
@@ -1005,7 +1014,7 @@ class SponsorshipContract(models.Model):
         """ Creates the annual gifts for sponsorships that
         have set the option for automatic birthday or christmas gifts creation. """
         logger.debug(f"Automatic {gift_type} Gift Generation Started.")
-
+        invoice_err_gen = False
         # Search active Sponsorships with automatic birthday gift
         contracts = self
 
@@ -1048,12 +1057,12 @@ class SponsorshipContract(models.Model):
                     self._generate_gift(gift_wizard, contract, invoicer, gift_type)
                 except Exception as e:
                     logger.error(f"Gift generation failed. {e}")
-                    self.env.context["invoice_err_gen"] = True
+                    invoice_err_gen = True
                 finally:
                     count += 1
 
         logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
-        return invoicer
+        return invoicer.with_context(invoice_err_gen=invoice_err_gen)
 
     def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
         gift_wizard.write(
@@ -1168,8 +1177,3 @@ class SponsorshipContract(models.Model):
                 invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_post()
-
-    @staticmethod
-    def is_payment_mode_direct_debit(self, pay_mode):
-        if pay_mode in (self.env['account.payment.mode'].search([('payment_method_code', 'like', '%direct_debit')])):
-            return True
