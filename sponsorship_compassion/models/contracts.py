@@ -599,63 +599,6 @@ class SponsorshipContract(models.Model):
                 child.hold_id = hold
         return True
 
-    def get_inv_lines_data(self):
-        """ Contract gifts relate their invoice lines to sponsorship,
-            Correspondence sponsorships don't create invoice lines.
-            Add analytic account to invoice_lines.
-        """
-        contracts = self.filtered(lambda c: c.total_amount != 0)
-
-        res = list()
-        for contract in contracts:
-            invl_datas = super(SponsorshipContract, contract).build_inv_lines_data()
-
-            if contract.type == "G":
-                for i in range(0, len(invl_datas)):
-                    sponsorship = contract.contract_line_ids[i].sponsorship_id
-                    gen_states = sponsorship.group_id._get_gen_states()
-                    if (
-                            sponsorship.state in gen_states
-                            and not sponsorship.project_id.hold_gifts
-                    ):
-                        invl_datas[i]["contract_id"] = sponsorship.id
-                    else:
-                        logger.error(
-                            f"No active sponsorship found for "
-                            f"child {sponsorship.child_code}. "
-                            f"The gift contract with "
-                            f"id {contract.id} is not valid."
-                        )
-                        continue
-
-            # Find the analytic account
-            for invl_data in invl_datas:
-                contract = self.env["recurring.contract"].browse(
-                    invl_data["contract_id"]
-                )
-                product_id = invl_data["product_id"]
-                partner_id = contract.partner_id.id
-                analytic = contract.origin_id.analytic_id
-                if not analytic:
-                    a_default = self.env["account.analytic.default"].account_get(
-                        product_id, partner_id, date=fields.Date.today()
-                    )
-                    analytic = a_default and a_default.analytic_id
-                if analytic:
-                    invl_data.update({"analytic_account_id": analytic.id})
-                    a_default = self.env["account.analytic.default"].account_get(
-                        product_id, partner_id, date=fields.Date.today()
-                    )
-
-                tags = a_default and a_default.analytic_tag_ids
-                if tags:
-                    invl_data.update({"analytic_tag_ids": [(6, 0, tags.ids)]})
-
-            # Append the invoice lines.
-            res.extend(invl_datas)
-
-        return res
-
     def put_child_on_no_money_hold(self):
         """Convert child to No Money Hold"""
         self.ensure_one()

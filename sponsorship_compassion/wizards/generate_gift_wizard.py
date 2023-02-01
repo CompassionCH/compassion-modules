@@ -129,52 +129,9 @@ class GenerateGiftWizard(models.TransientModel):
             If any custom data is wanted in invoice from contract group, just
             inherit this method.
         """
-        self.ensure_one()
         contract = self.env.context.get("invoice_contract")
         if not contract:
             raise Exception(f"This method should get a contract passt to context.\n{os.path.basename(__file__)}")
-        partner_id = contract.partner_id.id
-        # Cannot create contract with different multiple (is it possible ?)
-        partner_product_price_list = self.env['product.pricelist']._get_partner_pricelist_multi([partner_id],
-                                                                                                company_id=contract.company_id)
-        journal = self.env['account.journal'].search([
-            ('type', '=', 'sale'),
-            ('company_id', '=', contract.company_id.id)
-        ], limit=1)
-        inv_data = {
-            'payment_reference': contract.group_id.ref,  # Accountant reference
-            'ref': contract.group_id.ref,  # Internal reference
-            'move_type': 'out_invoice',
-            'partner_id': partner_id,
-            'journal_id': journal.id,
-            'currency_id': partner_product_price_list.get(partner_id).currency_id.id,
-            'invoice_date': invoicing_date,  # Accountant date
-            'date': datetime.now(),  # Date of generation of the invoice
-            'recurring_invoicer_id': invoicer.id,
-            'payment_mode_id': contract.group_id.payment_mode_id.id,
-            'company_id': contract.company_id.id,
-            # Field for the invoice_due_date to be automatically calculated
-            'invoice_payment_term_id': contract.partner_id.property_payment_term_id.id or self.env.ref(
-                "account.account_payment_term_immediate").id,
-            'invoice_line_ids': [
-                (0, 0, self.build_inv_lines_data(contract))
-            ],
-            'narration': "\n".join(contract.comment or "")
-        }
-        return inv_data
-
-    def build_inv_lines_data(self, contract):
-        """ Setup a dict with data passed to invoice_line.create.
-        If any custom data is wanted in invoice line from contract,
-        just inherit this method.
-        :return: list of dictionaries
-        """
-        return {
-            'name': self.product_id.name,
-            'price_unit': self.amount,
-            'quantity': 1,
-            'product_id': self.product_id.id,
-            'contract_id': contract.id,
-            'account_id': self.product_id.with_company(
-                contract.company_id.id).property_account_income_id.id or False
-        }
+        contract._build_invoice_gen_data(invoicing_date=invoicing_date,
+                                         invoicer=invoicer,
+                                         gift_wizard=self)
