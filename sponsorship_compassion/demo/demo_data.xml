@@ -2,6 +2,7 @@
     <record id="account_type_debiteur" model="account.account.type">
         <field name="name">Bilan : Debiteurs</field>
         <field name="type">receivable</field>
+        <field name="internal_group">income</field>
     </record>
     <record id="post_account_receivable" model="account.account">
         <field name="code">1050</field>

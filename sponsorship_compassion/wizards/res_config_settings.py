@@ -28,3 +28,11 @@ class StaffNotificationSettings(models.TransientModel):
         config_parameter="sponsorship_compassion.time_allowed_for_letters",
         default=90
     )
+
+    christmas_inv_due_month = fields.Integer(
+        help="Set the month defined for the christmas invoice to be done. "
+             "are still allowed",
+        config_parameter="sponsorship_compassion.christmas_inv_due_month",
+        # Default invoices for christmas gift are due for two months before Christmas
+        default=10
+    )

@@ -7,14 +7,19 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
+import calendar
 import logging
+import os
+
+from dateutil import parser
+from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
+from dateutil.utils import today
 
 from odoo import api, fields, models, _
 from odoo.tools import config
-from ..models.product_names import GIFT_REF
+from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 test_mode = config.get("test_enable")
@@ -38,54 +43,56 @@ class GenerateGiftWizard(models.TransientModel):
     )
 
     def generate_invoice(self):
-        # Read data in english
         self.ensure_one()
         if not self.description:
             self.description = self.product_id.display_name
-        invoice_ids = list()
-        gen_states = self.env["recurring.contract.group"]._get_gen_states()
-
-        # Ids of contracts are stored in context
-        for contract in (
-                self.env["recurring.contract"]
+        invoice_ids = []
+        for contract in (self.env["recurring.contract"]
                 .browse(self.env.context.get("active_ids", list()))
-                .filtered(lambda c: "S" in c.type and c.state in gen_states)
+                .filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
         ):
-            if self.product_id.default_code == GIFT_REF[0]:
-                # Birthday Gift
-                if not contract.child_id.birthdate:
-                    logger.error("The birthdate of the child is missing!")
-                    continue
-                # This is set in the view in order to let the user
-                # choose the invoice date. Otherwise (called from code)
-                # the invoice date will be computed based on the
-                # birthday of the child.
-                if self.env.context.get("force_date"):
-                    invoice_date = self.invoice_date
-                else:
-                    invoice_date, late = self.compute_date_birthday_invoice(
+            # Logs an error if the birthdate is missing and skip iteration
+            if self.product_id.default_code == GIFT_PRODUCTS_REF[0] and not contract.child_id.birthdate:
+                logger.error("The birthdate of the child is missing!")
+                continue
+            # Sets the invoice date to the one in the context if it exists
+            invoice_date = self.invoice_date if self.env.context.get("force_date") else False
+            if not invoice_date:
+                # Computes the invoice date for birthday gifts
+                if self.product_id.default_code == GIFT_PRODUCTS_REF[0]:
+                    invoice_date = self.compute_date_gift_invoice(
                         contract.child_id.birthdate, self.invoice_date
                     )
-                begin_year = self.invoice_date.replace(month=1, day=1)
-                end_year = begin_year.replace(month=12, day=31)
-                # If a gift was already made for the year, abort
-                invoice_line_ids = self.env["account.move.line"].search(
-                    [   "|",
+                # Computes the invoice date for Christmas gifts
+                else:
+                    invoice_date = self.compute_date_gift_invoice(
+                        date(today().year, 12, 25),
+                        date(
+                            today().year,
+                            self.env["res.config.settings"].get_param("christmas_inv_due_month", 10),
+                            1)
+                    )
+            if not self.force:
+                date_start = datetime.today().replace(month=1, day=1).date()
+                inv_lines = self.env["account.move.line"].search(
+                    [
+                        "|",
                         ("due_date", "=", invoice_date),
                         "&",
-                        ("due_date", ">=", begin_year),
-                        ("due_date", "<=", end_year),
+                        ("move_id.date", ">=", date_start),
+                        ("move_id.date", "<=", date_start.replace(month=12)),
                         "&", "&",
                         ("product_id", "=", self.product_id.id),
                         ("contract_id", "=", contract.id),
-                        ("state", "!=", "cancel")
+                        ("parent_state", "!=", "cancel")
                     ]
                 )
-                if invoice_line_ids and not self.force:
+                if inv_lines:
                     continue
-            else:
-                invoice_date = self.invoice_date
-            inv_data = self._setup_invoice(contract, invoice_date)
+
+            inv_data = self.with_context({"invoice_contract": contract})._build_invoice_gen_data(invoice_date,
+                                                                                                 self.env.context.get(
+                                                                                                     "invoicer"))
             invoice = self.env["account.move"].create(inv_data)
             invoice.partner_bank_id = contract.partner_id.bank_ids[:1].id
             invoice.action_post()
@@ -94,84 +101,80 @@ class GenerateGiftWizard(models.TransientModel):
             if not test_mode:
                 self.env.cr.commit()  # pylint: disable=invalid-commit
             invoice_ids.append(invoice.id)
-
         return {
             "name": _("Generated Invoices"),
             "view_mode": "list,form",
             "res_model": "account.move",
             "domain": [("id", "in", invoice_ids)],
-            # "context": {"form_view_ref": "sponsorship_compassion.view_invoice_child_form"},
             "type": "ir.actions.act_window",
         }
 
-    def _setup_invoice(self, contract, invoice_date):
-        journal_id = (
-            self.env["account.journal"]
-                .search(
-                [("type", "=", "sale"), ("company_id", "=", contract.company_id.id)],
-                limit=1,
-            )
-            .id
-        )
-        return {
-            "move_type": "out_invoice",
-            "partner_id": contract.gift_partner_id.id,
-            "journal_id": journal_id,
-            'currency_id': contract.company_id.currency_id.id,
-            "invoice_date": invoice_date,
-            "payment_mode_id": contract.payment_mode_id.id,
-            "company_id": contract.mapped('company_id')[:1].id,
-            "recurring_invoicer_id": self.env.context.get(
-                "recurring_invoicer_id", False
-            ),
-            "invoice_line_ids": [
-                (
-                    0,
-                    0,
-                    self.with_context(journal_id=journal_id)._setup_invoice_line(
-                        contract
-                    ),
-                ),
-            ],
-        }
+    @staticmethod
+    def compute_date_gift_invoice(gift_event_date, invoice_due_date):
+        """
+        Set date of invoice two months before gift event
+        :param gift_event_date: date of the gift event
+        :param invoice_due_date: due date of the invoice
+        :return: new_date, late (new invoice due date, whether the invoice is late or not)
+        """
+        new_date = gift_event_date.replace(year=today().year) + relativedelta(months=-2)
+        if new_date < invoice_due_date:
+            new_date = new_date + relativedelta(years=1)
+        # Ensure that the day of the new date is within the range of days in the month
+        new_date = new_date.replace(day=1)
+        return new_date
 
-    def _setup_invoice_line(self, contract):
+    def _build_invoice_gen_data(self, invoicing_date, invoicer):
+        """ Setup a dict with data passed to invoice.create.
+            If any custom data is wanted in invoice from contract group, just
+            inherit this method.
+        """
         self.ensure_one()
-        product = self.product_id
-
-        inv_line_data = {
-            "name": self.description,
-            "account_id": product.with_company(contract.company_id.id).property_account_income_id.id or False,
-            "price_unit": self.amount,
-            "quantity": 1,
-            "product_id": product.id,
-            "contract_id": contract.id,
+        contract = self.env.context.get("invoice_contract")
+        if not contract:
+            raise Exception(f"This method should get a contract passt to context.\n{os.path.basename(__file__)}")
+        partner_id = contract.partner_id.id
+        # Cannot create contract with different multiple (is it possible ?)
+        partner_product_price_list = self.env['product.pricelist']._get_partner_pricelist_multi([partner_id],
+                                                                                                company_id=contract.company_id)
+        journal = self.env['account.journal'].search([
+            ('type', '=', 'sale'),
+            ('company_id', '=', contract.company_id.id)
+        ], limit=1)
+        inv_data = {
+            'payment_reference': contract.group_id.ref,  # Accountant reference
+            'ref': contract.group_id.ref,  # Internal reference
+            'move_type': 'out_invoice',
+            'partner_id': partner_id,
+            'journal_id': journal.id,
+            'currency_id': partner_product_price_list.get(partner_id).currency_id.id,
+            'invoice_date': invoicing_date,  # Accountant date
+            'date': datetime.now(),  # Date of generation of the invoice
+            'recurring_invoicer_id': invoicer.id,
+            'payment_mode_id': contract.group_id.payment_mode_id.id,
+            'company_id': contract.company_id.id,
+            # Field for the invoice_due_date to be automatically calculated
+            'invoice_payment_term_id': contract.partner_id.property_payment_term_id.id or self.env.ref(
+                "account.account_payment_term_immediate").id,
+            'invoice_line_ids': [
+                (0, 0, self.build_inv_lines_data(contract))
+            ],
+            'narration': "\n".join(contract.comment or "")
         }
+        return inv_data
 
-        # Define analytic journal
-        analytic = self.env["account.analytic.default"].account_get(
-            product.id, contract.partner_id.id, date=fields.Date.today()
-        )
-        if analytic.analytic_id:
-            inv_line_data["analytic_account_id"] = analytic.analytic_id.id
-        if analytic.analytic_tag_ids:
-            inv_line_data["analytic_tag_ids"] = [(6, 0, analytic.analytic_tag_ids.ids)]
-
-        return inv_line_data
-
-    @api.model
-    def compute_date_birthday_invoice(self, child_birthdate, payment_date):
-        """Set date of invoice two months before child's birthdate"""
-        inv_date = payment_date
-        birthdate = child_birthdate
-        new_date = inv_date
-        late = False
-        if birthdate.month >= inv_date.month + 2:
-            new_date = inv_date.replace(day=28, month=birthdate.month - 2)
-        elif birthdate.month + 3 < inv_date.month:
-            new_date = birthdate.replace(
-                day=28, year=inv_date.year + 1
-            ) + relativedelta(months=-2)
-            new_date = max(new_date, inv_date)
-            late = True
-        return new_date, late
+    def build_inv_lines_data(self, contract):
+        """ Setup a dict with data passed to invoice_line.create.
+        If any custom data is wanted in invoice line from contract,
+        just inherit this method.
+        :return: list of dictionaries
+        """
+        return {
+            'name': self.product_id.name,
+            'price_unit': self.amount,
+            'quantity': 1,
+            'product_id': self.product_id.id,
+            'contract_id': contract.id,
+            'account_id': self.product_id.with_company(
+                contract.company_id.id).property_account_income_id.id or False
+        }

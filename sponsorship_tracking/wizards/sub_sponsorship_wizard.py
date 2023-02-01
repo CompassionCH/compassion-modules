@@ -63,15 +63,10 @@ class SubSponsorshipWizard(models.TransientModel):
             }
         )
         today = datetime.today()
-        next_invoice_date = contract.next_invoice_date.replace(
-            month=today.month, year=today.year
-        )
         if contract.last_paid_invoice_date:
             sub_invoice_date = contract.last_paid_invoice_date + relativedelta(months=1)
-            next_invoice_date = max(next_invoice_date, sub_invoice_date)
 
         if self.child_id:
-            sub_contract.next_invoice_date = next_invoice_date
             return {
                 "name": sub_contract.name,
                 "type": "ir.actions.act_window",
@@ -94,7 +89,6 @@ class SubSponsorshipWizard(models.TransientModel):
                     {
                         "default_take": 1,
                         "contract_id": sub_contract.id,
-                        "next_invoice_date": next_invoice_date,
                         "default_type": HoldType.SUB_CHILD_HOLD.value,
                         "default_channel": "sub",
                         "default_return_action": "sub",
