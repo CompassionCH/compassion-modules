@@ -32,29 +32,24 @@ class GenerateGiftWizard(models.TransientModel):
     _description = "Gift Generation Wizard"
 
     amount = fields.Float("Gift Amount", required=True)
-    product_id = fields.Many2one(
-        "product.product", "Gift Type", required=True, readonly=False
-    )
+    product_id = fields.Many2one("product.product", "Gift Type", required=True, readonly=False)
+    contract_id = fields.Many2one("recurring.contract", "Contract", required=True)
     invoice_date = fields.Date(default=fields.Date.today())
     description = fields.Char("Additional comments", size=200)
-    force = fields.Boolean(
-        "Force creation",
-        help="Creates the gift even if one was already " "made the same year.",
-    )
+    force = fields.Boolean("Force creation", help="Creates the gift even if one was already made the same year.")
+    quantity = fields.Integer(default=1)
 
     def generate_invoice(self):
         self.ensure_one()
         if not self.description:
             self.description = self.product_id.display_name
         invoice_ids = []
-        for contract in (self.env["recurring.contract"]
-                .browse(self.env.context.get("active_ids", list()))
-                .filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
-        ):
+        contract = self.contract_id.filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
+        if contract:
             # Logs an error if the birthdate is missing and skip iteration
             if self.product_id.default_code == GIFT_PRODUCTS_REF[0] and not contract.child_id.birthdate:
                 logger.error("The birthdate of the child is missing!")
-                continue
+                return 1
             # Sets the invoice date to the one in the context if it exists
             invoice_date = self.invoice_date if self.env.context.get("force_date") else False
             if not invoice_date:
@@ -88,11 +83,9 @@ class GenerateGiftWizard(models.TransientModel):
                     ]
                 )
                 if inv_lines:
-                    continue
+                    return 1
 
-            inv_data = self.with_context({"invoice_contract": contract})._build_invoice_gen_data(invoice_date,
-                                                                                                 self.env.context.get(
-                                                                                                     "invoicer"))
+            inv_data = self._build_invoice_gen_data(invoice_date, self.env.context.get("invoicer"))
             invoice = self.env["account.move"].create(inv_data)
             invoice.partner_bank_id = contract.partner_id.bank_ids[:1].id
             invoice.action_post()
@@ -129,9 +122,8 @@ class GenerateGiftWizard(models.TransientModel):
             If any custom data is wanted in invoice from contract group, just
             inherit this method.
         """
-        contract = self.env.context.get("invoice_contract")
-        if not contract:
+        if not self.contract_id:
             raise Exception(f"This method should get a contract passt to context.\n{os.path.basename(__file__)}")
-        contract._build_invoice_gen_data(invoicing_date=invoicing_date,
-                                         invoicer=invoicer,
-                                         gift_wizard=self)
+        return self.contract_id.group_id._build_invoice_gen_data(invoicing_date=invoicing_date,
+                                                                 invoicer=invoicer,
+                                                                 gift_wizard=self)

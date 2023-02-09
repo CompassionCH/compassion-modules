@@ -19,7 +19,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 
-from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF
+from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -945,14 +945,6 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    def _generate_invoices(self):
-        invoicer = super()._generate_invoices()
-        # We don't generate gift if the contract isn't active
-        contracts = self.filtered(lambda c: c.state == 'active')
-        contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
-        return invoicer
-
     def _generate_gifts(self, invoicer, gift_type):
         """ Creates the annual gifts for sponsorships that
         have set the option for automatic birthday or christmas gifts creation. """
@@ -989,6 +981,7 @@ class SponsorshipContract(models.Model):
                         "invoice_date": datetime.today().date(),
                         "product_id": product_id,
                         "amount": 0.0,
+                        "contract_id": 0
                     }
                 )
             )
@@ -1009,9 +1002,12 @@ class SponsorshipContract(models.Model):
 
     def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
         gift_wizard.write(
-            {"amount": eval(f"contract.{gift_type}_invoice")}
+            {
+                "amount": eval(f"contract.{gift_type}_invoice"),
+                "contract_id": contract.id
+            }
         )
-        gift_wizard.with_context(active_ids=contract.id, invoicer=invoicer).generate_invoice()
+        gift_wizard.with_context(invoicer=invoicer).generate_invoice()
 
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """

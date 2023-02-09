@@ -5,7 +5,6 @@
         <field name="model">recurring.contract</field>
         <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
         <field name="arch" type="xml">
-
             <!-- Hide reference -->
             <field name="reference" position="replace">
                 <field name="name" readonly="True"/>
@@ -49,7 +48,7 @@
             </xpath>
 
             <!-- Automatic birthday & christmas invoice -->
-            <field name="invoice_suspended_until" position="after">
+            <field name="start_date" position="before">
                 <field name="birthday_invoice"
                        attrs="{'invisible': ['|', ('state', 'in', ['terminated', 'cancelled']), ('type', 'not in', ['S','SC','SWP'])]}"/>
                 <field name="christmas_invoice"

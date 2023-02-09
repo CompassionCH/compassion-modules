@@ -194,6 +194,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
                 "amount": 200.0,
                 "invoice_date": fields.Date.today(),
+                "contract_id": self.contract.id
             }
         )
         gift_inv_ids = gift_wiz.with_context(
@@ -670,6 +671,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
                 "amount": 200.0,
                 "invoice_date": date.today(),
+                "contract_id": self.contract.id
             }
         )
 
