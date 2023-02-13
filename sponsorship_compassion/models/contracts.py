@@ -19,7 +19,8 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 
-from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF
+from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, \
+    PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -599,63 +600,6 @@ class SponsorshipContract(models.Model):
                 child.hold_id = hold
         return True
 
-    def get_inv_lines_data(self):
-        """ Contract gifts relate their invoice lines to sponsorship,
-            Correspondence sponsorships don't create invoice lines.
-            Add analytic account to invoice_lines.
-        """
-        contracts = self.filtered(lambda c: c.total_amount != 0)
-
-        res = list()
-        for contract in contracts:
-            invl_datas = super(SponsorshipContract, contract).build_inv_lines_data()
-
-            if contract.type == "G":
-                for i in range(0, len(invl_datas)):
-                    sponsorship = contract.contract_line_ids[i].sponsorship_id
-                    gen_states = sponsorship.group_id._get_gen_states()
-                    if (
-                            sponsorship.state in gen_states
-                            and not sponsorship.project_id.hold_gifts
-                    ):
-                        invl_datas[i]["contract_id"] = sponsorship.id
-                    else:
-                        logger.error(
-                            f"No active sponsorship found for "
-                            f"child {sponsorship.child_code}. "
-                            f"The gift contract with "
-                            f"id {contract.id} is not valid."
-                        )
-                        continue
-
-            # Find the analytic account
-            for invl_data in invl_datas:
-                contract = self.env["recurring.contract"].browse(
-                    invl_data["contract_id"]
-                )
-                product_id = invl_data["product_id"]
-                partner_id = contract.partner_id.id
-                analytic = contract.origin_id.analytic_id
-                if not analytic:
-                    a_default = self.env["account.analytic.default"].account_get(
-                        product_id, partner_id, date=fields.Date.today()
-                    )
-                    analytic = a_default and a_default.analytic_id
-                if analytic:
-                    invl_data.update({"analytic_account_id": analytic.id})
-                    a_default = self.env["account.analytic.default"].account_get(
-                        product_id, partner_id, date=fields.Date.today()
-                    )
-
-                tags = a_default and a_default.analytic_tag_ids
-                if tags:
-                    invl_data.update({"analytic_tag_ids": [(6, 0, tags.ids)]})
-
-            # Append the invoice lines.
-            res.extend(invl_datas)
-
-        return res
-
     def put_child_on_no_money_hold(self):
         """Convert child to No Money Hold"""
         self.ensure_one()
@@ -1002,14 +946,6 @@ class SponsorshipContract(models.Model):
                     vals.get("correspondent_id") or contract.correspondent_id.id
                 )
 
-    def _generate_invoices(self):
-        invoicer = super()._generate_invoices()
-        # We don't generate gift if the contract isn't active
-        contracts = self.filtered(lambda c: c.state == 'active')
-        contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
-        contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
-        return invoicer
-
     def _generate_gifts(self, invoicer, gift_type):
         """ Creates the annual gifts for sponsorships that
         have set the option for automatic birthday or christmas gifts creation. """
@@ -1019,11 +955,9 @@ class SponsorshipContract(models.Model):
         contracts = self
 
         product_id = (
-            self.env["product.product"]
-            .search(
+            self.env["product.product"].search(
                 [("default_code", "=", GIFT_PRODUCTS_REF[0] if gift_type == BIRTHDAY_GIFT else PRODUCT_GIFT_CHRISTMAS)],
-                limit=1)
-            .id
+                limit=1).id
         )
 
         # Don't generate gift for contract that are holding gifts or if they don't have an amount for the gift
@@ -1046,6 +980,7 @@ class SponsorshipContract(models.Model):
                         "invoice_date": datetime.today().date(),
                         "product_id": product_id,
                         "amount": 0.0,
+                        "contract_id": 0
                     }
                 )
             )
@@ -1066,9 +1001,12 @@ class SponsorshipContract(models.Model):
 
     def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
         gift_wizard.write(
-            {"amount": eval(f"contract.{gift_type}_invoice")}
+            {
+                "amount": eval(f"contract.{gift_type}_invoice"),
+                "contract_id": contract.id
+            }
         )
-        gift_wizard.with_context(active_ids=contract.id, invoicer=invoicer).generate_invoice()
+        gift_wizard.with_context(invoicer=invoicer).generate_invoice()
 
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 3 months. """

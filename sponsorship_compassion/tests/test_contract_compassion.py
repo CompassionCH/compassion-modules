@@ -25,7 +25,6 @@ class BaseContractCompassionTest(TestRecurringContract):
                 'pricelist_id': self.env.ref('product.list0').id,
                 'contract_line_ids': [
                     (0, 0, {'product_id': self.product.id, 'amount': 250, 'quantity': 800})],
-                'invoice_day': '12',
                 "birthday_invoice": 90000
             })
         with self.assertRaises(UserError):
@@ -36,6 +35,5 @@ class BaseContractCompassionTest(TestRecurringContract):
                 'pricelist_id': self.env.ref('product.list0').id,
                 'contract_line_ids': [
                     (0, 0, {'product_id': self.product.id, 'amount': 250, 'quantity': 800})],
-                'invoice_day': '12',
                 "christmas_invoice": 90000
             })

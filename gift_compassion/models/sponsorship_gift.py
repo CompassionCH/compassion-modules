@@ -194,9 +194,6 @@ class SponsorshipGift(models.Model):
                 gift.gift_date = self.env[
                     "generate.gift.wizard"
                 ].compute_date_gift_invoice(gift.child_id.birthdate, inv_dates[0])
-                if late:
-                    gift.state = "verify"
-                    gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")
             else:
                 gift.gift_date = max([d for d in inv_dates])
 
@@ -530,6 +527,7 @@ class SponsorshipGift(models.Model):
         move_lines_data = list()
         analytic = param_obj.get_param("gift_analytic_id")
         analytic_tag = param_obj.get_param("gift_analytic_tag_id")
+        product_id = self.sudo().invoice_line_ids[0].product_id.id
         # Create the debit lines from the Gift Account
         invoiced_amount = sum(self.sudo().invoice_line_ids.mapped("price_subtotal") or [0])
         if invoiced_amount:
@@ -537,6 +535,7 @@ class SponsorshipGift(models.Model):
                 move_lines_data.append(
                     {
                         "partner_id": invl.partner_id.id,
+                        "product_id": product_id,
                         "account_id": account_debit,
                         "name": invl.name,
                         "debit": invl.price_subtotal,
@@ -555,6 +554,7 @@ class SponsorshipGift(models.Model):
             move_lines_data.append(
                 {
                     "partner_id": self.partner_id.id,
+                    "product_id": product_id,
                     "account_id": account_debit,
                     "name": self.name,
                     "debit": amount,
@@ -571,6 +571,7 @@ class SponsorshipGift(models.Model):
         move_lines_data.append(
             {
                 "partner_id": self.partner_id.id,
+                "product_id": product_id,
                 "account_id": account_credit,
                 "name": self.name,
                 "date": maturity,
