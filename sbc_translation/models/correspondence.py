@@ -431,7 +431,7 @@ class Correspondence(models.Model):
                 "age": self.partner_id.age,
                 "ref": self.partner_id.ref
             },
-            "pdfUrl": f"{base_url}/web/pdf/correspondence/{self.id}",
+            "pdfUrl": f"{base_url}/b2s_image?id={self.uuid}&disposition=inline",
         }
 
     @api.multi

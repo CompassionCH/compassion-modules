@@ -39,6 +39,9 @@
         "sbc_compassion",
         "partner_contact_birthdate"
     ],
+    "external_dependencies": {
+        "python": ["pyquery"]
+    },
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",

@@ -1,0 +1,8 @@
+var f=Object.defineProperty;var m=(t,e,s)=>e in t?f(t,e,{enumerable:!0,configurable:!0,writable:!0,value:s}):t[e]=s;var n=(t,e,s)=>(m(t,typeof e!="symbol"?e+"":e,s),s);import{C as d,x as u,L as g,u as x,m as v}from"./index.79c05fa8.js";import{T as E}from"./TranslatorModal.0abf5672.js";const p="__error__",c=new Map,o=new Map,N=async t=>new Promise((e,s)=>{c.has(t)&&e(c.get(t)),o.has(t)?o.get(t).push(a=>e(a)):(o.set(t,[(a,i)=>i?s(i):e(a)]),v.translators.find(t).then(a=>{const i=a?a.name:void 0;c.set(t,i);const l=o.get(t)||[];o.delete(t),l.forEach(h=>h(i))}).catch(a=>{c.set(t,p);const i=o.get(t)||[];o.delete(t),i.forEach(l=>l(void 0,a))}))});class r extends d{constructor(){super(...arguments);n(this,"state",x({loading:!1,authorized:!0,translatorName:void 0,active:!1}))}setup(){this.state.loading=!0,N(this.props.translatorId).then(s=>{s===p?this.state.authorized=!1:this.state.translatorName=s}).catch(()=>{this.state.authorized=!1}).finally(()=>{this.state.loading=!1})}}n(r,"template",u`
+    <button t-if="state.authorized" class="text-blue-700 hover:text-compassion transition-colors flex gap-2" t-att-class="props.class || ''" t-on-click="() => state.active = true">
+      <t t-if="state.translatorName" t-esc="state.translatorName" />
+    </button>
+    <span t-if="!state.authorized" class="text-slate-500 text-sm italic">Hidden</span>
+    <Loader t-if="state.loading" />
+    <TranslatorModal translatorId="state.active ? props.translatorId : undefined" onClose="() => state.active = false" />
+  `),n(r,"props",{translatorId:{type:Number},class:{type:String,optional:!0}}),n(r,"components",{Loader:g,TranslatorModal:E});export{r as T};
