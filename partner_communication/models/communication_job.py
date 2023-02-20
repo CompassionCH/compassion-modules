@@ -555,31 +555,10 @@ class CommunicationJob(models.Model):
         return action
 
     @api.multi
-    def log_call(self):
-        return {
-            "name": _("Log your call"),
-            "type": "ir.actions.act_window",
-            "view_type": "form",
-            "view_mode": "form",
-            "res_model": "partner.communication.call.wizard",
-            "context": self.with_context(
-                {
-                    "click2dial_id": self.id,
-                    "phone_number": self.partner_phone or self.partner_mobile,
-                    "timestamp": fields.Datetime.now(),
-                    "default_communication_id": self.id,
-                }
-            ).env.context,
-            "target": "new",
-        }
-
-    @api.multi
     def call(self):
         """ Call partner from tree view button. """
         self.ensure_one()
-        self.env["phone.common"].with_context(
-            click2dial_model=self._name, click2dial_id=self.id
-        ).click2dial(self.partner_phone or self.partner_mobile)
+        self.env["phone.common"].click2dial(self.partner_phone or self.partner_mobile)
         return self.log_call()
 
     @api.multi

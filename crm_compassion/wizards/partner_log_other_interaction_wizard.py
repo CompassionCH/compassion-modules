@@ -6,10 +6,10 @@ class LogOtherInteractionWizard(models.TransientModel):
     _description = "Logging wizard for other interactions"
 
     partner_id = fields.Many2one("res.partner", "Partner", default=lambda self: self.env.context.get("active_id"))
-    subject = fields.Char()
-    other_type = fields.Char()
+    subject = fields.Char(required=True)
+    other_type = fields.Char(required=True)
     date = fields.Datetime(default=fields.Datetime.now)
-    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing")])
+    direction = fields.Selection([("in", "Incoming"), ("out", "Outgoing")], required=True)
     body = fields.Html()
 
     def log_interaction(self):

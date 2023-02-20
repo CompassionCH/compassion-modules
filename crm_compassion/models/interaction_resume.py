@@ -12,7 +12,6 @@ from odoo.exceptions import UserError
 
 
 class InteractionResume(models.TransientModel):
-
     _name = "interaction.resume"
     _description = "Resume of a given partner"
     _order = "communication_date desc"
@@ -64,14 +63,11 @@ class InteractionResume(models.TransientModel):
         :return: True
         """
         original_partner = self.env["res.partner"].browse(partner_id)
-        email_address = original_partner.email
-        partners_with_same_email_ids = (
-            self.env["res.partner"]
-                .search([("email", "!=", False), ("email", "=", email_address)])
-                .ids
-        ) + [partner_id] + original_partner.other_contact_ids.ids
-
-        self.search([("partner_id", "in", partners_with_same_email_ids)]).unlink()
+        partner_email = original_partner.email
+        partner_ids = [partner_id]
+        partner_ids += original_partner.mapped("other_contact_ids").ids
+        partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email)]).ids
+        self.search([("partner_id", "in", partner_ids), ("communication_type", "=", "Email")]).unlink()
         self.env.cr.execute(
             """
                     -- Partner Communications (both e-mail and physical)
@@ -131,7 +127,7 @@ class InteractionResume(models.TransientModel):
                         0 as other_interaction_id,
                         false as has_attachment
                         FROM "crm_phonecall" as crmpc
-                        WHERE crmpc.partner_id = %s AND crmpc.state = 'done'
+                        WHERE crmpc.partner_id = ANY(%s) AND crmpc.state = 'done'
                         )
             -- outgoing e-mails
                     UNION (
@@ -253,17 +249,17 @@ class InteractionResume(models.TransientModel):
                         o.id as other_interaction_id,
                         false as has_attachment
                         FROM "partner_log_other_interaction" as o
-                        WHERE o.partner_id = %s
+                        WHERE o.partner_id = ANY(%s)
                         )
             ORDER BY communication_date desc
                             """,
             (
-                partners_with_same_email_ids,
-                partner_id,
-                partners_with_same_email_ids,
-                email_address or "",
-                partners_with_same_email_ids,
-                partner_id,
+                partner_ids,
+                partner_ids,
+                partner_ids,
+                partner_email or "",
+                partner_ids,
+                partner_ids,
             ),
         )
 

@@ -13,10 +13,8 @@ from . import communication_job
 from . import communication_attachment
 from . import res_partner
 from . import email
-from . import crm_phonecall
 from . import ir_attachment
 from . import mail_template
 from . import report_with_omr
-from . import phone_common
 from . import ir_actions
 from . import queue_job
