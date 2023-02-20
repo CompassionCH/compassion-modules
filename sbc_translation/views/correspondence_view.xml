@@ -188,6 +188,7 @@
             </field>
             <filter name="state_published" position="after">
                 <filter name="translation_pending" string="In Translation" domain="[('state', '=', 'Global Partner translation queue')]"/>
+                <separator/>
                 <filter name="my_supervision" string="My supervision" domain="[('translation_supervisor_id', '=', uid)]"/>
             </filter>
             <filter name="group_state" position="after">

@@ -299,11 +299,11 @@ class Correspondence(models.Model):
     @api.multi
     def _compute_name(self):
         for letter in self:
-            if letter.sponsorship_id and letter.communication_type_ids:
+            if letter.partner_id and letter.child_id and letter.communication_type_ids:
                 letter.name = (
                     (letter.communication_type_ids[0].name or "")
                     + " ("
-                    + (letter.sponsorship_id.partner_id.ref or "")
+                    + (letter.partner_id.ref or "")
                     + " - "
                     + (letter.child_id.local_id or "")
                     + ")"

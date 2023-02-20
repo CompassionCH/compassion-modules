@@ -218,12 +218,13 @@ class Correspondence(models.Model):
     def assign_supervisor(self):
         """
         This method assigns a supervisor for a letter.
-        Can be inherited to customize by who the letters need to be checked.
+        Can be inherited to customize by whom the letters need to be checked.
         Here it picks one manager randomly.
         """
         manager_group = self.env.ref("sbc_translation.group_manager")
-        supervisors = self.env["res.users"].search([("groups_id", "=", manager_group.id)])
-        for letter in self:
+        admin = self.env.ref("base.user_admin")
+        supervisors = self.env["res.users"].sudo().search([("groups_id", "=", manager_group.id)]) - admin
+        for letter in self.filtered(lambda l: not l.translation_supervisor_id):
             letter.translation_supervisor_id = supervisors[randint(0, len(supervisors)-1)]
         return True
 
@@ -238,8 +239,8 @@ class Correspondence(models.Model):
             "translation_issue_comments": body_html
         })
         self.assign_supervisor()
-        template = self.env.ref("sbc_translation.translation_issue_notification")
-        self.message_post_with_template(template.id)
+        template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
+        self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
         return True
 
     @api.multi
@@ -248,7 +249,7 @@ class Correspondence(models.Model):
         TP API for sending to the translator a message regarding his or her comments.
         """
         self.ensure_one()
-        reply_template = self.env.ref("sbc_translation.comments_reply")
+        reply_template = self.env.ref("sbc_translation.comments_reply").sudo()
         self.message_post_with_view(reply_template, partner_ids=[(4, self.new_translator_id.partner_id.id)], values={
             "reply": body_html,
         })
@@ -405,11 +406,14 @@ class Correspondence(models.Model):
         """ Translation Platform API for fetching letter data. """
         self.ensure_one()
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        # Gives access to related objects
+        child = self.child_id.sudo()
+        partner = self.partner_id.sudo()
         return {
             "id": self.id,
             "status": self.translation_status or "None",
             "priority": self.translation_priority or "0",
-            "title": self.name,
+            "title": self.sudo().name,
             "source": self.src_translation_lang_id.with_context(lang="en_US").name,
             "target": self.translation_language_id.with_context(lang="en_US").name,
             "unreadComments": self.unread_comments,
@@ -418,18 +422,18 @@ class Correspondence(models.Model):
             "date": fields.Date.to_string(self.scanned_date),
             "translatedElements": self.get_translated_elements() or "None",
             "child": {
-                "preferredName": self.child_id.preferred_name,
-                "fullName": self.child_id.name,
-                "sex": self.child_id.gender,
-                "age": self.child_id.age,
-                "ref": self.child_id.local_id
+                "preferredName": child.preferred_name,
+                "fullName": child.name,
+                "sex": child.gender,
+                "age": child.age,
+                "ref": child.local_id
             },
             "sponsor": {
-                "preferredName": self.partner_id.preferred_name,
-                "fullName": self.partner_id.name,
-                "sex": self.partner_id.gmc_gender[0],
-                "age": self.partner_id.age,
-                "ref": self.partner_id.ref
+                "preferredName": partner.preferred_name,
+                "fullName": partner.name,
+                "sex": partner.gmc_gender[0],
+                "age": partner.age,
+                "ref": partner.ref
             },
             "pdfUrl": f"{base_url}/b2s_image?id={self.uuid}&disposition=inline",
         }

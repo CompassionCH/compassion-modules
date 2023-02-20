@@ -140,14 +140,14 @@ class TranslationUser(models.Model):
         Translation Platform API call to fetch user info.
         """
         self.ensure_one()
-        user = self.user_id
-        partner = self.partner_id
+        user = self.user_id.sudo()
+        partner = self.partner_id.sudo()
         group_user = self.env.ref("sbc_translation.group_user")
         group_admin = self.env.ref("sbc_translation.group_manager")
         role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
         language = self.env["res.lang"].with_context(lang="en_US").search([("code", "=", partner.lang)])
         return {
-            "email": self.user_id.email or "None",
+            "email": user.email or "None",
             "role": role,
             "name": partner.name or "None",
             "age": partner.age or "None",
