@@ -557,6 +557,7 @@ class GlobalChildSearch(models.TransientModel):
         :return:
         """
         params = self.data_to_json(mapping_name)
+        params["sortBy"] = "PriorityScore"
         onramp = OnrampConnector()
         if method == "POST":
             result = onramp.send_message(service_name, method, params)
