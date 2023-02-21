@@ -67,6 +67,10 @@ class GenerateGiftWizard(models.TransientModel):
                             self.env["res.config.settings"].get_param("christmas_inv_due_month", 10),
                             1)
                     )
+            # if the generation is suspended we don't want the gift to be generated
+            if contract.group_id.invoice_suspended_until and contract.group_id.invoice_suspended_until > invoice_date:
+                logger.warning("The invoices are suspended")
+                return 1
             if not self.force:
                 date_start = datetime.today().replace(month=1, day=1).date()
                 inv_lines = self.env["account.move.line"].search(
@@ -84,7 +88,6 @@ class GenerateGiftWizard(models.TransientModel):
                 )
                 if inv_lines:
                     return 1
-
             inv_data = self._build_invoice_gen_data(invoice_date, self.env.context.get("invoicer"))
             invoice = self.env["account.move"].create(inv_data)
             invoice.partner_bank_id = contract.partner_id.bank_ids[:1].id
