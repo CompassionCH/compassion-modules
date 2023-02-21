@@ -7,17 +7,14 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import calendar
 import logging
 import os
 
-from dateutil import parser
 from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
-from dateutil.utils import today
 
-from odoo import api, fields, models, _
+from odoo import fields, models, _
 from odoo.tools import config
 from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
 
@@ -34,7 +31,7 @@ class GenerateGiftWizard(models.TransientModel):
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one("product.product", "Gift Type", required=True, readonly=False)
     contract_id = fields.Many2one("recurring.contract", "Contract", required=True)
-    invoice_date = fields.Date(default=fields.Date.today())
+    invoice_date = fields.Date(default=fields.Date.today)
     description = fields.Char("Additional comments", size=200)
     force = fields.Boolean("Force creation", help="Creates the gift even if one was already made the same year.")
     quantity = fields.Integer(default=1)
@@ -61,14 +58,14 @@ class GenerateGiftWizard(models.TransientModel):
                 # Computes the invoice date for Christmas gifts
                 else:
                     invoice_date = self.compute_date_gift_invoice(
-                        date(today().year, 12, 25),
+                        date(date.today().year, 12, 25),
                         date(
-                            today().year,
+                            date.today().year,
                             self.env["res.config.settings"].get_param("christmas_inv_due_month", 10),
                             1)
                     )
             if not self.force:
-                date_start = datetime.today().replace(month=1, day=1).date()
+                date_start = date.today().replace(month=1, day=1)
                 inv_lines = self.env["account.move.line"].search(
                     [
                         "|",
@@ -110,7 +107,7 @@ class GenerateGiftWizard(models.TransientModel):
         :param invoice_due_date: due date of the invoice
         :return: new_date, late (new invoice due date, whether the invoice is late or not)
         """
-        new_date = gift_event_date.replace(year=today().year) + relativedelta(months=-2)
+        new_date = gift_event_date.replace(year=date.today().year) + relativedelta(months=-2)
         if new_date < invoice_due_date:
             new_date = new_date + relativedelta(years=1)
         # Ensure that the day of the new date is within the range of days in the month
