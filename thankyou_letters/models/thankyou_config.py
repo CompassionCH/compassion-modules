@@ -34,7 +34,8 @@ class ThankYouConfig(models.Model):
         :param invoice_lines: account.invoice.line recordset
         :return: thankyou.config record
         """
-        assert len(self) > 0, "There should be at least one Thank you configuration."
+        if not self:
+            return self
         # Cover the case where the total_amount is smaller that all min_
         # donation amount.
 

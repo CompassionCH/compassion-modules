@@ -254,7 +254,7 @@ class TestSponsorship(BaseSponsorshipTest):
         else:
             self.assertEqual(invoice.state, "open")
         self.assertEqual(invoice1.state, "open")
-        sponsorship.contract_terminated()
+        sponsorship._contract_terminated()
         # Force cleaning invoices immediatley
         self.assertTrue(sponsorship.state, "terminated")
         if invoice_date < today:
@@ -296,7 +296,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertFalse(update_hold.called)
 
         # Termination of correspondence
-        sponsorship.contract_terminated()
+        sponsorship._contract_terminated()
         self.assertTrue(sponsorship.state, "terminated")
 
         # Create regular sponsorship
@@ -315,7 +315,7 @@ class TestSponsorship(BaseSponsorshipTest):
         hold = child.hold_id
         self.assertEqual(hold.type, "No Money Hold")
 
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         self.assertEqual(sponsorship2.state, "cancelled")
 
     def test_sponsorship_compassion_third_scenario(self):
@@ -370,7 +370,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(contract1.state, "waiting")
         self.pay_sponsorship(contract1)
         self.assertEqual(contract1.state, "active")
-        contract1.contract_cancelled()
+        contract1._contract_cancelled()
         self.assertEqual(contract1.state, "cancelled")
         self.assertTrue(contract2.unlink())
 
@@ -480,9 +480,9 @@ class TestSponsorship(BaseSponsorshipTest):
             self.assertEqual(sponsorship.state, "waiting")
             self.pay_sponsorship(sponsorship)
         sponsorship1.global_id = 12349123
-        sponsorship1.contract_terminated()
+        sponsorship1._contract_terminated()
         self.assertEqual(sponsorship1.state, "terminated")
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         self.assertEqual(sponsorship2.state, "cancelled")
 
     @mock.patch(mock_update_hold)
@@ -534,9 +534,9 @@ class TestSponsorship(BaseSponsorshipTest):
         self.validate_sponsorship(sponsorship2)
         self.pay_sponsorship(sponsorship2)
         valid(2, True)
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         valid(1, True)
-        sponsorship1.contract_terminated()
+        sponsorship1._contract_terminated()
         valid(0, False)
 
     def test_change_partner(self):
