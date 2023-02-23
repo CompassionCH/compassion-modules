@@ -497,15 +497,7 @@ class ResPartner(models.Model):
             sponsorships = sponsorships.filtered(lambda s: s.state in states)
         return sponsorships
 
-    def migrate_christmas_contracts(self, christmas_lines, sponsorships):
-        amount = sum(christmas_lines.mapped("subtotal"))
-        if len(sponsorships) > 1:
-            amount = amount / len(sponsorships)
-        self.env.cr.execute("""
-            UPDATE recurring_contract
-            SET christmas_invoice = %s
-            WHERE id = ANY(%s)
-        """, [amount, sponsorships.ids])
+    def terminate_christmas_contracts(self, christmas_lines):
         contracts = christmas_lines.mapped("contract_id").with_context(async_mode=False)
         other_lines = contracts.mapped("contract_line_ids") - christmas_lines
         if other_lines:

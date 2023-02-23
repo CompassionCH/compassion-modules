@@ -15,8 +15,5 @@ def migrate(env, version):
         christmas_lines = contracts.mapped("contract_line_ids").filtered(lambda l: l.product_id == christmas)
         if not christmas_lines:
             continue
-        sponsorships = partner.sponsorship_ids.filtered(
-            lambda s: s.state not in ["cancelled", "terminated"] and s.is_direct_debit)
-        if sponsorships:
-            partner.with_delay().migrate_christmas_contracts(christmas_lines, sponsorships)
+        partner.with_delay().terminate_christmas_contracts(christmas_lines)
     _logger.info("Migration done!")
