@@ -6,9 +6,8 @@ _logger = logging.getLogger(__name__)
 
 @openupgrade.migrate()
 def migrate(env, version):
-    christmas = env["product.product"].search([("default_code", "=", "Christmas")])
-    clines = env["recurring.contract.line"].search(
-        [("product_id", "=", christmas.id), ("contract_id.state", "not in", ["terminated", "cancelled"])])
-    for partner in clines.mapped("contract_id.partner_id"):
-        partner.with_delay().terminate_christmas_contracts(
-            partner.other_contract_ids.mapped("contract_line_ids") & clines)
+    # Remove all contracts (Nordic only has Christmas contracts which are no longer used)
+    contracts = env["recurring.contract"].search([
+        ("type", "=", "O"), ("state", "not in", ["terminated", "cancelled"])])
+    contracts.action_contract_terminate()
+    contracts.with_context(force_delete=True).unlink()
