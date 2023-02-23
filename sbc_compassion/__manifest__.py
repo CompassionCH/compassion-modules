@@ -43,7 +43,6 @@
             "magic",
             "wand",
             "pyzbar",
-            "pdfminer",
             "PyPDF2",
             "openupgradelib",
             "fitz",  # PyMuPDF
