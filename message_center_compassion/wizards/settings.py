@@ -55,7 +55,7 @@ class Settings(models.TransientModel):
         res["translate_notify_ids"] = self._get_translate_notify_ids()
         return res
 
-    @ormcache("param")
+    @ormcache("param", "self.env.company.id")
     @api.model
     def get_param(self, param, default=None):
         """Get a single param from ['res.config.settings']"""
