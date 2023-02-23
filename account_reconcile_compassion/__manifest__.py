@@ -47,7 +47,6 @@
         "security/ir.model.access.csv",
         "views/account_reconcile_compassion.xml",
         "views/reconcile_fund_wizard_view.xml",
-        "views/reconcile_split_payment_wizard_view.xml",
         "views/change_attribution_wizard_view.xml",
         "views/account_invoice_view.xml",
         "views/res_config_view.xml",

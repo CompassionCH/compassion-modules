@@ -30,7 +30,7 @@ class GenerateGiftWizard(models.TransientModel):
 
     amount = fields.Float("Gift Amount", required=True)
     product_id = fields.Many2one("product.product", "Gift Type", required=True, readonly=False)
-    contract_id = fields.Many2one("recurring.contract", "Contract", required=True)
+    contract_id = fields.Many2one("recurring.contract", "Contract")
     invoice_date = fields.Date(default=fields.Date.today)
     description = fields.Char("Additional comments", size=200)
     force = fields.Boolean("Force creation", help="Creates the gift even if one was already made the same year.")
@@ -120,7 +120,7 @@ class GenerateGiftWizard(models.TransientModel):
             inherit this method.
         """
         if not self.contract_id:
-            raise Exception(f"This method should get a contract passt to context.\n{os.path.basename(__file__)}")
+            return False
         return self.contract_id.group_id._build_invoice_gen_data(invoicing_date=invoicing_date,
                                                                  invoicer=invoicer,
                                                                  gift_wizard=self)

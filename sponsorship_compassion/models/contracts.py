@@ -728,13 +728,13 @@ class SponsorshipContract(models.Model):
             contract.upsert_sponsorship()
         return True
 
-    def contract_cancelled(self):
-        super().contract_cancelled()
+    def _contract_cancelled(self, vals):
+        super()._contract_cancelled(vals)
         self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
         return True
 
-    def contract_terminated(self):
-        super().contract_terminated()
+    def _contract_terminated(self, vals):
+        super()._contract_terminated(vals)
         self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
         return True
 
@@ -899,7 +899,7 @@ class SponsorshipContract(models.Model):
                 if len(contract.contract_line_ids) > 1:
                     line.unlink()
                 else:
-                    contract.contract_terminated()
+                    contract.action_contract_terminate()
 
             if sponsorship.global_id and sponsorship.end_reason_id != departure:
                 # Cancel Sponsorship Message

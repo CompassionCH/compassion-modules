@@ -140,6 +140,7 @@ class AccountInvoice(models.Model):
         return self.filtered(
             lambda i: i.move_type == "out_invoice"
             and not i.avoid_thankyou_letter
+            and any(i.line_ids.mapped("product_id.requires_thankyou"))
             and (
                 not i.communication_id
                 or i.communication_id.state in ("call", "pending")
