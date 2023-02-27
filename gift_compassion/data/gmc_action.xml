@@ -11,7 +11,6 @@
             <field name="connect_outgoing_wrapper">GiftCreateRequestList</field>
             <field name="connect_answer_wrapper">GiftCreateResponses.GiftCreateResponseList</field>
             <field name="request_type">POST</field>
-            <field name="batch_send">1</field>
         </record>
         <!-- Update Gift Message -->
         <record id="update_gift" model="gmc.action">
