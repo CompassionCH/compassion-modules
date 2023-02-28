@@ -21,9 +21,11 @@ class ResPartner(models.Model):
         """
         self.ensure_one()
         if any(key in vals for key in ["property_payment_term_id"]):
-            invoices = self.env['account.move'].search([("partner_id", "=", self.id),
-                                                        ("payment_state", "=", "not_paid")
-                                                        ])
+            invoices = self.env['account.move'].search([
+                ("partner_id", "=", self.id),
+                ("payment_state", "=", "not_paid"),
+                ("state", "!=", "cancel")
+            ])
             if invoices:
                 data_invs = dict()
                 for inv in invoices:
@@ -32,4 +34,4 @@ class ResPartner(models.Model):
                             payment_term_id=self.property_payment_term_id.id
                         )
                     )
-                invoices.update_invoices(data_invs)
+                invoices.update_open_invoices(data_invs)
