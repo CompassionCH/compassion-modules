@@ -49,7 +49,7 @@
             <field name="name">General Fund</field>
             <field name="type">service</field>
             <field name="categ_id" ref="sponsorship_compassion.product_category_fund" />
-            <field name="list_price">8</field>
+            <field name="list_price">42</field>
             <field name="description">Thanks to your donation to the General Fund, through your help we can offer
                 a concrete help and a new future to many children on the field and restore hope in their lives.</field>
             <field name="property_account_income_id" search="[('code','=','6004')]"/>
