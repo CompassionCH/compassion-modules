@@ -950,7 +950,6 @@ class SponsorshipContract(models.Model):
         """ Creates the annual gifts for sponsorships that
         have set the option for automatic birthday or christmas gifts creation. """
         logger.debug(f"Automatic {gift_type} Gift Generation Started.")
-        invoice_err_gen = False
         # Search active Sponsorships with automatic birthday gift
         contracts = self
 
@@ -988,16 +987,11 @@ class SponsorshipContract(models.Model):
             # Generate invoices
             for contract in contracts:
                 logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
-                try:
-                    self._generate_gift(gift_wizard, contract, invoicer, gift_type)
-                except Exception as e:
-                    logger.error(f"Gift generation failed. {e}")
-                    invoice_err_gen = True
-                finally:
-                    count += 1
+                self._generate_gift(gift_wizard, contract, invoicer, gift_type)
+                count += 1
 
         logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
-        return invoicer.with_context(invoice_err_gen=invoice_err_gen)
+        return True
 
     def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
         gift_wizard.write(

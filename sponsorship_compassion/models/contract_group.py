@@ -38,10 +38,10 @@ class ContractGroup(models.Model):
                     "terminated", "cancelled")
             )
 
-    def _generate_invoices(self):
-        invoicer = super()._generate_invoices()
+    def _generate_invoices(self, invoicer):
+        super()._generate_invoices(invoicer)
         # We don't generate gift if the contract isn't active
         contracts = self.contract_ids.filtered(lambda c: c.state == 'active')
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
         contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
-        return invoicer
+        return True
