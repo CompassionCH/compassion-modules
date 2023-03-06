@@ -1,5 +1,3 @@
-from . import res_partner
-from . import res_partner_match
 ##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
@@ -11,3 +9,4 @@ from . import res_partner_match
 ##############################################################################
 
 from . import res_partner
+from . import res_partner_match
