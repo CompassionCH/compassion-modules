@@ -9,7 +9,7 @@
 ##############################################################################
 
 from odoo import fields, models
-from odoo.addons.recurring_contract.models.product_names import CHRISTMAS_GIFT, BIRTHDAY_GIFT
+from .product_names import CHRISTMAS_GIFT, BIRTHDAY_GIFT
 
 
 class ContractGroup(models.Model):

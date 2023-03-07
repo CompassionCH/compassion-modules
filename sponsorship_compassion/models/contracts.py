@@ -19,8 +19,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 
-from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, CHRISTMAS_GIFT, BIRTHDAY_GIFT, \
-    PRODUCT_GIFT_CHRISTMAS, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
+from .product_names import GIFT_PRODUCTS_REF, BIRTHDAY_GIFT, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -261,14 +260,16 @@ class SponsorshipContract(models.Model):
             "amount": 0 if correspondence else sponsorship_product.list_price,
             "subtotal": 0 if correspondence else sponsorship_product.list_price,
         }
-        gen_vals = {
-            "product_id": gen_product.id,
-            "quantity": 0 if correspondence else 1,
-            "amount": 0 if correspondence else gen_product.list_price,
-            "subtotal": 0 if correspondence else gen_product.list_price,
-        }
         res.append((0, 0, sponsorship_vals))
-        res.append((0, 0, gen_vals))
+        # Avoid appending the GEN fund when one line already exists (the partner most probably doesn't want it)
+        if len(self.contract_line_ids) != 1:
+            gen_vals = {
+                "product_id": gen_product.id,
+                "quantity": 0 if correspondence else 1,
+                "amount": 0 if correspondence else gen_product.list_price,
+                "subtotal": 0 if correspondence else gen_product.list_price,
+            }
+            res.append((0, 0, gen_vals))
         return res
 
     @api.depends("partner_id", "correspondent_id")
@@ -291,6 +292,17 @@ class SponsorshipContract(models.Model):
             )
 
     def _compute_invoices(self):
+        super()._compute_invoices()
+        # For some cases we only want to consider sponsorship invoices and exclude all gifts and fund donations
+        if self.env.context.get("open_invoices_sponsorship_only"):
+            for contract in self:
+                contract.open_invoice_ids = contract.open_invoice_ids.filtered(
+                    lambda i: i.invoice_category == "sponsorship")
+        # For some cases we want to get only the gift or fund invoices (birthday, christmas)
+        if self.env.context.get("open_invoices_exclude_sponsorship"):
+            for contract in self:
+                contract.open_invoice_ids = contract.open_invoice_ids.filtered(
+                    lambda i: i.invoice_category != "sponsorship")
         gift_contracts = self.filtered(lambda c: c.type == "G")
         for contract in gift_contracts:
             invoices = contract.mapped(
@@ -300,14 +312,27 @@ class SponsorshipContract(models.Model):
                 lambda i: i.invoice_category == "gift"
                           and i.state not in ("cancel", "draft")
             )
-            contract.nb_invoices = len(gift_invoices)
-        super(SponsorshipContract, self - gift_contracts)._compute_invoices()
+            contract.nb_invoices += len(gift_invoices)
 
     def _compute_gift_partner(self):
         for contract in self:
             contract.gift_partner_id = getattr(
                 contract, contract.send_gifts_to, contract.correspondent_id
             )
+
+    def _compute_contract_products(self):
+        if not self.env.context.get("open_invoices_exclude_sponsorship"):
+            super()._compute_contract_products()
+        else:
+            # Special case where we consider only gift products
+            for contract in self:
+                contract.product_ids = self.env["product.product"]
+                if contract.birthday_invoice:
+                    contract.product_ids += self.env["product.product"].search([
+                        ("default_code", "=", GIFT_PRODUCTS_REF[0])])
+                if contract.christmas_invoice:
+                    contract.product_ids += self.env["product.product"].search([
+                        ("default_code", "=", PRODUCT_GIFT_CHRISTMAS)])
 
     @api.depends(
         "correspondent_id", "correspondent_id.ref", "child_id", "child_id.local_id"
@@ -1109,3 +1134,15 @@ class SponsorshipContract(models.Model):
                 invoice.env.clear()
                 inv_lines.unlink()
                 invoice.action_post()
+
+    def _updt_invoices_rc(self, vals):
+        # Update only sponsorship invoices first, with invoice_lines and group changes (handled in super)
+        super(SponsorshipContract, self.with_context(open_invoices_sponsorship_only=True))._updt_invoices_rc(vals)
+
+        # Handle gifts if changes are made in those fields
+        if "birthday_invoice" in vals or "christmas_invoice" in vals:
+            contracts = self.with_context(open_invoices_exclude_sponsorship=True)
+            gifts = contracts.mapped("open_invoice_ids")
+            data_invs = gifts._build_invoice_data(contracts=contracts)
+            if data_invs:
+                gifts.update_open_invoices(data_invs)

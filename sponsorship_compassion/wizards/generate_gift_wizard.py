@@ -8,15 +8,14 @@
 #
 ##############################################################################
 import logging
-import os
 
-from datetime import datetime, date
+from datetime import date
 
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models, _
 from odoo.tools import config
-from odoo.addons.recurring_contract.models.product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
+from ..models.product_names import GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 test_mode = config.get("test_enable")

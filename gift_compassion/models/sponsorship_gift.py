@@ -9,7 +9,7 @@
 ##############################################################################
 from datetime import date, timedelta
 
-from odoo.addons.recurring_contract.models.product_names import (
+from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_PRODUCTS_REF,
     GIFT_CATEGORY
 )

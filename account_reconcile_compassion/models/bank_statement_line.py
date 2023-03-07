@@ -11,7 +11,7 @@
 import logging
 from functools import reduce
 
-from odoo.addons.recurring_contract.models.product_names import (
+from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_CATEGORY,
     SPONSORSHIP_CATEGORY,
 )

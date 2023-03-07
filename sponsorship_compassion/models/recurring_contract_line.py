@@ -11,7 +11,7 @@
 from lxml import etree
 
 from odoo import api, fields, models
-from odoo.addons.recurring_contract.models.product_names import SPONSORSHIP_CATEGORY, FUND_CATEGORY
+from .product_names import SPONSORSHIP_CATEGORY, FUND_CATEGORY
 
 
 class SponsorshipLine(models.Model):
