@@ -66,8 +66,9 @@ class AccountInvoice(models.Model):
 
     def _build_invoice_lines_from_contracts(self, modified_contracts):
         if self.invoice_category == "sponsorship":
-            return super()._build_invoice_lines_from_contracts(modified_contracts)
+            super = super()
         else:
             # Handle a gift or fund change
-            return super(AccountInvoice, self.with_context(
-                open_invoices_exclude_sponsorship=True))._build_invoice_lines_from_contracts(modified_contracts)
+            super = super(AccountInvoice, self.with_context(
+                open_invoices_exclude_sponsorship=True))
+        return super._build_invoice_lines_from_contracts(modified_contracts) 
