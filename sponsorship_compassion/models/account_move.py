@@ -63,3 +63,12 @@ class AccountInvoice(models.Model):
 
     def recompute_category(self):
         self._compute_invoice_category()
+
+    def _build_invoice_lines_from_contracts(self, modified_contracts):
+        if self.invoice_category == "sponsorship":
+            parent = super()
+        else:
+            # Handle a gift or fund change
+            parent = super(AccountInvoice, self.with_context(
+                open_invoices_exclude_sponsorship=True))
+        return parent._build_invoice_lines_from_contracts(modified_contracts)

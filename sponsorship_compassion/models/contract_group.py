@@ -9,7 +9,7 @@
 ##############################################################################
 
 from odoo import fields, models
-from odoo.addons.recurring_contract.models.product_names import CHRISTMAS_GIFT, BIRTHDAY_GIFT
+from .product_names import CHRISTMAS_GIFT, BIRTHDAY_GIFT
 
 
 class ContractGroup(models.Model):
@@ -39,9 +39,10 @@ class ContractGroup(models.Model):
             )
 
     def _generate_invoices(self, invoicer):
-        super()._generate_invoices(invoicer)
+        # Exclude gifts from regular generation
+        super(ContractGroup, self.with_context(open_invoices_sponsorship_only=True))._generate_invoices(invoicer)
         # We don't generate gift if the contract isn't active
-        contracts = self.contract_ids.filtered(lambda c: c.state == 'active')
+        contracts = self.mapped("contract_ids").filtered(lambda c: c.state == 'active')
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
         contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
