@@ -1143,6 +1143,6 @@ class SponsorshipContract(models.Model):
         if "birthday_invoice" in vals or "christmas_invoice" in vals:
             contracts = self.with_context(open_invoices_exclude_sponsorship=True)
             gifts = contracts.mapped("open_invoice_ids")
-            data_invs = gifts._build_invoice_data(contracts=contracts)
+            data_invs = gifts._build_invoices_data(contracts=contracts)
             if data_invs:
                 gifts.update_open_invoices(data_invs)

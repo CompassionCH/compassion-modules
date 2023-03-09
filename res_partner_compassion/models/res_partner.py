@@ -26,6 +26,6 @@ class ResPartner(models.Model):
                 ("payment_state", "=", "not_paid"),
                 ("state", "!=", "cancel")
             ])
-            data_invs = invoices._build_invoice_data(payment_term_id=self.property_payment_term_id.id)
+            data_invs = invoices._build_invoices_data(payment_term_id=self.property_payment_term_id.id)
             if data_invs:
                 invoices.update_open_invoices(data_invs)
