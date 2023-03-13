@@ -1,6 +1,7 @@
 jwt
 pyquery
 pytz
+pycups
 timezonefinder
 Babel
 phonenumbers
