@@ -47,6 +47,7 @@
         "data/mail_template.xml",
         "data/increment_translation_priority_cron.xml",
         "data/website.xml",
+        "data/queue_job.xml",
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",

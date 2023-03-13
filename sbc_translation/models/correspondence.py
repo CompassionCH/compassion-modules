@@ -120,6 +120,7 @@ class Correspondence(models.Model):
             ("content_inappropriate", _("Inappropriate content")),
             ("wrong_child_name", _("Child name different than expected")),
             ("wrong_sponsor_name", _("Sponsor name different than expected")),
+            ("invalid_layout", _("Wrong translation boxes layout")),
             ("other", _("Other issue"))
         ]
 
@@ -239,8 +240,8 @@ class Correspondence(models.Model):
             "translation_issue_comments": body_html
         })
         self.assign_supervisor()
-        template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
-        self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
+        # template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
+        # self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
         return True
 
     @api.multi
@@ -287,8 +288,6 @@ class Correspondence(models.Model):
         self.ensure_one()
         page_index = 0
         paragraph_index = 0
-        if not self.page_ids:
-            self.env["correspondence.page"].create({"correspondence_id": self.id})
         current_page = self.page_ids[page_index]
         if translator_id is None:
             translator_id = self.env["translation.user"].search([
@@ -300,12 +299,8 @@ class Correspondence(models.Model):
         }
         for element in letter_elements:
             if element.get("type") == "pageBreak":
-                # Clean existing paragraphs
-                current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
                 page_index += 1
                 paragraph_index = 0
-                if page_index >= len(self.page_ids):
-                    self.env["correspondence.page"].create({"correspondence_id": self.id})
                 current_page = self.page_ids[page_index]
             elif element.get("type") == "paragraph":
                 paragraph_vals = {
@@ -314,22 +309,12 @@ class Correspondence(models.Model):
                     "translated_text": element.get("content"),
                     "comments": element.get("comments")
                 }
-                if paragraph_index >= len(current_page.paragraph_ids):
-                    self.env["correspondence.paragraph"].create(paragraph_vals)
-                else:
-                    current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
+                current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
                 paragraph_index += 1
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
-        current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
-        self.page_ids[page_index + 1:].mapped("paragraph_ids").clear_paragraphs()
-        self.clear_pages()
         self.write(letter_vals)
         return True
-
-    @api.multi
-    def clear_pages(self):
-        self.page_ids.filtered(lambda p: not (p.original_text or p.english_text or p.translated_text)).unlink()
 
     @api.multi
     def submit_translation(self, letter_elements, translator_id=None):
@@ -411,7 +396,7 @@ class Correspondence(models.Model):
         partner = self.partner_id.sudo()
         return {
             "id": self.id,
-            "status": self.translation_status or "None",
+            "status": self.translate("translation_issue") or self.translation_status or "None",
             "priority": self.translation_priority or "0",
             "title": self.sudo().name,
             "source": self.src_translation_lang_id.with_context(lang="en_US").name,
@@ -421,6 +406,7 @@ class Correspondence(models.Model):
             "lastUpdate": fields.Datetime.to_string(self.write_date),
             "date": fields.Date.to_string(self.scanned_date),
             "translatedElements": self.get_translated_elements() or "None",
+            "translationIssue": self.translation_issue,
             "child": {
                 "preferredName": child.preferred_name,
                 "fullName": child.name,
@@ -441,25 +427,19 @@ class Correspondence(models.Model):
     @api.multi
     def get_translated_elements(self):
         res = []
-        last_paragraph_readonly = False
         for page in self.page_ids:
             if res:
-                first_paragraph = page.paragraph_ids[:1]
                 res.append({
                     "type": "pageBreak",
                     "id": page.id,
-                    "readonly": last_paragraph_readonly and (first_paragraph.english_text
-                                                             or first_paragraph.original_text)
                 })
             for paragraph in page.paragraph_ids:
-                last_paragraph_readonly = bool(paragraph.english_text or paragraph.original_text)
                 res.append({
                     "type": "paragraph",
                     "id": paragraph.id,
                     "content": paragraph.translated_text,
                     "comments": paragraph.comments,
                     "source": paragraph.english_text or paragraph.original_text or "",
-                    "readonly": last_paragraph_readonly
                 })
         return res
 
@@ -475,6 +455,17 @@ class Correspondence(models.Model):
             old_priority = int(letter.translation_priority)
             if old_priority < 4:
                 letter.translation_priority = str(old_priority + 1)
+            elif letter.translation_competence_id.fallback_competence_id:
+                letter.with_delay().move_pool()
+
+    def move_pool(self):
+        """
+        Move letter to another common translation pool. This is helpful when a letter is stuck for too long
+        inside a pool, and we want to move it to another one that has more translator resources.
+        """
+        self.ensure_one()
+        if self.translation_competence_id.fallback_competence_id and self.translation_status == "to do":
+            self.translation_competence_id = self.translation_competence_id.fallback_competence_id
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

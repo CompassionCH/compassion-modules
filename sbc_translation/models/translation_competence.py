@@ -12,6 +12,10 @@ class TranslationCompetence(models.Model):
     dest_language_id = fields.Many2one(
         "res.lang.compassion", "Destination language", domain=[("translatable", "=", True)], required=True, index=True
     )
+    fallback_competence_id = fields.Many2one(
+        "translation.competence", "Fallback competence",
+        help="Letters will move to this pool if they sit for too long waiting to be translated."
+    )
     name = fields.Char(compute="_compute_name")
     all_letter_ids = fields.One2many(
         "correspondence", "translation_competence_id", "All letters"
