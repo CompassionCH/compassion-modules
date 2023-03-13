@@ -568,7 +568,7 @@ class GlobalChildSearch(models.TransientModel):
 
             # When the skip param default value is higher than the available beneficiaries
             # make a second request with a computed skip param to still get an available beneficiary when possible
-            if self.nb_found and self.nb_found <= params['skip']:
+            if self.nb_found and 'skip' in params and self.nb_found <= params['skip']:
                 # Set the 'skip' parameter to retrieve only middle urgent beneficiaries
                 params['skip'] = self.nb_found // 2 if self.nb_found >= 2 else 0
                 result = onramp.send_message(service_name, method, None, params)
