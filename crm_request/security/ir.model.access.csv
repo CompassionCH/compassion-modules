@@ -3,6 +3,5 @@ admin_access_holiday_closure,admin_access_holiday_closure,model_holiday_closure,
 access_crm_stages,access_crm_stages,model_crm_claim_stage,sales_team.group_sale_manager,1,1,1,1
 access_crm_categories,access_crm_categories,model_crm_claim_category,sales_team.group_sale_manager,1,1,1,1
 ignored_reporter,ignored_reporter,model_ignored_reporter,sales_team.group_sale_manager,1,1,1,1
-mail_compose_message_transient_sec, mail_compose_message_wizard_security, model_mail_compose_message, base.group_user,1,1,1,1
-assign_request_wizard_sec, assign_request_wizard_sec, model_assign_request_wizard, base.group_user,1,1,1,1
-holiday_closure_template_preview_sec, holiday_closure_template_preview, model_holiday_closure_template_preview, base.group_user,1,1,1,1
+assign_request_wizard_sec,assign_request_wizard_sec,model_assign_request_wizard,base.group_user,1,1,1,1
+holiday_closure_template_preview_sec,holiday_closure_template_preview,model_holiday_closure_template_preview,base.group_user,1,1,1,1
