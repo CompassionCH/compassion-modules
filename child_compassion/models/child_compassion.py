@@ -210,6 +210,7 @@ class CompassionChild(models.Model):
             ("Education", "Education"),
             ("Engineering", "Engineering"),
             ("English", "English"),
+            ("Environmental", "Environmental"),
             ("Fine Arts", "Fine Arts"),
             ("Government / Political Science", "Government / Political Science"),
             ("Graphic Arts", "Graphic Arts"),
