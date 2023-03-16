@@ -252,7 +252,6 @@ class CrmClaim(models.Model):
         return result
 
     
-    urns("self", lambda value: value.id)
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
         to the supporter but not if it's an automatic answer.

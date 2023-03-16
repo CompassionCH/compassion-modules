@@ -16,11 +16,10 @@
     },
     # any module necessary for this one to work correctly
     "depends": [
-        "crm_claim_code",  # oca_addons/crm
         "mail",
-        "partner_contact_in_several_companies",  # oca_addons/partner-contact
         "advanced_translation",
-        "cms_form_compassion",
+        "crm_claim_code",  # oca_addons/crm
+        "partner_contact_in_several_companies",  # oca_addons/partner-contact
     ],
     # always loaded
     "data": [
