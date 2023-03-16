@@ -8,7 +8,7 @@ class MailMail(models.Model):
         Inherit mail.mail to deactivate a linked partner after a send.
     """
 
-    @api.multi
+    
     def _postprocess_sent_message(
         self, success_pids, failure_reason=False, failure_type="UNKNOWN"
     ):

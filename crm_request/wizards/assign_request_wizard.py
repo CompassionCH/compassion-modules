@@ -13,7 +13,7 @@ class AssignRequestWizard(models.TransientModel):
     )
     intern_note = fields.Text("Internal note")
 
-    @api.multi
+    
     def assign_to(self):
         self.ensure_one()
         model = self.env.context.get("active_model")

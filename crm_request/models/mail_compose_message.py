@@ -13,26 +13,28 @@ class MailComposer(models.TransientModel):
 
     _inherit = "mail.compose.message"
 
-    @api.multi
+    
     def send_mail(self, auto_commit=False):
-        res = super().send_mail(auto_commit)
+        res = True
+        for mail in self:
+            res = super().send_mail(auto_commit) & res
 
-        # Put back selected partner into claim
-        if self.env.context.get("claim_no_partner"):
-            gen_mail = self.env["mail.mail"].search(
-                [("res_id", "=", self.res_id), ("model", "=", "crm.claim")], limit=1
-            )
-            self.env["crm.claim"].browse(self.res_id).write(
-                {"partner_id": gen_mail.recipient_ids[:1].id}
-            )
+            # Put back selected partner into claim
+            if self.env.context.get("claim_no_partner"):
+                gen_mail = self.env["mail.mail"].search(
+                    [("res_id", "=", mail.res_id), ("model", "=", "crm.claim")], limit=1
+                )
+                self.env["crm.claim"].browse(mail.res_id).write(
+                    {"partner_id": gen_mail.recipient_ids[:1].id}
+                )
 
-        # Assign current user to request
-        if self.model == "crm.claim":
-            self.env["crm.claim"].browse(self.res_id).write({"user_id": self.env.uid})
+            # Assign current user to request
+            if mail.model == "crm.claim":
+                self.env["crm.claim"].browse(mail.res_id).write({"user_id": self.env.uid})
 
         return res
 
-    @api.multi
+    
     def onchange_template_id(self, template_id, composition_mode, model, res_id):
         """
         Append the quote of previous e-mail to the body of the message.

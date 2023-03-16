@@ -7,9 +7,13 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "category": "CRM",
-    "version": "12.0.1.1.1",
+    "version": "14.0.0.0.0",
     # Python dependencies
-    "external_dependencies": {"python": ["pandas"]},
+    'external_dependencies': {
+        'python': [
+            'pandas>=1.5.3'
+        ]
+    },
     # any module necessary for this one to work correctly
     "depends": [
         "crm_claim_code",  # oca_addons/crm

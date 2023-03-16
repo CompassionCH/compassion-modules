@@ -39,7 +39,7 @@ class RequestCategory(models.Model):
                             )
                         )
 
-    @api.multi
+    
     def get_keys(self):
         keywords_list = []
         for record in self:
