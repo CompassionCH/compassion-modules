@@ -62,7 +62,6 @@
     <record id="crm_holiday_act" model="ir.actions.act_window">
         <field name="name">Holiday</field>
         <field name="res_model">holiday.closure</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 

@@ -138,7 +138,7 @@ class HolidayClosure(models.Model):
                 res = config
         return res
 
-    @api.multi
+    
     def open_preview(self):
         return {
             "name": "Preview",

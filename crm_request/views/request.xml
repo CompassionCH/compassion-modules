@@ -22,12 +22,12 @@
         </field>
     </record>
 
-    <act_window id="action_wizard_request_assign"
-                name="Request assign"
-                res_model="assign.request.wizard"
-                view_mode="form"
-                target="new"
-    />
+    <record id="action_wizard_request_assign" model="ir.actions.act_window">
+        <field name="name">Request assign</field>
+        <field name="res_model">assign.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
     <!-- Kanban view -->
     <record id="crm_request_kanban_view" model="ir.ui.view">

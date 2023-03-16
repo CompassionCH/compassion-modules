@@ -37,13 +37,13 @@ class CrmClaim(models.Model):
     )
 
     @api.depends("subject")
-    @api.multi
     def _compute_name(self):
         for rd in self:
             rd.name = f"{rd.code} - {rd.subject}"
 
     def _compute_color(self):
         for request in self:
+            request.color = 0
             if int(request.priority) == 2:
                 request.color = 2
 
@@ -52,7 +52,7 @@ class CrmClaim(models.Model):
         langs = self.env["res.lang"].search([])
         return [(l.code, l.name) for l in langs]
 
-    @api.multi
+    
     def action_reply(self):
         """
         This function opens a window to compose an email, with the default
@@ -218,7 +218,7 @@ class CrmClaim(models.Model):
 
         return request_id
 
-    @api.multi
+    
     def message_update(self, msg_dict, update_vals=None):
         """Change the stage to "Waiting on support" when the customer write a
         new mail on the thread
@@ -251,8 +251,8 @@ class CrmClaim(models.Model):
                 request.user_id = False
         return result
 
-    @api.multi
-    @api.returns("self", lambda value: value.id)
+    
+    urns("self", lambda value: value.id)
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
         to the supporter but not if it's an automatic answer.
@@ -268,7 +268,7 @@ class CrmClaim(models.Model):
 
         return result
 
-    @api.multi
+    
     def create(self, values):
         ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
         if values.get("partner_id"):
@@ -295,7 +295,7 @@ class CrmClaim(models.Model):
             partner = partner.contact_id
         return partner
 
-    @api.multi
+    
     def write(self, values):
         """
         - If a user is assigned and the request is 'New', set to 'Waiting on support'
@@ -325,7 +325,7 @@ class CrmClaim(models.Model):
                 ).write({"author_id": values["partner_id"]})
         return True
 
-    @api.multi
+    
     def send_holiday_answer(self):
         """This will use the holiday mail template and enforce a
         mail sending to the requester."""

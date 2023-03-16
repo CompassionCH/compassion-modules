@@ -4,7 +4,7 @@
         <record id="business_closed_email_template" model="mail.template">
             <field name="name">Holiday - Automated response</field>
             <field name="model_id" ref="model_crm_claim"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="email_from">"${object.user_id.company.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="email_to">${object.email_from}</field>
             <field name="lang">${object.language}</field>
             <field name="reply_to">info@compassion.ch</field>
@@ -31,7 +31,7 @@
         <record id="assigned_contact_holiday_email_template" model="mail.template">
             <field name="name">Assigned contact in holiday</field>
             <field name="model_id" ref="model_crm_claim"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="email_from">"${object.user_id.company.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="email_to">${object.email_from}</field>
             <field name="lang">${object.language}</field>
             <field name="reply_to">info@compassion.ch</field>
