@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="crm_request_type_form" model="ir.ui.view">
+        <field name="name">crm.request.type.form</field>
+        <field name="model">crm.claim.category</field>
+        <field name="inherit_id" ref="crm_claim.crm_claim_category_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]" position="attributes">
+                <attribute name="string">Type</attribute>
+            </xpath>
+
+            <field name="name" position="after">
+                <field name="template_id" domain="[('model_id', '=', 'crm.claim')]"/>
+                <field name="keywords"/>
+                <field name="description"/>
+
+            </field>
+
+        </field>
+    </record>
+</odoo>
