@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="crm_request_reminder_cron" model="ir.cron">
+            <field name="name">Send weekly reminder to user for new or waiting support request</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="crm_claim.model_crm_claim"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_reminder_request()</field>
+        </record>
+    </data>
+</odoo>
