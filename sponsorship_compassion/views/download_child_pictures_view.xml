@@ -8,11 +8,17 @@
                     <p>You can download an archive file from here.</p>
                     <group>
                         <field name="fname" invisible="1"/>
-                        <field name="type"/>
+                        <group>
+                            <field name="type"/>
+                            <field name="include_child_name"/>
+                            <field name="include_child_ref"/>
+                        </group>
+                        <group>
+                            <field name="height" />
+                            <field name="width" />
+                        </group>
                     </group>
                     <group>
-                        <field name="height" />
-                        <field name="width" />
                         <field name="preview" widget="image_url"/>
                     </group>
                     <group>

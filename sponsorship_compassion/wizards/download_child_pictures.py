@@ -35,6 +35,8 @@ class DownloadChildPictures(models.TransientModel):
     download_data = fields.Binary(readonly=True)
     preview = fields.Char(compute="_compute_preview", store=True)
     information = fields.Text(readonly=True)
+    include_child_name = fields.Boolean()
+    include_child_ref = fields.Boolean("Include child reference")
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -43,13 +45,23 @@ class DownloadChildPictures(models.TransientModel):
     def get_file_name(self):
         return str(fields.Date.context_today(self)) + "_child_pictures.zip"
 
-    def get_picture_url(self, raw_url, pic_type, width, height):
-        if pic_type.lower() == "headshot":
-            cloudinary = "g_face,c_thumb,h_" + str(height) + ",w_" + str(width)
-        elif pic_type.lower() == "fullshot":
-            cloudinary = "w_" + str(width) + ",h_" + str(height) + ",c_fit"
+    def get_picture_url(self, child):
+        if self.type.lower() == "headshot":
+            cloudinary = "g_face,c_thumb,h_" + str(self.height) + ",w_" + str(self.width)
+        elif self.type.lower() == "fullshot":
+            cloudinary = "w_" + str(self.width) + ",h_" + str(self.height) + ",c_fit"
+        overlay = ""
+        font_size = 36
+        if all([self.include_child_name, self.include_child_ref, self.width < 500]):
+            font_size = 24
+        if self.include_child_name:
+            overlay = child.preferred_name
+        if self.include_child_ref:
+            overlay += f" ({child.local_id})" if overlay else child.local_id
+        if overlay:
+            cloudinary += f"/c_fit,l_text:Montserrat_{font_size}_bold:{overlay},g_south,y_40,w_{self.width}"
 
-        image_split = raw_url.split("/")
+        image_split = child.image_url.split("/")
         ind = image_split.index("media.ci.org")
         image_split[ind + 1] = cloudinary
         url = "/".join(image_split)
@@ -62,12 +74,7 @@ class DownloadChildPictures(models.TransientModel):
             found = 0
             for child in self.child_ids.filtered("image_url"):
                 child_code = child.local_id
-                url = self.get_picture_url(
-                    raw_url=child.image_url,
-                    pic_type=self.type,
-                    height=self.height,
-                    width=self.width,
-                )
+                url = self.get_picture_url(child)
                 data = base64.encodebytes(requests.get(url).content)
 
                 _format = url.split(".")[-1]
@@ -100,10 +107,10 @@ class DownloadChildPictures(models.TransientModel):
             self.height = 1200
             self.width = 800
 
-    @api.depends("height", "width")
+    @api.depends("height", "width", "include_child_name", "include_child_ref")
     def _compute_preview(self):
         for child in self.child_ids.filtered("image_url"):
-            self.preview = self.get_picture_url(child.image_url, self.type, self.width, self.height)
+            self.preview = self.get_picture_url(child)
             if self.preview:
                 break
         else:
@@ -123,9 +130,7 @@ class DownloadChildPictures(models.TransientModel):
         # Now we want children having an invalid 'image_url'.
         children_with_invalid_url = []
         for child in self.child_ids.filtered("image_url"):
-            url = self.get_picture_url(
-                raw_url=child.image_url, pic_type="fullshot", height=1, width=1
-            )
+            url = self.get_picture_url(child)
             if not requests.get(url).content:
                 # Not good, the url doesn't lead to an image
                 children_with_invalid_url += [child.local_id]
