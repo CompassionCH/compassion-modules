@@ -34,6 +34,7 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="partner_id"/>
                             <field name="subject"/>
                             <field name="body"/>
                         </group>
