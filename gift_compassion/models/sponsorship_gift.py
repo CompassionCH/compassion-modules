@@ -7,6 +7,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from datetime import date, timedelta
 
 from odoo.addons.sponsorship_compassion.models.product_names import (
@@ -16,6 +18,8 @@ from odoo.addons.sponsorship_compassion.models.product_names import (
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class SponsorshipGift(models.Model):
@@ -516,8 +520,9 @@ class SponsorshipGift(models.Model):
         account_credit = param_obj.get_param("gift_income_account_id")
         account_debit = param_obj.get_param("gift_expense_account_id")
         journal_id = param_obj.get_param("gift_journal_id")
-        if not account_credit or not account_debit:
-            raise UserError(_("Please setup income and expense accounts for gifts before sending them to GMC."))
+        if not all([account_credit, account_debit, journal_id]):
+            _logger.warning("Please setup income and expense accounts for gifts if you want to track payments to GMC.")
+            return True
         maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
         move_data = {
             "journal_id": journal_id,

@@ -57,24 +57,24 @@ class GiftNotificationSettings(models.TransientModel):
         res.update({
             "gift_notify_ids": self._get_gift_notify_ids(),
             "gift_expense_account_id": int(param_obj.get_param(
-                f"gift_compassion.gift_expense_account_{company_id}", 0)),
+                f"gift_compassion.gift_expense_account_{company_id}") or 0),
             "gift_income_account_id": int(param_obj.get_param(
-                f"gift_compassion.gift_income_account_{company_id}", 0)),
+                f"gift_compassion.gift_income_account_{company_id}") or 0),
             "gift_journal_id": int(param_obj.get_param(
-                f"gift_compassion.gift_journal_id{company_id}", 0)),
+                f"gift_compassion.gift_journal_id{company_id}") or 0),
         })
         return res
 
     def set_values(self):
         company_id = self.env.company.id
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_expense_account_{company_id}", str(self.gift_expense_account_id.id)
+            f"gift_compassion.gift_expense_account_{company_id}", str(self.gift_expense_account_id.id or 0)
         )
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_income_account_{company_id}", str(self.gift_income_account_id.id)
+            f"gift_compassion.gift_income_account_{company_id}", str(self.gift_income_account_id.id or 0)
         )
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_journal_id{company_id}", str(self.gift_journal_id.id)
+            f"gift_compassion.gift_journal_id{company_id}", str(self.gift_journal_id.id or 0)
         )
         super().set_values()
 
