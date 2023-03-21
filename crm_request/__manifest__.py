@@ -19,6 +19,7 @@
         "mail",
         "advanced_translation",
         "crm_claim_code",  # oca_addons/crm
+        "res_partner_compassion",
         "partner_contact_in_several_companies",  # oca_addons/partner-contact
     ],
     # always loaded
