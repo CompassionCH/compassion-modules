@@ -42,7 +42,8 @@
         "queue_job",  # oca_addons/queue
         "base_automation",  # source/addons
         "link_tracker",  # source/addons
-        "base_location"  # oca_addons/partner-contact
+        "base_location",  # oca_addons/partner-contact
+        "res_partner_compassion"
     ],
     "data": [
         "data/ir.config_parameter.xml",

@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from odoo import api, models
 
 
-class MatchPartner(models.AbstractModel):
+class ResPartnerMatch(models.AbstractModel):
     """
     Allows the matching of a partner from some given information.
     Can be extended or inherited to change the behaviour for some particular

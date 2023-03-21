@@ -12,6 +12,5 @@ from . import utm
 from . import ir_logging
 from . import cms_form
 from . import widgets
-from . import match_partner
 from . import link_tracker
 from . import invoice

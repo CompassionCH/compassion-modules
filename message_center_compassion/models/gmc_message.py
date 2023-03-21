@@ -116,7 +116,6 @@ class GmcMessage(models.Model):
     def update_res_name(self):
         self._compute_res_name()
 
-    
     def process_messages(self):
         new_messages = self.filtered(lambda m: m.state not in ("postponed", "success"))
         new_messages.write({"state": "pending", "failure_reason": False})
@@ -127,28 +126,23 @@ class GmcMessage(models.Model):
             new_messages._process_messages()
         return True
 
-    
     def get_answer_dict(self, index=0):
         answer = json.loads(self[index].answer)
         if isinstance(answer, list):
             answer = answer[index]
         return answer
-
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    
     def force_success(self):
         self.write({"state": "success", "failure_reason": False})
         self.mapped("message_ids").unlink()
         return True
 
-    
     def reset_message(self):
         self.write({"state": "new", "process_date": False, "failure_reason": False})
         return True
 
-    
     def open_related(self):
         self.ensure_one()
         if self.direction == "out":

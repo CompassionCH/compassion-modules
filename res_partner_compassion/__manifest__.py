@@ -39,10 +39,9 @@
     # any module necessary for this one to work correctly
     'depends': [
         "base",
-        "recurring_contract",  # compassion-accounting
     ],
     # always loaded
-    'data': [],
+    'data': ["views/res_partner_view.xml"],
     # only loaded in demonstration mode
     'demo': [],
 }
