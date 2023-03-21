@@ -211,8 +211,12 @@ class CommunicationJob(models.Model):
                 country = job.partner_id.country_id
                 company = self.env["res.company"].search([("partner_id.country_id", "=", country.id)], limit=1)
                 if not company:
-                    company = self.env.company
+                    company = self._fallback_company()
             job.company_id = company
+
+    def _fallback_company(self):
+        # Used when company couldn't be found with the partner
+        return self.env.company
 
     @api.model
     def send_mode_select(self):
