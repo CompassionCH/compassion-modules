@@ -78,34 +78,31 @@ class CrmClaim(models.Model):
             "salutation_language": self.language,
         }
 
-        if original_partner:
-            alias_partner = self._get_partner_alias(
-                original_partner, parseaddr(self.email_from)[1]
-            )
-            if alias_partner == original_partner:
-                partner = original_partner
-            else:
-                partner = alias_partner
-            ctx["default_partner_ids"] = [partner.id]
-
-            messages = self.mapped("message_ids").filtered(
-                lambda m: m.body
-                and (m.author_id == partner or partner in m.partner_ids)
-            )
-            if messages:
-                # Put quote of previous message in context for using in
-                # mail compose message wizard
-                message = messages.filtered(lambda m: m.author_id == partner)[:1]
-                if message:
-                    ctx["reply_quote"] = message.get_message_quote()
-                    ctx["message_id"] = message.id
-
-            # Un-archive the email_alias so that a mail can be sent and set a
-            # flag to re-archive them once the email is sent.
-            if partner.contact_type == "attached" and not partner.active:
-                partner.toggle_active()
+        alias_partner = self._get_partner_alias(
+            original_partner, parseaddr(self.email_from)[1]
+        )
+        if alias_partner == original_partner:
+            partner = original_partner
         else:
-            ctx["claim_no_partner"] = True
+            partner = alias_partner
+        ctx["default_partner_ids"] = [partner.id]
+
+        messages = self.mapped("message_ids").filtered(
+            lambda m: m.body
+            and (m.author_id == partner or partner in m.partner_ids)
+        )
+        if messages:
+            # Put quote of previous message in context for using in
+            # mail compose message wizard
+            message = messages.filtered(lambda m: m.author_id == partner)[:1]
+            if message:
+                ctx["reply_quote"] = message.get_message_quote()
+                ctx["message_id"] = message.id
+
+        # Un-archive the email_alias so that a mail can be sent and set a
+        # flag to re-archive them once the email is sent.
+        if partner.contact_type == "attached" and not partner.active:
+            partner.toggle_active()
 
         return {
             "type": "ir.actions.act_window",
@@ -145,7 +142,7 @@ class CrmClaim(models.Model):
         """Use the html of the mail's body instead of html converted in text"""
         msg["body"] = html_sanitize(msg.get("body", ""))
 
-        if custom_values is None:
+        if not custom_values:
             custom_values = {}
 
         alias_char = parseaddr(msg.get("to"))[1].split("@")[0]
