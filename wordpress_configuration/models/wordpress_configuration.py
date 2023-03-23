@@ -27,13 +27,11 @@ class WordpressConfiguration(models.Model):
         self._remove_previous_config(values)
         return super(WordpressConfiguration, self).create(values)
 
-    @api.multi
     def write(self, values):
         self._check_values(values)
         self._remove_previous_config(values)
         return super(WordpressConfiguration, self).write(values)
 
-    @api.multi
     def copy(self, values=None):
         res = super(WordpressConfiguration, self).copy(values)
         res.company_id = False
@@ -45,7 +43,7 @@ class WordpressConfiguration(models.Model):
         Returns the config for the given or current company
         """
         wp_config = self.search(
-            [("company_id", "=", company_id or self.env.user.company_id.id)], limit=1
+            [("company_id", "=", company_id or self.env.user.company.id)], limit=1
         )
         if not wp_config and raise_error:
             raise UserError(_("Missing Wordpress configuration for current company"))
@@ -75,7 +73,7 @@ class WordpressConfiguration(models.Model):
                 "host": host,
                 "user": user,
                 "password": pwd,
-                "company_id": self.env.user.company_id.id,
+                "company_id": self.env.user.company.id,
             }
         )
 
