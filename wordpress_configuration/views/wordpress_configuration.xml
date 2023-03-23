@@ -11,13 +11,16 @@
     </record>
 
     <!-- Action opening the tree view -->
-    <act_window id="open_view_wordpress_configuration"
-        name="Wordpress configuration"
-        res_model="wordpress.configuration"
-        view_mode="list,form" />
+    <record id="open_view_wordpress_configuration" model="ir.actions.act_window">
+        <field name="name">Wordpress configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wordpress.configuration</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
     <!-- Add menu entry in Settings/Technical -->
     <menuitem id="menu_technical_wp" name="Wordpress" parent="base.menu_custom" sequence="1"/>
-    <menuitem id="menu_wp_configuration" name="Wordpress configuration" parent="menu_technical_wp" sequence="1" action="open_view_wordpress_configuration"/>
+    <menuitem id="menu_wp_configuration" name="Wordpress configuration" parent="menu_technical_wp" sequence="1"
+              action="open_view_wordpress_configuration"/>
 
 </odoo>
