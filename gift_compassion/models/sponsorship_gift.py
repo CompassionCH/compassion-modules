@@ -226,7 +226,8 @@ class SponsorshipGift(models.Model):
             gift.currency_usd = self.env.ref("base.USD")
 
     def _compute_is_param_set(self):
-        self.is_param_set = all([int(self.account_credit), int(self.account_debit), int(self.journal_id)])
+        for gift in self:
+            gift.is_param_set = all([int(self.account_credit), int(self.account_debit), int(self.journal_id)])
 
     def _compute_params(self):
         company = self.sponsorship_id.company_id
