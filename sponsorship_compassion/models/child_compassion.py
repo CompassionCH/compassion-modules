@@ -48,8 +48,7 @@ class ChildCompassion(models.Model):
             depart = self.env.ref("sponsorship_compassion.end_reason_depart")
             sponsorships = self.mapped("sponsorship_ids").filtered(
                 lambda c: c.state not in ("terminated", "cancelled"))
-            sponsorships.write({"end_reason_id": depart.id})
-            sponsorships.contract_terminated()
+            sponsorships.action_contract_terminate({"end_reason_id": depart.id})
         else:
             # Hold expiration
             hold_released = self.env.ref("sponsorship_compassion.end_reason_release")
@@ -57,6 +56,5 @@ class ChildCompassion(models.Model):
                 lambda s: s.state in ("draft", "waiting", "waiting_payment")
             )
             if waiting_sponsorships:
-                waiting_sponsorships.end_reason_id = hold_released
-                waiting_sponsorships.contract_terminated()
+                waiting_sponsorships.action_contract_terminate({"end_reason_id": hold_released.id})
         return super().child_released(state)

@@ -10,9 +10,10 @@
 
 import logging
 from datetime import date
-from dateutil.relativedelta import relativedelta
 
 import mock
+from dateutil.relativedelta import relativedelta
+
 from odoo import fields
 from .test_contract_compassion import BaseContractCompassionTest
 
@@ -193,6 +194,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
                 "amount": 200.0,
                 "invoice_date": fields.Date.today(),
+                "contract_id": self.contract.id
             }
         )
         gift_inv_ids = gift_wiz.with_context(
@@ -252,9 +254,8 @@ class TestSponsorship(BaseSponsorshipTest):
         else:
             self.assertEqual(invoice.state, "open")
         self.assertEqual(invoice1.state, "open")
-        sponsorship.contract_terminated()
+        sponsorship._contract_terminated()
         # Force cleaning invoices immediatley
-        sponsorship._clean_invoices()
         self.assertTrue(sponsorship.state, "terminated")
         if invoice_date < today:
             self.assertEqual(invoice.state, "paid")
@@ -295,7 +296,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertFalse(update_hold.called)
 
         # Termination of correspondence
-        sponsorship.contract_terminated()
+        sponsorship._contract_terminated()
         self.assertTrue(sponsorship.state, "terminated")
 
         # Create regular sponsorship
@@ -314,7 +315,7 @@ class TestSponsorship(BaseSponsorshipTest):
         hold = child.hold_id
         self.assertEqual(hold.type, "No Money Hold")
 
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         self.assertEqual(sponsorship2.state, "cancelled")
 
     def test_sponsorship_compassion_third_scenario(self):
@@ -327,7 +328,6 @@ class TestSponsorship(BaseSponsorshipTest):
         quantity = [1, 20]
         contract_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -370,7 +370,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(contract1.state, "waiting")
         self.pay_sponsorship(contract1)
         self.assertEqual(contract1.state, "active")
-        contract1.contract_cancelled()
+        contract1._contract_cancelled()
         self.assertEqual(contract1.state, "cancelled")
         self.assertTrue(contract2.unlink())
 
@@ -391,7 +391,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child3 = self.create_child("SA12311013")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "advance_billing_months": 1,
                 "payment_mode_id": self.payment_mode.id,
@@ -453,7 +452,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child2 = self.create_child("UG28320016")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": self.michel.id,
                 "advance_billing_months": 1,
                 "payment_mode_id": self.payment_mode.id,
@@ -482,9 +480,9 @@ class TestSponsorship(BaseSponsorshipTest):
             self.assertEqual(sponsorship.state, "waiting")
             self.pay_sponsorship(sponsorship)
         sponsorship1.global_id = 12349123
-        sponsorship1.contract_terminated()
+        sponsorship1._contract_terminated()
         self.assertEqual(sponsorship1.state, "terminated")
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         self.assertEqual(sponsorship2.state, "cancelled")
 
     @mock.patch(mock_update_hold)
@@ -502,7 +500,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child2 = self.create_child("UG08320018")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -537,9 +534,9 @@ class TestSponsorship(BaseSponsorshipTest):
         self.validate_sponsorship(sponsorship2)
         self.pay_sponsorship(sponsorship2)
         valid(2, True)
-        sponsorship2.contract_terminated()
+        sponsorship2._contract_terminated()
         valid(1, True)
-        sponsorship1.contract_terminated()
+        sponsorship1._contract_terminated()
         valid(0, False)
 
     def test_change_partner(self):
@@ -548,7 +545,6 @@ class TestSponsorship(BaseSponsorshipTest):
         child1 = self.create_child("UG18920017")
         sp_group = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -586,7 +582,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group1 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -594,7 +589,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group2 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner2.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -629,7 +623,6 @@ class TestSponsorship(BaseSponsorshipTest):
 
         sp_group1 = self.create_group(
             {
-                "change_method": "do_nothing",
                 "partner_id": partner.id,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -657,7 +650,6 @@ class TestSponsorship(BaseSponsorshipTest):
         contract_group = self.create_group(
             {
                 "partner_id": self.michel.id,
-                "change_method": "clean_invoices"
             }
         )
         contract = self.create_contract(
@@ -679,6 +671,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
                 "amount": 200.0,
                 "invoice_date": date.today(),
+                "contract_id": self.contract.id
             }
         )
 
@@ -718,7 +711,6 @@ class TestSponsorship(BaseSponsorshipTest):
         contract_group = self.create_group(
             {
                 "partner_id": self.michel.id,
-                "change_method": "clean_invoices"
             }
         )
         contract = self.create_contract(

@@ -215,15 +215,15 @@ class RecurringContract(models.Model):
             )
         return super().contract_waiting()
 
-    def contract_cancelled(self):
+    def _contract_cancelled(self, vals):
         """ Change SDS Follower """
-        res = super().contract_cancelled()
+        res = super()._contract_cancelled(vals)
         self._check_need_sub()
         return res
 
-    def contract_terminated(self):
+    def _contract_terminated(self, vals):
         """ Change SDS Follower """
-        res = super().contract_terminated()
+        res = super()._contract_terminated(vals)
         self._check_need_sub()
         return res
 

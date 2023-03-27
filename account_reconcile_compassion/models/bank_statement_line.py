@@ -15,7 +15,6 @@ from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_CATEGORY,
     SPONSORSHIP_CATEGORY,
 )
-
 from odoo import models, _
 from odoo.exceptions import UserError
 from odoo.tools import mod10r

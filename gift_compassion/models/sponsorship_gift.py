@@ -7,15 +7,19 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+import logging
+
 from datetime import date, timedelta
 
 from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_REF,
-    GIFT_CATEGORY,
+    GIFT_PRODUCTS_REF,
+    GIFT_CATEGORY
 )
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class SponsorshipGift(models.Model):
@@ -144,6 +148,12 @@ class SponsorshipGift(models.Model):
     threshold_alert_type = fields.Char(readonly=True, copy=False)
     field_office_notes = fields.Char(readonly=True, copy=False)
     status_change_date = fields.Datetime(readonly=True)
+    account_credit = fields.Char(compute="_compute_params", readonly=True)
+    account_debit = fields.Char(compute="_compute_params", readonly=True)
+    journal_id = fields.Char(compute="_compute_params", readonly=True)
+    analytic = fields.Char(compute="_compute_params", readonly=True)
+    analytic_tag = fields.Char(compute="_compute_params", readonly=True)
+    is_param_set = fields.Boolean(compute="_compute_is_param_set", readonly=True)
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -177,7 +187,7 @@ class SponsorshipGift(models.Model):
         ]
 
     @api.depends(
-        "invoice_line_ids", "invoice_line_ids.state", "invoice_line_ids.price_subtotal"
+        "invoice_line_ids", "invoice_line_ids.parent_state", "invoice_line_ids.price_subtotal"
     )
     def _compute_invoice_fields(self):
         for gift in self.filtered("invoice_line_ids"):
@@ -185,22 +195,10 @@ class SponsorshipGift(models.Model):
             pay_dates = invoice_lines.filtered("last_payment").mapped(
                 "last_payment"
             ) or [False]
-            inv_dates = invoice_lines.filtered("due_date").mapped("due_date") or [False]
-            amounts = invoice_lines.mapped("price_subtotal")
-
             gift.date_partner_paid = fields.Date.to_string(max([d for d in pay_dates]))
+            gift.gift_date = max(invoice_lines.mapped('move_id').mapped("invoice_date") or [False])
 
-            if gift.sponsorship_gift_type == "Birthday":
-                gift.gift_date, late = self.env[
-                    "generate.gift.wizard"
-                ].compute_date_birthday_invoice(gift.child_id.birthdate, inv_dates[0])
-                if late:
-                    gift.state = "verify"
-                    gift.message_post(body=f"Late payment: Child Birthdate: {gift.child_id.birthdate}, Payment date: {inv_dates[0]}")
-            else:
-                gift.gift_date = max([d for d in inv_dates])
-
-            gift.amount = sum(amounts)
+            gift.amount = sum(invoice_lines.mapped("price_subtotal"))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -227,6 +225,19 @@ class SponsorshipGift(models.Model):
         for gift in self:
             gift.currency_usd = self.env.ref("base.USD")
 
+    def _compute_is_param_set(self):
+        for gift in self:
+            gift.is_param_set = all([int(self.account_credit), int(self.account_debit), int(self.journal_id)])
+
+    def _compute_params(self):
+        for gift in self:
+            company = gift.sponsorship_id.company_id
+            param_obj = self.env["res.config.settings"].sudo().with_company(company)
+            gift.account_credit = param_obj.get_param("gift_income_account_id")
+            gift.account_debit = param_obj.get_param("gift_expense_account_id")
+            gift.journal_id = param_obj.get_param("gift_journal_id")
+            gift.analytic = param_obj.get_param("gift_analytic_id")
+            gift.analytic_tag = param_obj.get_param("gift_analytic_tag_id")
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
@@ -459,7 +470,7 @@ class SponsorshipGift(models.Model):
         :return: dictionary of sponsorship.gift values
         """
         gift_type_vals = dict()
-        if product.default_code == GIFT_REF[0]:
+        if product.default_code == GIFT_PRODUCTS_REF[0]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -467,7 +478,7 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "Birthday",
                 }
             )
-        elif product.default_code == GIFT_REF[1]:
+        elif product.default_code == GIFT_PRODUCTS_REF[1]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -475,18 +486,18 @@ class SponsorshipGift(models.Model):
                     "sponsorship_gift_type": "General",
                 }
             )
-        elif product.default_code == GIFT_REF[2]:
+        elif product.default_code == GIFT_PRODUCTS_REF[2]:
             gift_type_vals.update(
                 {"gift_type": "Family Gift", "attribution": "Sponsored Child Family", }
             )
-        elif product.default_code == GIFT_REF[3]:
+        elif product.default_code == GIFT_PRODUCTS_REF[3]:
             gift_type_vals.update(
                 {
                     "gift_type": "Project Gift",
                     "attribution": "Center Based Programming",
                 }
             )
-        elif product.default_code == GIFT_REF[4]:
+        elif product.default_code == GIFT_PRODUCTS_REF[4]:
             gift_type_vals.update(
                 {
                     "gift_type": "Beneficiary Gift",
@@ -514,80 +525,80 @@ class SponsorshipGift(models.Model):
         data.update(
             {"state": "In Progress", "amount_us_dollars": exchange_rate * self.amount}
         )
-        company = self.sponsorship_id.company_id
-        param_obj = self.env["res.config.settings"].sudo().with_company(company)
-        account_credit = param_obj.get_param("gift_income_account_id")
-        account_debit = param_obj.get_param("gift_expense_account_id")
-        journal_id = param_obj.get_param("gift_journal_id")
-        if not account_credit or not account_debit:
-            raise UserError(_("Please setup income and expense accounts for gifts before sending them to GMC."))
-        maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
-        move_data = {
-            "journal_id": journal_id,
-            "ref": "Gift payment to GMC",
-            "date": maturity,
-        }
-        move_lines_data = list()
-        analytic = param_obj.get_param("gift_analytic_id")
-        analytic_tag = param_obj.get_param("gift_analytic_tag_id")
-        product_id = self.sudo().invoice_line_ids[0].product_id.id
-        # Create the debit lines from the Gift Account
-        invoiced_amount = sum(self.sudo().invoice_line_ids.mapped("price_subtotal") or [0])
-        if invoiced_amount:
-            for invl in self.sudo().invoice_line_ids:
+        account_credit = self.account_credit
+        account_debit = self.account_debit
+        journal_id = self.journal_id
+        # We create the move only if the parameter are set
+        if self.is_param_set:
+            maturity = (self.date_sent and self.date_sent.date()) or fields.Date.today()
+            move_data = {
+                "journal_id": journal_id,
+                "ref": "Gift payment to GMC",
+                "date": maturity,
+            }
+            move_lines_data = list()
+            analytic = self.analytic
+            analytic_tag = self.analytic_tag
+            product_id = self.sudo().invoice_line_ids[0].product_id.id
+            # Create the debit lines from the Gift Account
+            invoiced_amount = sum(self.sudo().invoice_line_ids.mapped("price_subtotal") or [0])
+            if invoiced_amount:
+                for invl in self.sudo().invoice_line_ids:
+                    move_lines_data.append(
+                        {
+                            "partner_id": invl.partner_id.id,
+                            "product_id": product_id,
+                            "account_id": account_debit,
+                            "name": invl.name,
+                            "debit": invl.price_subtotal,
+                            "credit": 0.0,
+                            "analytic_account_id": analytic,
+                            "date": maturity,
+                            "date_maturity": maturity,
+                            "currency_id": self.currency_usd.id,
+                            "amount_currency": invl.price_subtotal * exchange_rate,
+                            "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
+                        }
+                    )
+            if invoiced_amount < self.amount:
+                # Create a move line for the difference that is not invoiced.
+                amount = self.amount - invoiced_amount
                 move_lines_data.append(
                     {
-                        "partner_id": invl.partner_id.id,
+                        "partner_id": self.partner_id.id,
                         "product_id": product_id,
                         "account_id": account_debit,
-                        "name": invl.name,
-                        "debit": invl.price_subtotal,
-                        "credit": 0.0,
+                        "name": self.name,
+                        "debit": amount,
                         "analytic_account_id": analytic,
                         "date": maturity,
                         "date_maturity": maturity,
                         "currency_id": self.currency_usd.id,
-                        "amount_currency": invl.price_subtotal * exchange_rate,
+                        "amount_currency": amount * exchange_rate,
                         "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
                     }
                 )
-        if invoiced_amount < self.amount:
-            # Create a move line for the difference that is not invoiced.
-            amount = self.amount - invoiced_amount
+
+            # Create the credit line in the GMC Gift Due Account
             move_lines_data.append(
                 {
                     "partner_id": self.partner_id.id,
                     "product_id": product_id,
-                    "account_id": account_debit,
+                    "account_id": account_credit,
                     "name": self.name,
-                    "debit": amount,
-                    "analytic_account_id": analytic,
                     "date": maturity,
                     "date_maturity": maturity,
+                    "credit": self.amount,
                     "currency_id": self.currency_usd.id,
-                    "amount_currency": amount * exchange_rate,
-                    "analytic_tag_ids": [(4, analytic_tag)] if analytic_tag else False
+                    "amount_currency": self.amount * exchange_rate * -1,
                 }
             )
-
-        # Create the credit line in the GMC Gift Due Account
-        move_lines_data.append(
-            {
-                "partner_id": self.partner_id.id,
-                "product_id": product_id,
-                "account_id": account_credit,
-                "name": self.name,
-                "date": maturity,
-                "date_maturity": maturity,
-                "credit": self.amount,
-                "currency_id": self.currency_usd.id,
-                "amount_currency": self.amount * exchange_rate * -1,
-            }
-        )
-        move_data["line_ids"] = [(0, False, line_data) for line_data in move_lines_data]
-        move = self.env["account.move"].sudo().create(move_data)
-        move.action_post()
-        data["payment_id"] = move.id
+            move_data["line_ids"] = [(0, False, line_data) for line_data in move_lines_data]
+            move = self.env["account.move"].sudo().create(move_data)
+            move.action_post()
+            data["payment_id"] = move.id
+        else:
+            _logger.warning("Please setup income, expense and analytic accounts for gifts if you want to track payments to GMC.")
         self.write(data)
 
     @api.model
@@ -725,7 +736,7 @@ class SponsorshipGift(models.Model):
         inverse_debit_account = param_obj.get_param("gift_income_account_id")
         analytic = param_obj.get_param("gift_analytic_id")
         analytic_tag = param_obj.get_param("gift_analytic_tag_id")
-        for gift in self.filtered("payment_id"):
+        for gift in self.filtered("payment_id").filtered("is_param_set"):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({"date": fields.Date.today()})
             inverse_move.line_ids.write({"date_maturity": fields.Date.today()})

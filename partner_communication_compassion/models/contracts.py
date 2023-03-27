@@ -110,7 +110,7 @@ class RecurringContract(models.Model):
     ##########################################################################
     #                            WORKFLOW METHODS                            #
     ##########################################################################
-    def contract_cancelled(self):
+    def _contract_cancelled(self, optional_vals):
         # Remove pending communications
         for contract in self:
             self.env["partner.communication.job"].search(
@@ -123,8 +123,7 @@ class RecurringContract(models.Model):
                     ("state", "=", "pending"),
                 ]
             ).unlink()
-        super().contract_cancelled()
-        return True
+        return super()._contract_cancelled(optional_vals)
 
     def action_cancel_draft(self):
         """Cancel communication"""

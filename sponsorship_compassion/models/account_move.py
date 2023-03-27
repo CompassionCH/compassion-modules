@@ -8,7 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import date
 
 from odoo import api, fields, models
 
@@ -19,7 +18,6 @@ class AccountInvoice(models.Model):
     _inherit = "account.move"
 
     children = fields.Char("Children", compute="_compute_children")
-    last_payment = fields.Date(compute="_compute_last_payment", store=True)
     invoice_category = fields.Selection(
         [
             ("sponsorship", "Sponsorship"),
@@ -43,18 +41,6 @@ class AccountInvoice(models.Model):
             else:
                 invoice.children = False
 
-    @api.depends("payment_state")
-    def _compute_last_payment(self):
-        for invoice in self:
-            if invoice.line_ids.full_reconcile_id:
-                mv_filter = "credit" if invoice.move_type == "out_invoice" else "debit"
-                payment_dates = invoice.line_ids.filtered(mv_filter).mapped(
-                    "date"
-                )
-                invoice.last_payment = max(payment_dates or [False])
-            else:
-                invoice.last_payment = False
-
     @api.depends("line_ids", "payment_state", "line_ids.product_id")
     def _compute_invoice_category(self):
         categ_obj = self.env["product.category"]
@@ -77,3 +63,12 @@ class AccountInvoice(models.Model):
 
     def recompute_category(self):
         self._compute_invoice_category()
+
+    def _build_invoice_lines_from_contracts(self, modified_contracts):
+        if self.invoice_category == "sponsorship":
+            parent = super()
+        else:
+            # Handle a gift or fund change
+            parent = super(AccountInvoice, self.with_context(
+                open_invoices_exclude_sponsorship=True))
+        return parent._build_invoice_lines_from_contracts(modified_contracts)
