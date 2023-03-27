@@ -70,8 +70,17 @@
                                 icon="fa-pencil-square-o"
                                 class="oe_stat_button"/>
                     </div>
+                    <!-- Alert to warn on the no payment generation -->
+                    <field name="is_param_set" attrs="{'invisible': 1}"/>
+                    <div class="alert alert-warning text-center o_form_header" role="alert"
+                         attrs="{'invisible': ['|', ('is_param_set', '=', True), '&amp;', ('is_param_set', '=', False), ('state', '!=', 'draft')]}">
+
+                        <a class="close" data-dismiss="alert" href="#">x</a>
+                        <div>
+                            If you sent this gift it won't generate a GMC payment. (compassion accounting settings)
+                        </div>
+                    </div>
                     <div class="oe_title">
-                        <label for="name"/>
                         <h1>
                             <field name="name"/>
                         </h1>
@@ -81,7 +90,8 @@
                             <field name="sponsorship_id"
                                    options="{'colors':{'draft':'blue', 'waiting':'green', 'cancelled':'grey', 'terminated':'grey', 'mandate':'red'}, 'field_color':'state'}"
                                    attrs="{'required': [('gift_type', '!=', 'Project Gift')]}"/>
-                            <field name="partner_id" domain="[('global_id', '!=', False)]" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
+                            <field name="partner_id" domain="[('global_id', '!=', False)]"
+                                   attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
                             <field name="child_id" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
                             <field name="project_id" attrs="{'readonly': [('sponsorship_id', '!=', False)]}"/>
                         </group>
