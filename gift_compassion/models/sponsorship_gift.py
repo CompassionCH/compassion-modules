@@ -736,7 +736,7 @@ class SponsorshipGift(models.Model):
         inverse_debit_account = param_obj.get_param("gift_income_account_id")
         analytic = param_obj.get_param("gift_analytic_id")
         analytic_tag = param_obj.get_param("gift_analytic_tag_id")
-        for gift in self.filtered("payment_id"):
+        for gift in self.filtered("payment_id").filtered("is_param_set"):
             pay_move = gift.payment_id
             inverse_move = pay_move.copy({"date": fields.Date.today()})
             inverse_move.line_ids.write({"date_maturity": fields.Date.today()})
