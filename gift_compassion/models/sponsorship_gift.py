@@ -231,11 +231,12 @@ class SponsorshipGift(models.Model):
     def _compute_params(self):
         company = self.sponsorship_id.company_id
         param_obj = self.env["res.config.settings"].sudo().with_company(company)
-        self.account_credit = param_obj.get_param("gift_income_account_id")
-        self.account_debit = param_obj.get_param("gift_expense_account_id")
-        self.journal_id = param_obj.get_param("gift_journal_id")
-        self.analytic = param_obj.get_param("gift_analytic_id")
-        self.analytic_tag = param_obj.get_param("gift_analytic_tag_id")
+        for gift in self:
+            gift.account_credit = param_obj.get_param("gift_income_account_id")
+            gift.account_debit = param_obj.get_param("gift_expense_account_id")
+            gift.journal_id = param_obj.get_param("gift_journal_id")
+            gift.analytic = param_obj.get_param("gift_analytic_id")
+            gift.analytic_tag = param_obj.get_param("gift_analytic_tag_id")
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
