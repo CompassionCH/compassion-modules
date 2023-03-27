@@ -73,11 +73,11 @@
                     <!-- Alert to warn on the no payment generation -->
                     <field name="is_param_set" attrs="{'invisible': 1}"/>
                     <div class="alert alert-warning text-center o_form_header" role="alert"
-                         attrs="{'invisible': ['|', ('is_param_set', '=', True), '&amp;', ('is_param_set', '=', False), ('state', '!=', 'draft')]}">
+                         attrs="{'invisible': ['|', ('is_param_set', '=', True), ('state', '!=', 'draft')]}">
 
                         <a class="close" data-dismiss="alert" href="#">x</a>
                         <div>
-                            If you sent this gift it won't generate a GMC payment. (compassion accounting settings)
+                            GMC gift payment accounting entries are disabled. (compassion accounting settings)
                         </div>
                     </div>
                     <div class="oe_title">
@@ -107,7 +107,7 @@
                             <field name="date_partner_paid"/>
                             <field name="date_sent"/>
                             <field name="message_id" groups="message_center_compassion.group_gmc_user"/>
-                            <field name="payment_id"/>
+                            <field name="payment_id" attrs="{'invisible': [('is_param_set', '=', False)]}"/>
                             <field name="inverse_payment_id"
                                    attrs="{'invisible': [('inverse_payment_id', '=', False)]}"/>
                         </group>
