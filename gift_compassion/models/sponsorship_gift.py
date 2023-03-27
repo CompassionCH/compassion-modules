@@ -195,19 +195,10 @@ class SponsorshipGift(models.Model):
             pay_dates = invoice_lines.filtered("last_payment").mapped(
                 "last_payment"
             ) or [False]
-            inv_dates = invoice_lines.filtered("due_date").mapped("due_date") or [False]
-            amounts = invoice_lines.mapped("price_subtotal")
-
             gift.date_partner_paid = fields.Date.to_string(max([d for d in pay_dates]))
+            gift.gift_date = max(invoice_lines.mapped('move_id').mapped("invoice_date") or [False])
 
-            if gift.sponsorship_gift_type == "Birthday":
-                gift.gift_date = self.env[
-                    "generate.gift.wizard"
-                ].compute_date_gift_invoice(gift.child_id.birthdate, inv_dates[0])
-            else:
-                gift.gift_date = max([d for d in inv_dates])
-
-            gift.amount = sum(amounts)
+            gift.amount = sum(invoice_lines.mapped("price_subtotal"))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
