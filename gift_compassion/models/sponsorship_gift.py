@@ -230,9 +230,9 @@ class SponsorshipGift(models.Model):
             gift.is_param_set = all([int(self.account_credit), int(self.account_debit), int(self.journal_id)])
 
     def _compute_params(self):
-        company = self.sponsorship_id.company_id
-        param_obj = self.env["res.config.settings"].sudo().with_company(company)
         for gift in self:
+            company = gift.sponsorship_id.company_id
+            param_obj = self.env["res.config.settings"].sudo().with_company(company)
             gift.account_credit = param_obj.get_param("gift_income_account_id")
             gift.account_debit = param_obj.get_param("gift_expense_account_id")
             gift.journal_id = param_obj.get_param("gift_journal_id")
