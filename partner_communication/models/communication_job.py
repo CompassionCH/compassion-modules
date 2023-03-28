@@ -867,7 +867,7 @@ class CommunicationJob(models.Model):
         if behaviour["action"] == "server" and printer:
             # Get pdf should directly send it to the printer
             to_print = report.render_qweb_pdf(self.ids)
-            printer.print_document(report.report_name, to_print[0], **print_options)
+            printer.print_document(report, to_print[0], **print_options)
 
         return print_options
 
