@@ -297,6 +297,9 @@ class CompassionChild(models.Model):
     ##############
     desc_en = fields.Text("English description", readonly=True)
 
+    description_left = fields.Text(compute="_compute_description")
+    description_right = fields.Text(compute="_compute_description")
+
     # Just for migration
     delegated_comment = fields.Text()
 
@@ -318,6 +321,14 @@ class CompassionChild(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    def _compute_description(self):
+        lang_map = self.env["compassion.child.description"]._supported_languages()
+
+        for child in self:
+            lang = self.env.lang or "en_US"
+            description = getattr(child, lang_map.get(lang), "")
+            child.description_left = description
+            child.description_right = False  # Could be used to split the description inside the childpack
 
     def _compute_available(self):
         for child in self:

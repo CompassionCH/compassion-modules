@@ -94,6 +94,8 @@
         "data/fo.high.risk.csv",
         "data/fo.disaster.loss.csv",
         "data/queue_job.xml",
+        "report/childpack.xml",
+        "views/print_childpack_view.xml",
     ],
     "demo": [],
     "installable": True,
