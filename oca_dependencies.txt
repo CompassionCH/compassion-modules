@@ -18,6 +18,7 @@ account-reconcile
 bank-payment
 compassion-accounting https://github.com/CompassionCH/compassion-accounting
 connector-telephony
+crm
 partner-contact
 queue
 report-print-send

@@ -1,39 +1,40 @@
-# Copyright (C) 2018 Compassion CH
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-# pylint: disable=C8101
+# Copyright 2018-2023 CompassionCH
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
-    "name": "crm_request",
+    "name": "CRM Request",
+    "summary": "Enables Customer Support Inbox",
+    "version": "14.0.1.0.0",
+    "development_status": "Beta",
+    "category": "Helpdesk",
+    "website": "https://www.compassion.ch",
     "author": "Compassion CH",
+    "maintainers": ["ecino"],
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
-    "category": "CRM",
-    "version": "14.0.0.0.0",
-    # Python dependencies
-    'external_dependencies': {
+    "installable": True,
+    "external_dependencies": {
         'python': [
             'pandas>=1.5.3'
         ]
     },
-    # any module necessary for this one to work correctly
     "depends": [
         "mail",
         "advanced_translation",
+        "hr_holidays",
         "crm_claim_code",  # oca_addons/crm
-        "res_partner_compassion",
-        "partner_contact_in_several_companies",  # oca_addons/partner-contact
+        "mail_quoted_reply",  # OCA/social
+        "partner_auto_match",
+        "partner_email_alias",
+        "partner_salutation",
+        "partner_communication",
     ],
-    # always loaded
     "data": [
         "data/request_email_template.xml",
         "data/crm_request_data.xml",
-        "data/ignored_reporter.xml",
         "data/request_sequence.xml",
         "data/ir_cron.xml",
         "views/request.xml",
         "views/request_category.xml",
         "views/holiday_automated_response_view.xml",
-        "views/request_stage.xml",
         "security/ir.model.access.csv",
     ],
-    "installable": True,
 }

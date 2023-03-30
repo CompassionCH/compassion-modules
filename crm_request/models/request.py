@@ -3,11 +3,14 @@
 
 import logging
 from email.utils import parseaddr
+
 from dateutil import parser
 from dateutil.relativedelta import relativedelta
+from psycopg2 import IntegrityError
 
 from odoo import api, fields, models, exceptions, _
-from odoo.tools import html_sanitize
+from odoo.exceptions import ValidationError
+from odoo.tools import html_sanitize, prepend_html_content, email_normalize
 
 _logger = logging.getLogger(__name__)
 
@@ -30,11 +33,14 @@ class CrmClaim(models.Model):
     stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
     ref = fields.Char(related="partner_id.ref")
     color = fields.Integer("Color index", compute="_compute_color")
-    email_origin = fields.Char()
     language = fields.Selection("_get_lang")
     holiday_closure_id = fields.Many2one(
         "holiday.closure", "Holiday closure", readonly=True
     )
+    incoming_message_id = fields.Many2one("mail.message", compute="_compute_incoming_message")
+    incoming_message = fields.Html(compute="_compute_incoming_message")
+    quoted_reply = fields.Html(compute="_compute_incoming_message")
+    reply_to = fields.Char(compute="_compute_incoming_message")
 
     @api.depends("subject")
     def _compute_name(self):
@@ -52,20 +58,38 @@ class CrmClaim(models.Model):
         langs = self.env["res.lang"].search([])
         return [(l.code, l.name) for l in langs]
 
-    
+    def _compute_incoming_message(self):
+        for request in self:
+            messages = request.mapped("message_ids").filtered(
+                lambda m: m.body and (m.author_id == request.partner_id or m.email_from == request.email_from))
+            message = request.incoming_message_id = messages[:1]
+            request.incoming_message = message.body
+            request.quoted_reply = f"""
+                <blockquote style="padding-right:0px;padding-left:5px; border-left-color: #000; margin-left:5px;
+                                   margin-right:0px;border-left-width: 2px; border-left-style:solid">
+                    From: {message.email_from.replace('<', '(').replace('>', ')')}<br/>
+                    Date: {message.date}<br/>
+                    Subject: {message.subject}<br/>
+                    {message.body}
+                </blockquote>
+            """
+            request.reply_to = message.reply_to
+
     def action_reply(self):
         """
         This function opens a window to compose an email, with the default
         template message loaded by default
         """
         self.ensure_one()
-        original_partner = self.partner_id
 
-        if not original_partner:
+        if not self.partner_id:
             raise exceptions.UserError(_("You can only reply if you set the partner."))
 
         if not self.language:
             raise exceptions.UserError(_("Language must be specified."))
+
+        if not self.user_id:
+            self.user_id = self.env.user
 
         template_id = self.categ_id.template_id.id
         ctx = {
@@ -74,60 +98,21 @@ class CrmClaim(models.Model):
             "default_use_template": bool(template_id),
             "default_template_id": template_id,
             "default_composition_mode": "comment",
+            "default_partner_ids": [(4, self.partner_id.id)],
+            "use_email_alias": self.reply_to or self.email_from,
             "mark_so_as_sent": True,
             "salutation_language": self.language,
+            "default_body": prepend_html_content(
+                self.quoted_reply, f"<div style='margin-bottom: 20px;'><p>{self.partner_id.salutation}</p></div>")
         }
-
-        alias_partner = self._get_partner_alias(
-            original_partner, parseaddr(self.email_from)[1]
-        )
-        if alias_partner == original_partner:
-            partner = original_partner
-        else:
-            partner = alias_partner
-        ctx["default_partner_ids"] = [partner.id]
-
-        messages = self.mapped("message_ids").filtered(
-            lambda m: m.body
-            and (m.author_id == partner or partner in m.partner_ids)
-        )
-        if messages:
-            # Put quote of previous message in context for using in
-            # mail compose message wizard
-            message = messages.filtered(lambda m: m.author_id == partner)[:1]
-            if message:
-                ctx["reply_quote"] = message.get_message_quote()
-                ctx["message_id"] = message.id
-
-        # Un-archive the email_alias so that a mail can be sent and set a
-        # flag to re-archive them once the email is sent.
-        if partner.contact_type == "attached" and not partner.active:
-            partner.toggle_active()
 
         return {
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "mail.compose.message",
             "target": "new",
             "context": ctx,
         }
-
-    def _get_partner_alias(self, partner, email):
-        if email and partner.email.lower() != email.lower():
-            for partner_alias in partner.other_contact_ids:
-                if partner_alias.email.lower() == email.lower():
-                    return partner_alias
-            # No match is found
-            raise exceptions.Warning(_("No partner aliases match: %s !") % email)
-        else:
-            return partner
-
-    @api.onchange("partner_id")
-    def onchange_partner_id(self):
-        """Unlink the email_from field from the partner"""
-        if self.partner_id:
-            self.partner_phone = self.partner_id.phone
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
@@ -164,23 +149,12 @@ class CrmClaim(models.Model):
             "alias_id": alias.id,
             "categ_id": category_id,
             "subject": subject,
-            "email_origin": msg.get("from"),
+            "email_from": msg.get("from"),
         }
-
-        # If the mail is ignored_reporters use the email in the body instead
-        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
-        if defaults["email_origin"] in ignored_reporter:
-            email = msg["reply_to"]
-            defaults["email_origin"] = email
-            msg["from"] = email
-            msg["email_from"] = email
 
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
-            options = {"skip_create": True}
-            partner = match_obj.match_partner_to_infos(
-                {"email": parseaddr(defaults["email_origin"])[1]}, options
-            )
+            partner = match_obj.match_values_to_partner({"email": email_normalize(defaults["email_from"])})
             if partner:
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
@@ -214,84 +188,43 @@ class CrmClaim(models.Model):
             _logger.error(f"The automatic mail failed\n{e}")
 
         return request_id
-
     
     def message_update(self, msg_dict, update_vals=None):
-        """Change the stage to "Waiting on support" when the customer write a
-        new mail on the thread
+        """Change the stage to "Waiting on support" when the customer writes a
+        new mail on the thread, Unassign and put as "New" if the User in charge is in leave.
         """
         result = super().message_update(msg_dict, update_vals)
-        msg_date = parser.parse(msg_dict["date"])
-        for request in self:
-            request.stage_id = self.env["ir.model.data"].get_object_reference(
-                "crm_request", "stage_wait_support"
-            )[1]
-
-            if (
-                request.user_id
-                and self.env["hr.leave"].search(
-                    [
-                        ("employee_id", "in", request.user_id.employee_ids.ids),
-                        ("date_from", "<=", msg_date),
-                        ("date_to", ">=", msg_date),
-                        "|",
-                        ("state", "=", "validate"),
-                        ("state", "=", "confirm"),
-                    ],
-                    count=True,
-                )
-                != 0
-            ):
-                request.stage_id = self.env["ir.model.data"].get_object_reference(
-                    "crm_claim", "stage_claim1"
-                )[1]
-                request.user_id = False
+        wait_support = self.env.ref("crm_request.stage_wait_support")
+        stage_new = self.env.ref("crm_claim.stage_claim1")
+        in_leave = self.filtered("user_id.employee_ids.current_leave_id")
+        (self - in_leave).write({"stage_id": wait_support})
+        in_leave.write({
+            "stage_id": stage_new,
+            "user_id": False
+        })
         return result
 
-    
     def message_post(self, **kwargs):
         """Change the stage to "Resolve" when the employee answer
         to the supporter but not if it's an automatic answer.
         """
         result = super().message_post(**kwargs)
-
         if "mail_server_id" in kwargs and not self.env.context.get("keep_stage"):
-            for request in self:
-                ir_data = self.env["ir.model.data"]
-                request.stage_id = ir_data.get_object_reference(
-                    "crm_claim", "stage_claim2"
-                )[1]
-
+            resolved_stage = self.env.ref("crm_claim.stage_claim2")
+            self.write({"stage_id": resolved_stage.id})
         return result
 
-    
-    def create(self, values):
-        ignored_reporter = self.env["ignored.reporter"].search([]).mapped("email")
-        if values.get("partner_id"):
-            partner_id = values.get("partner_id")
-            partner = self.env["res.partner"].browse(partner_id)
-            partner = self.get_partner_parent(partner)
-            if partner.email in ignored_reporter:
-                del values["partner_id"]
-            else:
-                values["partner_id"] = partner.id
-        return super().create(values)
-
-    @staticmethod
-    def get_partner_parent(partner):
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
+        """Override to avoid changing the email_from value when already set.
+        :param email: ignored
         """
-        if the mail used refer to an alternative partner identity
-        iteratively take the partner 'parent' instead
-        here we use a for loop with 10 steps to avoid an infinite while
-        which can occur for example with circular references
-        """
-        for _ in range(10):
-            if not partner.contact_id:
-                break
-            partner = partner.contact_id
-        return partner
+        if self.partner_id:
+            if not self.partner_phone:
+                self.partner_phone = self.partner_id.phone
+            if not self.email_from:
+                self.email_from = self.partner_id.email
 
-    
     def write(self, values):
         """
         - If a user is assigned and the request is 'New', set to 'Waiting on support'
@@ -316,11 +249,25 @@ class CrmClaim(models.Model):
 
         if values.get("partner_id"):
             for request in self:
+                # Put the partner as author of the incoming message
                 request.message_ids.filtered(
-                    lambda m: m.email_from == request.email_origin
+                    lambda m: m.email_from == request.email_from
                 ).write({"author_id": values["partner_id"]})
-        return True
+                # Sync partner fields
+                partner = request.partner_id
+                if request.email_from:
+                    if partner.email and request.email_from:
+                        try:
+                            with self.env.cr.savepoint():
+                                partner.write({"email_alias_ids": [(0, 0, {"email": request.email_from})]})
+                        except (IntegrityError, ValidationError):
+                            _logger.warning("Unable to sync email to partner")
+                    else:
+                        partner.email = request.email_from
+                if request.partner_phone and not partner.phone:
+                    partner.phone = request.partner_phone
 
+        return True
     
     def send_holiday_answer(self):
         """This will use the holiday mail template and enforce a
@@ -330,7 +277,7 @@ class CrmClaim(models.Model):
             template.with_context(lang=request.language).send_mail(
                 request.id,
                 force_send=True,
-                email_values={"email_to": request.email_origin},
+                email_values={"email_to": request.email_from},
             )
 
     @api.model

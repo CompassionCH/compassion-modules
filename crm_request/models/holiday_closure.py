@@ -93,16 +93,14 @@ class HolidayClosure(models.Model):
         if self.end_date and (not self.reply_date or self.reply_date <= self.end_date):
             self.reply_date = (self.end_date + BDay(1)).date()
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         res = super().create(vals_list)
         # Make sure the translations are set for the default message
         to_translate = res.filtered(
             lambda h: h.holiday_message == self._default_message()
         )
-        langs = self.env["res.lang"].search(
-            [("code", "!=", self.env.lang), ("translatable", "=", True)]
-        )
+        langs = self.env["res.lang"].search([("code", "!=", self.env.lang)])
         for record in to_translate:
             for lang in langs.mapped("code"):
                 record.with_context(lang=lang).holiday_message = self.with_context(
@@ -115,7 +113,6 @@ class HolidayClosure(models.Model):
         template = self.get_holiday_template()
         return {
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": template._name,
             "res_id": template.id,
@@ -125,7 +122,7 @@ class HolidayClosure(models.Model):
     def get_holiday_template(self):
         """Returns the holiday template
         (either the mail.template record or partner.communication.config if
-         the module is installed and a rule is linked to the it).
+         the module is installed and a rule is linked to it).
         """
         res = self.env.ref("crm_request.business_closed_email_template")
         config_model = "partner.communication.config"
@@ -138,12 +135,10 @@ class HolidayClosure(models.Model):
                 res = config
         return res
 
-    
     def open_preview(self):
         return {
             "name": "Preview",
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "holiday.closure.template.preview",
             "context": self.env.context,
