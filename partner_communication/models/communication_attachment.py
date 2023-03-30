@@ -109,10 +109,7 @@ class CommunicationAttachment(models.Model):
             else:
                 to_print = attachment.data
 
-            report = self.env["ir.actions.report"]._get_report_from_name(
-                attachment.report_name
-            ).with_context(
-                lang=attachment.communication_id.partner_id.lang)
+            report = self.report_id.with_context(lang=attachment.communication_id.partner_id.lang)
             behaviour = report.behaviour()
             printer = behaviour.pop("printer", False)
             if behaviour.pop("action", "client") != "client" and printer:
@@ -122,5 +119,5 @@ class CommunicationAttachment(models.Model):
                     print_options["output_tray"] = output_tray
                 printer.with_context(
                     print_name=self.env.user.firstname[:3] + " " + attachment.name,
-                ).print_document(attachment.report_name, to_print, **print_options)
+                ).print_document(report, to_print, **print_options)
         return True
