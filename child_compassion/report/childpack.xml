@@ -1,0 +1,289 @@
+<odoo>
+    <record id="paperformat_childpack" model="report.paperformat">
+        <field name="name">Childpack</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">420</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="paperformat_a4_childpack" model="report.paperformat">
+        <field name="name">Compassion A4 Childpack</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <report id="report_childpack_full"
+        model="compassion.child"
+        string="Full Childpack"
+        report_type="qweb-pdf"
+        name="child_compassion.childpack_full"
+        menu="False"
+    />
+    <record id="report_childpack_full" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_childpack"/>
+    </record>
+
+    <report id="report_childpack_small"
+            model="compassion.child"
+            string="Small Childpack"
+            report_type="qweb-pdf"
+            name="child_compassion.childpack_small"
+            menu="False"
+    />
+    <record id="report_childpack_small" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_a4_childpack"/>
+    </record>
+
+
+    <template id="childpack_full">
+        <t t-set="formMargin" t-value="124"/>
+        <t t-call="child_compassion.childpack_small"/>
+    </template>
+
+    <template id="childpack_small">
+        <t t-set="disableFooter" t-value="1"/> <!-- Goes with a modification on the odoo template web.external_layout -->
+        <t t-set="marginLeft" t-value="formMargin or 0"/>
+        <t t-set="full" t-value="marginLeft > 0"/>
+        <t t-set="small" t-value="not full"/>
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="child_compassion.childpack_document" t-lang="lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="childpack_document">
+        <t t-set="o" t-value="o.with_context({'lang': lang})" />
+        <t t-call="web.external_layout">
+            <t t-call="child_compassion.childpack_style"/>
+                <t t-if="is_pdf">
+                    <div class="background">
+                        <img t-attf-src="http://localhost:8070/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"/>
+                    </div>
+                </t>
+                <t t-if="formMargin">
+                    <div class="local_id">
+                        <span>Available until: </span><span t-raw="o.get_date('hold_expiration')" class="due_date"/> <!-- keep space -->
+                        <span t-field="o.local_id"/>
+                    </div>
+                </t>
+                <div t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}">
+                    <div class="left">
+                        <t t-raw="o.description_left"/>
+                        <h6 t-if="o.project_id.description_left">
+                            <span>About the child development center</span>
+                        </h6>
+                        <t t-raw="o.project_id.description_left"/>
+                        <p t-field="o.local_id" class="child-ref"/>
+                    </div>
+                    <div class="right">
+                        <t t-raw="o.description_right"/>
+                        <h6 t-if="not o.project_id.description_left">
+                            <span>About the child development center</span>
+                        </h6>
+                        <t t-raw="o.project_id.description_right"/>
+                    </div>
+                </div>
+<!--                  <img class="qrcode" t-attf-src="data:image/jpg;base64,{{ o.qr_code_data }}" alt="QR Code to online sponsorship form" t-if="full"/>-->
+                <div class="photo">
+                    <img t-if="o.fullshot" t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"/>
+                </div>
+                <div class="summary">
+                    <p t-field="o.preferred_name" class="summary_field name"/>
+                    <p class="summary_field birthday">
+                        <t t-if="o.age">
+                            <span t-esc="o.age"/>
+                            <span>(</span>
+                        </t>
+                        <t t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')">
+                            <span>Born (F)</span>
+                        </t>
+                        <t t-else="">
+                            <span>Born</span>
+                        </t>
+                        <span t-esc="o.get_date('birthdate', 'date_short')"/>
+                        <span t-if="o.age">)</span>
+                    </p>
+                    <p t-field="o.project_id.country_id.name" class="summary_field country"/>
+                </div>
+        </t>
+    </template>
+
+    <template id="childpack_style">
+        <style>
+            .container {
+                font-size: 8pt;
+            }
+            .local_id {
+                position: absolute;
+                margin-top: 42mm;
+                margin-left: 60mm;
+                width: 108mm;
+                writing-mode:vertical-rl;
+                -webkit-transform:rotate(-90deg);
+                -moz-transform:rotate(-90deg);
+                -o-transform: rotate(-90deg);
+                -ms-transform:rotate(-90deg);
+                transform: rotate(-90deg);
+                white-space:nowrap;
+            }
+            .due_date {
+                margin-right: 15mm;
+            }
+            .desc {
+                position: absolute;
+                top: 0mm;
+                left: 0mm;
+                margin-left: <t t-esc="marginLeft+14.7"/>mm;
+                margin-top: 29mm;
+                width: 130mm;
+                height: 116mm;
+                max-height: 116mm;
+                column-count: 2;
+                -webkit-column-count: 2; /* Chrome, Safari, Opera */
+                -moz-column-count: 2; /* Firefox */
+            }
+            .desc .left {
+                width: 60mm;
+                max-width: 100%;
+            }
+            .desc .right {
+                width: 65mm;
+                max-width: 100%;
+                position: absolute;
+                left: 65mm;
+                top: 0mm;
+            }
+            .desc .left table {
+                width: 60mm;
+            }
+            .desc .right table {
+                width: 65mm;
+            }
+            .desc td {
+                vertical-align: bottom;
+                padding-bottom: 1.5mm;
+            }
+            .desc td:first-child {
+                padding-right: 2mm;
+                vertical-align: top;
+                width: 50%;
+            }
+            h6 {
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: 10pt;
+            }
+            .desc h6 {
+                margin-top: 3mm;
+                margin-bottom: 0mm;
+            }
+            .photo {
+                position: absolute;
+                left: <t t-esc="marginLeft+156"/>mm;
+                top: 40mm;
+                width: 88mm;
+                height: 125mm;
+            }
+            .photo img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+            .child-ref {
+                font-size: small;
+                margin-top: 40mm;
+            }
+            .summary {
+                position: absolute;
+                left: <t t-esc="marginLeft+189"/>mm;
+                top: 180mm;
+                width: 100%;
+            }
+            .summary_field {
+                position: relative;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin: 0mm;
+            }
+            .summary_field.name {
+                font-size: 12pt;
+                white-space: nowrap;
+                top: 1mm;
+            }
+            .summary_field.birthday {
+                font-size: 10pt;
+                margin-top: 1mm;
+            }
+            .summary_field.country {
+                font-size: 9pt;
+            }
+            .activities {
+                display: none;
+            }
+            /* Comma separated lists */
+            ul {
+                margin: 0;
+                padding: 0;
+            }
+            li {
+                display: inline;
+            }
+            li:after {
+                content: ", ";
+            }
+            li:last-child:after {
+                content: "";
+            }
+            .background {
+                <t t-if="small">
+                    position: absolute;
+                    left: 0mm;
+                    top: 0mm;
+                    width: 297mm;
+                    height: 210mm;
+                </t>
+                <t t-if="full">
+                    position: absolute;
+                    left: 0mm;
+                    top: 0mm;
+                    width: 420mm;
+                    height: 210mm;
+                </t>
+            }
+            .background img {
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto;
+            }
+            .qrcode {
+              position: absolute;
+              margin-left: <t t-esc="marginLeft+269"/>mm;
+              margin-top: 10mm;
+              width: 23mm;
+              height: 23mm;
+            }
+            /* This doesn't work with wkhtmltopdf so we added a t-if in the base template of odoo */
+            .header,.footer {
+                display: none;
+            }
+        </style>
+    </template>
+
+</odoo>
