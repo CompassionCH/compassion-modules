@@ -1,5 +1,5 @@
 ===========
-crm_request
+CRM Request
 ===========
 
 .. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -14,18 +14,37 @@ crm_request
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-CompassionCH%2Fcompassion--modules-lightgray.png?logo=github
-    :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/crm_request
+    :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_request
     :alt: CompassionCH/compassion-modules
 
 |badge1| |badge2| |badge3| 
 
-This module helps Compassion CH to manage the request of supporter, by updating
-the module crm.claim.
+This module helps Compassion CH to manage the request of supporter, by updating the module *crm_claim* by OCA.
+It uses the *partner_auto_match* module to automatically match incoming emails to existing partners and adds tools
+for easily replying to the partners with predefined e-mail templates.
+
+Features:
+    #. Detect incoming email address and assign to existing partner.
+    #. Read and keep the Reply-To field, for answering to the desired email address.
+    #. Custom automatic replies during holidays.
+    #. Automatic claim category assignment based on keywords found in the subject.
+    #. Automatic reply if a customer updates a request on which the assigned employee is on leave.
+    #. Periodic reminders to users about open requests.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Configuration
+=============
+
+To configure this module, you can use the **Support/Configuration menu**:
+
+#. Categories
+    #. You can set a template that will be used as a template for replies
+    #. You can enter keywords that will be used to parse incoming email subject and automatically match a category
+#. **Holiday**: enter the holiday periods and define a custom automatic reply for incoming messages during the period
 
 Usage
 =====
@@ -34,13 +53,18 @@ To use this module, you need to:
 
 * go to Support
 
+Known issues / Roadmap
+======================
+
+* Maybe eventually replaced with the OCA/helpdesk module
+
 Bug Tracker
 ===========
 
 Bugs are tracked on `GitHub Issues <https://github.com/CompassionCH/compassion-modules/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/CompassionCH/compassion-modules/issues/new?body=module:%20crm_request%0Aversion:%2011.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/CompassionCH/compassion-modules/issues/new?body=module:%20crm_request%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -55,19 +79,22 @@ Authors
 Contributors
 ~~~~~~~~~~~~
 
-* Emanuel Cino <seicher@compassion.ch>
+* Stephane Eicher <seicher@compassion.ch>
 * Quentin Gigon <gigon.quentin@gmail.com>
+* Simon Gonzlaez <simon.gonzalez@bluewin.ch>
+* Emanuel Cino <ecino@compassion.ch>
 
 Maintainers
 ~~~~~~~~~~~
 
-This module is maintained by Compassion Switzerland.
+.. |maintainer-ecino| image:: https://github.com/ecino.png?size=40px
+    :target: https://github.com/ecino
+    :alt: ecino
 
-.. image:: https://upload.wikimedia.org/wikipedia/en/8/83/CompassionInternationalLogo.png
-   :alt: Compassion Switzerland
-   :target: https://www.compassion.ch
+Current maintainer:
 
-Compassion Switzerland is a nonprofit organization whose
-mission is to release children from extreme poverty in Jesus name.
+|maintainer-ecino| 
 
-This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/11.0/crm_request>`_ project on GitHub.
+This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_request>`_ project on GitHub.
+
+You are welcome to contribute.

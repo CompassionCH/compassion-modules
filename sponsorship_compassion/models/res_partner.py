@@ -267,6 +267,7 @@ class ResPartner(models.Model):
         if notify and not self.env.context.get("no_upsert"):
             self.upsert_constituent()
 
+        self._updt_invoices_rp(vals)
         return res
 
     ##########################################################################
@@ -496,3 +497,22 @@ class ResPartner(models.Model):
                 states = [states]
             sponsorships = sponsorships.filtered(lambda s: s.state in states)
         return sponsorships
+
+    def _updt_invoices_rp(self, vals):
+        """
+        It updates the invoices of a partner when the partner is updated.
+        Should be called after the write has been done
+
+        :param vals: the values that are being updated on the partner
+        """
+        payment_term_id = vals.get("property_payment_term_id")
+        if payment_term_id:
+            invoices = self.env["account.move"].search([
+                ("partner_id", "in", self.ids),
+                ("payment_state", "=", "not_paid"),
+                ("state", "!=", "cancel"),
+                ("invoice_payment_term_id", "!=", payment_term_id)
+            ])
+            data_invs = invoices._build_invoices_data(payment_term_id=payment_term_id)
+            if data_invs:
+                invoices.update_open_invoices(data_invs)

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_advanced_translation,Full access on translations,model_ir_advanced_translation,base.group_user,1,1,1,1
 access_advanced_translation_portal,Read access on translations,model_ir_advanced_translation,base.group_portal,1,0,0,0
+access_res_lang_compassion,access_res_lang_compassion,model_res_lang_compassion,base.group_user,1,0,0,0

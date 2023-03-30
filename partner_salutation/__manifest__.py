@@ -29,11 +29,15 @@
 # pylint: disable=C8101
 {
     "name": "Compassion Partner Communications",
+    "summary": "Adds a salutation field on partners",
     "version": "14.0.1.0.0",
-    "category": "Other",
+    "development_status": "Beta",
+    "category": "Partner Management",
+    "website": "https://www.compassion.ch",
     "author": "Compassion CH",
+    "maintainers": ["ecino"],
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "installable": True,
     "depends": [
         "advanced_translation",
         "partner_firstname",  # OCA/partner-contact
@@ -41,7 +45,4 @@
     "data": [
         "views/res_partner_title_view.xml"
     ],
-    "demo": [],
-    "installable": True,
-    "auto_install": False,
 }
