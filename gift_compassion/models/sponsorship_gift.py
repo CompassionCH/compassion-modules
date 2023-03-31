@@ -92,6 +92,11 @@ class SponsorshipGift(models.Model):
         store=True,
         tracking=True,
     )
+    company_id = fields.Many2one(
+        related='sponsorship_id.company_id',
+        readonly=True,
+        help='Field is retrieve from the associated sponsorship'
+    )
     currency_id = fields.Many2one(
         "res.currency",
         compute="_compute_currency",
@@ -349,7 +354,6 @@ class SponsorshipGift(models.Model):
         :param invoice_line: account.invoice.line record
         :return: sponsorship.gift record
         """
-
         gift_vals = self.get_gift_values_from_product(invoice_line)
         if not gift_vals:
             return False
@@ -391,6 +395,7 @@ class SponsorshipGift(models.Model):
         is currently accepting gifts.
         """
         self.ensure_one()
+        self.env.company = self.sudo().company_id
         sponsorship = self.sponsorship_id
         if sponsorship.project_id.hold_gifts:
             return False, "Sponsorship may have a project with hold gifts"
@@ -410,11 +415,11 @@ class SponsorshipGift(models.Model):
 
             this_amount = self.amount * current_rate
             if this_amount < minimum_amount:
-                return False, f"""Gift amount is small than minimal amount, Gift amount: {round(this_amount,2)}$, 
-                Minimal amount :{round(minimum_amount,2)}$. """
+                return False, f"""Gift amount is small than minimal amount, Gift amount: {round(this_amount, 2)}$, 
+                Minimal amount :{round(minimum_amount, 2)}$. """
             if this_amount > maximum_amount:
-                return False, f"""Gift amount is higher than maximum amount, Gift amount: {round(this_amount,2)}$, 
-                Maximum amount :{round(maximum_amount,2)}$. """
+                return False, f"""Gift amount is higher than maximum amount, Gift amount: {round(this_amount, 2)}$, 
+                Maximum amount :{round(maximum_amount, 2)}$. """
 
             if threshold_rule.yearly_threshold:
                 # search other gifts for the same sponsorship.
@@ -447,8 +452,8 @@ class SponsorshipGift(models.Model):
 
                 if total_amount > (maximum_amount * threshold_rule.gift_frequency):
                     return False, f"""Yearly threshold exceed: total_amount: {round(total_amount)}$, Yearly threshold: 
-                                        {round(maximum_amount,2)}*{round(threshold_rule.gift_frequency,2)} 
-                                        = {round(maximum_amount * threshold_rule.gift_frequency,2)}$ """
+                                        {round(maximum_amount, 2)}*{round(threshold_rule.gift_frequency, 2)} 
+                                        = {round(maximum_amount * threshold_rule.gift_frequency, 2)}$ """
 
         return True, ""
 
@@ -515,7 +520,7 @@ class SponsorshipGift(models.Model):
         data.update(
             {"state": "In Progress", "amount_us_dollars": exchange_rate * self.amount}
         )
-        company = self.sponsorship_id.company_id
+        company = self.company_id
         param_obj = self.env["res.config.settings"].sudo().with_company(company)
         account_credit = param_obj.get_param("gift_income_account_id")
         account_debit = param_obj.get_param("gift_expense_account_id")
