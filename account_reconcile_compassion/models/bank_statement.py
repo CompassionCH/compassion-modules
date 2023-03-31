@@ -8,6 +8,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from wheel.metadata import _
 
 from odoo import fields, models
 
@@ -70,8 +71,24 @@ class AccountStatement(models.Model):
         return super().button_post()
 
     def auto_reconcile(self):
-        """ Auto reconcile matching invoices through jobs to avoid timeouts
-        Inspired by the `if model.auto_reconcile` part of _apply_rules()"""
+        """ Auto reconcile matching invoices through jobs to avoid timeouts """
+        if self.env.context.get('async_mode', True):
+            self.with_delay()._auto_reconcile()
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Auto reconcile',
+                    'type': 'success',
+                    'message': 'Reconciliation job has been queued',
+                    'sticky': False,
+                }
+            }
+        else:
+            self._auto_reconcile()
+
+    def _auto_reconcile(self):
+        """ Inspired by the `if model.auto_reconcile` part of _apply_rules() """
         reconcile_model = self.env["account.reconcile.model"].search([
             ("rule_type", "!=", "writeoff_button"),
             "|", ("company_id", "=", self.journal_id.company_id.id),
