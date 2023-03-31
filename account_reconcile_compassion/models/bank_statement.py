@@ -8,7 +8,6 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from wheel.metadata import _
 
 from odoo import fields, models
 
