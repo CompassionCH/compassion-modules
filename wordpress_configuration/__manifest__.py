@@ -30,7 +30,7 @@
 {
     "name": "Wordpress configuration for multi-company",
     "version": "14.0.0.0.0",
-    "category": "Other",
+    "category": "Technical",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",

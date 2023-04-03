@@ -43,7 +43,7 @@ class WordpressConfiguration(models.Model):
         Returns the config for the given or current company
         """
         wp_config = self.search(
-            [("company_id", "=", company_id or self.env.user.company.id)], limit=1
+            [("company_id", "in", [company_id or self.env.company.id, False])], limit=1
         )
         if not wp_config and raise_error:
             raise UserError(_("Missing Wordpress configuration for current company"))
