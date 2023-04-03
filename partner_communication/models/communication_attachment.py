@@ -109,7 +109,7 @@ class CommunicationAttachment(models.Model):
             else:
                 to_print = attachment.data
 
-            report = self.report_id.with_context(lang=attachment.communication_id.partner_id.lang)
+            report = attachment.report_id.with_context(lang=attachment.communication_id.partner_id.lang)
             behaviour = report.behaviour()
             printer = behaviour.pop("printer", False)
             if behaviour.pop("action", "client") != "client" and printer:
