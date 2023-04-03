@@ -166,7 +166,7 @@ class Correspondence(models.Model):
                           already exists.
         :return: True
         """
-        if self.sponsorship_id.state == 'terminated':
+        if self.sponsorship_id.state == 'terminated' and not self.env.context.get("force_send"):
             return False
         partners = self.mapped("partner_id")
         final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
