@@ -166,6 +166,8 @@ class Correspondence(models.Model):
                           already exists.
         :return: True
         """
+        if self.sponsorship_id.state == 'terminated':
+            return False
         partners = self.mapped("partner_id")
         final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
         module = "partner_communication_compassion."
@@ -198,10 +200,8 @@ class Correspondence(models.Model):
             old_letters._generate_communication(
                 first_letter_template if is_first else old_template
             )
-
         if self.env.context.get("force_send"):
             self.mapped("communication_id").filtered(lambda c: c.state != "done").send()
-
         return True
 
     ##########################################################################
