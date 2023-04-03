@@ -29,7 +29,7 @@
 {
     "name": "SBC Translation Platform",
     "version": "12.0.1.0.0",
-    "category": "Other",
+    "category": "Compassion",
     "summary": "SBC - Translation Platform",
     "sequence": 150,
     "author": "Compassion CH",

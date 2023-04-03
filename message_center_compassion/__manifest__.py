@@ -30,7 +30,7 @@
 {
     "name": "Compassion CH Message Center",
     "version": "14.0.1.0.2",
-    "category": "Other",
+    "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",

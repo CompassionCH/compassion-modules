@@ -30,7 +30,7 @@
 {
     "name": "Compassion Onramp Simulator",
     "version": "14.0.1.0.0",
-    "category": "Other",
+    "category": "Technical",
     "summary": "Send messages to Compassion Onramps",
     "sequence": 150,
     "author": "Compassion CH",
