@@ -58,7 +58,8 @@
     </template>
 
     <template id="childpack_small">
-        <t t-set="disableFooter" t-value="1"/> <!-- Goes with a modification on the odoo template web.external_layout -->
+        <t t-set="disable_footer" t-value="1"/>
+        <t t-set="disable_header" t-value="1"/>
         <t t-set="marginLeft" t-value="formMargin or 0"/>
         <t t-set="full" t-value="marginLeft > 0"/>
         <t t-set="small" t-value="not full"/>
@@ -101,7 +102,6 @@
                         <t t-raw="o.project_id.description_right"/>
                     </div>
                 </div>
-<!--                  <img class="qrcode" t-attf-src="data:image/jpg;base64,{{ o.qr_code_data }}" alt="QR Code to online sponsorship form" t-if="full"/>-->
                 <div class="photo">
                     <img t-if="o.fullshot" t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"/>
                 </div>
@@ -274,6 +274,8 @@
             }
             .qrcode {
               position: absolute;
+              top: 0mm;
+              left: 0mm;
               margin-left: <t t-esc="marginLeft+269"/>mm;
               margin-top: 10mm;
               width: 23mm;
@@ -285,5 +287,4 @@
             }
         </style>
     </template>
-
 </odoo>

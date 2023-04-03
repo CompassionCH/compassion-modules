@@ -1,0 +1,12 @@
+<odoo>
+    <template id="disableHeaderOrFooter" inherit_id="web.external_layout_standard">
+        <!-- support for custom header -->
+        <div t-attf-class="header o_company_#{company.id}_layout" position="attributes">
+            <attribute name="t-if">not disable_header</attribute>
+        </div>
+        <!-- support for custom footer -->
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout" position="attributes">
+            <attribute name="t-if">not disable_footer</attribute>
+        </div>
+    </template>
+</odoo>
