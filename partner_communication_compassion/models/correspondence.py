@@ -171,8 +171,8 @@ class Correspondence(models.Model):
         if self.env.context.get("force_send"):
             eligible_letters = self
         else:
-            eligible_letters = self.filtered(lambda l: l.sponsorship_id.state == 'terminated')
-            (self - eligible_letters).communication_id.filtered(lambda c: c.state == "pending").unlink()
+            eligible_letters = self.filtered(lambda l: l.sponsorship_id.state == 'active')
+            (self - eligible_letters).mapped("communication_id").filtered(lambda c: c.state != "done").unlink()
 
         partners = eligible_letters.mapped("partner_id")
         final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
