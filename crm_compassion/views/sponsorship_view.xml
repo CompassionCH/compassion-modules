@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_contracts_add_ambassador" model="ir.ui.view">
+        <field name="name">recurring.contract.correspondence</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='medium_id']" position="after">
+                <field name="user_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
