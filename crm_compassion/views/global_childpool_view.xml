@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_pool_section"
+              name="Global Childpool"
+              parent="crm.crm_menu_root"
+              sequence="2"/>
+    <menuitem id="menu_global_pool"
+              name="Global Childpool"
+              parent="menu_pool_section"
+              sequence="1"
+              action="child_compassion.open_view_childpool"/>
+    <menuitem id="menu_holds"
+              parent="menu_pool_section"
+              name="Holds"
+              sequence="2"
+              action="child_compassion.open_view_holds"/>
+    <menuitem id="menu_sponsorship_reservation"
+              parent="menu_pool_section"
+              name="Reservations"
+              sequence="3"
+              action="child_compassion.open_view_reservation_form"/>
+</odoo>

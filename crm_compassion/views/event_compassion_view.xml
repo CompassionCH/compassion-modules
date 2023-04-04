@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2014 Compassion (http://www.compassion.ch)
+    @author Emanuel Cino <ecino@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<odoo>
+    <!-- Events tree view -->
+    <record id="view_events_tree" model="ir.ui.view">
+        <field name="name">crm.event.compassion.tree</field>
+        <field name="model">crm.event.compassion</field>
+        <field name="priority" eval="8" />
+        <field name="arch" type="xml">
+            <tree string="Events">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="partner_id"/>
+                <field name="city"/>
+                <field name="user_id"/>
+                <field name="total_income" sum="Income"/>
+                <field name="total_expense" sum="Expense"/>
+                <field name="balance" sum="Balance"/>
+                <field name="won_sponsorships" sum="Won Sponsorships"/>
+                <field name="conversion_rate" widget="progressbar"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Events form view -->
+    <record id="view_events_form" model="ir.ui.view">
+        <field name="name">crm.event.compassion.form</field>
+        <field name="model">crm.event.compassion</field>
+        <field name="arch" type="xml">
+            <form string="Event">
+                <header>
+                    <button name="allocate_children" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" />
+                        </h1>
+                    </div>
+                    <div class="oe_right oe_button_box" name="buttons">
+                        <button name="show_children" type="object" class="oe_stat_button" icon="fa-child">
+                            <field name="effective_allocated" widget="statinfo" string="Children"/>
+                        </button>
+                        <button name="show_sponsorships" type="object" class="oe_stat_button" icon="fa-link">
+                            <field name="won_sponsorships" widget="statinfo" string="Sponsorships"/>
+                        </button>
+                        <button name="show_expenses" type="object" class="oe_stat_button" icon="fa-credit-card">
+                            <field name="total_expense" widget="statinfo" string="Expenses"/>
+                        </button>
+                        <button name="show_income" type="object" class="oe_stat_button" icon="fa-money">
+                            <field name="total_income" string="Income" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="campaign_id"/>
+                            <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
+                            <field name="analytic_id" readonly="1"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date" />
+                            <field name="hold_start_date" />
+                            <field name="hold_end_date" />
+                        </group>
+                        <group>
+                            <field name="partner_id" options="{'create': false, 'm2o_dialog': false}"/>
+                            <label for="street" string="Address"/>
+                            <div>
+                                <field name="street" placeholder="Street..."/>
+                                <field name="street2"/>
+                                <field name="zip_id"/>
+                                <div class="address_format">
+                                    <field name="city" placeholder="City" style="width: 40%%"/>
+                                    <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}'/>
+                                    <field name="zip" placeholder="ZIP" style="width: 20%%"/>
+                                </div>
+                                <field name="country_id"/>
+                            </div>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="number_allocate_children"/>
+                            <field name="planned_sponsorships"/>
+                            <field name="conversion_rate"/>
+                            <field name="balance"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Staff">
+                            <field name="staff_ids"/>
+                        </page>
+                        <page string="Internal Notes">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_event_filter" model="ir.ui.view">
+        <field name="name">crm.event.compassion.select</field>
+        <field name="model">crm.event.compassion</field>
+        <field name="arch" type="xml">
+            <search string="Search origin">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="city"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter string="Customer" name="customer" domain="[]" context="{'group_by':'partner_id'}"/>
+                    <filter string="Responsible" name="responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Opportunity" name="opportunity" domain="[]" context="{'group_by':'lead_id'}"/>
+                    <filter string="Year" name="year" domain="[]" context="{'group_by':'year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Events Calendar View -->
+    <record model="ir.ui.view" id="view_events_calendar">
+        <field name="name">Events Calendar</field>
+        <field name="model">crm.event.compassion</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar string="Compassion Events"
+                      date_start="start_date" date_stop="end_date" color="user_id" mode="month">
+                <field name="name"/>
+                <field name="partner_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_update_won_sponsorships_count" model="ir.actions.server">
+        <field name="name">Update won sponsorship count</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="model_crm_event_compassion"/>
+        <field name="binding_model_id" ref="model_crm_event_compassion"/>
+        <field name="code">
+            records.force_update_won_sponsorships_count()
+        </field>
+    </record>
+
+    <!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
+    <record id="action_events_compassion" model="ir.actions.act_window">
+        <field name="name">Events</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">crm.event.compassion</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">calendar,tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No events.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_events_compassion" name="Events" parent="crm.crm_menu_root" sequence="2" action="action_events_compassion"/>
+</odoo>
