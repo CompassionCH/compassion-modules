@@ -23,13 +23,11 @@ class AccountPartialReconcile(models.Model):
         lines = (self.mapped('debit_move_id') + self.mapped('credit_move_id')).mapped('move_id.line_ids')
         for line in lines.filtered("gift_id"):
             gift = line.gift_id
-            if gift.gmc_gift_id and gift.state != "Undeliverable":
+            if gift.state in ['draft', 'verify']:
+                gift.unlink()
+            elif gift.state != 'Undeliverable':
                 raise UserError(
                     _("You cannot delete the %s. It is already sent to GMC.")
                     % gift.name
                 )
-            # Remove the move line from the gift
-            gift.write({"invoice_line_ids": [(3, line.id)]})
-            if not gift.invoice_line_ids:
-                gift.unlink()
         super().unlink()
