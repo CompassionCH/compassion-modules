@@ -166,9 +166,15 @@ class Correspondence(models.Model):
                           already exists.
         :return: True
         """
-        if self.sponsorship_id.state == 'terminated' and not self.env.context.get("force_send"):
-            return False
-        partners = self.mapped("partner_id")
+        # We shouldn't send communication to terminated contracts
+        # We should also delete pending communication for those terminated contracts
+        if self.env.context.get("force_send"):
+            eligible_letters = self
+        else:
+            eligible_letters = self.filtered(lambda l: l.sponsorship_id.state == 'terminated')
+            (self - eligible_letters).communication_id.filtered(lambda c: c.state == "pending").unlink()
+
+        partners = eligible_letters.mapped("partner_id")
         final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
         module = "partner_communication_compassion."
         first_letter_template = self.env.ref(module + "config_onboarding_first_letter")
@@ -178,10 +184,10 @@ class Correspondence(models.Model):
         old_limit = datetime.today() - relativedelta(months=2)
 
         for partner in partners:
-            letters = self.filtered(lambda l: l.partner_id == partner)
-            is_first = self.filtered(
+            letters = eligible_letters.filtered(lambda l: l.partner_id == partner)
+            is_first = eligible_letters.filtered(
                 lambda l: l.communication_type_ids
-                == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
+                          == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
             )
             no_comm = letters.filtered(lambda l: not l.communication_id)
             to_generate = letters if self.env.context.get("overwrite") else no_comm
@@ -201,7 +207,7 @@ class Correspondence(models.Model):
                 first_letter_template if is_first else old_template
             )
         if self.env.context.get("force_send"):
-            self.mapped("communication_id").filtered(lambda c: c.state != "done").send()
+            eligible_letters.mapped("communication_id").filtered(lambda c: c.state != "done").send()
         return True
 
     ##########################################################################
