@@ -76,7 +76,7 @@
             <t t-call="child_compassion.childpack_style"/>
                 <t t-if="is_pdf">
                     <div class="background">
-                        <img t-attf-src="http://localhost:8070/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"/>
+                        <img t-attf-src="/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"/>
                     </div>
                 </t>
                 <t t-if="formMargin">
