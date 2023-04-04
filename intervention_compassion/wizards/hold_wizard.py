@@ -50,7 +50,7 @@ class HoldWizard(models.TransientModel):
     )
 
     def hold_sent(self, hold_vals):
-        """ Called when hold is created """
+        """Called when hold is created"""
         del hold_vals["intervention_id"]
         hold_vals["hold_id"] = hold_vals.pop("created_intervention_id")
         intervention_vals = self.intervention_id.get_vals()
@@ -74,9 +74,9 @@ class HoldWizard(models.TransientModel):
             # Grant create access rights to create intervention
             intervention = (
                 self.env["compassion.intervention"]
-                    .with_context(async_mode=True)
-                    .sudo()
-                    .create(intervention_vals)
+                .with_context(async_mode=True)
+                .sudo()
+                .create(intervention_vals)
             )
             # Replace author of record to avoid having admin
             intervention.message_ids.sudo().write(
@@ -92,7 +92,12 @@ class HoldWizard(models.TransientModel):
         message = (
             self.env["gmc.message"]
             .with_context(async_mode=False)
-            .create({"action_id": create_hold.id, "object_id": self.id, })
+            .create(
+                {
+                    "action_id": create_hold.id,
+                    "object_id": self.id,
+                }
+            )
         )
         if "failure" in message.state:
             raise UserError(message.failure_reason)

@@ -123,7 +123,7 @@ class InterventionSearch(models.TransientModel):
         def _get_filter(field_name, operator_id, value):
             field_id = (
                 self.env["ir.model.fields"]
-                    .search(
+                .search(
                     [
                         ("model", "=", "compassion.global.intervention"),
                         ("name", "=", field_name),
@@ -218,11 +218,10 @@ class InterventionSearch(models.TransientModel):
                 # Split only if a comma is outside of parenthesis
                 # (to handle the case of Sanitation subcategory)
                 if (
-                        re.search(
-                            r",\s*(?![^()]*\))",
-                            json_data["InterventionSubCategory_Name"]
-                        )
-                        is not None
+                    re.search(
+                        r",\s*(?![^()]*\))", json_data["InterventionSubCategory_Name"]
+                    )
+                    is not None
                 ):
                     json_data["InterventionSubCategory_Name"] = json_data[
                         "InterventionSubCategory_Name"

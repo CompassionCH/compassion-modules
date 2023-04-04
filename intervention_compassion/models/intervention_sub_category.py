@@ -41,7 +41,7 @@ class InterventionSubCategory(models.Model):
     def install_cat_rel(self):
         logger.info("Intervention Installation : Loading Category Relations")
         with open(
-                IMPORT_DIR + "compassion.intervention.cat.subcat.rel.csv", "r"
+            IMPORT_DIR + "compassion.intervention.cat.subcat.rel.csv", "r"
         ) as csvfile:
             csvreader = csv.reader(csvfile)
             # Skip header

@@ -37,7 +37,7 @@ class HoldWizard(models.TransientModel):
     commit_to_additional_fund = fields.Boolean()
 
     def commitment_created(self, intervention_vals):
-        """ Called when commitment is created """
+        """Called when commitment is created"""
         self.intervention_id.write(
             {
                 "state": "committed",
@@ -60,7 +60,10 @@ class HoldWizard(models.TransientModel):
         # message. To avoid that, we create and process the message in two
         # steps and commit in between.
         message = self.env["gmc.message"].create(
-            {"action_id": create_commitment.id, "object_id": self.id, }
+            {
+                "action_id": create_commitment.id,
+                "object_id": self.id,
+            }
         )
         if not test_mode:
             self.env.cr.commit()  # pylint: disable=invalid-commit
