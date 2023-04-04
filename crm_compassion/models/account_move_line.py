@@ -14,20 +14,13 @@ from odoo import api, models, fields
 class AccountInvoiceLine(models.Model):
     """Add salespersons to invoice_lines."""
 
-    _inherit = "account.invoice.line"
+    _inherit = "account.move.line"
 
     user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
-    currency_id = fields.Many2one(
-        "res.currency",
-        "Currency",
-        related="invoice_id.currency_id",
-        store=True,
-        readonly=False,
-    )
     event_id = fields.Many2one(
         "crm.event.compassion",
         "Event",
-        related="account_analytic_id.event_id",
+        related="analytic_account_id.event_id",
         store=True,
         readonly=True,
     )
@@ -40,6 +33,7 @@ class AccountInvoiceLine(models.Model):
             self.user_id = contract.user_id.id
 
 
+# TODO move this
 class GenerateGiftWizard(models.TransientModel):
     """Push salespersons to generated invoices"""
 

@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields, _
+from odoo import models, fields, _
 
 
 class Partner(models.Model):
@@ -31,7 +31,6 @@ class Partner(models.Model):
         auto_join=True,
     )
 
-    @api.multi
     def open_events(self):
         event_ids = (
             self.env["crm.event.compassion"]
@@ -42,14 +41,12 @@ class Partner(models.Model):
         return {
             "name": _("Events"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "tree,form",
             "res_model": "crm.event.compassion",
             "target": "current",
             "domain": [("id", "in", event_ids)],
         }
 
-    @api.multi
     def create_odoo_user(self):
         portal = self.env["portal.wizard"].create({})
         portal.onchange_portal_id()
@@ -59,7 +56,6 @@ class Partner(models.Model):
 
         return res
 
-    @api.multi
     def _compute_opportunity_count(self):
         super()._compute_opportunity_count()
         for partner in self:
@@ -102,7 +98,6 @@ class Partner(models.Model):
             "target": "current",
         }
 
-    @api.multi
     def log_call(self):
         """Prepare crm.phonecall creation."""
         self.ensure_one()

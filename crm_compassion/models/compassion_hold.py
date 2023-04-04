@@ -45,9 +45,8 @@ class CompassionHold(models.Model):
         store=True,
         readonly=False,
     )
-    event_id = fields.Many2one(track_visibility="onchange", readonly=False)
+    event_id = fields.Many2one(tracking=True, readonly=False)
 
-    @api.multi
     @api.depends("channel", "type", "event_id", "ambassador")
     def _compute_origin(self):
         origin_obj = self.env["recurring.contract.origin"]
@@ -63,6 +62,8 @@ class CompassionHold(models.Model):
                 origin_search.append(("name", "=", "Internet"))
             if origin_search:
                 hold.origin_id = origin_obj.search(origin_search, limit=1)
+            else:
+                hold.origin_id = False
 
     def reservation_to_hold(self, commkit_data):
         res_ids = super().reservation_to_hold(commkit_data)

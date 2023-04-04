@@ -16,7 +16,6 @@ class PortalWizard(models.TransientModel):
 
     _inherit = "portal.wizard"
 
-    @api.multi
     def action_apply(self):
         self.ensure_one()
         res = super().action_apply()

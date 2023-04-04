@@ -13,7 +13,10 @@ from odoo import models, fields
 class ChildHoldWizard(models.TransientModel):
     _inherit = "child.hold.wizard"
 
-    return_action = fields.Selection(selection_add=[("event", "Go back to event")])
+    return_action = fields.Selection(
+        selection_add=[("event", "Go back to event")],
+        ondelete={"event": "set default"}
+    )
 
     def _get_action(self, holds):
         action = super()._get_action(holds)

@@ -4,26 +4,14 @@
         OPPORTUNITY
     -->
 
-    <!-- Change with opportunities button in partner view -->
-    <record id="lost_opportunities_mod" model="ir.ui.view">
-        <field name="name">Opportunities button mod</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="crm.view_partners_form_crm1"/>
-        <field name="arch" type="xml">
-            <xpath expr="//button[@icon='fa-star' and @type='action']" position="attributes">
-                <attribute name="context">{'search_default_partner_id': active_id, 'active_test': False}</attribute>
-            </xpath>
-        </field>
-    </record>
-
     <!-- Opportunities Form View -->
     <record model="ir.ui.view" id="crm_case_form_view_oppor_spons1">
         <field name="name">Opportunities</field>
         <field name="model">crm.lead</field>
         <field name="priority">25</field>
-        <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            <label for="planned_revenue" position="before">
+            <label for="expected_revenue" position="before">
                 <label for="planned_sponsorships"/><h2><field name="planned_sponsorships"/></h2>
             </label>
             <xpath expr="//page[1]" position="before">
@@ -57,7 +45,7 @@
         <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
         <field name="priority">25</field>
         <field name="arch" type="xml">
-            <field name="planned_revenue" position="before">
+            <field name="expected_revenue" position="before">
                 <field name="planned_sponsorships" sum="Expected Sponsorship" />
             </field>
         </field>
@@ -70,7 +58,7 @@
         <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
         <field name="priority">25</field>
         <field name="arch" type="xml">
-		<xpath expr="//field[@name='planned_revenue']" position="replace">
+		<xpath expr="//field[@name='expected_revenue']" position="replace">
                   <field name="planned_sponsorships" sum="Expected Sponsorships"/>
                 </xpath>
                 <xpath expr="//progressbar" position="replace">

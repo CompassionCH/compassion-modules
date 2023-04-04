@@ -13,7 +13,7 @@ from . import contract_origin
 from . import contract
 from . import crm_lead
 from . import account_analytic_account
-from . import account_invoice_line
+from . import account_move_line
 from . import res_partner
 from . import calendar_event
 from . import demand_planning

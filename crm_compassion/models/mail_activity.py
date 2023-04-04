@@ -57,7 +57,7 @@ class MailActivity(models.Model):
                 )
         return super().create(vals_list)
 
-    def action_feedback(self, feedback=False):
+    def action_feedback(self, feedback=False, attachment_ids=None):
         vals = {"state": "done"}
         if feedback:
             vals["description"] = feedback
@@ -65,6 +65,6 @@ class MailActivity(models.Model):
         related_partner = self.env[self.res_model].browse(self.res_id)
         if not related_partner.message_ids:
             related_partner.message_post(
-                body="System note", message_type="comment", subtype="mail.mt_note"
+                body="System note", message_type="comment", subtype_xmlid="mail.mt_note"
             )
         return super().action_feedback(feedback)

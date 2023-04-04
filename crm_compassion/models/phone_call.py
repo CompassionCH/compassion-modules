@@ -23,7 +23,6 @@ class PhoneCall(models.Model):
             res.is_from_employee = True
         return res
 
-    @api.multi
     def write(self, values):
         """Mark any linked activities as done."""
         super().write(values)
