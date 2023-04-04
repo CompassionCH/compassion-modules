@@ -61,7 +61,6 @@ class GlobalIntervention(models.TransientModel):
         return {
             "name": _("Intervention Hold Request"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "compassion.intervention.hold.wizard",
             "context": self.with_context(

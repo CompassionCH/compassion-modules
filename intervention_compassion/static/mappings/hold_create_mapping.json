@@ -3,11 +3,11 @@
   "model": "compassion.intervention.hold.wizard",
   "mapping": {
     "Intervention_ID": {
-      "field": "intervention_id.intervention_id"
+      "field": "intervention_id.intervention_id",
+      "allow_relational_creation": false
     },
     "HoldID": {
-      "field": "created_intervention_id.hold_id",
-      "relational_write_mode": ""
+      "field": "hold_id"
     },
     "ExpirationDate": {
       "field": "expiration_date"

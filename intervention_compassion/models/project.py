@@ -31,7 +31,6 @@ class FCP(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Interventions",
-            "view_type": "form",
             "view_mode": "tree,form",
             "res_model": "compassion.intervention",
             "res_id": self.intervention_ids.ids,

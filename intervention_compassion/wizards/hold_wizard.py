@@ -18,6 +18,7 @@ class HoldWizard(models.TransientModel):
 
     _inherit = "compassion.mapped.model"
     _name = "compassion.intervention.hold.wizard"
+    _description = "Intervention Hold Wizard"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -27,6 +28,7 @@ class HoldWizard(models.TransientModel):
     )
     created_intervention_id = fields.Many2one("compassion.intervention", readonly=False)
     hold_amount = fields.Float(required=True)
+    hold_id = fields.Char()
     usd = fields.Many2one(related="intervention_id.currency_usd", readonly=False)
     expiration_date = fields.Date(required=True)
     next_year_opt_in = fields.Boolean()
@@ -52,7 +54,6 @@ class HoldWizard(models.TransientModel):
     def hold_sent(self, hold_vals):
         """Called when hold is created"""
         del hold_vals["intervention_id"]
-        hold_vals["hold_id"] = hold_vals.pop("created_intervention_id")
         intervention_vals = self.intervention_id.get_vals()
         intervention_vals.update(hold_vals)
         intervention_vals.update(

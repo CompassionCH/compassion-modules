@@ -35,7 +35,7 @@
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
     "depends": [
-        "child_compassion",  # modules/child_compassion
+        "sponsorship_compassion",
         "base_automation",
     ],
     "external_dependencies": {},
