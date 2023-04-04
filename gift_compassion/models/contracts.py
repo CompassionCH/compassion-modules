@@ -71,23 +71,6 @@ class SponsorshipContract(models.Model):
 
         return res
 
-    def invoice_unpaid(self, invoice):
-        """ Remove pending gifts or prevent unreconcile if gift are already
-            sent.
-        """
-        for invl in invoice.invoice_line_ids.filtered("gift_id"):
-            gift = invl.gift_id
-            if gift.gmc_gift_id and gift.state != "Undeliverable":
-                raise UserError(
-                    _("You cannot delete the %s. It is already sent to GMC.")
-                    % gift.name
-                )
-            # Remove the invoice line from the gift
-            gift.write({"invoice_line_ids": [(3, invl.id)]})
-            if not gift.invoice_line_ids:
-                gift.unlink()
-        super(SponsorshipContract, self).invoice_unpaid(invoice)
-
     def open_gifts(self):
         sponsorship_ids = self.ids
         if self.type == "G":
