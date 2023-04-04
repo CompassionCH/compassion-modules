@@ -30,7 +30,7 @@
 {
     "name": "Compassion Children",
     "version": "14.0.1.0.0",
-    "category": "Other",
+    "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",
@@ -94,6 +94,9 @@
         "data/fo.high.risk.csv",
         "data/fo.disaster.loss.csv",
         "data/queue_job.xml",
+        "report/childpack.xml",
+        "report/external_layout.xml",
+        "views/print_childpack_view.xml",
     ],
     "demo": [],
     "installable": True,

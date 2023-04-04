@@ -29,7 +29,7 @@
 {
     "name": "Sponsor to beneficiary communication",
     "version": "14.0.1.0.1",
-    "category": "Other",
+    "category": "Compassion",
     "summary": "SBC - Supporter to Beneficiary Communication",
     "sequence": 150,
     "author": "Compassion CH",

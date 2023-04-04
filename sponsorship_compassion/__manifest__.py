@@ -30,7 +30,7 @@
 {
     "name": "Compassion Sponsorships",
     "version": "14.0.1.1.7",
-    "category": "Other",
+    "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "http://www.compassion.ch",

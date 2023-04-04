@@ -374,6 +374,8 @@ class CompassionProject(models.Model):
     # Project Descriptions
     ######################
     description_en = fields.Text("English description", readonly=True)
+    description_left = fields.Text(compute="_compute_description")
+    description_right = fields.Text(compute="_compute_description")
 
     re_opening_status = fields.Char(compute="_compute_re_opening_state",
                                     store=True,
@@ -403,6 +405,15 @@ class CompassionProject(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
+    def _compute_description(self):
+        lang_map = self.env["compassion.project.description"]._supported_languages()
+
+        for project in self:
+            lang = self.env.lang or "en_US"
+            description = getattr(project, lang_map.get(lang), "")
+            project.description_right = description
+            project.description_left = False
+
     @api.depends("fcp_id")
     def _compute_field_office(self):
         fo_obj = self.env["compassion.field.office"]

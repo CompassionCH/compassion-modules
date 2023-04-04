@@ -234,7 +234,7 @@
             <field name="connect_service">disaster-communication-update/v1/${object.disaster_communication_update_name}</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
-            <field name="no_out_going_data" eval="True"/>
+            <field name="no_outgoing_data" eval="True"/>
         </record>
         <!--Beneficiary Hold Removal-->
         <record id="beneficiary_hold_removal" model="gmc.action">
