@@ -12,12 +12,7 @@
                     <button name="cancel_hold" string="Cancel Hold" type="object" attrs="{'invisible': [('hold_id', '=', False)]}"/>
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name"/>
-                        </h1>
-                    </div>
-                    <div class="oe_right oe_button_box" name="buttons">
+                    <div class="oe_button_box" name="buttons">
                         <button name="get_infos"
                                 type="object"
                                 class="oe_stat_button"
@@ -55,6 +50,11 @@
                                 icon="fa-male"
                                 string="Partner"/>
                     </div>
+                    <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
                     <group>
                         <group>
                             <field name="intervention_id"/>

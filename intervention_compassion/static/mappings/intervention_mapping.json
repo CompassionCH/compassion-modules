@@ -20,11 +20,13 @@
     },
     "InterventionCategory_Name": {
       "field": "category_id.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "InterventionSubCategory_Name": {
       "field": "subcategory_ids.name",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "ActualDurationInMonthsNbr": {
       "field": "actual_duration"

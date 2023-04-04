@@ -87,7 +87,7 @@ class CompassionIntervention(models.Model):
         "Company",
         required=True,
         index=True,
-        default=lambda self: self.env.user.company_id.id,
+        default=lambda self: self.env.company.id,
         readonly=False,
     )
 
@@ -280,7 +280,10 @@ class CompassionIntervention(models.Model):
     other_activities = fields.Char(readonly=True)
 
     def _compute_level1_deliverables(self):
-        for intervention in self.filtered("type"):
+        for intervention in self:
+            if not intervention.type:
+                intervention.deliverable_level_1_ids = False
+                continue
             if "CIV" in intervention.type:
                 intervention.deliverable_level_1_ids = self.env.ref(
                     "intervention_compassion.deliverable_final_program_report"
@@ -316,6 +319,8 @@ class CompassionIntervention(models.Model):
                         "deliverable_sponsorship_launch_budget"
                     )
                 )
+            else:
+                intervention.deliverable_level_1_ids = False
 
     def _compute_move_line(self):
         for record in self:
@@ -596,7 +601,6 @@ class CompassionIntervention(models.Model):
             "name": _("Expenses"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "account.move.line",
             "context": self.env.context,
             "domain": [
@@ -615,7 +619,6 @@ class CompassionIntervention(models.Model):
             "name": _("Income"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "account.move.line",
             "context": self.env.context,
             "domain": [
@@ -634,7 +637,6 @@ class CompassionIntervention(models.Model):
             "name": _("Contract"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "recurring.contract.line",
             "context": self.env.context,
             "domain": [
@@ -665,7 +667,6 @@ class CompassionIntervention(models.Model):
             "name": _("Partner"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "res.partner",
             "context": self.env.context,
             "domain": [
@@ -715,7 +716,6 @@ class CompassionIntervention(models.Model):
         return {
             "name": _("Intervention Commitment Request"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "compassion.intervention.commitment.wizard",
             "context": self.with_context(
@@ -858,6 +858,7 @@ class CompassionIntervention(models.Model):
 class InterventionDeliverable(models.Model):
     _name = "compassion.intervention.deliverable"
     _inherit = "connect.multipicklist"
+    _description = "Intervention deliverable"
 
     res_model = "compassion.intervention"
     res_field = "deliverable_level_2_ids"

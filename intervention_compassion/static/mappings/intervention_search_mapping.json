@@ -21,7 +21,9 @@
     },
     "InterventionQueryResponseList": {
       "field": "intervention_ids.id",
-      "sub_mapping": "Compassion Global Intervention"
+      "sub_mapping": "Compassion Global Intervention",
+      "search_relational_record": true,
+      "search_key": "intervention_id"
     }
   }
 }
