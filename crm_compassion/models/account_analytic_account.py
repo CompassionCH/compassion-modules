@@ -21,7 +21,6 @@ class AnalyticAccount(models.Model):
         "crm.event.compassion", "Event", store=True, readonly=True
     )
 
-    @api.multi
     def name_get(self):
         res = []
         for analytic in self:

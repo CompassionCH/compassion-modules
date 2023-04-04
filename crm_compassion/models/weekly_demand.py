@@ -78,8 +78,9 @@ class WeeklyDemand(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     @api.depends("week_start_date", "week_end_date")
-    @api.multi
     def _compute_demand_events(self):
+        self.number_children_events = 0
+        self.resupply_events = 0
         for week in self.filtered("week_start_date").filtered("week_end_date"):
             # Compute demand
             events = self.env["crm.event.compassion"].search(
@@ -119,7 +120,6 @@ class WeeklyDemand(models.Model):
             week.number_children_events = allocate
             week.resupply_events = resupply
 
-    @api.multi
     def _inverse_fields(self):
         """Allow to manually set demand and resupply computed numbers."""
         pass
@@ -144,7 +144,6 @@ class WeeklyDemand(models.Model):
         "number_sub_sponsorship",
         "number_children_events",
     )
-    @api.multi
     def _compute_demand_total(self):
         for week in self:
             week.total_demand = (
@@ -193,7 +192,6 @@ class WeeklyDemand(models.Model):
         return allocate_per_week - (float(ambass_sponsored) / STATS_DURATION)
 
     @api.depends("week_start_date")
-    @api.multi
     def _compute_resupply_sub(self):
         """Compute SUB resupply."""
         sub_average = self._default_demand_sub()
@@ -249,7 +247,6 @@ class WeeklyDemand(models.Model):
         "resupply_sub",
         "resupply_events",
     )
-    @api.multi
     def _compute_resupply_total(self):
         for week in self:
             week.total_resupply = math.floor(
@@ -275,7 +272,7 @@ class WeeklyDemand(models.Model):
             vals["number_children_ambassador"] -= vals["average_unsponsored_ambassador"]
             vals["average_unsponsored_ambassador"] = 0
 
-        # this ensure that the default functions are triggered
+        # this ensures that the default functions are triggered
         # even if the record is created with "False" values
         for k, v in dict(vals).items():
             if bool(v) is False or v is None:
@@ -323,7 +320,6 @@ class WeeklyDemand(models.Model):
             "average_cancellation": self._default_cancellation(),
         }
 
-    @api.multi
     def correct_event_resupply(self):
         """
         Action rule called to correct a negative event resupply.

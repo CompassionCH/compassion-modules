@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2023 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -28,15 +28,19 @@
 
 # pylint: disable=C8101
 {
-    "name": "Compassion CH - Events",
-    "version": "12.0.1.0.3",
-    "category": "CRM",
-    "sequence": 150,
+    "name": "Compassion - Events",
+    "summary": "Compassion Events and Opportunities",
+    "version": "14.0.1.0.0",
+    "development_status": "Beta",
+    "category": "Customer Relationship Management",
+    "website": "https://www.compassion.ch",
     "author": "Compassion CH",
+    "maintainers": ["ecino"],
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "installable": True,
     "depends": [
         "base_location",  # oca_addons/partner_contact
+        "crm_phonecall",  # OCA/crm
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
         "mail_tracking",  # oca_addons/social
@@ -55,7 +59,6 @@
         "views/calendar_event_view.xml",
         "views/calendar_view.xml",
         "views/contract_origin_view.xml",
-        "views/crm_claim_menu.xml",
         "views/crm_lead_view.xml",
         "views/demand_planning_settings.xml",
         "views/demand_planning.xml",
@@ -65,14 +68,10 @@
         "views/global_childpool_view.xml",
         "views/hold_view.xml",
         "views/interaction_resume_view.xml",
-        "views/mail_message_view.xml",
         "views/partner_log_interaction_wizard_view.xml",
         "views/partner_log_other_interaction_wizard_view.xml",
         "views/res_partner_view.xml",
         "views/sponsorship_view.xml",
     ],
     "qweb": ["static/src/xml/kanban_colors.xml"],
-    "demo": [],
-    "installable": True,
-    "auto_install": False,
 }

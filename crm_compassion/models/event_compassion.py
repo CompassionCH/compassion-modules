@@ -26,7 +26,7 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-    name = fields.Char(size=128, required=True, track_visibility="onchange")
+    name = fields.Char(required=True, tracking=True)
     full_name = fields.Char(compute="_compute_full_name")
     type = fields.Selection(
         [
@@ -38,23 +38,23 @@ class EventCompassion(models.Model):
             ("tour", _("Sponsor tour")),
         ],
         required=True,
-        track_visibility="onchange",
+        tracking=True,
     )
     start_date = fields.Datetime(required=True)
     year = fields.Char(compute="_compute_year", store=True)
     end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
-        "res.partner", "Customer", track_visibility="onchange", readonly=False
+        "res.partner", "Customer", tracking=True, readonly=False
     )
     zip_id = fields.Many2one("res.city.zip", "Address", readonly=False)
-    street = fields.Char(size=128)
-    street2 = fields.Char(size=128)
-    city = fields.Char(size=128)
+    street = fields.Char()
+    street2 = fields.Char()
+    city = fields.Char()
     state_id = fields.Many2one("res.country.state", "State", readonly=False)
-    zip = fields.Char(size=24)
+    zip = fields.Char()
     country_id = fields.Many2one("res.country", "Country", readonly=False)
     user_id = fields.Many2one(
-        "res.users", "Ambassador", track_visibility="onchange", readonly=False
+        "res.users", "Ambassador", tracking=True, readonly=False
     )
     hold_ids = fields.One2many("compassion.hold", "event_id", readonly=True)
     allocate_child_ids = fields.One2many(
@@ -70,13 +70,13 @@ class EventCompassion(models.Model):
         "event_id",
         "partner_id",
         "Staff",
-        track_visibility="onchange",
+        tracking=True,
         readonly=False,
     )
     user_ids = fields.Many2many(
         "res.users",
         compute="_compute_users",
-        track_visibility="onchange",
+        tracking=True,
         readonly=False,
     )
     description = fields.Text()
@@ -96,10 +96,10 @@ class EventCompassion(models.Model):
         readonly=False,
     )
     invoice_line_ids = fields.One2many(
-        "account.invoice.line", "event_id", readonly=True
+        "account.move.line", "event_id", readonly=True
     )
     income_line_ids = fields.One2many(
-        "account.invoice.line",
+        "account.move.line",
         compute="_compute_income_lines",
         string="Income",
         readonly=False,
@@ -109,15 +109,15 @@ class EventCompassion(models.Model):
     balance = fields.Float(compute="_compute_balance", readonly=True, store=True)
     number_allocate_children = fields.Integer(
         "Number of children to allocate",
-        track_visibility="onchange",
+        tracking=True,
         required=True,
         default=0,
     )
     planned_sponsorships = fields.Integer(
-        "Expected sponsorships", track_visibility="onchange", required=True, default=0
+        "Expected sponsorships", tracking=True, required=True, default=0
     )
     lead_id = fields.Many2one(
-        "crm.lead", "Opportunity", track_visibility="onchange", readonly=False
+        "crm.lead", "Opportunity", tracking=True, readonly=False
     )
     won_sponsorships = fields.Integer(related="origin_id.won_sponsorships", store=True)
     conversion_rate = fields.Float(related="origin_id.conversion_rate", store=True)
@@ -132,44 +132,39 @@ class EventCompassion(models.Model):
         "Company",
         required=True,
         index=True,
-        default=lambda self: self.env.user.company_id.id,
+        default=lambda self: self.env.company.id,
         readonly=False,
     )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     def _compute_expense_lines(self):
         for event in self:
             event.expense_line_ids = event.analytic_id.line_ids.filtered(
                 lambda l: l.amount < 0.0
             )
 
-    @api.multi
     def _compute_income_lines(self):
         for event in self:
             event.income_line_ids = event.invoice_line_ids.filtered(
-                lambda l: l.state == "paid"
+                lambda l: l.payment_state == "paid"
                 and not l.contract_id
-                and l.invoice_id.type == "out_invoice"
+                and l.move_id.move_type == "out_invoice"
             )
 
-    @api.multi
     @api.depends("analytic_id.line_ids")
     def _compute_expense(self):
         for event in self:
             expenses = event.expense_line_ids.filtered(lambda l: l.amount < 0)
             event.total_expense = abs(sum(expenses.mapped("amount") or [0]))
 
-    @api.multi
-    @api.depends("invoice_line_ids.state")
+    @api.depends("invoice_line_ids.payment_state")
     def _compute_income(self):
         for event in self:
             incomes = event.income_line_ids
             event.total_income = sum(incomes.mapped("price_subtotal") or [0])
 
-    @api.multi
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):
         for event in self:
@@ -178,18 +173,18 @@ class EventCompassion(models.Model):
             else:
                 event.balance = 0.0
 
-    @api.multi
     @api.depends("start_date")
     def _compute_year(self):
-        for event in self.filtered("start_date"):
-            event.year = str(event.start_date.year)
+        for event in self:
+            if event.start_date:
+                event.year = str(event.start_date.year)
+            else:
+                event.year = False
 
-    @api.multi
     def _compute_full_name(self):
         for event in self:
             event.full_name = event.type.title() + " " + event.name + " " + event.year
 
-    @api.multi
     @api.depends("hold_ids")
     def _compute_allocate_children(self):
         for event in self:
@@ -217,7 +212,6 @@ class EventCompassion(models.Model):
         )
         return (start if start else self.start_date.date()) - timedelta(days=delta)
 
-    @api.multi
     @api.depends("staff_ids")
     def _compute_users(self):
         for event in self:
@@ -282,7 +276,6 @@ class EventCompassion(models.Model):
 
         return event
 
-    @api.multi
     def write(self, vals):
         """Push values to linked objects."""
         super().write(vals)
@@ -304,7 +297,6 @@ class EventCompassion(models.Model):
 
         return True
 
-    @api.multi
     def copy(self, default=None):
         this_year = str(datetime.now().year)
         if self.year == this_year:
@@ -313,7 +305,6 @@ class EventCompassion(models.Model):
             default["name"] = self.name + " (copy)"
         return super().copy(default)
 
-    @api.multi
     def unlink(self):
         """Check that the event is not linked with expenses or won
         sponsorships."""
@@ -349,7 +340,6 @@ class EventCompassion(models.Model):
                 event.calendar_event_id = calendar_event
         return True
 
-    @api.multi
     def force_update_won_sponsorships_count(self):
         for event in self:
             event.origin_id._compute_won_sponsorships()
@@ -357,54 +347,47 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
-    @api.multi
     def show_sponsorships(self):
         self.ensure_one()
         return {
             "name": _("Sponsorships"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "recurring.contract",
             "src_model": "crm.event.compassion",
             "context": self.with_context(default_type="S", group_by=False).env.context,
             "domain": [("id", "in", self.origin_id.contract_ids.ids)],
         }
 
-    @api.multi
     def show_expenses(self):
         self.ensure_one()
         return {
             "name": _("Expenses"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "account.analytic.line",
             "src_model": "crm.event.compassion",
             "context": self.with_context(group_by="general_account_id").env.context,
             "domain": [("id", "in", self.expense_line_ids.ids)],
         }
 
-    @api.multi
     def show_income(self):
         return {
             "name": _("Income"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "view_type": "form",
-            "res_model": "account.invoice.line",
+            "res_model": "account.move.line",
             "src_model": "crm.event.compassion",
             "context": self.env.context,
             "domain": [("id", "in", self.income_line_ids.ids)],
         }
 
-    @api.multi
     def show_children(self):
         return {
             "name": _("Allocated Children"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
             "res_model": "compassion.child",
             "src_model": "crm.event.compassion",
             "context": self.with_context(search_default_available=1).env.context,
@@ -423,7 +406,6 @@ class EventCompassion(models.Model):
             event.analytic_id.write({"account_tag_ids": [(6, 0, tag_ids)]})
 
     @api.onchange("start_date")
-    @api.multi
     def onchange_start_date(self):
         """
         Update end_date and hold_start_date as soon as start_date is changed
@@ -434,7 +416,6 @@ class EventCompassion(models.Model):
                 event.end_date = event.start_date
 
     @api.onchange("end_date")
-    @api.multi
     def onchange_end_date(self):
         days_after = self.env["res.config.settings"].get_param("days_hold_after_event")
         for event in self.filtered("end_date"):
@@ -494,7 +475,6 @@ class EventCompassion(models.Model):
         }
         return calendar_vals
 
-    @api.multi
     def allocate_children(self):
         no_money_yield = float(self.planned_sponsorships)
         yield_rate = float(self.number_allocate_children - self.planned_sponsorships)
@@ -529,7 +509,6 @@ class EventCompassion(models.Model):
     ##########################################################################
     #              SUBSCRIPTION METHODS TO SUBSCRIBE STAFF ONLY              #
     ##########################################################################
-    @api.multi
     def message_auto_subscribe(self, updated_fields, values=None):
         """
         Subscribe from user_ids field which is a computed field.

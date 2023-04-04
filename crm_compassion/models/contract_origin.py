@@ -27,7 +27,6 @@ class ContractOrigin(models.Model):
             else:
                 super(ContractOrigin, origin)._compute_name()
 
-    @api.multi
     def write(self, vals):
         """Propagate ambassador into contracts and invoice lines."""
         if "partner_id" in vals:
@@ -37,7 +36,7 @@ class ContractOrigin(models.Model):
                     [("origin_id", "=", origin.id), ("user_id", "=", old_ambassador_id)]
                 )
                 sponsorships.write({"user_id": vals["partner_id"]})
-                invoice_lines = self.env["account.invoice.line"].search(
+                invoice_lines = self.env["account.move.line"].search(
                     [("contract_id", "in", sponsorships.ids)]
                 )
                 invoice_lines.write({"user_id": vals["partner_id"]})

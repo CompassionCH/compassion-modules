@@ -23,10 +23,13 @@
         </field>
     </record>
 
-    <act_window id="action_log_interaction"
-                name="Log your e-mail"
-                src_model="res.partner"
-                res_model="partner.log.interaction.wizard"
-                view_mode="form" view_type="form" target="new"/>
+    <record model="ir.actions.act_window" id="action_log_interaction">
+        <field name="name">Log your email</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_view_types">form</field>
+        <field name="res_model">partner.log.interaction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
 </odoo>

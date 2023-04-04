@@ -9,8 +9,8 @@
                   decoration-info="phone_id"
                   decoration-muted="mass_mailing_id"
                   edit="0" create="0" delete="0">
-                <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" />
-                <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" />
+                <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" title="Outgoing"/>
+                <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" title="Incoming"/>
                 <field name="communication_date"/>
                 <field name="communication_type" string="Send mode"/>
                 <field name="rule_id"/>
@@ -25,7 +25,7 @@
                 <field name="tracking_status"/>
                 <field name="subject"/>
                 <field name="has_attachment" invisible="1"/>
-                <button icon="fa-paperclip" attrs="{'invisible': [('has_attachment', '=', False)]}"/>
+                <button icon="fa-paperclip" attrs="{'invisible': [('has_attachment', '=', False)]}" title="Attachments"/>
             </tree>
         </field>
     </record>

@@ -19,7 +19,7 @@ class CrmLead(models.Model):
 
     planned_sponsorships = fields.Integer(
         "Expected new sponsorships",
-        track_visibility="onchange",
+        tracking=True,
         compute="_compute_planned_sponsorship",
         store=True,
     )
@@ -29,7 +29,6 @@ class CrmLead(models.Model):
     phonecall_ids = fields.One2many("crm.phonecall", "opportunity_id", readonly=False)
     meeting_ids = fields.One2many("calendar.event", "opportunity_id", readonly=False)
 
-    @api.multi
     def create_event(self):
         self.ensure_one()
         context = self.with_context(
@@ -51,7 +50,6 @@ class CrmLead(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "New event",
-            "view_type": "form",
             "view_mode": "form,calendar,tree",
             "res_model": "crm.event.compassion",
             "target": "current",
@@ -63,7 +61,6 @@ class CrmLead(models.Model):
         self.search([])._compute_planned_sponsorship()
         return True
 
-    @api.multi
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):
         for lead in self:
@@ -73,7 +70,6 @@ class CrmLead(models.Model):
                     future_planned_sponsorships += e.planned_sponsorships
             lead.planned_sponsorships = future_planned_sponsorships
 
-    @api.multi
     def _merge_data(self, fields):
         """Update the _merge_data function to be able to merge
         many2many and one2may
@@ -91,7 +87,6 @@ class CrmLead(models.Model):
 
         return data
 
-    @api.multi
     def merge_opportunity(self, user_id=False, team_id=False):
         CRM_LEAD_FIELDS_TO_MERGE.extend(["phonecall_ids", "meeting_ids"])
         return super().merge_opportunity(user_id, team_id)

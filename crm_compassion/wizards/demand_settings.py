@@ -21,7 +21,6 @@ class DemandPlanningSettings(models.TransientModel):
     days_allocate_before_event = fields.Integer()
     days_hold_after_event = fields.Integer()
 
-    @api.multi
     def set_values(self):
         super().set_values()
         config = self.env["ir.config_parameter"]
