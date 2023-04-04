@@ -20,14 +20,13 @@ INTERVENTION_PORTAL_URL = "https://compassion.force.com/GlobalPartners/"
 
 
 class CompassionIntervention(models.Model):
-    """ All interventions on hold or sponsored.
-    """
+    """All interventions on hold or sponsored."""
 
     _inherit = [
         "compassion.generic.intervention",
         "mail.thread",
         "compassion.mapped.model",
-        "mail.activity.mixin"
+        "mail.activity.mixin",
     ]
     _name = "compassion.intervention"
     _description = "Intervention"
@@ -98,9 +97,7 @@ class CompassionIntervention(models.Model):
     actual_duration = fields.Integer(help="Actual duration in months", readonly=True)
     initial_planned_end_date = fields.Date(readonly=True)
     planned_end_date = fields.Date(readonly=True, tracking=True)
-    end_date = fields.Date(
-        help="Actual end date", readonly=True, tracking=True
-    )
+    end_date = fields.Date(help="Actual end date", readonly=True, tracking=True)
 
     # Budget Information (all monetary fields are in US dollars)
     ####################
@@ -110,9 +107,7 @@ class CompassionIntervention(models.Model):
     )
     local_contribution = fields.Float(readonly=True, help="Actual local contribution")
     commitment_amount = fields.Float(readonly=True, tracking=True)
-    commited_percentage = fields.Float(
-        readonly=True, tracking=True, default=100.0
-    )
+    commited_percentage = fields.Float(readonly=True, tracking=True, default=100.0)
     total_expense = fields.Char(
         "Total expense", compute="_compute_move_line", readonly=True
     )
@@ -124,7 +119,7 @@ class CompassionIntervention(models.Model):
     total_estimated_cost_local = fields.Float("Estimated costs (local currency)")
     local_currency_id = fields.Many2one(
         "res.currency",
-        related="field_office_id.country_id." "currency_id",
+        related="field_office_id.country_id.currency_id",
         readonly=False,
     )
 
@@ -197,33 +192,50 @@ class CompassionIntervention(models.Model):
         ],
         required=True,
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
     )
     hold_amount = fields.Float(
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
         tracking=True,
     )
     expiration_date = fields.Date(
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
     )
     next_year_opt_in = fields.Boolean(
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
     )
     user_id = fields.Many2one(
         "res.users",
         "Primary owner",
         domain=[("share", "=", False)],
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
         tracking=True,
-        oldname="primary_owner",
     )
     secondary_owner = fields.Char(
         readonly=True,
-        states={"on_hold": [("readonly", False)], "sla": [("readonly", False)], },
+        states={
+            "on_hold": [("readonly", False)],
+            "sla": [("readonly", False)],
+        },
     )
 
     # Survival Information
@@ -384,7 +396,7 @@ class CompassionIntervention(models.Model):
         return res
 
     def unlink(self):
-        """ Only allow to delete cancelled Interventions. """
+        """Only allow to delete cancelled Interventions."""
         if self.filtered(lambda i: i.state != "cancel"):
             raise UserError(_("You can only delete cancelled Interventions."))
         return super().unlink()
@@ -434,12 +446,14 @@ class CompassionIntervention(models.Model):
                     intervention.activity_schedule(
                         "mail.mail_activity_data_todo",
                         summary=_("Set an expiration date and service level"),
-                        note=_("You have been assigned to the Intervention {}. "
-                               "Please update the intervention by setting an "
-                               "expiration date and service level.".
-                               format(intervention.intervention_id)
-                               ),
-                        user_id=user.id
+                        note=_(
+                            "You have been assigned to the Intervention {}. "
+                            "Please update the intervention by setting an "
+                            "expiration date and service level.".format(
+                                intervention.intervention_id
+                            )
+                        ),
+                        user_id=user.id,
                     )
 
         return intervention.ids
@@ -453,7 +467,7 @@ class CompassionIntervention(models.Model):
         :param commkit_data contains the data of the
         message (json)
         :return list of intervention ids which are concerned by the
-        message """
+        message"""
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         intervention_request = (
@@ -498,18 +512,20 @@ class CompassionIntervention(models.Model):
         return True
 
     def hold_sent(self, intervention_vals=None):
-        """ Do nothing when hold is sent. """
+        """Do nothing when hold is sent."""
         return True
 
     def hold_cancelled(self, intervention_vals=None):
-        """ Remove the hold and put intervention in Cancel state. """
+        """Remove the hold and put intervention in Cancel state."""
         self.write(
-            {"hold_id": False, "state": "cancel", }
+            {
+                "hold_id": False,
+                "state": "cancel",
+            }
         )
         self.message_post(
-            body=_(
-                "The hold of %s (%s) was just cancelled."
-            ) % (self.name, self.intervention_id),
+            body=_("The hold of %s (%s) was just cancelled.")
+            % (self.name, self.intervention_id),
             subject=_("Intervention hold cancelled"),
             partner_ids=self.message_partner_ids.ids,
             subtype_xmlid="mail.mt_comment",
@@ -549,9 +565,9 @@ class CompassionIntervention(models.Model):
         # search existing project or create a new one if doesn't exist.
         for intervention in self:
             if (
-                    intervention.product_template_id
-                    or intervention.state != "committed"
-                    or not intervention.parent_intervention_name
+                intervention.product_template_id
+                or intervention.state != "committed"
+                or not intervention.parent_intervention_name
             ):
                 continue
             product_name = intervention.parent_intervention_name
@@ -660,7 +676,7 @@ class CompassionIntervention(models.Model):
         }
 
     def get_infos(self):
-        """ Get the most recent information about the intervention """
+        """Get the most recent information about the intervention"""
         for intervention in self:
             if intervention.state == "cancel":
                 continue
@@ -745,12 +761,12 @@ class CompassionIntervention(models.Model):
     @api.model
     def intervention_reporting_milestone(self, commkit_data):
         """This function is automatically executed when a
-                InterventionReportingMilestoneRequestList is received,
-                it send a message to the follower of the Intervention
-                :param commkit_data contains the data of the
-                message (json)
-                :return list of intervention ids which are concerned by the
-                message """
+        InterventionReportingMilestoneRequestList is received,
+        it sends a message to the follower of the Intervention
+        :param commkit_data contains the data of the
+        message (json)
+        :return list of intervention ids which are concerned by the
+        message"""
         # actually commkit_data is a dictionary with a single entry which
         # value is a list of dictionary (for each record)
         milestones_data = commkit_data["InterventionReportingMilestoneRequestList"]
@@ -786,7 +802,7 @@ class CompassionIntervention(models.Model):
         :param commkit_data contains the data of the
                message (json)
         :return list of intervention ids which are concerned
-                by the message """
+                by the message"""
         # sleep to prevent a concurence error
         time.sleep(10)
         # actually commkit_data is a dictionary with a single entry which
@@ -811,8 +827,9 @@ class CompassionIntervention(models.Model):
             amendment_type = ", ".join(interventionamendment.get("AmendmentType", []))
             amendment_reason = interventionamendment.get("ReasonsForAmendment", "")
             amendment_hold_id = interventionamendment.get("HoldID", "")
-            body = _("This intervention has been modified by amendment.") + \
-                f"""<br/>
+            body = (
+                _("This intervention has been modified by amendment.")
+                + f"""<br/>
                 <ul>
                     <li>Amendment ID: {interventionamendment['InterventionAmendment_ID']}</li>
                     <li>Amendment Type: {amendment_type}</li>
@@ -821,6 +838,7 @@ class CompassionIntervention(models.Model):
                     <li>Hold ID: {amendment_hold_id}</li>
                 </ul>
                 """
+            )
             intervention.message_post(
                 body=body,
                 subject=_(intervention.name + ": Amendment received"),

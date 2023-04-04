@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 class GenericIntervention(models.AbstractModel):
-    """ Generic information of interventions shared by subclasses:
-        - compassion.intervention : funded interventions
-        - compassion.global.intervention : available interventions in global
-                                           pool
+    """Generic information of interventions shared by subclasses:
+    - compassion.intervention : funded interventions
+    - compassion.global.intervention : available interventions in global
+                                       pool
     """
 
     _name = "compassion.generic.intervention"
@@ -96,9 +96,9 @@ class GenericIntervention(models.AbstractModel):
         ]
 
     def get_vals(self):
-        """ Get the required field values of one record for other record
-            creation.
-            :return: Dictionary of values for the fields
+        """Get the required field values of one record for other record
+        creation.
+        :return: Dictionary of values for the fields
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
