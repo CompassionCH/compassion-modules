@@ -246,10 +246,9 @@ class FieldToJson(models.Model):
                     if not records and self.allow_relational_creation:
                         to_create.append(val)
                         continue
+                    orm_vals.extend([(4, rid) for rid in records.ids])
                     if to_update:
                         orm_vals.extend([(1, rid, val) for rid in records.ids])
-                    else:
-                        orm_vals.extend([(4, rid) for rid in records.ids])
         else:
             to_create = value
 

@@ -8,10 +8,9 @@
                 <group>
                     <group>
                         <field name="model" invisible="1"/>
-                        <field name="mapped_fields" invisible="1"/>
                         <field name="field_type" invisible="1"/>
                         <field name="operator" invisible="1"/>
-                        <field name="field_id" options="{'create': False}"/>
+                        <field name="field_id" options="{'create': False}" domain="[('model', '=', model)]"/>
                         <field name="operator_id" domain="[('field_types_supported', 'ilike', field_type)]"/>
                     </group>
                     <group>
