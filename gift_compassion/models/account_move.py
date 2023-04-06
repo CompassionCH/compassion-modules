@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import models
 
 
 class AccountMove(models.Model):

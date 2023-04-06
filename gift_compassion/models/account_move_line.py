@@ -7,11 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
 from odoo import models, fields
 
 
-class InvoiceLine(models.Model):
+class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     gift_id = fields.Many2one("sponsorship.gift", "GMC Gift", readonly=False)
