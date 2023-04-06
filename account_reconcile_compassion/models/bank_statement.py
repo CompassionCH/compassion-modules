@@ -72,7 +72,7 @@ class AccountStatement(models.Model):
     def auto_reconcile(self):
         """ Auto reconcile matching invoices through jobs to avoid timeouts """
         if self.env.context.get('async_mode', True):
-            self.with_delay()._auto_reconcile()
+            self.with_company(self.journal_id.company_id.id).with_delay()._auto_reconcile()
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
