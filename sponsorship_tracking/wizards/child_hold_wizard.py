@@ -15,15 +15,16 @@ from odoo.tools import relativedelta
 
 
 class ChildHoldWizard(models.TransientModel):
-    """ Add return action for sub_sponsorship. """
+    """Add return action for sub_sponsorship."""
 
     _inherit = "child.hold.wizard"
 
-    return_action = fields.Selection(selection_add=[("sub", "Make SUB Sponsorship")],
-                                     ondelete={"sub": "set default"})
+    return_action = fields.Selection(
+        selection_add=[("sub", "Make SUB Sponsorship")], ondelete={"sub": "set default"}
+    )
 
     def send(self):
-        """ Remove default_type from context to avoid putting type in child.
+        """Remove default_type from context to avoid putting type in child.
         For SUB, put async mode to False in order to wait for the message
         answers.
         """
@@ -58,5 +59,9 @@ class ChildHoldWizard(models.TransientModel):
                     "view_mode": "form",
                 }
             )
-            action["context"] = self.with_context({"default_type": "S", }).env.context
+            action["context"] = self.with_context(
+                {
+                    "default_type": "S",
+                }
+            ).env.context
         return action

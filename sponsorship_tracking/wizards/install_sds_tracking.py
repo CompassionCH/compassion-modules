@@ -32,14 +32,14 @@ class InstallSdsTracking(models.TransientModel):
     # Only at module installation
     @api.model
     def set_sds_states(self):
-        """ Rules for setting the SDS State of a contract.
-            1. Draft contracts -> draft
-            2. Waiting contracts -> active
-            3. Active contracts -> active
-            4. Cancelled contracts -> cancelled
-            5. Contracts terminated by sponsor -> cancelled
-            6. Contracts child departed -> no_sub, sub_accept or sub_reject
-               See Method _get_contract_sub for more details.
+        """Rules for setting the SDS State of a contract.
+        1. Draft contracts -> draft
+        2. Waiting contracts -> active
+        3. Active contracts -> active
+        4. Cancelled contracts -> cancelled
+        5. Contracts terminated by sponsor -> cancelled
+        6. Contracts child departed -> no_sub, sub_accept or sub_reject
+           See Method _get_contract_sub for more details.
         """
         contract_obj = self.env["recurring.contract"]
         depart = self.env.ref("sponsorship_compassion.end_reason_depart")
@@ -88,13 +88,13 @@ class InstallSdsTracking(models.TransientModel):
             self.env.cr.execute(query)
 
     def _get_contract_sub(self):
-        """ Rules for setting SUB Status of a contract with child departed:
-            1. No active or cancelled/terminated SUB contract exists -> no_sub
-            2. One active SUB contract exists -> sub_accept
-            3. One cancelled/terminated contract exists and end_date > 50 days
-               after child departure or end_reason is also a child departure
-               -> sub_accept
-            4. If no other condition above is met -> sub_reject
+        """Rules for setting SUB Status of a contract with child departed:
+        1. No active or cancelled/terminated SUB contract exists -> no_sub
+        2. One active SUB contract exists -> sub_accept
+        3. One cancelled/terminated contract exists and end_date > 50 days
+           after child departure or end_reason is also a child departure
+           -> sub_accept
+        4. If no other condition above is met -> sub_reject
         """
         contract_obj = self.env["recurring.contract"]
         depart = self.env.ref("sponsorship_compassion.end_reason_depart")
@@ -133,8 +133,8 @@ class InstallSdsTracking(models.TransientModel):
                         sub_end_date = sub_contract.end_date
                         sub_start_date = sub_contract.start_date
                         if (
-                                sub_contract.end_reason_id == depart
-                                or sub_end_date > sub_start_date + timedelta(days=50)
+                            sub_contract.end_reason_id == depart
+                            or sub_end_date > sub_start_date + timedelta(days=50)
                         ):
                             sub_accept_ids.append(contract.id)
                             break

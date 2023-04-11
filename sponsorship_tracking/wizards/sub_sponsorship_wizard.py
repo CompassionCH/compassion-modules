@@ -30,7 +30,8 @@ class SubSponsorshipWizard(models.TransientModel):
         readonly=False,
     )
     no_sub_default_reasons = fields.Many2one(
-        "recurring.contract.end.reason", "No sub reason")
+        "recurring.contract.end.reason", "No sub reason"
+    )
     is_other = fields.Boolean(compute="_compute_is_other")
     no_sub_reason = fields.Char("Precisions")
 
@@ -41,7 +42,7 @@ class SubSponsorshipWizard(models.TransientModel):
             record.is_other = record.no_sub_default_reasons == other
 
     def create_subsponsorship(self):
-        """ Creates a subsponsorship. """
+        """Creates a subsponsorship."""
         self.ensure_one()
 
         sponsorship_id = self.env.context.get("active_id")
@@ -75,7 +76,11 @@ class SubSponsorshipWizard(models.TransientModel):
                 "res_model": "recurring.contract",
                 "res_id": sub_contract.id,
                 "target": "current",
-                "context": self.with_context({"default_type": "S", }).env.context,
+                "context": self.with_context(
+                    {
+                        "default_type": "S",
+                    }
+                ).env.context,
             }
         else:
             return {
@@ -98,7 +103,7 @@ class SubSponsorshipWizard(models.TransientModel):
             }
 
     def no_sub(self):
-        """ No SUB for the sponsorship. """
+        """No SUB for the sponsorship."""
         self.ensure_one()
         sponsorship_id = self.env.context.get("active_id")
         contract = self.env["recurring.contract"].browse(sponsorship_id)

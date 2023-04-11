@@ -63,7 +63,7 @@ class RecurringContract(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        """ Push parent contract in SUB state. """
+        """Push parent contract in SUB state."""
         contract = super().create(vals)
         contract.parent_id._trigger_sub()
         return contract
@@ -77,7 +77,7 @@ class RecurringContract(models.Model):
         return super().write(vals)
 
     def unlink(self):
-        """ Put parent in SUB Reject. """
+        """Put parent in SUB Reject."""
         is_sub = self.filtered(lambda s: s.parent_id.sds_state == "sub")
         to_remove = self
         for sub in is_sub:
@@ -94,14 +94,14 @@ class RecurringContract(models.Model):
     ##########################################################################
     @api.onchange("partner_id")
     def on_change_partner_id(self):
-        """ Find parent sponsorship if any is sub_waiting. """
+        """Find parent sponsorship if any is sub_waiting."""
         super().on_change_partner_id()
 
         if "S" in self.type:
             origin_id = (
                 self.env["recurring.contract.origin"]
-                    .search([("type", "=", "sub")], limit=1)
-                    .id
+                .search([("type", "=", "sub")], limit=1)
+                .id
             )
             correspondent_id = self.correspondent_id.id
             parent_id = self._define_parent_id(correspondent_id)
@@ -112,7 +112,7 @@ class RecurringContract(models.Model):
 
     @api.onchange("child_id")
     def onchange_child_id(self):
-        """ Put back in SUB state if needed. """
+        """Put back in SUB state if needed."""
         res = super().onchange_child_id()  # Warning: onchange_child_id() does not exist
         self.parent_id._trigger_sub()
         return res
@@ -174,14 +174,14 @@ class RecurringContract(models.Model):
 
     @api.model
     def _read_group_fill_results(
-            self,
-            domain,
-            groupby,
-            remaining_groupbys,
-            aggregated_fields,
-            count_field,
-            read_group_result,
-            read_group_order=None,
+        self,
+        domain,
+        groupby,
+        remaining_groupbys,
+        aggregated_fields,
+        count_field,
+        read_group_result,
+        read_group_order=None,
     ):
         result = super()._read_group_fill_results(
             domain,
@@ -207,7 +207,7 @@ class RecurringContract(models.Model):
     #                            WORKFLOW METHODS                            #
     ##########################################################################
     def contract_waiting(self):
-        """ Make contract SDS status in active mode. """
+        """Make contract SDS status in active mode."""
         to_transition = self.filtered(lambda s: s.sds_state == "draft")
         if to_transition:
             to_transition.write(
@@ -216,26 +216,26 @@ class RecurringContract(models.Model):
         return super().contract_waiting()
 
     def _contract_cancelled(self, vals):
-        """ Change SDS Follower """
+        """Change SDS Follower"""
         res = super()._contract_cancelled(vals)
         self._check_need_sub()
         return res
 
     def _contract_terminated(self, vals):
-        """ Change SDS Follower """
+        """Change SDS Follower"""
         res = super()._contract_terminated(vals)
         self._check_need_sub()
         return res
 
     def contract_active(self):
-        """ Change color of parent Sponsorship. """
+        """Change color of parent Sponsorship."""
         res = super().contract_active()
         for sub in self.filtered(lambda s: s.parent_id.sds_state == "sub"):
             sub.parent_id.color_id = 10  # Green
         return res
 
     def check_sub_state(self):
-        """ Called from base_action_rule to verify subs. """
+        """Called from base_action_rule to verify subs."""
         for sponsorship in self:
             if sponsorship.sub_sponsorship_id.state == "active":
                 sponsorship.sds_state = "sub_accept"
@@ -246,7 +246,7 @@ class RecurringContract(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _check_need_sub(self):
-        """ Called when a contract is terminated, update the sds states. """
+        """Called when a contract is terminated, update the sds states."""
         departure = self.env.ref("sponsorship_compassion.end_reason_depart")
         child_exchange = self.env.ref(
             "sponsorship_compassion.end_reason_child_exchange"
@@ -266,14 +266,14 @@ class RecurringContract(models.Model):
                 }
             else:
                 if (
-                        contract.parent_id.sds_state == "sub"
-                        and contract.end_reason_id != child_exchange
+                    contract.parent_id.sds_state == "sub"
+                    and contract.end_reason_id != child_exchange
                 ):
                     # This is as subreject
                     contract.parent_id.write({"sds_state": "sub_reject", "color": 1})
                 elif (
-                        contract.parent_id.sds_state == "sub"
-                        and contract.end_reason_id == child_exchange
+                    contract.parent_id.sds_state == "sub"
+                    and contract.end_reason_id == child_exchange
                 ):
                     # Remove parent to allow a new subsponsorship
                     contract.with_context(allow_removing_sub=True).parent_id = False
@@ -295,11 +295,11 @@ class RecurringContract(models.Model):
         return False
 
     def _parent_id_changed(self, parent_id):
-        """ If contract parent is sub_waiting, mark the sub. """
+        """If contract parent is sub_waiting, mark the sub."""
         for contract in self:
             if "S" in contract.type:
                 if contract.parent_id and not self.env.context.get(
-                        "allow_removing_sub"
+                    "allow_removing_sub"
                 ):
                     raise exceptions.UserError(
                         _("You cannot change the sub sponsorship.")
@@ -308,13 +308,12 @@ class RecurringContract(models.Model):
                 parent._trigger_sub()
 
     def _trigger_sub(self):
-        """ Triggers the transition to SUB state if the sponsorship is in
+        """Triggers the transition to SUB state if the sponsorship is in
         valid state (either sub waiting or no sub since less than 50 days)
         """
         limit = datetime.now() - relativedelta(days=50)
         valid_sub = self.filtered(
             lambda s: s.sds_state == "sub_waiting"
-            or (s.sds_state in ["sub_reject",
-                                "no_sub"] and s.end_date >= limit)
+            or (s.sds_state in ["sub_reject", "no_sub"] and s.end_date >= limit)
         )
         valid_sub.write({"sds_state": "sub", "color": 1})  # Red until sub is active
