@@ -396,11 +396,11 @@ class Correspondence(models.Model):
         partner = self.partner_id.sudo()
         return {
             "id": self.id,
-            "status": self.translate("translation_issue") or self.translation_status or "None",
+            "status": self.translate("translation_issue") or self.translate("translation_status") or "None",
             "priority": self.translation_priority or "0",
             "title": self.sudo().name,
-            "source": self.src_translation_lang_id.with_context(lang="en_US").name,
-            "target": self.translation_language_id.with_context(lang="en_US").name,
+            "source": self.src_translation_lang_id.name,
+            "target": self.translation_language_id.name,
             "unreadComments": self.unread_comments,
             "translatorId": self.new_translator_id.id or "None",
             "lastUpdate": fields.Datetime.to_string(self.write_date),

@@ -145,11 +145,12 @@ class TranslationUser(models.Model):
         group_user = self.env.ref("sbc_translation.group_user")
         group_admin = self.env.ref("sbc_translation.group_manager")
         role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
-        language = self.env["res.lang"].with_context(lang="en_US").search([("code", "=", partner.lang)])
+        language = self.env["res.lang"].search([("code", "=", partner.lang)])
         return {
             "email": user.email or "None",
             "role": role,
             "name": partner.name or "None",
+            "preferredName": partner.preferred_name,
             "age": partner.age or "None",
             "language": language.name or "None",
             "total": self.nb_translated_letters or "None",
@@ -160,7 +161,7 @@ class TranslationUser(models.Model):
                 "source": skill.competence_id.source_language_id.name,
                 "target": skill.competence_id.dest_language_id.name,
                 "verified": skill.verified
-            } for skill in self.translation_skills.with_context(lang="en_US")] or "None",
+            } for skill in self.translation_skills] or "None",
         }
 
 
