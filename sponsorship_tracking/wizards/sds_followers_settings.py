@@ -12,7 +12,7 @@ from odoo import api, models, fields
 
 
 class SdsFollowerSettings(models.TransientModel):
-    """ Settings configuration for any Notifications."""
+    """Settings configuration for any Notifications."""
 
     _inherit = "res.config.settings"
 

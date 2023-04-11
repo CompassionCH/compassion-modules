@@ -113,7 +113,7 @@ class TestTracking(BaseSponsorshipTest):
     @mock.patch(mock_cleaner)
     @mock.patch(mock_release_hold)
     def test_contract_tracking_until_sub_sponsorship_made(
-            self, release_mock, cleaner, invoicer, get_infos, hold_mock, lifecyle_mock
+        self, release_mock, cleaner, invoicer, get_infos, hold_mock, lifecyle_mock
     ):
         """
         Test scenario:
@@ -156,8 +156,7 @@ class TestTracking(BaseSponsorshipTest):
         sub1_id = (
             self.env["sds.subsponsorship.wizard"]
             .with_context(active_id=self.list_sponsorships[0].id)
-            .create(
-                {"state": "sub", "channel": "direct", "child_id": sub_child1.id})
+            .create({"state": "sub", "channel": "direct", "child_id": sub_child1.id})
             .create_subsponsorship()["res_id"]
         )
         # Get the subsponsorship from its id and force his activation.
@@ -173,9 +172,8 @@ class TestTracking(BaseSponsorshipTest):
         # Sponsor choose another child
         subsponsorship2_wizzard = (
             self.env["sds.subsponsorship.wizard"]
-                .with_context(active_id=self.list_sponsorships[1].id)
-                .create(
-                {"state": "sub", "channel": "direct", "child_id": sub_child2.id})
+            .with_context(active_id=self.list_sponsorships[1].id)
+            .create({"state": "sub", "channel": "direct", "child_id": sub_child2.id})
         )
 
         sub2_id = subsponsorship2_wizzard.create_subsponsorship()["res_id"]
@@ -218,8 +216,7 @@ class TestTracking(BaseSponsorshipTest):
         sub3_id = (
             self.env["sds.subsponsorship.wizard"]
             .with_context(active_id=self.list_sponsorships[2].id)
-            .create(
-                {"state": "sub", "channel": "direct", "child_id": sub_child3.id})
+            .create({"state": "sub", "channel": "direct", "child_id": sub_child3.id})
             .create_subsponsorship()["res_id"]
         )
         # Force th activation of the sponsorship we just created.

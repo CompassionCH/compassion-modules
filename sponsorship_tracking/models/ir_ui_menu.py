@@ -16,8 +16,8 @@ class IrUiMenu(models.Model):
     _inherit = "ir.ui.menu"
 
     def get_needaction_data(self):
-        """ add manually the counter for only one menu an not for all
-        menus of a model, doesn't use _needaction_count method """
+        """add manually the counter for only one menu an not for all
+        menus of a model, doesn't use _needaction_count method"""
         res = super().get_needaction_data()
 
         # add manually the counter for only
