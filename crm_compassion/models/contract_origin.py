@@ -33,9 +33,9 @@ class ContractOrigin(models.Model):
             for origin in self:
                 old_ambassador_id = origin.partner_id.id
                 sponsorships = self.env["recurring.contract"].search(
-                    [("origin_id", "=", origin.id), ("user_id", "=", old_ambassador_id)]
+                    [("origin_id", "=", origin.id), ("ambassador_id", "=", old_ambassador_id)]
                 )
-                sponsorships.write({"user_id": vals["partner_id"]})
+                sponsorships.write({"ambassador_id": vals["partner_id"]})
                 invoice_lines = self.env["account.move.line"].search(
                     [("contract_id", "in", sponsorships.ids)]
                 )
@@ -55,3 +55,8 @@ class ContractOrigin(models.Model):
             ],
             limit=1,
         )
+
+    def get_ambassador(self):
+        """Returns the partner considered as the 'Ambassador' that brought this origin of sponsorships."""
+        self.ensure_one()
+        return self.partner_id or self.event_id.user_id.partner_id or self.analytic_id.partner_id

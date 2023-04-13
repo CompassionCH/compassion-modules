@@ -50,7 +50,7 @@ class WeeklyRevision(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
+    @api.model_create_single
     def create(self, vals):
         """Compute all results."""
         start_date = vals["week_start_date"]

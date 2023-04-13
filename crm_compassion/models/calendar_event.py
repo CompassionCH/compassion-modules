@@ -15,5 +15,5 @@ class CalendarEvent(models.Model):
     _inherit = "calendar.event"
 
     compassion_event_id = fields.Many2one(
-        "crm.event.compassion", "Event", readonly=False
+        "crm.event.compassion", "Compassion Event", readonly=False
     )

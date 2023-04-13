@@ -11,19 +11,19 @@
         <field name="model">crm.event.compassion</field>
         <field name="priority" eval="8" />
         <field name="arch" type="xml">
-            <tree string="Events">
+            <tree>
                 <field name="name"/>
                 <field name="type"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="partner_id"/>
-                <field name="city"/>
                 <field name="user_id"/>
-                <field name="total_income" sum="Income"/>
-                <field name="total_expense" sum="Expense"/>
-                <field name="balance" sum="Balance"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="total_income" sum="Income" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="total_expense" sum="Expense" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="balance" sum="Balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="won_sponsorships" sum="Won Sponsorships"/>
-                <field name="conversion_rate" widget="progressbar"/>
+                <field name="conversion_rate" widget="progressbar" avg="Average conversion"/>
             </tree>
         </field>
     </record>
@@ -33,17 +33,12 @@
         <field name="name">crm.event.compassion.form</field>
         <field name="model">crm.event.compassion</field>
         <field name="arch" type="xml">
-            <form string="Event">
+            <form>
                 <header>
                     <button name="allocate_children" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" default_focus="1" />
-                        </h1>
-                    </div>
-                    <div class="oe_right oe_button_box" name="buttons">
+                    <div class="oe_button_box" name="buttons">
                         <button name="show_children" type="object" class="oe_stat_button" icon="fa-child">
                             <field name="effective_allocated" widget="statinfo" string="Children"/>
                         </button>
@@ -57,41 +52,43 @@
                             <field name="total_income" string="Income" widget="statinfo"/>
                         </button>
                     </div>
+                    <div class="d-flex align-items-center" style="">
+                        <h1 class="mr-4 pt-2">
+                            <field name="name" default_focus="1" placeholder="Event name..."/>
+                        </h1>
+                        <field name="conversion_rate" widget="percentpie" class="mx-4"/>
+                        <field name="currency_id" invisible="1"/>
+                        <label for="balance" class="mb-2"/>
+                        <field name="balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    </div>
+                    <div class="oe_header">
+                    </div>
                     <group>
                         <group>
-                            <field name="type"/>
-                            <field name="campaign_id"/>
-                            <field name="lead_id" context="{'form_view_ref':'crm.crm_case_form_view_oppor'}"/>
-                            <field name="analytic_id" readonly="1"/>
-                            <field name="user_id"/>
+                            <field name="type" widget="selection_badge"/>
                         </group>
                         <group>
-                            <field name="start_date"/>
-                            <field name="end_date" />
-                            <field name="hold_start_date" />
-                            <field name="hold_end_date" />
+                            <field name="start_date" widget="daterange" options="{'related_end_date': 'end_date'}"/>
+                            <field name="end_date" widget="daterange" options="{'related_start_date': 'start_date'}"/>
+                        </group>
+                        <group class="oe_red">
+                            <field name="number_allocate_children" widget="numeric_step" options="{'step': 10, 'min': 0}"/>
+                            <field name="planned_sponsorships" widget="numeric_step" options="{'step': 10, 'min': 0}"/>
                         </group>
                         <group>
-                            <field name="partner_id" options="{'create': false, 'm2o_dialog': false}"/>
-                            <label for="street" string="Address"/>
-                            <div>
-                                <field name="street" placeholder="Street..."/>
-                                <field name="street2"/>
-                                <field name="zip_id"/>
-                                <div class="address_format">
-                                    <field name="city" placeholder="City" style="width: 40%%"/>
-                                    <field name="state_id" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}'/>
-                                    <field name="zip" placeholder="ZIP" style="width: 20%%"/>
-                                </div>
-                                <field name="country_id"/>
-                            </div>
+                            <field name="lead_id"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
                             <field name="company_id"/>
                         </group>
                         <group>
-                            <field name="number_allocate_children"/>
-                            <field name="planned_sponsorships"/>
-                            <field name="conversion_rate"/>
-                            <field name="balance"/>
+                            <label for="partner_id"/>
+                            <div>
+                                <field name="partner_id" options="{'no_quick_create': true}"/>
+                                <br class="oe_read_only"/>
+                                <field name="street" placeholder="Street..."/>
+                                <br class="oe_read_only"/>
+                                <field name="zip_id"/>
+                            </div>
                         </group>
                     </group>
                     <notebook>
@@ -100,6 +97,18 @@
                         </page>
                         <page string="Internal Notes">
                             <field name="description"/>
+                        </page>
+                        <page string="Marketing">
+                            <group>
+                                <field name="campaign_id"/>
+                                <field name="analytic_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Allocation configuration">
+                            <group>
+                                <field name="hold_start_date" />
+                                <field name="hold_end_date" />
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -117,11 +126,12 @@
         <field name="name">crm.event.compassion.select</field>
         <field name="model">crm.event.compassion</field>
         <field name="arch" type="xml">
-            <search string="Search origin">
+            <search>
                 <field name="name"/>
                 <field name="type"/>
-                <field name="city"/>
+                <field name="lead_id"/>
                 <field name="partner_id"/>
+                <field name="zip_id"/>
                 <field name="user_id"/>
                 <group expand="0" string="Group By...">
                     <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
@@ -141,9 +151,14 @@
         <field name="priority" eval="2"/>
         <field name="arch" type="xml">
             <calendar string="Compassion Events"
-                      date_start="start_date" date_stop="end_date" color="user_id" mode="month">
+                      date_start="start_date" date_stop="end_date"
+                      color="user_id" mode="month">
                 <field name="name"/>
                 <field name="partner_id"/>
+                <field name="user_id" avatar_field="image_128"/>
+                <field name="type"/>
+                <field name="planned_sponsorships"/>
+                <field name="won_sponsorships"/>
             </calendar>
         </field>
     </record>

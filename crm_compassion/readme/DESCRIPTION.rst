@@ -1,7 +1,7 @@
 This module helps Compassion CH to manage its planned events, by creating a
 new model for tracking upcoming events.
 
- * Won opportunities can generate new events
+ * Opportunities can generate new events
  * Each event is linked to an analytic account
  * Each event creates a sponsorship origin
  * Portal users have an analytic account to track sponsorships gained by them
@@ -10,6 +10,10 @@ new model for tracking upcoming events.
  Warning: This module deactivates e-mail notification for calendar events !
     If you want to enable it again, please remove the config_parameter
     'calendar.block_mail'.
+
+Interaction Resume
+------------------
+New partner view to collect all history of communications with a partner and display them all at the same place.
 
 Demand Planning
 ---------------

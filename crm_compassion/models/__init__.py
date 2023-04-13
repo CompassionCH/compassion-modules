@@ -11,6 +11,7 @@
 from . import event_compassion
 from . import contract_origin
 from . import contract
+from . import contract_group
 from . import crm_lead
 from . import account_analytic_account
 from . import account_move_line
@@ -25,3 +26,4 @@ from . import mail_mail
 from . import phone_call
 from . import mail_activity
 from . import mail_tracking_email
+from . import account_analytic_line

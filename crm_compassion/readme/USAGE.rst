@@ -1,4 +1,4 @@
 To use this module, you need to:
 
-* go to Sales -> Events
+* go to CRM -> Events
 

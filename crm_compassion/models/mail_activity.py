@@ -15,13 +15,11 @@ class MailActivity(models.Model):
 
     phonecall_id = fields.Many2one("crm.phonecall", "Phonecall")
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """
         Links mail activities on crm.phonecall
         """
-        if isinstance(vals_list, dict):
-            vals_list = [vals_list]
         call_activity_id = self.env.ref("mail.mail_activity_data_call").id
         partner_model_id = self.env.ref("base.model_res_partner").id
         lead_model_id = self.env.ref("crm.model_crm_lead").id

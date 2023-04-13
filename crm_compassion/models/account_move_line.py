@@ -28,19 +28,5 @@ class AccountInvoiceLine(models.Model):
     @api.onchange("contract_id")
     def on_change_contract_id(self):
         """Push Ambassador to invoice line."""
-        contract = self.contract_id
-        if contract and contract.user_id:
-            self.user_id = contract.user_id.id
-
-
-# TODO move this
-class GenerateGiftWizard(models.TransientModel):
-    """Push salespersons to generated invoices"""
-
-    _inherit = "generate.gift.wizard"
-
-    def _setup_invoice_line(self, contract):
-        invl_data = super()._setup_invoice_line(contract)
-        if contract.user_id:
-            invl_data["user_id"] = contract.user_id.id
-        return invl_data
+        if self.contract_id.ambassador_id:
+            self.user_id = self.contract_id.ambassador_id
