@@ -66,8 +66,8 @@ class InteractionResume(models.TransientModel):
         partner_email = original_partner.email
         partner_ids = [partner_id]
         partner_ids += original_partner.mapped("other_contact_ids").ids
-        partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email)]).ids
-        self.search([("partner_id", "in", partner_ids), ("communication_type", "=", "Email")]).unlink()
+        partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email), ("id", "not in", partner_ids)]).ids
+        self.search([("partner_id", "in", partner_ids)]).unlink()
         self.env.cr.execute(
             """
                     -- Partner Communications (both e-mail and physical)
