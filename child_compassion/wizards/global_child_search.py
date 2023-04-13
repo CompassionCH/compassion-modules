@@ -385,12 +385,12 @@ class GlobalChildSearch(models.TransientModel):
         holds = child_hold.create(
             {
                 "type": "E-Commerce Hold",
-                "hold_expiration_date": expiration_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "expiration_date": expiration_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "primary_owner": user_id,
                 "secondary_owner": "Carole Rochat",
                 "no_money_yield_rate": "20",
                 "yield_rate": "80",
-                "channel": "Website",
+                "channel": "web",
             }
         )
         holds.send()

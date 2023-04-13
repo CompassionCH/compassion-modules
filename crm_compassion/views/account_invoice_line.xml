@@ -26,6 +26,16 @@
             <xpath expr="//field[@name='contract_id']" position="after">
                 <field name="user_id"/>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="context">
+                    {'default_move_type': context.get('default_move_type'),
+                     'journal_id': journal_id,
+                     'default_partner_id': commercial_partner_id,
+                     'default_currency_id': currency_id or company_currency_id,
+                     'default_analytic_account_id': context.get('default_analytic_account_id')
+                     }
+                </attribute>
+            </xpath>
         </field>
     </record>
 

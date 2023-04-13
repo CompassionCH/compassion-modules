@@ -26,13 +26,17 @@ class CrmLead(models.Model):
     event_ids = fields.One2many(
         "crm.event.compassion", "lead_id", "Events", readonly=False
     )
-    phonecall_ids = fields.One2many("crm.phonecall", "opportunity_id", readonly=False)
-    meeting_ids = fields.One2many("calendar.event", "opportunity_id", readonly=False)
 
     def create_event(self):
         self.ensure_one()
-        context = self.with_context(
-            {
+        # Open the create form...
+        return {
+            "type": "ir.actions.act_window",
+            "name": "New event",
+            "view_mode": "form,calendar,tree",
+            "res_model": "crm.event.compassion",
+            "target": "current",
+            "context": {
                 "default_name": self.name,
                 "default_partner_id": self.partner_id.id,
                 "default_street": self.street,
@@ -44,22 +48,8 @@ class CrmLead(models.Model):
                 "default_user_id": self.user_id.id,
                 "default_planned_sponsorships": self.planned_sponsorships,
                 "default_lead_id": self.id,
-            }
-        ).env.context
-        # Open the create form...
-        return {
-            "type": "ir.actions.act_window",
-            "name": "New event",
-            "view_mode": "form,calendar,tree",
-            "res_model": "crm.event.compassion",
-            "target": "current",
-            "context": context,
+            },
         }
-
-    @api.model
-    def migrate_planned_sponsorships(self):
-        self.search([])._compute_planned_sponsorship()
-        return True
 
     @api.depends("event_ids", "event_ids.planned_sponsorships")
     def _compute_planned_sponsorship(self):

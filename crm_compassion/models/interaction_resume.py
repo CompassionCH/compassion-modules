@@ -286,8 +286,9 @@ class InteractionResume(models.TransientModel):
 
         return self.create(self.env.cr.dictfetchall())
 
-    def create(self, vals):
-        res = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super().create(vals_list)
         filter_res = self
         emails = self.env["mail.mail"]
         for record in res:

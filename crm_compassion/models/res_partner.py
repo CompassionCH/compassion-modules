@@ -84,7 +84,6 @@ class Partner(models.Model):
             "name": _("Interaction resume"),
             "type": "ir.actions.act_window",
             "res_model": "interaction.resume",
-            "view_type": "form",
             "view_mode": "tree,form",
             "domain": [
                 (

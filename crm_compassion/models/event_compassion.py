@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 
 from odoo import api, models, fields, exceptions, _
 from odoo.exceptions import ValidationError
+from odoo.tools import html2plaintext
 
 
 class EventCompassion(models.Model):
@@ -44,17 +45,12 @@ class EventCompassion(models.Model):
     year = fields.Char(compute="_compute_year", store=True)
     end_date = fields.Datetime(required=True)
     partner_id = fields.Many2one(
-        "res.partner", "Customer", tracking=True, readonly=False
+        "res.partner", "Venue", tracking=True, readonly=False, check_company=True
     )
     zip_id = fields.Many2one("res.city.zip", "Address", readonly=False)
     street = fields.Char()
-    street2 = fields.Char()
-    city = fields.Char()
-    state_id = fields.Many2one("res.country.state", "State", readonly=False)
-    zip = fields.Char()
-    country_id = fields.Many2one("res.country", "Country", readonly=False)
     user_id = fields.Many2one(
-        "res.users", "Ambassador", tracking=True, readonly=False
+        "res.users", "Responsible", tracking=True, readonly=False, check_company=True
     )
     hold_ids = fields.One2many("compassion.hold", "event_id", readonly=True)
     allocate_child_ids = fields.One2many(
@@ -79,15 +75,15 @@ class EventCompassion(models.Model):
         tracking=True,
         readonly=False,
     )
-    description = fields.Text()
+    description = fields.Html()
     analytic_id = fields.Many2one(
-        "account.analytic.account", "Analytic Account", copy=False, readonly=False
+        "account.analytic.account", "Analytic Account", copy=False, readonly=False, check_company=True
     )
     origin_id = fields.Many2one(
-        "recurring.contract.origin", "Origin", copy=False, readonly=False
+        "recurring.contract.origin", "Origin", copy=False
     )
     contract_ids = fields.One2many(
-        "recurring.contract", related="origin_id.contract_ids", readonly=True
+        "recurring.contract", related="origin_id.contract_ids"
     )
     expense_line_ids = fields.One2many(
         "account.analytic.line",
@@ -96,7 +92,7 @@ class EventCompassion(models.Model):
         readonly=False,
     )
     invoice_line_ids = fields.One2many(
-        "account.move.line", "event_id", readonly=True
+        "account.move.line", "event_id", readonly=True, check_company=True
     )
     income_line_ids = fields.One2many(
         "account.move.line",
@@ -106,7 +102,8 @@ class EventCompassion(models.Model):
     )
     total_expense = fields.Float(compute="_compute_expense", readonly=True, store=True)
     total_income = fields.Float(compute="_compute_income", readonly=True, store=True)
-    balance = fields.Float(compute="_compute_balance", readonly=True, store=True)
+    balance = fields.Float("Profit/Loss", compute="_compute_balance", readonly=True, store=True)
+    currency_id = fields.Many2one("res.currency", related="analytic_id.currency_id")
     number_allocate_children = fields.Integer(
         "Number of children to allocate",
         tracking=True,
@@ -117,7 +114,7 @@ class EventCompassion(models.Model):
         "Expected sponsorships", tracking=True, required=True, default=0
     )
     lead_id = fields.Many2one(
-        "crm.lead", "Opportunity", tracking=True, readonly=False
+        "crm.lead", "Opportunity", tracking=True, readonly=False, check_company=True
     )
     won_sponsorships = fields.Integer(related="origin_id.won_sponsorships", store=True)
     conversion_rate = fields.Float(related="origin_id.conversion_rate", store=True)
@@ -132,7 +129,7 @@ class EventCompassion(models.Model):
         "Company",
         required=True,
         index=True,
-        default=lambda self: self.env.company.id,
+        default=lambda self: self.env.company,
         readonly=False,
     )
 
@@ -168,10 +165,7 @@ class EventCompassion(models.Model):
     @api.depends("total_income", "total_expense")
     def _compute_balance(self):
         for event in self:
-            if event.total_expense and event.total_income:
-                event.balance = event.total_income / float(event.total_expense)
-            else:
-                event.balance = 0.0
+            event.balance = event.total_income - event.total_expense
 
     @api.depends("start_date")
     def _compute_year(self):
@@ -222,7 +216,7 @@ class EventCompassion(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
+    @api.model_create_single
     def create(self, vals):
         """When an event is created:
         - Format the name to remove year of it,
@@ -354,9 +348,13 @@ class EventCompassion(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": "recurring.contract",
-            "src_model": "crm.event.compassion",
-            "context": self.with_context(default_type="S", group_by=False).env.context,
-            "domain": [("id", "in", self.origin_id.contract_ids.ids)],
+            "context": {
+                "default_type": "S",
+                "default_company_id": self.company_id.id,
+                "default_origin_id": self.origin_id.id,
+                "default_campaign_id": self.campaign_id.id,
+                "search_default_origin_id": self.origin_id.id,
+            },
         }
 
     def show_expenses(self):
@@ -366,21 +364,27 @@ class EventCompassion(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": "account.analytic.line",
-            "src_model": "crm.event.compassion",
-            "context": self.with_context(group_by="general_account_id").env.context,
-            "domain": [("id", "in", self.expense_line_ids.ids)],
+            "context": {
+                "default_account_id": self.analytic_id.id,
+                "expense_from_event": True,
+                "default_company_id": self.company_id.id,
+                "search_default_account_id": self.analytic_id.id,
+            },
         }
 
     def show_income(self):
+        self.ensure_one()
         return {
             "name": _("Income"),
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
-            "view_type": "form",
-            "res_model": "account.move.line",
-            "src_model": "crm.event.compassion",
-            "context": self.env.context,
-            "domain": [("id", "in", self.income_line_ids.ids)],
+            "res_model": "account.move",
+            "context": self.with_context(
+                default_analytic_account_id=self.analytic_id.id, default_company_id=self.company_id.id,
+                default_move_type="out_invoice",
+                search_default_paid=True,
+            ).env.context,
+            "domain": [("id", "in", self.invoice_line_ids.mapped("move_id").ids)],
         }
 
     def show_children(self):
@@ -394,47 +398,37 @@ class EventCompassion(models.Model):
             "domain": [("id", "in", self.allocate_child_ids.ids)],
         }
 
-    @api.onchange("type")
-    def onchange_type(self):
-        """Update analytic account"""
-        for event in self.filtered("type"):
-            tag_ids = (
-                self.env["account.analytic.tag"]
-                .search([("name", "ilike", event.type)])
-                .ids
-            )
-            event.analytic_id.write({"account_tag_ids": [(6, 0, tag_ids)]})
-
     @api.onchange("start_date")
     def onchange_start_date(self):
-        """
-        Update end_date and hold_start_date as soon as start_date is changed
-        """
-        for event in self.filtered("start_date"):
-            event.hold_start_date = event.compute_hold_start_date()
-            if not event.end_date or event.end_date < event.start_date:
-                event.end_date = event.start_date
+        if self.start_date:
+            self.hold_start_date = self.compute_hold_start_date()
 
     @api.onchange("end_date")
     def onchange_end_date(self):
-        days_after = self.env["res.config.settings"].get_param("days_hold_after_event")
-        for event in self.filtered("end_date"):
-            event.hold_end_date = (event.end_date + timedelta(days=days_after)).date()
+        if self.end_date:
+            days_after = self.env["res.config.settings"].get_param("days_hold_after_event")
+            self.hold_end_date = (self.end_date + timedelta(days=days_after)).date()
+
+    @api.onchange("partner_id")
+    def onchange_partner(self):
+        self.street = self.partner_id.street
+        self.zip_id = self.partner_id.zip_id
+
+    @api.onchange("lead_id")
+    def onchange_lead_id(self):
+        if self.lead_id.user_id:
+            self.user_id = self.lead_id.user_id
 
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _get_analytic_vals(self):
         name = self.name
-        tag_ids = (
-            self.env["account.analytic.tag"].search([("name", "ilike", self.type)]).ids
-        )
-        if self.city:
-            name += " " + self.city
+        if self.zip_id.city_id:
+            name += " " + self.zip_id.city_id.name
         return {
             "name": name,
             "year": self.year,
-            "tag_ids": [(6, 0, tag_ids)],
             "partner_id": self.user_id.partner_id.id,
             "event_id": self.id,
         }
@@ -462,16 +456,16 @@ class EventCompassion(models.Model):
             "compassion_event_id": self.id,
             "categ_ids": [(6, 0, [self.env.ref("crm_compassion.calendar_event").id])],
             "duration": max(duration_in_hours, 3),
-            "description": self.description,
-            "location": self.city,
+            "description": html2plaintext(self.description),
+            "location": self.zip_id.city_id.name,
             "user_id": self.user_id.id,
+            "partner_id": self.user_id.parent_id.id,
             "partner_ids": [
                 (6, 0, (self.staff_ids | self.partner_id | self.user_id.partner_id).ids)
             ],
             "start": self.start_date,
             "stop": self.end_date or self.start_date,
             "allday": self.end_date and self.start_date.date() != self.end_date.date(),
-            "state": "open",  # to block that meeting date in the calendar
         }
         return calendar_vals
 
@@ -487,7 +481,6 @@ class EventCompassion(models.Model):
         return {
             "name": _("Global Childpool"),
             "type": "ir.actions.act_window",
-            "view_type": "form",
             "view_mode": "form",
             "res_model": "compassion.childpool.search",
             "target": "current",

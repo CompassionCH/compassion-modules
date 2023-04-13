@@ -128,12 +128,11 @@ class WeeklyDemand(models.Model):
     def _default_demand_sub(self):
         """Compute average of SUB since one year."""
         start_date = datetime.today() - timedelta(weeks=STATS_DURATION)
-        website_medium = self.env.ref("utm.utm_medium_website").id
         sub_sponsored = self.env["recurring.contract"].search_count(
             [
                 ("parent_id", "!=", False),
                 ("start_date", ">=", start_date),
-                ("medium_id", "!=", website_medium),
+                ("child_id", "!=", False)
             ]
         )
         return float(sub_sponsored) // STATS_DURATION
@@ -222,7 +221,7 @@ class WeeklyDemand(models.Model):
                         ("medium_id.name", "!=", "internet"),
                     ]
                 )
-                week.resupply_sub = sub * (sub_reject_average // sub_average or 1)
+                week.resupply_sub = sub * (sub_reject_average // (sub_average or 1))
             else:
                 week.resupply_sub = sub_reject_average
 
@@ -259,26 +258,27 @@ class WeeklyDemand(models.Model):
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """If we had more sponsored children from the than
         what we predict to allocate based on the system setting, make the
         prevision larger."""
-        if vals["average_unsponsored_web"] < 0:
-            vals["number_children_website"] -= vals["average_unsponsored_web"]
-            vals["average_unsponsored_web"] = 0
+        for vals in vals_list:
+            if vals["average_unsponsored_web"] < 0:
+                vals["number_children_website"] -= vals["average_unsponsored_web"]
+                vals["average_unsponsored_web"] = 0
 
-        if vals["average_unsponsored_ambassador"] < 0:
-            vals["number_children_ambassador"] -= vals["average_unsponsored_ambassador"]
-            vals["average_unsponsored_ambassador"] = 0
+            if vals["average_unsponsored_ambassador"] < 0:
+                vals["number_children_ambassador"] -= vals["average_unsponsored_ambassador"]
+                vals["average_unsponsored_ambassador"] = 0
 
-        # this ensures that the default functions are triggered
-        # even if the record is created with "False" values
-        for k, v in dict(vals).items():
-            if bool(v) is False or v is None:
-                del vals[k]
+            # this ensures that the default functions are triggered
+            # even if the record is created with "False" values
+            for k, v in dict(vals).items():
+                if bool(v) is False or v is None:
+                    del vals[k]
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     ##########################################################################
     #                             PUBLIC METHODS                             #

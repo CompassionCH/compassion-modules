@@ -39,17 +39,17 @@
     "license": "AGPL-3",
     "installable": True,
     "depends": [
-        "base_location",  # oca_addons/partner_contact
+        "base_location",  # OCA/partner_contact
+        "web_widget_numeric_step",  # OCA/web
         "crm_phonecall",  # OCA/crm
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
-        "mail_tracking",  # oca_addons/social
+        "mail_tracking",  # OCA/social
         "partner_contact_in_several_companies",  # oca_addons/partner-contact
         "mass_mailing",
         "base_automation",
     ],
     "data": [
-        "data/account_analytic_data.xml",
         "data/calendar_event_type.xml",
         "data/demand_planning.xml",
         "security/crm_compassion_security.xml",

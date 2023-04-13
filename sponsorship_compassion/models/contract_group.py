@@ -46,3 +46,12 @@ class ContractGroup(models.Model):
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
         contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
+
+    def build_inv_line_data(self, invoicing_date=False, gift_wizard=False, contract_line=False):
+        # Push analytic account
+        res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
+        if gift_wizard:
+            res["analytic_account_id"] = gift_wizard.contract_id.origin_id.analytic_id.id
+        elif contract_line:
+            res["analytic_account_id"] = contract_line.contract_id.origin_id.analytic_id.id
+        return res

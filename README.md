@@ -12,6 +12,7 @@ addon | version | maintainers | summary
 [account_reconcile_compassion](account_reconcile_compassion/) | 14.0.1.1.0 |  | Bank Statement Reconcile for Compassion CH
 [advanced_translation](advanced_translation/) | 14.0.1.0.0 |  | Advanced Translation
 [child_compassion](child_compassion/) | 14.0.1.0.0 |  | Compassion Children
+[crm_compassion](crm_compassion/) | 14.0.1.0.0 | [![ecino](https://github.com/ecino.png?size=30px)](https://github.com/ecino) | Compassion Events and Opportunities
 [crm_request](crm_request/) | 14.0.1.0.0 | [![ecino](https://github.com/ecino.png?size=30px)](https://github.com/ecino) | Enables Customer Support Inbox
 [gift_compassion](gift_compassion/) | 14.0.1.0.2 |  | Compassion Sponsorship Gifts
 [intervention_compassion](intervention_compassion/) | 14.0.1.0.0 |  | Compassion Interventions
@@ -32,5 +33,6 @@ addon | version | maintainers | summary
 [sponsorship_compassion](sponsorship_compassion/) | 14.0.1.1.7 |  | Compassion Sponsorships
 [sponsorship_tracking](sponsorship_tracking/) | 14.0.1.0.0 |  | Compassion Sponsorships Tracking
 [thankyou_letters](thankyou_letters/) | 14.0.1.0.0 |  | Thank You Letters
+[wordpress_configuration](wordpress_configuration/) | 14.0.0.0.0 |  | Wordpress configuration for multi-company
 
 [//]: # (end addons)

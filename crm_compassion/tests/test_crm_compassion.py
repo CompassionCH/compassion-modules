@@ -48,7 +48,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
             },
             [{"amount": 50.0}],
         )
-        sponsorship.write({"user_id": self.michel.id})
+        sponsorship.write({"ambassador_id": self.michel.id})
         mark_origin = self.env["recurring.contract.origin"].search(
             [("type", "=", "marketing")]
         )

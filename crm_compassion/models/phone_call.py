@@ -16,12 +16,12 @@ class PhoneCall(models.Model):
 
     is_from_employee = fields.Boolean(default=False)
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
         if "origin" in self._context and self._context.get("origin") == "employee":
-            res.is_from_employee = True
-        return res
+            for vals in vals_list:
+                vals["is_from_employee"] = True
+        return super().create(vals_list)
 
     def write(self, values):
         """Mark any linked activities as done."""

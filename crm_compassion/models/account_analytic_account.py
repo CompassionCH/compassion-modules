@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class AnalyticAccount(models.Model):
