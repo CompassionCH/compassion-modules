@@ -33,7 +33,7 @@
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://www.compassion.ch",
     "depends": ["sponsorship_compassion", "base_automation"],
     "data": [
         "views/sub_sponsorship_wizard_view.xml",

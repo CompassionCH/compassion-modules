@@ -71,7 +71,6 @@ class SubSponsorshipWizard(models.TransientModel):
             return {
                 "name": sub_contract.name,
                 "type": "ir.actions.act_window",
-                "view_type": "form",
                 "view_mode": "form",
                 "res_model": "recurring.contract",
                 "res_id": sub_contract.id,
@@ -86,7 +85,6 @@ class SubSponsorshipWizard(models.TransientModel):
             return {
                 "name": _("Global Childpool"),
                 "type": "ir.actions.act_window",
-                "view_type": "form",
                 "view_mode": "form",
                 "res_model": "compassion.childpool.search",
                 "target": "current",
