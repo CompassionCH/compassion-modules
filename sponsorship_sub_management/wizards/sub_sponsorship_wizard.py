@@ -63,9 +63,6 @@ class SubSponsorshipWizard(models.TransientModel):
                 ).id,
             }
         )
-        today = datetime.today()
-        if contract.last_paid_invoice_date:
-            sub_invoice_date = contract.last_paid_invoice_date + relativedelta(months=1)
 
         if self.child_id:
             return {
