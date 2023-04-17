@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="log_other_interaction_wizard_view" model="ir.ui.view">
+        <field name="name">partner.log.other.interaction.wizard</field>
+        <field name="model">partner.log.other.interaction.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="partner_id" invisible="1"/>
+                    <group>
+                        <field name="other_type"/>
+                        <field name="direction"/>
+                        <field name="date"/>
+                    </group>
+                    <group>
+                        <field name="subject"/>
+                        <field name="body"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="log_interaction" string="Log other" type="object" class="oe_highlight"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="log_other_interaction_form_view" model="ir.ui.view">
+        <field name="name">log other interaction form view</field>
+        <field name="model">partner.log.other.interaction</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="subject"/>
+                            <field name="body"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="other_type"/>
+                            <field name="direction"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_log_other_interaction">
+        <field name="name">Log other interaction</field>
+        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_view_types">form</field>
+        <field name="res_model">partner.log.other.interaction.wizard</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

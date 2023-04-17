@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<odoo>
+    <!--
+        OPPORTUNITY
+    -->
+
+    <!-- Opportunities Form View -->
+    <record model="ir.ui.view" id="crm_case_form_view_oppor_spons1">
+        <field name="name">Opportunities</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">25</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <label for="expected_revenue" position="before">
+                <label for="planned_sponsorships"/><h2><field name="planned_sponsorships"/></h2>
+            </label>
+            <xpath expr="//page[1]" position="before">
+                <page string="Events">
+                    <button class="btn btn-primary mb-4" string="Create Event" name="create_event" type="object"/>
+                    <field name="event_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="start_date"/>
+                            <field name="partner_id"/>
+                            <field name="zip_id"/>
+                            <field name="user_id"/>
+                            <field name="total_income" sum="Total"/>
+                            <field name="total_expense" sum="Total"/>
+                            <field name="planned_sponsorships" sum="Total"/>
+                            <field name="won_sponsorships" sum="Total"/>
+                            <field name="conversion_rate" avg="Avg"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Opportunities Tree View -->
+    <record model="ir.ui.view" id="crm_case_tree_view_oppor_spons1">
+        <field name="name">Opportunities Tree</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <field name="expected_revenue" position="before">
+                <field name="planned_sponsorships" sum="Expected Sponsorship" />
+            </field>
+        </field>
+    </record>
+
+    <!-- CRM Lead Kanban View  -->
+    <record model="ir.ui.view" id="crm_case_kanban_view_leads_spons1">
+        <field name="name">CRM - Leads Kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <xpath expr="//progressbar" position="replace">
+               <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}' sum_field="planned_sponsorships" help="."/>
+            </xpath>
+            <xpath expr="//div[hasclass('dropdown-menu')]/t/a[@type='delete']" position="after">
+                <a role="menuitem" name="create_event" type="object" class="dropdown-item">Create event</a>
+            </xpath>
+            <xpath expr="//div[hasclass('o_kanban_record_subtitle')]/t" position="replace">
+                <t t-if="record.planned_sponsorships.raw_value"><field name="planned_sponsorships" /> sponsorships</t>
+            </xpath>
+        </field>
+    </record>
+</odoo>

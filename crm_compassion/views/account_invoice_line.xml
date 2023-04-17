@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_account_invoice_filter_compassion" model="ir.ui.view">
+        <field name="name">inherit.account.move.compassion.select</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_compassion_filter"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="user_id" string="Ambassador"/>
+                <field name="analytic_account_id" string="Analytic Account"/>
+                <field name="currency_id"/>
+            </field>
+            <filter name='group_contract' position="before">
+                <filter string="Ambassador" name="ambassador" domain="[]" context="{'group_by':'user_id'}"/>
+                <filter string="Analytic Account" name="analytic_account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+                <filter string="Due Date" name="due_date" domain="[]" context="{'group_by':'due_date'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Invoice Form View -->
+    <record model="ir.ui.view" id="crm_invoice_compassion">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_invoice_child_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='contract_id']" position="after">
+                <field name="user_id"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="context">
+                    {'default_move_type': context.get('default_move_type'),
+                     'journal_id': journal_id,
+                     'default_partner_id': commercial_partner_id,
+                     'default_currency_id': currency_id or company_currency_id,
+                     'default_analytic_account_id': context.get('default_analytic_account_id')
+                     }
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+        ACCOUNT INVOICE LINE
+    -->
+
+    <!-- Invoie Line Tree View -->
+    <record model="ir.ui.view" id="crm_invoice_line_compassion">
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_child_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='contract_id']" position="attributes">
+                <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='contract_id']" position="after">
+                <field name="user_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_invoice_line_crm_compassion">
+        <field name="name">account.move.line.partner.crm.compassion.tree</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_invoice_line_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="name" />
+            </field>
+            <xpath expr="//field[@name='contract_id']" position="attributes">
+                <attribute name="on_change">on_change_contract_id(contract_id)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='contract_id']" position="after">
+                <field name="user_id" />
+                <field name="account_id" />
+                <field name="analytic_account_id" />
+            </xpath>
+            <field name="price_subtotal" position="after">
+                <field name="currency_id" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Invoice Line Form -->
+    <record model="ir.ui.view" id="view_invoice_line_form_crm_compassion">
+        <field name="name">account.move.line.crm.compassion.form</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="before">
+                <field name="move_id" readonly="1" context="{'form_view_ref': 'account.view_move_form'}"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Sidebar action, called from menu_recurring_contract_form menuitem -->
+    <record id="action_invoice_lines_compassion" model="ir.actions.act_window">
+        <field name="name">Move Lines</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_invoice_line_crm_compassion"/>
+    </record>
+    <menuitem id="menu_invoice_lines_compassion" name="Invoice Lines" parent="account.menu_finance_entries" action="action_invoice_lines_compassion"/>
+
+    <!-- Add group by analytic in move line -->
+    <record model="ir.ui.view" id="crm_invoice_supplier_compassion">
+        <field name="name">account.move.line.analytic.search</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group">
+                <filter string="Analytic Account" name="analytic_account" domain="[]" context="{'group_by':'analytic_account_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

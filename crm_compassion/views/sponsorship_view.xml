@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_contracts_add_ambassador" model="ir.ui.view">
+        <field name="name">recurring.contract.correspondence</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='medium_id']" position="after">
+                <field name="ambassador_id"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Search contracts by Salesperson -->
+    <record id="view_recurring_contract_filter" model="ir.ui.view">
+        <field name="name">recurring.contract.select</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_filter_graph" />
+        <field name="arch" type="xml">
+            <field name="origin_id" position="after">
+                <field name="ambassador_id"/>
+            </field>
+            <filter name="group_type" position="after">
+                <filter string="Ambassador" name="group_ambassador" domain="[]"  context="{'group_by':'ambassador_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_contract_tree_crm" model="ir.ui.view">
+        <field name="name">recurring.contract.crm.tree</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_tree_compassion"/>
+        <field eval="18" name="priority"/>
+        <field name="arch" type="xml">
+            <field name="payment_mode_id" position="after">
+                <field name="origin_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

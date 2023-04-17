@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add event on calendar views -->
+    <record id="calendar_event_view" model="ir.ui.view">
+        <field name="name">calendar.event.form.compassion</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <field name="start" position="before">
+                <field name="compassion_event_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

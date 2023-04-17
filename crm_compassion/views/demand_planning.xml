@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Weekly Demand Form View -->
+    <record id="view_demand_weekly_demand_form" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.crm.form</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="inherit_id" ref="child_compassion.view_demand_weekly_demand_form"/>
+        <field name="arch" type="xml">
+            <field name="total_demand" position="before">
+                <field name="number_children_website"/>
+                <field name="number_children_ambassador"/>
+                <field name="number_sub_sponsorship"/>
+                <field name="number_children_events"/>
+                <field name="total_demand"/>
+            </field>
+            <field name="total_resupply" position="before">
+                <field name="average_unsponsored_web"/>
+                <field name="average_unsponsored_ambassador"/>
+                <field name="resupply_sub"/>
+                <field name="resupply_events"/>
+                <field name="average_cancellation"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_demand_weekly_demand_tree" model="ir.ui.view">
+        <field name="name">demand.weekly.demand.crm.tree</field>
+        <field name="model">demand.weekly.demand</field>
+        <field name="inherit_id" ref="child_compassion.view_demand_weekly_demand_tree"/>
+        <field name="arch" type="xml">
+            <field name="total_demand" position="before">
+                <field name="number_children_website"/>
+                <field name="number_children_ambassador"/>
+                <field name="number_sub_sponsorship"/>
+                <field name="number_children_events"/>
+            </field>
+            <field name="total_resupply" position="before">
+                <field name="average_unsponsored_web"/>
+                <field name="average_unsponsored_ambassador"/>
+                <field name="resupply_sub"/>
+                <field name="resupply_events"/>
+                <field name="average_cancellation"/>
+            </field>
+        </field>
+    </record>
+</odoo>
