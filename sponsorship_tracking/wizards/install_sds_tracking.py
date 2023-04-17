@@ -73,19 +73,22 @@ class InstallSdsTracking(models.TransientModel):
 
     def _set_sds_state(self, contract_ids, sds_state, sds_change_date, date_delta=0):
         if contract_ids:
-            # correct according to
-            # http://initd.org/psycopg/docs/usage.html#passing-parameters-to-sql-queries
-            # pylint:disable=E8103
             query = sql.SQL(
-                f"""
-                UPDATE recurring_contract
-                SET sds_state = '{sds_state}',
-                sds_state_date = {sql.Identifier(sds_change_date).string}
-                + interval '{date_delta} days',
-                    color = {SDS_COLORS[sds_state]}
-                WHERE id in ({(', '.join(str(id) for id in contract_ids))})"""
+                """
+                    UPDATE recurring_contract
+                    SET sds_state = %s,
+                        sds_state_date = {} + interval '%s days',
+                        color = %s
+                    WHERE id IN %s
+                """
+            ).format(sql.Identifier(sds_change_date))  # Safely inserting a column name in the query
+            query_params = (
+                sds_state,
+                date_delta,
+                SDS_COLORS[sds_state],
+                tuple(contract_ids)
             )
-            self.env.cr.execute(query)
+            self.env.cr.execute(query, query_params)
 
     def _get_contract_sub(self):
         """Rules for setting SUB Status of a contract with child departed:
