@@ -77,11 +77,11 @@ class InstallSdsTracking(models.TransientModel):
                 """
                     UPDATE recurring_contract
                     SET sds_state = %s,
-                        sds_state_date = {} + interval '%s days',
+                        sds_state_date = {column} + interval '%s days',
                         color = %s
                     WHERE id IN %s
                 """
-            ).format(sql.Identifier(sds_change_date))  # Safely inserting a column name in the query
+            ).format(column=sql.Identifier(sds_change_date))  # Safely inserting a column name in the query
             query_params = (
                 sds_state,
                 date_delta,
