@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
         FROM 
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
-            LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Sponsorship count'
+            LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Child Sponsored'
         WHERE 
             activation_date IS NOT NULL 
             AND child_id IS NOT NULL
@@ -52,7 +52,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
         FROM 
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
-            LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Sponsorship count'
+            LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Child Sponsored'
         WHERE 
             activation_date IS NOT NULL
             AND end_date IS NOT NULL
