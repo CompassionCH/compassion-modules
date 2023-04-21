@@ -8,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015 Compassion CH (http://www.compassion.ch)
-#    @author: David Coninckx
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
+#    @author: David Coninckx, Emmanuel Ecino, Noé Berdoz
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -32,9 +32,14 @@
     "version": "14.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
+    "maintainers": ["ecino", "NoeBerdoz"],
     "license": "AGPL-3",
     "website": "https://www.compassion.ch",
-    "depends": ["sponsorship_compassion", "base_automation"],
+    "depends": [
+        "sponsorship_compassion",
+        "base_automation",
+        "crm_compassion"
+    ],
     "data": [
         "views/sub_sponsorship_wizard_view.xml",
         "views/contract_view.xml",
