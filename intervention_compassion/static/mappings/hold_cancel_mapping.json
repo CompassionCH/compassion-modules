@@ -9,7 +9,7 @@
       "field": "hold_id"
     },
     "GlobalPartner_ID": {
-      "to_json_conversion": "'CH'"
+      "to_json_conversion": "gpid"
     }
   }
 }
