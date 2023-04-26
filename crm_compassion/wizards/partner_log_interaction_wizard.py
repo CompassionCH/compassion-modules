@@ -83,3 +83,13 @@ class LogInteractionWizard(models.TransientModel):
         mail_tracking_obj = self.env["mail.tracking.email"]
         mail_tracking_obj.search([("mail_id", "=", mail.id)]).unlink()
         mail_tracking_obj.sudo().create(vals)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'New interaction created',
+                'message': "Your new interaction has been created! Click the link to access it: "
+                           f"<a href='web#id={mail.id}&view_type=form&model=mail.mail'>{mail.subject}</a>",
+                'sticky': True,
+            }
+        }

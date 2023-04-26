@@ -25,8 +25,17 @@ class LogOtherInteractionWizard(models.TransientModel):
             "body": self.body,
             "date": self.date,
         }
-        self.env["partner.log.other.interaction"].create(data)
-
+        other_interaction = self.env["partner.log.other.interaction"].create(data)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'New interaction created',
+                'message': "Your new interaction has been created! Click the link to access it: "
+                           f"<a href='web#id={other_interaction.id}&view_type=form&model=mail.mail'>{other_interaction.subject}</a>",
+                'sticky': True,
+            }
+        }
 
 class OtherInteractions(models.Model):
     _name = "partner.log.other.interaction"
