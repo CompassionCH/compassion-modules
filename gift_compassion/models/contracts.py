@@ -19,11 +19,6 @@ from odoo.exceptions import UserError
 class SponsorshipContract(models.Model):
     _inherit = "recurring.contract"
 
-    no_birthday_invoice = fields.Boolean(
-        help="The automatic birthday gift will not generate an invoice."
-             "This means a birthday gift will always be sent to GMC "
-             "even if we didn't register a payment."
-    )
     number_gifts = fields.Integer(compute="_compute_nb_gifts")
 
     def _compute_nb_gifts(self):

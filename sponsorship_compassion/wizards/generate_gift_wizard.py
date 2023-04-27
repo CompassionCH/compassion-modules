@@ -40,7 +40,10 @@ class GenerateGiftWizard(models.TransientModel):
         if not self.description:
             self.description = self.product_id.display_name
         invoice_ids = []
-        contract = self.contract_id.filtered(lambda c: "S" in c.type and c.state in ['active', 'waiting'])
+        # Retrieve contracts eligible for gift generation
+        contract = self.contract_id.filtered(lambda c: "S" in c.type
+                                                       and c.state in ['active', 'waiting']
+                                                       and c.is_gift_authorized)
         if contract:
             # Logs an error if the birthdate is missing and skip iteration
             if self.product_id.default_code == GIFT_PRODUCTS_REF[0] and not contract.child_id.birthdate:

@@ -183,6 +183,9 @@ class SponsorshipContract(models.Model):
         compute="_compute_is_direct_debit",
         help="Is paid by direct debit"
     )
+    is_gift_authorized = fields.Boolean(
+        compute="_compute_is_gift_auth"
+    )
 
     _sql_constraints = [
         (
@@ -446,6 +449,13 @@ class SponsorshipContract(models.Model):
         dd_modes = self.env['account.payment.mode'].search([('payment_method_code', 'like', '%direct_debit')])
         for contract in self:
             contract.is_direct_debit = contract.payment_mode_id in dd_modes
+
+    @api.depends('payment_mode_id')
+    def _compute_is_gift_auth(self):
+        for contract in self:
+            contract.is_gift_authorized = True
+            if not contract.is_direct_debit and (contract.birthday_invoice or contract.christmas_invoice):
+                contract.is_gift_authorized = False
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -829,14 +839,6 @@ class SponsorshipContract(models.Model):
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
-    @api.constrains('birthday_invoice', 'christmas_invoice')
-    def _check_gift_invoice_method(self):
-        for contract in self:
-            if contract.birthday_invoice or contract.christmas_invoice:
-                if not contract.is_direct_debit:
-                    raise UserError("You can't have an amount for 'Birthday Invoice' "
-                                    "or 'Christmas Invoice' if the payment mode isn't a direct debit.")
-
     def _on_language_changed(self):
         """ Update the preferred language in GMC. """
         messages = self.upsert_sponsorship().with_context({"async_mode": False})

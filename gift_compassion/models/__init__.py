@@ -13,5 +13,5 @@ from . import contracts
 from . import account_partial_reconcile
 from . import gift_threshold_settings
 from . import account_move
+from . import recurring_contract_group
 from . import account_move_line
-from . import contract_group

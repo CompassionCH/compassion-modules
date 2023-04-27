@@ -18,7 +18,6 @@ class ContractGroup(models.Model):
     ##########################################################################
     #                                 FIELDS                                 #
     ##########################################################################
-
     contains_sponsorship = fields.Boolean(
         string="Contains sponsorship",
         compute="_compute_contains_sponsorship",
