@@ -14,8 +14,6 @@ from odoo import models, api, fields
 class EmailComposeMessage(models.TransientModel):
     _inherit = "mail.compose.message"
 
-    body = fields.Html(sanitize=False)
-
     @api.model
     def create_emails(self, template, res_ids, default_mail_values=None):
         """ Helper to generate a new e-mail given a template and objects.
