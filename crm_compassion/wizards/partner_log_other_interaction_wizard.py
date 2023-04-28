@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 
 class LogOtherInteractionWizard(models.TransientModel):
@@ -21,8 +21,12 @@ class LogOtherInteractionWizard(models.TransientModel):
             "body": self.body,
             "date": self.date,
         }
-        self.env["partner.log.other.interaction"].create(data)
-
+        other_interaction = self.env["partner.log.other.interaction"].create(data)
+        self.partner_id.message_post(body=_(
+            "Your new interaction has been created! Click the link to access it: "
+            f"<a href=# data-oe-model={other_interaction._name} data-oe-id={other_interaction.id}>"
+            f"{other_interaction.subject + ' ' + other_interaction.other_type}</a>"
+        ))
 
 class OtherInteractions(models.Model):
     _name = "partner.log.other.interaction"
