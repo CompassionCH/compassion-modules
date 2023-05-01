@@ -29,7 +29,7 @@
 {
     'name': 'Reminder for contracts',
     'summary': 'Reminder features',
-    'version': "14.0.1.0.5",
+    'version': "14.0.1.0.0",
     'license': 'AGPL-3',
     'author': 'Compassion CH',
     'development_status': 'Production/Stable',
@@ -41,8 +41,8 @@
     ],
     'external_dependencies': {},
     'data': [
-        'data/contract_reminder.xml',
         'data/email_reminder_template.xml',
+        'data/contract_reminder.xml',
     ],
     'installable': True,
 }
