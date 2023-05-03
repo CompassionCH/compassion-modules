@@ -47,7 +47,7 @@ class PartnerCommunicationJob(models.Model):
             return dict()
 
         # In other cases, attach the payment slip.
-        report_name = "report_compassion.bvr_due"
+        report_name = "partner_communication_reminder.bvr_due"
         data = {"background": True, "doc_ids": sponsorships.ids, "disable_scissors": True}
         pdf = self._get_pdf_from_data(
             data, self.env.ref("report_compassion.report_bvr_due")

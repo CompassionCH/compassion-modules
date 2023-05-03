@@ -25,10 +25,10 @@ class RecurringContract(models.Model):
         today = datetime.now()
         first_day_of_month = date(today.year, today.month, 1)
         first_reminder_config = self.env.ref(
-            "recurring_contract.sponsorship_reminder_1"
+            "partner_communication_reminder.sponsorship_reminder_1"
         )
         second_reminder_config = self.env.ref(
-            "recurring_contract.sponsorship_reminder_2"
+            "partner_communication_reminder.sponsorship_reminder_2"
         )
         first_reminder = self.with_context(
             default_print_subject=False,
