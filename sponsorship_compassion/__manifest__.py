@@ -70,6 +70,7 @@
         "data/end_reasons.xml",
         "data/partner_category_data.xml",
         "data/utm_data.xml",
+        "data/switch_wp_comm_pref.xml",
         "data/res_partner_sequence.xml",
         "data/queue_job.xml",
         "security/ir.model.access.csv",
