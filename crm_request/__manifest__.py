@@ -32,6 +32,7 @@
         "data/crm_request_data.xml",
         "data/request_sequence.xml",
         "data/ir_cron.xml",
+        "views/res_users_view.xml",
         "views/request.xml",
         "views/request_category.xml",
         "views/holiday_automated_response_view.xml",
