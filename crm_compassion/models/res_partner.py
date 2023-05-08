@@ -81,7 +81,7 @@ class Partner(models.Model):
         self.env["interaction.resume"].populate_resume(self.id)
         partners_with_same_email_ids = (
             self.env["res.partner"]
-                .search([("email", "!=", False), ("email", "=", self.email)])
+                .search([("email", "!=", False), ("email", "=", self.email), ('id', 'not in', self.ids)])
                 .ids
         )
         return {
@@ -92,7 +92,7 @@ class Partner(models.Model):
             "view_mode": "tree,form",
             "domain": [("partner_id", "in",
                         self.ids + partners_with_same_email_ids +
-                        self.other_contact_ids.ids)],
+                        self.mapped("other_contact_ids").ids)],
             "target": "current",
         }
 
