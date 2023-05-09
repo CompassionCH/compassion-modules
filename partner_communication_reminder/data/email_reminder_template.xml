@@ -23,7 +23,7 @@
                     % set number = len(invoices)
                 </div>
                 <p>
-                    ${partner.salutation},
+                    ${partner.salutation}
                     <br/>
                     <br/>
                     We very warmly thank you for your decision to support ${firstname} so as to help us to release this

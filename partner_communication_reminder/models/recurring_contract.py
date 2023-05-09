@@ -35,7 +35,7 @@ class RecurringContract(models.Model):
         first_reminder_config = self.env.ref(
             "partner_communication_reminder.sponsorship_reminder_1"
         )
-        first_reminder = self.search(search_domain, limit=1).with_context(
+        first_reminder = self.search(search_domain).with_context(
             default_print_subject=False,
             default_auto_send=False,
             default_print_header=True,
