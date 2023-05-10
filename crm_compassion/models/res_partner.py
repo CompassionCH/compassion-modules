@@ -85,15 +85,33 @@ class Partner(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "interaction.resume",
             "view_mode": "tree,form",
-            "domain": [
-                (
-                    "partner_id",
-                    "in",
-                    self.ids
-                    + partners_with_same_email_ids
-                    + self.other_contact_ids.ids,
-                )
-            ],
+            "domain": [("partner_id", "in",
+                        self.ids + partners_with_same_email_ids +
+                        self.other_contact_ids.ids)],
+            "target": "current",
+        }
+
+    def open_interaction_full(self):
+        """
+        Populates data for interaction resume and open the view
+        :return: action opening the view
+        """
+        self.ensure_one()
+        self.env["interaction.resume"].populate_resume(self.id, full=True)
+        partners_with_same_email_ids = (
+            self.env["res.partner"]
+                .search([("email", "!=", False), ("email", "=", self.email)])
+                .ids
+        )
+        return {
+            "name": _("Interaction resume"),
+            "type": "ir.actions.act_window",
+            "res_model": "interaction.resume",
+            "view_type": "form",
+            "view_mode": "tree,form",
+            "domain": [("partner_id", "in",
+                        self.ids + partners_with_same_email_ids +
+                        self.other_contact_ids.ids)],
             "target": "current",
         }
 
