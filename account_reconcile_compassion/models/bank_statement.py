@@ -95,6 +95,9 @@ class AccountStatement(models.Model):
         ], limit=1)
 
         for bank_statement in self.filtered("line_ids"):
+            reconcile_model = reconcile_model.with_context({
+                "bank_statement_date": bank_statement.date
+            })
             matching_amls = reconcile_model._apply_rules(bank_statement.line_ids)
 
             for line_id, result in matching_amls.items():
