@@ -487,6 +487,7 @@ class CompassionHold(models.Model):
                 subject=_("No money hold extension"),
                 subtype_xmlid="mail.mt_comment",
             )
+            super().postpone_no_money_hold(additional_text)
             # Commit after hold is updated
             if not test_mode:
                 self.env.cr.commit()  # pylint:disable=invalid-commit

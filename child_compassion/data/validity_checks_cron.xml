@@ -17,15 +17,19 @@
             <field name="state">code</field>
             <field name="code">model.check_hold_validity()</field>
         </record>
-        <record id="no_money_cron" model="ir.cron">
+        <record id="automated_action" model="base.automation">
             <field name="name">Postpone No Money Holds</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
             <field name="model_id" ref="child_compassion.model_compassion_hold"/>
+            <field name="active" eval="True"/>
+            <field name="filter_domain"
+                   eval="[('state', '=', 'active'),
+                   ('type', 'in', ['No Money Hold', 'Sub Child Hold'])]"/>
+            <field name="trigger">on_time</field>
+            <field name="trg_date_id" ref="child_compassion.field_compassion_hold__expiration_date"/>
+            <field name="trg_date_range">-7</field>
+            <field name="trg_date_range_type">day</field>
             <field name="state">code</field>
-            <field name="code">model.postpone_no_money_cron()</field>
+            <field name="code">records.postpone_no_money_hold()</field>
         </record>
         <record id="project_reservation_cron" model="ir.cron">
             <field name="name">Check reservations validity</field>

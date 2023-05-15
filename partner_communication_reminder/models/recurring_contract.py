@@ -37,6 +37,7 @@ class RecurringContract(models.Model):
         """ Creation of the reminder for active and waiting contracts """
         _logger.info("Creating Sponsorship Reminders")
         search_domain = [
+            ("state", "in", ("active", "mandate")),
             ("global_id", "!=", False),
             ("type", "like", "S"),
             "|",
@@ -44,29 +45,16 @@ class RecurringContract(models.Model):
             ("child_id.project_id.suspension", "=", False),
             ("months_due", ">", 1)
         ]
-        active_domain = [("state", "in", ("active", "mandate"))]
-        waiting_domain = [("state", "=", "waiting")]
         first_reminder_config = self.env.ref(
             "partner_communication_reminder.sponsorship_reminder_1"
         )
-        first_waiting_reminder_config = self.env.ref(
-            "partner_communication_reminder.sponsorship_waiting_reminder_1"
-        )
-        first_reminder = self.search(search_domain + active_domain).with_context(
-            default_print_subject=False,
-            default_auto_send=False,
-            default_print_header=True,
-        )
-        first_waiting_reminder = self.search(search_domain + waiting_domain).with_context(
+        first_reminder = self.search(search_domain).with_context(
             default_print_subject=False,
             default_auto_send=False,
             default_print_header=True,
         )
         first_reminder.send_communication(
             first_reminder_config, correspondent=False
-        )
-        first_waiting_reminder.send_communication(
-            first_waiting_reminder_config, correspondent=False
         )
         _logger.info("Sponsorship Reminders created!")
         return True
