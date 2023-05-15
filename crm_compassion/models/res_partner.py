@@ -72,6 +72,7 @@ class Partner(models.Model):
                 ]
             )
 
+    @api.multi
     def open_interaction(self, full=False):
         """
         Populates data for interaction resume and open the view
