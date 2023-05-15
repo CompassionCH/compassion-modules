@@ -56,10 +56,11 @@ class InteractionResume(models.TransientModel):
     )
 
     @api.model
-    def populate_resume(self, partner_id):
+    def populate_resume(self, partner_id, full=False):
         """
         Creates the rows for the resume of given partner
         :param partner_id: the partner
+        :param full: boolean to define if we limit the interaction on a time period
         :return: True
         """
         original_partner = self.env["res.partner"].browse(partner_id)
@@ -69,7 +70,7 @@ class InteractionResume(models.TransientModel):
         partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email), ("id", "not in", partner_ids)]).ids
         self.search([("partner_id", "in", partner_ids)]).unlink()
         self.env.cr.execute(
-            """
+            f"""
                     -- Partner Communications (both e-mail and physical)
                     SELECT DISTINCT ON(email_id, subject, communication_date)
                         CASE pcj.send_mode
@@ -102,7 +103,7 @@ class InteractionResume(models.TransientModel):
                         FULL OUTER JOIN mail_tracking_email mt ON pcj.email_id = mt.mail_id
                         WHERE pcj.state = 'done'
                         AND pcj.partner_id = ANY(%s)
-                        AND pcj.date BETWEEN (NOW() - interval '3 year') AND NOW()
+                        {"" if full else "AND pcj.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
             -- phonecalls
                     UNION (
                       SELECT
@@ -128,6 +129,7 @@ class InteractionResume(models.TransientModel):
                         false as has_attachment
                         FROM "crm_phonecall" as crmpc
                         WHERE crmpc.partner_id = ANY(%s) AND crmpc.state = 'done'
+                        {"" if full else "AND crmpc.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
                         )
             -- outgoing e-mails
                     UNION (
@@ -159,7 +161,7 @@ class InteractionResume(models.TransientModel):
                         AND mt.partner_id = ANY(%s)
                         AND (mail.direction = 'out' OR mail.direction IS NULL)
                         AND m.model != 'partner.communication.job'
-                        AND m.date BETWEEN (NOW() - interval '1 year') AND NOW()
+                        {"" if full else "AND m.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
                         )
 
             -- mass mailings sent from mailchimp (no associated email)
@@ -197,7 +199,7 @@ class InteractionResume(models.TransientModel):
                         WHERE mail.sent IS NOT NULL
                         AND tracking.mail_id IS NULL  -- skip if it's already in mail
                         AND mail.email = %s
-                        AND mail.create_date BETWEEN (NOW() - interval '1 year') AND NOW()
+                        {"" if full else "AND mail.create_date BETWEEN (NOW() - interval '2 year') AND NOW()"}
                         )
             -- incoming messages from partners
                     UNION (
@@ -226,7 +228,7 @@ class InteractionResume(models.TransientModel):
                         WHERE m.subject IS NOT NULL
                         AND m.message_type = 'email'
                         AND m.author_id = ANY(%s)
-                        AND m.date BETWEEN (NOW() - interval '1 year') AND NOW()
+                        {"AND m.date BETWEEN (NOW() - interval '2 year') AND NOW()" if full else ""}
                         )
             -- other interactions
                     UNION (
@@ -250,6 +252,7 @@ class InteractionResume(models.TransientModel):
                         false as has_attachment
                         FROM "partner_log_other_interaction" as o
                         WHERE o.partner_id = ANY(%s)
+                        {"" if full else "AND o.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
                         )
             ORDER BY communication_date desc
                             """,

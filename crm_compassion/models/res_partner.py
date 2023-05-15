@@ -72,13 +72,14 @@ class Partner(models.Model):
                 ]
             )
 
-    def open_interaction(self):
+    @api.multi
+    def open_interaction(self, full=False):
         """
         Populates data for interaction resume and open the view
         :return: action opening the view
         """
         self.ensure_one()
-        self.env["interaction.resume"].populate_resume(self.id)
+        self.env["interaction.resume"].populate_resume(self.id, full)
         partners_with_same_email_ids = (
             self.env["res.partner"]
                 .search([("email", "!=", False), ("email", "=", self.email), ('id', 'not in', self.ids)])
@@ -95,6 +96,10 @@ class Partner(models.Model):
                         self.mapped("other_contact_ids").ids)],
             "target": "current",
         }
+
+    def open_interaction_full(self):
+        return self.open_interaction(full=True)
+
 
     @api.multi
     def log_call(self):
