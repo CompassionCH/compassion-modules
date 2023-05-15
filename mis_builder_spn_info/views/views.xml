@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="mis_spn_info_tree_view">
+        <field name="name">mis.spn.info.tree </field>
+        <field name="model">mis.spn.info</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="correspondent_id"/>
+                <field name="account_id"/>
+                <field name="debit" sum="debit" />
+                <field name="credit" sum="credit" />
+                <field name="analytic_id"/>
+            </tree>
+        </field>
+    </record>
+  </data>
+</odoo>
