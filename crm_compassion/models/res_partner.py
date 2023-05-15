@@ -67,35 +67,32 @@ class Partner(models.Model):
                     ("active", "=", False),
                 ]
             )
-
-    def open_interaction(self):
+    def open_interaction(self, full=False):
         """
         Populates data for interaction resume and open the view
         :return: action opening the view
         """
         self.ensure_one()
-        self.env["interaction.resume"].populate_resume(self.id)
+        self.env["interaction.resume"].populate_resume(self.id, full)
         partners_with_same_email_ids = (
             self.env["res.partner"]
-            .search([("email", "!=", False), ("email", "=", self.email)])
-            .ids
+                .search([("email", "!=", False), ("email", "=", self.email), ('id', 'not in', self.ids)])
+                .ids
         )
         return {
             "name": _("Interaction resume"),
             "type": "ir.actions.act_window",
             "res_model": "interaction.resume",
+            "view_type": "form",
             "view_mode": "tree,form",
-            "domain": [
-                (
-                    "partner_id",
-                    "in",
-                    self.ids
-                    + partners_with_same_email_ids
-                    + self.other_contact_ids.ids,
-                )
-            ],
+            "domain": [("partner_id", "in",
+                        self.ids + partners_with_same_email_ids +
+                        self.mapped("other_contact_ids").ids)],
             "target": "current",
         }
+
+    def open_interaction_full(self):
+        return self.open_interaction(full=True)
 
     def log_call(self):
         """Prepare crm.phonecall creation."""
