@@ -48,6 +48,7 @@
         "data/other_emails.xml",
         "data/depart_communications.xml",
         "data/communication_config.xml",
+        "data/switch_wp_comm_pref.xml",
         "data/utm_data.xml",
         "report/child_picture.xml",
         "views/communication_job_view.xml",
