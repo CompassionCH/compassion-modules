@@ -73,7 +73,7 @@ class AccountReconcileModel(models.Model):
         :return:                (query, params)
         '''
         query, params = super()._get_invoice_matching_query(st_lines_with_partner, excluded_ids)
-        bank_statement_date = self.env.context.get("bank_statement_date", False)
+        bank_statement_date = self.env.context.get("bank_statement_date")
         if params["aml_date_limit"] and bank_statement_date:
             date_limit = bank_statement_date - relativedelta(months=self.past_months_limit)
             params['aml_date_limit'] = date_limit
