@@ -743,7 +743,7 @@ class CompassionIntervention(models.Model):
         # erroneous data
         del ihrn["InterventionType_Name"]
 
-        vals = self.json_to_data(commkit_data)
+        vals = self.json_to_data(ihrn)
         intervention_id = vals["intervention_id"]
 
         intervention = self.env["compassion.intervention"].search(

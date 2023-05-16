@@ -72,7 +72,7 @@ class InteractionResume(models.TransientModel):
         self.env.cr.execute(
             f"""
                     -- Partner Communications (both e-mail and physical)
-                    SELECT DISTINCT ON(email_id, subject)
+                    SELECT DISTINCT ON(email_id, subject, communication_date)
                         CASE pcj.send_mode
                             WHEN 'physical' THEN 'Paper' ELSE 'Email'
                             END

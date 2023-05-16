@@ -1,0 +1,12 @@
+<odoo>
+    <!-- Rule for changing wp partner to email after contract switch -->
+    <record id="sub_check" model="base.automation">
+        <field name="name">Sponsorship: Write and Pray to normal contract update partner</field>
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="trigger">on_write</field>
+        <field name="filter_pre_domain">[('type', '=', 'SWP'), ('correspondent_id.global_communication_delivery_preference', '=', 'sms')]</field>
+        <field name="filter_domain">[('type', 'in', ['S', 'SC'])]</field>
+        <field name="state">code</field>
+        <field name="code">records.mapped('correspondent_id').write({'global_communication_delivery_preference':'digital'})</field>
+    </record>
+</odoo>
