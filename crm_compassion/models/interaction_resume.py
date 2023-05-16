@@ -184,7 +184,6 @@ class InteractionResume(models.TransientModel):
                         AND m.model != 'partner.communication.job'
                         {"" if full_resume else "AND m.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
                         )
-
             -- mass mailings sent from mailchimp (no associated email)
                     UNION (
                       SELECT DISTINCT ON (email, mass_mailing_id)
@@ -250,7 +249,6 @@ class InteractionResume(models.TransientModel):
                         AND m.message_type = 'email'
                         AND m.author_id = ANY(%s)
                         {"" if full_resume else "AND m.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
-                        )
             -- other interactions
                     UNION (
                       SELECT

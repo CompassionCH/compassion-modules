@@ -1,3 +1,5 @@
+from dateutil.relativedelta import relativedelta
+
 from odoo import api, models, fields
 
 
@@ -59,3 +61,19 @@ class AccountReconcileModel(models.Model):
             } for tag in analytic_default.analytic_tag_ids]
             return res
         return False
+
+    def _get_invoice_matching_query(self, st_lines_with_partner, excluded_ids):
+        ''' Returns the query applying the current invoice_matching reconciliation
+        model to the provided statement lines.
+
+        :param st_lines_with_partner: A list of tuples (statement_line, partner),
+                                      associating each statement line to treate with
+                                      the corresponding partner, given by the partner map
+        :param excluded_ids:    Account.move.lines to exclude.
+        :return:                (query, params)
+        '''
+        query, params = super()._get_invoice_matching_query(st_lines_with_partner, excluded_ids)
+        bank_statement_date = self.env.context.get("bank_statement_date")
+        if params.get("aml_date_limit") and bank_statement_date:
+            date_limit = bank_statement_date - relativedelta(months=self.past_months_limit)
+            params['aml_date_limit'] = date_limit

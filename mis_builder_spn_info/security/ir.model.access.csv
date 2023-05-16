@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mis_builder_spn_info_mis_builder_spn_info,mis_builder_spn_info.mis_builder_spn_info,model_mis_spn_info,base.group_user,1,1,1,1
