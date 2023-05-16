@@ -32,7 +32,7 @@
         </field>
     </record>
 
-    <record id="action_generate_communication" model="ir.actions.act_window">
+    <record id="action_generate_communication_menu" model="ir.actions.act_window">
         <field name="name">Generate Communications</field>
         <field name="res_model">partner.communication.generate.wizard</field>
         <field name="view_type">form</field>
@@ -41,7 +41,7 @@
     </record>
 
     <menuitem name="Generate Communications" parent="menu_communication" id="menu_communication_generate" sequence="2"
-              action="action_generate_communication"/>
+              action="action_generate_communication_menu"/>
 
     <!-- Add action in partners to generate communications -->
     <act_window id="action_generate_communication" key2="client_action_multi" name="Generate Communications"
