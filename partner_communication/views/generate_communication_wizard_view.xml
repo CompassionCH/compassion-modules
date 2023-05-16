@@ -47,6 +47,6 @@
     <act_window id="action_generate_communication" key2="client_action_multi" name="Generate Communications"
                 res_model="partner.communication.generate.wizard" src_model="res.partner"
                 view_mode="form" target="new" view_type="form"
-                context="{}"
+                context="{'default_selection_domain': [('id', 'in', active_ids)]}"
     />
 </odoo>
