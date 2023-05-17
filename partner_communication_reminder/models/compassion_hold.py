@@ -14,7 +14,7 @@ class CompassionHold(models.Model):
             "\n\nA reminder has been prepared for the " "sponsor {} ({})"
         )
         failed = self.env[self._name]
-        for i in range(1, 3):
+        for i in range(1, 4):
             reminder_conf = self.env.ref(f"partner_communication_reminder.sponsorship_activation_reminder_{i}")
             reminders = self.env["partner.communication.job"].search([
                 ("config_id", "=", reminder_conf.id),

@@ -397,24 +397,6 @@ class CompassionHold(models.Model):
         return True
 
     @api.model
-    def postpone_no_money_cron(self):
-        # Search for expiring No Money Hold
-        this_week_delay = datetime.now() + timedelta(days=7)
-        holds = self.search(
-            [
-                ("state", "=", "active"),
-                ("expiration_date", "<=", this_week_delay),
-                (
-                    "type",
-                    "in",
-                    [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value],
-                ),
-            ]
-        )
-        holds.postpone_no_money_hold()
-        return True
-
-    @api.model
     def beneficiary_hold_removal(self, commkit_data):
         data = commkit_data.get("BeneficiaryHoldRemovalNotification")
         hold = self.search([("hold_id", "=", data.get("HoldID"))])
@@ -487,7 +469,6 @@ class CompassionHold(models.Model):
                 subject=_("No money hold extension"),
                 subtype_xmlid="mail.mt_comment",
             )
-            super().postpone_no_money_hold(additional_text)
             # Commit after hold is updated
             if not test_mode:
                 self.env.cr.commit()  # pylint:disable=invalid-commit
