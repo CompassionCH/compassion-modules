@@ -17,19 +17,19 @@ class PartnerCommunicationJob(models.Model):
     _inherit = "partner.communication.job"
 
     def send(self):
-        other_jobs = self.filtered(lambda j: j.send_mode != "sms")
-        # No money extension
-        no_money_1 = self.env.ref(
-            "partner_communication_switzerland.sponsorship_waiting_reminder_1"
-        )
         settings = self.env["res.config.settings"].sudo()
         first_extension = settings.get_param("no_money_hold_duration")
-        for communication in other_jobs:
-            extension = False
-            if communication.config_id == no_money_1:
-                extension = first_extension + 7
+        second_extension = settings.get_param("no_money_hold_extension")
+        extension_mapping = {
+            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_1"): first_extension + 7,
+            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_2"): second_extension + 7,
+            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_3"): 10,
+        }
+        for communication in self.filtered(lambda j: j.send_mode != "sms"):
+            config_id = communication.config_id
+            extension = extension_mapping.get(config_id)
             if extension:
                 holds = communication.get_objects().mapped("child_id.hold_id")
-                for hold in holds:
-                    expiration = datetime.now() + relativedelta(days=extension)
-                    hold.expiration_date = expiration
+                expiration = datetime.now() + relativedelta(days=extension)
+                holds.write({"expiration_date": expiration})
+        return True

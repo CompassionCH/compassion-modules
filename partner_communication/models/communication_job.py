@@ -272,7 +272,7 @@ class CommunicationJob(models.Model):
 
         if "send_mode" not in vals and "default_send_mode" not in self.env.context:
             job.send_mode = send_mode[0]
-        if "auto_send" not in vals and "default_auto_send" not in self.env.context:
+        if "auto_send" not in vals and "default_auto_send" not in self.env.context and send_mode[1]:
             job.auto_send = send_mode[1]
 
         if not job.body_html or not strip_tags(job.body_html):

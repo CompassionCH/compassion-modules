@@ -67,13 +67,110 @@
                 </p>
             </field>
         </record>
-                <!-- E-mail for Waiting Sponsorship Reminders -->
-        <record id="email_sponsorship_waiting_reminder_1" model="mail.template">
-            <field name="name">Sponsorship Waiting Reminder 1</field>
+        <record id="email_sponsorship_reminder_2" model="mail.template">
+            <field name="name">Sponsorship Reminder 2</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field name="partner_to">
+                ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
+            </field>
+            <field name="subject">Payment reminder</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set sponsorships = object.get_objects()
+                    % set children = sponsorships.mapped('child_id')
+                    % set firstname = children.get_list('firstname', 3, 'many children')
+                    % set invoices = sponsorships.mapped('due_invoice_ids')
+                    % set amount = sum(sponsorships.mapped('amount_due'))
+                    % set number = len(invoices)
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We very warmly thank you for your decision to support ${firstname} so as to help us to release this
+                    child from poverty in Jesus’ name.
+                    <br/>
+                    <br/>
+                    It may have escaped your attention that
+                    <b>the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
+                    <br/>
+                    We send you a payment slip so you can settle the payment <b>within 10 days</b>. Otherwise, we will
+                    feel forced to end your sponsorship.
+                    <br/>
+                    <br/>
+                    Please contact us if you are facing financial challenges or if you want to pay by installments.
+                    Together we will look for a solution which guarantees an ongoing support for
+                    ${children.get('your sponsored child')}.
+                    <br/>
+                    <br/>
+                    Thanks for making the payment of your sponsorship a priority. If this letter has crossed with your
+                    payment, please accept our thanks and disregard this notice.
+                    <br/>
+                    <br/>
+                    Sincerely,
+                </p>
+            </field>
+        </record>
+        <record id="email_sponsorship_reminder_3" model="mail.template"> <!-- TODO info pauline -->
+            <field name="name">Sponsorship Reminder 3</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">
+                ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
+            </field>
+            <field name="subject">Payment reminder</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set sponsorships = object.get_objects()
+                    % set children = sponsorships.mapped('child_id')
+                    % set firstname = children.get_list('firstname', 3, 'many children')
+                    % set invoices = sponsorships.mapped('due_invoice_ids')
+                    % set amount = sum(sponsorships.mapped('amount_due'))
+                    % set number = len(invoices)
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We very warmly thank you for your decision to support ${firstname} so as to help us to release this
+                    child from poverty in Jesus’ name.
+                    <br/>
+                    <br/>
+                    It may have escaped your attention that
+                    <b>the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
+                    <br/>
+                    We send you a payment slip so you can settle the payment <b>within 10 days</b>. Otherwise, we will
+                    feel forced to end your sponsorship.
+                    <br/>
+                    <br/>
+                    Please contact us if you are facing financial challenges or if you want to pay by installments.
+                    Together we will look for a solution which guarantees an ongoing support for
+                    ${children.get('your sponsored child')}.
+                    <br/>
+                    <br/>
+                    Thanks for making the payment of your sponsorship a priority. If this letter has crossed with your
+                    payment, please accept our thanks and disregard this notice.
+                    <br/>
+                    <br/>
+                    Sincerely,
+                </p>
+            </field>
+        </record>
+
+        <!-- E-mail for Waiting Sponsorship Reminders -->
+        <record id="email_sponsorship_activation_reminder_1" model="mail.template">
+            <field name="name">Sponsorship Activation Reminder 1</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">
+                ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
+            </field>
             <field name="subject">Payment reminder</field>
             <field name="body_html" type="html">
                 <div>
@@ -83,24 +180,32 @@
                     % set is_dd = 'direct_debit' in payment_mode
                     % set children = sponsorships.mapped('child_id')
                     % set firstname = children.get_list('firstname', 3, 'many children')
-                    % set amount = sum(sponsorships.mapped('total_amount')) * min(sponsorships.mapped('group_id.advance_billing_months'))
+                    % set amount = sum(sponsorships.mapped('total_amount')) *
+                    min(sponsorships.mapped('group_id.advance_billing_months'))
                     % set extension = children[0].hold_id.no_money_extension_duration
                 </div>
                 <p>
                     ${partner.salutation},
                     <br/>
                     <br/>
-                    We very warmly thank you for your commitment to our sponsorship program and for supporting ${firstname}.
-                    However, we have not yet activated your ${'sponsorship' if len(children) == 1 else 'sponsorships'} because we haven't received your first payment yet.
+                    We very warmly thank you for your commitment to our sponsorship program and for supporting
+                    ${firstname}.
+                    However, we have not yet activated your ${'sponsorship' if len(children) == 1 else 'sponsorships'}
+                    because we haven't received your first payment yet.
                     % if is_dd:
-                        The withdrawal from your account couldn't be executed. We therefore propose you to change your payment mode and settle a standing order with the reference that you can find on the attached payment slip.
+                    The withdrawal from your account couldn't be executed. We therefore propose you to change your
+                    payment mode and settle a standing order with the reference that you can find on the attached
+                    payment slip.
                     % else:
-                        It may have escaped your attention that the sponsorship is not yet paid in the amount of CHF ${amount}.-
-                        <br/>
-                        <br/>
-                        We send you a payment slip so you can settle the payment <b>within ${extension} days</b>.
-                        Please contact us if you are facing financial challenges. Together we will look for a solution which guarantees an ongoing support for ${children.get('your sponsored child')}.
-                        If this letter has crossed with your payment, please accept our thanks and disregard this notice. Thanks for making the payment of your sponsorship a priority.
+                    It may have escaped your attention that the sponsorship is not yet paid in the amount of CHF
+                    ${amount}.-
+                    <br/>
+                    <br/>
+                    We send you a payment slip so you can settle the payment <b>within ${extension} days</b>.
+                    Please contact us if you are facing financial challenges. Together we will look for a solution which
+                    guarantees an ongoing support for ${children.get('your sponsored child')}.
+                    If this letter has crossed with your payment, please accept our thanks and disregard this notice.
+                    Thanks for making the payment of your sponsorship a priority.
                     % endif
                     <br/>
                     <br/>
@@ -108,6 +213,68 @@
                     <br/>
                     <br/>
                     Yours sincerely
+                </p>
+            </field>
+        </record>
+        <record id="email_sponsorship_activation_reminder_2" model="mail.template">
+            <field name="name">Sponsorship Activation Reminder 2</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">
+                ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
+            </field>
+            <field name="subject">Payment reminder</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set sponsorships = object.get_objects()
+                    % set children = sponsorships.mapped('child_id')
+                    % set firstname = children.get_list('firstname', 3, 'many children')
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We are sorry to inform you of the cancellation of your sponsorship toward ${firstname}, due to
+                    unpaid sponsorship.
+                    <br/>
+                    <br/>
+                    We will now look for a new sponsor to continue the follow up with ${children.get('him')}.
+                    <br/>
+                    <br/>
+                    Kind regards
+                </p>
+            </field>
+        </record>
+        <record id="email_sponsorship_activation_reminder_3" model="mail.template">
+            <field name="name">Sponsorship Activation Reminder 3</field>
+            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
+            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field name="reply_to">info@compassion.ch</field>
+            <field name="partner_to">
+                ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
+            </field>
+            <field name="subject">Sponsorship Cancellation</field>
+            <field name="body_html" type="html">
+                <div>
+                    % set partner = object.partner_id
+                    % set sponsorships = object.get_objects()
+                    % set children = sponsorships.mapped('child_id')
+                    % set firstname = children.get_list('firstname', 3, 'many children')
+                </div>
+                <p>
+                    ${partner.salutation},
+                    <br/>
+                    <br/>
+                    We are sorry to inform you of the cancellation of your sponsorship toward ${firstname}, due to
+                    unpaid sponsorship.
+                    <br/>
+                    <br/>
+                    We will now look for a new sponsor to continue the follow up with ${children.get('him')}.
+                    <br/>
+                    <br/>
+                    Kind regards
                 </p>
             </field>
         </record>
