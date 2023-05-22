@@ -23,6 +23,8 @@
                         class="oe_stat_button"
                         icon="fa-envelope-o">
                 </button>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="open_interaction_full"
                         string="Full Interactions"
                         title="Interaction for this partner since the beginning"
