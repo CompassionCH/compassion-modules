@@ -77,3 +77,4 @@ class AccountReconcileModel(models.Model):
         if params.get("aml_date_limit") and bank_statement_date:
             date_limit = bank_statement_date - relativedelta(months=self.past_months_limit)
             params['aml_date_limit'] = date_limit
+        return query, params
