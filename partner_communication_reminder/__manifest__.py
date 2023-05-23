@@ -37,7 +37,8 @@
     'category': 'Accounting',
     'depends': [
         'partner_communication',
-        'recurring_contract'
+        'recurring_contract',
+        'child_compassion'
     ],
     'external_dependencies': {},
     'data': [
