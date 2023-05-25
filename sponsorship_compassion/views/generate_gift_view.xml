@@ -30,5 +30,6 @@
         <field name="binding_model_id" ref="model_recurring_contract"/>
         <field name="view_mode">form</field>
         <field name="target">new</field>
+        <field name="context">{'default_contract_id': active_ids[0]}</field>
     </record>
 </odoo>
