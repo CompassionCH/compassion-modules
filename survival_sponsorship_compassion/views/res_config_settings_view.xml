@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="new_participant_settings_form" model="ir.ui.view">
+        <field name="name">new.participant.settings.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="message_center_compassion.notification_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']">
+                <div name="survival_sponsorship">
+                    <label for="survival_sponsorship_warn_user_ids" class="o_light_label"/>
+                    <field name="survival_sponsorship_warn_user_ids" widget="many2many_tags"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

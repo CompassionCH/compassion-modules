@@ -13,7 +13,7 @@ from odoo import fields, models
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
-
+    # FIX TODO !!!! This field is wrongly named it should be ids
     intervention_id = fields.One2many(
         "compassion.intervention",
         "product_template_id",

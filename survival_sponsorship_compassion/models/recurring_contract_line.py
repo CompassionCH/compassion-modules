@@ -1,0 +1,36 @@
+##############################################################################
+#
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Simon Gonzalez <sgonzalez@ikmail.com>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+
+from odoo import fields, models, api
+from odoo.exceptions import UserError
+
+
+class SponsorshipContract(models.Model):
+    _inherit = ["recurring.contract.line"]
+    _name = "recurring.contract.line"
+
+    contract_type = fields.Selection(
+        selection_add=[('CSP', 'Survival Sponsorship')],
+        related="contract_id.type",
+        readonly=True,
+    )
+
+    @api.constrains('quantity', 'product_id')
+    def quantity_constrains(self):
+        for contract_line in self.filtered("product_id.survival_sponsorship_sale"):
+            product = contract_line.product_id
+            qty_reached = contract_line.quantity + product.survival_sponsorship_number
+            if qty_reached > product.survival_slot_number:
+                raise UserError("You can't validate a contract that uses more slot than the one available\n"
+                                f"{product.survival_sponsorship_field_office_id.name} has "
+                                f"{product.survival_slot_number} slots available "
+                                f"you tried to add {contract_line.quantity}\n"
+                                f"{product.survival_slot_number - product.survival_sponsorship_number} slots "
+                                f"are still available")
