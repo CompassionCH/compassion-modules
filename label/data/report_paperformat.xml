@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_label" model="report.paperformat">
+      <field name="name">Label A4</field>
+      <field name="format">custom</field>
+      <field name="default" eval="True" />
+      <field name="page_height">297</field>
+      <field name="page_width">210</field>
+      <field name="orientation">Portrait</field>
+      <field name="margin_top">0</field>
+      <field name="margin_bottom">0</field>
+      <field name="margin_left">0</field>
+      <field name="margin_right">0</field>
+      <field name="header_line" eval="False" />
+      <field name="header_spacing">0</field>
+      <field name="dpi">96</field>
+    </record>
+
+    <report id="dynamic_label" string="Qweb Label" model="label.print.wizard" name="label.report_label" report_type="qweb-pdf"/>
+
+    <record id="dynamic_label" model="ir.actions.report">
+      <field name="paperformat_id" ref="label.paperformat_label"/>
+    </record>
+</odoo>

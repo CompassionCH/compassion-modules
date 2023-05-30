@@ -1,0 +1,37 @@
+<odoo>
+    <template id="one_label">
+<!--        <link rel="stylesheet" href="/label/static/src/css/label.css"/>-->
+        <!-- In order to keep the layout whatever the datas are, everything is inside a div that hide the overflow and occupy all the place -->
+        <div class="o_label_table_cell" t-attf-style="padding-right: {{padding_right}}mm; padding-bottom: {{padding_bottom}}mm; padding-top: {{padding_top}}mm; padding-left: {{padding_left}}mm;">
+            <table class="o_label_cell_table">
+                <tr>
+                    <t t-if="(col[0]['type'] == 'barcode')">
+                        <td t-attf-style="width: {{barcode_width}}mm;">
+                            <div class="o_label_barcode">
+                                <img t-att-src="'data:image/png;base64,%s' % o.barcode('QR',col[0]['value'], barcode_width, barcode_height)" t-attf-style="vertical-align: middle; width: {{barcode_width}}mm; height: {{barcode_height}}mm;"/>
+                            </div>
+                        </td>
+                    </t>
+
+                    <td style="vertical-align: middle; height: 100%;">
+                        <div class="o_label_div_cell">
+                            <table class="o_label_text_table">
+                                <t t-foreach="col" t-as="val">
+                                    <t t-if="(val['type'] != 'barcode')">
+                                        <tr>
+                                            <td style="vertical-align: middle">
+                                                <span t-att-style="val['style']">
+                                                    <t t-esc="val['value']"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+</odoo>

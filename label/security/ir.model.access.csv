@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_label_print,Read only access on label_print,model_label_print,,1,0,0,0
+access_label_brand,Read only access on label_brand,model_label_brand,,1,0,0,0
+access_label_config,Read only access on label_config,model_label_config,,1,0,0,0
+access_label_print_field,Read only access on label_print_field,model_label_print_field,,1,0,0,0
