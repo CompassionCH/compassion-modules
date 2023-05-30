@@ -2,28 +2,24 @@
     <template id="report_label">
         <link rel="stylesheet" href="/label/static/src/css/label.css"/>
         <t t-call="web.basic_layout">
-            <t t-foreach="docs" t-as="o">
-                <t t-foreach="label_data" t-as="data_page">
-                    <div class="page">
-                        <div t-attf-style="position: absolute; left: {{ o.config_id.left_margin}}mm; top: {{(o.config_id.top_margin + data_page_index * 297)}}mm; height: {{(297 - o.config_id.top_margin - o.config_id.bottom_margin)}}mm; width: {{(210 - o.config_id.left_margin - o.config_id.right_margin)}}mm;">
-                            <!-- Start page -->
-                            <table class="o_label_page_table" t-attf-style="border-space: {{o.config_id.cell_spacing}}mm;">
-                                <t t-foreach="data_page" t-as="row">
-                                    <tr>
-                                        <t t-foreach="row" t-as="col">
-                                            <td t-attf-style="height: {{o.config_id.height}}mm; width: {{o.config_id.width}}mm;">
-                                                <!-- One Label -->
-                                                <t t-call="label.one_label"/>
-                                            </td>
-                                        </t>
-                                    </tr>
+            <div class="page" style="margin-top:10px;margin-left:10px;">
+                <t t-foreach="docs" t-as="o">
+                    <!-- Start page -->
+                    <div style="padding-left:7px;padding-top:70px">
+                        <table class="o_label_page_table">
+                            <tr>
+                                <t t-foreach="3" t-as="col">
+                                    <td>
+                                            <!-- One Label -->
+                                            <t t-call="label.one_label"/>
+                                    </td>
                                 </t>
-                            </table>
-                        </div>
-                        <p style="page-break-after:always;"/>
+                            </tr>
+                        </table>
                     </div>
+                    <p style="page-break-after:always;"/>
                 </t>
-            </t>
+            </div>
         </t>
     </template>
 </odoo>

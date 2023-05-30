@@ -8,8 +8,8 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2015-2017 Compassion CH (http://www.compassion.ch)
-#    @author: Emanuel Cino, Serpent Consulting Services Pvt. Ltd.
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
+#    @author: Simon Gonzalez
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,19 +29,13 @@
 # pylint: disable=C8101
 {
     "name": "Mass Label Reporting",
-    "version": "12.0.1.0.0",
+    "version": "14.0.1.0.0",
     "author": "Serpent Consulting Services Pvt. Ltd.",
     "category": "Tools",
     "website": "http://www.serpentcs.com",
     "license": "AGPL-3",
-    "depends": ["base", "web"],
+    "depends": ["base", "web", "sponsorship_compassion"],
     "data": [
-        "views/label_config_view.xml",
-        "views/label_print_view.xml",
-        "views/label_print_wizard_view.xml",
-        "security/ir.model.access.csv",
-        "data/label.brand.csv",
-        "data/label.config.csv",
         "data/report_paperformat.xml",
         "reports/dynamic_label.xml",
         "reports/one_label.xml",
@@ -49,3 +43,4 @@
     "installable": True,
     "auto_install": False,
 }
+
