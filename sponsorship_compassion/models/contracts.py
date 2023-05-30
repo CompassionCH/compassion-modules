@@ -1030,7 +1030,7 @@ class SponsorshipContract(models.Model):
         gift_wizard.with_context(invoicer=invoicer).generate_invoice()
 
     def invoice_paid(self, invoice):
-        """ Prevent to reconcile invoices for sponsorships older than 3 months. """
+        """ Prevent to reconcile invoices for sponsorships older than 6 months. """
         bypass_state = self.env.context.get("bypass_state", False)
         for invl in invoice.invoice_line_ids:
             if invl.contract_id and invl.contract_id.child_id:
@@ -1040,7 +1040,7 @@ class SponsorshipContract(models.Model):
                 if contract.state == "cancelled" and not bypass_state:
                     raise UserError(f"The contract {contract.name} is not active.")
                 if contract.state == "terminated" and contract.end_date and not bypass_state:
-                    limit = datetime.now() - relativedelta(days=180)
+                    limit = invoice.invoice_date - relativedelta(days=180)
                     ended_since = contract.end_date
                     if ended_since < limit:
                         raise UserError(f"The contract {contract.name} is not active.")
