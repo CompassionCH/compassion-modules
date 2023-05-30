@@ -67,13 +67,14 @@ class Partner(models.Model):
                     ("active", "=", False),
                 ]
             )
-    def open_interaction(self, full=False):
+
+    def open_interaction(self, full_resume=False):
         """
         Populates data for interaction resume and open the view
         :return: action opening the view
         """
         self.ensure_one()
-        self.env["interaction.resume"].populate_resume(self.id, full)
+        self.env["interaction.resume"].populate_resume(self.id, full_resume)
         partners_with_same_email_ids = (
             self.env["res.partner"]
                 .search([("email", "!=", False), ("email", "=", self.email), ('id', 'not in', self.ids)])
@@ -92,7 +93,7 @@ class Partner(models.Model):
         }
 
     def open_interaction_full(self):
-        return self.open_interaction(full=True)
+        return self.open_interaction(full_resume=True)
 
     def log_call(self):
         """Prepare crm.phonecall creation."""
