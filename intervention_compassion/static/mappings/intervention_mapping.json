@@ -6,6 +6,9 @@
       "field": "field_office_id.name",
       "search_relational_record": true
     },
+    "AdditionalMarketingInformation": {
+      "field": "additional_marketing_information"
+    },
     "ActualLocalContribution": {
       "field": "local_contribution"
     },
@@ -51,6 +54,9 @@
     },
     "Description": {
       "field": "description"
+    },
+    "DisburseWithoutCommitment": {
+      "field": "disburse_without_commitment"
     },
     "EstimatedImpactedBeneficiaryQuantity": {
       "field": "estimated_impacted_beneficiaries"

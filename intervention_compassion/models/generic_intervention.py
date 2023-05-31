@@ -61,6 +61,7 @@ class GenericIntervention(models.AbstractModel):
     total_cost = fields.Float(readonly=True)
     requested_additional_funding = fields.Float(readonly=True)
     estimated_impacted_beneficiaries = fields.Integer(readonly=True)
+    disburse_without_commitment = fields.Boolean(readonly=True)
 
     @api.model
     def get_fields(self):
