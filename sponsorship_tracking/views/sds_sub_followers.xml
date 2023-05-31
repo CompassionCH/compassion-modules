@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright (C) 2023 Compassion (http://www.compassion.ch)
+    @author Noé Berdoz <nberdoz@compassion.ch>
+    The licence is in the file __manifest__.py
+-->
+<odoo>
+    <data>
+        <record id="sds_sub_followers_tree" model="ir.ui.view">
+            <field name="name">sds.sub.followers.tree</field>
+            <field name="model">sds.sub.followers</field>
+            <field name="arch" type="xml">
+                <tree string="Sub Followers">
+                    <field name="active_languages"/>
+                    <field name="sub_followers"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="sds_sub_followers_act_window" model="ir.actions.act_window">
+            <field name="name">SUB Followers</field>
+            <field name="res_model">sds.sub.followers</field>
+        </record>
+
+        <menuitem action="sds_sub_followers_act_window" id="menu_sds_sub_followers_act_window" parent="menu_tracking" sequence="1"/>
+    </data>
+</odoo>

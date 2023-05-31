@@ -43,6 +43,7 @@
     "data": [
         "views/sub_sponsorship_wizard_view.xml",
         "views/contract_view.xml",
+        "views/sds_sub_followers.xml",
         "views/settings_view.xml",
         "views/end_reason_view.xml",
         "data/sponsorship_action_rules.xml",
