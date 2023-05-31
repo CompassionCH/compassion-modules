@@ -9,3 +9,4 @@
 ##############################################################################
 
 from . import contracts
+from . import sds_sub_followers
