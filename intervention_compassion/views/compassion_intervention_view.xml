@@ -8,8 +8,10 @@
             <form>
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="on_hold,committed,active,close"/>
-                    <button name="create_commitment" string="Commit Funds" type="object" states="on_hold" class="oe_highlight"/>
-                    <button name="cancel_hold" string="Cancel Hold" type="object" attrs="{'invisible': [('hold_id', '=', False)]}"/>
+                    <button name="create_commitment" string="Commit Funds" type="object" states="on_hold"
+                            class="oe_highlight"/>
+                    <button name="cancel_hold" string="Cancel Hold" type="object"
+                            attrs="{'invisible': [('hold_id', '=', False)]}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="buttons">
@@ -51,15 +53,16 @@
                                 string="Partner"/>
                     </div>
                     <div class="oe_title">
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
                         <group>
                             <field name="intervention_id"/>
                             <field name="field_office_id"/>
                             <field name="fcp_ids" widget="many2many_tags"/>
+                            <field name="additional_marketing_information"/>
                             <field name="category_id"/>
                             <field name="subcategory_ids" domain="[('category_ids', '=', category_id)]"/>
                             <field name="type"/>
@@ -68,6 +71,7 @@
                         <group>
                             <field name="funding_status"/>
                             <field name="intervention_status"/>
+                            <field name="disburse_without_commitment"/>
                             <field name='company_id'/>
                             <field name="funding_global_partners"/>
                             <field name="service_level"/>
@@ -80,7 +84,8 @@
                             <group>
                                 <group string="Hold Information" attrs="{'invisible': [('hold_id', '=', False)]}">
                                     <field name="hold_id"/>
-                                    <field name="hold_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="hold_amount" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
                                     <field name="expiration_date"/>
                                     <field name="next_year_opt_in"/>
                                     <field name="user_id"/>
@@ -88,21 +93,30 @@
                                 </group>
                                 <group string="Previsions">
                                     <field name="currency_usd" invisible="1"/>
-                                    <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="total_estimated_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+                                    <field name="estimated_costs" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="total_estimated_cost_local" widget="monetary"
+                                           options="{'currency_field': 'local_currency_id'}"/>
                                     <field name="estimated_impacted_beneficiaries"/>
-                                    <field name="estimated_local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="estimated_local_contribution" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
                                     <field name="local_currency_id" invisible="1"/>
                                 </group>
                                 <group string="Actual numbers">
-                                    <field name="total_cost" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="total_actual_cost_local" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+                                    <field name="total_cost" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="total_actual_cost_local" widget="monetary"
+                                           options="{'currency_field': 'local_currency_id'}"/>
                                     <field name="impacted_beneficiaries"/>
-                                    <field name="local_contribution" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="requested_additional_funding" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                    <field name="commitment_amount" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="local_contribution" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="requested_additional_funding" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="commitment_amount" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
                                     <field name="commited_percentage" widget="progressbar"/>
-                                    <field name="total_amendment" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                    <field name="total_amendment" widget="monetary"
+                                           options="{'currency_field': 'currency_usd'}"/>
                                 </group>
                             </group>
                         </page>
@@ -126,14 +140,18 @@
                         <page string="SLA Negotiation">
                             <group>
                                 <field name="sla_negotiation_status"/>
-                                <field name="fo_proposed_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
-                                <field name="approved_sla_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
+                                <field name="fo_proposed_sla_costs" widget="monetary"
+                                       options="{'currency_field': 'currency_usd'}"/>
+                                <field name="approved_sla_costs" widget="monetary"
+                                       options="{'currency_field': 'currency_usd'}"/>
                                 <field name="sla_comments"/>
                             </group>
                             <group>
                                 <field name="deliverable_level_1_ids" widget="many2many_tags"/>
-                                <field name="deliverable_level_2_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
-                                <field name="deliverable_level_3_ids" widget="many2many_tags" attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
+                                <field name="deliverable_level_2_ids" widget="many2many_tags"
+                                       attrs="{'invisible': [('service_level', '!=', 'Level 2')]}"/>
+                                <field name="deliverable_level_3_ids" widget="many2many_tags"
+                                       attrs="{'invisible': [('service_level', '!=', 'Level 3')]}"/>
                             </group>
                         </page>
                         <page string="Details">
@@ -184,7 +202,8 @@
         <field name="name">compassion.intervention.tree</field>
         <field name="model">compassion.intervention</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state=='on_hold'" decoration-muted="state in ('close','cancel')" decoration-success="state=='committed'" decoration-danger="state == 'sla'">
+            <tree decoration-info="state=='on_hold'" decoration-muted="state in ('close','cancel')"
+                  decoration-success="state=='committed'" decoration-danger="state == 'sla'">
                 <field name="name"/>
                 <field name="category_id"/>
                 <field name="intervention_id"/>
@@ -217,7 +236,8 @@
                 <group expand="0" string="Group By...">
                     <filter string="Category" name="category" domain="[]" context="{'group_by':'category_id'}"/>
                     <filter string="Type" name="type" domain="[]" context="{'group_by':'type'}"/>
-                    <filter string="Funding Status" name="funding_status" domain="[]" context="{'group_by':'funding_status'}"/>
+                    <filter string="Funding Status" name="funding_status" domain="[]"
+                            context="{'group_by':'funding_status'}"/>
                     <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
                 </group>
             </search>
