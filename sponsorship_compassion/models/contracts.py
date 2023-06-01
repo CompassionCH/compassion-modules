@@ -67,7 +67,7 @@ class SponsorshipContract(models.Model):
         "compassion.global.partner", "Transferred to", readonly=False
     )
     gmc_commitment_id = fields.Char(
-        help="Connect global ID", readonly=True, copy=False, tracking=True, oldname="global_id"
+        help="Connect global ID", readonly=True, copy=False, tracking=True
     )
     hold_expiration_date = fields.Datetime(
         help="Used for setting a hold after sponsorship cancellation"
