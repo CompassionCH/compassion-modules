@@ -16,7 +16,7 @@ def migrate(env, version):
         global_id = contract.child_id.global_id
         _logger.info(f"Migrating {global_id} child on {contract.gmc_commitment_id} contract")
         answer = onramp.send_message(f"beneficiaries/{global_id}/summary", "GET")
-        commitments = answer.get("content").get("Commitments") if answer.get("code") == "200" else False
+        commitments = answer.get("content").get("Commitments") if answer.get("code") == 200 else False
         if commitments:
             for commitment in commitments:
                 if commitment.get("EndDate"):
