@@ -112,7 +112,7 @@ class PartnerSponsorshipReport(models.Model):
 
         for partner in self:
             total_meal = sum(
-                partner.related_sponsorships.filtered("global_id").mapped(get_nb_meal)
+                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(get_nb_meal)
             )
             partner.sr_nb_meal = total_meal
 
@@ -124,13 +124,13 @@ class PartnerSponsorshipReport(models.Model):
 
         for partner in self:
             total_check = sum(
-                partner.related_sponsorships.filtered("global_id").mapped(get_nb_check)
+                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(get_nb_check)
             )
             partner.sr_nb_medic_check = total_check
 
     def _compute_nb_bible(self):
         for partner in self:
-            total_bible = len(partner.related_sponsorships.filtered("global_id"))
+            total_bible = len(partner.related_sponsorships.filtered("gmc_commitment_id"))
             partner.sr_nb_bible = total_bible
 
     def _compute_total_donation(self):

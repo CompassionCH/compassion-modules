@@ -3,10 +3,13 @@
   "model": "recurring.contract",
   "mapping": {
     "Commitment_ID": {
-      "field": "global_id"
+      "field": "gmc_commitment_id"
+    },
+    "CorrespondentCommitmentID": {
+      "field": "gmc_correspondent_commitment_id"
     },
     "CommitmentID": {
-      "field": "global_id"
+      "field": "gmc_commitment_id"
     },
     "CompassNeedKey": {
       "field": "child_id.local_id",
@@ -44,7 +47,7 @@
       "search_relational_record": true
     },
     "SponsorSupporterGlobalID": {
-      "field": "correspondent_id.global_id",
+      "field": "partner_id.global_id",
       "search_relational_record": true
     },
     "Beneficiary_GlobalID": {
@@ -61,7 +64,7 @@
       "field": null
     },
     "ParentCommitmentID": {
-      "field": "parent_id.global_id"
+      "field": "parent_id.gmc_commitment_id"
     },
     "CommitmentEndDate": {
       "field": "end_date"

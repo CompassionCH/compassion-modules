@@ -3,7 +3,7 @@
   "model": "recurring.contract",
   "mapping": {
     "Commitment_ID": {
-      "field": "global_id"
+      "field": "gmc_commitment_id"
     },
     "CompassNeedKey": {
       "field": "child_id.local_id",
@@ -67,7 +67,7 @@
       "to_json_conversion": "'Sponsor-requested Cancellation'"
     },
     "ParentCommitmentID": {
-      "field": "parent_id.global_id"
+      "field": "parent_id.gmc_commitment_id"
     },
     "CommitmentEndDate": {
       "field": "end_date"

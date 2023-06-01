@@ -36,6 +36,20 @@
             <field name="batch_send">1</field>
             <field name="priority">50</field>
         </record>
+        <!-- Sponsorship Message Creation -->
+        <record id="upsert_correspondent_commitment" model="gmc.action">
+            <field name="direction">out</field>
+            <field name="name">UpsertCorrespondentCommitment</field>
+            <field name="mapping_id" ref="mapping_upsert_correspondence_commitment"/>
+            <field name="model">sponsorship.compassion</field>
+            <field name="description">This will send an upsert of the correspondent commitment to GMC.</field>
+            <field name="connect_service">supporters/correspondencecommitments</field>
+            <field name="connect_outgoing_wrapper">CorrespondentList</field>
+            <field name="connect_answer_wrapper">CorrespondentCreateResponseList</field>
+            <field name="request_type">POST</field>
+            <field name="batch_send">1</field>
+            <field name="priority">50</field>
+        </record>
         <!-- UpdateSponsorship is not yet used. It could be useful for merging Supporters -->
         <record id="update_sponsorship" model="gmc.action">
             <field name="direction">out</field>
