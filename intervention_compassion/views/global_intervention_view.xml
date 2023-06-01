@@ -46,6 +46,7 @@
                             <field name="category_id"/>
                             <field name="subcategory_ids" widget="many2many"/>
                             <field name="type"/>
+                            <field name="additional_marketing_information"/>
                         </group>
                         <group>
                             <field name="funding_status"/>
@@ -59,6 +60,7 @@
                             <field name="start_no_later_than"/>
                         </group>
                         <group string="Costs">
+                            <field name="disburse_without_commitment"/>
                             <field name="currency_usd" invisible="1"/>
                             <field name="estimated_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
                             <field name="pdc_costs" widget="monetary" options="{'currency_field': 'currency_usd'}"/>
@@ -82,6 +84,8 @@
                 <field name="fcp_ids"/>
                 <field name="field_office_id"/>
                 <field name="funding_status"/>
+                <field name="additional_marketing_information"/>
+                <field name="disburse_without_commitment"/>
                 <field name="type"/>
                 <group expand="0" string="Group By...">
                     <filter string="Category" name="category" domain="[]" context="{'group_by':'category_id'}"/>

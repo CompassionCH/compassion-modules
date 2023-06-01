@@ -33,6 +33,9 @@
     "Description": {
       "field": "description"
     },
+    "DisburseWithoutCommitment": {
+      "field": "disburse_without_commitment"
+    },
     "InterventionCategory": {
       "field": "category_id.name",
       "search_relational_record": true
