@@ -41,7 +41,7 @@
             <field name="direction">out</field>
             <field name="name">UpsertCorrespondentCommitment</field>
             <field name="mapping_id" ref="mapping_upsert_correspondence_commitment"/>
-            <field name="model">sponsorship.compassion</field>
+            <field name="model">recurring.contract</field>
             <field name="description">This will send an upsert of the correspondent commitment to GMC.</field>
             <field name="connect_service">supporters/correspondencecommitments</field>
             <field name="connect_outgoing_wrapper">CorrespondentList</field>
