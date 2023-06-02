@@ -30,7 +30,7 @@ def migrate(env, version):
                     partner = env['res.partner'].search_read([
                         ('global_id', '=', commitment.get("SupporterID"))
                     ], ['id'])
-                    contract.gmc_payer_partner_id = partner[0] if partner else False
+                    contract.gmc_payer_partner_id = partner[0].get("id") if partner else False
                 elif commitment.get("CommitmentType") == "Correspondent":
                     _logger.info(f"Commitment used to assign gmc_commitment_id \n"
                                  f"current :{contract.gmc_correspondent_commitment_id}\n"
