@@ -30,9 +30,9 @@
 {
     "name": "Mass Label Reporting",
     "version": "14.0.1.0.0",
-    "author": "Serpent Consulting Services Pvt. Ltd.",
+    "author": "Compassion CH",
     "category": "Tools",
-    "website": "http://www.serpentcs.com",
+    "website": "http://www.compassion.ch",
     "license": "AGPL-3",
     "depends": ["base", "web", "sponsorship_compassion"],
     "data": [

@@ -10,8 +10,8 @@
                             <tr>
                                 <t t-foreach="3" t-as="col">
                                     <td>
-                                            <!-- One Label -->
-                                            <t t-call="label.one_label"/>
+                                        <!-- One Label -->
+                                        <t t-call="label.one_label"/>
                                     </td>
                                 </t>
                             </tr>
