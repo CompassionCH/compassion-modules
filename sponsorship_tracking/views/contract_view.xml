@@ -58,7 +58,7 @@
             <button name="open_invoices" position="after">
                 <button name="switch_contract_view"
                         type="object"
-                        title="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
+                        string="Open SDS view" context="{'view_id':'view_follow_contract_form_compassion'}"
                         attrs="{'invisible': [('type', 'not in', ['S', 'SC', 'SWP'])]}"
                         class="oe_inline oe_stat_button" icon="fa-history"/>
             </button>
@@ -73,15 +73,15 @@
             <form string="Follow contract" create="false">
                 <header>
                     <field name="sds_state" widget="statusbar" statusbar_visible="draft,start,active,sub,sub_accept"/>
-                    <button name="action_sub" type="object" class="oe_highlight" title="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
-                    <button name="action_no_sub" type="object" title="No sub" attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"/>
-                    <button name="action_sub_reject" type="object" title="SUB Reject" attrs="{'invisible':[('sds_state','not in',['sub', 'sub_waiting'])]}"/>
+                    <button name="action_sub" type="object" class="oe_highlight" string="Create SUB Sponsorship" attrs="{'invisible':[('sds_state','!=','sub_waiting')]}"/>
+                    <button name="action_no_sub" type="object" string="No sub" attrs="{'invisible':[('sds_state','not in',['active', 'sub_waiting'])]}"/>
+                    <button name="action_sub_reject" type="object" string="SUB Reject" attrs="{'invisible':[('sds_state','not in',['sub', 'sub_waiting'])]}"/>
                 </header>
                 <sheet>
                     <div class="oe_right oe_button_box" name="button_box">
                         <button name="switch_contract_view"
                                 type="object"
-                                title="Open financial view"
+                                string="Open financial view"
                                 context="{'view_id':'view_tracking_contract_form'}"/>
                     </div>
                     <div class="oe_title">

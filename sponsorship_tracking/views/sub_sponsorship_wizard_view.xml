@@ -23,10 +23,10 @@
                     </group>
                 </sheet>
                 <footer>
-                    <button name="create_subsponsorship" title="Create SUB Sponsorship" type="object" class="oe_highlight" states="sub"/>
-                    <button name="no_sub" title="No SUB" type="object" class="oe_highlight" states=""/>
+                    <button name="create_subsponsorship" string="Create SUB Sponsorship" type="object" class="oe_highlight" states="sub"/>
+                    <button name="no_sub" string="No SUB" type="object" class="oe_highlight" states=""/>
                     or
-                    <button title="Cancel" class="oe_link" special="cancel"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
                 </footer>
             </form>
         </field>
