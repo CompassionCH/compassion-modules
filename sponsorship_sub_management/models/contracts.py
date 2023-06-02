@@ -120,7 +120,7 @@ class RecurringContract(models.Model):
     def switch_contract_view(self):
         ir_model_data = self.env["ir.model.data"]
         view_id = ir_model_data.get_object_reference(
-            "sponsorship_tracking", self.env.context["view_id"]
+            "sponsorship_sub_management", self.env.context["view_id"]
         )[1]
         return {
             "view_mode": "form",
