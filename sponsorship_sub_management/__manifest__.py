@@ -28,7 +28,7 @@
 
 # pylint: disable=C8101
 {
-    "name": "Compassion Sponsorships Tracking",
+    "name": "Compassion SUB Sponsorships Management",
     "version": "14.0.1.0.0",
     "category": "Compassion",
     "author": "Compassion CH",
