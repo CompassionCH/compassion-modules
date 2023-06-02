@@ -1,6 +1,6 @@
 Module to track the sponsorship departures and SUB sponsorships.
 
-It is based on a new state : ``sds_state``.
+It is based on a new state : `sds_state`.
 
 It adds a new kanban, tree and form view to track sponsorships after child departure.
 
