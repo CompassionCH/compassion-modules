@@ -1,0 +1,25 @@
+<odoo>
+    <template id="report_label">
+        <link rel="stylesheet" href="/label/static/src/css/label.css"/>
+        <t t-call="web.basic_layout">
+            <div class="page" style="margin-top:10px;margin-left:10px;">
+                <t t-foreach="docs" t-as="o">
+                    <!-- Start page -->
+                    <div style="padding-left:7px;padding-top:70px">
+                        <table class="o_label_page_table">
+                            <tr>
+                                <t t-foreach="3" t-as="col">
+                                    <td>
+                                        <!-- One Label -->
+                                        <t t-call="label.one_label"/>
+                                    </td>
+                                </t>
+                            </tr>
+                        </table>
+                    </div>
+                    <p style="page-break-after:always;"/>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>
