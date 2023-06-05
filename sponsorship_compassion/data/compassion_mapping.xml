@@ -11,6 +11,10 @@
         <field name="model_id" ref="model_recurring_contract"/>
         <field name="name">Create Sponsorship Mapping</field>
     </record>
+    <record id="mapping_upsert_correspondence_commitment" model="compassion.mapping">
+        <field name="model_id" ref="model_recurring_contract"/>
+        <field name="name">Upsert Correspondence Commitment Mapping</field>
+    </record>
     <record id="mapping_cancel_sponsorship" model="compassion.mapping">
         <field name="model_id" ref="model_recurring_contract"/>
         <field name="name">Cancel Sponsorship Mapping</field>

@@ -446,7 +446,7 @@ class TestSponsorship(BaseSponsorshipTest):
     def test_sponsorship_compassion_fifth_scenario(self):
         """
         Testing the workflow transitions. In particular the termination of
-        the contract if they were sent to GMC or not (global_id set).
+        the contract if they were sent to GMC or not (gmc_commitment_id set).
         """
         child1 = self.create_child("UG83320015")
         child2 = self.create_child("UG28320016")
@@ -479,7 +479,7 @@ class TestSponsorship(BaseSponsorshipTest):
             self.validate_sponsorship(sponsorship)
             self.assertEqual(sponsorship.state, "waiting")
             self.pay_sponsorship(sponsorship)
-        sponsorship1.global_id = 12349123
+        sponsorship1.gmc_commitment_id = 12349123
         sponsorship1._contract_terminated()
         self.assertEqual(sponsorship1.state, "terminated")
         sponsorship2._contract_terminated()

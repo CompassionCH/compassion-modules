@@ -57,7 +57,7 @@ class TestTracking(BaseSponsorshipTest):
                 "partner_id": self.michel.id,
                 "group_id": sp_group.id,
                 "child_id": child1.id,
-                "global_id": "wlefkjewf",
+                "gmc_commitment_id": "wlefkjewf",
             },
             [{"amount": 50.0}],
         )
@@ -69,7 +69,7 @@ class TestTracking(BaseSponsorshipTest):
                 "partner_id": self.thomas.id,
                 "group_id": sp_group.id,
                 "child_id": child2.id,
-                "global_id": "wlefkdfjewf",
+                "gmc_commitment_id": "wlefkdfjewf",
             },
             [{"amount": 50.0}],
         )
@@ -81,7 +81,7 @@ class TestTracking(BaseSponsorshipTest):
                 "partner_id": self.david.id,
                 "group_id": sp_group.id,
                 "child_id": child3.id,
-                "global_id": "wlefkjewe34wf",
+                "gmc_commitment_id": "wlefkjewe34wf",
             },
             [{"amount": 50.0}],
         )
@@ -93,7 +93,7 @@ class TestTracking(BaseSponsorshipTest):
                 "partner_id": self.jacob.id,
                 "group_id": sp_group.id,
                 "child_id": child4.id,
-                "global_id": "wle234534fkjewf",
+                "gmc_commitment_id": "wle234534fkjewf",
             },
             [{"amount": 50.0}],
         )
@@ -200,7 +200,7 @@ class TestTracking(BaseSponsorshipTest):
                 "group_id": subsponsorship2.group_id.id,
                 "child_id": sub_child4.id,
                 "parent_id": self.list_sponsorships[1].id,
-                "global_id": "wle2dsg34fkjewf",
+                "gmc_commitment_id": "wle2dsg34fkjewf",
             },
             [{"amount": 50.0}],
         )

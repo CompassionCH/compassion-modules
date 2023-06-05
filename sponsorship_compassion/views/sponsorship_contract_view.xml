@@ -89,9 +89,9 @@
                 <field name="sub_sponsorship_id" states="terminated" context="{'default_type':'S'}"/>
             </field>
 
-            <!-- Add global_id field -->
+            <!-- Add gmc_commitment_id field -->
             <field name="type" position="after">
-                <field name="global_id" attrs="{'invisible': [('type', '!=', 'S')]}"/>
+                <field name="gmc_commitment_id" attrs="{'invisible': [('type', '!=', 'S')]}"/>
             </field>
 
             <!-- Add transfer field -->

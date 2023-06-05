@@ -44,12 +44,6 @@ class RecurringContract(models.Model):
         else:
             self.send_introduction_letter = True
 
-    def _on_change_correspondant(self, correspondent_id):
-        # Don't send introduction letter when correspondent is changed
-        cancelled_sponsorships = super()._on_change_correspondant(correspondent_id)
-        cancelled_sponsorships.write({"send_introduction_letter": False})
-        return cancelled_sponsorships
-
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
