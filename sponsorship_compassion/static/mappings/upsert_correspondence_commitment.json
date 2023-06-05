@@ -1,0 +1,44 @@
+{
+  "name": "Upsert Correspondence Commitment Mapping",
+  "model": "recurring.contract",
+  "mapping": {
+    "CorrespondentCommitmentID": {
+      "field": "gmc_correspondent_commitment_id",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "CorrespondentCorrespondenceLanguage": {
+      "field": "reading_language.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "CorrespondentGlobalPartnerID": {
+      "to_json_conversion": "gpid"
+    },
+    "CorrespondentSupporterGlobalID": {
+      "field": "correspondent_id.global_id",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "PrimaryHoldOwner": {
+      "field": "write_uid.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "SecondaryHoldOwner": {
+      "field": "create_uid.name",
+      "search_relational_record": true,
+      "allow_relational_creation": false
+    },
+    "SponsorGlobalPartnerID": {
+      "to_json_conversion": "gpid"
+    },
+    "Beneficiary_GlobalID": {
+      "field": "child_id.global_id",
+      "search_relational_record": true
+    },
+    "Channel_Name": {
+      "field": null
+    }
+  }
+}

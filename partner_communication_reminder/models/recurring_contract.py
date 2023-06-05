@@ -53,7 +53,7 @@ class RecurringContract(models.Model):
         search_domain = [
             ("months_due", ">", 1),
             ("state", "in", ("active", "mandate")),
-            ("global_id", "!=", False),
+            ("gmc_commitment_id", "!=", False),
             ("type", "like", "S"),
             "|",
             ("child_id.project_id.suspension", "!=", "fund-suspended"),

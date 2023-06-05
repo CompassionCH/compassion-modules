@@ -66,7 +66,7 @@ class SponsorshipContract(models.Model):
     transfer_partner_id = fields.Many2one(
         "compassion.global.partner", "Transferred to", readonly=False
     )
-    global_id = fields.Char(
+    gmc_commitment_id = fields.Char(
         help="Connect global ID", readonly=True, copy=False, tracking=True
     )
     hold_expiration_date = fields.Datetime(
@@ -145,6 +145,15 @@ class SponsorshipContract(models.Model):
         ondelete="restrict",
         tracking=True,
     )
+    gmc_payer_partner_id = fields.Many2one(
+        'res.partner',
+        readonly=True,
+        help="Partner synchronized with GMC as a payer."
+    )
+    gmc_correspondent_commitment_id = fields.Char(
+        readonly=True,
+        help="Id of the correspondent commitment."
+    )
     type = fields.Selection(
         [
             ("O", "General"),
@@ -189,9 +198,9 @@ class SponsorshipContract(models.Model):
 
     _sql_constraints = [
         (
-            "unique_global_id",
-            "unique(global_id)",
-            "You cannot have same global ids for contracts",
+            "unique_gmc_commitment_id",
+            "unique(gmc_commitment_id)",
+            "You cannot have same commitment ids for contracts",
         )
     ]
 
@@ -533,23 +542,23 @@ class SponsorshipContract(models.Model):
         if "partner_id" in vals:
             old_partners = self.mapped("partner_id")
 
-        updated_correspondents = self.env[self._name]
-        previous_states = []
-        if "correspondent_id" in vals:
-            previous_states.extend([r.state for r in self])
-            updated_correspondents = self.filtered("global_id")
-            if not self.env.context.get("no_upsert"):
-                for record in updated_correspondents:
-                    record._remove_correspondent()
-
-            for child in self.mapped("child_id"):
-                child.child_sponsored(vals["correspondent_id"])
-
         # Change the sub_sponsorship_id value in the previous parent_id
         if "parent_id" in vals:
             self.mapped("parent_id").write({"sub_sponsorship_id": False})
 
         super().write(vals)
+
+        updated_correspondents = self.env[self._name]
+        previous_states = []
+        if "correspondent_id" in vals:
+            previous_states.extend([r.state for r in self])
+            updated_correspondents = self.filtered("gmc_commitment_id")
+            # Update the correspondent in GMC
+            if not self.env.context.get("no_upsert"):
+                for record in updated_correspondents:
+                    record._change_correspondent()
+            for child in self.mapped("child_id"):
+                child.child_sponsored(vals["correspondent_id"])
 
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
@@ -557,14 +566,6 @@ class SponsorshipContract(models.Model):
         if "partner_id" in vals:
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
-
-        if "correspondent_id" in vals and not self.env.context.get("no_upsert"):
-            for record, previous_state in zip(self, previous_states):
-                if previous_state not in ["active"]:
-                    continue
-                success, error_msg = record.add_correspondent()
-                if success is False:
-                    self.env.user.notify_danger(error_msg)
 
         # Set the sub_sponsorship_id in the current parent_id
         if "parent_id" in vals:
@@ -757,6 +758,8 @@ class SponsorshipContract(models.Model):
             )
         # Creating the messages to send to GMC when a sponsorship is activated
         for contract in self.filtered(lambda c: "S" in c.type):
+            # Define the payer that will be sync to gmc
+            contract.gmc_payer_partner_id = contract.partner_id
             # UpsertConstituent Message
             partner = contract.correspondent_id
             partner.upsert_constituent()
@@ -852,23 +855,19 @@ class SponsorshipContract(models.Model):
                 self.env.user.notify_danger(error_msg, "Language update failed.")
                 logger.error(error_msg, exc_info=True)
 
-    def _remove_correspondent(self):
+    def _change_correspondent(self):
         self.ensure_one()
         message_obj = self.env["gmc.message"].with_context({"async_mode": False})
-        cancel_action = self.env.ref("sponsorship_compassion.cancel_sponsorship")
+        upsert_correspondent_gmc = self.env.ref("sponsorship_compassion.upsert_correspondent_commitment")
 
         if self.state in ("cancelled", "terminated"):
             raise UserError(_("You can't change the correspondent of a"
                               " cancelled or terminated sponsorship"))
 
-        hold_expiration_date = self.env["compassion.hold"].get_default_hold_expiration(
-            HoldType.SPONSOR_CANCEL_HOLD)
-        self.hold_expiration_date = hold_expiration_date
-
         # Cancel sponsorship at GMC
         message = message_obj.create(
             {
-                "action_id": cancel_action.id,
+                "action_id": upsert_correspondent_gmc.id,
                 "child_id": self.child_id.id,
                 "partner_id": self.correspondent_id.id,
                 "object_id": self.id,
@@ -878,7 +877,8 @@ class SponsorshipContract(models.Model):
 
         answer = json.loads(message.answer)
         if not isinstance(answer, dict) or "Code" not in answer:
-            raise UserError(_("Invalid GMC answer"))
+            raise UserError(("Invalid GMC answer\n"
+                             f"Answer : {answer}"))
         if message.state == "failure":
             error_message = answer["Message"]
             logger.error(message.failure_reason)
@@ -886,8 +886,6 @@ class SponsorshipContract(models.Model):
         elif message.state == "odoo_failure":
             logger.warning(message.failure_reason)
 
-        self.global_id = False
-        self.state = "terminated"
         self.correspondent_id.update_number_sponsorships()
         return True
 
@@ -927,7 +925,7 @@ class SponsorshipContract(models.Model):
                 else:
                     contract.action_contract_terminate()
 
-            if sponsorship.global_id and sponsorship.end_reason_id != departure:
+            if sponsorship.gmc_commitment_id and sponsorship.end_reason_id != departure:
                 # Cancel Sponsorship Message
                 message_obj = self.env["gmc.message"]
                 action_id = self.env.ref("sponsorship_compassion.cancel_sponsorship").id
@@ -939,7 +937,7 @@ class SponsorshipContract(models.Model):
                     "child_id": sponsorship.child_id.id,
                 }
                 message_obj.create(message_vals)
-            elif not sponsorship.global_id:
+            elif not sponsorship.gmc_commitment_id:
                 # Remove CreateSponsorship message.
                 message_obj = self.env["gmc.message"]
                 action_id = self.env.ref("sponsorship_compassion.create_sponsorship").id
