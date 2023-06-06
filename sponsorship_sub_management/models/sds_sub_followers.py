@@ -16,15 +16,15 @@ class SdsSubFollowers(models.Model):
     _name = 'sds.sub.followers'
     _description = 'SDS SUB Sponsorship Followers'
 
-    # Users to notify after Child Departure
-    sub_followers = fields.Many2one(
+    # User to notify after Child Departure
+    user_id = fields.Many2one(
         "res.users",
         string="Sub sponsorships follower",
         domain=[("share", "=", False)],
     )
 
-    # Languages that could have notifications
-    active_languages = fields.Many2one(
+    # Language that could have notifications
+    res_lang_id = fields.Many2one(
         "res.lang",
         string="Active languages",
         domain=[("active", "=", True)],

@@ -11,8 +11,8 @@
             <field name="model">sds.sub.followers</field>
             <field name="arch" type="xml">
                 <tree string="Sub Followers">
-                    <field name="active_languages"/>
-                    <field name="sub_followers"/>
+                    <field name="res_lang_id"/>
+                    <field name="user_id"/>
                 </tree>
             </field>
         </record>
