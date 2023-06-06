@@ -1,0 +1,13 @@
+<odoo>
+    <data noupdate="1">
+        <record id="warn_admin_on_product_overload" model="base.automation">
+            <field name="name">Survival Product Limit</field>
+            <field name="model_id" ref="account.model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">records.warn_admin</field>
+            <field name="trigger">on_write</field>
+            <field name="filter_domain">[("survival_sponsorship_sale", "=", True), ('slot_used', '>=', 80)]</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>
