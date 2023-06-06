@@ -1,9 +1,18 @@
+##############################################################################
+#
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
+#    Releasing children from poverty in Jesus' name
+#    @author: Simon Gonzalez <sgonzalez@ikmail.com>
+#
+#    The licence is in the file __manifest__.py
+#
+##############################################################################
+
 from odoo import api, models, fields
 
 
-class StaffNotificationSettings(models.TransientModel):
+class ResConfigSettings(models.TransientModel):
     """ Settings configuration for warning notifications"""
-
     _inherit = "res.config.settings"
 
     survival_sponsorship_warn_user_ids = fields.Many2many(

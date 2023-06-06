@@ -12,14 +12,11 @@ from odoo import fields, models, api
 from odoo.exceptions import UserError
 
 
-class SponsorshipContract(models.Model):
+class RecurringContractLine(models.Model):
     _inherit = ["recurring.contract.line"]
-    _name = "recurring.contract.line"
 
-    contract_type = fields.Selection(
-        selection_add=[('CSP', 'Survival Sponsorship')],
-        related="contract_id.type",
-        readonly=True,
+    product_id = fields.Many2one(
+        domain="[('id', 'in', allowed_product_ids)]"
     )
 
     @api.constrains('quantity', 'product_id')

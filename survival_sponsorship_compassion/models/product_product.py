@@ -7,6 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+
 import logging
 
 from dateutil.relativedelta import relativedelta

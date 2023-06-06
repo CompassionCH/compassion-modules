@@ -1,18 +1,14 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2015 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Cyril Sester, Emanuel Cino
+#    @author: Simon Gonzalez <sgonzalez@ikmail.com>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
 
-import logging
-
-from odoo import api, fields, models
-
-logger = logging.getLogger(__name__)
+from odoo import api, models
 
 
 class RecurringContractGroup(models.Model):

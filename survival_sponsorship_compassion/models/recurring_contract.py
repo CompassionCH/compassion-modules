@@ -9,15 +9,14 @@
 ##############################################################################
 
 from odoo import fields, models, api
-from odoo.exceptions import UserError
 
 
-class SponsorshipContract(models.Model):
+class RecurringContract(models.Model):
     _inherit = ["recurring.contract"]
-    _name = "recurring.contract"
 
     type = fields.Selection(selection_add=[('CSP', 'Survival Sponsorship')])
 
     @api.multi
     def invoice_paid(self, invoice):
+        super().invoice_paid()
         self.filtered(lambda c: c.type == 'CSP').contract_active()
