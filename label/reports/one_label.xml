@@ -11,7 +11,7 @@
                                     <tr>
                                         <td t-attf-style="padding-right:15px;padding-left:{{0 if col == 0 else 60}}px;">
                                             <div class="o_label_barcode">
-                                                <img t-att-src="'/report/barcode/QR/%s' % o.partner_id.ref + 'XX' + o.child_id.local_id"
+                                                <img t-attf-src="/report/barcode/QR/{{o.partner_id.ref}}XX{{o.child_id.local_id}}?width=500&amp;height=500"
                                                      t-attf-style="vertical-align: middle; width: 18mm; height: 18mm;"/>
                                             </div>
                                         </td>

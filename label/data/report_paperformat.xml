@@ -16,5 +16,5 @@
       <field name="dpi">96</field>
     </record>
 
-    <report id="dynamic_label" string="Qweb Label" model="recurring.contract" name="label.report_label" report_type="qweb-pdf"/>
+    <report id="dynamic_label" string="Sponsorship Label" model="recurring.contract" name="label.report_label" report_type="qweb-pdf"/>
 </odoo>
