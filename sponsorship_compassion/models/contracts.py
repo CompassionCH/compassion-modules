@@ -136,9 +136,8 @@ class SponsorshipContract(models.Model):
     sub_sponsorship_id = fields.Many2one(
         "recurring.contract", "sub sponsorship", readonly=True, copy=False, index=True
     )
-    name = fields.Char(store=True, compute="name_get", copy=False)
     partner_lang = fields.Selection(
-        "res.partner", "Partner language", related="partner_id.lang", store=True
+        string="Partner language", related="partner_id.lang", store=True
     )
     partner_id = fields.Many2one(
         "res.partner",
@@ -156,7 +155,8 @@ class SponsorshipContract(models.Model):
     )
     gmc_correspondent_commitment_id = fields.Char(
         readonly=True,
-        help="Id of the correspondent commitment."
+        help="Id of the correspondent commitment.",
+        tracking=True
     )
     type = fields.Selection(
         [
@@ -365,7 +365,6 @@ class SponsorshipContract(models.Model):
                     name += " - " + contract.child_code
                 elif contract.contract_line_ids:
                     name += " - " + contract.contract_line_ids[0].product_id.name
-                contract.name = name
                 result.append((contract.id, name))
         return result
 
@@ -558,6 +557,8 @@ class SponsorshipContract(models.Model):
         old_partners = self.env["res.partner"]
         if "partner_id" in vals:
             old_partners = self.mapped("partner_id")
+        if "correspondent_id" in vals:
+            old_partners |= self.mapped("correspondent_id")
 
         # Change the sub_sponsorship_id value in the previous parent_id
         if "parent_id" in vals:
@@ -580,7 +581,7 @@ class SponsorshipContract(models.Model):
         if "reading_language" in vals:
             (self - updated_correspondents)._on_language_changed()
 
-        if "partner_id" in vals:
+        if old_partners:
             self.mapped("partner_id").update_number_sponsorships()
             old_partners.update_number_sponsorships()
 
@@ -630,6 +631,12 @@ class SponsorshipContract(models.Model):
         # Force refresh some fields in case they are not in sync
         self.mapped("partner_id").update_number_sponsorships()
         self._compute_active()
+        return True
+
+    def correspondence_updated(self, vals):
+        # Called after answer from GMC when changing the correspondent
+        self.write({"gmc_correspondent_commitment_id": vals["gmc_correspondent_commitment_id"]})
+        self.correspondent_id.update_number_sponsorships()
         return True
 
     def cancel_sent(self, vals):
@@ -861,7 +868,7 @@ class SponsorshipContract(models.Model):
     def _change_correspondent(self):
         self.ensure_one()
         if not self.correspondent_id.global_id:
-            self.correspondent_id.upsert_constituent()
+            self.correspondent_id.upsert_constituent().process_messages()
         message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         upsert_correspondent_gmc = self.env.ref("sponsorship_compassion.upsert_correspondent_commitment")
 
@@ -869,7 +876,6 @@ class SponsorshipContract(models.Model):
             raise UserError(_("You can't change the correspondent of a"
                               " cancelled or terminated sponsorship"))
 
-        # Cancel sponsorship at GMC
         message = message_obj.create(
             {
                 "action_id": upsert_correspondent_gmc.id,
@@ -890,8 +896,6 @@ class SponsorshipContract(models.Model):
             raise UserError(_("GMC returned an error :") + "\n" + error_message)
         elif message.state == "odoo_failure":
             logger.warning(message.failure_reason)
-
-        self.correspondent_id.update_number_sponsorships()
         return True
 
     def add_correspondent(self):
