@@ -435,11 +435,11 @@ class ResPartner(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def upsert_constituent(self):
-        """If partner has active contracts, UPSERT Constituent in GMC."""
+        """UPSERT Constituent in GMC."""
         message_obj = self.env["gmc.message"].with_context(async_mode=False)
         messages = message_obj
         action_id = self.env.ref("sponsorship_compassion.upsert_partner").id
-        for partner in self.filtered("has_sponsorships"):
+        for partner in self:
             if not partner.ref:
                 partner.ref = self.env["ir.sequence"].next_by_code("partner.ref")
             # UpsertConstituent Message if not one already pending

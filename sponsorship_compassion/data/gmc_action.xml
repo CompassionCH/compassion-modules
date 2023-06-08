@@ -47,6 +47,7 @@
             <field name="connect_outgoing_wrapper">CorrespondentList</field>
             <field name="connect_answer_wrapper">CorrespondentCreateResponseList</field>
             <field name="request_type">POST</field>
+            <field name="success_method">correspondence_updated</field>
             <field name="batch_send">1</field>
             <field name="priority">50</field>
         </record>

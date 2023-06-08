@@ -115,7 +115,7 @@
                             <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
                                   decoration-success="state == 'waiting'"
                                   decoration-muted="state in ('terminated','cancelled')">
-                                <field name="name"/>
+                                <field name="display_name"/>
                                 <field name="create_date"/>
                                 <field name="start_date"/>
                                 <field name="end_date"/>

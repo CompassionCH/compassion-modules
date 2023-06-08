@@ -24,7 +24,7 @@
             </xpath>
             <!-- Hide reference -->
             <field name="reference" position="replace">
-                <field name="name" readonly="True"/>
+                <field name="display_name" readonly="True"/>
             </field>
 
             <field name="comment" position="after">
@@ -211,7 +211,7 @@
                                 <div class="oe_product_desc">
                                     <a type="open">
                                         <h4>
-                                            <field name="name"/>
+                                            <field name="display_name"/>
                                         </h4>
                                     </a>
                                     <ul>
