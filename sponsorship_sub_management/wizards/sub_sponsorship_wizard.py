@@ -49,12 +49,10 @@ class SubSponsorshipWizard(models.TransientModel):
         contract_obj = self.env["recurring.contract"]
         contract = contract_obj.browse(sponsorship_id)
         contract.sds_uid = self.env.user
-        sub_contract = contract.copy(
+        sub_contract = contract.with_context({}).copy(
             {
                 "parent_id": sponsorship_id,
-                "channel": "sub",
                 "child_id": self.child_id.id,
-                "user_id": False,
                 "sds_uid": self.env.uid,
                 "medium_id": self.env.ref("utm.utm_medium_direct").id,
                 "source_id": self.env.ref("sponsorship_compassion.utm_source_sub").id,

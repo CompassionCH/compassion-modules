@@ -36,9 +36,7 @@
     "license": "AGPL-3",
     "website": "https://www.compassion.ch",
     "depends": [
-        "sponsorship_compassion",
-        "base_automation",
-        "crm_compassion"
+        "sponsorship_compassion"
     ],
     "data": [
         "views/sub_sponsorship_wizard_view.xml",

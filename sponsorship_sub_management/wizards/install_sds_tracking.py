@@ -105,7 +105,7 @@ class InstallSdsTracking(models.TransientModel):
         child_departed_contracts = contract_obj.search(
             [
                 ("state", "=", "terminated"),
-                ("end_reason_id", "=", depart.id),
+                ("end_reason_id", "in", [depart.id, False]),
                 ("end_date", "!=", False),
             ]
         )

@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sds_subsponsorship_wizard,access_sds_subsponsorship_wizard,model_sds_subsponsorship_wizard,child_compassion.group_sponsorship,1,1,1,1
+access_sds_sub_followers,access_sds_sub_followers,model_sds_sub_followers,child_compassion.group_sponsorship,1,1,1,1
+access_install_sds_tracking,access_install_sds_tracking,model_install_sds_tracking,base.group_system,1,0,0,0

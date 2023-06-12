@@ -51,7 +51,6 @@ class RecurringContract(models.Model):
     sds_uid = fields.Many2one(
         "res.users",
         "SDS Follower",
-        default=lambda self: self.env.user,
         copy=False,
         readonly=False,
     )
@@ -111,11 +110,9 @@ class RecurringContract(models.Model):
                 self.origin_id = origin_id
 
     @api.onchange("child_id")
-    def onchange_child_id(self):
+    def onchange_child_check_sub(self):
         """Put back in SUB state if needed."""
-        res = super().onchange_child_id()  # Warning: onchange_child_id() does not exist
         self.parent_id._trigger_sub()
-        return res
 
     def switch_contract_view(self):
         ir_model_data = self.env["ir.model.data"]
@@ -252,8 +249,10 @@ class RecurringContract(models.Model):
             "sponsorship_compassion.end_reason_child_exchange"
         )
         for contract in self.filtered("child_id"):
-            lang = contract.correspondent_id.lang[:2]
-            sds_user = self.env["res.config.settings"].sudo().get_param("sub_" + lang)
+            sds_user = self.env["sds.sub.followers"].search([
+                "|", ("res_lang_id.code", "like", contract.correspondent_id.lang),
+                ("res_lang_id", "=", False)
+            ], limit=1).user_id
             if contract.end_reason_id == departure:
                 # When a departure comes for a sub sponsorship, we consider
                 # the sub proposal as accepted.
