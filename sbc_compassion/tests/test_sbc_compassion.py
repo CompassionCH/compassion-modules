@@ -42,7 +42,7 @@ class TestSbcCompassion(BaseSponsorshipTest):
 
         self.t_partner.write({"global_id": "12345678", "ref": "1231234"})
 
-        self.validate_sponsorship(self.t_sponsorship)
+        self.waiting_sponsorship(self.t_sponsorship)
         self.t_sponsorship.force_activation()
 
     def test_base(self):
