@@ -37,9 +37,6 @@
     "ActualEndDate": {
       "field": "end_date"
     },
-    "AdditionalMarketingInformation": {
-      "field": "additional_marketing_information"
-    },
     "ApprovedSLACostUSD": {
       "field": "approved_sla_costs"
     },

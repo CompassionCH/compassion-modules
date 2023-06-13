@@ -55,7 +55,8 @@
     },
     "FieldOffice_ID": {
       "field": "field_office_id.field_office_id",
-      "search_relational_record": true
+      "search_relational_record": true,
+      "allow_relational_creation": false
     },
     "IsFieldOfficePriority": {
       "field": "is_fo_priority"

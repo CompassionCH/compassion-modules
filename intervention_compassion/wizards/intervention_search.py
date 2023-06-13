@@ -73,6 +73,7 @@ class InterventionSearch(models.TransientModel):
     remaining_amount_equal = fields.Float()
     remaining_amount_greater = fields.Float("Remaining amount greater than")
     remaining_amount_lower = fields.Float("Remaining amount lower than")
+    disburse_without_commitment = fields.Boolean()
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -161,6 +162,8 @@ class InterventionSearch(models.TransientModel):
         if self.field_office_ids:
             fo_codes = ";".join(self.field_office_ids.mapped("field_office_id"))
             new_filters.append(_get_filter("field_office_id", anyof_id, fo_codes))
+        if self.disburse_without_commitment:
+            new_filters.append(_get_filter("disburse_without_commitment", is_id, "T"))
         if self.remaining_amount_equal:
             equalto_id = self.env.ref("message_center_compassion.equalto").id
             new_filters.append(

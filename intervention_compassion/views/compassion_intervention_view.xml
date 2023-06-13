@@ -278,7 +278,29 @@
         <field name="context">{'search_default_active': 1}</field>
     </record>
 
-    <menuitem id="menu_interventions"
+    <record id="open_categories_action" model="ir.actions.act_window">
+        <field name="name">Intervention Categories</field>
+        <field name="res_model">compassion.intervention.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="open_subcategories_action" model="ir.actions.act_window">
+        <field name="name">Intervention Subcategories</field>
+        <field name="res_model">compassion.intervention.subcategory</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_interventions_section"
               parent="child_compassion.menu_field_section" name="Interventions"
-              action="open_view_intervention_tree" sequence="6"/>
+              sequence="6"/>
+
+    <menuitem id="menu_interventions"
+              parent="menu_interventions_section" name="Committed Interventions"
+              action="open_view_intervention_tree" sequence="10"/>
+
+    <menuitem id="menu_interventions_categories"
+              parent="menu_interventions_section" name="Categories"
+              action="open_categories_action" sequence="50"/>
+    <menuitem id="menu_interventions_subcategories"
+              parent="menu_interventions_section" name="Subcategories"
+              action="open_subcategories_action" sequence="60"/>
 </odoo>

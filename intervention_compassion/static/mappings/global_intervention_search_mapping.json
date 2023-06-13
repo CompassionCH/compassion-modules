@@ -5,6 +5,9 @@
     "Category": {
       "field": "category_id"
     },
+    "DisburseWithoutCommitment": {
+      "field": "disburse_without_commitment"
+    },
     "FieldOfficeID": {
       "field": "field_office_id"
     },

@@ -32,6 +32,7 @@
                                         <field name="type_selected"/>
                                     </div>
                                     <field name="category_id" options="{'limit': 20}"/>
+                                    <field name="disburse_without_commitment"/>
                                 </group>
                                 <group>
                                     <field name="intervention_id"/>
@@ -89,6 +90,6 @@
     </record>
 
     <menuitem id="menu_interventions_search"
-              parent="child_compassion.menu_field_section" name="Search Interventions"
-              action="search_intervention" sequence="7" groups="group_intervention"/>
+              parent="menu_interventions_section" name="Global Pool"
+              action="search_intervention" sequence="20" groups="group_intervention"/>
 </odoo>
