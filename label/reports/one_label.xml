@@ -7,15 +7,15 @@
                     <td style="vertical-align: middle; height: 100%;">
                         <div class="o_label_div_cell">
                             <table class="o_label_text_table">
-                                <t t-foreach="11" t-as="val" style="margin-bottom:20px;">
+                                <t t-foreach="11" t-as="val">
                                     <tr>
-                                        <td t-attf-style="padding-right:15px;padding-left:{{0 if col == 0 else 60}}px;">
+                                        <td t-attf-style="padding-right:15px;padding-left:{{0 if col == 0 else 70}}px;">
                                             <div class="o_label_barcode">
                                                 <img t-attf-src="/report/barcode/QR/{{o.partner_id.ref}}XX{{o.child_id.local_id}}?width=500&amp;height=500"
                                                      t-attf-style="vertical-align: middle; width: 18mm; height: 18mm;"/>
                                             </div>
                                         </td>
-                                        <td style="vertical-align: middle; padding-bottom:70px;">
+                                        <td t-attf-style="vertical-align: middle; padding-bottom:{{0 if val == 10 else 75}}px;">
                                             <span>
                                                 <t t-esc="o.partner_id.ref"/> - <t
                                                     t-esc="o.child_id.preferred_name"/>
