@@ -19,7 +19,6 @@
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
                 <field name="campaign_id"/>
-                <field name="origin_id"/>
                 <field name="event_id"/>
             </field>
         </field>
