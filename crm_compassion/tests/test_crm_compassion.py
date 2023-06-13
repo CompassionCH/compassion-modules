@@ -56,7 +56,7 @@ class TestCrmCompassion(BaseSponsorshipTest):
         self.assertEqual(sponsorship.state, "draft")
         sponsorship.write({"origin_id": mark_origin.id})
         sponsorship.on_change_origin()
-        self.validate_sponsorship(sponsorship)
+        self.waiting_sponsorship(sponsorship)
         invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
         self.assertEqual(len(invoices), 2)
         self.assertEqual(invoices[0].state, "open")

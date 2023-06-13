@@ -23,12 +23,12 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
         child3.gender = u"F"
 
         # Creation of the sponsorship contract
-        partner = self.michel
+        partner = self.partner_1
         sp_group = self.create_group({"partner_id": partner.id})
         sponsorship_ids = [
             self.create_contract(
                 {
-                    "partner_id": self.michel.id,
+                    "partner_id": self.partner_1.id,
                     "group_id": sp_group.id,
                     "child_id": child1.id,
                 },
@@ -36,7 +36,7 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
             ),
             self.create_contract(
                 {
-                    "partner_id": self.michel.id,
+                    "partner_id": self.partner_1.id,
                     "group_id": sp_group.id,
                     "child_id": child2.id,
                 },
@@ -44,7 +44,7 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
             ),
             self.create_contract(
                 {
-                    "partner_id": self.michel.id,
+                    "partner_id": self.partner_1.id,
                     "group_id": sp_group.id,
                     "child_id": child3.id,
                 },
@@ -58,10 +58,10 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
 
         # Contract validation
         for sponsorship in sponsorship_ids:
-            self.validate_sponsorship(sponsorship)
+            self.waiting_sponsorship(sponsorship)
 
-        invoices1 = sponsorship[0].invoice_line_ids.mapped("invoice_id")
-        invoice1 = self.env["account.invoice"].browse(invoices1[1].id)
+        invoices1 = sponsorship_ids[0].invoice_line_ids.mapped("move_id")
+        invoice1 = self.env["account.move"].browse(invoices1[0].id)
 
         self._pay_invoice(invoice1)
 

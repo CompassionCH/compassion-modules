@@ -306,6 +306,7 @@ class CompassionChild(models.Model):
     _sql_constraints = [
         ("compass_id", "unique(compass_id)", "The child already exists in database."),
         ("global_id", "unique(global_id)", "The child already exists in database."),
+        ("birthdate", "check(birthdate <= CURRENT_DATE)", "The birthdate can't be in the future")
     ]
 
     @property

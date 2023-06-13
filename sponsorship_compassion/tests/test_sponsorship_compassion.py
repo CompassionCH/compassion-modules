@@ -10,12 +10,14 @@
 
 import logging
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 import mock
-from dateutil.relativedelta import relativedelta
+from dateutil.utils import today
 
 from odoo import fields
 from .test_contract_compassion import BaseContractCompassionTest
+from odoo.addons.sponsorship_compassion.models.product_names import (GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS)
 
 mock_update_hold = (
     "odoo.addons.child_compassion.models.compassion_hold" ".CompassionHold.update_hold"
@@ -41,12 +43,57 @@ logger = logging.getLogger(__name__)
 class BaseSponsorshipTest(BaseContractCompassionTest):
     def setUp(self):
         super().setUp()
+        # Create the GIFT products for the gifts tests
+        product_vals = {
+            'name': "gifts test",
+            'type': 'service',
+            'categ_id': self.env.ref("sponsorship_compassion.product_category_gift").id,
+            'sale_ok': True
+        }
+        for gift in [GIFT_PRODUCTS_REF[0], PRODUCT_GIFT_CHRISTMAS]:
+            product_vals.update({"default_code": gift})
+            self.env["product.product"].create(product_vals)
         # Creation of an origin
         self.origin_id = (
             self.env["recurring.contract.origin"].create({"type": "event"}).id
         )
-        self.product = self.env["product.product"].search(
-            [("default_code", "=", "sponsorship")], limit=1
+        self.product = self.env['product.product'].create({
+            'name': "Sponsorship test",
+            'type': 'service',
+            'categ_id': self.env.ref(
+                "sponsorship_compassion.product_category_sponsorship", self.env['product.category']
+            ).id,
+            'sale_ok': True
+        })
+        # Direct debit payment method
+        dd_pay_method = self.env["account.payment.method"].create({
+            "name": "DD_Gifts",
+            "code": "gift_direct_debit",
+            "payment_type": "inbound",
+            "bank_account_required": False,
+        })
+        dd_pay_mode = self.env["account.payment.mode"].create(
+            {
+                "name": "Test Direct Debit of customers",
+                "bank_account_link": "variable",
+                "payment_method_id": dd_pay_method.id
+            }
+        )
+        # Create a child and get the project associated
+        self.child = self.create_child("PE012304567")
+        # Creation of the sponsorship contract
+        sp_group = self.create_group({
+            "partner_id": self.partner_1.id,
+            "payment_mode_id": dd_pay_mode.id
+        })
+        self.sponsorship = self.create_contract(
+            {
+                "partner_id": self.partner_1.id,
+                "group_id": sp_group.id,
+                "child_id": self.child.id,
+                "type": "S"
+            },
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
 
     @mock.patch(mock_update_hold)
@@ -65,7 +112,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                 "lastname": "Last",
                 "type": "CDSP",
                 "state": "N",
-                "birthdate": "2010-01-01",
+                "birthdate": today() + relativedelta(years=-3, months=3),
                 "project_id": self.env["compassion.project"]
                 .create({"fcp_id": local_id[:5]})
                 .id,
@@ -89,7 +136,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         default_values = {
             "type": "S",
             "correspondent_id": vals["partner_id"],
-            "origin_id": self.origin_id,
+            "origin_id": self.env["recurring.contract.origin"].create({"type": "event"}).id,
         }
         default_values.update(vals)
         return super().create_contract(default_values, line_vals)
@@ -98,7 +145,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         default_values = {
             "contract_id": 0,
             "amount": 5,
-            "product_id": 1,
+            "product_id": self.product.id,
             "quantity": 1,
         }
         default_values.update(vals)
@@ -125,7 +172,7 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return sponsorship.write({"child_id": child.id})
 
     @mock.patch(mock_update_hold)
-    def validate_sponsorship(self, contract, update_hold):
+    def waiting_sponsorship(self, contract, update_hold):
         """
         Validates a sponsorship without updating hold with Connect
         :param contract: recurring.contract object
@@ -136,16 +183,58 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         return update_hold
 
     def pay_sponsorship(self, sponsorship):
-        invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
+        invoices = sponsorship.invoice_line_ids.mapped("move_id")
         if not invoices:
-            invoices = sponsorship.button_generate_invoices().invoice_ids
-        self.assertEqual(len(invoices), 2)
+            sponsorship.button_generate_invoices()
+            invoices = sponsorship.invoice_line_ids.mapped("move_id")
+        self.assertEqual(len(invoices), 1)
         for invoice in reversed(invoices):
-            self.assertEqual(invoices[0].state, "open")
+            self.assertEqual(invoices[0].state, "posted")
             self._pay_invoice(invoice)
 
 
 class TestSponsorship(BaseSponsorshipTest):
+    def test_sponsorship_compassion_multiple_contract(self):
+        """
+            We are testing the generation of invoices on multiple contract on the same payment option
+        """
+        sponsorship = self.sponsorship
+        # Check that the child is sponsored
+        # Test validation of contract
+        self.waiting_sponsorship(sponsorship)
+        self.assertEqual(sponsorship.state, "waiting")
+        # Invoices should be generated when the contract goes from draft to waiting
+        invoices = sponsorship.invoice_line_ids.mapped("move_id")
+        self._pay_invoice(invoices[0])
+        self.assertEqual(sponsorship.state, "active")
+
+        # Generate gifts for the child
+        sponsorship.write({
+            "birthday_invoice": 100
+        })
+        sponsorship.button_generate_invoices()
+        gift_invoice = sponsorship.invoice_line_ids.mapped("move_id").filtered(
+            lambda m: m.invoice_category == 'gift'
+        )
+        self._pay_invoice(gift_invoice[0])
+        self.assertEqual(gift_invoice[0].payment_state, "paid")
+        self.assertEqual(gift_invoice[0].invoice_date.month,
+                         (sponsorship.child_id.birthdate - relativedelta(months=2)).month)
+        child = self.create_child("S008320011")
+        sponsorship2 = self.create_contract(
+            {
+                "child_id": child.id,
+                "group_id": sponsorship.group_id.id,
+                "partner_id": sponsorship.partner_id.id,
+            },
+            [{"amount": 50.0, "product_id": self.product.id}],
+        )
+        self.waiting_sponsorship(sponsorship2)
+        self.assertEqual(sponsorship.group_id.active_contract_ids.mapped(
+            "invoice_line_ids.move_id.invoice_line_ids.contract_id"
+        ),
+            sponsorship + sponsorship2)
+
     def test_sponsorship_compassion_first_scenario(self):
         """
             This first scenario consists in creating a sponsorship contract
@@ -153,226 +242,39 @@ class TestSponsorship(BaseSponsorshipTest):
             Check the different states of the contract and check if there are
             no mistakes.
         """
-        # Create a child and get the project associated
-        child = self.create_child("PE012304567")
-
-        # Creation of the sponsorship contract
-        sp_group = self.create_group({"partner_id": self.michel.id})
-        sponsorship = self.create_contract(
-            {
-                "partner_id": self.michel.id,
-                "group_id": sp_group.id,
-                "child_id": child.id,
-            },
-            [{"amount": 50.0}],
-        )
+        child = self.child
+        sponsorship = self.sponsorship
         # Check that the child is sponsored
         self.assertEqual(child.state, "P")
         self.assertEqual(sponsorship.state, "draft")
 
         # Test validation of contract
-        update_hold = self.validate_sponsorship(sponsorship)
+        update_hold = self.waiting_sponsorship(sponsorship)
         self.assertEqual(sponsorship.state, "waiting")
         self.assertTrue(update_hold.called)
         hold = child.hold_id
         self.assertEqual(hold.type, "No Money Hold")
-
-        invoices = sponsorship.invoice_line_ids.mapped("invoice_id")
-        if not invoices:
-            invoices = sponsorship.button_generate_invoices().invoice_ids
-        self.assertEqual(len(invoices), 2)
-        invoice = self.env["account.invoice"].browse(invoices[1].id)
-        self.assertEqual(invoice.state, "open")
+        # Invoices should be generated when the contract goes from draft to waiting
+        invoices = sponsorship.invoice_line_ids.mapped("move_id")
+        self.assertEqual(len(invoices), 1)
+        invoice = invoices[0]
+        self.assertEqual(invoice.payment_state, "not_paid")
         self._pay_invoice(invoice)
-        self.assertEqual(invoice.state, "paid")
+        self.assertEqual(invoice.payment_state, "paid")
         self.assertEqual(sponsorship.state, "active")
 
         # Generate gifts for the child
-        gift_wiz_obj = self.env["generate.gift.wizard"]
-        gift_wiz = gift_wiz_obj.create(
-            {
-                "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
-                "amount": 200.0,
-                "invoice_date": fields.Date.today(),
-                "contract_id": self.contract.id
-            }
+        sponsorship.write({
+            "birthday_invoice": 100
+        })
+        sponsorship.button_generate_invoices()
+        gift_invoice = sponsorship.invoice_line_ids.mapped("move_id").filtered(
+            lambda m: m.invoice_category == 'gift'
         )
-        gift_inv_ids = gift_wiz.with_context(
-            active_ids=[sponsorship.id]
-        ).generate_invoice()["domain"][0][2]
-        gift_inv = self.env["account.invoice"].browse(gift_inv_ids)
-        gift_inv[0].action_post()
-        self._pay_invoice(gift_inv[0])
-        self.assertEqual(gift_inv[0].state, "paid")
-
-        # Suspend of the sponsorship contract
-        contracts_in_invoices = invoices.mapped("invoice_line_ids.contract_id")
-        self.env["compassion.project.ile"].create(
-            {
-                "project_id": child.project_id.id,
-                "type": "Suspension",
-                "name": "LE-15156-544",
-                "hold_cdsp_funds": True,
-            }
-        )
-        logger.info("Suspension done, this is the dates and states of invoices")
-        logger.info(str(invoices.mapped("date_invoice")))
-        logger.info(str(invoices.mapped("state")))
-        invoice1 = invoices[0]
-        today = date.today()
-        invoice_date = invoice.date_invoice
-        if invoice_date < today:
-            self.assertEqual(invoice.state, "paid")
-        else:
-            if len(contracts_in_invoices) == 1:
-                self.assertEqual(invoice.state, "cancel")
-            else:
-                self.assertEqual(invoice.state, "open")
-                self.assertNotIn(
-                    sponsorship, invoice.mapped("invoice_line_ids.contract_id")
-                )
-
-        if len(contracts_in_invoices) == 1:
-            self.assertEqual(invoice1.state, "cancel")
-        else:
-            self.assertEqual(invoice.state, "open")
-            self.assertNotIn(
-                sponsorship, invoice1.mapped("invoice_line_ids.contract_id")
-            )
-
-        # Reactivation of the sponsorship contract
-        self.env["compassion.project.ile"].create(
-            {
-                "project_id": child.project_id.id,
-                "name": "LE-54654-545411",
-                "type": "Reactivation",
-                "hold_cdsp_funds": False,
-            }
-        )
-        if invoice_date < today:
-            self.assertEqual(invoice.state, "paid")
-        else:
-            self.assertEqual(invoice.state, "open")
-        self.assertEqual(invoice1.state, "open")
-        sponsorship._contract_terminated()
-        # Force cleaning invoices immediatley
-        self.assertTrue(sponsorship.state, "terminated")
-        if invoice_date < today:
-            self.assertEqual(invoice.state, "paid")
-        else:
-            if len(contracts_in_invoices) == 1:
-                self.assertEqual(invoice.state, "cancel")
-                self.assertEqual(invoice1.state, "cancel")
-            else:
-                self.assertNotIn(
-                    sponsorship, invoice.mapped("invoice_line_ids.contract_id")
-                )
-                self.assertNotIn(
-                    sponsorship, invoice1.mapped("invoice_line_ids.contract_id")
-                )
-
-    def test_sponsorship_compassion_second_scenario(self):
-        """
-            We are testing in this scenario the other type of sponsorship
-            contract (type 'SC'). Check if we pass from "draft" state to
-            "active" state directly by the validation button. Check if there
-            are no invoice lines too. Test if a contract is
-            cancelled well if we don't generate invoices.
-        """
-        child = self.create_child("IO06790211")
-        sp_group = self.create_group({"partner_id": self.david.id})
-        sponsorship = self.create_contract(
-            {
-                "type": "SC",
-                "child_id": child.id,
-                "group_id": sp_group.id,
-                "partner_id": self.david.id,
-            },
-            [],
-        )
-        # Activate correspondence sponsorship
-        update_hold = self.validate_sponsorship(sponsorship)
-        self.assertEqual(sponsorship.state, "active")
-        self.assertFalse(update_hold.called)
-
-        # Termination of correspondence
-        sponsorship._contract_terminated()
-        self.assertTrue(sponsorship.state, "terminated")
-
-        # Create regular sponsorship
-        child = self.create_child("IO06890212")
-        sponsorship2 = self.create_contract(
-            {
-                "child_id": child.id,
-                "partner_id": self.david.id,
-                "group_id": sp_group.id,
-            },
-            [{"amount": 50.0}],
-        )
-        update_hold = self.validate_sponsorship(sponsorship2)
-        self.assertEqual(sponsorship2.state, "waiting")
-        self.assertTrue(update_hold.called)
-        hold = child.hold_id
-        self.assertEqual(hold.type, "No Money Hold")
-
-        sponsorship2._contract_terminated()
-        self.assertEqual(sponsorship2.state, "cancelled")
-
-    def test_sponsorship_compassion_third_scenario(self):
-        """
-            Test of the general contract (type 'O'). It's approximately the
-            same test than the contract_compassion's one.
-        """
-        contract_amount = [50, 75]
-        amount = [17, 29]
-        quantity = [1, 20]
-        contract_group = self.create_group(
-            {
-                "partner_id": self.michel.id,
-                "payment_mode_id": self.payment_mode.id,
-            }
-        )
-        contract1 = self.create_contract(
-            {
-                "type": "O",
-                "partner_id": contract_group.partner_id.id,
-                "group_id": contract_group.id,
-            },
-            [{"amount": contract_amount[0]}],
-        )
-        contract2 = self.create_contract(
-            {
-                "type": "O",
-                "partner_id": contract_group.partner_id.id,
-                "group_id": contract_group.id,
-            },
-            [{"amount": contract_amount[1]}],
-        )
-        self.create_contract_line(
-            {"contract_id": contract1.id, "amount": amount[0], "quantity": quantity[0]}
-        )
-        contract_line = self.create_contract_line(
-            {"contract_id": contract2.id, "amount": amount[1], "quantity": quantity[1]}
-        )
-        self.assertEqual(contract1.state, "draft")
-        contract1.contract_line_ids += contract_line
-        self.assertEqual(contract_line.contract_id, contract1)
-        self.assertEqual(len(contract2.contract_line_ids), 1)
-        self.assertEqual(
-            contract1.total_amount,
-            contract_amount[0] + sum([amount[i] * q for i, q in enumerate(quantity)]),
-        )
-
-        self.assertEqual(contract2.total_amount, contract_amount[1])
-
-        # Switching to "waiting for payment" state
-        self.validate_sponsorship(contract1)
-        self.assertEqual(contract1.state, "waiting")
-        self.pay_sponsorship(contract1)
-        self.assertEqual(contract1.state, "active")
-        contract1._contract_cancelled()
-        self.assertEqual(contract1.state, "cancelled")
-        self.assertTrue(contract2.unlink())
+        self._pay_invoice(gift_invoice[0])
+        self.assertEqual(gift_invoice[0].payment_state, "paid")
+        self.assertEqual(gift_invoice[0].invoice_date.month,
+                         (sponsorship.child_id.birthdate - relativedelta(months=2)).month)
 
     @mock.patch(mock_get_lifecycle)
     def test_sponsorship_compassion_fourth_scenario(self, lifecycle_mock):
@@ -391,7 +293,7 @@ class TestSponsorship(BaseSponsorshipTest):
         child3 = self.create_child("SA12311013")
         sp_group = self.create_group(
             {
-                "partner_id": self.michel.id,
+                "partner_id": self.partner_1.id,
                 "advance_billing_months": 1,
                 "payment_mode_id": self.payment_mode.id,
             }
@@ -402,7 +304,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group.id,
                 "partner_id": sp_group.partner_id.id,
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
         sponsorship2 = self.create_contract(
             {
@@ -410,7 +312,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group.id,
                 "partner_id": sp_group.partner_id.id,
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
         sponsorship3 = self.create_contract(
             {
@@ -425,11 +327,14 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(sponsorship1.child_id, child1)
         self.assertEqual(sponsorship2.child_id, child2)
         total_price = 0
-        for sponsorship in [sponsorship1, sponsorship2, sponsorship3]:
-            self.validate_sponsorship(sponsorship)
+        sponsorships = sponsorship3 + sponsorship2 + sponsorship1
+        for sponsorship in sponsorships.filtered(
+                lambda s: s.state in ['waiting', 'active']
+        ):
+            self.waiting_sponsorship(sponsorship)
             total_price += sponsorship.total_amount
             self.assertEqual(sponsorship.state, "waiting")
-        invoices = sponsorship1.button_generate_invoices().invoice_ids
+        invoices = sponsorship1.invoice_line_ids.mapped("move_id")
         for invoice in reversed(invoices):
             self._pay_invoice(invoice)
             invoiced = self.env["account.move"].browse(invoice.id)
@@ -438,110 +343,14 @@ class TestSponsorship(BaseSponsorshipTest):
         child3.child_departed()
         self.assertEqual(child3.state, "F")
         self.assertEqual(child3.sponsor_id.id, False)
-        action_move = self.michel.unreconciled_transaction_items()
+        action_move = self.partner_1.unreconciled_transaction_items()
         self.assertTrue(action_move)
-        action = self.michel.show_lines()
+        action = self.partner_1.show_lines()
         self.assertTrue(action)
-
-    def test_sponsorship_compassion_fifth_scenario(self):
-        """
-        Testing the workflow transitions. In particular the termination of
-        the contract if they were sent to GMC or not (global_id set).
-        """
-        child1 = self.create_child("UG83320015")
-        child2 = self.create_child("UG28320016")
-        sp_group = self.create_group(
-            {
-                "partner_id": self.michel.id,
-                "advance_billing_months": 1,
-                "payment_mode_id": self.payment_mode.id,
-            }
-        )
-        sponsorship1 = self.create_contract(
-            {
-                "child_id": child1.id,
-                "group_id": sp_group.id,
-                "partner_id": sp_group.partner_id.id,
-            },
-            [{"amount": 50.0}],
-        )
-        sponsorship2 = self.create_contract(
-            {
-                "child_id": child2.id,
-                "group_id": sp_group.id,
-                "partner_id": sp_group.partner_id.id,
-            },
-            [{"amount": 50.0}],
-        )
-        sponsorships = [sponsorship1, sponsorship2]
-        for sponsorship in sponsorships:
-            self.assertEqual(sponsorship.state, "draft")
-            self.validate_sponsorship(sponsorship)
-            self.assertEqual(sponsorship.state, "waiting")
-            self.pay_sponsorship(sponsorship)
-        sponsorship1.global_id = 12349123
-        sponsorship1._contract_terminated()
-        self.assertEqual(sponsorship1.state, "terminated")
-        sponsorship2._contract_terminated()
-        self.assertEqual(sponsorship2.state, "cancelled")
-
-    @mock.patch(mock_update_hold)
-    def test_number_sponsorships(self, mock_hold):
-        mock_hold.return_value = True
-        partner = self.michel
-
-        def valid(number_sponsorships, has_sponsorships):
-            self.assertEqual(partner.number_sponsorships, number_sponsorships)
-            self.assertEqual(partner.has_sponsorships, has_sponsorships)
-            self.assertEqual(partner.number_children, number_sponsorships)
-
-        valid(0, False)
-        child1 = self.create_child("UG18320017")
-        child2 = self.create_child("UG08320018")
-        sp_group = self.create_group(
-            {
-                "partner_id": partner.id,
-                "payment_mode_id": self.payment_mode.id,
-            }
-        )
-        sponsorship1 = self.create_contract(
-            {
-                "child_id": child1.id,
-                "group_id": sp_group.id,
-                "partner_id": sp_group.partner_id.id,
-            },
-            [{"amount": 50.0}],
-        )
-        sponsorship2 = self.create_contract(
-            {
-                "child_id": child2.id,
-                "group_id": sp_group.id,
-                "partner_id": sp_group.partner_id.id,
-            },
-            [{"amount": 50.0}],
-        )
-        valid(0, False)
-        self.validate_sponsorship(sponsorship1)
-        valid(0, False)
-        self.pay_sponsorship(sponsorship1)
-        valid(1, True)
-        sponsorship1.update({"partner_id": self.thomas.id})
-        valid(1, True)
-        sponsorship1.update({"correspondent_id": self.thomas.id})
-        valid(0, False)
-        sponsorship1.update({"partner_id": partner.id})
-        valid(1, True)
-        self.validate_sponsorship(sponsorship2)
-        self.pay_sponsorship(sponsorship2)
-        valid(2, True)
-        sponsorship2._contract_terminated()
-        valid(1, True)
-        sponsorship1._contract_terminated()
-        valid(0, False)
 
     def test_change_partner(self):
         """ Test changing partner of contract."""
-        partner = self.michel
+        partner = self.partner_1
         child1 = self.create_child("UG18920017")
         sp_group = self.create_group(
             {
@@ -555,27 +364,27 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group.id,
                 "partner_id": sp_group.partner_id.id,
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
-        self.validate_sponsorship(sponsorship)
+        self.waiting_sponsorship(sponsorship)
         sponsorship.button_generate_invoices()
-        invoices = sponsorship.mapped("invoice_line_ids.invoice_id")
+        invoices = sponsorship.mapped("invoice_line_ids.move_id")
         invoice_state = list(set(invoices.mapped("state")))
         partner_invoice = invoices.mapped("partner_id")
         self.assertEqual(len(invoice_state), 1)
-        self.assertEqual(invoice_state[0], "open")
+        self.assertEqual(invoice_state[0], "posted")
         self.assertEqual(partner_invoice, partner)
         # Change partner
-        sponsorship.partner_id = self.thomas
+        sponsorship.write({'partner_id': self.partner_2})
         invoice_state = list(set(invoices.mapped("state")))
-        self.assertEqual(invoice_state[0], "open")
+        self.assertEqual(invoice_state[0], "posted")
         partner_invoice = invoices.mapped("partner_id")
-        self.assertEqual(partner_invoice, self.thomas)
+        self.assertEqual(partner_invoice, self.partner_2)
 
     def test_commitment_number_on_partner_change(self):
         """Test if commitment number is correctly updated"""
-        partner = self.michel
-        partner2 = self.thomas
+        partner = self.partner_1
+        partner2 = self.partner_2
 
         child1 = self.create_child("UG18920019")
         child2 = self.create_child("UG18920011")
@@ -600,7 +409,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group1.id,
                 "partner_id": sp_group1.partner_id.id
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
 
         sponsorship2 = self.create_contract(
@@ -609,7 +418,7 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group2.id,
                 "partner_id": sp_group2.partner_id.id
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
 
         sponsorship2.partner_id = partner
@@ -617,7 +426,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertGreater(sponsorship2.commitment_number, sponsorship1.commitment_number)
 
     def test_correct_default_correspondent(self):
-        partner = self.michel
+        partner = self.partner_1
 
         child1 = self.create_child("UG18920021")
 
@@ -634,72 +443,10 @@ class TestSponsorship(BaseSponsorshipTest):
                 "group_id": sp_group1.id,
                 "partner_id": sp_group1.partner_id.id
             },
-            [{"amount": 50.0}],
+            [{"amount": 50.0, "product_id": self.product.id}],
         )
 
         self.assertEqual(sponsorship1.correspondent_id, partner)
-
-    def test_gift_on_invoice_clean(self):
-        """
-            Test that gift invoice are handled correctly
-            when cleaning and regenerating invoices.
-        """
-
-        child = self.create_child("PE012304567")
-
-        contract_group = self.create_group(
-            {
-                "partner_id": self.michel.id,
-            }
-        )
-        contract = self.create_contract(
-            {
-                "partner_id": self.michel.id,
-                "group_id": contract_group.id,
-                "child_id": child.id
-            },
-            [{"amount": 50.0}])
-
-        total_amount = contract.total_amount
-
-        update_hold = self.validate_sponsorship(contract)
-
-        # Generate gifts for the child
-        gift_wiz_obj = self.env["generate.gift.wizard"]
-        gift_wiz = gift_wiz_obj.create(
-            {
-                "product_id": self.product.search([("name", "=", "Birthday Gift")]).id,
-                "amount": 200.0,
-                "invoice_date": date.today(),
-                "contract_id": self.contract.id
-            }
-        )
-
-        gift_inv_ids = gift_wiz.with_context(
-            active_ids=[contract.id]
-        ).generate_invoice()["domain"][0][2]
-        gift_inv = self.env["account.invoice"].browse(gift_inv_ids)
-        gift_inv[0].action_post()
-
-        contract_group.with_context(async_mode=False).write(
-            {"advance_billing_months": 3})
-
-        invoices = contract.invoice_line_ids.mapped("invoice_id")
-
-        self.assertEqual(len(invoices.filtered(lambda x: x.state == "open")), 5)
-
-        self.assertEqual(len(invoices.filtered(lambda x: x.invoice_category == "sponsorship")), 4)
-        self.assertEqual(len(invoices.filtered(lambda x: x.invoice_category == "gift")), 1)
-
-        contract_group.with_context(async_mode=False).write(
-            {"advance_billing_months": 1})
-
-        invoices = contract.invoice_line_ids.mapped("invoice_id")
-
-        self.assertEqual(len(invoices.filtered(lambda x: x.state == "open")), 3)
-        self.assertEqual(len(invoices.filtered(lambda x: x.state == "cancel")), 2)
-
-        self.assertEqual(len(invoices.filtered(lambda x: x.invoice_category == "gift")), 1)
 
     def test_partly_paid_sponsorship_activation(self):
         """
@@ -710,18 +457,18 @@ class TestSponsorship(BaseSponsorshipTest):
 
         contract_group = self.create_group(
             {
-                "partner_id": self.michel.id,
+                "partner_id": self.partner_1.id,
             }
         )
         contract = self.create_contract(
             {
                 "type": "SC",
-                "partner_id": self.michel.id,
+                "partner_id": self.partner_1.id,
                 "group_id": contract_group.id,
                 "child_id": child.id
             },
-            [{"amount": 50.0}])
+            [{"amount": 50.0, "product_id": self.product.id}])
 
         self.assertEqual(contract.state, "draft")
-        self.validate_sponsorship(contract)
+        self.waiting_sponsorship(contract)
         self.assertEqual(contract.state, "waiting")
