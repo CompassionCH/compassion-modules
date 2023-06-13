@@ -38,6 +38,7 @@
     "maintainers": ["ecino"],
     "license": "AGPL-3",
     "installable": True,
+    "pre_init_hook": "pre_init_hook",
     "depends": [
         "base_location",  # OCA/partner_contact
         "web_widget_numeric_step",  # OCA/web
