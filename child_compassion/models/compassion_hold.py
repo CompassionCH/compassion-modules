@@ -166,6 +166,7 @@ class CompassionHold(models.Model):
         readonly=True,
         default="draft",
         tracking=True,
+        index=True,
     )
     reinstatement_reason = fields.Char(readonly=True)
     reservation_id = fields.Many2one(
@@ -178,11 +179,12 @@ class CompassionHold(models.Model):
     # Track field changes
     ambassador = fields.Many2one(tracking=True, readonly=False)
     primary_owner = fields.Many2one(tracking=True, readonly=False)
-    type = fields.Selection(tracking=True)
+    type = fields.Selection(tracking=True, index=True)
     channel = fields.Selection(tracking=True)
     expiration_date = fields.Datetime(tracking=True,
                                       required=False,
-                                      default=datetime.now() + timedelta(days=60)
+                                      default=datetime.now() + timedelta(days=60),
+                                      index=True
                                       )
 
     _sql_constraints = [

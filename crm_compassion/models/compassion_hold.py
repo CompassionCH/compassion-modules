@@ -9,7 +9,7 @@
 ##############################################################################
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
-from odoo import api, models, fields
+from odoo import models, fields
 
 
 class AbstractHold(models.AbstractModel):
@@ -39,31 +39,24 @@ class AbstractHold(models.AbstractModel):
 class CompassionHold(models.Model):
     _inherit = "compassion.hold"
 
-    origin_id = fields.Many2one(
-        "recurring.contract.origin",
-        compute="_compute_origin",
-        store=True,
-        readonly=False,
-    )
     event_id = fields.Many2one(tracking=True, readonly=False)
 
-    @api.depends("channel", "type", "event_id", "ambassador")
-    def _compute_origin(self):
+    def get_origin(self):
+        self.ensure_one()
         origin_obj = self.env["recurring.contract.origin"]
-        for hold in self:
-            origin_search = list()
-            if hold.type == HoldType.REINSTATEMENT_HOLD.value:
-                origin_search.append(("name", "=", "Reinstatement"))
-            elif hold.channel == "event" and hold.event_id:
-                origin_search.append(("event_id", "=", hold.event_id.id))
-            elif hold.channel == "ambassador" and hold.ambassador:
-                origin_search.append(("name", "=", hold.ambassador.name))
-            elif hold.channel == "web":
-                origin_search.append(("name", "=", "Internet"))
-            if origin_search:
-                hold.origin_id = origin_obj.search(origin_search, limit=1)
-            else:
-                hold.origin_id = False
+        origin_search = list()
+        if self.type == HoldType.REINSTATEMENT_HOLD.value:
+            origin_search.append(("name", "=", "Reinstatement"))
+        elif self.channel == "event" and self.event_id:
+            origin_search.append(("event_id", "=", self.event_id.id))
+        elif self.channel == "ambassador" and self.ambassador:
+            origin_search.append(("name", "=", self.ambassador.name))
+        elif self.channel == "web":
+            origin_search.append(("name", "=", "Internet"))
+        if origin_search:
+            return origin_obj.search(origin_search, limit=1)
+        else:
+            return origin_obj
 
     def reservation_to_hold(self, commkit_data):
         res_ids = super().reservation_to_hold(commkit_data)

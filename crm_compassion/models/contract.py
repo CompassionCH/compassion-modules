@@ -28,7 +28,7 @@ class Contracts(models.Model):
     @api.onchange("child_id")
     def onchange_child_id(self):
         hold = self.hold_id
-        origin = hold.origin_id
+        origin = hold.get_origin()
         if origin:
             self.origin_id = origin
         if hold.channel and hold.channel == "web":
