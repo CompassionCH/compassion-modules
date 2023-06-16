@@ -857,6 +857,8 @@ class SponsorshipContract(models.Model):
 
     def _change_correspondent(self):
         self.ensure_one()
+        if not self.correspondent_id.global_id:
+            self.correspondent_id.upsert_constituent()
         message_obj = self.env["gmc.message"].with_context({"async_mode": False})
         upsert_correspondent_gmc = self.env.ref("sponsorship_compassion.upsert_correspondent_commitment")
 
