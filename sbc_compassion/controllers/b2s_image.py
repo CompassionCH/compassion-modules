@@ -65,7 +65,7 @@ class RestController(http.Controller):
     @http.route("/b2s_image", type="http", auth="public", methods=["GET"])
     # We don't want to rename parameter id because it's used by our sponsors
     # pylint: disable=redefined-builtin
-    def handler_b2s_image(self, id=None, disp=None, type=None, **parameters):
+    def handler_b2s_image(self, id=None, disposition="attachment", file_type=None, **parameters):
         """ Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
@@ -80,11 +80,10 @@ class RestController(http.Controller):
         if not correspondence:
             raise NotFound()
         correspondence.email_read = datetime.now()
-        disposition = disp if disp else "attachment"
         content_type = "application/" + (
             "zip" if correspondence.letter_format == "zip" else "pdf"
         )
-        data, fname = _get_data(correspondence, type)
+        data, fname = _get_data(correspondence, file_type)
         headers = Headers([("Content-Disposition",
                             f"{disposition}; filename={fname}")])
         return Response(data or "No data", content_type=content_type, headers=headers)
