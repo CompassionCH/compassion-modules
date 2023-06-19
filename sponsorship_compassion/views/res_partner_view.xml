@@ -46,6 +46,7 @@
                             <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
                                   decoration-success="state == 'waiting'"
                                   decoration-muted="state in ('terminated','cancelled')">
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                                 <field name="child_id"/>
                                 <field name="child_name"/>
                                 <field name="preferred_name"/>
@@ -58,7 +59,6 @@
                                 <field name="total_amount"/>
                                 <field name="state"/>
                                 <field name="type"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
@@ -69,6 +69,7 @@
                             <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
                                   decoration-success="state == 'waiting'"
                                   decoration-muted="state in ('terminated','cancelled')">
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                                 <field name="child_id"/>
                                 <field name="child_name"/>
                                 <field name="preferred_name"/>
@@ -81,7 +82,6 @@
                                 <field name="total_amount"/>
                                 <field name="state"/>
                                 <field name="type"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
@@ -92,6 +92,7 @@
                             <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
                                   decoration-success="state == 'waiting'"
                                   decoration-muted="state in ('terminated','cancelled')">
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                                 <field name="child_id"/>
                                 <field name="child_name"/>
                                 <field name="preferred_name"/>
@@ -104,7 +105,6 @@
                                 <field name="total_amount"/>
                                 <field name="state"/>
                                 <field name="type"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
@@ -115,6 +115,7 @@
                             <tree decoration-info="state == 'draft'" decoration-bf="state == 'active'"
                                   decoration-success="state == 'waiting'"
                                   decoration-muted="state in ('terminated','cancelled')">
+                                <button name="open_contract" type="object" icon="fa-external-link"/>
                                 <field name="name"/>
                                 <field name="create_date"/>
                                 <field name="start_date"/>
@@ -125,7 +126,6 @@
                                 <field name="total_amount"/>
                                 <field name="state"/>
                                 <field name="type"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
                             </tree>
                         </field>
                     </div>
