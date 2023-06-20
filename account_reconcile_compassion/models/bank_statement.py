@@ -109,22 +109,7 @@ class AccountStatement(models.Model):
             line = bank_statement.line_ids.browse(line_id)
             move_lines = self.env["account.move.line"].browse(result["aml_ids"])
             # Check that line wasn't already reconciled
-
             move_lines = move_lines.filtered(lambda a: not a.reconciled)
             reconcile = reconcile_model._prepare_reconciliation(
                 line, move_lines.ids)
-
-            # An open balance is needed but no partner has been found.
-            # if reconcile['open_balance_dict'] is False:
-            #     continue
-
-            # new_aml_dicts = reconcile['new_aml_dicts']
-            # if reconcile['open_balance_dict']:
-            #     new_aml_dicts.append(reconcile['open_balance_dict'])
-            #
             line.with_context({"default_journal_id": None}).reconcile(reconcile)
-            # line.process_reconciliation(
-            #     counterpart_aml_dicts=reconcile['counterpart_aml_dicts'],
-            #     payment_aml_rec=reconcile['payment_aml_rec'],
-            #     new_aml_dicts=new_aml_dicts,
-            # )
