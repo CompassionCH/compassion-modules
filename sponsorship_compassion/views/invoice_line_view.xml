@@ -24,7 +24,7 @@
                 <attribute name="options">{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}</attribute>
             </xpath>
             <xpath expr="//tree/field[@name='name']" position="after">
-                <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ['draft', 'active'])]"
+                <field name="contract_id" domain="[('partner_id', '=', parent.partner_id), ('state', 'in', ['waiting', 'active'])]"
                        options="{'create_edit':false,'field_color': 'state', 'search_more':true,
                                      'colors': {'cancelled': 'gray', 'terminated': 'gray', 'draft': 'blue', 'mandate': 'red', 'waiting': 'green'}}"/> <!-- ('correspondent_id', '=', parent.partner_id),-->
             </xpath>
