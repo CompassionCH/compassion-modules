@@ -369,6 +369,7 @@ class Correspondence(models.Model):
                             "correspondence_id": letter.id,
                         }
                     )
+        self.create_text_boxes()
 
     def _get_text(self, source_text):
         """ Gets the desired text (original/translated) from the pages. """
@@ -972,6 +973,15 @@ class Correspondence(models.Model):
                         "english_text": english_boxes[i] if len(english_boxes) > i else "",
                         "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
                         "sequence": i
+                    }])
+                if nb_paragraphs == 0:
+                    # Create at least one empty paragraph per page
+                    paragraphs += paragraphs.create([{
+                        "page_id": page.id,
+                        "original_text": "",
+                        "english_text": "",
+                        "translated_text": "",
+                        "sequence": 0
                     }])
         return paragraphs
 
