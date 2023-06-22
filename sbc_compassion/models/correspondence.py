@@ -974,15 +974,15 @@ class Correspondence(models.Model):
                         "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
                         "sequence": i
                     }])
-                if nb_paragraphs == 0:
-                    # Create at least one empty paragraph per page
-                    paragraphs += paragraphs.create([{
-                        "page_id": page.id,
-                        "original_text": "",
-                        "english_text": "",
-                        "translated_text": "",
-                        "sequence": 0
-                    }])
+            else:
+                # Create at least one empty paragraph per page
+                paragraphs += paragraphs.create([{
+                    "page_id": page.id,
+                    "original_text": "",
+                    "english_text": "",
+                    "translated_text": "",
+                    "sequence": 0
+                }])
         return paragraphs
 
     ##########################################################################
