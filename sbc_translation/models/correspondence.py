@@ -375,11 +375,11 @@ class Correspondence(models.Model):
                     # Copy translation text into english text field
                     letter.english_text = letter.translated_text
                 # Send to GMC
-                letter.create_commkit()
+                letter.sudo().create_commkit()
             else:
                 # Recompose the letter image and process letter
-                if super(Correspondence, letter).process_letter():
-                    letter.send_communication()
+                if super(Correspondence, letter).process_letter() and hasattr(letter, "send_communication"):
+                    letter.sudo().send_communication()
 
     @api.multi
     def list_letters(self):
