@@ -290,7 +290,7 @@ class Correspondence(models.Model):
         page_index = 0
         paragraph_index = 0
         current_page = self.page_ids[page_index]
-        if translator_id is None:
+        if not translator_id:
             translator_id = self.env["translation.user"].search([
                 ("user_id", "=", self.env.uid)
             ]).id
@@ -329,9 +329,6 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         self.save_translation(letter_elements, translator_id)
-        # Make sure the state is correct at this point we had weird issues when submiting whithout saving first
-        self.env.cr.commit()
-        self.env.clear()
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id)
         if user_skill.verified and not self.unread_comments:
