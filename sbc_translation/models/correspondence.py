@@ -417,7 +417,7 @@ class Correspondence(models.Model):
             "sponsor": {
                 "preferredName": partner.preferred_name,
                 "fullName": partner.name,
-                "sex": partner.gmc_gender[0],
+                "sex": partner.title.name,
                 "age": partner.age,
                 "ref": partner.ref
             },
