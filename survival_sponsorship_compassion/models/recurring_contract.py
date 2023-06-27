@@ -18,5 +18,5 @@ class RecurringContract(models.Model):
 
     @api.multi
     def invoice_paid(self, invoice):
-        super().invoice_paid()
+        super().invoice_paid(invoice)
         self.filtered(lambda c: c.type == 'CSP').contract_active()
