@@ -333,11 +333,6 @@ class Correspondence(models.Model):
             lambda s: s.competence_id == self.translation_competence_id)
         is_s2b = self.direction == "Supporter To Beneficiary"
         if user_skill.verified and not self.unread_comments:
-            self.write({
-                "translate_done": fields.Datetime.now(),
-                "translation_status": "done",
-                "state": "Received in the system" if is_s2b else "Published to Global Partner"
-            })
             self._post_process_translation()
         else:
             self.translation_status = "to validate"
@@ -354,7 +349,6 @@ class Correspondence(models.Model):
             "translation_issue": False,
             "translation_issue_comments": False,
             "translation_supervisor_id": self.env.uid,
-            "translation_status": "done",
         })
         self._post_process_translation()
         return True
@@ -375,17 +369,23 @@ class Correspondence(models.Model):
 
     @api.multi
     def _post_process_translation(self):
-        for letter in self.filtered(lambda l: l.translation_status == "done"):
-            if letter.direction == "Supporter To Beneficiary":
-                if self.translation_language_id.code_iso == "eng":
-                    # Copy translation text into english text field
-                    letter.english_text = letter.translated_text
-                # Send to GMC
-                letter.sudo().create_commkit()
-            else:
-                # Recompose the letter image and process letter
-                if super(Correspondence, letter).process_letter() and hasattr(letter, "send_communication"):
-                    letter.sudo().send_communication()
+        self.ensure_one()
+        is_s2b = self.direction == "Supporter To Beneficiary"
+        self.write({
+            "translate_done": fields.Datetime.now(),
+            "translation_status": "done",
+            "state": "Received in the system" if is_s2b else "Published to Global Partner"
+        })
+        if self.direction == "Supporter To Beneficiary":
+            if self.translation_language_id.code_iso == "eng":
+                # Copy translation text into english text field
+                self.english_text = self.translated_text
+            # Send to GMC
+            self.sudo().create_commkit()
+        else:
+            # Recompose the letter image and process letter
+            if super(Correspondence, self).process_letter() and hasattr(self, "send_communication"):
+                self.sudo().send_communication()
 
     @api.multi
     def list_letters(self):
