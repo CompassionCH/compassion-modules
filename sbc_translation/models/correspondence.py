@@ -310,6 +310,9 @@ class Correspondence(models.Model):
                     "translated_text": element.get("content"),
                     "comments": element.get("comments")
                 }
+                if self.translation_language_id.code_iso == "eng":
+                    # Copy translation text into english text field
+                    paragraph_vals["english_text"] = element.get("content")
                 current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
                 paragraph_index += 1
             if element.get("comments"):
@@ -331,7 +334,6 @@ class Correspondence(models.Model):
         self.env.clear()
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id)
-        is_s2b = self.direction == "Supporter To Beneficiary"
         if user_skill.verified and not self.unread_comments:
             self._post_process_translation()
         else:
@@ -349,6 +351,7 @@ class Correspondence(models.Model):
             "translation_issue": False,
             "translation_issue_comments": False,
             "translation_supervisor_id": self.env.uid,
+            "unread_comments": False,
         })
         self._post_process_translation()
         return True
@@ -377,14 +380,11 @@ class Correspondence(models.Model):
             "state": "Received in the system" if is_s2b else "Published to Global Partner"
         })
         if self.direction == "Supporter To Beneficiary":
-            if self.translation_language_id.code_iso == "eng":
-                # Copy translation text into english text field
-                self.english_text = self.translated_text
             # Send to GMC
             self.sudo().create_commkit()
         else:
             # Recompose the letter image and process letter
-            if super(Correspondence, self).process_letter() and hasattr(self, "send_communication"):
+            if self.with_context(force_publish=True).process_letter() and hasattr(self, "send_communication"):
                 self.sudo().send_communication()
 
     @api.multi
