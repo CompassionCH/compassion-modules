@@ -36,6 +36,7 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <field name="translation_status" widget="statusbar" readonly="0"/>
+                    <button name="approve_translation" type="object" class="oe_highlight" attrs="{'invisible': [('translation_status', '!=', 'to validate')]}"/>
                     <button name="remove_local_translate" type="object"
                             string="Remove from translation" class="oe_highlight"
                             states="Global Partner translation queue"/>
