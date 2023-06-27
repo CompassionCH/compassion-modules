@@ -12,6 +12,7 @@ from random import randint
 
 from odoo import models, api, fields, _
 from odoo.exceptions import UserError
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -390,7 +391,8 @@ class Correspondence(models.Model):
     def get_letter_info(self):
         """ Translation Platform API for fetching letter data. """
         self.ensure_one()
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        domain = request.httprequest.host_url or \
+            f"https://{self.env.ref('sbc_translation.translation_website').domain}"
         # Gives access to related objects
         child = self.child_id.sudo()
         partner = self.partner_id.sudo()
@@ -421,7 +423,7 @@ class Correspondence(models.Model):
                 "age": partner.age,
                 "ref": partner.ref
             },
-            "pdfUrl": f"{base_url}/b2s_image?id={self.uuid}&disposition=inline",
+            "pdfUrl": f"https://{domain}/b2s_image?id={self.uuid}&disposition=inline",
         }
 
     @api.multi
