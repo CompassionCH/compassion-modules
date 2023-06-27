@@ -329,13 +329,15 @@ class Correspondence(models.Model):
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id)
         is_s2b = self.direction == "Supporter To Beneficiary"
-        letter_vals = {
-            "translate_done": fields.Datetime.now(),
-            "translation_status": "done" if user_skill.verified and not self.unread_comments else "to validate",
-            "state": "Received in the system" if is_s2b else "Published to Global Partner"
-        }
-        self.write(letter_vals)
-        self._post_process_translation()
+        if user_skill.verified and not self.unread_comments:
+            self.write({
+                "translate_done": fields.Datetime.now(),
+                "translation_status": "done",
+                "state": "Received in the system" if is_s2b else "Published to Global Partner"
+            })
+            self._post_process_translation()
+        else:
+            self.translation_status = "to validate"
         return True
 
     @api.multi
