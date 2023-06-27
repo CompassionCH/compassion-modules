@@ -326,6 +326,9 @@ class Correspondence(models.Model):
         """
         self.ensure_one()
         self.save_translation(letter_elements, translator_id)
+        # Make sure the state is correct at this point we had weird issues when submiting whithout saving first
+        self.env.cr.commit()
+        self.env.clear()
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id)
         is_s2b = self.direction == "Supporter To Beneficiary"
