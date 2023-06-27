@@ -32,5 +32,4 @@ class PartnerCommunicationJob(models.Model):
                 holds = communication.get_objects().mapped("child_id.hold_id")
                 expiration = datetime.now() + relativedelta(days=extension)
                 holds.write({"expiration_date": expiration})
-        res = super().send()
-        return res
+        return super().send()
