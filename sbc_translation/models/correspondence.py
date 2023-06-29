@@ -376,13 +376,12 @@ class Correspondence(models.Model):
             "translation_status": "done",
             "state": "Received in the system" if is_s2b else "Published to Global Partner"
         })
-        if self.direction == "Supporter To Beneficiary":
+        if is_s2b:
             # Send to GMC
             self.sudo().create_commkit()
         else:
             # Recompose the letter image and process letter
-            if self.with_context(force_publish=True).process_letter() and hasattr(self, "send_communication"):
-                self.sudo().send_communication()
+            self.sudo().with_context(force_publish=True).process_letter()
 
     @api.multi
     def list_letters(self):
