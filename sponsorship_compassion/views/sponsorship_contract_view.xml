@@ -79,7 +79,7 @@
             <!-- Add context for group view -->
             <field name="group_id" position="attributes">
                 <attribute name="context">{'default_type': context.get('default_type'), 'default_partner_id':
-                    partner_id}
+                    partner_id, 'contract_id': id}
                 </attribute>
             </field>
             <field name="group_id" position="after">
