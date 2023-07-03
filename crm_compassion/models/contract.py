@@ -28,18 +28,19 @@ class Contracts(models.Model):
     @api.onchange("child_id")
     def onchange_child_id(self):
         hold = self.hold_id
-        origin = hold.get_origin()
-        if origin:
-            self.origin_id = origin
-        if hold.channel and hold.channel == "web":
-            self.medium_id = self.env.ref("utm.utm_medium_website")
-        if hold.ambassador:
-            self.ambassador_id = hold.ambassador
-        self.campaign_id = hold.campaign_id
-        if hold.comments:
-            return {
-                "warning": {
-                    "title": _("The child has some comments"),
-                    "message": hold.comments,
+        if hold:
+            origin = hold.get_origin()
+            if origin:
+                self.origin_id = origin
+            if hold.channel and hold.channel == "web":
+                self.medium_id = self.env.ref("utm.utm_medium_website")
+            if hold.ambassador:
+                self.ambassador_id = hold.ambassador
+            self.campaign_id = hold.campaign_id
+            if hold.comments:
+                return {
+                    "warning": {
+                        "title": _("The child has some comments"),
+                        "message": hold.comments,
+                    }
                 }
-            }
