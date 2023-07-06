@@ -10,12 +10,18 @@
                         <field name="survival_sponsorship_sale"/>
                     </group>
                     <group attrs="{'invisible':[('survival_sponsorship_sale', '=', False)]}">
-                        <field name="survival_sponsorship_field_office_id"
-                               attrs="{'required':[('survival_sponsorship_sale', '=', True)]}"/>
-                        <field name="slot_used" widget="progressbar"/>
-                        <field name="survival_slot_number"/>
-                        <field name="survival_sponsorship_number"/>
-                        <field name="alltime_survival_sponsorship_number"/>
+                        <group string="Communications">
+                            <field name="survival_mom_name"/>
+                            <field name="survival_child_name"/>
+                        </group>
+                        <group string="Statistics">
+                            <field name="survival_sponsorship_field_office_id"
+                                   attrs="{'required':[('survival_sponsorship_sale', '=', True)]}"/>
+                            <field name="slot_used" widget="progressbar"/>
+                            <field name="survival_slot_number"/>
+                            <field name="survival_sponsorship_number"/>
+                            <field name="alltime_survival_sponsorship_number"/>
+                        </group>
                     </group>
                 </page>
             </xpath>

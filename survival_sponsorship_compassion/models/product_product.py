@@ -25,6 +25,14 @@ class ProductProduct(models.Model):
         readonly=True,
         help="(Inherited from product template) The product can be sold as a survival sponsorship one"
     )
+    survival_mom_name = fields.Char(
+        "Name of the mom (com)",
+        help="This field is used in the communications"
+    )
+    survival_child_name = fields.Char(
+        "Name of the baby (com)",
+        help="This field is used in the communications"
+    )
     survival_sponsorship_field_office_id = fields.Many2one(
         'compassion.field.office',
         string='Survival Sponsorship Field office',
