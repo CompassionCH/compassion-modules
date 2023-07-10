@@ -209,9 +209,14 @@ class CommunicationJob(models.Model):
             company = job.partner_id.company_id
             if not company:
                 country = job.partner_id.country_id
-                company = self.env["res.company"].search([("partner_id.country_id", "=", country.id)], limit=1)
+                company = self.env["res.company"].search([(
+                    "partner_id.country_id", "=", country.id)], limit=1)
                 if not company:
-                    company = self._fallback_company()
+                    first_object = self.get_objects()[:1]
+                    if first_object and hasattr(first_object, "company_id"):
+                        company = first_object.company_id
+                    else:
+                        company = self._fallback_company()
             job.company_id = company
 
     def _fallback_company(self):
