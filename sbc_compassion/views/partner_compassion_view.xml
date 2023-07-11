@@ -2,7 +2,7 @@
     <record id="view_partner_form_sbc" model="ir.ui.view">
         <field name="name">res.partner.form.sbc</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="inherit_id" ref="sponsorship_compassion.view_res_partner_invoice_line_button_form"/>
         <field name="arch" type="xml">
             <!-- Add correspondence options -->
             <xpath expr="//div[@name='button_box']/button[1]" position="after">
