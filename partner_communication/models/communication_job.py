@@ -203,20 +203,26 @@ class CommunicationJob(models.Model):
                 lambda a: a.attachment_id not in job.ir_attachment_ids
             ).unlink()
 
-    @api.depends("partner_id")
+    @api.depends("partner_id", "object_ids")
     def _compute_company(self):
+        """
+        Rule for setting company:
+            1. Check the related records and use the company set in those
+            2. Check for a company linked to the partner
+            3. Look if a company exists at the country of the partner
+            4. Call a fallback function that can provide a custom rule for finding a company
+        """
         for job in self:
             company = job.partner_id.company_id
-            if not company:
-                country = job.partner_id.country_id
+            first_object = self.get_objects()[:1]
+            if first_object and hasattr(first_object, "company_id") and first_object.company_id:
+                company = first_object.company_id
+            if not company and job.partner_id.country_id:
                 company = self.env["res.company"].search([(
-                    "partner_id.country_id", "=", country.id)], limit=1)
-                if not company:
-                    first_object = self.get_objects()[:1]
-                    if first_object and hasattr(first_object, "company_id"):
-                        company = first_object.company_id
-                    else:
-                        company = self._fallback_company()
+                    "partner_id.country_id", "=", job.partner_id.country_id.id)
+                ], limit=1)
+            if not company:
+                company = self._fallback_company()
             job.company_id = company
 
     def _fallback_company(self):
