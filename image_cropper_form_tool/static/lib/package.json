@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "compressorjs": "^1.2.1",
+    "cropperjs": "^1.5.13"
+  }
+}
