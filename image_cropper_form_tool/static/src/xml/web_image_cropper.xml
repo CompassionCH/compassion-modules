@@ -1,0 +1,30 @@
+<odoo>
+    <template id="assets_backend" name="image_cropper_form_tool assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript"
+                    src="/image_cropper_form_tool/static/lib/node_modules/cropperjs/dist/cropper.js"/>
+        </xpath>
+        <xpath expr="." position="inside">
+            <script type="text/javascript"
+                    src="/image_cropper_form_tool/static/lib/node_modules/compressorjs/dist/compressor.js"/>
+        </xpath>
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/image_cropper_form_tool/static/lib/node_modules/cropperjs/dist/cropper.css"/>
+        </xpath>
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/image_cropper_form_tool/static/src/js/web_image_cropper.js"></script>
+        </xpath>
+    </template>
+
+    <template id="assets_common" name="image_cropper_form_tool assets" inherit_id="web.assets_common">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/image_cropper_form_tool/static/src/js/web_image_cropper.js"></script>
+        </xpath>
+    </template>
+
+    <template id="image_cropper_dialog_template">
+        <div t-name="image_cropper_form_tool.ImageCropper">
+            <img class="image_cropper_form_tool" t-att-src="src"/>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,1 @@
+This module add a cropper dialog when uploading an image if the widget image_cropper is used in the view
