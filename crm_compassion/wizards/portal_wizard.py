@@ -35,12 +35,6 @@ class PortalWizard(models.TransientModel):
             )
             acc_ids = analytics_obj.search([("name", "=", partner_name)])
             if not acc_ids and users:
-                partner_tag = self.env.ref("crm_compassion.tag_partners")
-                analytics_obj.create(
-                    {
-                        "name": partner_name,
-                        "tag_ids": [(4, partner_tag.id)],
-                    }
-                )
+                analytics_obj.create({"name": partner_name})
 
         return res
