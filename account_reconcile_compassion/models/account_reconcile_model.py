@@ -17,10 +17,6 @@ class AccountReconcileModel(models.Model):
         help="Check to disable thank you letter for donation"
     )
 
-    @api.onchange("product_id")
-    def onchange_product_id(self):
-        self.account_id = self.with_company(self.company_id).product_id.property_account_income_id
-
     @api.model
     def product_changed(self, product_id, statement_id):
         """
