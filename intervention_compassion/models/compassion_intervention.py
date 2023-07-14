@@ -849,7 +849,7 @@ class CompassionIntervention(models.Model):
     @api.multi
     def json_to_data(self, json, mapping_name=None):
         json = json.get("InterventionAmendmentKitRequest", json)
-        if "ICP" in json:
+        if "ICP" in json and json["ICP"] is not None:
             json["ICP"] = json["ICP"].split("; ")
         return super().json_to_data(json, mapping_name)
 
