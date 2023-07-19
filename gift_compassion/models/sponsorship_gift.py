@@ -57,7 +57,7 @@ class SponsorshipGift(models.Model):
         readonly=False,
     )
     invoice_line_ids = fields.One2many(
-        "account.invoice.line", "gift_id", string="Invoice lines", readonly=True
+        "account.invoice.line", "gift_id", string="Invoice lines", readonly=True, copy=False
     )
     payment_id = fields.Many2one(
         "account.move", "GMC Payment", copy=False, readonly=False
