@@ -164,13 +164,15 @@ class MatchPartner(models.AbstractModel):
         Each of the listed method must take a partner_obj and the infos as
         their parameter. They must also return a recordset of partner.
         """
-        return ["email", "fullname_and_zip"]
+        return ["email_and_fullname", "fullname_and_zip"]
 
     @api.model
-    def _match_rule_email(self, partner_obj, infos, options=None):
+    def _match_rule_email_and_fullname(self, partner_obj, infos, options=None):
         email = infos["email"].strip()
         return partner_obj.search(
             [
+                ("lastname", "ilike", infos["lastname"]),
+                ("firstname", "ilike", infos["firstname"]),
                 ("email", "=ilike", email),
                 "|",
                 ("active", "=", True),
