@@ -105,11 +105,10 @@ class ProductProduct(models.Model):
         interventions.sudo().get_infos()
         # We create the product for the field offices that doesn't already have one
         for field_office in interventions.filtered(lambda i: i.field_office_id not in ps_field_office).mapped('field_office_id'):
-            country = field_office.country_id
             self.env['product.product'].create(
                 {
                     "name": "Survival Sponsorships",
-                    "default_code": "csp_" + country.code,
+                    "default_code": "csp_" + field_office.field_office_id,
                     "taxes_id": False,
                     "product_tmpl_id": self.env.ref("survival_sponsorship_compassion.survival_product_template").id,
                     "survival_sponsorship_field_office_id": field_office.id,
