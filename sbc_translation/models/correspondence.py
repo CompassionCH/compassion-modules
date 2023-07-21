@@ -28,7 +28,11 @@ class Correspondence(models.Model):
         "res.lang.compassion", "Source of translation", readonly=False
     )
     translation_supervisor_id = fields.Many2one(
-        "res.users", "Translation supervisor", domain=[("share", "=", False)])
+        "res.users",
+        "Translation supervisor",
+        domain=[("share", "=", False)],
+        default=lambda self: self.env["res.users"].sudo().search([("email", "=", "sds@compassion.ch")])
+    )
     translation_competence_id = fields.Many2one(
         "translation.competence", compute="_compute_competence", store=True, inverse="_inverse_competence"
     )
@@ -217,20 +221,6 @@ class Correspondence(models.Model):
         return True
 
     @api.multi
-    def assign_supervisor(self):
-        """
-        This method assigns a supervisor for a letter.
-        Can be inherited to customize by whom the letters need to be checked.
-        Here it picks one manager randomly.
-        """
-        manager_group = self.env.ref("sbc_translation.group_manager")
-        admin = self.env.ref("base.user_admin")
-        supervisors = self.env["res.users"].sudo().search([("groups_id", "=", manager_group.id)]) - admin
-        for letter in self.filtered(lambda l: not l.translation_supervisor_id):
-            letter.translation_supervisor_id = supervisors[randint(0, len(supervisors)-1)]
-        return True
-
-    @api.multi
     def raise_translation_issue(self, issue_type, body_html):
         """
         TP API for translator to raise an issue with the letter
@@ -240,7 +230,6 @@ class Correspondence(models.Model):
             "translation_issue": issue_type,
             "translation_issue_comments": body_html
         })
-        self.assign_supervisor()
         # template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
         # self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
         return True
