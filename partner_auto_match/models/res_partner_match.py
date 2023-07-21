@@ -122,12 +122,13 @@ class ResPartnerMatch(models.AbstractModel):
         Each of the listed method must take a partner_obj and the infos as
         their parameter. They must also return a recordset of partner.
         """
-        return ["email", "name_and_zip"]
+        return ["email_and_name", "name_and_zip"]
 
     @api.model
-    def _match_email(self, vals):
+    def _match_email_and_name(self, vals):
         email = vals["email"].strip()
         return self.env["res.partner"].search([
+            ("name", "ilike", vals["name"]),
             ("email", "=ilike", email),
         ])
 
