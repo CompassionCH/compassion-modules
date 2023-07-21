@@ -30,8 +30,7 @@ class Correspondence(models.Model):
     translation_supervisor_id = fields.Many2one(
         "res.users",
         "Translation supervisor",
-        domain=[("share", "=", False)],
-        default=lambda self: self.env["res.users"].sudo().search([("email", "=", "sds@compassion.ch")])
+        domain=[("share", "=", False)]
     )
     translation_competence_id = fields.Many2one(
         "translation.competence", compute="_compute_competence", store=True, inverse="_inverse_competence"
@@ -229,6 +228,9 @@ class Correspondence(models.Model):
         self.write({
             "translation_issue": issue_type,
             "translation_issue_comments": body_html
+        })
+        self.write({
+            'translation_supervisor_id': self.env["res.users"].sudo().search([("email", "=", "sds@compassion.ch")])
         })
         # template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
         # self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
