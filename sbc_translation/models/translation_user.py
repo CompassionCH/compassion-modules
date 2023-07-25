@@ -31,14 +31,23 @@ class TranslationUser(models.Model):
         "res.lang.compassion", domain=[("translatable", "=", True)],
         help="Utility field only used for the search view"
     )
-    search_competence_id = fields.Many2one(
-        "translation.competence", help="Utility field only used for the search view"
+    search_competence_ids = fields.Many2many(
+        "translation.competence",
+        help="Utility field only used for the search view",
+        compute="_compute_competences",
+        store=True
     )
     avatar = fields.Binary(related="partner_id.image_small")
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
+
+    @api.multi
+    @api.depends("translation_skills")
+    def _compute_competences(self):
+        for translator in self:
+            translator.search_competence_ids = translator.mapped("translation_skills.competence_id").ids
 
     @api.multi
     @api.depends("translated_letter_ids")
