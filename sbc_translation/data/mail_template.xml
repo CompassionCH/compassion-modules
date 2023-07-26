@@ -19,8 +19,7 @@
         <p>Dear <span t-field="object.new_translator_id.partner_id.name"/>,</p>
         <p>You just received a reply regarding your comments on the translation:</p>
         <p t-raw="reply"/>
-        <p>Thank you for your help.</p>
-        <br/><hr/><br/>
+        <hr/>
         <table>
             <tr>
                 <th style="width: 40%">Paragraph</th>
@@ -34,6 +33,11 @@
                     </tr>
                 </t>
             </t>
+        </br><p>Thank you for your help,
+        % if user and user.signature:
+        ${user.signature | safe}
+        % endif
+        </p>
         </table>
         <hr/>
         <p><a t-att-href="object.translation_url">Open the letter in the translation platform</a></p>
