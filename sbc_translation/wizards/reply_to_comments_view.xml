@@ -6,15 +6,6 @@
         <field name="arch" type="xml">
             <form string="Reply to comments">
                 <group>
-                    <field name="paragraph_ids">
-                        <tree default_order="page_id asc, sequence asc">
-                            <field name="original_text"/>
-                            <field name="translated_text"/>
-                            <field name="comments"/>
-                        </tree>
-                    </field>
-                </group>
-                <group>
                     <field name="answer"/>
                 </group>
                 <footer>
