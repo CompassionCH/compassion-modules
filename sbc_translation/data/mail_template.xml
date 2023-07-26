@@ -33,13 +33,14 @@
                     </tr>
                 </t>
             </t>
-        </br><p>Thank you for your help,
+        </table>
+        <hr/>
+        <p><a t-att-href="object.translation_url">Open the letter in the translation platform</a></p>
+        <hr/>
+        <br/><p>Thank you for your help,
         % if user and user.signature:
         ${user.signature | safe}
         % endif
         </p>
-        </table>
-        <hr/>
-        <p><a t-att-href="object.translation_url">Open the letter in the translation platform</a></p>
     </template>
 </odoo>
