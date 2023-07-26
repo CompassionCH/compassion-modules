@@ -7,6 +7,7 @@
             <form string="Reply to comments">
                 <group>
                     <field name="answer"/>
+                    <p class="text-muted">Your reply will be added in an automatic email with greetings.</p>
                 </group>
                 <footer>
                     <button name="send_reply" string="Send reply" type="object" class="btn-primary"/>
