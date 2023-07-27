@@ -58,7 +58,6 @@ class EndSponsorshipsMonthReport(models.Model):
             ON to_char(c.end_date, 'YYYY.MM') = s.activation_date
         """
 
-    @api.model_cr
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         # We disable the check for SQL injection. The only risk of sql

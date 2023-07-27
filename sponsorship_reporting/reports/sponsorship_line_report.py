@@ -26,12 +26,10 @@ class SponsorshipsEvolutionMonthsReport(models.Model):
     )
     is_active = fields.Boolean(readonly=True)
 
-    @api.multi
     def _compute_name(self):
         for line in self:
             line.name = f"{line.partner_id.name} / Line #{line.sponsor_line}"
 
-    @api.model_cr
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
         # We disable the check for SQL injection. The only risk of sql

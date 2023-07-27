@@ -8,7 +8,7 @@
 #                        /_/
 #                            in Jesus' name
 #
-#    Copyright (C) 2018-2020 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2023 Compassion CH (http://www.compassion.ch)
 #    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -27,14 +27,16 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    "name": "Compassion Donation Report",
-    "version": "12.0.1.0.0",
+    "name": "Compassion Sponsorship Reports",
+    "summary": "Add the reports for the sponsorships",
+    "version": "14.0.1.0.0",
     "author": "Compassion CH",
     "category": "Finance",
     "website": "http://www.compassion.ch",
     "depends": [
         "account_fiscal_year",  # OCA/account-financial-reporting
         "account_fiscal_month",  # OCA/account-financial-reporting
+        "sponsorship_compassion",  # compassionCH/sponsorship_compassion
     ],
     "data": ["views/account_invoice_report_view.xml"],
     "demo": [],
@@ -42,5 +44,4 @@
     "license": "AGPL-3",
     "installable": True,
     "auto_install": False,
-    "application": False,
 }

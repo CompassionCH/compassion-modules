@@ -31,7 +31,6 @@ class SponsorshipsEvolutionMonthsReport(models.Model):
         """ ""
         return "month", "YYYY.MM"
 
-    @api.model_cr
     def init(self):
         """
         This SQL view is returning useful statistics about sponsorships.

@@ -68,7 +68,6 @@
     <record id="action_ended_sponsorships_report" model="ir.actions.act_window">
         <field name="name">Ended Sponsorships (percentage)</field>
         <field name="res_model">end.sponsorships.month.report</field>
-        <field name="view_type">form</field>
         <field name="view_mode">pivot,graph</field>
         <field name="context">{'search_default_fy_analysis': 1, 'search_default_last_five_year': 1}</field>
         <field name="search_view_id" ref="end_sponsorships_search"/>
@@ -79,7 +78,6 @@
     <record id="action_ended_sponsorships_details_report" model="ir.actions.act_window">
         <field name="name">Ended Sponsorships (details)</field>
         <field name="res_model">end.sponsorships.month.report</field>
-        <field name="view_type">form</field>
         <field name="view_mode">pivot,graph</field>
         <field name="context">{'search_default_fy_analysis': 1, 'search_default_last_five_year': 1}</field>
         <field name="search_view_id" ref="end_sponsorships_search"/>

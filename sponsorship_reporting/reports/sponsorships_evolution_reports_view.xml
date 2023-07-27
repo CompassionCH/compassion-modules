@@ -18,7 +18,6 @@
     <record id="action_sponsorships_evolution_months_report" model="ir.actions.act_window">
         <field name="name">Sponsorships Evolution By Months</field>
         <field name="res_model">sponsorships.evolution_months.report</field>
-        <field name="view_type">form</field>
         <field name="view_mode">graph,pivot</field>
         <field name="search_view_id" ref="view_sponsorships_evolution_months_report_search"/>
         <field name="context">{"graph_mode":"line","search_default_last_12_months":1}</field>
@@ -41,7 +40,6 @@
     <record id="action_sponsorships_evolution_years_report" model="ir.actions.act_window">
         <field name="name">Sponsorships Evolution By Years</field>
         <field name="res_model">sponsorships.evolution_years.report</field>
-        <field name="view_type">form</field>
         <field name="view_mode">graph,pivot</field>
         <field name="context">{"graph_mode":"line"}</field>
         <field name="help">From this report, you can have an overview of active sponsorships during time. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>

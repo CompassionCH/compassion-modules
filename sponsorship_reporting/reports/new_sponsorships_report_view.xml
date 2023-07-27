@@ -52,7 +52,6 @@
     <record id="action_new_sponsorships_report" model="ir.actions.act_window">
         <field name="name">Sponsorships Activations Report</field>
         <field name="res_model">recurring.contract</field>
-        <field name="view_type">form</field>
         <field name="view_mode">graph</field>
         <field name="search_view_id" ref="view_new_sponsorships_report_search"/>
         <field name="context">{"graph_mode": "bar", "search_default_last_6_months": 1}</field>
