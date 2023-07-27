@@ -19,7 +19,7 @@
                 <filter name="origin" string="Origin" domain="[]" context="{'group_by': 'origin_id'}"/>
                 <filter name="medium" string="Medium" domain="[]" context="{'group_by': 'medium_id'}"/>
                 <filter name="language" string="Language" domain="[]" context="{'group_by': 'partner_lang'}"/>
-                <filter name="reprise" string="Reprise" domain="[]" context="{'group_by': 'is_already_a_sponsor'}"/>
+                <filter name="reprise" string="Reprise" domain="[]" context="{'group_by': 'is_first_sponsorship'}"/>
 
                 <filter string="By weeks" name="by_weeks" domain="[]" context="{'group_by': 'activation_date:week'}" />
                 <filter string="By months" name="by_months" domain="[]" context="{'group_by': 'activation_date:month'}" />
@@ -58,8 +58,8 @@
         <field name="domain">[('activation_date', '!=', False), ('child_id', '!=', False)]</field>
         <field name="help">From this report, you can have an overview of the new sponsorships. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'graph', 'view_id': ref('sponsorship_switzerland.view_new_sponsorships_report_graph')}),
-                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_switzerland.view_new_sponsorships_report_pivot')})]"/>
+                (0, 0, {'view_mode': 'graph', 'view_id': ref('sponsorship_reporting.view_new_sponsorships_report_graph')}),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_reporting.view_new_sponsorships_report_pivot')})]"/>
     </record>
 
     <!-- sponsorships reports menu -->

@@ -6,12 +6,11 @@
          <field name="model">account.invoice.report</field>
          <field name="inherit_id" ref="account.view_account_invoice_report_pivot"/>
          <field name="arch" type="xml">
-             <field name="date" position="replace">
+             <field name="invoice_date" position="replace">
                  <field name="fiscal_year" type="col"/>
-                 <field name="nbr" type="measure"/>
              </field>
-             <field name="categ_id" position="replace">
-                 <field name="account_line_id" type="row"/>
+             <field name="product_categ_id" position="replace">
+                 <field name="account_id" type="row"/>
              </field>
          </field>
     </record>
@@ -21,7 +20,7 @@
          <field name="model">account.invoice.report</field>
          <field name="inherit_id" ref="account.view_account_invoice_report_graph"/>
          <field name="arch" type="xml">
-             <field name="categ_id" position="before">
+             <field name="product_categ_id" position="before">
                  <field name="fiscal_year"/>
              </field>
          </field>
@@ -33,7 +32,7 @@
         <field name="inherit_id" ref="account.view_account_invoice_report_search"/>
         <field name="arch" type="xml">
             <filter name="my_invoice" position="after">
-                <filter string="Fiscal Year Analysis" name="fy_analysis" domain="[('valid_month', '=', True), ('date', '&lt;=', time.strftime('%%Y-%%m-%%d')), ('date', '&gt;=', '2015-07-01'), ('state', '=', 'paid')]" help="Compare fiscal years"/>
+                <filter string="Fiscal Year Analysis" name="fy_analysis" domain="[('valid_month', '=', True), ('invoice_date', '&lt;=', time.strftime('%%Y-%%m-%%d')), ('invoice_date', '&gt;=', '2015-07-01'), ('payment_state', '=', 'paid')]" help="Compare fiscal years"/>
             </filter>
         </field>
     </record>

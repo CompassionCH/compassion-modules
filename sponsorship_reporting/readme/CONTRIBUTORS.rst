@@ -1,1 +1,2 @@
 * Emanuel Cino <ecino@compassion.ch>
+* Simon Gonzalez <simon.gonzalez@bluewin.ch>

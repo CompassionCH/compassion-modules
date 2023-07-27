@@ -73,7 +73,7 @@
         <field name="search_view_id" ref="end_sponsorships_search"/>
         <field name="help">From this report, you can have an overview of the ended sponsorships.</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_switzerland.end_sponsorships_pivot')})]"/>
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_reporting.end_sponsorships_pivot')})]"/>
     </record>
     <record id="action_ended_sponsorships_details_report" model="ir.actions.act_window">
         <field name="name">Ended Sponsorships (details)</field>
@@ -83,7 +83,7 @@
         <field name="search_view_id" ref="end_sponsorships_search"/>
         <field name="help">From this report, you can view the details of the ended sponsorships.</field>
         <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_switzerland.end_sponsorships_details_pivot')})]"/>
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_reporting.end_sponsorships_details_pivot')})]"/>
     </record>
 
     <menuitem id="sponsorships_report_menu_ending" name="Ending Analysis" parent="sponsorships_report_menu_base" sequence="1"/>

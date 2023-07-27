@@ -36,9 +36,15 @@
     "depends": [
         "account_fiscal_year",  # OCA/account-financial-reporting
         "account_fiscal_month",  # OCA/account-financial-reporting
-        "sponsorship_compassion",  # compassionCH/sponsorship_compassion
+        "sponsorship_sub_management",  # CompassionCH/compassion-modules
+        "crm_phone",
     ],
-    "data": ["views/account_invoice_report_view.xml"],
+    "data": [
+        "views/sponsorships_evolution_reports_view.xml",
+        "views/end_sponsorships_report_view.xml",
+        "views/new_sponsorships_report_view.xml",
+        "views/account_invoice_report_view.xml",
+    ],
     "demo": [],
     "test": [],
     "license": "AGPL-3",

@@ -7,7 +7,6 @@ class EndSponsorshipsMonthReport(models.Model):
     _table = "gme_monthly_report"
     _description = "GME monthly acquisition/cancellation"
     _auto = False
-    _rec_name = "date"
 
     lang = fields.Selection("select_lang", readonly=True)
     end_reason_id = fields.Selection(
@@ -55,7 +54,7 @@ class EndSponsorshipsMonthReport(models.Model):
         period."""
         return """
             JOIN sponsorships_evolution_months_report s
-            ON to_char(c.end_date, 'YYYY.MM') = s.activation_date
+            ON to_char(c.end_date, 'YYYY.MM') = s.study_date
         """
 
     def init(self):
@@ -65,16 +64,16 @@ class EndSponsorshipsMonthReport(models.Model):
         # external source.
         # pylint:disable=E8103
         self.env.cr.execute(
-            """
+            """ 
             CREATE OR REPLACE VIEW %s AS
             SELECT c.id, c.end_date, c.end_reason_id, c.sub_sponsorship_id,
                    c.sds_state, p.id as partner_id, %s, %s, %s,
-                   p.lang, 100/s.active_sponsorships as active_percentage,
-                   100.0/s.terminated_sponsorships as total_percentage,
-                   s.terminated_sponsorships,
-                   s.activation_date
-            FROM recurring_contract c JOIN res_partner p
-              ON c.correspondent_id = p.id
+                   p.lang, 100/s.new_sponsored as active_percentage,
+                   100.0/s.sponsored_terminated as total_percentage,
+                   s.sponsored_terminated,
+                   s.study_date
+            FROM recurring_contract c 
+              JOIN res_partner p ON c.correspondent_id = p.id
               %s
             WHERE c.state = 'terminated' AND c.child_id IS NOT NULL
             AND c.end_date IS NOT NULL
