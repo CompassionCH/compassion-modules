@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- sponsorships evolution by months -->
+    <record id="view_sponsorships_evolution_months_report_search" model="ir.ui.view">
+        <field name="name">sponsorships.evolution_months.report.search</field>
+        <field name="model">sponsorships.evolution_months.report</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Product">
+                <filter string="Last 12 Months" name="last_12_months" domain="[('study_date','&gt;=',(context_today()-relativedelta(months=11)).strftime('%Y.%m')),('study_date','&lt;=', time.strftime('%Y.%m'))]"/>
+                <filter string="Last 24 Months" name="last_24_months" domain="[('study_date','&gt;=',(context_today()-relativedelta(years=1, months=11)).strftime('%Y.%m')),('study_date','&lt;=', time.strftime('%Y.%m'))]"/>
+                <filter string="This Year" name="this_year" domain="[('study_date','&gt;=', time.strftime('%Y.01'))]"/>
+                <filter string="Last Year" name="last_year" domain="[('study_date','&gt;=',(context_today()-relativedelta(years=1)).strftime('%Y.01')),('study_date','&lt;', time.strftime('%Y.01'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sponsorships_evolution_months_report" model="ir.actions.act_window">
+        <field name="name">Sponsorships Evolution By Months</field>
+        <field name="res_model">sponsorships.evolution_months.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_sponsorships_evolution_months_report_search"/>
+        <field name="context">{"graph_mode":"line","search_default_last_12_months":1}</field>
+        <field name="help">From this report, you can have an overview of active sponsorships during time. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>
+    </record>
+
+    <record id="view_sponsorships_evolution_months_report_graph" model="ir.ui.view">
+        <field name="name">sponsorships.evolution_months.report.graph</field>
+        <field name="model">sponsorships.evolution_months.report</field>
+        <field name="arch" type="xml">
+            <graph string="Sponsorships Evolution By Months" type="line">
+                <field name="study_date" type="col" interval="month"/>
+                <field name="sponsored" type="measure"/>
+                <field name="sponsorships" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- sponsorships evolution by years -->
+    <record id="action_sponsorships_evolution_years_report" model="ir.actions.act_window">
+        <field name="name">Sponsorships Evolution By Years</field>
+        <field name="res_model">sponsorships.evolution_years.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{"graph_mode":"line"}</field>
+        <field name="help">From this report, you can have an overview of active sponsorships during time. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>
+    </record>
+
+    <record id="view_sponsorships_evolution_years_report_graph" model="ir.ui.view">
+        <field name="name">sponsorships.evolution_years.report.graph</field>
+        <field name="model">sponsorships.evolution_years.report</field>
+        <field name="arch" type="xml">
+            <graph string="Sponsorships Evolution By Years" type="line">
+                <field name="study_date" type="col" interval="year"/>
+                <field name="sponsored" type="measure"/>
+                <field name="sponsorships" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sponsorships_evolution_months_report_pivot">
+        <field name="name">sponsorships.evolution_months.report.pivot</field>
+        <field name="model">sponsorships.evolution_months.report</field>
+        <field name="arch" type="xml">
+             <pivot disable_linking="True">
+                 <field name="sponsorships" type="measure"/>
+                 <field name="sponsored" type="measure"/>
+                 <field name="acquisition" type="measure"/>
+                 <field name="cancellation" type="measure"/>
+                 <field name="study_date" type="row"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record model="ir.ui.view" id="sponsorships_evolution_years_report_pivot">
+        <field name="name">sponsorships.evolution_years.report.pivot</field>
+        <field name="model">sponsorships.evolution_years.report</field>
+        <field name="arch" type="xml">
+             <pivot disable_linking="True">
+                 <field name="sponsorships" type="measure"/>
+                 <field name="sponsored" type="measure"/>
+                 <field name="acquisition" type="measure"/>
+                 <field name="cancellation" type="measure"/>
+                 <field name="study_date" type="row"/>
+             </pivot>
+         </field>
+    </record>
+
+    <!-- sponsorships reports menu -->
+    <menuitem id="sponsorships_report_menu_base" name="Reports" parent="child_compassion.menu_sponsorship_root" sequence="8"/>
+    <menuitem id="sponsorships_report_menu_metrics" name="Sponsorship Metrics" parent="sponsorships_report_menu_base" sequence="0"/>
+    <menuitem id="sponsorships_report_menu_evolution_months" name="Sponsorships Evolution By Months" parent="sponsorships_report_menu_metrics" action="action_sponsorships_evolution_months_report" sequence="1"/>
+    <menuitem id="sponsorships_report_menu_evolution_year" name="Sponsorships Evolution By Years" parent="sponsorships_report_menu_metrics" action="action_sponsorships_evolution_years_report" sequence="2"/>
+
+</odoo>

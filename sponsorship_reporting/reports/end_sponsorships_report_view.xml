@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pivot views -->
+    <record model="ir.ui.view" id="end_sponsorships_pivot">
+        <field name="name">end.sponsorships.report.pivot</field>
+        <field name="model">end.sponsorships.month.report</field>
+        <field name="arch" type="xml">
+             <pivot string="Ended Sponsorships" disable_linking="True" display_quantity="True">
+                 <field name="category" type="row"/>
+                 <field name="active_percentage" type="measure"/>
+                 <field name="fiscal_year" type="col"/>
+             </pivot>
+         </field>
+    </record>
+    <record model="ir.ui.view" id="end_sponsorships_details_pivot">
+        <field name="name">end.sponsorships.details.report.pivot</field>
+        <field name="model">end.sponsorships.month.report</field>
+        <field name="arch" type="xml">
+             <pivot string="Ended Sponsorships" disable_linking="True" display_quantity="True">
+                 <field name="category" type="row"/>
+                 <field name="sub_category" type="row"/>
+                 <field name="end_reason_id" type="row"/>
+                 <!--<field name="total_percentage" type="measure" operator="avg" widget="percentage"/>-->
+                 <field name="fiscal_year" type="col"/>
+             </pivot>
+         </field>
+    </record>
+
+    <!-- Graphs -->
+    <record id="end_sponsorships_bar" model="ir.ui.view">
+         <field name="name">end.sponsorships.report.graph</field>
+         <field name="model">end.sponsorships.month.report</field>
+         <field name="arch" type="xml">
+             <graph string="Ended Sponsorships percentage" type="bar">
+                 <field name="end_date" interval="month"/>
+                 <field name="active_percentage" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Search -->
+    <record id="end_sponsorships_search" model="ir.ui.view">
+        <field name="name">end.sponsorships.report.search</field>
+        <field name="model">end.sponsorships.month.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="end_date"/>
+                <field name="end_reason_id"/>
+                <field name="lang"/>
+                <separator/>
+                <filter string="Child departure" name="child_departure" domain="[('category', '=', 'child')]"/>
+                <filter string="Sponsor cancellation" name="sponsor_cancel" domain="[('category', '=', 'sponsor')]"/>
+                <separator/>
+                <filter string="Fiscal Year Analysis" name="fy_analysis" domain="[('valid_month', '=', True), ('end_date', '&lt;=', time.strftime('%%Y-%%m-%%d'))]" help="Compare fiscal years"/>
+                <separator/>
+                <filter string="This Month" name="last_month" domain="[('end_date', '&gt;=', time.strftime('%%Y-%%m-01'))]"/>
+                <filter string="This Year" name="last_year" domain="[('end_date', '&gt;=', time.strftime('%%Y-01-01'))]"/>
+                <filter string="Last 5 Years" name="last_five_year" domain="[('end_date', '&gt;=', (context_today()-relativedelta(years=5)).strftime('%%Y-01-01'))]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Fiscal Year" name="group_fiscal_year" context="{'group_by':'fiscal_year'}"/>
+                    <filter string="Lang" name="group_lang" context="{'group_by':'lang'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ended_sponsorships_report" model="ir.actions.act_window">
+        <field name="name">Ended Sponsorships (percentage)</field>
+        <field name="res_model">end.sponsorships.month.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_fy_analysis': 1, 'search_default_last_five_year': 1}</field>
+        <field name="search_view_id" ref="end_sponsorships_search"/>
+        <field name="help">From this report, you can have an overview of the ended sponsorships.</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_switzerland.end_sponsorships_pivot')})]"/>
+    </record>
+    <record id="action_ended_sponsorships_details_report" model="ir.actions.act_window">
+        <field name="name">Ended Sponsorships (details)</field>
+        <field name="res_model">end.sponsorships.month.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_fy_analysis': 1, 'search_default_last_five_year': 1}</field>
+        <field name="search_view_id" ref="end_sponsorships_search"/>
+        <field name="help">From this report, you can view the details of the ended sponsorships.</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_switzerland.end_sponsorships_details_pivot')})]"/>
+    </record>
+
+    <menuitem id="sponsorships_report_menu_ending" name="Ending Analysis" parent="sponsorships_report_menu_base" sequence="1"/>
+    <menuitem name="Ended Sponsorships (percentage)" action="action_ended_sponsorships_report" id="menu_ended_sponsorships" parent="sponsorships_report_menu_ending" sequence="4"/>
+    <menuitem name="Ended Sponsorships (details)" action="action_ended_sponsorships_details_report" id="menu_ended_sponsorships_details" parent="sponsorships_report_menu_ending" sequence="5"/>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bank_statement_completion_rule_partner_ref" model="account.statement.completion.rule">
+        <field name="name">Match from line reference (based on partner reference)</field>
+        <field name="sequence">30</field>
+        <field name="function_to_call">get_from_partner_ref</field>
+    </record>
+
+    <record id="bank_statement_completion_rule_bvr_ref" model="account.statement.completion.rule">
+        <field name="name">Match from line reference (based on invoice BVR reference)</field>
+        <field name="sequence">20</field>
+        <field name="function_to_call">get_from_bvr_ref</field>
+    </record>
+    
+    <record id="bank_statement_completion_rule_bvr_ref_lsv" model="account.statement.completion.rule">
+        <field name="name">[LSV/DD]: Match from line reference (based on invoice BVR reference)</field>
+        <field name="sequence">20</field>
+        <field name="function_to_call">lsv_dd_get_from_bvr_ref</field>
+    </record>
+    
+    <record id="bank_statement_completion_rule_credit_lsv_dd" model="account.statement.completion.rule">
+        <field name="name">Match LSV DD Credit in 1098</field>
+        <field name="sequence">60</field>
+        <field name="function_to_call">get_from_lsv_dd</field>
+    </record>
+
+    <record id="bank_statement_completion_rule_recurring_contract_wire_transfer_mapping" model="account.statement.completion.rule">
+        <field name="name">Match wire transfer payment mode custom note</field>
+        <field name="sequence">20</field>
+        <field name="function_to_call">recurring_contract_wire_transfer_mapping</field>
+    </record>
+
+    <record id="bank_statement_completion_rule_sponsor_name" model="account.statement.completion.rule">
+        <field name="name">Match sponsor name (based on label)</field>
+        <field name="sequence">90</field>
+        <field name="function_to_call">get_sponsor_name</field>
+    </record>
+</odoo>
