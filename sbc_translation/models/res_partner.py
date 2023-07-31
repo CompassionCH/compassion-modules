@@ -24,5 +24,5 @@ class ResPartner(models.Model):
         help="Allow to engage the partner in translations.")
 
     _sql_constraints = [
-        ('translation_user_uniq', 'check(translation_user_id)', 'Only one Translation User can be linked !'),
+        ('translation_user_uniq', 'unique(translation_user_id)', 'Only one Translation User can be linked !'),
     ]
