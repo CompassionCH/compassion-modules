@@ -31,3 +31,17 @@ class RecurringContractLine(models.Model):
                                 f"you tried to add {contract_line.quantity}\n"
                                 f"{product.survival_slot_number - product.survival_sponsorship_number} slots "
                                 f"are still available")
+
+    @api.onchange("contract_type")
+    def onchange_type(self):
+        """ Change domain of product depending on type of contract. """
+        res = super().onchange_type()
+        if self.contract_id.type == "CSP":
+            tmpl = self.env.ref(
+                "survival_sponsorship_compassion.survival_product_template")
+            res["domain"] = {
+                "product_id": [
+                    ("product_tmpl_id", "=", tmpl.id)
+                ]
+            }
+        return res

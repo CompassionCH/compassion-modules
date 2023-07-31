@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
 testing = tools.config.get("test_enable")
 
+SPONSORSHIP_TYPE_LIST = ["S", "SC", "SWP"]
 
 class SponsorshipContract(models.Model):
     _inherit = ["recurring.contract", "compassion.mapped.model"]
@@ -749,7 +750,7 @@ class SponsorshipContract(models.Model):
         and activate gift contracts.
         Send messages to GMC.
         """
-        for contract in self.filtered(lambda c: "S" in c.type):
+        for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST):
             # UpsertConstituent Message
             partner = contract.correspondent_id
             partner.upsert_constituent()
@@ -787,7 +788,7 @@ class SponsorshipContract(models.Model):
         self.with_delay(eta=delay).cancel_old_invoices()
 
         con_line_obj = self.env["recurring.contract.line"]
-        for contract in self.filtered(lambda c: "S" in c.type):
+        for contract in self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST):
             gift_contract_lines = con_line_obj.search(
                 [("sponsorship_id", "=", contract.id)]
             )
@@ -811,13 +812,13 @@ class SponsorshipContract(models.Model):
     @api.multi
     def contract_cancelled(self):
         super().contract_cancelled()
-        self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
+        self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST)._on_sponsorship_finished()
         return True
 
     @api.multi
     def contract_terminated(self):
         super().contract_terminated()
-        self.filtered(lambda c: "S" in c.type)._on_sponsorship_finished()
+        self.filtered(lambda c: c.type in SPONSORSHIP_TYPE_LIST)._on_sponsorship_finished()
         return True
 
     @api.multi
@@ -1015,13 +1016,13 @@ class SponsorshipContract(models.Model):
         child_id = vals.get("child_id")
         for contract in self:
             if (
-                    "S" in contract.type
+                    contract.type in SPONSORSHIP_TYPE_LIST
                     and contract.child_id
                     and contract.child_id.id != child_id
             ):
                 # Free the previously selected child
                 contract.child_id.child_unsponsored()
-            if child_id and "S" in contract.type:
+            if child_id and contract.type in SPONSORSHIP_TYPE_LIST:
                 # Mark the selected child as sponsored
                 self.env["compassion.child"].browse(child_id).child_sponsored(
                     vals.get("correspondent_id") or contract.correspondent_id.id
