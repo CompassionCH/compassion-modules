@@ -15,10 +15,6 @@ from odoo.exceptions import UserError
 class RecurringContractLine(models.Model):
     _inherit = ["recurring.contract.line"]
 
-    product_id = fields.Many2one(
-        domain="[('id', 'in', allowed_product_ids)]"
-    )
-
     @api.constrains('quantity', 'product_id')
     def quantity_constrains(self):
         for contract_line in self.filtered("product_id.survival_sponsorship_sale"):
@@ -39,9 +35,11 @@ class RecurringContractLine(models.Model):
         if self.contract_id.type == "CSP":
             tmpl = self.env.ref(
                 "survival_sponsorship_compassion.survival_product_template")
+            fund = self.env.ref("sponsorship_compassion.product_category_fund")
             res["domain"] = {
                 "product_id": [
-                    ("product_tmpl_id", "=", tmpl.id)
+                    "|", ("product_tmpl_id", "=", tmpl.id),
+                    ("product_tmpl_id.categ_id", "=", fund.id)
                 ]
             }
         return res

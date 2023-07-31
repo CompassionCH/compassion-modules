@@ -52,12 +52,12 @@
                                 <span>Letters in translation: </span>
                                 <field name="number_current_letters"/>
                             </a>
-                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id}">
+                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_ids': active_id}">
                                 <br/>
                                 <span>Total translators: </span>
                                 <field name="number_translators"/>
                             </a>
-                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id, 'search_default_translated_this_year': 1}">
+                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_ids': active_id, 'search_default_translated_this_year': 1}">
                                 <br/>
                                 <span>Translators active this year: </span>
                                 <field name="number_active_translators"/>

@@ -7,7 +7,7 @@
             <form string="Reply to comments">
                 <group>
                     <field name="paragraph_ids">
-                        <tree default_order="page_id asc, sequence asc">
+                        <tree>
                             <field name="original_text"/>
                             <field name="translated_text"/>
                             <field name="comments"/>
@@ -16,6 +16,7 @@
                 </group>
                 <group>
                     <field name="answer"/>
+                    <p class="text-muted">Your reply will be added in an automatic email with greetings.</p>
                 </group>
                 <footer>
                     <button name="send_reply" string="Send reply" type="object" class="btn-primary"/>
