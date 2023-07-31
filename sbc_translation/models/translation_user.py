@@ -47,7 +47,7 @@ class TranslationUser(models.Model):
     @api.depends("translation_skills")
     def _compute_competences(self):
         for translator in self:
-            translator.search_competence_ids = translator.mapped("translation_skills.competence_id").ids
+            translator.search_competence_ids = translator.mapped("translation_skills.competence_id")
 
     @api.multi
     @api.depends("translated_letter_ids")
