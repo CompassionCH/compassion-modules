@@ -23,6 +23,7 @@ class Correspondence(models.Model):
         """
     _inherit = "correspondence"
 
+    name = fields.Char(store=True)
     new_translator_id = fields.Many2one("translation.user", "Local translator")
     src_translation_lang_id = fields.Many2one(
         "res.lang.compassion", "Source of translation", readonly=False
