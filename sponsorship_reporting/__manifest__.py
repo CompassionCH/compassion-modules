@@ -37,7 +37,6 @@
         "account_fiscal_year",  # OCA/account-financial-reporting
         "account_fiscal_month",  # OCA/account-financial-reporting
         "sponsorship_sub_management",  # CompassionCH/compassion-modules
-        "crm_phone",
     ],
     "data": [
         "views/sponsorships_evolution_reports_view.xml",
