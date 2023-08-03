@@ -68,7 +68,7 @@ class Correspondence(models.Model):
         track_visibility="onchange",
         readonly=False,
     )
-    name = fields.Char(compute="_compute_name")
+    name = fields.Char(compute="_compute_name", store=True)
     partner_id = fields.Many2one(
         "res.partner", "Partner", readonly=True, ondelete="restrict"
     )
@@ -297,6 +297,7 @@ class Correspondence(models.Model):
         ]
 
     @api.multi
+    @api.depends("communication_type_ids", "partner_id", "child_id")
     def _compute_name(self):
         for letter in self:
             if letter.partner_id and letter.child_id and letter.communication_type_ids:
