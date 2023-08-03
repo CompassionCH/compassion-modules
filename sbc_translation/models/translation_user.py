@@ -31,7 +31,7 @@ class TranslationUser(models.Model):
         "res.lang.compassion", domain=[("translatable", "=", True)],
         help="Utility field only used for the search view"
     )
-    search_competence_ids = fields.Many2one(
+    search_competence_id = fields.Many2one(
         "translation.competence",
         help="Utility field only used for the search view"
     )

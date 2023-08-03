@@ -63,7 +63,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="partner_id"/>
-                <field name="search_competence_ids" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
+                <field name="search_competence_id" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
                 <field name="search_source_lang" string="Source language" filter_domain="[('translation_skills.competence_id.source_language_id', '=', self)]"/>
                 <field name="search_dest_lang" string="Destination language" filter_domain="[('translation_skills.competence_id.dest_language_id', '=', self)]"/>
                 <separator />

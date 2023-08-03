@@ -31,6 +31,7 @@ class TranslationCompetence(models.Model):
         ("unique_competence", "unique(source_language_id,dest_language_id)", "This competence already exists.")
     ]
 
+    @api.depends("dest_language_id", "source_language_id")
     def _compute_name(self):
         for competence in self:
             competence.name = competence.source_language_id.name + " -> " + competence.dest_language_id.name
