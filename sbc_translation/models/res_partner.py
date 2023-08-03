@@ -17,12 +17,15 @@ from odoo.exceptions import UserError
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    translation_user_id = fields.One2many(
+    translation_user_id = fields.Many2one(
         "translation.user",
-        inverse_name="partner_id",
         string="Translation User",
-        help="Allow to engage the partner in translations.")
+        help="Allow to engage the partner in translations.",
+        compute="_compute_translator",
+        readonly=False,
+        store=True
+    )
 
-    _sql_constraints = [
-        ('translation_user_uniq', 'unique(translation_user_id)', 'Only one Translation User can be linked !'),
-    ]
+    def _compute_translator(self):
+        for partner in self:
+            partner.translation_user_id = self.env["translation.user"].search([("partner_id", "=", partner.id)], limit=1)
