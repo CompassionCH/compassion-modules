@@ -38,17 +38,10 @@
                     </group>
                     <group>
                         <field name="translation_skills" context="{'default_translator_id': active_id}">
-                            <tree>
+                            <tree editable="bottom">
                                 <field name="competence_id"/>
                                 <field name="verified"/>
                             </tree>
-                            <form>
-                                <group>
-                                    <field name="translator_id" invisible="1"/>
-                                    <field name="competence_id"/>
-                                    <field name="verified"/>
-                                </group>
-                            </form>
                         </field>
                     </group>
                 </sheet>
