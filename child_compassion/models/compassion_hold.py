@@ -14,10 +14,8 @@ from functools import reduce
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
-from odoo.tools import config
 
 logger = logging.getLogger(__name__)
-test_mode = config.get("test_enable")
 
 
 class HoldType(Enum):
@@ -209,7 +207,8 @@ class CompassionHold(models.Model):
         if "expiration_date" in vals and self.filtered(
                 lambda h: h.expiration_date < datetime.now()):
             raise UserError(_(
-                "The expiration date as been reach and thus can't be changed."))
+                "Sorry, the child is no longer available."
+            ))
 
         res = super().write(vals)
         notify_vals = ["primary_owner", "type", "expiration_date"]
@@ -248,7 +247,6 @@ class CompassionHold(models.Model):
         messages.process_messages()
         failed = messages.filtered(lambda m: "failure" in m.state)
         if failed:
-            self.env.cr.rollback()
             raise UserError("\n\n".join(failed.mapped("failure_reason")))
 
     def hold_sent(self, vals):
@@ -265,9 +263,6 @@ class CompassionHold(models.Model):
                 elif old_hold.hold_id != hold.hold_id and old_hold.expiration_date < datetime.now():
                     child_to_update.hold_id = hold
                     old_hold.unlink()
-                # Always commit after receiving a hold to avoid losing it
-                if not test_mode:
-                    self.env.cr.commit()  # pylint: disable=invalid-commit
             else:
                 # Release child if no hold_id received
                 hold.unlink()
@@ -489,9 +484,6 @@ class CompassionHold(models.Model):
                 subject=_("No money hold extension"),
                 subtype_xmlid="mail.mt_comment",
             )
-            # Commit after hold is updated
-            if not test_mode:
-                self.env.cr.commit()  # pylint:disable=invalid-commit
 
     ##########################################################################
     #                              Mapping METHOD                            #

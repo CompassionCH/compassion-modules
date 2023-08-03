@@ -13,7 +13,7 @@ from odoo import models, fields, api
 class PrivacyStatement(models.Model):
     _name = "compassion.privacy.statement"
     _description = "Compassion Privacy Statement"
-    _order = "version"
+    _order = "date desc"
     _sql_constraints = [
         ("unique_privacy_statement", "unique(version)", 'This "Version" already exists')
     ]

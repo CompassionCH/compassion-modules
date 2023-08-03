@@ -55,8 +55,7 @@ class ResPartnerMatch(models.AbstractModel):
 
         # Postprocess partner (either update or create it depending on context options)
         if len(partner) == 1 and match_update:
-            delay = datetime.now() + timedelta(minutes=1)
-            self.with_delay(eta=delay)._update_partner(partner, vals)
+            self.update_partner(partner, vals)
         if not partner and match_create:
             partner = self._create_partner(vals)
         return partner
@@ -92,10 +91,14 @@ class ResPartnerMatch(models.AbstractModel):
         return create_infos
 
     @api.model
-    def _update_partner(self, partner, vals):
-        """Update the matched partner with a selection of the given infos."""
-        update_infos = self._process_update_vals(vals)
-        partner.with_context({"skip_check_zip": True}).write(update_infos)
+    def update_partner(self, partner, vals, async_mode=True, delay=1):
+        delay = datetime.now() + timedelta(minutes=delay)
+        filtered_vals = self._process_update_vals(partner, vals)
+        if async_mode:
+            partner.with_context({"skip_check_zip": True}).with_delay(
+                eta=delay).write(filtered_vals)
+        else:
+            partner.with_context({"skip_check_zip": True}).write(filtered_vals)
 
     @api.model
     def _preprocess_vals(self, vals):
@@ -103,15 +106,16 @@ class ResPartnerMatch(models.AbstractModel):
         pass
 
     @api.model
-    def _process_update_vals(self, vals):
+    def _process_update_vals(self, partner, vals):
         """
         From the info given by the user, select the one that should be used
         for the update of the partner.
         """
         valid = self._get_valid_update_fields()
         update_infos = {}
+        partner_vals = partner.read(vals.keys())[0]
         for key, value in vals.items():
-            if key in valid and value:
+            if key in valid and partner_vals[key] != value:
                 update_infos[key] = value
         return update_infos
 
@@ -171,4 +175,6 @@ class ResPartnerMatch(models.AbstractModel):
             "country_id",
             "state_id",
             "function",
+            "lang",
+            "title",
         ]

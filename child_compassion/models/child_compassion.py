@@ -63,7 +63,6 @@ class CompassionChild(models.Model):
         [
             ("W", "Waiting Hold"),
             ("N", "Consigned"),
-            ("I", "On Internet"),
             ("P", "Sponsored"),
             ("F", "Departed"),
             ("R", "Released"),
@@ -295,10 +294,10 @@ class CompassionChild(models.Model):
 
     # Descriptions
     ##############
-    desc_en = fields.Text("English description", readonly=True)
+    desc_en = fields.Html("English description", readonly=True)
 
-    description_left = fields.Text(compute="_compute_description")
-    description_right = fields.Text(compute="_compute_description")
+    description_left = fields.Html(compute="_compute_description")
+    description_right = fields.Html(compute="_compute_description")
 
     # Just for migration
     delegated_comment = fields.Text()
@@ -337,7 +336,7 @@ class CompassionChild(models.Model):
 
     @api.model
     def _available_states(self):
-        return ["N", "I"]
+        return ["N"]
 
     def _compute_exit_reason(self):
         for child in self:
@@ -381,7 +380,6 @@ class CompassionChild(models.Model):
                 HoldType.SUB_CHILD_HOLD.value,
                 HoldType.NO_MONEY_HOLD.value,
             ],
-            "I": consignment_holds,
             "P": no_hold
             + [HoldType.NO_MONEY_HOLD.value, HoldType.SUB_CHILD_HOLD.value],
             "F": no_hold,

@@ -172,7 +172,9 @@ class SponsorshipContract(models.Model):
     group_freq = fields.Char(
         string="Payment frequency", compute="_compute_frequency", readonly=True
     )
-    is_first_sponsorship = fields.Boolean(readonly=True)
+    is_first_sponsorship = fields.Boolean(
+        compute="_compute_is_first_sponsorship", store=True
+    )
     sponsorship_line_id = fields.Integer(
         help="Identifies the active sponsorship line of a sponsor."
              "When sponsorship is ended but a SUB is made, the SUB will have"
@@ -469,6 +471,17 @@ class SponsorshipContract(models.Model):
             contract.is_gift_authorized = True
             if not contract.is_direct_debit and (contract.birthday_invoice or contract.christmas_invoice):
                 contract.is_gift_authorized = False
+
+    @api.depends("correspondent_id")
+    def _compute_is_first_sponsorship(self):
+        for sponsorship in self:
+            old_sponsorships = sponsorship.correspondent_id.sponsorship_ids\
+                .filtered(
+                    lambda c: c.state != "cancelled" and c.start_date
+                    and c.start_date < (
+                        sponsorship.start_date or sponsorship.create_date
+                        ))
+            sponsorship.is_first_sponsorship = not old_sponsorships
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -776,10 +789,6 @@ class SponsorshipContract(models.Model):
         for contract in self - contracts:
             if not contract.start_date:
                 contract.start_date = fields.Datetime.now()
-            old_sponsorships = contract.correspondent_id.sponsorship_ids.filtered(
-                lambda c: c.state != "cancelled" and c.start_date
-                          and c.start_date < contract.start_date)
-            contract.is_first_sponsorship = not old_sponsorships
 
             if contract.type == "G":
                 # Activate directly if sponsorship is already active

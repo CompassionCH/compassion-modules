@@ -45,7 +45,7 @@
         <field name="inherit_id" ref="child_compassion.view_compassion_child_tree"/>
         <field name="arch" type="xml">
             <field name="hold_ambassador" position="before">
-                <field name="hold_event"/>
+                <field name="hold_event" optional="true"/>
             </field>
         </field>
     </record>

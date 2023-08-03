@@ -179,14 +179,14 @@ class EventCompassion(models.Model):
         for event in self:
             event.full_name = event.type.title() + " " + event.name + " " + event.year
 
-    @api.depends("hold_ids")
+    @api.depends("hold_ids", "hold_ids.type")
     def _compute_allocate_children(self):
         for event in self:
             children = event.hold_ids.mapped("child_id")
             event.allocate_child_ids = children
             nb_child = 0
             for child in children:
-                if child.state in ("N", "I"):
+                if child.state == "N":
                     nb_child += 1
             event.effective_allocated = nb_child
 
@@ -469,7 +469,7 @@ class EventCompassion(models.Model):
         }
         return calendar_vals
 
-    def allocate_children(self):
+    def allocate_children_action(self):
         no_money_yield = float(self.planned_sponsorships)
         yield_rate = float(self.number_allocate_children - self.planned_sponsorships)
         if self.number_allocate_children > 1:
@@ -486,7 +486,8 @@ class EventCompassion(models.Model):
             "target": "current",
             "context": self.with_context(
                 {
-                    "default_take": self.number_allocate_children,
+                    "default_take": (self.number_allocate_children
+                                     - self.effective_allocated),
                     "default_event_id": self.id,
                     "default_channel": "event",
                     "default_ambassador": self.user_id.partner_id.id,
@@ -498,6 +499,20 @@ class EventCompassion(models.Model):
                 }
             ).env.context,
         }
+
+    def allocate_children(self):
+        """
+        Puts children on hold for the event
+        @return: Nothing
+        """
+        for event in self:
+            context = event.allocate_children()["context"]
+            childpool = self.env["compassion.childpool.search"].with_context(
+                context).create({})
+            childpool.rich_mix()
+            hold_wizard = self.env["child.hold.wizard"].with_context(
+                active_id=childpool.id, active_model=childpool._name).create({})
+            hold_wizard.with_delay().send()
 
     ##########################################################################
     #              SUBSCRIPTION METHODS TO SUBSCRIBE STAFF ONLY              #

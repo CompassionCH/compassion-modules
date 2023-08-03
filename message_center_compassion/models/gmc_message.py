@@ -13,12 +13,11 @@ import re
 import traceback
 from datetime import datetime
 
-from odoo import api, models, fields, tools, _
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 from ..tools.onramp_connector import OnrampConnector
 
 logger = logging.getLogger(__name__)
-testing = tools.config.get("test_enable")
 
 
 class GmcMessage(models.Model):
@@ -358,8 +357,6 @@ class GmcMessage(models.Model):
                             "state": "success"
                         }
                     )
-                    if not testing:
-                        self.env.cr.commit()  # pylint:disable=invalid-commit
                     self[i]._process_single_answer(data_objects[i], result)
                 elif isinstance(result, dict):
                     if action.failure_method:
@@ -402,19 +399,20 @@ class GmcMessage(models.Model):
         self.ensure_one()
         action = self.action_id
         try:
-            answer_data = data_object.json_to_data(answer_data, action.mapping_id.name)
-            f = getattr(data_object, action.success_method)
-            f(answer_data)
-            self.state = "success"
+            with self.env.cr.savepoint():
+                answer_data = data_object.json_to_data(
+                    answer_data, action.mapping_id.name)
+                f = getattr(data_object, action.success_method)
+                f(answer_data)
+                self.state = "success"
         except Exception as e:
             logger.error(traceback.format_exc())
-            self.env.cr.rollback()
-            self.env.clear()
             try:
                 if action.failure_method:
                     getattr(data_object, action.failure_method)(answer_data)
             except:
-                pass
+                logger.warning(
+                    "Failure method of message %s failed", [action.name])
             self.write(
                 {"state": "odoo_failure", "failure_reason": str(e), }
             )

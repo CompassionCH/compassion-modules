@@ -16,6 +16,7 @@ class FieldOffice(models.Model):
     _name = "compassion.field.office"
     _inherit = "compassion.mapped.model"
     _description = "Field Office"
+    _order = "country_name,field_office_id"
 
     name = fields.Char("Name")
     field_office_id = fields.Char(required=True)
@@ -32,6 +33,7 @@ class FieldOffice(models.Model):
     country = fields.Char(string="country")
     country_id = fields.Many2one("res.country", "Country", readonly=False)
     country_code = fields.Char(related="country_id.code")
+    country_name = fields.Char(related="country_id.name", store=True, readonly=True)
     street = fields.Char()
     city = fields.Char()
     province = fields.Char()

@@ -9,9 +9,8 @@
 ##############################################################################
 import logging
 
-from odoo import tools, models, api, fields, _
+from odoo import models, fields, _
 
-testing = tools.config.get("test_enable")
 _logger = logging.getLogger(__name__)
 
 
@@ -52,32 +51,26 @@ class ChildHoldWizard(models.TransientModel):
         chunk_size = 10
         for i in range(0, len(child_search), chunk_size):
             _logger.debug(f"Processing chunk {i} for sending hold requests")
-            try:
-                messages = self.env["gmc.message"]
-                for child in child_search[i: i + chunk_size]:
-                    # Save children form global children to compassion children
-                    child_comp = self.env["compassion.child"].create(
-                        child.get_child_vals()
-                    )
+            messages = self.env["gmc.message"]
+            for child in child_search[i: i + chunk_size]:
+                # Save children form global children to compassion children
+                child_comp = self.env["compassion.child"].create(
+                    child.get_child_vals()
+                )
 
-                    # Create Holds for children to reserve
-                    hold_vals = self.get_hold_values()
-                    hold_vals["child_id"] = child_comp.id
-                    hold = holds.create(hold_vals)
-                    holds += hold
+                # Create Holds for children to reserve
+                hold_vals = self.get_hold_values()
+                hold_vals["child_id"] = child_comp.id
+                hold = holds.create(hold_vals)
+                holds += hold
 
-                    # Create messages to send to Connect
-                    action_id = self.env.ref("child_compassion.create_hold").id
+                # Create messages to send to Connect
+                action_id = self.env.ref("child_compassion.create_hold").id
 
-                    messages += messages.create(
-                        {"action_id": action_id, "object_id": hold.id}
-                    )
-                messages.process_messages()
-                if not testing:
-                    self.env.cr.commit()  # pylint: disable=invalid-commit
-            except:
-                _logger.error("Hold chunk failed", exc_info=True)
-                self.env.cr.rollback()
+                messages += messages.create(
+                    {"action_id": action_id, "object_id": hold.id}
+                )
+            messages.process_messages()
 
         return self._get_action(holds)
 

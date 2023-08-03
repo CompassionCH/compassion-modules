@@ -1,0 +1,26 @@
+<odoo>
+    <record model="base.automation" id="allocate_children">
+        <field name="name">Allocate children for event</field>
+        <field name="model_id" ref="model_crm_event_compassion"/>
+        <field name="state">code</field>
+        <field name="filter_domain">[('number_allocate_children', '>', 0)]</field>
+        <field name="trigger">on_time</field>
+        <field name="trg_date_id" ref="field_crm_event_compassion__hold_start_date"/>
+        <field name="code">
+records.allocate_children()
+        </field>
+    </record>
+
+    <record model="base.automation" id="fill_event_pool">
+        <field name="name">Refill the event pool with new children</field>
+        <field name="model_id" ref="model_crm_event_compassion"/>
+        <field name="state">code</field>
+        <field name="trigger">on_write</field>
+        <field name="trigger_field_ids" eval="[(6,0,ref('field_crm_event_compassion__effective_allocated'))]"/>
+        <field name="filter_pre_domain">[('start_date', '&lt;', datetime.datetime.now()), ('end_date', '&gt;', datetime.datetime.now())]</field>
+        <field name="filter_domain">[('effective_allocated', '&lt;', 10)]</field>
+        <field name="code">
+records.allocate_children()
+        </field>
+    </record>
+</odoo>

@@ -13,6 +13,8 @@ import logging
 from datetime import date
 from urllib.request import urlopen
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import models, fields, api
 
 logger = logging.getLogger(__name__)
@@ -48,7 +50,7 @@ class GenericChild(models.AbstractModel):
     preferred_name = fields.Char()
     gender = fields.Selection([("F", "Female"), ("M", "Male")], readonly=True)
     birthdate = fields.Date(readonly=True)
-    age = fields.Integer(readonly=True, compute="_compute_age")
+    age = fields.Integer(readonly=True, compute="_compute_age", search="_search_age")
     is_orphan = fields.Boolean(readonly=True)
     is_area_hiv_affected = fields.Boolean()
     beneficiary_state = fields.Selection("_get_availability_state", readonly=True)
@@ -123,6 +125,24 @@ class GenericChild(models.AbstractModel):
                 - born.year
                 - ((today.month, today.day) < (born.month, born.day))
             )
+
+    def _search_age(self, operator, value):
+        try:
+            value_min = date.today() - relativedelta(years=int(value) + 1)
+            value_max = False
+            if operator == "=":
+                value_max = value_min + relativedelta(years=1)
+            elif operator in [">", ">="]:
+                value_max = value_min + relativedelta(years=1)
+                value_min = False
+            res = []
+            if value_min:
+                res.append(("birthdate", ">=", value_min))
+            if value_max:
+                res.append(("birthdate", "<=", value_max))
+            return res
+        except ValueError:
+            return []
 
     def _compute_image_thumb(self):
         self._load_image(True, False)

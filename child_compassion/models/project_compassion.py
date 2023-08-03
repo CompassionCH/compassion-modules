@@ -373,9 +373,9 @@ class CompassionProject(models.Model):
 
     # Project Descriptions
     ######################
-    description_en = fields.Text("English description", readonly=True)
-    description_left = fields.Text(compute="_compute_description")
-    description_right = fields.Text(compute="_compute_description")
+    description_en = fields.Html("English description", readonly=True)
+    description_left = fields.Html(compute="_compute_description")
+    description_right = fields.Html(compute="_compute_description")
 
     re_opening_status = fields.Char(compute="_compute_re_opening_state",
                                     store=True,
