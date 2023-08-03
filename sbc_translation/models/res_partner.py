@@ -22,7 +22,8 @@ class ResPartner(models.Model):
         string="Translation User",
         help="Allow to engage the partner in translations.",
         compute="_compute_translator",
-        readonly=False
+        readonly=False,
+        store=True
     )
 
     def _compute_translator(self):
