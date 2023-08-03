@@ -680,30 +680,36 @@ class CommunicationJob(models.Model):
         }
         for job in self:
             if job.attachment_ids:
-                # Print letter
-                print_name = name[:3] + " " + (job.subject or "")
-                # output_tray = job.print_letter(print_name)["output_tray"]
-                job.print_letter(print_name)
+                try:
+                    with self.env.cr.savepoint():
+                        # Print letter
+                        print_name = name[:3] + " " + (job.subject or "")
+                        # output_tray = job.print_letter(print_name)["output_tray"]
+                        job.print_letter(print_name)
 
-                # Print attachments in the same output_tray
-                job.attachment_ids.print_attachments(
-                    # output_tray=output_tray,
-                )
-                job.write({"state": state, "sent_date": fields.Datetime.now()})
-                if not testing:
-                    # Commit to avoid invalid state if process fails
-                    self.env.cr.commit()  # pylint: disable=invalid-commit
+                        # Print attachments in the same output_tray
+                        job.attachment_ids.print_attachments(
+                            # output_tray=output_tray,
+                        )
+                        job.write({
+                            "state": state,
+                            "sent_date": fields.Datetime.now()
+                        })
+                except:
+                    _logger.error("Error printing job %s", [job.id])
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += job
 
         for lang, configs in batch_print.items():
             for config, jobs in configs.items():
-                print_name = name[:3] + " " + config
-                jobs.print_letter(print_name)
-                jobs.write({"state": state, "sent_date": fields.Datetime.now()})
-                if not testing:
-                    # Commit to avoid invalid state if process fails
-                    self.env.cr.commit()  # pylint: disable=invalid-commit
+                try:
+                    with self.env.cr.savepoint():
+                        print_name = name[:3] + " " + config
+                        jobs.print_letter(print_name)
+                        jobs.write({"state": state, "sent_date": fields.Datetime.now()})
+                except:
+                    _logger.error(
+                        "Error while printing jobs %s", [str(jobs.ids)])
         return self.download_data()
 
     def print_letter(self, print_name, **print_options):

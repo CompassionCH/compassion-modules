@@ -8,8 +8,6 @@
 #
 ##############################################################################
 
-# from . import controllers
-# from . import forms
 from . import models
 from . import wizards
 from odoo.addons.message_center_compassion.tools.load_mappings \

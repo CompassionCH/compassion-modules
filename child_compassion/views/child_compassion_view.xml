@@ -39,7 +39,7 @@
                                 <div class="oe_product_desc">
                                     <a type="open">
                                         <img class="oe_kanban_image" alt="child"
-                                             t-att-src="kanban_image('compassion.child', 'headshot', record.pictures_ids.raw_value)"/>
+                                             t-att-src="kanban_image('compassion.child.pictures', 'headshot', record.pictures_ids.raw_value)"/>
                                         <h4>
                                             <field name="name"/>
                                         </h4>
@@ -83,7 +83,7 @@
                         <button name="get_infos" string="Get info" type="object" icon="fa-refresh" class="oe_stat_button"
                                 context="{'async_mode': False}"/>
                         <button name="get_lifecycle_event" string="Get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        <button name="edit_translations" string="Edit translations" type="object" icon="fa-globe" class="oe_stat_button"/>
+                        <button name="edit_translations" string="Edit translations" type="object" icon="fa-language" class="oe_stat_button"/>
                     </div>
                     <div class="row">
                         <div class="col-2">
@@ -257,11 +257,12 @@
         <field name="arch" type="xml">
             <tree decoration-warning="state == 'W'"
                   decoration-muted="state in ('F', 'R')">
+                <field name="preferred_name"/>
                 <field name="name"/>
                 <field name="local_id"/>
                 <field name="date"/>
-                <field name="unsponsored_since"/>
-                <field name="sponsor_id"/>
+                <field name="unsponsored_since" optional="true"/>
+                <field name="sponsor_id" optional="true"/>
                 <field name="gender"/>
                 <field name="birthdate"/>
                 <field name="birthday_dm"/>
@@ -269,7 +270,7 @@
                 <field name="hold_channel"/>
                 <field name="hold_type"/>
                 <field name="hold_owner"/>
-                <field name="hold_ambassador"/>
+                <field name="hold_ambassador" optional="true"/>
                 <field name="hold_expiration"/>
                 <field name="state"/>
             </tree>
@@ -291,13 +292,10 @@
                 <field name="hold_owner"/>
                 <field name="hold_ambassador"/>
                 <field name="birthday_month"/>
-                <filter name="available" string="Consigned" domain="[('state','in',('N','I'))]"/>
-                <filter name="sponsored" string="Sponsored" domain="[('state','=','P')]"/>
-                <filter name="departed" string="Departed" domain="[('state','=','F')]" help="Departed children"/>
                 <separator/>
                 <filter name="my_children" string="My Allocations" domain="[('hold_owner','=',uid)]"/>
                 <group expand="0" string="Group By...">
-                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
                     <filter string="Hold Type" name="hold_type" domain="[]" context="{'group_by':'hold_type'}"/>
                     <filter string="Channel" name="channel" domain="[]" context="{'group_by':'hold_channel'}"/>
                     <filter string="Owner" name="owner" domain="[]" context="{'group_by':'hold_owner'}"/>
@@ -420,7 +418,7 @@
         <field name="name">Children</field>
         <field name="res_model">compassion.child</field>
         <field name="view_mode">tree,kanban,form</field>
-        <field name="context">{'search_default_available':1}</field>
+        <field name="context">{'search_default_state':'N'}</field>
     </record>
 
     <!-- Update child picture actions -->

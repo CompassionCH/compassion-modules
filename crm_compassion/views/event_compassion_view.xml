@@ -35,7 +35,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="allocate_children" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
+                    <button name="allocate_children_action" type="object" string="Allocate children" colspan="2" context="{'number_allocate_children': number_allocate_children}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="buttons">

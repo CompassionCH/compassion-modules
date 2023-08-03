@@ -15,12 +15,10 @@ from io import BytesIO
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-from odoo.tools import config
 from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 from ..tools.onramp_connector import SBCConnector
 
 _logger = logging.getLogger(__name__)
-test_mode = config.get("test_enable")
 
 try:
     import magic
@@ -785,38 +783,6 @@ class Correspondence(models.Model):
             ]
         )
         gmc_messages.write({"state": "new"})
-
-    @api.model
-    def migrate_attachments(self):
-        """ This method is specific for migration > 10.0.1.1.0
-            so that the attachments can be correctly linked to the letters.
-            It is not put inside a migration script because the method is
-            very slow. Therefore we commit at each letter to avoid having to
-            start all over again in case of failure.
-        """
-        attachment_obj = self.env["ir.attachment"]
-        _logger.info("Migration of correspondence attachments started !")
-        letters = self.search([("letter_image", "=", False)], order="id desc")
-        total = len(letters)
-        index = 1
-        for letter in letters:
-            _logger.info(f"... moving attachment of letter {index}/{total}")
-            attachments = attachment_obj.search(
-                [("res_model", "=", "correspondence"), ("res_id", "=", letter.id)],
-                order="id desc",
-            )
-            if attachments:
-                letter.write(
-                    {
-                        "letter_image": attachments[0].datas,
-                        "file_name": attachments[0].name,
-                    }
-                )
-                attachments.unlink()
-            if not test_mode:
-                self.env.cr.commit()  # pylint: disable=invalid-commit
-            index += 1
-        return True
 
     def _get_file_name(self):
         self.ensure_one()

@@ -47,7 +47,7 @@
                 <attribute name="attrs">{'required':[('type', 'in', ['S','SC','SWP'])]}</attribute>
             </field>
             <field name="medium_id" position="before">
-                <field name="child_id" domain="[('state', 'in', ('N', 'I'))]"
+                <field name="child_id" domain="[('state', '=', 'N')]"
                        options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
                 <field name="origin_id"/>
             </field>

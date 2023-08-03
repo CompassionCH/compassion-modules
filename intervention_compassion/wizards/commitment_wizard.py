@@ -7,11 +7,8 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.exceptions import UserError
-from odoo.tools import config
-
-test_mode = config.get("test_enable")
 
 
 class HoldWizard(models.TransientModel):
@@ -65,8 +62,6 @@ class HoldWizard(models.TransientModel):
                 "object_id": self.id,
             }
         )
-        if not test_mode:
-            self.env.cr.commit()  # pylint: disable=invalid-commit
         message.with_context(async_mode=False).process_messages()
         if "failure" in message.state:
             raise UserError(message.failure_reason)
