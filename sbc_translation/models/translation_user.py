@@ -135,6 +135,20 @@ class TranslationUser(models.Model):
         } for translator in self]).id
 
     @api.multi
+    def unlink_skill(self, skill_dict):
+        """
+        Translation Platform API. Delete a skill to the translator
+        :param skill_dict: Data about the skill to delete
+        """
+        for translation_usr in self:
+            translation_usr.translation_skills.filtered(
+                lambda s: s.competence_id.dest_language_id.name == skill_dict.get("target")
+                and s.competence_id.source_language_id.name == skill_dict.get("source")
+                and s.verified == skill_dict.get("verified")
+            ).unlink()
+        return True
+
+    @api.multi
     def get_user_info(self):
         """
         Translation Platform API call to fetch user info.
