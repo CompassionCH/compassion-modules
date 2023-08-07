@@ -653,6 +653,17 @@ class CompassionProject(models.Model):
 
         return True
 
+    def get_all_projects(self):
+        message_obj = self.env["gmc.message"]
+        action_id = self.env.ref("child_compassion.retrieve_all_icp").id
+        message = message_obj.create({
+            "action_id": action_id,
+        })
+        if "failure" in message.state:
+            raise UserError(message.failure_reason)
+
+        return True
+
     def get_lifecycle_event(self):
         onramp = OnrampConnector(self.env)
         endpoint = "churchpartners/{}/kits/icplifecycleeventkit"
