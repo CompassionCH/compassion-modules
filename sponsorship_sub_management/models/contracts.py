@@ -228,7 +228,7 @@ class RecurringContract(models.Model):
         """Change color of parent Sponsorship."""
         res = super().contract_active()
         for sub in self.filtered(lambda s: s.parent_id.sds_state == "sub"):
-            sub.parent_id.color_id = 10  # Green
+            sub.parent_id.color = 10  # Green
         return res
 
     def check_sub_state(self):
