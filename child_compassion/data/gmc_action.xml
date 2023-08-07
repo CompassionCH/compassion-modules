@@ -54,13 +54,15 @@
             <field name="no_outgoing_data" eval="True"/>
             <field name="success_method">details_answer</field>
         </record>
-        <record id="retrieve_all_icp" model="gmc.action">
+        <record id="icp_search_request" model="gmc.action">
             <field name="direction">out</field>
-            <field name="name">RetrieveAllICP</field>
+            <field name="name">ICPSearchRequest</field>
             <field name="mapping_id" ref="mapping_fcp"/>
+            <field name="connect_answer_wrapper">ICPResponseList</field>
             <field name="description">This will retrieve all the projects</field>
             <field name="connect_service">churchpartners/availabilityquery</field>
-            <field name="request_type">GET</field>
+            <field name="request_type">POST</field>
+            <field name="no_outgoing_data">True</field>
             <field name="auto_process">1</field>
         </record>
         <record id="field_office_details" model="gmc.action">
