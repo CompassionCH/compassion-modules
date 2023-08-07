@@ -6,7 +6,8 @@
         <field name="arch" type="xml">
             <field name="end_date" position="after">
                 <button type='object' name='limited_time' string="Limited time CSP"
-                        attrs="{'invisible': ['|', ('type','!=', 'CSP'), ('state', '!=', 'draft')]}" />
+                        attrs="{'invisible': ['|', ('type','!=', 'CSP'), ('state', '!=', 'draft')]}" 
+                        help="This button will calculate an end date in 18 months from now." />
             </field>
         </field>
     </record>
