@@ -655,7 +655,7 @@ class CompassionProject(models.Model):
 
     def get_all_projects(self):
         message_obj = self.env["gmc.message"]
-        action_id = self.env.ref("child_compassion.retrieve_all_icp").id
+        action_id = self.env.ref("child_compassion.icp_search_request").id
         message = message_obj.create({
             "action_id": action_id,
         })
