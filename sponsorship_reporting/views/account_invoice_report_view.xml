@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_invoice_report_pivot" model="ir.ui.view">
+         <field name="name">account.invoice.report.compassion.pivot</field>
+         <field name="model">account.invoice.report</field>
+         <field name="inherit_id" ref="account.view_account_invoice_report_pivot"/>
+         <field name="arch" type="xml">
+             <field name="invoice_date" position="replace">
+                 <field name="fiscal_year" type="col"/>
+             </field>
+             <field name="product_categ_id" position="replace">
+                 <field name="account_id" type="row"/>
+             </field>
+         </field>
+    </record>
+
+    <record id="view_account_invoice_report_graph" model="ir.ui.view">
+         <field name="name">account.invoice.report.compassion.graph</field>
+         <field name="model">account.invoice.report</field>
+         <field name="inherit_id" ref="account.view_account_invoice_report_graph"/>
+         <field name="arch" type="xml">
+             <field name="product_categ_id" position="before">
+                 <field name="fiscal_year"/>
+             </field>
+         </field>
+    </record>
+
+    <record id="view_account_invoice_report_search" model="ir.ui.view">
+        <field name="name">account.invoice.report.compassion.search</field>
+        <field name="model">account.invoice.report</field>
+        <field name="inherit_id" ref="account.view_account_invoice_report_search"/>
+        <field name="arch" type="xml">
+            <filter name="my_invoice" position="after">
+                <filter string="Fiscal Year Analysis" name="fy_analysis" domain="[('valid_month', '=', True), ('invoice_date', '&lt;=', time.strftime('%%Y-%%m-%%d')), ('invoice_date', '&gt;=', '2015-07-01'), ('payment_state', '=', 'paid')]" help="Compare fiscal years"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Replace action to use our default filters -->
+    <record id="account.action_account_invoice_report_all" model="ir.actions.act_window">
+        <field name="name">Invoices Analysis</field>
+        <field name="res_model">account.invoice.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_customer':1, 'group_by':[], 'group_by_no_leaf':1, 'search_default_fy_analysis': 1}</field>
+        <field name="search_view_id" ref="view_account_invoice_report_search"/>
+        <field name="help">From this report, you can have an overview of the amount invoiced to your customers. The search tool can also be used to personalise your Invoices reports and so, match this analysis to your needs.</field>
+    </record>
+</odoo>
