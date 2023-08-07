@@ -1,0 +1,14 @@
+<odoo>
+    <record model="ir.ui.view" id="contract_limit_csp_view">
+        <field name="name">csp.time.limit.form.view</field>
+        <field name="model">recurring.contract</field>
+        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+        <field name="arch" type="xml">
+            <field name="end_date" position="after">
+                <button type='object' name='limited_time' string="Limited time CSP"
+                        attrs="{'invisible': ['|', ('type','!=', 'CSP'), ('state', '!=', 'draft')]}" 
+                        help="This button will calculate an end date in 18 months from now." />
+            </field>
+        </field>
+    </record>
+</odoo>

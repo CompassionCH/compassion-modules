@@ -43,6 +43,7 @@
     "data": [
         'views/product_product_view.xml',
         'views/product_template_view.xml',
+        'views/recurring_contract.xml',
         'views/res_config_settings_view.xml',
         'data/product_warning_automation.xml',
         'data/survival_product_template.xml'

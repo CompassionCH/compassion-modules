@@ -7,7 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
+from dateutil.relativedelta import relativedelta
 
+import odoo.fields
 from odoo import fields, models, api
 
 
@@ -20,3 +22,7 @@ class RecurringContract(models.Model):
     def invoice_paid(self, invoice):
         super().invoice_paid(invoice)
         self.filtered(lambda c: c.type == 'CSP').contract_active()
+
+    def limited_time(self):
+        for contract in self:
+            contract.end_date = odoo.fields.datetime.now() + relativedelta(months=18)
