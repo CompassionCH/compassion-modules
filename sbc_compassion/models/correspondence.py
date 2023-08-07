@@ -698,7 +698,8 @@ class Correspondence(models.Model):
         self.download_attach_letter_image(letter_type="original_letter_url")
         res = True
         for letter in self:
-            if letter.original_language_id not in letter.supporter_languages_ids:
+            if (letter.original_language_id not in letter.supporter_languages_ids
+                    and not self.env.context.get("force_publish")):
                 res = res and letter.compose_letter_image()
             letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
         return res
