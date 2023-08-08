@@ -34,12 +34,19 @@ class TranslationUser(models.Model):
     search_competence_id = fields.Many2one(
         "translation.competence",
         help="Utility field only used for the search view"
+
     )
     avatar = fields.Binary(related="partner_id.image_small")
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
+
+    @api.multi
+    @api.depends("translation_skills")
+    def _compute_competences(self):
+        for translator in self:
+            translator.search_competence_ids = translator.mapped("translation_skills.competence_id")
 
     @api.multi
     @api.depends("translated_letter_ids")
@@ -134,6 +141,20 @@ class TranslationUser(models.Model):
             "translator_id": translator.id,
             "competence_id": competence_id,
         } for translator in self]).id
+
+    @api.multi
+    def unlink_skill(self, skill_dict):
+        """
+        Translation Platform API. Delete a skill to the translator
+        :param skill_dict: Data about the skill to delete
+        """
+        for translation_usr in self:
+            translation_usr.translation_skills.filtered(
+                lambda s: s.competence_id.dest_language_id.name == skill_dict.get("target")
+                and s.competence_id.source_language_id.name == skill_dict.get("source")
+                and s.verified == skill_dict.get("verified")
+            ).unlink()
+        return True
 
     @api.multi
     def get_user_info(self):

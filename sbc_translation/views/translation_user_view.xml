@@ -39,17 +39,10 @@
                     </group>
                     <group>
                         <field name="translation_skills" context="{'default_translator_id': active_id}">
-                            <tree>
+                            <tree editable="bottom">
                                 <field name="competence_id"/>
                                 <field name="verified"/>
                             </tree>
-                            <form>
-                                <group>
-                                    <field name="translator_id" invisible="1"/>
-                                    <field name="competence_id"/>
-                                    <field name="verified"/>
-                                </group>
-                            </form>
                         </field>
                     </group>
                 </sheet>
@@ -63,7 +56,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="partner_id"/>
-                <field name="search_competence_id" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
+                <field name="search_competence_ids" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
                 <field name="search_source_lang" string="Source language" filter_domain="[('translation_skills.competence_id.source_language_id', '=', self)]"/>
                 <field name="search_dest_lang" string="Destination language" filter_domain="[('translation_skills.competence_id.dest_language_id', '=', self)]"/>
                 <separator />
