@@ -16,7 +16,7 @@ class TranslationCompetence(models.Model):
         "translation.competence", "Fallback competence",
         help="Letters will move to this pool if they sit for too long waiting to be translated."
     )
-    name = fields.Char(compute="_compute_name")
+    name = fields.Char(compute="_compute_name", store=True)  # We need to store it to filter on it
     all_letter_ids = fields.One2many(
         "correspondence", "translation_competence_id", "All letters"
     )
@@ -31,6 +31,7 @@ class TranslationCompetence(models.Model):
         ("unique_competence", "unique(source_language_id,dest_language_id)", "This competence already exists.")
     ]
 
+    @api.depends("dest_language_id", "source_language_id")
     def _compute_name(self):
         for competence in self:
             competence.name = competence.source_language_id.name + " -> " + competence.dest_language_id.name
@@ -51,12 +52,10 @@ class TranslationCompetence(models.Model):
         for competence in self:
             competence.number_translators = self.env["translation.user"].search_count([
                 ("translation_skills.competence_id", "=", competence.id),
-                ("translation_skills.competence_id", "!=", False)
             ])
             competence.number_active_translators = self.env["translation.user"].search_count([
                 ("translation_skills.competence_id", "=", competence.id),
-                ("translation_skills.competence_id", "!=", False),
-                ("nb_translated_letters_this_year", "!=", False)])
+                ("nb_translated_letters_this_year", ">", 0)])
 
     @api.model
     def get_translation_languages(self):
