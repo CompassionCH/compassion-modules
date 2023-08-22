@@ -82,6 +82,8 @@ class AccountInvoiceLine(models.Model):
             self.env["thankyou.config"].search([]).for_donation(all_invoice_lines)
         )
         generated_comms = self.env["partner.communication.job"]
+        if not thankyou_config:
+            return False
         for communication_config in new_communication_config | all_existing_comm.mapped("config_id"):
             invoice_lines = new_invoice_lines \
                 if new_communication_config == communication_config else self.env[self._name]
