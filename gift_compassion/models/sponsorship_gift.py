@@ -217,7 +217,7 @@ class SponsorshipGift(models.Model):
                 name = gift.translate("sponsorship_gift_type") + " " + _("Gift")
 
             if gift.sponsorship_id:
-                name += " [" + gift.sponsorship_id.name + "]"
+                name += " [" + gift.sponsorship_id.display_name + "]"
             elif gift.partner_id:
                 name += " [" + gift.partner_id.name + "]"
             elif gift.child_id:
