@@ -104,11 +104,11 @@ class RecurringContract(models.Model):
                 )
                 if not has_first_reminder:
                     contracts_eligible_reminder_dict["first"] += sponsorship
-        contracts_eligible_reminder_dict["first"].send_communication(
+        contracts_eligible_reminder_dict["first"].with_delay().send_communication(
             reminder_conf_list[0], correspondent=False)
-        contracts_eligible_reminder_dict["second"].send_communication(
+        contracts_eligible_reminder_dict["second"].with_delay().send_communication(
             reminder_conf_list[1], correspondent=False)
-        contracts_eligible_reminder_dict["third"].send_communication(
+        contracts_eligible_reminder_dict["third"].with_delay().send_communication(
             reminder_conf_list[2], correspondent=False)
         _logger.info("Sponsorship Reminders created!")
         return True
