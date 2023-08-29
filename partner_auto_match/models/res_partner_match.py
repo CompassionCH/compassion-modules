@@ -94,11 +94,15 @@ class ResPartnerMatch(models.AbstractModel):
     def update_partner(self, partner, vals, async_mode=True, delay=1):
         delay = datetime.now() + timedelta(minutes=delay)
         filtered_vals = self._process_update_vals(partner, vals)
+        partner_context = {
+            "skip_check_zip": True,
+            "no_upsert": True
+        }
         if async_mode:
-            partner.with_context({"skip_check_zip": True}).with_delay(
+            partner.with_context(partner_context).with_delay(
                 eta=delay).write(filtered_vals)
         else:
-            partner.with_context({"skip_check_zip": True}).write(filtered_vals)
+            partner.with_context(partner_context).write(filtered_vals)
 
     @api.model
     def _preprocess_vals(self, vals):

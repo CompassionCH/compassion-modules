@@ -1,0 +1,10 @@
+<odoo>
+    <template id="question_matrix" inherit_id="survey.question_matrix">
+        <xpath expr="//table//thead/tr">
+            <th class="border-0" t-if="question.matrix_row_ids.filtered('value_right')"> </th>
+        </xpath>
+        <xpath expr="//tbody/tr//td" position="after">
+            <th class="border-0 font-weight-normal text-right" t-if="col_label_last and row_label.value_right"><span t-field="row_label.value_right" /></th>
+        </xpath>
+    </template>
+</odoo>

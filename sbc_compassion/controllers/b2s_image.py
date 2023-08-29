@@ -43,7 +43,7 @@ def _get_child_correspondence(partner, child):
         lambda contract: contract.correspondent_id == partner or
         contract.partner_id == partner
     )
-    return request.env["correspondence"].search([
+    return request.env["correspondence"].sudo().search([
         ("sponsorship_id", "=", sponsorship_ids[0].id),
     ])
 

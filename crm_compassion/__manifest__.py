@@ -45,9 +45,8 @@
         "crm_phonecall",  # OCA/crm
         "sponsorship_compassion",  # compassion-modules
         "partner_communication",  # compassion-modules
-        "mail_tracking",  # OCA/social
         "partner_contact_in_several_companies",  # oca_addons/partner-contact
-        "mass_mailing",
+        "mail_tracking_mass_mailing",  # OCA/social
         "base_automation",
     ],
     "data": [
