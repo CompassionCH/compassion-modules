@@ -2,11 +2,10 @@
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
-#    @author: Simon Gonzalez <simon.gonzalez@bluewin.ch>
+#    @author: Emanuel Cino <ecino@compassion.ch>
 #
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-
-from . import res_partner_match
-from . import abstract_partner_form
+from . import models
+from .hooks import post_init_hook

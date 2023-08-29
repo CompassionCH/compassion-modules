@@ -48,7 +48,7 @@ class InteractionResume(models.TransientModel):
         related="paper_id.config_id",
     )
     email_id = fields.Many2one("mail.mail", "Email")
-    mass_mailing_id = fields.Many2one("mail.mass_mailing", "Mass mailing")
+    mass_mailing_id = fields.Many2one("mailing.mailing", "Mass mailing")
     other_interaction_id = fields.Many2one(
         "partner.log.other.interaction", "Logged interaction"
     )
@@ -100,7 +100,7 @@ class InteractionResume(models.TransientModel):
                         as communication_type,
                         pcj.sent_date as communication_date,
                         pcj.partner_id AS partner_id,
-                        COALESCE(pcj.email_to, mt.recipient_address) AS email,
+                        mt.recipient_address AS email,
                         pcj.subject AS subject,
                         '' as other_type,
                         REGEXP_REPLACE(pcj.body_html, '<img[^>]*>', '') AS body,
@@ -212,9 +212,9 @@ class InteractionResume(models.TransientModel):
                             SELECT a.message_id
                             FROM message_attachment_rel a WHERE a.message_id = tracking.mail_message_id
                         ) as has_attachment
-                        FROM "mail_mail_statistics" as mail
+                        FROM "mailing_trace" as mail
                         JOIN mail_tracking_email tracking ON mail.mail_tracking_id = tracking.id
-                        JOIN mail_mass_mailing mm ON mail.mass_mailing_id = mm.id
+                        JOIN mailing_mailing mm ON mail.mass_mailing_id = mm.id
                         JOIN utm_source source ON mm.source_id = source.id
                         WHERE mail.sent IS NOT NULL
                         AND tracking.mail_id IS NULL  -- skip if it's already in mail
@@ -249,6 +249,7 @@ class InteractionResume(models.TransientModel):
                         AND m.message_type = 'email'
                         AND m.author_id = ANY(%s)
                         {"" if full_resume else "AND m.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
+                        )
             -- other interactions
                     UNION (
                       SELECT

@@ -1,6 +1,9 @@
+import re
 from odoo import models, api
 from odoo.exceptions import UserError
-from odoo.models import regex_order
+
+
+regex_order = re.compile('^similarity\((.*),.*\)(\s+(desc|asc))?$', re.I)
 
 
 class ResPartner(models.Model):

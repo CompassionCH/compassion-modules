@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Partner segmentation survey-->
+    <record id="partner_segmentation_survey" model="survey.survey">
+        <field name="users_login_required" eval="True"/>
+        <field name="users_can_go_back" eval="False"/>
+        <field name="is_attempts_limited" eval="True"/>
+        <field name="attempts_limit">1</field>
+        <field name="questions_layout">page_per_question</field>
+        <field name="scoring_type">no_scoring</field>
+        <field name="title">Welcome!</field>
+        <field name="state">open</field>
+        <field name="description" type="html">
+            <p>
+                Thank you for participating in this 5-minute survey that will allow Compassion to better serve supporters like you.
+            </p>
+            <p>
+            Please be assured that this survey is completely confidential, and we will only use this information to improve our service to you. We will never publish or share your personal data with third parties without your permission.
+            </p>
+            <p>
+            So let's get started!
+            </p>
+        </field>
+        <field name="description_done" type="html">
+            <p>
+                Thank you so much for taking the time to answer these questions!
+            </p>
+            <div class="mt-4">
+                <a href="/my/home" class="btn btn-primary">Continue</a>
+            </div>
+        </field>
+    </record>
+
+    <!-- Question 1-->
+    <record id="pss_question_1" model="survey.question">
+        <field name="title">Which of the following sentences do you agree more with ?</field>
+        <field name="question_type">matrix</field>
+        <field name="comments_allowed" eval="False"/>
+        <field name="constr_mandatory">True</field>
+        <field name="column_nb">2</field>
+        <field name="survey_id" ref="partner_segmentation_survey"/>
+    </record>
+    <record id="pss_q1_1" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record id="pss_q1_2" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">2</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record id="pss_q1_3" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">3</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record id="pss_q1_4" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">4</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record id="pss_q1_5" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">5</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record id="pss_q1_6" model="survey.question.answer">
+        <field name="value"></field>
+        <field name="answer_score">6</field>
+        <field name="question_id" ref="pss_question_1"/>
+    </record>
+    <record model="survey.question.answer" id="pss_q1_labels">
+        <field name="value">It's nice to receive acknowledgement, however small, when I support a cause</field>
+        <field name="value_right">Receiving acknowledgement when I support a cause doesn't really matter to me</field>
+        <field name="matrix_question_id" ref="pss_question_1"/>
+    </record>
+    <record model="survey.question.answer" id="pss_q2_labels">
+        <field name="value">I want to travel to see firsthand what those in need are experiencing</field>
+        <field name="value_right">I'd rather not travel to see firsthand what those in need are experiencing</field>
+        <field name="matrix_question_id" ref="pss_question_1"/>
+    </record>
+    <record model="survey.question.answer" id="pss_q3_labels">
+        <field name="value">I give as the opportunity arises</field>
+        <field name="value_right">I give on a regular schedule</field>
+        <field name="matrix_question_id" ref="pss_question_1"/>
+    </record>
+    <record model="survey.question.answer" id="pss_q4_labels">
+        <field name="value">I prefer to make a spiritual impact before anything else</field>
+        <field name="value_right">I prefer to make a physical and cognitive impact before anything else</field>
+        <field name="matrix_question_id" ref="pss_question_1"/>
+    </record>
+    <record model="survey.question.answer" id="pss_q5_labels">
+        <field name="value">It is critical that I personally play some role in sharing the gospel with others when I'm helping a cause</field>
+        <field name="value_right">I do not personally need to share the gospel with others when helping a cause</field>
+        <field name="matrix_question_id" ref="pss_question_1"/>
+    </record>
+
+    <!-- Question 6-->
+    <record id="pss_question_6" model="survey.question">
+        <field name="title">If you were to find a charitable cause you loved or was really important to you, which of the following would describe you and your role in that cause?</field>
+        <field name="description">Select the best matching answers. Choose up to 3 options.</field>
+        <field name="question_type">multiple_choice</field>
+        <field name="max_checked_option">3</field>
+        <field name="comments_allowed" eval="False"/>
+        <field name="constr_mandatory">True</field>
+        <field name="constr_error_msg">This question require an answer. A maximum of 3 options can be selected.</field>
+        <field name="survey_id" ref="partner_segmentation_survey"/>
+    </record>
+    <record id="pss_q6_1" model="survey.question.answer">
+        <field name="value">Someone who is gentle, kind, hospitable, generous, and focused on social good as a way to
+            have a positive impact</field>
+        <field name="sequence">0</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_2" model="survey.question.answer">
+        <field name="value">Someone who wants to take part in advocacy and political events to seek change</field>
+        <field name="sequence">1</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_3" model="survey.question.answer">
+        <field name="value">Someone who enjoys the communal aspects of helping a cause and uses the community around
+            them to connect people to work together to have a positive impact </field>
+        <field name="sequence">2</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_4" model="survey.question.answer">
+        <field name="value">Someone who currently puts their professional skills and expertise to use for the cause, or
+            plans to use their skills and expertise in the future</field>
+        <field name="sequence">3</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_5" model="survey.question.answer">
+        <field name="value">Someone who does everything they can to have a positive impact because they've personally
+            experienced hardships </field>
+        <field name="sequence">4</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_6" model="survey.question.answer">
+        <field name="value">Someone who faithfully gives financially but needs no further engagement</field>
+        <field name="sequence">5</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_7" model="survey.question.answer">
+        <field name="value">Someone who gives their resources to others they know will use it most effectively and
+            efficiently to help those in need</field>
+        <field name="sequence">6</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_8" model="survey.question.answer">
+        <field name="value">Someone who prays for others who tackle this problem</field>
+        <field name="sequence">7</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+    <record id="pss_q6_9" model="survey.question.answer">
+        <field name="value">None of the above</field>
+        <field name="sequence">8</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_6"/>
+    </record>
+
+    <!-- Question 7-->
+    <record id="pss_question_7" model="survey.question">
+        <field name="title">Which of the following actions, if any, have you ever taken to support a charitable
+            cause or non-profit organization?</field>
+        <field name="description">Select the answers that apply</field>
+        <field name="question_type">multiple_choice</field>
+        <field name="comments_allowed" eval="True"/>
+        <field name="comment_count_as_answer" eval="True"/>
+        <field name="constr_mandatory">True</field>
+        <field name="survey_id" ref="partner_segmentation_survey"/>
+    </record>
+    <record id="pss_q7_1" model="survey.question.answer">
+        <field name="value">Volunteered my time</field>
+        <field name="sequence">0</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_2" model="survey.question.answer">
+        <field name="value">Donated money on a one-time basis</field>
+        <field name="sequence">1</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_3" model="survey.question.answer">
+        <field name="value">Donated money on a monthly or regular basis</field>
+        <field name="sequence">2</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_4" model="survey.question.answer">
+        <field name="value">Donated goods, products, or resources</field>
+        <field name="sequence">3</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_5" model="survey.question.answer">
+        <field name="value">Done a small act of kindness (e.g., cooking a meal for someone in need, offering someone in
+            need a place to rest)</field>
+        <field name="sequence">4</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_6" model="survey.question.answer">
+        <field name="value">Used a talent or skill to raise money and awareness for a cause</field>
+        <field name="sequence">5</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_7" model="survey.question.answer">
+        <field name="value">Participated in protests/marches</field>
+        <field name="sequence">6</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_8" model="survey.question.answer">
+        <field name="value">Created posts and engaged in discussions on social media</field>
+        <field name="sequence">7</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_9" model="survey.question.answer">
+        <field name="value">Contacted a politician or government representative to advocate for the cause</field>
+        <field name="sequence">8</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_10" model="survey.question.answer">
+        <field name="value">Talked to my friends about the cause</field>
+        <field name="sequence">9</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_11" model="survey.question.answer">
+        <field name="value">Shared my opinion about the cause with those around me (e.g., students, coworkers, friends,
+            etc.)</field>
+        <field name="sequence">10</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_12" model="survey.question.answer">
+        <field name="value">Participated in a charity event (e.g., Walk-a-thon)</field>
+        <field name="sequence">11</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_13" model="survey.question.answer">
+        <field name="value">Signed a petition online</field>
+        <field name="sequence">12</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+    <record id="pss_q7_14" model="survey.question.answer">
+        <field name="value"> None of the above</field>
+        <field name="sequence">13</field>
+        <field name="answer_score">1</field>
+        <field name="question_id" ref="pss_question_7"/>
+    </record>
+</odoo>

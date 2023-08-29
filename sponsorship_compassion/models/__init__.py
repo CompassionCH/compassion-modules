@@ -16,7 +16,6 @@ from . import contract_group
 from . import contract_origin
 from . import contracts
 from . import contracts_report
-from . import privacy_statement
 from . import product
 from . import project_compassion
 from . import recurring_contract_line

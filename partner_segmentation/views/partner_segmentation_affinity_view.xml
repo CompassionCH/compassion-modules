@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="partner_segmentation_affinity_form" model="ir.ui.view">
+        <field name="name">res.partner.segment.affinity.form</field>
+        <field name="model">res.partner.segment.affinity</field>
+        <field name="arch" type="xml">
+            <form string="Partner Segmentation">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="segment_id"/>
+                            <field name="affinity"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="partner_segmentation_affinity_tree" model="ir.ui.view">
+        <field name="name">res.partner.segment.affinity.tree</field>
+        <field name="model">res.partner.segment.affinity</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="segment_id"/>
+                <field name="affinity"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="open_view_partner_segmentation_affinity" model="ir.actions.act_window">
+        <field name="name">Partners segmentation affinity</field>
+        <field name="res_model">res.partner.segment.affinity</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_partner_segment_affinity"
+              parent="menu_segmentation"
+              name="Partners Segmentation Affinity"
+              action="open_view_partner_segmentation_affinity"
+              sequence="2"/>
+
+</odoo>

@@ -24,7 +24,7 @@ class PrivacyStatement(models.Model):
     name = fields.Char(compute="_compute_name")
     version = fields.Char()
     text = fields.Html(translate=True)
-    date = fields.Date()
+    date = fields.Date(default=fields.Date.today)
 
     @api.model
     def get_current(self):

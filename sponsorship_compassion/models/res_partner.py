@@ -74,12 +74,6 @@ class ResPartner(models.Model):
         string="Number of children",
         related="number_sponsorships",
     )
-    privacy_statement_ids = fields.One2many(
-        "privacy.statement.agreement",
-        "partner_id",
-        copy=False,
-        readonly=False,
-    )
     member_ids = fields.One2many(
         "res.partner",
         "church_id",
@@ -159,30 +153,6 @@ class ResPartner(models.Model):
             partner.receivable_items = move_line_obj.search_count(
                 [("partner_id", "=", partner.id), ("account_id.code", "=", "1050")]
             )
-
-    def set_privacy_statement(self, origin):
-        for partner in self:
-            p_statement = self.env["compassion.privacy.statement"].get_current()
-            contract = self.env["privacy.statement.agreement"].search(
-                [
-                    ["partner_id", "=", partner.id],
-                    ["privacy_statement_id", "=", p_statement.id],
-                ],
-                order="agreement_date desc",
-                limit=1,
-            )
-            if contract:
-                contract.agreement_date = fields.Date.today()
-                contract.origin_signature = origin
-            else:
-                self.env["privacy.statement.agreement"].create(
-                    {
-                        "partner_id": partner.id,
-                        "agreement_date": fields.Date.today(),
-                        "privacy_statement_id": p_statement.id,
-                        "origin_signature": origin,
-                    }
-                )
 
     def update_number_sponsorships(self):
         for partner in self:

@@ -148,22 +148,6 @@
                            context="{'default_church_id': active_id, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}"/>
                 </page>
             </xpath>
-
-            <xpath expr="//page[last()]" position="after">
-                <page string="Privacy data" name="privacy_data" groups="child_compassion.group_sponsorship">
-                    <group>
-                        <field name="privacy_statement_ids"
-                               context="{'default_partner_id': active_id}" groups="child_compassion.group_sponsorship">
-                            <tree>
-                                <field name="version"/>
-                                <field name="agreement_date"/>
-                                <field name="origin_signature"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
-                            </tree>
-                        </field>
-                    </group>
-                </page>
-            </xpath>
         </field>
     </record>
 
