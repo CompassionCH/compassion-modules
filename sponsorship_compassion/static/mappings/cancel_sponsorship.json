@@ -44,7 +44,7 @@
       "search_relational_record": true
     },
     "SponsorSupporterGlobalID": {
-      "field": "correspondent_id.global_id",
+      "field": "partner_id.global_id",
       "search_relational_record": true,
       "allow_relational_creation": false
     },
