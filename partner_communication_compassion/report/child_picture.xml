@@ -26,38 +26,39 @@
     </record>
 
     <template id="child_picture">
+        <t t-set="disable_footer" t-value="1"/>
+        <t t-set="disable_header" t-value="1"/>
         <t t-call="web.html_container">
-            <div class="article">
                 <t t-foreach="docs" t-as="o">
-                    <div class="page">
-                        <style type="text/css">
-                            img {
-                                width: 101mm;
-                                height: 153mm;
-                                object-fit: cover;
-                                position: absolute;
-                                left: 0mm;
-                            }
-                            #child-ref {
-                                position: absolute;
-                                top: 130mm;
-                                left : 10mm;
-                                right: 10mm;
-                                padding: 2mm;
-                                background-color: rgba(255, 255, 255, 0.3);
-                                border-radius: 2mm;
-                                text-align: center;
-                            }
-                        </style>
-                        <img t-attf-src="data:image/jpeg;base64,#{ o.fullshot }"/>
-                        <div id="child-ref">
-                            <span t-field="o.local_id"/>
-                            <span> </span>
-                            <span t-field="o.preferred_name"/>
-                        </div>
-                    </div>
+                    <t t-call="web.external_layout">
+                            <style type="text/css">
+                                img {
+                                    width: 101mm;
+                                    height: 153mm;
+                                    object-fit: cover;
+                                    position: absolute;
+                                    left: 0mm;
+                                    top: 0mm;
+                                }
+                                #child-ref {
+                                    position: absolute;
+                                    top: 130mm;
+                                    left : 10mm;
+                                    right: 10mm;
+                                    padding: 2mm;
+                                    background-color: rgba(255, 255, 255, 0.3);
+                                    border-radius: 2mm;
+                                    text-align: center;
+                                }
+                            </style>
+                            <img t-attf-src="data:image/jpeg;base64,#{ o.fullshot }"/>
+                            <div id="child-ref">
+                                <span t-field="o.local_id"/>
+                                <span> </span>
+                                <span t-field="o.preferred_name"/>
+                            </div>
+                    </t>
                 </t>
-            </div>
         </t>
     </template>
 </odoo>
