@@ -44,7 +44,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     def _compute_progress(self):
         s_wizards = self.filtered(lambda w: w.res_model == "recurring.contract")
         for wizard in s_wizards:
-            if wizard.eta:
+            if wizard.scheduled_date:
                 wizard.progress = 1
             elif wizard.partner_source == "send_gifts_to":
                 partners = self.env["res.partner"]
@@ -110,9 +110,9 @@ class GenerateCommunicationWizard(models.TransientModel):
                         "auto_send": False,
                     })
                 options = {"force_language": self.force_language}
-                if async_mode or self.eta:
+                if async_mode or self.scheduled_date:
                     self.with_delay(
-                        eta=self.eta,
+                        eta=self.scheduled_date,
                         priority=50
                     ).create_communication(vals, options)
                 else:

@@ -49,7 +49,6 @@ class GenerateCommunicationWizard(models.TransientModel):
     )
     progress = fields.Float(compute="_compute_progress")
     scheduled_date = fields.Datetime("Schedule generation")
-    eta = fields.Integer("ETA", compute="_compute_eta")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -65,7 +64,7 @@ class GenerateCommunicationWizard(models.TransientModel):
 
     def _compute_progress(self):
         for wizard in self:
-            if wizard.eta:
+            if wizard.scheduled_date:
                 wizard.progress = 1
             else:
                 wizard.progress = float(len(wizard.communication_ids) * 100) / (
@@ -77,14 +76,6 @@ class GenerateCommunicationWizard(models.TransientModel):
         for wizard in self:
             if wizard.scheduled_date and wizard.scheduled_date < fields.Datetime.now():
                 raise ValidationError(_("Schedule date must be in the future"))
-
-    def _compute_eta(self):
-        for wizard in self:
-            if wizard.scheduled_date:
-                wizard.eta = (
-                        wizard.scheduled_date - fields.Datetime.now()).seconds
-            else:
-                wizard.eta = 0
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -144,9 +135,10 @@ class GenerateCommunicationWizard(models.TransientModel):
             options = {
                 "force_language": self.force_language,
             }
-            if async_mode or self.eta:
+            if async_mode or self.scheduled_date:
                 self.with_delay(
-                    eta=self.eta, priority=50).create_communication(vals, options)
+                    eta=self.scheduled_date,
+                    priority=50).create_communication(vals, options)
             else:
                 self.create_communication(vals, options)
         return True
