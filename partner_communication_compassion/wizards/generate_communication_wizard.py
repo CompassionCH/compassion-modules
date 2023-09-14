@@ -44,7 +44,9 @@ class GenerateCommunicationWizard(models.TransientModel):
     def _compute_progress(self):
         s_wizards = self.filtered(lambda w: w.res_model == "recurring.contract")
         for wizard in s_wizards:
-            if wizard.partner_source == "send_gifts_to":
+            if wizard.eta:
+                wizard.progress = 1
+            elif wizard.partner_source == "send_gifts_to":
                 partners = self.env["res.partner"]
                 for sponsorship in wizard.sponsorship_ids:
                     partners += sponsorship.mapped(sponsorship.send_gifts_to)
@@ -107,10 +109,14 @@ class GenerateCommunicationWizard(models.TransientModel):
                         "send_mode": self.send_mode,
                         "auto_send": False,
                     })
-                if async_mode:
-                    self.with_delay().create_communication(vals)
+                options = {"force_language": self.force_language}
+                if async_mode or self.eta:
+                    self.with_delay(
+                        eta=self.eta,
+                        priority=50
+                    ).create_communication(vals, options)
                 else:
-                    self.create_communication(vals)
+                    self.create_communication(vals, options)
             return True
         else:
             return super().generate_communications(async_mode)

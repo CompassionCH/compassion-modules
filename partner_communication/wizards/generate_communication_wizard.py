@@ -11,6 +11,7 @@ import logging
 
 from odoo import models, api, fields, _
 from odoo.tools.safe_eval import safe_eval
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -47,6 +48,8 @@ class GenerateCommunicationWizard(models.TransientModel):
         readonly=False,
     )
     progress = fields.Float(compute="_compute_progress")
+    scheduled_date = fields.Datetime("Schedule generation")
+    eta = fields.Integer("ETA", compute="_compute_eta")
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -62,9 +65,26 @@ class GenerateCommunicationWizard(models.TransientModel):
 
     def _compute_progress(self):
         for wizard in self:
-            wizard.progress = float(len(wizard.communication_ids) * 100) / (
-                len(wizard.partner_ids) or 1
-            )
+            if wizard.eta:
+                wizard.progress = 1
+            else:
+                wizard.progress = float(len(wizard.communication_ids) * 100) / (
+                    len(wizard.partner_ids) or 1
+                )
+
+    @api.constrains("scheduled_date")
+    def check_eta(self):
+        for wizard in self:
+            if wizard.scheduled_date and wizard.scheduled_date < fields.Datetime.now():
+                raise ValidationError(_("Schedule date must be in the future"))
+
+    def _compute_eta(self):
+        for wizard in self:
+            if wizard.scheduled_date:
+                wizard.eta = (
+                        wizard.scheduled_date - fields.Datetime.now()).seconds
+            else:
+                wizard.eta = 0
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -121,27 +141,36 @@ class GenerateCommunicationWizard(models.TransientModel):
                     "send_mode": self.send_mode,
                     "auto_send": False
                 })
-            if async_mode:
-                self.with_delay().create_communication(vals)
+            options = {
+                "force_language": self.force_language,
+            }
+            if async_mode or self.eta:
+                self.with_delay(
+                    eta=self.eta, priority=50).create_communication(vals, options)
             else:
-                self.create_communication(vals)
+                self.create_communication(vals, options)
         return True
 
-    def create_communication(self, vals):
+    @api.model
+    def create_communication(self, vals, options):
         """ Generate partner communication """
         communication = self.env["partner.communication.job"].create(vals)
-        if self.force_language:
-            model = self.model_id
-            template = model.email_template_id.with_context(
-                lang=self.force_language, salutation_language=self.force_language
+        force_language = options.get("force_language")
+        if force_language:
+            template = communication.email_template_id.with_context(
+                lang=force_language, salutation_language=force_language
             )
             new_subject = template._render_template(
-                template.subject, "partner.communication.job", communication.ids
+                template.subject, "partner.communication.job",
+                communication.ids
             )
             new_text = template._render_template(
-                template.body_html, "partner.communication.job", communication.ids
+                template.body_html, "partner.communication.job",
+                communication.ids
             )
             communication.body_html = new_text[communication.id]
             communication.subject = new_subject[communication.id]
 
-        self.communication_ids += communication
+        if self.exists():
+            self.communication_ids += communication
+        return communication

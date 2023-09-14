@@ -17,6 +17,7 @@
                         <field name="customize_template"/>
                         <field name="send_mode" attrs="{'invisible': [('customize_template', '=', False)]}"/>
                         <field name="force_language" attrs="{'invisible': [('customize_template', '=', False)]}"/>
+                        <field name="scheduled_date"/>
                     </group>
                     <div states="generation">
                         <p>The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
