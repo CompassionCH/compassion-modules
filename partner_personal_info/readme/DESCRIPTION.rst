@@ -1,2 +1,1 @@
-Creates a new tab in the partner form for gathering all sensitive information about sponsors. Adds privacy statement
-agreements to keep track of user approval, and personal unique identifier for partners.
+Creates a new tab in the partner form for gathering all sensitive information about sponsors. Adds also a personal unique identifier for partners.

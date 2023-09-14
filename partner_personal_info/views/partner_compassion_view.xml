@@ -17,18 +17,9 @@
             <group name="personal_information_group">
                 <group name="personal_information_birthdate" position="move"/>
             </group>
-            <group name="personal_information_group" position="after">
+            <group name="personal_information_group">
                 <group name="privacy_statements" string="Data privacy">
                     <field name="uuid"/>
-                    <field name="privacy_statement_ids"
-                           context="{'default_partner_id': active_id}">
-                        <tree>
-                            <button name="open_contract" type="object" icon="fa-external-link"/>
-                            <field name="version"/>
-                            <field name="agreement_date"/>
-                            <field name="origin_signature"/>
-                        </tree>
-                    </field>
                 </group>
             </group>
             <!-- Restrict the tab to sponsorship users -->
