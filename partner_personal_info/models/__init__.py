@@ -8,4 +8,3 @@
 #
 ##############################################################################
 from . import partner_compassion
-from . import privacy_statement

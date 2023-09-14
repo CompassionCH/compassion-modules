@@ -42,11 +42,8 @@
         "partner_contact_birthdate",
     ],
     "data": [
-        "security/ir.model.access.csv",
         "views/partner_compassion_view.xml",
-        "views/privacy_statement.xml",
     ],
-    "post_init_hook": "post_init_hook",
     "qweb": [],
     "installable": True,
     "auto_install": False,
