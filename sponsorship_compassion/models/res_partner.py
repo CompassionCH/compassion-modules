@@ -1,6 +1,6 @@
 ##############################################################################
 #
-#    Copyright (C) 2014-2016 Compassion CH (http://www.compassion.ch)
+#    Copyright (C) 2014-2023 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
 #    @author: Cyril Sester, Emanuel Cino
 #
@@ -12,7 +12,8 @@ import random
 import string
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.tools.config import config
+
+from .contracts import SPONSORSHIP_TYPE_LIST
 
 
 # For more flexibility we have split "res.partner" by functionality
@@ -102,7 +103,7 @@ class ResPartner(models.Model):
             partner.contracts_correspondant = contract_obj.search(
                 [
                     ("correspondent_id", "=", partner.id),
-                    ("type", "in", ["S", "SC", "SWP"]),
+                    ("type", "in", SPONSORSHIP_TYPE_LIST),
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
@@ -110,7 +111,7 @@ class ResPartner(models.Model):
             partner.contracts_paid = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
-                    ("type", "in", ["S", "SC", "SWP"]),
+                    ("type", "in", SPONSORSHIP_TYPE_LIST),
                     ("fully_managed", "=", False),
                 ],
                 order="start_date desc",
@@ -118,7 +119,7 @@ class ResPartner(models.Model):
             partner.contracts_fully_managed = contract_obj.search(
                 [
                     ("partner_id", "=", partner.id),
-                    ("type", "in", ["S", "SC", "SWP"]),
+                    ("type", "in", SPONSORSHIP_TYPE_LIST),
                     ("fully_managed", "=", True),
                 ],
                 order="start_date desc",
@@ -128,16 +129,10 @@ class ResPartner(models.Model):
                 + partner.contracts_paid
                 + partner.contracts_fully_managed
             )
-            partner.other_contract_ids = (
-                contract_obj.search(
-                    [
-                        ("partner_id", "=", partner.id),
-                        ("type", "not in", ["S", "SC", "SWP"]),
-                    ],
-                    order="start_date desc",
-                ).ids
-                or False
-            )
+            partner.other_contract_ids = contract_obj.search([
+                ("partner_id", "=", partner.id),
+                ("type", "not in", SPONSORSHIP_TYPE_LIST)
+            ],order="start_date desc").ids or False
 
     def _compute_count_items(self):
         move_line_obj = self.env["account.move.line"]
