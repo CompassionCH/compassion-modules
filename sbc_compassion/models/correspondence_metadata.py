@@ -29,11 +29,12 @@ class CorrespondenceMetadata(models.AbstractModel):
     template_id = fields.Many2one("correspondence.template", "Template", readonly=False)
     source = fields.Selection(
         selection=[
-            ("letter", _("Letter")),
-            ("email", _("E-Mail")),
-            ("website", _("Compassion website")),
-            ("app", _("Mobile app")),
-            ("compassion", _("Written by Compassion")),
+            ("app", "Mobile app"),
+            ("compassion", "Written by Compassion"),
+            ("email", "E-Mail"),
+            ("letter", "Scanned Letter"),
+            ("mycompassion", "MyCompassion"),
+            ("website", "Compassion website"),
         ],
         default="letter",
     )
