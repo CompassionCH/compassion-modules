@@ -139,7 +139,13 @@ class GmcMessage(models.Model):
         return True
 
     def reset_message(self):
-        self.write({"state": "new", "process_date": False, "failure_reason": False})
+        self.write({
+            "state": "new",
+            "process_date": False,
+            "failure_reason": False,
+            "answer": False,
+            "request_id": False,
+        })
         return True
 
     def open_related(self):

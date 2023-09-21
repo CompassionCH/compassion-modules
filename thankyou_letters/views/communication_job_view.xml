@@ -21,8 +21,8 @@
         <field name="inherit_id" ref="partner_communication.communication_job_tree"/>
         <field name="arch" type="xml">
             <field name="subject" position="after">
-                <field name="success_story_id"/>
-                <field name="success_sentence_id"/>
+                <field name="success_story_id" optional="true"/>
+                <field name="success_sentence_id" optional="true"/>
             </field>
         </field>
     </record>

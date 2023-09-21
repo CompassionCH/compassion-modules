@@ -80,7 +80,7 @@
                 <field name="subject"/>
                 <field name="user_id"/>
                 <field name="state"/>
-                <field name="need_call"/>
+                <field name="need_call" optional="true"/>
                 <field name="sent_date"/>
                 <field name="activity_ids" invisible="1"/>
                 <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
