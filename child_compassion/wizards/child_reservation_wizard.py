@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, _
+from odoo import _, models
 
 
 class ChildReservationWizard(models.TransientModel):
@@ -32,8 +32,8 @@ class ChildReservationWizard(models.TransientModel):
         reservations = reservation_obj
         child_search = (
             self.env["compassion.childpool.search"]
-                .browse(self.env.context.get("active_id"))
-                .global_child_ids
+            .browse(self.env.context.get("active_id"))
+            .global_child_ids
         )
 
         for child in child_search:

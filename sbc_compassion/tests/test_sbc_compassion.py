@@ -52,8 +52,8 @@ class TestSbcCompassion(BaseSponsorshipTest):
 
     def test_import_pdf(self):
         """
-            This test import the pdf include in the folder /data and verify the
-            data's integrity.
+        This test import the pdf include in the folder /data and verify the
+        data's integrity.
         """
         list_data = []
 
@@ -73,8 +73,8 @@ class TestSbcCompassion(BaseSponsorshipTest):
 
         import_letter = (
             self.env["import.letters.history"]
-                .with_context(async_mode=False)
-                .create({"data": list_data})
+            .with_context(async_mode=False)
+            .create({"data": list_data})
         )
 
         import_letter.button_import()

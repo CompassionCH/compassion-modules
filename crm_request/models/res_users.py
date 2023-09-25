@@ -15,6 +15,7 @@ class ResUsers(models.Model):
 
     do_reminder_support_req = fields.Boolean(
         "Activate the reminder on support request",
-        help="Define if you receive scheduled actions on the support request you're assigned to",
-        default=True
+        help="Define if you receive scheduled actions on the support request "
+        "you're assigned to",
+        default=True,
     )

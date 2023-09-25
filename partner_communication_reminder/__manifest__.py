@@ -27,23 +27,19 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    'name': 'Reminder for contracts',
-    'summary': 'Reminder features',
-    'version': "14.0.1.0.0",
-    'license': 'AGPL-3',
-    'author': 'Compassion CH',
-    'development_status': 'Production/Stable',
-    'website': 'https://www.compassion.ch',
-    'category': 'Accounting',
-    'depends': [
-        'partner_communication',
-        'recurring_contract',
-        'child_compassion'
+    "name": "Reminder for contracts",
+    "summary": "Reminder features",
+    "version": "14.0.1.0.0",
+    "license": "AGPL-3",
+    "author": "Compassion CH",
+    "development_status": "Production/Stable",
+    "website": "https://www.compassion.ch",
+    "category": "Accounting",
+    "depends": ["partner_communication", "recurring_contract", "child_compassion"],
+    "external_dependencies": {},
+    "data": [
+        "data/email_reminder_template.xml",
+        "data/contract_reminder.xml",
     ],
-    'external_dependencies': {},
-    'data': [
-        'data/email_reminder_template.xml',
-        'data/contract_reminder.xml',
-    ],
-    'installable': True,
+    "installable": True,
 }

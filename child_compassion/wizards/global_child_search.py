@@ -8,14 +8,15 @@
 #
 ##############################################################################
 import sys
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 from math import ceil
 
 from dateutil.relativedelta import relativedelta
-from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+
+from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
 class GlobalChildSearch(models.TransientModel):
@@ -119,7 +120,7 @@ class GlobalChildSearch(models.TransientModel):
         "Number of restricted children",
         readonly=True,
         help="These children were removed from the search results because "
-             "of a National Office restriction configuration.",
+        "of a National Office restriction configuration.",
     )
     missing_dates = fields.Text(help="All birthdates not found when using 365 search")
 
@@ -237,7 +238,7 @@ class GlobalChildSearch(models.TransientModel):
         return True
 
     def make_a_hold(self):
-        """ Create hold and send to Connect """
+        """Create hold and send to Connect"""
         self.ensure_one()
         return {
             "name": _("Specify Attributes"),
@@ -308,7 +309,7 @@ class GlobalChildSearch(models.TransientModel):
         return True
 
     def do_365_mix(self):
-        """ Try to find one child per day of the year having his birthdate
+        """Try to find one child per day of the year having his birthdate
         on that date."""
         today = date.today()
         first_day = today.replace(day=1, month=1)
@@ -399,19 +400,27 @@ class GlobalChildSearch(models.TransientModel):
         self.ensure_one()
         # Remove all search filters
         self.write({"search_filter_ids": [(5, False, False)]})
+        new_filters = list()
 
         # Utility to get write values for a selected filter
-        def _get_filter(field_name, operator_id, value):
-            field_id = (
-                self.env["ir.model.fields"]
-                    .search([("model", "=", self._name), ("name", "=", field_name)])
-                    .id
-            )
-            return (
-                0,
-                0,
-                {"field_id": field_id, "operator_id": operator_id, "value": value},
-            )
+        def create_filter(field_name, operator_id, value=None):
+            if self[field_name]:
+                ir_field = self.env["ir.model.fields"].search(
+                    [("model", "=", self._name), ("name", "=", field_name)], limit=1
+                )
+                if value is None:
+                    value = self[field_name]
+                new_filters.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "field_id": ir_field.id,
+                            "operator_id": operator_id,
+                            "value": value,
+                        },
+                    )
+                )
 
         # Construct filter values
         anyof_id = self.env.ref("message_center_compassion.anyof").id
@@ -419,82 +428,49 @@ class GlobalChildSearch(models.TransientModel):
         between_id = self.env.ref("message_center_compassion.between").id
         equalto_id = self.env.ref("message_center_compassion.equalto").id
         within_id = self.env.ref("message_center_compassion.within").id
-        new_filters = list()
         if self.min_age or self.max_age:
             min_age = self.min_age or 0
             max_age = self.max_age or 120
             age_range = str(min_age) + ";" + str(max_age)
-            new_filters.append(_get_filter("min_age", between_id, age_range))
-        if self.local_id:
-            new_filters.append(_get_filter("local_id", is_id, self.local_id))
-        if self.child_name:
-            new_filters.append(_get_filter("child_name", is_id, self.child_name))
-        if self.state_selected:
-            new_filters.append(
-                _get_filter("state_selected", anyof_id, self.state_selected)
-            )
-        if self.birthday_day:
-            new_filters.append(
-                _get_filter("birthday_day", equalto_id, self.birthday_day)
-            )
-        if self.birthday_month:
-            new_filters.append(
-                _get_filter("birthday_month", equalto_id, self.birthday_month)
-            )
-        if self.birthday_year:
-            new_filters.append(
-                _get_filter("birthday_year", equalto_id, self.birthday_year)
-            )
+            create_filter("min_age", between_id, age_range)
+        create_filter("local_id", is_id)
+        create_filter("child_name", is_id, self.child_name)
+        create_filter("state_selected", anyof_id, self.state_selected)
+        create_filter("birthday_day", equalto_id, self.birthday_day)
+        create_filter("birthday_month", equalto_id, self.birthday_month)
+        create_filter("birthday_year", equalto_id, self.birthday_year)
         if self.chronic_illness and self.chronic_illness != "Unknown":
-            new_filters.append(
-                _get_filter(
-                    "chronic_illness",
-                    is_id,
-                    "T" if self.chronic_illness == "Yes" else "F",
-                )
+            create_filter(
+                "chronic_illness",
+                is_id,
+                "T" if self.chronic_illness == "Yes" else "F",
             )
-        if self.field_office_ids:
-            values = ";".join(self.field_office_ids.mapped("country_code"))
-            new_filters.append(_get_filter("field_office_ids", anyof_id, values))
-        if self.gender:
-            new_filters.append(_get_filter("gender", anyof_id, self.gender[0]))
-        if self.holding_gp_ids:
-            values = ";".join(self.holding_gp_ids.mapped("country_id.code"))
-            new_filters.append(_get_filter("holding_gp_ids", anyof_id, values))
-        if self.fcp_ids:
-            values = ";".join(self.fcp_ids.mapped("fcp_id"))
-            new_filters.append(_get_filter("fcp_ids", anyof_id, values))
-        if self.fcp_name:
-            new_filters.append(_get_filter("fcp_name", is_id, self.fcp_name))
-        if self.hiv_affected_area:
-            new_filters.append(_get_filter("hiv_affected_area", is_id, "T"))
-        if self.is_orphan:
-            new_filters.append(_get_filter("is_orphan", is_id, "T"))
-        if self.has_special_needs:
-            new_filters.append(_get_filter("has_special_needs", is_id, "T"))
-        if self.father_alive:
-            new_filters.append(_get_filter("father_alive", anyof_id, self.father_alive))
-        if self.mother_alive:
-            new_filters.append(_get_filter("mother_alive", anyof_id, self.mother_alive))
+        values = ";".join(self.field_office_ids.mapped("country_code"))
+        create_filter("field_office_ids", anyof_id, values)
+        create_filter("gender", anyof_id, self.gender[0])
+        values = ";".join(self.holding_gp_ids.mapped("country_id.code"))
+        create_filter("holding_gp_ids", anyof_id, values)
+        values = ";".join(self.fcp_ids.mapped("fcp_id"))
+        create_filter("fcp_ids", anyof_id, values)
+        create_filter("fcp_name", is_id, self.fcp_name)
+        create_filter("hiv_affected_area", is_id, "T")
+        create_filter("is_orphan", is_id, "T")
+        create_filter("has_special_needs", is_id, "T")
+        create_filter("father_alive", anyof_id, self.father_alive)
+        create_filter("mother_alive", anyof_id, self.mother_alive)
         if self.physical_disability and self.physical_disability != "Unknown":
-            new_filters.append(
-                _get_filter(
-                    "physical_disability",
-                    is_id,
-                    "T" if self.physical_disability == "Yes" else "F",
-                )
+            create_filter(
+                "physical_disability",
+                is_id,
+                "T" if self.physical_disability == "Yes" else "F",
             )
         if self.completion_date_after or self.completion_date_before:
             start_date = self.completion_date_after or "1970-01-01"
             stop_date = self.completion_date_before or date.max
             date_range = start_date + ";" + stop_date
-            new_filters.append(
-                _get_filter("completion_date_after", within_id, date_range)
-            )
-        if self.min_days_waiting:
-            days_range = str(self.min_days_waiting) + ";" + str(sys.maxint)
-            new_filters.append(_get_filter("min_days_waiting", between_id, days_range))
-
+            create_filter("completion_date_after", within_id, date_range)
+        days_range = str(self.min_days_waiting) + ";" + str(sys.maxsize)
+        create_filter("min_days_waiting", between_id, days_range)
         return self.write({"search_filter_ids": new_filters})
 
     def data_to_json(self, mapping_name=None):
@@ -541,7 +517,7 @@ class GlobalChildSearch(models.TransientModel):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _call_search_service(
-            self, mapping_name, service_name, result_name, method="GET"
+        self, mapping_name, service_name, result_name, method="GET"
     ):
         """
         Calls the given search service for the global childpool
@@ -585,11 +561,10 @@ class GlobalChildSearch(models.TransientModel):
             raise UserError(error)
 
     def _does_match(self, child):
-        """ Returns if the selected criterias correspond to the given child.
-        """
+        """Returns if the selected criterias correspond to the given child."""
         if (
-                self.field_office_ids
-                and child.project_id.field_office_id not in self.field_office_ids
+            self.field_office_ids
+            and child.project_id.field_office_id not in self.field_office_ids
         ):
             return False
         if self.fcp_ids and child.project_id not in self.fcp_ids:

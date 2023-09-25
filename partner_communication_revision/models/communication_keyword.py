@@ -9,7 +9,7 @@
 ##############################################################################
 import re
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 COLOR_SEQUENCE = [
     "darkblue",
@@ -58,10 +58,10 @@ class CommunicationKeyword(models.Model):
     raw_code = fields.Char(
         required=True,
         help="contains the raw template code, for instance : "
-             "* %if object.test_value:"
-             "* %for test in  object.tests:"
-             "* ${object.variable}"
-             "* % set variable = object.variable",
+        "* %if object.test_value:"
+        "* %for test in  object.tests:"
+        "* ${object.variable}"
+        "* % set variable = object.variable",
     )
     short_code = fields.Char(
         compute="_compute_short_code", store=True, inverse="_inverse_short_code"
@@ -90,7 +90,7 @@ class CommunicationKeyword(models.Model):
     edit_value = fields.Boolean(
         default=True,
         help="Set this value to true or false to edit the corresponding "
-             "part of the text on the template.",
+        "part of the text on the template.",
     )
     color = fields.Char()
 
@@ -118,15 +118,16 @@ class CommunicationKeyword(models.Model):
                         # shortcode
                         match = re.search(r"(get|get_list|mapped)\('(.*?)'", raw)
                         if match:
-                            keyword.short_code = match.group(2).split(".")[-1]\
-                                .replace(" ", "_")
+                            keyword.short_code = (
+                                match.group(2).split(".")[-1].replace(" ", "_")
+                            )
                     else:
                         if "if" in raw:
                             # Takes one of the side of the clause
                             parts = raw.strip("${}").split(" if ")
-                            raw = parts[0].strip("'") or parts[1].split("else ")[-1].strip(
-                                "'"
-                            )
+                            raw = parts[0].strip("'") or parts[1].split("else ")[
+                                -1
+                            ].strip("'")
                         match = re.search(r"\w+", raw.split(".")[-1])
                         keyword.short_code = match.group(0)
 
@@ -191,7 +192,7 @@ class CommunicationKeyword(models.Model):
 
     @api.model
     def create(self, vals):
-        """ Assign color at creation. """
+        """Assign color at creation."""
         count = self.search_count(
             [("revision_id", "=", vals["revision_id"]), ("type", "=", vals["type"])]
         )
@@ -238,7 +239,7 @@ class CommunicationKeyword(models.Model):
         return self.write({field: text and text.strip("[]")})
 
     def get_text(self):
-        """ Returns the text of the clause depending on its edit_value. """
+        """Returns the text of the clause depending on its edit_value."""
         self.ensure_one()
         if self.edit_value or "for" in self.type:
             return self.true_text

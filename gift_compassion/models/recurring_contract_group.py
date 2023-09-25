@@ -8,10 +8,11 @@
 #
 ##############################################################################
 
-from odoo import models, _
+from odoo import _, models
+
 from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_PRODUCTS_REF,
-    PRODUCT_GIFT_CHRISTMAS
+    PRODUCT_GIFT_CHRISTMAS,
 )
 
 
@@ -28,11 +29,15 @@ class RecurringContractGroup(models.Model):
         return res
 
     def _cancel_gift_inv(self):
-        empty_move = self.env['account.move']
-        contract_not_dd = self.mapped("contract_ids").filtered(lambda d: not d.is_direct_debit)
+        empty_move = self.env["account.move"]
+        contract_not_dd = self.mapped("contract_ids").filtered(
+            lambda d: not d.is_direct_debit
+        )
         for move_line in contract_not_dd.mapped("invoice_line_ids").filtered(
-                lambda l: l.move_id.payment_state != 'paid' and l.move_id.state == 'posted'
-                          and l.product_id.default_code in [PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF[0]]
+            lambda l: l.move_id.payment_state != "paid"
+            and l.move_id.state == "posted"
+            and l.product_id.default_code
+            in [PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF[0]]
         ):
             move = move_line.move_id
             move.button_draft()
@@ -45,15 +50,20 @@ class RecurringContractGroup(models.Model):
                 # The invoice would be empty if we remove the line
                 message = "The invoice has been cancelled "
                 empty_move |= move
-            move.message_post(body=_(
-                message + "because the payment mode of the <a href=# "
-                          f"data-oe-model={self._name} data-oe-id={group_id.id}>"
-                          f"Payment option ({group_id.ref})</a> has been modified")
+            move.message_post(
+                body=_(
+                    message + "because the payment mode of the <a href=# "
+                    f"data-oe-model={self._name} data-oe-id={group_id.id}>"
+                    f"Payment option ({group_id.ref})</a> has been modified"
+                )
             )
-            group_id.message_post(body=_(
-                "Because of the payment method modification on this payment option. "
-                f"The <a href=# data-oe-model={move._name} data-oe-id={move.id}>invoice ({move.name})</a>"
-                " has been cancelled." if "cancelled" in message else " has some line that were unlink."
-
-            ))
+            group_id.message_post(
+                body=_(
+                    "Because of the payment method modification on this payment option."
+                    f" The <a href=# data-oe-model={move._name} data-oe-id={move.id}>"
+                    f"invoice ({move.name})</a> has been cancelled."
+                    if "cancelled" in message
+                    else " has some line that were unlink."
+                )
+            )
         empty_move.button_cancel()

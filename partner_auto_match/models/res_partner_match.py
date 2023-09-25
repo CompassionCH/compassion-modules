@@ -21,6 +21,7 @@ class ResPartnerMatch(models.AbstractModel):
     Can be extended or inherited to change the behaviour for some particular
     case.
     """
+
     _name = "res.partner.match"
     _description = "Match partner"
 
@@ -66,12 +67,13 @@ class ResPartnerMatch(models.AbstractModel):
         create_infos = self._process_create_infos(vals)
         partner = self.env["res.partner"].create(create_infos)
         partner.activity_schedule(
-            'partner_auto_match.activity_check_duplicates',
+            "partner_auto_match.activity_check_duplicates",
             date_deadline=datetime.date(datetime.today() + timedelta(weeks=1)),
             summary="Verify new partner",
             note="Please verify that this partner doesn't already exist",
-            user_id=self.env["ir.config_parameter"].sudo().get_param(
-                "partner_auto_match.match_validation_responsible", self.env.uid)
+            user_id=self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("partner_auto_match.match_validation_responsible", self.env.uid),
         )
         return partner
 
@@ -94,13 +96,11 @@ class ResPartnerMatch(models.AbstractModel):
     def update_partner(self, partner, vals, async_mode=True, delay=1):
         delay = datetime.now() + timedelta(minutes=delay)
         filtered_vals = self._process_update_vals(partner, vals)
-        partner_context = {
-            "skip_check_zip": True,
-            "no_upsert": True
-        }
+        partner_context = {"skip_check_zip": True, "no_upsert": True}
         if async_mode:
-            partner.with_context(partner_context).with_delay(
-                eta=delay).write(filtered_vals)
+            partner.with_context(partner_context).with_delay(eta=delay).write(
+                filtered_vals
+            )
         else:
             partner.with_context(partner_context).write(filtered_vals)
 
@@ -135,17 +135,21 @@ class ResPartnerMatch(models.AbstractModel):
     @api.model
     def _match_email_and_name(self, vals):
         email = vals["email"].strip()
-        return self.env["res.partner"].search([
-            ("name", "ilike", vals["name"]),
-            ("email", "=ilike", email),
-        ])
+        return self.env["res.partner"].search(
+            [
+                ("name", "ilike", vals["name"]),
+                ("email", "=ilike", email),
+            ]
+        )
 
     @api.model
     def _match_name_and_zip(self, vals):
-        return self.env["res.partner"].search([
-            ("name", "ilike", vals["name"]),
-            ("zip", "=", vals["zip"]),
-        ])
+        return self.env["res.partner"].search(
+            [
+                ("name", "ilike", vals["name"]),
+                ("zip", "=", vals["zip"]),
+            ]
+        )
 
     @api.model
     def _get_valid_create_fields(self):

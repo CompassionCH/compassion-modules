@@ -38,8 +38,12 @@ class ChildLifecycle(models.Model):
                     # Depending on the communication we want different object_ids
                     object_ids = lifecycle.child_id.id
                     if communication_type in (
-                    self.env.ref("partner_communication_compassion.lifecycle_child_unplanned_exit"),
-                    self.env.ref("partner_communication_compassion.lifecycle_child_planned_exit")
+                        self.env.ref(
+                            "partner_communication_compassion.lifecycle_child_unplanned_exit"
+                        ),
+                        self.env.ref(
+                            "partner_communication_compassion.lifecycle_child_planned_exit"
+                        ),
                     ):
                         object_ids = lifecycle.child_id.sponsorship_ids[:1].id
 
@@ -83,10 +87,10 @@ class ProjectLifecycle(models.Model):
             communication_type = self.env["partner.communication.config"].search(search)
             if communication_type and len(communication_type) == 1:
                 for child in self.env["compassion.child"].search(
-                        [
-                            ("project_id", "=", lifecycle.project_id.id),
-                            ("sponsor_id", "!=", False),
-                        ]
+                    [
+                        ("project_id", "=", lifecycle.project_id.id),
+                        ("sponsor_id", "!=", False),
+                    ]
                 ):
                     self.env["partner.communication.job"].create(
                         {

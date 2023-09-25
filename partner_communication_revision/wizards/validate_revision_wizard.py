@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, fields
+from odoo import api, fields, models
 
 
 class ValidateRevisionWizard(models.TransientModel):

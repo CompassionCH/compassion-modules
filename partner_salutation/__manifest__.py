@@ -42,7 +42,5 @@
         "advanced_translation",
         "partner_firstname",  # OCA/partner-contact
     ],
-    "data": [
-        "views/res_partner_title_view.xml"
-    ],
+    "data": ["views/res_partner_title_view.xml"],
 }

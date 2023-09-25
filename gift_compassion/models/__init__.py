@@ -8,10 +8,12 @@
 #
 ##############################################################################
 
-from . import sponsorship_gift
-from . import contracts
-from . import account_partial_reconcile
-from . import gift_threshold_settings
-from . import account_move
-from . import recurring_contract_group
-from . import account_move_line
+from . import (
+    account_move,
+    account_move_line,
+    account_partial_reconcile,
+    contracts,
+    gift_threshold_settings,
+    recurring_contract_group,
+    sponsorship_gift,
+)

@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -41,7 +41,7 @@ class CompassionMapping(models.Model):
         self._validate_data(json)
         model = self.env["ir.model"].search([("model", "=", json["model"])])
         if not model:
-            raise UserError(_("Model does not exist : %s") % json['model'])
+            raise UserError(_("Model does not exist : %s") % json["model"])
         mapping = self.search(
             [("name", "=", json["name"]), ("model_id", "=", model.id)]
         )
@@ -64,7 +64,8 @@ class CompassionMapping(models.Model):
                     _(
                         "Invalid data for JSON field %s. "
                         "Expected a dictionary or a string."
-                    ) % json_name
+                    )
+                    % json_name
                 )
             short_spec = isinstance(odoo_spec, str)
             field_spec_vals = {
@@ -79,7 +80,8 @@ class CompassionMapping(models.Model):
                     sub_mapping_record = self.search([("name", "=", sub_mapping)])
                     if not sub_mapping_record:
                         raise UserError(
-                            _("No mapping found with name %s") % sub_mapping)
+                            _("No mapping found with name %s") % sub_mapping
+                        )
                     if len(sub_mapping_record) > 1:
                         raise UserError(_("Ambiguous mapping name %s") % sub_mapping)
                     field_spec_vals["sub_mapping_id"] = sub_mapping_record.id
@@ -103,7 +105,9 @@ class CompassionMapping(models.Model):
                                 ("name", "=", field_path),
                             ]
                         )
-                        current_model = self.env["ir.model"].search([("model", "=", relational_field.relation)])
+                        current_model = self.env["ir.model"].search(
+                            [("model", "=", relational_field.relation)]
+                        )
                     field = self.env["ir.model.fields"].search(
                         [
                             ("model_id", "=", current_model.id),
@@ -118,7 +122,7 @@ class CompassionMapping(models.Model):
                 # We should have found a valid field
                 try:
                     field.ensure_one()
-                except ValueError:
+                except ValueError as error:
                     # Raise a meaningful error
                     field = (
                         field_name.split(".")[-1]
@@ -131,10 +135,9 @@ class CompassionMapping(models.Model):
                         else self.model_id.model
                     )
                     raise UserError(
-                        _(
-                            "[%s] Invalid mapping: field %s in %s doesn't exist"
-                        ) % (self.name, field, model)
-                    )
+                        _("[%s] Invalid mapping: field %s in %s doesn't exist")
+                        % (self.name, field, model)
+                    ) from error
                 field_spec_vals["odoo_field"] = field_name
             if not short_spec:
                 field_spec_vals.update(odoo_spec)
@@ -167,5 +170,6 @@ class CompassionMapping(models.Model):
                         "You can only add mapping to models that inherit "
                         "compassion.mapped.model\n"
                         "%s doesn't support mappings."
-                    ) % model._name
+                    )
+                    % model._name
                 )

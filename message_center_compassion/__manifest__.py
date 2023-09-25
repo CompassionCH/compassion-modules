@@ -36,7 +36,9 @@
     "website": "http://www.compassion.ch",
     "development_status": "Stable",
     "depends": ["base", "queue_job"],
-    "external_dependencies": {"python": ["jwt"], },
+    "external_dependencies": {
+        "python": ["jwt"],
+    },
     "data": [
         "security/gmc_groups.xml",
         "security/ir.model.access.csv",

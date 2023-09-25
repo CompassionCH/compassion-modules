@@ -10,7 +10,7 @@
 
 import logging
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,8 @@ class ChildCompassion(models.Model):
             # Departure
             depart = self.env.ref("sponsorship_compassion.end_reason_depart")
             sponsorships = self.mapped("sponsorship_ids").filtered(
-                lambda c: c.state not in ("terminated", "cancelled"))
+                lambda c: c.state not in ("terminated", "cancelled")
+            )
             sponsorships.action_contract_terminate({"end_reason_id": depart.id})
         else:
             # Hold expiration
@@ -56,5 +57,7 @@ class ChildCompassion(models.Model):
                 lambda s: s.state in ("draft", "waiting", "waiting_payment")
             )
             if waiting_sponsorships:
-                waiting_sponsorships.action_contract_terminate({"end_reason_id": hold_released.id})
+                waiting_sponsorships.action_contract_terminate(
+                    {"end_reason_id": hold_released.id}
+                )
         return super().child_released(state)

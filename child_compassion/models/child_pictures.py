@@ -9,16 +9,17 @@
 ##############################################################################
 import base64
 import logging
-from urllib.request import urlopen, Request
+from urllib.request import Request, urlopen
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.http import request
 
 logger = logging.getLogger(__name__)
 
 # This User-Agent simulate a browser, so that the fetch is not blocked
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
+    "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; "
+    "en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
 }
 
 
@@ -58,17 +59,20 @@ class ChildPictures(models.Model):
                 base_url = request.website.domain
             except AttributeError:
                 config = self.env["ir.config_parameter"].sudo()
-                base_url = config.get_param("web.external.url", config.get_param("web.base.url"))
+                base_url = config.get_param(
+                    "web.external.url", config.get_param("web.base.url")
+                )
             endpoint = str(base_url) + "/web/image/compassion.child.pictures"
-            image.image_url_compassion =\
+            image.image_url_compassion = (
                 f"{endpoint}/{image.id}/fullshot/{image.date}_{image.child_id.id}.jpg"
+            )
 
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
-        """ Fetch new pictures from GMC webservice when creating
+        """Fetch new pictures from GMC webservice when creating
         a new Pictures object. Check if picture is the same as the previous
         and attach the pictures to the last case study.
         """
@@ -83,7 +87,8 @@ class ChildPictures(models.Model):
         if not image_date:
             # We could not retrieve a picture, we cancel the creation
             pictures.child_id.message_post(
-                body=_(pictures._error_msg), subject=_("Picture update"))
+                body=_(pictures._error_msg), subject=_("Picture update")
+            )
             pictures.unlink()
             return False
 
@@ -107,10 +112,9 @@ class ChildPictures(models.Model):
     def _find_same_picture(self):
         self.ensure_one()
         reference = self.with_context(bin_size=False)
-        pics = reference.search([
-            ("child_id", "=", self.child_id.id),
-            ("id", "!=", self.id)
-        ], limit=1)  # The last picture is most probably one that could be the same.
+        pics = reference.search(
+            [("child_id", "=", self.child_id.id), ("id", "!=", self.id)], limit=1
+        )  # The last picture is most probably one that could be the same.
         same_pics = pics.filtered(
             lambda record: record.fullshot == reference.fullshot
             and record.headshot == reference.headshot
@@ -118,7 +122,7 @@ class ChildPictures(models.Model):
         return same_pics
 
     def _get_picture(self, pic_type="Headshot", width=300, height=400):
-        """ Gets a picture from Compassion webservice """
+        """Gets a picture from Compassion webservice"""
         self.ensure_one()
         if pic_type.lower() == "headshot":
             cloudinary = (
@@ -145,7 +149,7 @@ class ChildPictures(models.Model):
                     self.headshot = data
                 elif pic_type.lower() == "fullshot":
                     self.fullshot = data
-            except Exception as e:
+            except Exception:
                 self._error_msg = (
                     "Image cannot be fetched, invalid image "
                     "url : " + picture.image_url

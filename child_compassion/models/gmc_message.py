@@ -10,13 +10,13 @@
 
 import logging
 
-from odoo import models, fields
+from odoo import fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class GmcMessage(models.Model):
-    """ Add child in messages. """
+    """Add child in messages."""
 
     _inherit = "gmc.message"
 

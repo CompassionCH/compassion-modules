@@ -15,7 +15,9 @@ class ContractGroup(models.Model):
 
     _inherit = "recurring.contract.group"
 
-    def build_inv_line_data(self, invoicing_date=False, gift_wizard=False, contract_line=False):
+    def build_inv_line_data(
+        self, invoicing_date=False, gift_wizard=False, contract_line=False
+    ):
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
         if gift_wizard:
             res["user_id"] = gift_wizard.contract_id.ambassador_id.id

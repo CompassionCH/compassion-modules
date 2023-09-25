@@ -1112,4 +1112,3 @@ msgstr "get infos"
 #: model:res.groups,comment:intervention_compassion.group_intervention
 msgid "the user will have access to all interventions and related data."
 msgstr "the user will have access to all interventions and related data."
-

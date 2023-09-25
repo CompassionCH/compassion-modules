@@ -8,13 +8,14 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 
 class SdsSubFollowers(models.Model):
     """Configuration for SUB sponsorship Notifications."""
-    _name = 'sds.sub.followers'
-    _description = 'SDS SUB Sponsorship Followers'
+
+    _name = "sds.sub.followers"
+    _description = "SDS SUB Sponsorship Followers"
     _order = "sequence,id"
 
     # User to notify after Child Departure
@@ -22,20 +23,26 @@ class SdsSubFollowers(models.Model):
         "res.users",
         string="Sub sponsorships follower",
         domain=[("share", "=", False)],
-        required=True
+        required=True,
     )
     # Language that could have notifications
     res_lang_id = fields.Many2one(
         "res.lang",
         string="Active language",
         domain=[("active", "=", True)],
-        help="Language for which to be notified (empty for all languages)"
+        help="Language for which to be notified (empty for all languages)",
     )
     sequence = fields.Integer(
-        default=10, required=True,
-        help="When multiple followers match, the one with highest priority (at the top) will be assigned."
+        default=10,
+        required=True,
+        help="When multiple followers match, the one with highest priority"
+        "(at the top) will be assigned.",
     )
 
     _sql_constraints = [
-        ("unique_user", "unique(user_id,res_lang_id)", "This user is already configured.")
+        (
+            "unique_user",
+            "unique(user_id,res_lang_id)",
+            "This user is already configured.",
+        )
     ]

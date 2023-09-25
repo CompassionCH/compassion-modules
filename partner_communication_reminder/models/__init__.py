@@ -1,3 +1,1 @@
-from . import compassion_hold
-from . import partner_communication_job
-from . import recurring_contract
+from . import compassion_hold, partner_communication_job, recurring_contract

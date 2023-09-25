@@ -8,22 +8,24 @@
 #
 ##############################################################################
 
-from . import event_compassion
-from . import contract_origin
-from . import contract
-from . import contract_group
-from . import crm_lead
-from . import account_analytic_account
-from . import account_move_line
-from . import res_partner
-from . import calendar_event
-from . import demand_planning
-from . import weekly_demand
-from . import weekly_revision
-from . import compassion_hold
-from . import interaction_resume
-from . import mail_mail
-from . import phone_call
-from . import mail_activity
-from . import mail_tracking_email
-from . import account_analytic_line
+from . import (
+    account_analytic_account,
+    account_analytic_line,
+    account_move_line,
+    calendar_event,
+    compassion_hold,
+    contract,
+    contract_group,
+    contract_origin,
+    crm_lead,
+    demand_planning,
+    event_compassion,
+    interaction_resume,
+    mail_activity,
+    mail_mail,
+    mail_tracking_email,
+    phone_call,
+    res_partner,
+    weekly_demand,
+    weekly_revision,
+)

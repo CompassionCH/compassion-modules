@@ -12,18 +12,19 @@ from datetime import datetime
 
 from babel.dates import format_date
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
-    """ Add fields for retrieving values for communications.
+    """Add fields for retrieving values for communications.
 
-        - Short address
-            Mr. John Doe
-            Street
-            City
-            Country
+    - Short address
+        Mr. John Doe
+        Street
+        City
+        Country
     """
+
     _inherit = "res.partner"
 
     gender = fields.Selection(related="title.gender", readonly=True)
@@ -43,7 +44,7 @@ class ResPartner(models.Model):
                 res = t_partner.title.shortcut + " "
                 if partner.firstname:
                     res += partner.firstname + " "
-                res += (partner.lastname or '') + "<br/>"
+                res += (partner.lastname or "") + "<br/>"
             res += t_partner.contact_address
             partner.short_address = p.sub("<br/>", res)
 

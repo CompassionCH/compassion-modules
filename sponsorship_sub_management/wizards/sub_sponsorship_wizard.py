@@ -7,12 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import datetime
+from odoo import _, api, fields, models
 
-from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
-
-from odoo import api, models, fields, _
 
 
 class SubSponsorshipWizard(models.TransientModel):

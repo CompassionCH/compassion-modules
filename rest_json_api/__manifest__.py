@@ -38,8 +38,7 @@
         "base",
     ],
     "external_dependencies": {"python": []},
-    "data": [
-    ],
+    "data": [],
     "demo": [],
     "installable": True,
     "auto_install": False,

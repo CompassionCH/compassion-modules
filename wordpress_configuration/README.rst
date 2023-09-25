@@ -17,7 +17,7 @@ Wordpress configuration for multi-company
     :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/wordpress_configuration
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 The module allows to create different wordpress configurations for different companies.
 

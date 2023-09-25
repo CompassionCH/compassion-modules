@@ -9,28 +9,26 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 logger = logging.getLogger(__name__)
 
 
 class CommunicationDefaults(models.AbstractModel):
-    """ Abstract class to share config settings between communication config
-    and communication job. """
+    """Abstract class to share config settings between communication config
+    and communication job."""
 
     _name = "partner.communication.defaults"
 
-    user_id = fields.Many2one(
-        "res.users", "From", domain=[("share", "=", False)]
-    )
+    user_id = fields.Many2one("res.users", "From", domain=[("share", "=", False)])
     need_call = fields.Selection(
         "get_need_call",
         help="Indicates we should have a personal contact with the partner",
     )
     print_if_not_email = fields.Boolean(
         help="Should we print the communication if the sponsor don't have "
-             "an e-mail address"
+        "an e-mail address"
     )
     report_id = fields.Many2one(
         "ir.actions.report",
@@ -57,23 +55,31 @@ class CommunicationDefaultConfig(models.Model):
 
     config_id = fields.Many2one("partner.communication.config", "Communication type")
     lang_id = fields.Many2one(
-        "res.lang", "Language",
-        help="This config will only apply to communications in selected language.")
+        "res.lang",
+        "Language",
+        help="This config will only apply to communications in selected language.",
+    )
     user_id = fields.Many2one(
-       string="User", help="This config will only apply for communications from this user")
+        string="User",
+        help="This config will only apply for communications from this user",
+    )
 
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("user_id") and not vals.get("lang_id"):
-                raise UserError(_(
-                    "The config should apply at least for a user or a language, otherwise you can "
-                    "simply change the settings in the general configuration."))
+                raise UserError(
+                    _(
+                        "The config should apply at least for a user or a language, "
+                        "otherwise you can simply change the settings in the general "
+                        "configuration."
+                    )
+                )
         return super().create(vals_list)
 
 
 class CommunicationConfig(models.Model):
-    """ This class allows to configure if and how we will inform the
-    sponsor when a given event occurs. """
+    """This class allows to configure if and how we will inform the
+    sponsor when a given event occurs."""
 
     _name = "partner.communication.config"
     _inherit = "partner.communication.defaults"
@@ -124,7 +130,7 @@ class CommunicationConfig(models.Model):
         comodel_name="partner.communication.default.config",
         inverse_name="config_id",
         string="Custom Configuration",
-        readonly=False
+        readonly=False,
     )
     active = fields.Boolean(default=True)
 
@@ -133,14 +139,13 @@ class CommunicationConfig(models.Model):
     ##########################################################################
     @api.constrains("send_mode_pref_field")
     def _validate_config(self):
-        """ Test if the config is valid. """
+        """Test if the config is valid."""
         for config in self.filtered("send_mode_pref_field"):
             valid = hasattr(self.env["res.partner"], config.send_mode_pref_field)
             if not valid:
                 raise ValidationError(
-                    _(
-                        "Following field does not exist in res.partner: %s."
-                    ) % config.send_mode_pref_field
+                    _("Following field does not exist in res.partner: %s.")
+                    % config.send_mode_pref_field
                 )
 
     @api.constrains("report_id")
@@ -205,7 +210,7 @@ class CommunicationConfig(models.Model):
     def build_inform_mode(
         self, partner, communication_send_mode, print_if_not_email, send_mode_pref_field
     ):
-        """ Returns how the partner should be informed for the given
+        """Returns how the partner should be informed for the given
         communication (digital, physical or False).
         It makes the product of the communication preference and the partner
         preference :

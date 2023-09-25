@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, _
+from odoo import _, fields, models
 
 
 class Partner(models.Model):
@@ -77,8 +77,14 @@ class Partner(models.Model):
         self.env["interaction.resume"].populate_resume(self.id, full_resume)
         partners_with_same_email_ids = (
             self.env["res.partner"]
-                .search([("email", "!=", False), ("email", "=", self.email), ('id', 'not in', self.ids)])
-                .ids
+            .search(
+                [
+                    ("email", "!=", False),
+                    ("email", "=", self.email),
+                    ("id", "not in", self.ids),
+                ]
+            )
+            .ids
         )
         return {
             "name": _("Interaction resume"),
@@ -86,9 +92,15 @@ class Partner(models.Model):
             "res_model": "interaction.resume",
             "view_type": "form",
             "view_mode": "tree,form",
-            "domain": [("partner_id", "in",
-                        self.ids + partners_with_same_email_ids +
-                        self.mapped("other_contact_ids").ids)],
+            "domain": [
+                (
+                    "partner_id",
+                    "in",
+                    self.ids
+                    + partners_with_same_email_ids
+                    + self.mapped("other_contact_ids").ids,
+                )
+            ],
             "target": "current",
         }
 

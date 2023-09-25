@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, _
+from odoo import _, fields, models
 
 
 class CommunicationJob(models.Model):
@@ -33,7 +33,7 @@ class CommunicationJob(models.Model):
         }
 
     def call(self):
-        """ Call partner from tree view button. """
+        """Call partner from tree view button."""
         self.ensure_one()
         self.env["phone.common"].with_context(
             click2dial_model=self._name, click2dial_id=self.id

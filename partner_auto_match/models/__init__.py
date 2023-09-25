@@ -8,5 +8,4 @@
 #
 ##############################################################################
 
-from . import res_partner_match
-from . import abstract_partner_form
+from . import abstract_partner_form, res_partner_match

@@ -10,7 +10,7 @@
 
 import logging
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -33,9 +33,7 @@ class CorrespondenceTemplatePage(models.Model):
     )
     page_index = fields.Integer(required=True, default=1)
     name = fields.Char(compute="_compute_name")
-    background = fields.Image(
-        "Page background", help="Use 300 DPI images"
-    )
+    background = fields.Image("Page background", help="Use 300 DPI images")
     header_box_id = fields.Many2one(
         "correspondence.text.box", string="Header", readonly=False
     )

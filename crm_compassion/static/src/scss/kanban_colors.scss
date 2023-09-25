@@ -1,58 +1,60 @@
-$o-colors: lighten(#000, 46.7%), #F06050, #F4A460, #F7CD1F, #6CC1ED, #814968,
-              #EB7E7F, #2C8397, #475577, #D6145F, #30C381, #9365B8,
-              #b30000, #0000cc, #ff0000, #993300, #006600, #ffff80, #ffd1b3,
-              #99ff99, #003366, #333333, #330033, #4d0000, #476b6b;
+$o-colors: lighten(#000, 46.7%), #f06050, #f4a460, #f7cd1f, #6cc1ed, #814968, #eb7e7f,
+  #2c8397, #475577, #d6145f, #30c381, #9365b8, #b30000, #0000cc, #ff0000, #993300,
+  #006600, #ffff80, #ffd1b3, #99ff99, #003366, #333333, #330033, #4d0000, #476b6b;
 
 @mixin o-kanban-record-color {
-    @for $size from 2 through length($o-colors) {
-        // Note: the first color is not defined as it is the 'no color' for kanban
-        .oe_kanban_color_#{$size - 1}::after {
-            background-color: nth($o-colors, $size);
-        }
+  @for $size from 2 through length($o-colors) {
+    // Note: the first color is not defined as it is the 'no color' for kanban
+    .oe_kanban_color_#{$size - 1}::after {
+      background-color: nth($o-colors, $size);
     }
+  }
 }
 
 @mixin o-kanban-tag-color {
-    @for $size from 1 through length($o-colors) {
-        // Note: the first color is supposed to be invisible if there is a color
-        // field but it is used as a default color when there is no color field
-        &.o_tag_color_#{$size - 1} span {
-            background-color: nth($o-colors, $size);
-        }
+  @for $size from 1 through length($o-colors) {
+    // Note: the first color is supposed to be invisible if there is a color
+    // field but it is used as a default color when there is no color field
+    &.o_tag_color_#{$size - 1} span {
+      background-color: nth($o-colors, $size);
     }
+  }
 }
 .o_kanban_view {
-    @include o-kanban-record-color;
+  @include o-kanban-record-color;
 
-    .oe_kanban_card, .o_kanban_record {
-        .o_field_many2manytags, .o_kanban_tags {
-            .o_tag {
-                @include o-kanban-tag-color;
-            }
-        }
+  .oe_kanban_card,
+  .o_kanban_record {
+    .o_field_many2manytags,
+    .o_kanban_tags {
+      .o_tag {
+        @include o-kanban-tag-color;
+      }
     }
+  }
 }
 
 .o_field_widget {
-    &.o_field_many2manytags {
-        @for $size from 1 through length($o-colors) {
-            .o_tag_color_#{$size - 1} {
-                @if $size == 1 {
-                    & {
-                        background-color: white;
-                        color: nth($o-colors, $size);
-                        box-shadow: inset 0 0 0 2px nth($o-colors, $size);
-                    }
-                    &::after {
-                        background-color: nth($o-colors, $size);
-                    }
-                } @else {
-                    &, &::after {
-                        background-color: nth($o-colors, $size);
-                        color: $white;
-                    }
-                }
-            }
+  &.o_field_many2manytags {
+    @for $size from 1 through length($o-colors) {
+      .o_tag_color_#{$size - 1} {
+        @if $size == 1 {
+          & {
+            background-color: white;
+            color: nth($o-colors, $size);
+            box-shadow: inset 0 0 0 2px nth($o-colors, $size);
+          }
+          &::after {
+            background-color: nth($o-colors, $size);
+          }
+        } @else {
+          &,
+          &::after {
+            background-color: nth($o-colors, $size);
+            color: $white;
+          }
         }
+      }
     }
+  }
 }

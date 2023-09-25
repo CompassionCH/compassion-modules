@@ -9,9 +9,8 @@
 ##############################################################################
 import logging
 
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.tools.mimetypes import guess_mimetype
-
 
 logger = logging.getLogger(__name__)
 

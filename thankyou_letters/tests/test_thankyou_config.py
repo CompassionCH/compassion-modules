@@ -34,18 +34,25 @@ class TestThankYouLetters(SavepointCase):
         self.assertEqual(thankyou_configs.for_donation(line), self.config50)
 
         line = self.env["account.invoice.line"].search(
-            [("price_subtotal", ">=", 100), ("price_subtotal", "<", 500), ], limit=1
+            [
+                ("price_subtotal", ">=", 100),
+                ("price_subtotal", "<", 500),
+            ],
+            limit=1,
         )
         self.assertEqual(thankyou_configs.for_donation(line), self.config100)
 
         line = self.env["account.invoice.line"].search(
-            [("price_subtotal", ">=", 500), ], limit=1
+            [
+                ("price_subtotal", ">=", 500),
+            ],
+            limit=1,
         )
         self.assertEqual(thankyou_configs.for_donation(line), self.config500)
 
     def test_build_inform_mode(self):
-        """ Test separating send_message using communication config logic. """
+        """Test separating send_message using communication config logic."""
         send_mode, auto = self.config50.build_inform_mode(self.asus)
 
         self.assertTrue(auto)
-        self.assertEquals(send_mode, "digital")
+        self.assertEqual(send_mode, "digital")

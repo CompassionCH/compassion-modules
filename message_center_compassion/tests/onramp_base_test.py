@@ -15,7 +15,7 @@ PORT = config["http_port"]
 
 
 class TestOnramp(common.HttpCase):
-    """ Base class for all Onramp tests. """
+    """Base class for all Onramp tests."""
 
     def setUp(self):
         # Add special controller for decoding a fake Oauth token and posting
@@ -29,7 +29,7 @@ class TestOnramp(common.HttpCase):
             "content-type": "application/json",
             "Authorization": "Bearer fake_token",
             "x-cim-MessageType": "http://schemas.ci.org/ci/services/"
-                                 "communications/2015/09/SBCStructured",
+            "communications/2015/09/SBCStructured",
             "x-cim-FromAddress": "CHTest",
             "x-cim-ToAddress": "CH",
         }

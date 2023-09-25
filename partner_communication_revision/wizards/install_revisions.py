@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api
+from odoo import api, models
 
 
 class RevisionInstall(models.AbstractModel):
@@ -26,10 +26,12 @@ class RevisionInstall(models.AbstractModel):
             )
             revision_date = config.email_template_id.write_date
             for lang in missing_langs:
-                revision_obj.create({
-                    'lang': lang.code,
-                    'config_id': config.id,
-                    'revision_date': revision_date
-                })
+                revision_obj.create(
+                    {
+                        "lang": lang.code,
+                        "config_id": config.id,
+                        "revision_date": revision_date,
+                    }
+                )
             config.revision_date = revision_date and revision_date.date()
         return True

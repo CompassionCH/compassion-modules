@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, _
+from odoo import _, models
 from odoo.tools.safe_eval import safe_eval
 
 

@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class ProjectLifecycle(models.Model):
@@ -106,7 +106,7 @@ class ProjectLifecycle(models.Model):
 
     @api.model
     def create(self, vals):
-        """ Call suspension and reactivation process on projects. """
+        """Call suspension and reactivation process on projects."""
         project = self.env["compassion.project"].browse(vals.get("project_id"))
         fund_suspended = project.suspension == "fund-suspended"
         hold_gifts = project.hold_gifts

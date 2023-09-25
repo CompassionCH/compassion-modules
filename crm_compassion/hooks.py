@@ -1,7 +1,8 @@
 # Copyright 2023 Emanuel Cino
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import api, SUPERUSER_ID
 from openupgradelib import openupgrade
+
+from odoo import SUPERUSER_ID, api
 
 
 def pre_init_hook(cr):
@@ -17,6 +18,16 @@ def pre_init_hook(cr):
     """
     # This will avoid computing all values at module installation, which takes forever.
     env = api.Environment(cr, SUPERUSER_ID, {})
-    openupgrade.add_fields(env, [(
-        "event_id", "account.move.line", False, "integer", "integer", "crm_compassion"
-    )])
+    openupgrade.add_fields(
+        env,
+        [
+            (
+                "event_id",
+                "account.move.line",
+                False,
+                "integer",
+                "integer",
+                "crm_compassion",
+            )
+        ],
+    )

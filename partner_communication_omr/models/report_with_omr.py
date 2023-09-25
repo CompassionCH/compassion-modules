@@ -6,7 +6,7 @@ from odoo import models
 _logger = logging.getLogger(__name__)
 
 try:
-    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileReader, PdfFileWriter
 except ImportError:
     _logger.warning("Please install library PyPDF2")
 
@@ -24,7 +24,8 @@ class OmrAwareReport(models.Model):
                 output = PdfFileWriter()
                 for job in jobs:
                     document, document_type = super()._render_qweb_pdf(
-                        job.ids, data=data)
+                        job.ids, data=data
+                    )
                     if job.omr_enable_marks:
                         is_latest_document = not job.attachment_ids.filtered(
                             "attachment_id.enable_omr"

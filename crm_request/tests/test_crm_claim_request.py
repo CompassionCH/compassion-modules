@@ -8,6 +8,7 @@
 #
 ##############################################################################
 from datetime import datetime
+
 from odoo.tests import SingleTransactionCase
 
 

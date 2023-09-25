@@ -9,12 +9,11 @@
 ##############################################################################
 from datetime import date
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 
 
 class Contracts(models.Model):
-    """ Add correspondence information in contracts
-    """
+    """Add correspondence information in contracts"""
 
     _inherit = "recurring.contract"
 
@@ -37,12 +36,10 @@ class Contracts(models.Model):
     last_letter = fields.Integer(
         "Days since sponsor wrote", compute="_compute_last_letter"
     )
-    last_sponsor_letter = fields.Date(
-        "Date of last sponsor letter"
-    )
+    last_sponsor_letter = fields.Date("Date of last sponsor letter")
     write_for_birthday_alert = fields.Boolean(
         help="True when child will have birthday in less than 3 months and"
-             "sponsor has not written in this period.",
+        "sponsor has not written in this period.",
         compute="_compute_write_for_birthday_alert",
     )
 
@@ -50,7 +47,7 @@ class Contracts(models.Model):
     #                             FIELDS METHODS                             #
     ##########################################################################
     def _compute_get_letters(self):
-        """ Retrieve correspondence of sponsorship contracts. """
+        """Retrieve correspondence of sponsorship contracts."""
         for sponsorship in self:
             letters_obj = self.env["correspondence"]
             letters = letters_obj.search([("sponsorship_id", "=", sponsorship.id)])
@@ -103,15 +100,20 @@ class Contracts(models.Model):
 
     @api.model
     def create(self, vals):
-        if "child_id" in vals and "correspondent_id" in vals and \
-                "reading_language" not in vals:
+        if (
+            "child_id" in vals
+            and "correspondent_id" in vals
+            and "reading_language" not in vals
+        ):
             child = self.env["compassion.child"].browse(vals["child_id"])
             correspondent = self.env["res.partner"].browse(vals["correspondent_id"])
             english = self.env.ref("advanced_translation.lang_compassion_english")
             spoken_langs = correspondent.spoken_lang_ids
-            reading_language = (spoken_langs & child.correspondence_language_id) or (
-                spoken_langs & english) or spoken_langs.filtered(
-                lambda l: l.lang_id.code == correspondent.lang)
+            reading_language = (
+                (spoken_langs & child.correspondence_language_id)
+                or (spoken_langs & english)
+                or spoken_langs.filtered(lambda l: l.lang_id.code == correspondent.lang)
+            )
             vals["reading_language"] = reading_language.id
         return super().create(vals)
 
@@ -120,11 +122,11 @@ class Contracts(models.Model):
     ##########################################################################
     @api.onchange("correspondent_id", "child_id")
     def onchange_relationship(self):
-        """ Define the preferred reading language for the correspondent.
-            1. Sponsor main language if child speaks that language
-            2. Any language spoken by both sponsor and child other than
-               English
-            3. English
+        """Define the preferred reading language for the correspondent.
+        1. Sponsor main language if child speaks that language
+        2. Any language spoken by both sponsor and child other than
+           English
+        3. English
         """
         for sponsorship in self:
             if sponsorship.correspondent_id and sponsorship.child_id:
@@ -140,7 +142,9 @@ class Contracts(models.Model):
                 if sponsor_main_lang in child_languages:
                     sponsorship.reading_language = sponsor_main_lang
                 else:
-                    english = self.env.ref("advanced_translation.lang_compassion_english")
+                    english = self.env.ref(
+                        "advanced_translation.lang_compassion_english"
+                    )
                     common_langs = (child_languages & sponsor_languages) - english
                     if common_langs:
                         sponsorship.reading_language = common_langs[0]
@@ -163,10 +167,11 @@ class Contracts(models.Model):
     #                            WORKFLOW METHODS                            #
     ##########################################################################
     def contract_active(self):
-        """ Send letters that were on hold. """
+        """Send letters that were on hold."""
         super().contract_active()
         for contract in self.filtered(
-                lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
+            lambda c: "S" in c.type and not c.project_id.hold_s2b_letters
         ):
-            contract.sponsor_letter_ids.filtered(lambda c: not c.kit_identifier)\
-                .reactivate_letters("Sponsorship activated")
+            contract.sponsor_letter_ids.filtered(
+                lambda c: not c.kit_identifier
+            ).reactivate_letters("Sponsorship activated")

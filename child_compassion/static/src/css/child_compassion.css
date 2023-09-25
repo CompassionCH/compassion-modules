@@ -1,16 +1,16 @@
 .openerp .oe_checklist_div {
-	width: 100%;
+  width: 100%;
 }
 .openerp .oe_form .oe_checklist_box {
-	width: 3%;
-	display: inline-block;
+  width: 3%;
+  display: inline-block;
 }
 .openerp .oe_checklist_label {
-	width: 25%;
-	display: inline-block;
-	height: 100%;
+  width: 25%;
+  display: inline-block;
+  height: 100%;
 }
 .openerp .oe_form .oe_checklist_value {
-	width: 70%;
-	display: inline-block;
+  width: 70%;
+  display: inline-block;
 }

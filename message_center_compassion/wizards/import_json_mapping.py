@@ -10,7 +10,7 @@
 import base64
 import json
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ImportJsonMapping(models.TransientModel):

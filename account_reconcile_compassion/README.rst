@@ -17,7 +17,7 @@ Bank Statement Reconcile for Compassion CH
     :target: https://github.com/CompassionCH/compassion-switzerland/tree/11.0/account_reconcile_compassion
     :alt: CompassionCH/compassion-switzerland
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 Reconcile rules with bvr_ref of invoice for Compassion CH.
 

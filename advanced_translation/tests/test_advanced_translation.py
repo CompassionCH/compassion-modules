@@ -4,7 +4,7 @@ from odoo.tests.common import SingleTransactionCase
 class AdvancedTranslationTest(SingleTransactionCase):
     @classmethod
     def setUpClass(cls):
-        """ Create test data."""
+        """Create test data."""
         super().setUpClass()
 
         cls.test_partner_obj = cls.env["res.partner"]
@@ -17,8 +17,7 @@ class AdvancedTranslationTest(SingleTransactionCase):
         cls.females = (julia + jessica).with_context(lang="en_US")
 
     def test_keyword_gender(self):
-        """Testing that the correct term is returned given the recordset.
-        """
+        """Testing that the correct term is returned given the recordset."""
         self.assertEqual(self.males[:1].get("demo_his"), "his")
         self.assertEqual(self.males.get("demo_his"), "their(m)")
         self.assertEqual(self.females[:1].get("demo_his"), "her")

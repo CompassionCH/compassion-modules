@@ -78,8 +78,7 @@ class PartnerForm(models.AbstractModel):
                 partner_vals = self._convert_vals_for_res_partner(vals)
                 vals["partner_id"] = (
                     self.env["res.partner.match"]
-                    .match_values_to_partner(
-                        partner_vals, match_update, match_create)
+                    .match_values_to_partner(partner_vals, match_update, match_create)
                     .id
                 )
         return super().create(vals_list)

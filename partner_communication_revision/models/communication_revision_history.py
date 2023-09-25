@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
+from odoo import fields, models
 
 
 class CommunicationRevisionHistory(models.Model):
@@ -26,13 +26,16 @@ class CommunicationRevisionHistory(models.Model):
         string="Revision history",
         required=True,
         index=True,
-        ondelete="cascade"
+        ondelete="cascade",
     )
     proposition_text = fields.Html()
 
     _sql_constraints = [
-        ("unique_version", "unique(linked_revision_id,revision_number)",
-         "This version is already existing!")
+        (
+            "unique_version",
+            "unique(linked_revision_id,revision_number)",
+            "This version is already existing!",
+        )
     ]
 
     def name_get(self):
@@ -43,8 +46,7 @@ class CommunicationRevisionHistory(models.Model):
         return names
 
     def save_revision_state(self):
-        write_fields = [
-            "revision_number", "revision_date", "body_html", "raw_subject"]
+        write_fields = ["revision_number", "revision_date", "body_html", "raw_subject"]
         if self.linked_revision_id.state == "active":
             # Also change revision texts when they are not being edited
             write_fields += ["proposition_text", "subject"]
@@ -52,8 +54,7 @@ class CommunicationRevisionHistory(models.Model):
             revision.write(revision.linked_revision_id.read(write_fields)[0])
 
     def get_vals(self):
-        read_fields = [
-            "revision_number", "revision_date", "body_html", "raw_subject"]
+        read_fields = ["revision_number", "revision_date", "body_html", "raw_subject"]
         if self.linked_revision_id.state == "active":
             # Also change revision texts when they are not being edited
             read_fields += ["proposition_text", "subject"]

@@ -13,10 +13,11 @@ import threading
 import uuid
 from io import BytesIO
 
-from odoo import fields, models, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
+
 from ..tools.onramp_connector import SBCConnector
+from .correspondence_page import BOX_SEPARATOR, PAGE_SEPARATOR
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class CorrespondenceType(models.Model):
 
 
 class Correspondence(models.Model):
-    """ This class holds the data of a Communication Kit between
+    """This class holds the data of a Communication Kit between
     a child and a sponsor.
     """
 
@@ -51,7 +52,7 @@ class Correspondence(models.Model):
         "correspondence.metadata",
         "translatable.model",
         "compassion.mapped.model",
-        "utm.mixin"
+        "utm.mixin",
     ]
     _description = "Letter"
     _order = "status_date desc"
@@ -78,8 +79,7 @@ class Correspondence(models.Model):
         related="sponsorship_id.child_id", store=True, readonly=False
     )
     # Field used for identifying correspondence by GMC
-    kit_identifier = fields.Char(
-        "Kit id", copy=False, readonly=True, tracking=True)
+    kit_identifier = fields.Char("Kit id", copy=False, readonly=True, tracking=True)
     direction = fields.Selection(
         selection=[
             ("Supporter To Beneficiary", _("Supporter to participant")),
@@ -151,7 +151,9 @@ class Correspondence(models.Model):
         compute="_compute_letter_format",
         store=True,
     )
-    preferred_dpi = fields.Integer(compute="_compute_preferred_dpi", help="Resolution of fetched PDF")
+    preferred_dpi = fields.Integer(
+        compute="_compute_preferred_dpi", help="Resolution of fetched PDF"
+    )
 
     # 3. Letter language, text information, attached images
     #######################################################
@@ -183,7 +185,7 @@ class Correspondence(models.Model):
         readonly=True,
         domain=[("res_model", "=", _name)],
         string="Attached images",
-        copy=True
+        copy=True,
     )
     page_ids = fields.One2many(
         "correspondence.page", "correspondence_id", readonly=False, copy=True
@@ -197,11 +199,14 @@ class Correspondence(models.Model):
     ###########################
     status_date = fields.Datetime(default=fields.Datetime.now)
     scanned_date = fields.Date(default=fields.Date.today)
-    relationship = fields.Selection([
-        ("Sponsor", _("Sponsor")),
-        ("Encourager", _("Encourager")),
-        ("Correspondent", _("Correspondent"))
-    ], default="Sponsor")
+    relationship = fields.Selection(
+        [
+            ("Sponsor", _("Sponsor")),
+            ("Encourager", _("Encourager")),
+            ("Correspondent", _("Correspondent")),
+        ],
+        default="Sponsor",
+    )
     is_first_letter = fields.Boolean(
         compute="_compute_is_first",
         store=True,
@@ -251,14 +256,14 @@ class Correspondence(models.Model):
     ##########################################################################
     @api.model
     def get_states(self):
-        """ Returns all the possible states. """
+        """Returns all the possible states."""
         return list(
             set(self._fields["s2b_state"].selection)
             | set(self._fields["b2s_state"].selection)
         )
 
     def _compute_states(self):
-        """ Sets the internal states (s2b and b2s). """
+        """Sets the internal states (s2b and b2s)."""
         for letter in self:
             if letter.direction == "Supporter To Beneficiary":
                 letter.s2b_state = letter.state
@@ -355,7 +360,7 @@ class Correspondence(models.Model):
                     for i in range(0, len(letter.page_ids)):
                         setattr(letter.page_ids[i], field, pages_text[i].strip("\n"))
                     last_page_text = getattr(letter.page_ids[i], field)
-                    last_page_text += "\n\n" + "\n\n".join(pages_text[i + 1:])
+                    last_page_text += "\n\n" + "\n\n".join(pages_text[i + 1 :])
                     setattr(letter.page_ids[i], field, last_page_text)
             else:
                 for i in range(0, len(pages_text)):
@@ -367,8 +372,12 @@ class Correspondence(models.Model):
                     )
 
     def _get_text(self, source_text):
-        """ Gets the desired text (original/translated) from the pages. """
-        txt = self.page_ids.mapped("paragraph_ids").filtered(source_text).mapped(source_text)
+        """Gets the desired text (original/translated) from the pages."""
+        txt = (
+            self.page_ids.mapped("paragraph_ids")
+            .filtered(source_text)
+            .mapped(source_text)
+        )
         return ("\n" + PAGE_SEPARATOR + "\n").join(txt)
 
     @api.depends("letter_image")
@@ -404,14 +413,14 @@ class Correspondence(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals):
-        """ Fill missing fields.
+        """Fill missing fields.
         The field `letter_image` is a binary and will be stored in an ir.attachment
         If `stored_letter_image` is set to False, `letter_image` is dropped and PDFs
         will be generated when requested using the template and
         """
         if (
-                vals.get("direction", "Supporter To Beneficiary")
-                == "Supporter To Beneficiary"
+            vals.get("direction", "Supporter To Beneficiary")
+            == "Supporter To Beneficiary"
         ):
             vals["communication_type_ids"] = [
                 (4, self.env.ref("sbc_compassion.correspondence_type_supporter").id)
@@ -456,7 +465,7 @@ class Correspondence(models.Model):
             # Set the correct number of pages
             image_pdf = PdfFileReader(BytesIO(letter_data))
             if letter.nbr_pages < image_pdf.numPages:
-                for i in range(letter.nbr_pages, image_pdf.numPages):
+                for _i in range(letter.nbr_pages, image_pdf.numPages):
                     letter.page_ids.create({"correspondence_id": letter.id})
 
         if not self.env.context.get("no_comm_kit"):
@@ -465,17 +474,20 @@ class Correspondence(models.Model):
         return letter
 
     def write(self, vals):
-        """ Keep track of state changes. """
+        """Keep track of state changes."""
         if "state" in vals:
             if vals["state"] == "Translation check unsuccessful":
-                responsible = self.env["res.config.settings"].get_param("letter_responsible")
+                responsible = self.env["res.config.settings"].get_param(
+                    "letter_responsible"
+                )
                 if responsible:
                     for c in self:
                         c._make_activity(vals["state"], responsible)
 
             elif "state" in vals:
                 for c in self.filtered(
-                        lambda o: o.state == "Translation check unsuccessful"):
+                    lambda o: o.state == "Translation check unsuccessful"
+                ):
                     c.activity_ids.unlink()
             vals["status_date"] = fields.Datetime.now()
         if "letter_image" in vals and self.store_letter_image is False:
@@ -511,21 +523,22 @@ class Correspondence(models.Model):
                 }
             )
             if (
-                    letter.sponsorship_id.state not in ("active", "terminated")
-                    or letter.child_id.project_id.hold_s2b_letters
+                letter.sponsorship_id.state not in ("active", "terminated")
+                or letter.child_id.project_id.hold_s2b_letters
             ):
                 message.state = "postponed"
                 if letter.child_id.project_id.hold_s2b_letters:
                     letter.state = "Exception"
                     letter.message_post(
                         body=_(
-                            "Letter was put on hold because the project is suspended"),
+                            "Letter was put on hold because the project is suspended"
+                        ),
                         subject=_("Project suspended"),
                     )
         return True
 
     def compose_letter_button(self):
-        """ Remove old images, download original and compose translation. """
+        """Remove old images, download original and compose translation."""
         self.attach_original()
         return self.compose_letter_image()
 
@@ -557,7 +570,9 @@ class Correspondence(models.Model):
                     if len(text.strip()) < 5:
                         images.append(pages.pop(i.index - len(images)))
 
-        pdf_out = template.generate_pdf(self.name, {}, {"Translation": text_boxes}, images, pages)
+        pdf_out = template.generate_pdf(
+            self.name, {}, {"Translation": text_boxes}, images, pages
+        )
         if pdf_out:
             self.letter_image = base64.b64encode(pdf_out)
 
@@ -582,14 +597,14 @@ class Correspondence(models.Model):
             # translation in the same box. We want to avoid composing
             # English text when it's not expected
             if (
-                    "".join(self.translated_text.split())
-                    != "".join(self.english_text.split())
-                    and self.translation_language_id.code_iso != "eng"
+                "".join(self.translated_text.split())
+                != "".join(self.english_text.split())
+                and self.translation_language_id.code_iso != "eng"
             ):
                 # Avoid capturing english text that hasn't been translated
                 paragraphs = paragraphs.filtered(source).filtered(
                     lambda p: "".join((p.translated_text or "").split())
-                              != "".join((p.english_text or "").split())
+                    != "".join((p.english_text or "").split())
                 )
         else:
             source = "english_text"
@@ -597,7 +612,7 @@ class Correspondence(models.Model):
             # original text.
             paragraphs = paragraphs.filtered(source).filtered(
                 lambda p: "".join((p.english_text or "").split())
-                          != "".join((p.original_text or "").split())
+                != "".join((p.original_text or "").split())
             )
         if not getattr(self, source):
             return source, text_boxes
@@ -617,7 +632,7 @@ class Correspondence(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-        """ Update or Create the letter with given values. """
+        """Update or Create the letter with given values."""
         letter_ids = list()
         process_letters = self
         for commkit in commkit_data.get("Responses", [commkit_data]):
@@ -676,16 +691,17 @@ class Correspondence(models.Model):
         return self.write(vals)
 
     def process_letter(self):
-        """ Method called when new B2S letter is Published. """
-        base_url = self.env["ir.config_parameter"].sudo().get_param(
-            "web.external.url", "")
+        """Method called when new B2S letter is Published."""
+        base_url = (
+            self.env["ir.config_parameter"].sudo().get_param("web.external.url", "")
+        )
         self.download_attach_letter_image(letter_type="final_letter_url")
         for letter in self:
             letter.read_url = f"{base_url}/b2s_image?id={letter.uuid}"
         return True
 
     def download_attach_letter_image(self, letter_type="final_letter_url"):
-        """ Download letter image from US service and attach to letter. """
+        """Download letter image from US service and attach to letter."""
         for letter in self:
             # Download and store letter
             letter_url = getattr(letter, letter_type)
@@ -696,9 +712,8 @@ class Correspondence(models.Model):
                 )
             if image_data is None:
                 raise UserError(
-                    _(
-                        "Image of letter %s was not found remotely."
-                    ) % letter.kit_identifier
+                    _("Image of letter %s was not found remotely.")
+                    % letter.kit_identifier
                 )
             letter.write(
                 {"file_name": letter._get_file_name(), "letter_image": image_data}
@@ -713,7 +728,7 @@ class Correspondence(models.Model):
         return True
 
     def get_image(self):
-        """ Method for retrieving the image """
+        """Method for retrieving the image"""
         self.ensure_one()
 
         if not self.store_letter_image or not self.letter_image:
@@ -755,7 +770,7 @@ class Correspondence(models.Model):
         }
 
     def hold_letters(self, message="Project suspended"):
-        """ Prevents to send S2B letters to GMC. """
+        """Prevents to send S2B letters to GMC."""
         self.write({"state": "Exception"})
         for letter in self:
             letter.message_post(body=_("Letter was put on hold"), subject=message)
@@ -770,7 +785,7 @@ class Correspondence(models.Model):
         gmc_messages.write({"state": "postponed"})
 
     def reactivate_letters(self, message="Project reactivated"):
-        """ Release the hold on S2B letters. """
+        """Release the hold on S2B letters."""
         self.write({"state": "Received in the system"})
         for letter in self:
             letter.message_post(body=_("The letter can now be sent."), subject=message)
@@ -831,8 +846,9 @@ class Correspondence(models.Model):
                 page["EnglishTranslatedText"] = page["TranslatedText"]
 
         if "GlobalPartnerSBCId" in json_data:
-            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + \
-                str(self.resubmit_id)
+            json_data["GlobalPartnerSBCId"] = json_data["GlobalPartnerSBCId"] + str(
+                self.resubmit_id
+            )
 
         return json_data
 
@@ -867,37 +883,56 @@ class Correspondence(models.Model):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
                 raise UserError(
-                    _("Letter must be in state 'Translation check unsuccessful'"))
+                    _("Letter must be in state 'Translation check unsuccessful'")
+                )
 
-            letter.write({
-                "kit_identifier": False,
-                "resubmit_id": letter.resubmit_id + 1,
-                "state": "Received in the system"
-            })
+            letter.write(
+                {
+                    "kit_identifier": False,
+                    "resubmit_id": letter.resubmit_id + 1,
+                    "state": "Received in the system",
+                }
+            )
             letter.create_commkit()
 
     def quality_check_failed(self):
-        return self.write({
-            "state": "Quality check unsuccessful",
-        })
+        return self.write(
+            {
+                "state": "Quality check unsuccessful",
+            }
+        )
 
     def create_text_boxes(self):
         self.mapped("page_ids.paragraph_ids").unlink()
-        paragraphs = self.env["correspondence.paragraph"].with_context(from_correspondence_text=True)
+        paragraphs = self.env["correspondence.paragraph"].with_context(
+            from_correspondence_text=True
+        )
         for page in self.mapped("page_ids"):
             if page.original_text or page.english_text or page.translated_text:
                 original_boxes = (page.original_text or "").split(BOX_SEPARATOR)
                 english_boxes = (page.english_text or "").split(BOX_SEPARATOR)
                 translated_boxes = (page.translated_text or "").split(BOX_SEPARATOR)
-                nb_paragraphs = max(len(original_boxes), len(english_boxes), len(translated_boxes))
+                nb_paragraphs = max(
+                    len(original_boxes), len(english_boxes), len(translated_boxes)
+                )
                 for i in range(0, nb_paragraphs):
-                    paragraphs += paragraphs.create([{
-                        "page_id": page.id,
-                        "original_text": original_boxes[i] if len(original_boxes) > i else "",
-                        "english_text": english_boxes[i] if len(english_boxes) > i else "",
-                        "translated_text": translated_boxes[i] if len(translated_boxes) > i else "",
-                        "sequence": i
-                    }])
+                    paragraphs += paragraphs.create(
+                        [
+                            {
+                                "page_id": page.id,
+                                "original_text": original_boxes[i]
+                                if len(original_boxes) > i
+                                else "",
+                                "english_text": english_boxes[i]
+                                if len(english_boxes) > i
+                                else "",
+                                "translated_text": translated_boxes[i]
+                                if len(translated_boxes) > i
+                                else "",
+                                "sequence": i,
+                            }
+                        ]
+                    )
         return paragraphs
 
     ##########################################################################
@@ -906,7 +941,9 @@ class Correspondence(models.Model):
 
     def _make_activity(self, state, user_id):
         self.ensure_one()
-        self.activity_schedule('mail.mail_activity_data_todo',
-                               summary=state,
-                               user_id=user_id,
-                               note=f"Letter has {state}")
+        self.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary=state,
+            user_id=user_id,
+            note=f"Letter has {state}",
+        )

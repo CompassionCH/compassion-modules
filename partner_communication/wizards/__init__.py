@@ -8,10 +8,12 @@
 #
 ##############################################################################
 
-from . import mail_compose_message
-from . import change_text_wizard
-from . import email_template_preview_view
-from . import pdf_wizard
-from . import generate_communication_wizard
-from . import settings
-from . import download_print_job_wizard
+from . import (
+    change_text_wizard,
+    download_print_job_wizard,
+    email_template_preview_view,
+    generate_communication_wizard,
+    mail_compose_message,
+    pdf_wizard,
+    settings,
+)

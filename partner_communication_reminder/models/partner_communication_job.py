@@ -21,9 +21,17 @@ class PartnerCommunicationJob(models.Model):
         first_extension = settings.get_param("no_money_hold_duration")
         second_extension = settings.get_param("no_money_hold_extension")
         extension_mapping = {
-            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_1"): first_extension + 7,
-            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_2"): second_extension + 7,
-            self.env.ref("partner_communication_reminder.sponsorship_activation_reminder_3"): 10,
+            self.env.ref(
+                "partner_communication_reminder.sponsorship_activation_reminder_1"
+            ): first_extension
+            + 7,
+            self.env.ref(
+                "partner_communication_reminder.sponsorship_activation_reminder_2"
+            ): second_extension
+            + 7,
+            self.env.ref(
+                "partner_communication_reminder.sponsorship_activation_reminder_3"
+            ): 10,
         }
         for communication in self.filtered(lambda j: j.send_mode != "sms"):
             config_id = communication.config_id

@@ -1428,4 +1428,3 @@ msgstr "Hennes favoritaktiviteter är:"
 #: code:addons/child_compassion/wizards/child_description.py:0
 msgid "{preferred_name} suffers from:"
 msgstr "{preferred_name} lider av:"
-

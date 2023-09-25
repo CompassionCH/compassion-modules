@@ -8,13 +8,13 @@
 #
 ##############################################################################
 
-from odoo import models, fields, exceptions, _
+from odoo import _, exceptions, fields, models
 
 
 class ReconcileFundWizard(models.TransientModel):
     """wizard that helps the user doing a full reconciliation when a customer
     paid more than excepted. It puts the extra amount in a fund selected
-    in the self and fully reconcile the credit line. """
+    in the self and fully reconcile the credit line."""
 
     _name = "reconcile.fund.wizard"
     _description = "Wizard reconcile fund"
@@ -56,8 +56,8 @@ class ReconcileFundWizard(models.TransientModel):
         return general_fund.id
 
     def reconcile_with_fund(self):
-        """ Generate an invoice corresponding to the selected fund
-            and reconcile it with selected move lines
+        """Generate an invoice corresponding to the selected fund
+        and reconcile it with selected move lines
         """
         if not self.contract_ids:
             raise exceptions.UserError(

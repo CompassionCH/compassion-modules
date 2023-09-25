@@ -7,20 +7,19 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import base64
 import logging
-
-from odoo import api, models
+from io import BytesIO
 
 from reportlab.lib.colors import white
 from reportlab.lib.units import mm
 from reportlab.pdfgen.canvas import Canvas
-from io import BytesIO
+
+from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
 try:
-    from PyPDF2 import PdfFileWriter, PdfFileReader
+    from PyPDF2 import PdfFileReader, PdfFileWriter
     from PyPDF2.utils import PdfReadError
 except ImportError:
     _logger.warning(
@@ -36,15 +35,17 @@ class CommunicationJob(models.Model):
     def _get_default_vals(self, vals, default_vals=None):
         if default_vals is None:
             default_vals = []
-        default_vals.extend([
-            "omr_enable_marks",
-            "omr_should_close_envelope",
-            "omr_add_attachment_tray_1",
-            "omr_add_attachment_tray_2",
-            "omr_top_mark_x",
-            "omr_top_mark_y",
-            "omr_single_sided",
-        ])
+        default_vals.extend(
+            [
+                "omr_enable_marks",
+                "omr_should_close_envelope",
+                "omr_add_attachment_tray_1",
+                "omr_add_attachment_tray_2",
+                "omr_top_mark_x",
+                "omr_top_mark_y",
+                "omr_single_sided",
+            ]
+        )
         return super()._get_default_vals(vals, default_vals)
 
     def add_omr_marks(self, pdf_data, is_latest_document):
@@ -62,7 +63,8 @@ class CommunicationJob(models.Model):
         try:
             existing_pdf = PdfFileReader(pdf_buffer)
         except PdfReadError:
-            # Cannot add OMR marks to non-pdf attachments. The folding machine will unfortunately block here.
+            # Cannot add OMR marks to non-pdf attachments.
+            # The folding machine will unfortunately block here.
             return pdf_data
 
         output = PdfFileWriter()

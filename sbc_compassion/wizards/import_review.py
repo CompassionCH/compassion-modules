@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -52,12 +52,10 @@ class ImportReview(models.TransientModel):
         readonly=False,
     )
     physical_attachments = fields.Selection(
-        related="current_line_id.physical_attachments",
-        readonly=False
+        related="current_line_id.physical_attachments", readonly=False
     )
     attachments_description = fields.Char(
-        related="current_line_id.attachments_description",
-        readonly=False
+        related="current_line_id.attachments_description", readonly=False
     )
     edit = fields.Boolean("Edit mode")
 
@@ -93,20 +91,22 @@ class ImportReview(models.TransientModel):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def next(self):
-        """ Load the next import line in the view. """
+        """Load the next import line in the view."""
         self.ensure_one()
         if self.current_line_id.status not in ("ok", "no_template"):
             raise UserError(_("Please review this import before going to the next."))
         self.write(
             {
                 "current_line_index": self.current_line_index + 1,
-                "sponsorship_id": self._get_sponsorship_from_line(self.current_line_index + 1).id,
+                "sponsorship_id": self._get_sponsorship_from_line(
+                    self.current_line_index + 1
+                ).id,
             }
         )
         self.current_line_id.reviewed = True
 
     def finish(self):
-        """ Return to import view. """
+        """Return to import view."""
         self.ensure_one()
         import_history = self.current_line_id.import_id
         import_history.import_line_ids._compute_check_status()
@@ -121,7 +121,7 @@ class ImportReview(models.TransientModel):
         }
 
     def postpone(self):
-        """ Move the line in another import. """
+        """Move the line in another import."""
         self.ensure_one()
         postpone_import = self.postpone_import_id
         current_import = self.current_line_id.import_id

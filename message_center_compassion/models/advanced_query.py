@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class QueryFilter(models.TransientModel):
@@ -34,7 +34,7 @@ class QueryFilter(models.TransientModel):
             if self.end_date:
                 value += ";" + self.end_date
             self.value = value
-    
+
     def data_to_json(self, mapping_name=None):
         # Queries should always be lists
         result = []
@@ -47,7 +47,7 @@ class QueryFilter(models.TransientModel):
 
 
 class QueryOperator(models.Model):
-    """ An operator, valid for certain field types. """
+    """An operator, valid for certain field types."""
 
     _name = "compassion.query.operator"
     _description = "Compassion Query Operator"

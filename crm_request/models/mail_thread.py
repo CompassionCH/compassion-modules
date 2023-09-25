@@ -1,5 +1,3 @@
-from odoo.tools import decode_message_header
-
 from odoo import api, models, tools
 
 

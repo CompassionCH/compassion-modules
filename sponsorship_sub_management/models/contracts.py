@@ -12,7 +12,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, models, fields, exceptions, _
+from odoo import _, api, exceptions, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -249,10 +249,18 @@ class RecurringContract(models.Model):
             "sponsorship_compassion.end_reason_child_exchange"
         )
         for contract in self.filtered("child_id"):
-            sds_user = self.env["sds.sub.followers"].search([
-                "|", ("res_lang_id.code", "like", contract.correspondent_id.lang),
-                ("res_lang_id", "=", False)
-            ], limit=1).user_id
+            sds_user = (
+                self.env["sds.sub.followers"]
+                .search(
+                    [
+                        "|",
+                        ("res_lang_id.code", "like", contract.correspondent_id.lang),
+                        ("res_lang_id", "=", False),
+                    ],
+                    limit=1,
+                )
+                .user_id
+            )
             if contract.end_reason_id == departure:
                 # When a departure comes for a sub sponsorship, we consider
                 # the sub proposal as accepted.

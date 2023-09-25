@@ -11,11 +11,7 @@
     "maintainers": ["ecino"],
     "license": "AGPL-3",
     "installable": True,
-    "external_dependencies": {
-        'python': [
-            'pandas>=1.5.3'
-        ]
-    },
+    "external_dependencies": {"python": ["pandas>=1.5.3"]},
     "depends": [
         "mail",
         "advanced_translation",

@@ -8,10 +8,12 @@
 #
 ##############################################################################
 
-from . import intervention_sub_category
-from . import intervention_category
-from . import generic_intervention
-from . import global_intervention
-from . import compassion_intervention
-from . import product_template
-from . import project
+from . import generic_intervention  # isort:skip
+from . import (
+    compassion_intervention,
+    global_intervention,
+    intervention_category,
+    intervention_sub_category,
+    product_template,
+    project,
+)

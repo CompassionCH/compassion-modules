@@ -8,6 +8,7 @@
 #
 ##############################################################################
 import json
+
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
@@ -16,7 +17,7 @@ class TestOnrampConnector(object):
         self.connector = OnrampConnector(env)
 
     def test_message(self, test_message):
-        """ Sends a message to any onramp.
+        """Sends a message to any onramp.
         :param test_message (onramp.simulator record): the message to send
         """
         headers = {
@@ -28,5 +29,9 @@ class TestOnrampConnector(object):
         url = test_message.server_url
         body = test_message.body_json
 
-        r = self.connector.send_message(url, "POST", headers=headers, body=json.loads(body), full_url=True)
-        test_message.write({"result": str(r.get("content")), "result_code": r.get("code")})
+        r = self.connector.send_message(
+            url, "POST", headers=headers, body=json.loads(body), full_url=True
+        )
+        test_message.write(
+            {"result": str(r.get("content")), "result_code": r.get("code")}
+        )

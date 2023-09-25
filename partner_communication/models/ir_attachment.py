@@ -7,11 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import fields, models
 
 
 class IrAttachment(models.Model):
-    """ Add a link to report to know how to print the attachment. """
+    """Add a link to report to know how to print the attachment."""
 
     _inherit = "ir.attachment"
 

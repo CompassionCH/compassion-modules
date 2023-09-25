@@ -7,8 +7,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
-from odoo import tools
+from odoo import fields, models, tools
 
 
 class LastWritingReport(models.Model):

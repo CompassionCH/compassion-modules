@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, _
+from odoo import _, fields, models
 
 
 class GmcActionConnect(models.Model):

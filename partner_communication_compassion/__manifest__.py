@@ -38,7 +38,7 @@
         "partner_communication",
         "partner_salutation",
         "sbc_compassion",
-        "report_wkhtmltopdf_param"  # OCA/reporting-engine
+        "report_wkhtmltopdf_param",  # OCA/reporting-engine
     ],
     "data": [
         "data/major_revision_emails.xml",

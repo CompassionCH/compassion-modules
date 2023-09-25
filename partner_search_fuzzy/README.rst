@@ -17,7 +17,7 @@ Partner fuzzy search
     :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_search_fuzzy
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 Adds fuzzy search operator on partners. This will enable you to search on partner names and have results ordered
 according to similarity.
@@ -74,7 +74,7 @@ Maintainers
 
 Current maintainer:
 
-|maintainer-ecino| 
+|maintainer-ecino|
 
 This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_search_fuzzy>`_ project on GitHub.
 

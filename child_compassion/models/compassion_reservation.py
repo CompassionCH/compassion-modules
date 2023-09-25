@@ -10,7 +10,7 @@
 import datetime
 from datetime import timedelta
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -34,9 +34,7 @@ class CompassionReservation(models.Model):
         default="draft",
         tracking=True,
     )
-    fcp_id = fields.Many2one(
-        "compassion.project", "Project",  readonly=False
-    )
+    fcp_id = fields.Many2one("compassion.project", "Project", readonly=False)
     child_id = fields.Many2one(
         "compassion.child",
         "Child",
@@ -49,9 +47,7 @@ class CompassionReservation(models.Model):
         store=True,
     )
     campaign_event_identifier = fields.Char()
-    expiration_date = fields.Datetime(
-        "Hold expiration date", tracking=True
-    )
+    expiration_date = fields.Datetime("Hold expiration date", tracking=True)
     reservation_expiration_date = fields.Date(
         required=True,
         tracking=True,
@@ -85,7 +81,9 @@ class CompassionReservation(models.Model):
             if not child:
                 # Create child (not available yet to us)
                 child = self.env["compassion.child"].create(
-                    {"global_id": reservation.child_global_id, }
+                    {
+                        "global_id": reservation.child_global_id,
+                    }
                 )
             reservation.child_id = child
 
@@ -116,8 +114,8 @@ class CompassionReservation(models.Model):
         if sync:
             messages = (
                 self.with_context(async_mode=False)
-                    .filtered(lambda r: r.state == "active")
-                    .handle_reservation()
+                .filtered(lambda r: r.state == "active")
+                .handle_reservation()
             )
             failed = messages.filtered(lambda m: "failure" in m.state)
             if failed:
@@ -168,12 +166,12 @@ class CompassionReservation(models.Model):
         return messages
 
     def reservation_create_answer(self, vals):
-        """ Called when receiving the answer of CreateReservation message. """
+        """Called when receiving the answer of CreateReservation message."""
         vals["state"] = "active"
         return self.write(vals)
 
     def reservation_create_answer_fail(self, vals):
-        """ Called when the reservation has failed"""
+        """Called when the reservation has failed"""
         self.message_post(
             subject=_("Reservation failed"),
             body=_("[" + str(vals["Code"]) + "] " + vals["Message"]),
@@ -181,7 +179,7 @@ class CompassionReservation(models.Model):
         )
 
     def reservation_cancel_answer(self, vals):
-        """ Called when receiving the answer of CreateReservation message. """
+        """Called when receiving the answer of CreateReservation message."""
         vals["state"] = "expired"
         return self.write(vals)
 
@@ -217,8 +215,8 @@ class CompassionReservation(models.Model):
         expiration = self.reservation_expiration_date
         days_on_hold = (
             self.env["res.config.settings"]
-                .sudo()
-                .get_param("reservation_hold_duration")
+            .sudo()
+            .get_param("reservation_hold_duration")
         )
         dt = timedelta(days=days_on_hold)
         self.expiration_date = fields.Datetime.to_datetime(expiration + dt)

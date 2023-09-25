@@ -26,7 +26,7 @@ class TestThankYouLetters(SavepointCase):
             cls.env.ref(
                 "l10n_generic_coa.configurable_chart_template"
             ).try_loading_for_current_company()
-        except ValueError as e:
+        except ValueError:
             logger.error("Could not load configurable chart template properly")
         cls.account_revenue = cls.account_model.search(
             [
@@ -55,16 +55,22 @@ class TestThankYouLetters(SavepointCase):
         cls.product_mouse = cls.env.ref("product.product_product_10")
 
         cls.env["thankyou.config"].create(
-            {"min_donation_amount": 50.0, "send_mode": "auto_digital_only", }
+            {
+                "min_donation_amount": 50.0,
+                "send_mode": "auto_digital_only",
+            }
         )
 
         cls.env["thankyou.config"].create(
-            {"min_donation_amount": 1000.0, "need_call": "after_sending", "send_mode": "auto_digital_only",}
+            {
+                "min_donation_amount": 1000.0,
+                "need_call": "after_sending",
+                "send_mode": "auto_digital_only",
+            }
         )
 
-
     def test_success_stories_set(self):
-        """ Pay some invoices and test the success stories are
+        """Pay some invoices and test the success stories are
         correctly set according to the product settings.
         """
         asus = self.env.ref("base.res_partner_1")
@@ -109,7 +115,8 @@ class TestThankYouLetters(SavepointCase):
 
         # use the first thanks comm to avoid other issue (missing user_id reference in test db)
         thanks_partner_comm1 = self.env["partner.communication.config"].search(
-            [("send_mode_pref_field", "like", "thankyou_preference")], limit=1)
+            [("send_mode_pref_field", "like", "thankyou_preference")], limit=1
+        )
 
         thanks_partner_comm2 = thanks_partner_comm1.copy()
 
@@ -117,30 +124,34 @@ class TestThankYouLetters(SavepointCase):
         self.assertIsNot(thanks_partner_comm2, False)
 
         # create 2 products with identical communication and a 3rd one with
-        product1 = self.env["product.product"].create({
-            "name": "product1",
-            "partner_communication_config": thanks_partner_comm1.id,
-            "requires_thankyou": True
-        })
+        product1 = self.env["product.product"].create(
+            {
+                "name": "product1",
+                "partner_communication_config": thanks_partner_comm1.id,
+                "requires_thankyou": True,
+            }
+        )
 
-        product2 = self.env["product.product"].create({
-            "name": "product2",
-            "partner_communication_config": thanks_partner_comm1.id,
-            "requires_thankyou": True
-        })
+        product2 = self.env["product.product"].create(
+            {
+                "name": "product2",
+                "partner_communication_config": thanks_partner_comm1.id,
+                "requires_thankyou": True,
+            }
+        )
 
-        product3 = self.env["product.product"].create({
-            "name": "product3",
-            "partner_communication_config": thanks_partner_comm2.id,
-            "requires_thankyou": True
-        })
+        product3 = self.env["product.product"].create(
+            {
+                "name": "product3",
+                "partner_communication_config": thanks_partner_comm2.id,
+                "requires_thankyou": True,
+            }
+        )
 
         self.assertIsNot(product1, False)
         self.assertIsNot(product2, False)
 
-        partner = self.env["res.partner"].create({
-            "name": "test partner"
-        })
+        partner = self.env["res.partner"].create({"name": "test partner"})
 
         invoice1 = self.create_invoice(partner.id, product1.id, 300)
         self.pay_invoice(invoice1)
@@ -150,10 +161,13 @@ class TestThankYouLetters(SavepointCase):
                 ("partner_id", "=", partner.id),
                 ("state", "in", ("call", "pending")),
                 ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
-            ])
+            ]
+        )
 
         self.assertEqual(len(all_existing_comm), 1)
-        self.assertEqual(thanks_partner_comm1.id, product1.partner_communication_config.id)
+        self.assertEqual(
+            thanks_partner_comm1.id, product1.partner_communication_config.id
+        )
 
         invoice2 = self.create_invoice(partner.id, product2.id, 400)
         self.pay_invoice(invoice2)
@@ -163,7 +177,8 @@ class TestThankYouLetters(SavepointCase):
                 ("partner_id", "=", partner.id),
                 ("state", "in", ("call", "pending")),
                 ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
-            ])
+            ]
+        )
 
         self.assertEqual(len(all_existing_comm), 1)
 
@@ -178,7 +193,8 @@ class TestThankYouLetters(SavepointCase):
                 ("partner_id", "=", partner.id),
                 ("state", "in", ("call", "pending")),
                 ("config_id", "in", (thanks_partner_comm1 + thanks_partner_comm2).ids),
-            ])
+            ]
+        )
 
         self.assertEqual(len(all_existing_comm), 2)
         self.assertNotEqual(prev_need_call, comm_to_watch.need_call)

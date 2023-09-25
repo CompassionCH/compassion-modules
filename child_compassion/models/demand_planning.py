@@ -10,7 +10,7 @@
 
 from datetime import datetime, timedelta
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class DemandPlanning(models.Model):
@@ -28,7 +28,11 @@ class DemandPlanning(models.Model):
     )
     sent_date = fields.Datetime(readonly=True, copy=False)
     state = fields.Selection(
-        [("draft", "Draft"), ("sent", "Sent"), ("error", "Error"), ],
+        [
+            ("draft", "Draft"),
+            ("sent", "Sent"),
+            ("error", "Error"),
+        ],
         readonly=True,
         default="draft",
     )
@@ -47,8 +51,8 @@ class DemandPlanning(models.Model):
     ##########################################################################
     @api.model
     def _get_default_weekly_demands(self):
-        """ Take previous locked previsions and create new ones for future
-        weeks. """
+        """Take previous locked previsions and create new ones for future
+        weeks."""
         create_values = list()
         today = datetime.today()
         sunday = today
@@ -59,7 +63,7 @@ class DemandPlanning(models.Model):
             sunday = today + timedelta(days=(diff_to_sunday + 7))
 
         # Submit 78 weeks
-        for i in range(0, 78):
+        for _i in range(0, 78):
             vals = {}
             week_vals = (0, 0, vals)
             week_demand = self.env["demand.weekly.demand"].search(
@@ -110,7 +114,7 @@ class DemandPlanning(models.Model):
 
     @api.model
     def process_weekly_demand(self):
-        """ Weekly CRON for Demand Planning.
+        """Weekly CRON for Demand Planning.
         1. Submit previsions
         2. Create Demand Planning for the next weeks
         """
@@ -136,6 +140,4 @@ class DemandPlanning(models.Model):
     def data_to_json(self, mapping_name=None):
         connect_data = super().data_to_json(mapping_name)
         connect_data["GlobalPartner_ID"] = self.env.user.country_id.code
-        return {
-            "GlobalPartnerWeeklyDemandRequest": connect_data
-        }
+        return {"GlobalPartnerWeeklyDemandRequest": connect_data}

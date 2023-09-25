@@ -17,7 +17,7 @@ Compassion Partner Communications
     :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_salutation
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module adds a salutation field that can be used in communications with clients.
 
@@ -65,7 +65,7 @@ Maintainers
 
 Current maintainer:
 
-|maintainer-ecino| 
+|maintainer-ecino|
 
 This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_salutation>`_ project on GitHub.
 

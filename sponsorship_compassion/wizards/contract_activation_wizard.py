@@ -8,11 +8,11 @@
 #
 ##############################################################################
 
-from odoo import models, api
+from odoo import models
 
 
 class ActivateContractWizard(models.TransientModel):
-    """ This wizard force activation of a contract. """
+    """This wizard force activation of a contract."""
 
     _name = "recurring.contract.activate.wizard"
     _description = "Recurring contract activation wizard"

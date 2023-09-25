@@ -10,7 +10,7 @@
 import base64
 import logging
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -39,12 +39,16 @@ class CommunicationAttachment(models.Model):
         required=True, help="Identifier of the report used to print"
     )
     attachment_id = fields.Many2one(
-        "ir.attachment", string="Attachments", required=True, readonly=False, ondelete="cascade"
+        "ir.attachment",
+        string="Attachments",
+        required=True,
+        readonly=False,
+        ondelete="cascade",
     )
     data = fields.Binary(compute="_compute_data")
     printed_pdf_data = fields.Binary(
         help="Technical field used when the report was not sent to printer but to client "
-             "in order to download the result afterwards."
+        "in order to download the result afterwards."
     )
     printed_pdf_name = fields.Char(related="attachment_id.name")
 
@@ -63,8 +67,8 @@ class CommunicationAttachment(models.Model):
         if not vals.get("report_id"):
             vals["report_id"] = (
                 self.env["ir.actions.report"]
-                    ._get_report_from_name(vals.get("report_name"))
-                    .id
+                ._get_report_from_name(vals.get("report_name"))
+                .id
             )
 
         new_record = "data" in vals and "attachment_id" not in vals
@@ -93,16 +97,18 @@ class CommunicationAttachment(models.Model):
 
     def print_attachments(self, output_tray=None):
         for attachment in self:
-            report = self.env["ir.actions.report"]._get_report_from_name(
-                attachment.report_name
-            ).with_context(
-                lang=attachment.communication_id.partner_id.lang)
+            report = (
+                self.env["ir.actions.report"]
+                ._get_report_from_name(attachment.report_name)
+                .with_context(lang=attachment.communication_id.partner_id.lang)
+            )
             behaviour = report.behaviour()
             printer = behaviour.pop("printer", False)
             data = attachment._get_attachment_data()
             if behaviour.pop("action", "client") != "client" and printer:
-                print_options = {opt: value for opt, value in behaviour.items() if
-                                 value}
+                print_options = {
+                    opt: value for opt, value in behaviour.items() if value
+                }
                 if output_tray:
                     print_options["output_tray"] = output_tray
                 printer.with_context(

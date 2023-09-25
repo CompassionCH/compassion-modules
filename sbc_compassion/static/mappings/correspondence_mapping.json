@@ -3,7 +3,7 @@
   "model": "correspondence",
   "mapping": {
     "Beneficiary": {
-      "field" : "child_id.id",
+      "field": "child_id.id",
       "sub_mapping": {
         "name": "Beneficiary Correspondence",
         "model": "compassion.child",
@@ -40,7 +40,7 @@
     },
     "GlobalPartner": {
       "to_json_conversion": "self.env.user.company_id.country_id.code"
-      },
+    },
     "Pages": {
       "field": "page_ids.id",
       "sub_mapping": "Correspondence Page"

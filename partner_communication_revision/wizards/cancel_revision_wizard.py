@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, fields
+from odoo import api, fields, models
 
 
 class ValidateRevisionWizard(models.TransientModel):
@@ -39,7 +39,7 @@ class ValidateRevisionWizard(models.TransientModel):
     @api.model
     def _default_revision(self):
         return self.env["partner.communication.revision"].browse(
-            self.env.context.get('active_id')
+            self.env.context.get("active_id")
         )
 
     def _compute_user_id(self):

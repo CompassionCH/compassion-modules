@@ -31,7 +31,7 @@
           "BeneficiaryPhysicalCondition": "beneficiary_physical_condition",
           "CaregiversDiedNumber": "caregivers_died_number",
           "CaregiversSeriouslyInjuredNumber": "caregivers_seriously_injured_number",
-          "DisasterStatus" : "disaster_status",
+          "DisasterStatus": "disaster_status",
           "HouseCondition": "house_condition",
           "LostPersonalEffects": {
             "field": "loss_ids.name",

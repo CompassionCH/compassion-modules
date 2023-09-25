@@ -7,13 +7,13 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 
 class CorrespondenceMetadata(models.AbstractModel):
-    """ This class defines all metadata of a correspondence.
-        This is an abstract class that should never be used for creating
-        records.
+    """This class defines all metadata of a correspondence.
+    This is an abstract class that should never be used for creating
+    records.
     """
 
     _name = "correspondence.metadata"
@@ -49,7 +49,7 @@ class CorrespondenceMetadata(models.AbstractModel):
         ]
 
     def get_correspondence_metadata(self):
-        """ Get the field values of one record.
+        """Get the field values of one record.
         :return: Dictionary of values for the fields
         """
         self.ensure_one()
