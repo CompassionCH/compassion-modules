@@ -12,7 +12,7 @@ import io
 
 from PyPDF2 import PdfFileReader
 
-from odoo import models, api, fields
+from odoo import api, fields, models
 
 
 class RevisionPreview(models.TransientModel):
@@ -64,7 +64,7 @@ class RevisionPreview(models.TransientModel):
         return model + "," + str(self.env[model].search(criteria, limit=1).id)
 
     def unlink(self):
-        """ Remove preview jobs. """
+        """Remove preview jobs."""
         self.mapped("preview_job_id").unlink()
         return super().unlink()
 
@@ -102,9 +102,9 @@ class RevisionPreview(models.TransientModel):
         if config.report_id:
             # Create a PDF preview
             pdf_data = (
-                config.report_id
-                .with_context(must_skip_send_to_printer=True)
-                ._render_qweb_pdf(self.preview_job_id.ids)
+                config.report_id.with_context(
+                    must_skip_send_to_printer=True
+                )._render_qweb_pdf(self.preview_job_id.ids)
             )[0]
             pdf = PdfFileReader(io.BytesIO(pdf_data))
             self.write(

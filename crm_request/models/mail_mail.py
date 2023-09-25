@@ -1,10 +1,11 @@
-from odoo import models, api
+from odoo import api, models
 
 
 class MailMail(models.Model):
     _inherit = "mail.mail"
 
-    """Provides a way to send e-mail to the alias address of a contact (should be set in the context where needed).
+    """Provides a way to send e-mail to the alias address of a contact
+    (should be set in the context where needed).
     """
 
     @api.model_create_multi

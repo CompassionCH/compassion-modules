@@ -9,15 +9,19 @@
 ##############################################################################
 
 import logging
-from datetime import date
-from dateutil.relativedelta import relativedelta
 
 import mock
+from dateutil.relativedelta import relativedelta
 from dateutil.utils import today
 
 from odoo import fields
+
+from odoo.addons.sponsorship_compassion.models.product_names import (
+    GIFT_PRODUCTS_REF,
+    PRODUCT_GIFT_CHRISTMAS,
+)
+
 from .test_contract_compassion import BaseContractCompassionTest
-from odoo.addons.sponsorship_compassion.models.product_names import (GIFT_PRODUCTS_REF, PRODUCT_GIFT_CHRISTMAS)
 
 mock_update_hold = (
     "odoo.addons.child_compassion.models.compassion_hold" ".CompassionHold.update_hold"
@@ -45,10 +49,10 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         super().setUp()
         # Create the GIFT products for the gifts tests
         product_vals = {
-            'name': "gifts test",
-            'type': 'service',
-            'categ_id': self.env.ref("sponsorship_compassion.product_category_gift").id,
-            'sale_ok': True
+            "name": "gifts test",
+            "type": "service",
+            "categ_id": self.env.ref("sponsorship_compassion.product_category_gift").id,
+            "sale_ok": True,
         }
         for gift in [GIFT_PRODUCTS_REF[0], PRODUCT_GIFT_CHRISTMAS]:
             product_vals.update({"default_code": gift})
@@ -57,41 +61,45 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         self.origin_id = (
             self.env["recurring.contract.origin"].create({"type": "event"}).id
         )
-        self.product = self.env['product.product'].create({
-            'name': "Sponsorship test",
-            'type': 'service',
-            'categ_id': self.env.ref(
-                "sponsorship_compassion.product_category_sponsorship", self.env['product.category']
-            ).id,
-            'sale_ok': True
-        })
+        self.product = self.env["product.product"].create(
+            {
+                "name": "Sponsorship test",
+                "type": "service",
+                "categ_id": self.env.ref(
+                    "sponsorship_compassion.product_category_sponsorship",
+                    self.env["product.category"],
+                ).id,
+                "sale_ok": True,
+            }
+        )
         # Direct debit payment method
-        dd_pay_method = self.env["account.payment.method"].create({
-            "name": "DD_Gifts",
-            "code": "gift_direct_debit",
-            "payment_type": "inbound",
-            "bank_account_required": False,
-        })
+        dd_pay_method = self.env["account.payment.method"].create(
+            {
+                "name": "DD_Gifts",
+                "code": "gift_direct_debit",
+                "payment_type": "inbound",
+                "bank_account_required": False,
+            }
+        )
         dd_pay_mode = self.env["account.payment.mode"].create(
             {
                 "name": "Test Direct Debit of customers",
                 "bank_account_link": "variable",
-                "payment_method_id": dd_pay_method.id
+                "payment_method_id": dd_pay_method.id,
             }
         )
         # Create a child and get the project associated
         self.child = self.create_child("PE012304567")
         # Creation of the sponsorship contract
-        sp_group = self.create_group({
-            "partner_id": self.partner_1.id,
-            "payment_mode_id": dd_pay_mode.id
-        })
+        sp_group = self.create_group(
+            {"partner_id": self.partner_1.id, "payment_mode_id": dd_pay_mode.id}
+        )
         self.sponsorship = self.create_contract(
             {
                 "partner_id": self.partner_1.id,
                 "group_id": sp_group.id,
                 "child_id": self.child.id,
-                "type": "S"
+                "type": "S",
             },
             [{"amount": 50.0, "product_id": self.product.id}],
         )
@@ -121,7 +129,8 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
                     {
                         "hold_id": self.ref(9),
                         "type": "Consignment Hold",
-                        "expiration_date": fields.Datetime.now() + relativedelta(weeks=2),
+                        "expiration_date": fields.Datetime.now()
+                        + relativedelta(weeks=2),
                         "primary_owner": 1,
                     }
                 )
@@ -136,7 +145,9 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
         default_values = {
             "type": "S",
             "correspondent_id": vals["partner_id"],
-            "origin_id": self.env["recurring.contract.origin"].create({"type": "event"}).id,
+            "origin_id": self.env["recurring.contract.origin"]
+            .create({"type": "event"})
+            .id,
         }
         default_values.update(vals)
         return super().create_contract(default_values, line_vals)
@@ -196,7 +207,8 @@ class BaseSponsorshipTest(BaseContractCompassionTest):
 class TestSponsorship(BaseSponsorshipTest):
     def test_sponsorship_compassion_multiple_contract(self):
         """
-            We are testing the generation of invoices on multiple contract on the same payment option
+        We are testing the generation of invoices on multiple contract on
+        the same payment option
         """
         sponsorship = self.sponsorship
         # Check that the child is sponsored
@@ -209,17 +221,17 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(sponsorship.state, "active")
 
         # Generate gifts for the child
-        sponsorship.write({
-            "birthday_invoice": 100
-        })
+        sponsorship.write({"birthday_invoice": 100})
         sponsorship.button_generate_invoices()
         gift_invoice = sponsorship.invoice_line_ids.mapped("move_id").filtered(
-            lambda m: m.invoice_category == 'gift'
+            lambda m: m.invoice_category == "gift"
         )
         self._pay_invoice(gift_invoice[0])
         self.assertEqual(gift_invoice[0].payment_state, "paid")
-        self.assertEqual(gift_invoice[0].invoice_date.month,
-                         (sponsorship.child_id.birthdate - relativedelta(months=2)).month)
+        self.assertEqual(
+            gift_invoice[0].invoice_date.month,
+            (sponsorship.child_id.birthdate - relativedelta(months=2)).month,
+        )
         child = self.create_child("S008320011")
         sponsorship2 = self.create_contract(
             {
@@ -230,17 +242,19 @@ class TestSponsorship(BaseSponsorshipTest):
             [{"amount": 50.0, "product_id": self.product.id}],
         )
         self.waiting_sponsorship(sponsorship2)
-        self.assertEqual(sponsorship.group_id.active_contract_ids.mapped(
-            "invoice_line_ids.move_id.invoice_line_ids.contract_id"
-        ),
-            sponsorship + sponsorship2)
+        self.assertEqual(
+            sponsorship.group_id.active_contract_ids.mapped(
+                "invoice_line_ids.move_id.invoice_line_ids.contract_id"
+            ),
+            sponsorship + sponsorship2,
+        )
 
     def test_sponsorship_compassion_first_scenario(self):
         """
-            This first scenario consists in creating a sponsorship contract
-            (type 'S') and associate a child to the sponsor.
-            Check the different states of the contract and check if there are
-            no mistakes.
+        This first scenario consists in creating a sponsorship contract
+        (type 'S') and associate a child to the sponsor.
+        Check the different states of the contract and check if there are
+        no mistakes.
         """
         child = self.child
         sponsorship = self.sponsorship
@@ -264,28 +278,28 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(sponsorship.state, "active")
 
         # Generate gifts for the child
-        sponsorship.write({
-            "birthday_invoice": 100
-        })
+        sponsorship.write({"birthday_invoice": 100})
         sponsorship.button_generate_invoices()
         gift_invoice = sponsorship.invoice_line_ids.mapped("move_id").filtered(
-            lambda m: m.invoice_category == 'gift'
+            lambda m: m.invoice_category == "gift"
         )
         self._pay_invoice(gift_invoice[0])
         self.assertEqual(gift_invoice[0].payment_state, "paid")
-        self.assertEqual(gift_invoice[0].invoice_date.month,
-                         (sponsorship.child_id.birthdate - relativedelta(months=2)).month)
+        self.assertEqual(
+            gift_invoice[0].invoice_date.month,
+            (sponsorship.child_id.birthdate - relativedelta(months=2)).month,
+        )
 
     @mock.patch(mock_get_lifecycle)
     def test_sponsorship_compassion_fourth_scenario(self, lifecycle_mock):
         """
-            In this final scenario we are testing the creation of 3 sponsorship
-            contracts for the same partner with for each contract one child to
-            sponsor.
-            We will make a child stop and leave the sponsorship program,
-            check if that child have no more sponsor id.
-            Check if the 3 contracts create one merged invoice for every month
-            (2 months here) with the good values.
+        In this final scenario we are testing the creation of 3 sponsorship
+        contracts for the same partner with for each contract one child to
+        sponsor.
+        We will make a child stop and leave the sponsorship program,
+        check if that child have no more sponsor id.
+        Check if the 3 contracts create one merged invoice for every month
+        (2 months here) with the good values.
         """
         lifecycle_mock.return_value = True
         child1 = self.create_child("UG72320010")
@@ -329,7 +343,7 @@ class TestSponsorship(BaseSponsorshipTest):
         total_price = 0
         sponsorships = sponsorship3 + sponsorship2 + sponsorship1
         for sponsorship in sponsorships.filtered(
-                lambda s: s.state in ['waiting', 'active']
+            lambda s: s.state in ["waiting", "active"]
         ):
             self.waiting_sponsorship(sponsorship)
             total_price += sponsorship.total_amount
@@ -349,7 +363,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertTrue(action)
 
     def test_change_partner(self):
-        """ Test changing partner of contract."""
+        """Test changing partner of contract."""
         partner = self.partner_1
         child1 = self.create_child("UG18920017")
         sp_group = self.create_group(
@@ -375,7 +389,7 @@ class TestSponsorship(BaseSponsorshipTest):
         self.assertEqual(invoice_state[0], "posted")
         self.assertEqual(partner_invoice, partner)
         # Change partner
-        sponsorship.write({'partner_id': self.partner_2})
+        sponsorship.write({"partner_id": self.partner_2})
         invoice_state = list(set(invoices.mapped("state")))
         self.assertEqual(invoice_state[0], "posted")
         partner_invoice = invoices.mapped("partner_id")
@@ -407,7 +421,7 @@ class TestSponsorship(BaseSponsorshipTest):
             {
                 "child_id": child1.id,
                 "group_id": sp_group1.id,
-                "partner_id": sp_group1.partner_id.id
+                "partner_id": sp_group1.partner_id.id,
             },
             [{"amount": 50.0, "product_id": self.product.id}],
         )
@@ -416,14 +430,16 @@ class TestSponsorship(BaseSponsorshipTest):
             {
                 "child_id": child2.id,
                 "group_id": sp_group2.id,
-                "partner_id": sp_group2.partner_id.id
+                "partner_id": sp_group2.partner_id.id,
             },
             [{"amount": 50.0, "product_id": self.product.id}],
         )
 
         sponsorship2.partner_id = partner
 
-        self.assertGreater(sponsorship2.commitment_number, sponsorship1.commitment_number)
+        self.assertGreater(
+            sponsorship2.commitment_number, sponsorship1.commitment_number
+        )
 
     def test_correct_default_correspondent(self):
         partner = self.partner_1
@@ -441,7 +457,7 @@ class TestSponsorship(BaseSponsorshipTest):
             {
                 "child_id": child1.id,
                 "group_id": sp_group1.id,
-                "partner_id": sp_group1.partner_id.id
+                "partner_id": sp_group1.partner_id.id,
             },
             [{"amount": 50.0, "product_id": self.product.id}],
         )
@@ -465,9 +481,10 @@ class TestSponsorship(BaseSponsorshipTest):
                 "type": "SC",
                 "partner_id": self.partner_1.id,
                 "group_id": contract_group.id,
-                "child_id": child.id
+                "child_id": child.id,
             },
-            [{"amount": 50.0, "product_id": self.product.id}])
+            [{"amount": 50.0, "product_id": self.product.id}],
+        )
 
         self.assertEqual(contract.state, "draft")
         self.waiting_sponsorship(contract)

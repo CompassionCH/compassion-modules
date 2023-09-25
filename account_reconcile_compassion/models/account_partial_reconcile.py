@@ -20,12 +20,12 @@ class AccountPartialReconcile(models.Model):
     _inherit = "account.partial.reconcile"
 
     def _fix_multiple_exchange_rates_diff(
-            self, amls_to_fix, amount_diff, diff_in_currency, currency, move
+        self, amls_to_fix, amount_diff, diff_in_currency, currency, move
     ):
         analytic_account_id = (
             self.env["ir.config_parameter"]
-                .sudo()
-                .get_param(
+            .sudo()
+            .get_param(
                 "account_reconcile_compassion.currency_exchange_analytic_account"
             )
         )

@@ -9,13 +9,14 @@
 ##############################################################################
 import base64
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class PrintChildpack(models.TransientModel):
     """
     Wizard for selecting a the child dossier type and language.
     """
+
     _name = "print.childpack"
     _description = "Select the child dossier type and language"
 
@@ -53,16 +54,18 @@ class PrintChildpack(models.TransientModel):
         return self.env.lang
 
     def _compute_module_name(self):
-        self.module_name = __name__.split('.')[2]
+        self.module_name = __name__.split(".")[2]
 
     def get_report(self):
         """
         Print selected child dossier
         :return: Generated report
         """
-        children = self.env["compassion.child"].browse(
-            self.env.context.get("active_ids")
-        ).with_context(lang=self.lang)
+        children = (
+            self.env["compassion.child"]
+            .browse(self.env.context.get("active_ids"))
+            .with_context(lang=self.lang)
+        )
         data = {
             "lang": self.lang,
             "doc_ids": children.ids,
@@ -73,7 +76,9 @@ class PrintChildpack(models.TransientModel):
         report_ref = self.env.ref(report_name).with_context(lang=self.lang)
         if self.pdf:
             name = children.local_id if len(children) == 1 else "childpacks"
-            self.pdf_name = f"{name}_{self.type.split('.')[1].split('_')[1]}_{self.lang.split('_')[0]}.pdf"
+            self.pdf_name = (
+                f"{name}_{self.type.split('_')[-1]}_{self.lang.split('_')[0]}.pdf"
+            )
             pdf_data = report_ref.with_context(
                 must_skip_send_to_printer=True
             )._render_qweb_pdf(children.ids, data=data)

@@ -10,7 +10,7 @@
 import math
 from datetime import date, datetime, timedelta
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 # Number of days a sponsorship must be active before Sub validation
 SUB_DURATION = 90.0
@@ -132,7 +132,7 @@ class WeeklyDemand(models.Model):
             [
                 ("parent_id", "!=", False),
                 ("start_date", ">=", start_date),
-                ("child_id", "!=", False)
+                ("child_id", "!=", False),
             ]
         )
         return float(sub_sponsored) // STATS_DURATION
@@ -269,7 +269,9 @@ class WeeklyDemand(models.Model):
                 vals["average_unsponsored_web"] = 0
 
             if vals["average_unsponsored_ambassador"] < 0:
-                vals["number_children_ambassador"] -= vals["average_unsponsored_ambassador"]
+                vals["number_children_ambassador"] -= vals[
+                    "average_unsponsored_ambassador"
+                ]
                 vals["average_unsponsored_ambassador"] = 0
 
             # this ensures that the default functions are triggered

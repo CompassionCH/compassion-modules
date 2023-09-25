@@ -9,9 +9,9 @@
 ##############################################################################
 import logging
 
-from odoo import models, api, fields, _
-from odoo.tools.safe_eval import safe_eval
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -25,19 +25,18 @@ class GenerateCommunicationWizard(models.TransientModel):
         [("edit", "edit"), ("preview", "preview"), ("generation", "generation")],
         default="edit",
     )
-    selection_domain = fields.Char(default=lambda s: f"[('id', 'in', {s.env.context.get('active_ids')})]")
+    selection_domain = fields.Char(
+        default=lambda s: f"[('id', 'in', {s.env.context.get('active_ids')})]"
+    )
     partner_ids = fields.Many2many(
-        "res.partner",
-        string="Recipients",
-        readonly=False,
-        compute="_compute_partners"
+        "res.partner", string="Recipients", readonly=False, compute="_compute_partners"
     )
     force_language = fields.Selection("_lang_select")
     model_id = fields.Many2one(
         "partner.communication.config",
         "Template",
         domain=[("model", "=", "res.partner")],
-        required=True
+        required=True,
     )
     send_mode = fields.Selection("_send_mode_select")
     customize_template = fields.Boolean()
@@ -120,7 +119,7 @@ class GenerateCommunicationWizard(models.TransientModel):
         }
 
     def generate_communications(self, async_mode=True):
-        """ Create the communication records """
+        """Create the communication records"""
         for partner in self.partner_ids:
             vals = {
                 "partner_id": partner.id,
@@ -128,24 +127,21 @@ class GenerateCommunicationWizard(models.TransientModel):
                 "config_id": self.model_id.id,
             }
             if self.send_mode:
-                vals.update({
-                    "send_mode": self.send_mode,
-                    "auto_send": False
-                })
+                vals.update({"send_mode": self.send_mode, "auto_send": False})
             options = {
                 "force_language": self.force_language,
             }
             if async_mode or self.scheduled_date:
                 self.with_delay(
-                    eta=self.scheduled_date,
-                    priority=50).create_communication(vals, options)
+                    eta=self.scheduled_date, priority=50
+                ).create_communication(vals, options)
             else:
                 self.create_communication(vals, options)
         return True
 
     @api.model
     def create_communication(self, vals, options):
-        """ Generate partner communication """
+        """Generate partner communication"""
         communication = self.env["partner.communication.job"].create(vals)
         force_language = options.get("force_language")
         if force_language:
@@ -153,12 +149,10 @@ class GenerateCommunicationWizard(models.TransientModel):
                 lang=force_language, salutation_language=force_language
             )
             new_subject = template._render_template(
-                template.subject, "partner.communication.job",
-                communication.ids
+                template.subject, "partner.communication.job", communication.ids
             )
             new_text = template._render_template(
-                template.body_html, "partner.communication.job",
-                communication.ids
+                template.body_html, "partner.communication.job", communication.ids
             )
             communication.body_html = new_text[communication.id]
             communication.subject = new_subject[communication.id]

@@ -14,7 +14,7 @@ from io import BytesIO
 
 from wand.exceptions import PolicyError
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
@@ -28,8 +28,7 @@ except ImportError:
 
 
 class CorrespondenceS2bGenerator(models.Model):
-    """ Generation of S2B Letters with text.
-    """
+    """Generation of S2B Letters with text."""
 
     _name = "correspondence.s2b.generator"
     _description = "Correspondence Generator"
@@ -47,28 +46,28 @@ class CorrespondenceS2bGenerator(models.Model):
     image_ids = fields.Many2many(
         "ir.attachment", string="Attached images", readonly=False
     )
-    template_id = fields.Many2one(
-        required=True, domain=[("type", "=", "s2b")]
-    )
+    template_id = fields.Many2one(required=True, domain=[("type", "=", "s2b")])
     background = fields.Image(related="template_id.template_image")
     selection_domain = fields.Char(
-        default=[('state', '=', 'active'), ('child_id', '!=', False)]
+        default=[("state", "=", "active"), ("child_id", "!=", False)]
     )
     sponsorship_ids = fields.Many2many(
         "recurring.contract", string="Sponsorships", required=True, readonly=False
     )
     language_id = fields.Many2one(
-        "res.lang.compassion", "Language", readonly=False,
+        "res.lang.compassion",
+        "Language",
+        readonly=False,
         default=lambda s: s.env.ref("advanced_translation.lang_compassion_english").id,
-        required=True
+        required=True,
     )
     body = fields.Text(
         required=True,
         help="You can use the following tags to replace with values :\n\n"
-             "* %child%: child name\n"
-             "* %age%: child age (1, 2, 3, ...)\n"
-             "* %firstname%: sponsor firstname\n"
-             "* %lastname%: sponsor lastname\n",
+        "* %child%: child name\n"
+        "* %age%: child age (1, 2, 3, ...)\n"
+        "* %firstname%: sponsor firstname\n"
+        "* %lastname%: sponsor lastname\n",
     )
     letter_ids = fields.One2many(
         "correspondence", "generator_id", "Letters", readonly=False
@@ -127,8 +126,7 @@ class CorrespondenceS2bGenerator(models.Model):
             self.selection_domain = str(domain)
 
     def preview(self):
-        """ Generate a picture for preview.
-        """
+        """Generate a picture for preview."""
         pdf = self._get_pdf(self.sponsorship_ids[:1])[0]
         if self.template_id.layout == "CH-A-3S01-1":
             # Read page 2
@@ -143,30 +141,39 @@ class CorrespondenceS2bGenerator(models.Model):
         try:
             with Image(blob=pdf, resolution=96) as pdf_image:
                 preview = base64.b64encode(pdf_image.make_blob(format="jpeg"))
-        except PolicyError:
+        except PolicyError as error:
             _logger.error(
                 "ImageMagick policy error. Please add following line to "
                 "/etc/Image-Magick-<version>/policy.xml: "
-                 "<policy domain=\"coder\" rights=\"read|write\" "
-                "pattern=\"PDF\" />", exc_info=True)
-            raise UserError(_(
-                "Please allow ImageMagick to write PDF files."
-                " Ask an IT admin for help."))
-        except TypeError:
-            _logger.error("FPDF error", exc_info=True)
-            raise UserError(_(
-                "There was an error while generating the PDF of the letter. "
-                "Please check FPDF logs for more information."))
+                '<policy domain="coder" rights="read|write" '
+                'pattern="PDF" />',
+            )
+            raise UserError(
+                _(
+                    "Please allow ImageMagick to write PDF files."
+                    " Ask an IT admin for help."
+                )
+            ) from error
+        except TypeError as error:
+            raise UserError(
+                _(
+                    "There was an error while generating the PDF of the letter. "
+                    "Please check FPDF logs for more information."
+                )
+            ) from error
 
         pdf_image = base64.b64encode(pdf)
 
         return self.write(
-            {"state": "preview", "preview_image": preview, "preview_pdf": pdf_image, }
+            {
+                "state": "preview",
+                "preview_image": preview,
+                "preview_pdf": pdf_image,
+            }
         )
 
     def edit(self):
-        """ Generate a picture for preview.
-        """
+        """Generate a picture for preview."""
         return self.write({"state": "draft"})
 
     def generate_letters(self, utms=None):
@@ -231,7 +238,7 @@ class CorrespondenceS2bGenerator(models.Model):
         }
 
     def _get_text(self, sponsorship):
-        """ Generates the text given a sponsorship. """
+        """Generates the text given a sponsorship."""
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
         child = sponsorship.child_id
@@ -248,7 +255,7 @@ class CorrespondenceS2bGenerator(models.Model):
         return text
 
     def _get_pdf(self, sponsorship):
-        """ Generates a PDF given a sponsorship. """
+        """Generates a PDF given a sponsorship."""
         self.ensure_one()
         sponsor = sponsorship.correspondent_id
         child = sponsorship.child_id

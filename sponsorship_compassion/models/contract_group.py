@@ -9,7 +9,8 @@
 ##############################################################################
 
 from odoo import fields, models
-from .product_names import CHRISTMAS_GIFT, BIRTHDAY_GIFT
+
+from .product_names import BIRTHDAY_GIFT, CHRISTMAS_GIFT
 
 
 class ContractGroup(models.Model):
@@ -33,24 +34,32 @@ class ContractGroup(models.Model):
     def _compute_contains_sponsorship(self):
         for group in self:
             group.contains_sponsorship = group.mapped("contract_ids").filtered(
-                lambda s: s.type in ("S", "SC", "SWP") and s.state not in (
-                    "terminated", "cancelled")
+                lambda s: s.type in ("S", "SC", "SWP")
+                and s.state not in ("terminated", "cancelled")
             )
 
     def _generate_invoices(self, invoicer):
         # Exclude gifts from regular generation
-        super(ContractGroup, self.with_context(open_invoices_sponsorship_only=True))._generate_invoices(invoicer)
+        super(
+            ContractGroup, self.with_context(open_invoices_sponsorship_only=True)
+        )._generate_invoices(invoicer)
         # We don't generate gift if the contract isn't active
-        contracts = self.mapped("contract_ids").filtered(lambda c: c.state == 'active')
+        contracts = self.mapped("contract_ids").filtered(lambda c: c.state == "active")
         contracts._generate_gifts(invoicer, BIRTHDAY_GIFT)
         contracts._generate_gifts(invoicer, CHRISTMAS_GIFT)
         return True
 
-    def build_inv_line_data(self, invoicing_date=False, gift_wizard=False, contract_line=False):
+    def build_inv_line_data(
+        self, invoicing_date=False, gift_wizard=False, contract_line=False
+    ):
         # Push analytic account
         res = super().build_inv_line_data(invoicing_date, gift_wizard, contract_line)
         if gift_wizard:
-            res["analytic_account_id"] = gift_wizard.contract_id.origin_id.analytic_id.id
+            res[
+                "analytic_account_id"
+            ] = gift_wizard.contract_id.origin_id.analytic_id.id
         elif contract_line:
-            res["analytic_account_id"] = contract_line.contract_id.origin_id.analytic_id.id
+            res[
+                "analytic_account_id"
+            ] = contract_line.contract_id.origin_id.analytic_id.id
         return res

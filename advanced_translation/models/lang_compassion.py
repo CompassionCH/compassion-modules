@@ -9,13 +9,13 @@
 ##############################################################################
 
 from iso639 import Lang
+
 from odoo import fields, models
 
 
 class ResLang(models.Model):
 
-    """ This class adds spoken languages to match Compassion needs.
-    """
+    """This class adds spoken languages to match Compassion needs."""
 
     _name = "res.lang.compassion"
     _description = "Compassion language"

@@ -1,3 +1,1 @@
-from . import models
-from . import wizards
-from . import tests
+from . import models, tests, wizards

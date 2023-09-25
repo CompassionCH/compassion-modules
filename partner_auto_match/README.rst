@@ -17,7 +17,7 @@ Partner auto match
     :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_auto_match
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module doesn't do anything on its own, but enables other modules to find and update or create partner given
 any field data.
@@ -73,7 +73,7 @@ Maintainers
 
 Current maintainer:
 
-|maintainer-ecino| 
+|maintainer-ecino|
 
 This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/partner_auto_match>`_ project on GitHub.
 

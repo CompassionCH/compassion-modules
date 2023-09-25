@@ -15,8 +15,7 @@ class ResPartnerSegment(models.Model):
     _description = "Partner Segmentation"
 
     segment_index = fields.Integer(
-        required=True,
-        help="Used for segment computation by segmentation engine"
+        required=True, help="Used for segment computation by segmentation engine"
     )
     name = fields.Char(required=True)
     main_driver = fields.Char()
@@ -28,7 +27,7 @@ class ResPartnerSegment(models.Model):
 
     segment_total = fields.Integer(
         help="percentage of categorized partners for whom this is "
-             "the primary segment",
+        "the primary segment",
         compute="_compute_segment_total",
     )
 
@@ -44,8 +43,7 @@ class ResPartnerSegment(models.Model):
     )
 
     _sql_constraints = [
-        ("unique_index", "unique(segment_index)",
-         "Segment index must be unique")
+        ("unique_index", "unique(segment_index)", "Segment index must be unique")
     ]
 
     def _compute_segment_size(self):

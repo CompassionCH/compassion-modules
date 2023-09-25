@@ -13,26 +13,32 @@ import re
 from datetime import datetime, timedelta
 
 import requests
-from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
-from odoo import models, fields, api, tools, _
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
+
+from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 logger = logging.getLogger(__name__)
 
 try:
-    from timezonefinder import TimezoneFinder
     from pytz import timezone
-except (ImportError, IOError) as err:
+    from timezonefinder import TimezoneFinder
+except (ImportError, IOError):
     logger.warning("Please install timezonefinder and pytz")
 
 
 class CompassionProject(models.Model):
-    """ A compassion project """
+    """A compassion project"""
 
     _name = "compassion.project"
     _rec_name = "fcp_id"
-    _inherit = ["mail.thread", "mail.activity.mixin", "translatable.model", "compassion.mapped.model"]
+    _inherit = [
+        "mail.thread",
+        "mail.activity.mixin",
+        "translatable.model",
+        "compassion.mapped.model",
+    ]
     _description = "Frontline Church Partner"
 
     ##########################################################################
@@ -99,19 +105,31 @@ class CompassionProject(models.Model):
     number_church_members = fields.Integer(readonly=True)
     weekly_child_attendance = fields.Integer(readonly=True)
     implemented_program_ids = fields.Many2many(
-        "fcp.program", "fcp_implemented_programs", "fcp_id", "program_id",
-        string="Programs implemented", readonly=True
+        "fcp.program",
+        "fcp_implemented_programs",
+        "fcp_id",
+        "program_id",
+        string="Programs implemented",
+        readonly=True,
     )
     interested_program_ids = fields.Many2many(
-        "fcp.program", "fcp_interested_programs", "fcp_id", "program_id",
-        string="Programs of interest", readonly=True
+        "fcp.program",
+        "fcp_interested_programs",
+        "fcp_id",
+        "program_id",
+        string="Programs of interest",
+        readonly=True,
     )
 
     # Church infrastructure information
     ###################################
     church_building_size = fields.Float(help="Unit is square meters", readonly=True)
     church_ownership = fields.Selection(
-        [("Rented", "Rented"), ("Owned", "Owned"), ], readonly=True
+        [
+            ("Rented", "Rented"),
+            ("Owned", "Owned"),
+        ],
+        readonly=True,
     )
     facility_ids = fields.Many2many(
         "fcp.church.facility", string="Church facilities", readonly=True
@@ -322,7 +340,7 @@ class CompassionProject(models.Model):
 
     # Partnership
     #############
-    partnership_start_date = fields.Date( readonly=True)
+    partnership_start_date = fields.Date(readonly=True)
     program_start_date = fields.Date(readonly=True)
     program_end_date = fields.Date(readonly=True)
 
@@ -338,7 +356,9 @@ class CompassionProject(models.Model):
     )
     covid_status_ids = fields.One2many(
         "compassion.project.covid_update",
-        "fcp_id", "FCP Re-opening Status", readonly=True
+        "fcp_id",
+        "FCP Re-opening Status",
+        readonly=True,
     )
 
     suspension = fields.Selection(
@@ -377,28 +397,54 @@ class CompassionProject(models.Model):
     description_left = fields.Html(compute="_compute_description")
     description_right = fields.Html(compute="_compute_description")
 
-    re_opening_status = fields.Char(compute="_compute_re_opening_state",
-                                    store=True,
-                                    tracking=True,
-                                    )
+    re_opening_status = fields.Char(
+        compute="_compute_re_opening_state",
+        store=True,
+        tracking=True,
+    )
 
     @property
     def translated_fields(self):
         return [
-            "involvement_ids.value", "ministry_ids.value", "implemented_program_ids.value",
-            "interested_program_ids.value", "facility_ids.value", "mobile_device_ids.value", "utility_ids.value",
-            "spiritual_activity_babies_ids.value", "spiritual_activity_kids_ids.value",
-            "spiritual_activity_ados_ids.value", "cognitive_activity_babies_ids.value",
-            "cognitive_activity_kids_ids.value", "cognitive_activity_ados_ids.value",
-            "physical_activity_babies_ids.value", "physical_activity_kids_ids.value",
-            "physical_activity_ados_ids.value", "socio_activity_babies_ids.value", "socio_activity_kids_ids.value",
-            "socio_activity_ados_ids.value", "primary_adults_occupation_ids.value", "school_cost_paid_ids.value",
-            "rainy_month_ids.name", "planting_month_ids.name", "harvest_month_ids.name", "hunger_month_ids.name",
+            "involvement_ids.value",
+            "ministry_ids.value",
+            "implemented_program_ids.value",
+            "interested_program_ids.value",
+            "facility_ids.value",
+            "mobile_device_ids.value",
+            "utility_ids.value",
+            "spiritual_activity_babies_ids.value",
+            "spiritual_activity_kids_ids.value",
+            "spiritual_activity_ados_ids.value",
+            "cognitive_activity_babies_ids.value",
+            "cognitive_activity_kids_ids.value",
+            "cognitive_activity_ados_ids.value",
+            "physical_activity_babies_ids.value",
+            "physical_activity_kids_ids.value",
+            "physical_activity_ados_ids.value",
+            "socio_activity_babies_ids.value",
+            "socio_activity_kids_ids.value",
+            "socio_activity_ados_ids.value",
+            "primary_adults_occupation_ids.value",
+            "school_cost_paid_ids.value",
+            "rainy_month_ids.name",
+            "planting_month_ids.name",
+            "harvest_month_ids.name",
+            "hunger_month_ids.name",
             "primary_diet_ids.value",
-            "preferred_lang_id.name", "primary_language_id.name",
-            "church_ownership", "electrical_power", "school_year_begins", "typical_roof_material",
-            "typical_floor_material", "typical_wall_material", "coolest_month", "warmest_month", "current_weather",
-            "first_scheduled_letter", "second_scheduled_letter",
+            "preferred_lang_id.name",
+            "primary_language_id.name",
+            "church_ownership",
+            "electrical_power",
+            "school_year_begins",
+            "typical_roof_material",
+            "typical_floor_material",
+            "typical_wall_material",
+            "coolest_month",
+            "warmest_month",
+            "current_weather",
+            "first_scheduled_letter",
+            "second_scheduled_letter",
             "community_terrain",
         ]
 
@@ -488,7 +534,7 @@ class CompassionProject(models.Model):
     ##########################################################################
     @api.model
     def create(self, vals_list):
-        """ Avoid creating an already existing FCP. """
+        """Avoid creating an already existing FCP."""
         if isinstance(vals_list, dict):
             vals_list = [vals_list]
 
@@ -506,7 +552,7 @@ class CompassionProject(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def suspend_funds(self):
-        """ Hook to perform some action when project is suspended.
+        """Hook to perform some action when project is suspended.
         By default: log a message.
         """
         for project in self:
@@ -540,8 +586,7 @@ class CompassionProject(models.Model):
         """
         for project in self:
             if not project.last_weather_refresh_date or (
-                    datetime.now() - project.last_weather_refresh_date >
-                    timedelta(hours=1)
+                datetime.now() - project.last_weather_refresh_date > timedelta(hours=1)
             ):
                 json = requests.get(
                     "https://api.openweathermap.org/data/2.5/weather"
@@ -568,7 +613,7 @@ class CompassionProject(models.Model):
         return all_activities[:max_int].mapped("value")
 
     def details_answer(self, vals):
-        """ Called when receiving the answer of GetDetails message. """
+        """Called when receiving the answer of GetDetails message."""
         self.ensure_one()
         vals["last_update_date"] = fields.Date.today()
         self.write(vals)
@@ -577,7 +622,7 @@ class CompassionProject(models.Model):
 
     @api.model
     def new_kit(self, commkit_data):
-        """ New project kit is received. """
+        """New project kit is received."""
         projects = self
         for project_data in commkit_data.get("ICPResponseList", [commkit_data]):
             fcp_id = project_data.get("ICP_ID")
@@ -604,11 +649,11 @@ class CompassionProject(models.Model):
 
         for key, val in odoo_data.items():
             if isinstance(val, str) and val.lower() in (
-                    "null",
-                    "false",
-                    "none",
-                    "other",
-                    "unknown",
+                "null",
+                "false",
+                "none",
+                "other",
+                "unknown",
             ):
                 odoo_data[key] = False
 
@@ -629,7 +674,8 @@ class CompassionProject(models.Model):
 
     def fetch_translations(self):
         """
-        Contact GMC service in all installed languages in order to fetch all terms used in child description.
+        Contact GMC service in all installed languages in order to fetch all terms
+        used in child description.
         """
         self._fetch_translations(self.env.ref("child_compassion.icp_details"))
         return self.edit_translations()
@@ -638,8 +684,8 @@ class CompassionProject(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def update_informations(self):
-        """ Get the most recent informations for selected projects and update
-            them accordingly. """
+        """Get the most recent informations for selected projects and update
+        them accordingly."""
         message_obj = self.env["gmc.message"]
         action_id = self.env.ref("child_compassion.icp_details").id
         for project in self:
@@ -656,9 +702,11 @@ class CompassionProject(models.Model):
     def get_all_projects(self):
         message_obj = self.env["gmc.message"]
         action_id = self.env.ref("child_compassion.icp_search_request").id
-        message = message_obj.create({
-            "action_id": action_id,
-        })
+        message = message_obj.create(
+            {
+                "action_id": action_id,
+            }
+        )
         if "failure" in message.state:
             raise UserError(message.failure_reason)
 
@@ -682,7 +730,7 @@ class CompassionProject(models.Model):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def reactivate_project(self):
-        """ To perform some actions when project is reactivated """
+        """To perform some actions when project is reactivated"""
         for project in self:
             project.message_post(
                 body=_("The project is reactivated."),

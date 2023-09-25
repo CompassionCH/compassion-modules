@@ -8,12 +8,14 @@
 #
 ##############################################################################
 
-from . import child
-from . import lifecycle_events
-from . import compassion_hold
-from . import correspondence
-from . import contracts
-from . import res_partner
-from . import disaster_alert
-from . import partner_communication
-from . import res_country
+from . import (
+    child,
+    compassion_hold,
+    contracts,
+    correspondence,
+    disaster_alert,
+    lifecycle_events,
+    partner_communication,
+    res_country,
+    res_partner,
+)

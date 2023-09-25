@@ -17,7 +17,7 @@ Compassion - Events
     :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_compassion
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module helps Compassion CH to manage its planned events, by creating a
 new model for tracking upcoming events.
@@ -130,7 +130,7 @@ Maintainers
 
 Current maintainer:
 
-|maintainer-ecino| 
+|maintainer-ecino|
 
 This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_compassion>`_ project on GitHub.
 

@@ -7,11 +7,11 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class ChildLifecycleEvent(models.Model):
-    """ A child lifecycle event (BLE) """
+    """A child lifecycle event (BLE)"""
 
     _name = "compassion.child.ble"
     _description = "Child Lifecycle Event"
@@ -40,10 +40,14 @@ class ChildLifecycleEvent(models.Model):
     education_plan = fields.Selection(
         [
             ("Continuing In Formal Education", "Continuing In Formal Education"),
-            ("Continuing In Tech / Vocational Training",
-             "Continuing In Tech / Vocational Training"),
-            ("Not Continuing Education At This Time",
-             "Not Continuing Education At This Time"),
+            (
+                "Continuing In Tech / Vocational Training",
+                "Continuing In Tech / Vocational Training",
+            ),
+            (
+                "Not Continuing Education At This Time",
+                "Not Continuing Education At This Time",
+            ),
             ("Entering Military Service", "Entering Military Service"),
             ("Will Be Working", "Will Be Working"),
             ("Data Unavailable/Not Applicable", "Data Unavailable/Not Applicable"),
@@ -382,7 +386,7 @@ class ChildLifecycleEvent(models.Model):
         lifecycle_ids = list()
 
         for single_data in commkit_data.get(
-                "BeneficiaryLifecycleEventList", [commkit_data]
+            "BeneficiaryLifecycleEventList", [commkit_data]
         ):
             vals = self.json_to_data(single_data)
             lifecycle = self.create(vals)

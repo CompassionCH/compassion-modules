@@ -1,14 +1,18 @@
 import re
 
-from pyzbar import pyzbar
 from PIL import ImageEnhance, ImageFilter
+from pyzbar import pyzbar
 
 # compile regex
 reg_partner = "(?P<partner>[0-9]{7})"
 reg_child = "(?P<child>[A-Z]{2}[0-9]{7,9})"
 reg_optional_separator = "(?:XX)?"
-reg_partner_child = re.compile(reg_partner + reg_optional_separator + reg_child, re.IGNORECASE)
-reg_child_partner = re.compile(reg_child + reg_optional_separator + reg_partner, re.IGNORECASE)
+reg_partner_child = re.compile(
+    reg_partner + reg_optional_separator + reg_child, re.IGNORECASE
+)
+reg_child_partner = re.compile(
+    reg_child + reg_optional_separator + reg_partner, re.IGNORECASE
+)
 
 
 def detect_barcode_in_image(image):
@@ -27,12 +31,14 @@ def threshold(img):
 def erode(i):
     def f(img):
         return img.filter(ImageFilter.MaxFilter(i))
+
     return f
 
 
 def contrast(i):
     def f(img):
         return ImageEnhance.Contrast(img).enhance(i)
+
     return f
 
 
@@ -44,7 +50,7 @@ strategies = [
     (top_left, blue_channel, contrast(2), erode(3)),
     (top_left, threshold),
     (top_left,),
-    (), # do nothing
+    (),  # do nothing
 ]
 
 

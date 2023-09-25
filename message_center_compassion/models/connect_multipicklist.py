@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 
 
 class ConnectMultipicklist(models.AbstractModel):
@@ -31,8 +31,9 @@ class ConnectMultipicklist(models.AbstractModel):
 
     @api.model
     def create(self, vals_list):
-        """Sometimes we get from Connect a same value in several fields trying to create at the same time.
-        We therefore try to find an already existing record before creating a new one, to avoid errors."""
+        """Sometimes we get from Connect a same value in several fields trying to
+        create at the same time. We therefore try to find an already existing record
+        before creating a new one, to avoid errors."""
         res = self
         if not isinstance(vals_list, list):
             vals_list = [vals_list]
@@ -58,7 +59,7 @@ class ConnectMultipicklist(models.AbstractModel):
             "views": [[False, "tree"], [False, "form"]],
             "domain": [["id", "in", res_ids]],
         }
-    
+
     def get_res_ids(self):
         """
         :return: Recordset of records having a given property
@@ -69,4 +70,3 @@ class ConnectMultipicklist(models.AbstractModel):
                 self.env[self.res_model].search([(prop_id, "in", self.res_field)]).ids
             )
         return res_ids
-

@@ -17,7 +17,7 @@ class PositionedTextBox extends PositionedObject
 	{
 		$this->height = $height;
 		$this->type = $type;
-		
+
 		parent::__construct($minX, $minY, $maxX, $maxY);
 	}
 

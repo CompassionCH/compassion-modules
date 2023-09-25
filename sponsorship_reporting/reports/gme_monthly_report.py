@@ -1,4 +1,4 @@
-from odoo import api, models, fields, tools, _
+from odoo import _, api, fields, models, tools
 
 
 class EndSponsorshipsMonthReport(models.Model):
@@ -64,7 +64,7 @@ class EndSponsorshipsMonthReport(models.Model):
         # external source.
         # pylint:disable=E8103
         self.env.cr.execute(
-            """ 
+            """
             CREATE OR REPLACE VIEW %s AS
             SELECT c.id, c.end_date, c.end_reason_id, c.sub_sponsorship_id,
                    c.sds_state, p.id as partner_id, %s, %s, %s,
@@ -72,7 +72,7 @@ class EndSponsorshipsMonthReport(models.Model):
                    100.0/s.sponsored_terminated as total_percentage,
                    s.sponsored_terminated,
                    s.study_date
-            FROM recurring_contract c 
+            FROM recurring_contract c
               JOIN res_partner p ON c.correspondent_id = p.id
               %s
             WHERE c.state = 'terminated' AND c.child_id IS NOT NULL

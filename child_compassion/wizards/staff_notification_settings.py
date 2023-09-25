@@ -8,11 +8,11 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class StaffNotificationSettings(models.TransientModel):
-    """ Settings configuration for any Notifications."""
+    """Settings configuration for any Notifications."""
 
     _inherit = "res.config.settings"
 
@@ -20,7 +20,10 @@ class StaffNotificationSettings(models.TransientModel):
     disaster_notify_ids = fields.Many2many(
         "res.partner",
         string="Disaster Alert",
-        domain=[("user_ids", "!=", False), ("user_ids.share", "=", False), ],
+        domain=[
+            ("user_ids", "!=", False),
+            ("user_ids.share", "=", False),
+        ],
         compute="_compute_relation_disaster_notify_ids",
         inverse="_inverse_relation_disaster_notify_ids",
         readonly=False,

@@ -12,7 +12,7 @@ import csv
 import logging
 import os
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 

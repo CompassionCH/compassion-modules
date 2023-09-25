@@ -9,11 +9,11 @@
 ##############################################################################
 import base64
 import logging
-
 from io import BytesIO
-from PyPDF2 import PdfFileWriter, PdfFileReader
 
-from odoo import models, _, fields
+from PyPDF2 import PdfFileReader, PdfFileWriter
+
+from odoo import _, fields, models
 from odoo.exceptions import MissingError
 
 _logger = logging.getLogger(__name__)
@@ -157,7 +157,9 @@ class PartnerCommunication(models.Model):
     def send(self):
         res = super().send()
         biennial = self.env.ref("partner_communication_compassion.biennial")
-        biennials = self.filtered(lambda j: j.state == "done" and j.config_id == biennial)
+        biennials = self.filtered(
+            lambda j: j.state == "done" and j.config_id == biennial
+        )
         if biennials:
             for child in biennials.get_objects():
                 child.sponsorship_ids[0].new_picture = False

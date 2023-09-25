@@ -1,7 +1,7 @@
 import base64
 import logging
 
-from odoo import api, SUPERUSER_ID
+from odoo import SUPERUSER_ID, api
 from odoo.tools.misc import file_open
 
 _logger = logging.getLogger(__name__)

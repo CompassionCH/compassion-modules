@@ -11,7 +11,7 @@ import base64
 from io import BytesIO
 from zipfile import ZipFile
 
-from odoo import models, api, fields, _
+from odoo import _, fields, models
 
 
 class DownloadLetters(models.TransientModel):
@@ -33,11 +33,12 @@ class DownloadLetters(models.TransientModel):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def _compute_filename(self):
-        self.fname = fields.Date.context_today(self).strftime("%d-%m-%Y") \
-            + _("_letters.zip")
+        self.fname = fields.Date.context_today(self).strftime("%d-%m-%Y") + _(
+            "_letters.zip"
+        )
 
     def _compute_data(self):
-        """ Create the zip archive from the selected letters. """
+        """Create the zip archive from the selected letters."""
         letters = (
             self.env[self.env.context["active_model"]]
             .browse(self.env.context["active_ids"])

@@ -11,13 +11,13 @@ import logging
 
 from psycopg2 import IntegrityError
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class ContractOrigin(models.Model):
-    """ Origin of a contract """
+    """Origin of a contract"""
 
     _name = "recurring.contract.origin"
     _description = "Recurring Contract Origin"
@@ -29,14 +29,14 @@ class ContractOrigin(models.Model):
     type = fields.Selection(
         "_get_origin_types",
         help="Origin of contract : "
-             " * Contact with sponsor/ambassador : an other sponsor told the "
-             "person about Compassion."
-             " * Event : sponsorship was made during an event"
-             " * Marketing campaign : sponsorship was made after specific "
-             "campaign (magazine, ad, etc..)"
-             " * Crowdfunding : sponsorship obtained from a crowdunfding project"
-             " * Transfer : sponsorship transferred from another country."
-             " * Other : select only if none other type matches.",
+        " * Contact with sponsor/ambassador : an other sponsor told the "
+        "person about Compassion."
+        " * Event : sponsorship was made during an event"
+        " * Marketing campaign : sponsorship was made after specific "
+        "campaign (magazine, ad, etc..)"
+        " * Crowdfunding : sponsorship obtained from a crowdunfding project"
+        " * Transfer : sponsorship transferred from another country."
+        " * Other : select only if none other type matches.",
         required=True,
         index=True,
     )
@@ -103,8 +103,11 @@ class ContractOrigin(models.Model):
         for origin in self.filtered("contract_ids"):
             # not tacking sponsors with parent_id or in cancelled state.
             contract_ids = origin.contract_ids.filtered(lambda c: not c.parent_id)
-            origin.won_sponsorships = len(contract_ids.filtered(lambda c: c.state != "cancelled"))
-            # sponsor who cancelled their sponsorship are used to compute conversion_rate to avoid bias
+            origin.won_sponsorships = len(
+                contract_ids.filtered(lambda c: c.state != "cancelled")
+            )
+            # sponsor who cancelled their sponsorship are used to compute
+            # conversion_rate to avoid bias
             origin.conversion_rate = (
                 len(contract_ids.filtered("activation_date"))
                 / float(len(contract_ids))
@@ -138,8 +141,8 @@ class ContractOrigin(models.Model):
                 partner_name = partner.parent_id.name + ", " + partner_name
             analytic_account = (
                 self.env["account.analytic.account"]
-                    .with_context(lang="en_US")
-                    .search([("name", "=", partner_name)], limit=1)
+                .with_context(lang="en_US")
+                .search([("name", "=", partner_name)], limit=1)
             )
             res.analytic_id = analytic_account
 

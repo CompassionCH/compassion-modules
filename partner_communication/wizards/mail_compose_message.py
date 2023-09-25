@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields
+from odoo import api, models
 
 
 class EmailComposeMessage(models.TransientModel):
@@ -16,7 +16,7 @@ class EmailComposeMessage(models.TransientModel):
 
     @api.model
     def create_emails(self, template, res_ids, default_mail_values=None):
-        """ Helper to generate a new e-mail given a template and objects.
+        """Helper to generate a new e-mail given a template and objects.
 
         :param int template: mail.template record
         :param res_ids: ids of the resource objects
@@ -37,7 +37,7 @@ class EmailComposeMessage(models.TransientModel):
 
     @api.model
     def get_generated_fields(self, template, res_ids):
-        """ Helper to retrieve generated html given a template and objects.
+        """Helper to retrieve generated html given a template and objects.
 
         :param int template: mail.template record
         :param res_ids: ids of the resource objects
@@ -52,7 +52,7 @@ class EmailComposeMessage(models.TransientModel):
         return email_fields
 
     def _get_mail_values(self, template, res_ids):
-        """ Helper to get e-mail values given a template and objects.
+        """Helper to get e-mail values given a template and objects.
 
         :param int template: mail.template record
         :param res_ids: ids of the resource objects
@@ -62,8 +62,8 @@ class EmailComposeMessage(models.TransientModel):
             res_ids = [res_ids]
         wizard = (
             self.sudo()
-                .with_context(active_ids=res_ids)
-                .create(
+            .with_context(active_ids=res_ids)
+            .create(
                 {
                     "template_id": template.id,
                     "composition_mode": "mass_mail",

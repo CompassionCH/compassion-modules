@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, fields, exceptions, _
+from odoo import _, exceptions, fields, models
 
 
 class ChangeAttributionWizard(models.TransientModel):
@@ -57,7 +57,7 @@ class ChangeAttributionWizard(models.TransientModel):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def unreconcile(self):
-        """ Unreconcile selected payments. """
+        """Unreconcile selected payments."""
         self.ensure_one()
         if not self.invoice_line_ids:
             raise exceptions.UserError(
@@ -68,7 +68,9 @@ class ChangeAttributionWizard(models.TransientModel):
             )
 
         # Unreconcile payments
-        move_lines = self.invoice_line_ids.mapped("full_reconcile_id.reconciled_line_ids")
+        move_lines = self.invoice_line_ids.mapped(
+            "full_reconcile_id.reconciled_line_ids"
+        )
         move_lines.remove_move_reconcile()
 
         # Cancel paid invoices and move invoice lines to a new
@@ -96,9 +98,14 @@ class ChangeAttributionWizard(models.TransientModel):
                     {"invoice_origin": self.comment or "Payment attribution changed."}
                 )
                 invoice.button_cancel()
-                new_invoice.write({
-                    "invoice_line_ids": [(0, 0, invl_vals) for invl_vals in invoice.invoice_line_ids.read()]
-                })
+                new_invoice.write(
+                    {
+                        "invoice_line_ids": [
+                            (0, 0, invl_vals)
+                            for invl_vals in invoice.invoice_line_ids.read()
+                        ]
+                    }
+                )
 
         new_invoice.to_reconcile = sum(move_lines.mapped("credit"))
 

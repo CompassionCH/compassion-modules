@@ -1,5 +1,6 @@
 from odoo.exceptions import ValidationError
 from odoo.tests import SingleTransactionCase
+
 from ..tools.load_mappings import load_mapping_files
 
 
@@ -9,19 +10,19 @@ class TestMapping(SingleTransactionCase):
         super().setUpClass()
 
     def test_advanced_query_mapping_loaded(self):
-        """ Test that the advanced query mapping is correctly loaded after
-        module installation. """
+        """Test that the advanced query mapping is correctly loaded after
+        module installation."""
         query_mapping = self.env["compassion.mapping"].search(
             [("name", "=", "advanced query")]
         )
         self.assertTrue(query_mapping)
-        self.assertEquals(query_mapping.model_id.model, "compassion.query.filter")
+        self.assertEqual(query_mapping.model_id.model, "compassion.query.filter")
         json_specs = query_mapping.json_spec_ids
         # The field mapping should be a relational field mapping
         field_mapping = json_specs.filtered("relational_field_id")
-        self.assertEquals(field_mapping.field_name, "id")
-        self.assertEquals(field_mapping.relational_field_id.name, "field_id")
-        self.assertEquals(field_mapping.json_name, "Field")
+        self.assertEqual(field_mapping.field_name, "id")
+        self.assertEqual(field_mapping.relational_field_id.name, "field_id")
+        self.assertEqual(field_mapping.json_name, "Field")
 
     def test_json_mapping_loader(self):
         path = "message_center_compassion/static/mappings/"

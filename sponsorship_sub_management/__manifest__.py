@@ -35,9 +35,7 @@
     "maintainers": ["ecino", "NoeBerdoz"],
     "license": "AGPL-3",
     "website": "https://www.compassion.ch",
-    "depends": [
-        "sponsorship_compassion"
-    ],
+    "depends": ["sponsorship_compassion"],
     "data": [
         "views/sub_sponsorship_wizard_view.xml",
         "views/contract_view.xml",

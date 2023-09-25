@@ -10,7 +10,7 @@
 import html
 import logging
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ PAGE_SEPARATOR = "#PAGE#"
 
 
 class CorrespondencePage(models.Model):
-    """ This class defines a page used for in sponsorship correspondence"""
+    """This class defines a page used for in sponsorship correspondence"""
 
     _inherit = "compassion.mapped.model"
     _name = "correspondence.page"
@@ -57,10 +57,14 @@ class CorrespondencePage(models.Model):
     def sync_text_from_paragraphs(self):
         _fields = ["original_text", "english_text", "translated_text"]
         for page in self:
-            page.write({
-                field: BOX_SEPARATOR.join(page.mapped("paragraph_ids").mapped(field))
-                for field in _fields
-            })
+            page.write(
+                {
+                    field: BOX_SEPARATOR.join(
+                        page.mapped("paragraph_ids").mapped(field)
+                    )
+                    for field in _fields
+                }
+            )
         return True
 
     @api.model

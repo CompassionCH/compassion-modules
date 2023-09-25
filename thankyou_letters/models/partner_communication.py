@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class CommunicationDefaults(models.AbstractModel):

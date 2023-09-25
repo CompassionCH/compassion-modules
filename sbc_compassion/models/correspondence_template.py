@@ -15,14 +15,14 @@ import os.path
 import subprocess
 import tempfile
 
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
 
 class Style:
-    """ Defines a few colors for drawing on the result picture
+    """Defines a few colors for drawing on the result picture
     (names from wikipedia).
     The color order is BGR"""
 
@@ -36,7 +36,7 @@ class Style:
 
 
 class CorrespondenceTemplate(models.Model):
-    """ This class defines a template used for Supporter Letters and holds
+    """This class defines a template used for Supporter Letters and holds
     all information relative to position of metadata in the Template, like for
     instance where the QR Code is supposed to be, where the language
     checkboxes will be found, where the pattern will be, etc...
@@ -52,7 +52,12 @@ class CorrespondenceTemplate(models.Model):
     ##########################################################################
     name = fields.Char(required=True, translate=True)
     type = fields.Selection(
-        [("s2b", "S2B Template"), ("b2s", "B2S Layout"), ], required=True, default="s2b"
+        [
+            ("s2b", "S2B Template"),
+            ("b2s", "B2S Layout"),
+        ],
+        required=True,
+        default="s2b",
     )
     active = fields.Boolean(default=True)
     layout = fields.Selection(
@@ -81,7 +86,7 @@ class CorrespondenceTemplate(models.Model):
         "correspondence.template.page",
         "Additional page",
         help="Template used in case the S2B text is too long to fit on the "
-             "standard two-sided page.",
+        "standard two-sided page.",
         readonly=False,
     )
 
@@ -121,51 +126,20 @@ class CorrespondenceTemplate(models.Model):
         """
         self.ensure_one()
 
+        # Images stored on disk for FPDF processing. We keep them in these lists
+        # to make sure we properly remove the files at the end of the process.
         temp_img = []
-        temp_header = []
-        temp_text = []
+
         if background_list is None:
             background_list = []
         overflow_template = False
 
         pages = self.mapped("page_ids") - self.additional_page_id
-        template_list = []
+        template_list, header_data, image_boxes = self._generate_template_list(
+            pages, header, background_list, temp_img
+        )
         image_list = []
-        page_count = 0
-        for i, page in enumerate(pages):
-            page_count += 1
-            header_index = i % 2
-            try:
-                background = background_list[i]
-            except (TypeError, IndexError):
-                background = page.background
-            if background:
-                temp_img.append(
-                    tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
-                )
-                temp_img[-1].write(base64.b64decode(background))
-                temp_img[-1].flush()
-                background_file = temp_img[-1].name
-            else:
-                background_file = False
-            header_data = []
-            page_header = page.header_box_id
-            if page_header and len(header) >= header_index:
-                header_file = tempfile.NamedTemporaryFile(
-                    "w", prefix="header_", suffix=".txt"
-                )
-                header_file.write(header[header_index])
-                header_file.flush()
-                header_data = [header_file.name]
-                header_data.extend(page_header.get_json_repr())
-                temp_header.append(header_file)
-            text_list = []
-            for text_box in page.text_box_ids:
-                text_list.append(text_box.get_json_repr())
-            image_boxes = []
-            for image_box in page.image_box_ids:
-                image_boxes.append(image_box.get_json_repr())
-            template_list.append([background_file, header_data, text_list, image_boxes])
+
         if background_list:
             # An original document is provided. We want
             # to complete the PDF document with the remaining pages
@@ -205,12 +179,12 @@ class CorrespondenceTemplate(models.Model):
         text_list = []
         for t_type, t_boxes in list(text.items()):
             for txt in t_boxes:
-                temp_text.append(
+                temp_img.append(
                     tempfile.NamedTemporaryFile("w", prefix=t_type + "_", suffix=".txt")
                 )
-                temp_text[-1].write(txt)
-                temp_text[-1].flush()
-                text_list.append([temp_text[-1].name, t_type])
+                temp_img[-1].write(txt)
+                temp_img[-1].flush()
+                text_list.append([temp_img[-1].name, t_type])
 
         for image in image_data:
             ifile = tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
@@ -252,10 +226,6 @@ class CorrespondenceTemplate(models.Model):
         # Clean temp files
         for img in temp_img:
             img.close()
-        for h in temp_header:
-            h.close()
-        for t in temp_text:
-            t.close()
         std_err_file.close()
 
         # Read and return output
@@ -279,3 +249,41 @@ class CorrespondenceTemplate(models.Model):
         if folder == "":
             return os.path.join(self._absolute_path, filename)
         return os.path.join(self._absolute_path, folder + "/" + filename)
+
+    def _generate_template_list(self, pages, header, background_list, temp_img):
+        """Generate a list of template pages to be used by the PHP script"""
+        template_list = []
+        for page_index, page in enumerate(pages):
+            header_index = page_index % 2
+            try:
+                background = background_list[page_index]
+            except (TypeError, IndexError):
+                background = page.background
+            if background:
+                temp_img.append(
+                    tempfile.NamedTemporaryFile(prefix="img_", suffix=".jpg")
+                )
+                temp_img[-1].write(base64.b64decode(background))
+                temp_img[-1].flush()
+                background_file = temp_img[-1].name
+            else:
+                background_file = False
+            header_data = []
+            page_header = page.header_box_id
+            if page_header and len(header) >= header_index:
+                header_file = tempfile.NamedTemporaryFile(
+                    "w", prefix="header_", suffix=".txt"
+                )
+                header_file.write(header[header_index])
+                header_file.flush()
+                header_data = [header_file.name]
+                header_data.extend(page_header.get_json_repr())
+                temp_img.append(header_file)
+            text_list = []
+            for text_box in page.text_box_ids:
+                text_list.append(text_box.get_json_repr())
+            image_boxes = []
+            for image_box in page.image_box_ids:
+                image_boxes.append(image_box.get_json_repr())
+            template_list.append([background_file, header_data, text_list, image_boxes])
+        return template_list, header_data, image_boxes

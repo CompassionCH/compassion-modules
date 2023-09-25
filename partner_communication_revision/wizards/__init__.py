@@ -8,9 +8,11 @@
 #
 ##############################################################################
 
-from . import revision_preview
-from . import install_revisions
-from . import new_proposition_wizard
-from . import validate_revision_wizard
-from . import cancel_revision_wizard
-from . import submit_revision_wizard
+from . import (
+    cancel_revision_wizard,
+    install_revisions,
+    new_proposition_wizard,
+    revision_preview,
+    submit_revision_wizard,
+    validate_revision_wizard,
+)

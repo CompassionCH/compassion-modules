@@ -39,7 +39,13 @@
         "message_center_compassion",
         "advanced_translation",
     ],
-    "external_dependencies": {"python": ["pyquery", "pytz", "timezonefinder", ]},
+    "external_dependencies": {
+        "python": [
+            "pyquery",
+            "pytz",
+            "timezonefinder",
+        ]
+    },
     "data": [
         "security/sponsorship_groups.xml",
         "security/ir.model.access.csv",

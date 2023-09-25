@@ -7,20 +7,22 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import partner_compassion
-from . import correspondence_metadata
-from . import correspondence
-from . import correspondence_page
-from . import correspondence_paragraph
-from . import correspondence_template_page
-from . import correspondence_template
-from . import import_config
-from . import import_letters_history
-from . import import_letter_line
-from . import contracts
-from . import correspondence_positioned_objects
-from . import project_compassion
-from . import correspondence_s2b_generator
-from . import last_writing_report
-from . import field_to_json
-from . import contracts_report
+from . import correspondence_metadata  # isort:skip
+from . import (
+    contracts,
+    contracts_report,
+    correspondence,
+    correspondence_page,
+    correspondence_paragraph,
+    correspondence_positioned_objects,
+    correspondence_s2b_generator,
+    correspondence_template,
+    correspondence_template_page,
+    field_to_json,
+    import_config,
+    import_letter_line,
+    import_letters_history,
+    last_writing_report,
+    partner_compassion,
+    project_compassion,
+)

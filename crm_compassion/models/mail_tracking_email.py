@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import fields, models
 
 
 # Adds a few indexes for performance of interaction resume

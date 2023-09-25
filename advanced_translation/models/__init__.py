@@ -1,6 +1,8 @@
-from . import ir_advanced_translation
-from . import langdetect
-from . import ocr
-from . import lang_compassion
-from . import translatable_model
-from . import res_partner_test
+from . import (
+    ir_advanced_translation,
+    lang_compassion,
+    langdetect,
+    ocr,
+    res_partner_test,
+    translatable_model,
+)

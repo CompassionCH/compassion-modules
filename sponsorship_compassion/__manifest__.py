@@ -76,7 +76,9 @@
         "views/product_views.xml",
         "views/res_config_settings_view.xml",
     ],
-    "demo": ["demo/demo_data.xml", ],
+    "demo": [
+        "demo/demo_data.xml",
+    ],
     "installable": True,
     "auto_install": False,
     "development_status": "Stable",

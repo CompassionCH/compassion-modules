@@ -1,16 +1,19 @@
-.openerp .oe_bank_statement_reconciliation .oe_bank_statement_reconciliation_line .partner_name {
-    cursor: pointer;
+.openerp
+  .oe_bank_statement_reconciliation
+  .oe_bank_statement_reconciliation_line
+  .partner_name {
+  cursor: pointer;
 }
 
 .popover {
-    max-width: 600px;
-    width: 60%;
+  max-width: 600px;
+  width: 60%;
 }
 
 .o_reconciliation {
-    .o_reconciliation_line {
-        &[data-mode="create"] > .create {
-            max-height: 300px;
-        }
+  .o_reconciliation_line {
+    &[data-mode="create"] > .create {
+      max-height: 300px;
     }
+  }
 }

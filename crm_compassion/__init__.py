@@ -8,7 +8,5 @@
 #
 ##############################################################################
 
-from . import models
-from . import wizards
-
+from . import models, wizards
 from .hooks import pre_init_hook

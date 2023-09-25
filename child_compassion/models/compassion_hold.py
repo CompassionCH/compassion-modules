@@ -12,14 +12,14 @@ from datetime import datetime, timedelta
 from enum import Enum
 from functools import reduce
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
 
 
 class HoldType(Enum):
-    """ Defines available Hold Types. """
+    """Defines available Hold Types."""
 
     CHANGE_COMMITMENT_HOLD = "Change Commitment Hold"
     CONSIGNMENT_HOLD = "Consignment Hold"
@@ -37,7 +37,7 @@ class HoldType(Enum):
 
     @staticmethod
     def from_string(hold_type):
-        """ Gets the HoldType given its string representation. """
+        """Gets the HoldType given its string representation."""
         for etype in HoldType:
             if etype.value == hold_type:
                 return etype
@@ -45,7 +45,7 @@ class HoldType(Enum):
 
 
 class AbstractHold(models.AbstractModel):
-    """ Defines the basics of each model that must set up hold values. """
+    """Defines the basics of each model that must set up hold values."""
 
     _name = "compassion.abstract.hold"
     _description = "Compassion Abstract Hold"
@@ -115,7 +115,7 @@ class AbstractHold(models.AbstractModel):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def get_fields(self):
-        """ Returns the fields for which we want to know the value. """
+        """Returns the fields for which we want to know the value."""
         return [
             "type",
             "expiration_date",
@@ -130,8 +130,8 @@ class AbstractHold(models.AbstractModel):
         ]
 
     def get_hold_values(self):
-        """ Get the field values of one record.
-            :return: Dictionary of values for the fields
+        """Get the field values of one record.
+        :return: Dictionary of values for the fields
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
@@ -179,11 +179,12 @@ class CompassionHold(models.Model):
     primary_owner = fields.Many2one(tracking=True, readonly=False)
     type = fields.Selection(tracking=True, index=True)
     channel = fields.Selection(tracking=True)
-    expiration_date = fields.Datetime(tracking=True,
-                                      required=False,
-                                      default=datetime.now() + timedelta(days=60),
-                                      index=True
-                                      )
+    expiration_date = fields.Datetime(
+        tracking=True,
+        required=False,
+        default=datetime.now() + timedelta(days=60),
+        index=True,
+    )
 
     _sql_constraints = [
         ("hold_id", "unique(hold_id)", "The hold already exists in database."),
@@ -205,10 +206,9 @@ class CompassionHold(models.Model):
 
     def write(self, vals):
         if "expiration_date" in vals and self.filtered(
-                lambda h: h.expiration_date < datetime.now()):
-            raise UserError(_(
-                "Sorry, the child is no longer available."
-            ))
+            lambda h: h.expiration_date < datetime.now()
+        ):
+            raise UserError(_("Sorry, the child is no longer available."))
 
         res = super().write(vals)
         notify_vals = ["primary_owner", "type", "expiration_date"]
@@ -224,7 +224,9 @@ class CompassionHold(models.Model):
         a child anymore (child released).
         :return: True
         """
-        active_holds = self.filtered(lambda h: h.state == "active" and h.expiration_date > datetime.now())
+        active_holds = self.filtered(
+            lambda h: h.state == "active" and h.expiration_date > datetime.now()
+        )
         active_holds.release_hold()
         inactive_holds = self - active_holds
         super(CompassionHold, inactive_holds).unlink()
@@ -250,7 +252,7 @@ class CompassionHold(models.Model):
             raise UserError("\n\n".join(failed.mapped("failure_reason")))
 
     def hold_sent(self, vals):
-        """ Called when hold is sent to Connect. """
+        """Called when hold is sent to Connect."""
         self.write(vals)
         # update compassion children with hold_id received
         for hold in self:
@@ -260,7 +262,10 @@ class CompassionHold(models.Model):
                 old_hold = child_to_update.hold_id
                 if not old_hold:
                     child_to_update.child_consigned(hold.id)
-                elif old_hold.hold_id != hold.hold_id and old_hold.expiration_date < datetime.now():
+                elif (
+                    old_hold.hold_id != hold.hold_id
+                    and old_hold.expiration_date < datetime.now()
+                ):
                     child_to_update.hold_id = hold
                     old_hold.unlink()
             else:
@@ -270,7 +275,7 @@ class CompassionHold(models.Model):
 
     @api.model
     def reinstatement_notification(self, commkit_data):
-        """ Called when a child was Reinstated. """
+        """Called when a child was Reinstated."""
         # Reinstatement holds are available for 90 days (Connect default)
         in_90_days = datetime.now() + timedelta(days=90)
 
@@ -287,7 +292,7 @@ class CompassionHold(models.Model):
                 "expiration_date": in_90_days,
                 "state": "active",
                 "comments": "Child was reinstated! Be sure to propose it to its "
-                            "previous sponsor.",
+                "previous sponsor.",
             }
         )
         hold = self.create(vals)
@@ -307,14 +312,12 @@ class CompassionHold(models.Model):
         return [hold.id]
 
     def reservation_to_hold(self, commkit_data):
-        """ Called when a reservation gots converted to a hold. """
+        """Called when a reservation gots converted to a hold."""
         hold_data = commkit_data.get("ReservationConvertedToHoldNotification")
         child_global_id = hold_data and hold_data.get("Beneficiary_GlobalID")
         if child_global_id:
             child = self.env["compassion.child"].create({"global_id": child_global_id})
-            hold = self.env["compassion.hold"].create(
-                self.json_to_data(hold_data)
-            )
+            hold = self.env["compassion.hold"].create(self.json_to_data(hold_data))
             hold.write(
                 {
                     "state": "active",
@@ -327,8 +330,8 @@ class CompassionHold(models.Model):
             reservation_state = "active"
             number_reserved = reservation.number_reserved + 1
             if (
-                    number_reserved == reservation.number_of_beneficiaries
-                    or reservation.reservation_type == "child"
+                number_reserved == reservation.number_of_beneficiaries
+                or reservation.reservation_type == "child"
             ):
                 reservation_state = "expired"
             reservation.write(
@@ -367,7 +370,7 @@ class CompassionHold(models.Model):
         try:
             messages.process_messages()
             self.hold_released()
-        except:
+        except Exception:
             self.env.clear()
             messages.env.clear()
             logger.error("Some holds couldn't be released.")
@@ -378,7 +381,7 @@ class CompassionHold(models.Model):
         return True
 
     def hold_released(self, vals=None):
-        """ Called when release message was successfully sent to GMC. """
+        """Called when release message was successfully sent to GMC."""
         self.write({"state": "expired"})
         self.mapped("child_id").child_released()
         return True
@@ -418,8 +421,10 @@ class CompassionHold(models.Model):
 
         # avoid realising a hold (and related child) that has already been released
         if hold and hold.state == "expired":
-            logger.warning("Received Participant Hold Removal order from GMC for"
-                           "already expired hold.")
+            logger.warning(
+                "Received Participant Hold Removal order from GMC for"
+                "already expired hold."
+            )
             return hold.ids
 
         if not hold:

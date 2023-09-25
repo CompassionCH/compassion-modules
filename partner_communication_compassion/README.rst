@@ -12,7 +12,7 @@ Compassion Partner Communications
     :target: https://github.com/compassionCH/compassion-switzerland/tree/11.0/partner_communication_switzerland
     :alt: compassionCH/compassion-switzerland
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module adds all Sponsorship communications for Compassion.
 

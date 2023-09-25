@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ProductTemplate(models.Model):
@@ -24,7 +24,7 @@ class ProductTemplate(models.Model):
     requires_thankyou = fields.Boolean(
         "Enable thank you letter",
         help="Set to true to enable thank you letters when invoice line "
-             "with this product is reconciled.",
+        "with this product is reconciled.",
         default=True,
     )
     success_story_id = fields.Many2one(

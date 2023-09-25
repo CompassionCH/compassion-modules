@@ -8,5 +8,4 @@
 #
 ##############################################################################
 
-from . import reconcile_fund_wizard
-from . import change_attribution_wizard
+from . import change_attribution_wizard, reconcile_fund_wizard

@@ -1,23 +1,25 @@
-from . import global_child
-from . import child_compassion
-from . import child_pictures
-from . import field_office
-from . import project_compassion
-from . import child_property
-from . import child_assessment
-from . import child_lifecycle_event
-from . import household
-from . import fcp_property
-from . import fcp_covid_status_update
-from . import project_lifecycle_event
-from . import global_partner
-from . import compassion_hold
-from . import gmc_message
-from . import compassion_reservation
-from . import major_revision
-from . import field_office_disaster
-from . import child_note
-from . import demand_planning
-from . import weekly_demand
-from . import field_office_learning
-from . import compassion_mapped_model
+from . import global_child  # isort:skip
+from . import (
+    child_assessment,
+    child_compassion,
+    child_lifecycle_event,
+    child_note,
+    child_pictures,
+    child_property,
+    compassion_hold,
+    compassion_mapped_model,
+    compassion_reservation,
+    demand_planning,
+    fcp_covid_status_update,
+    fcp_property,
+    field_office,
+    field_office_disaster,
+    field_office_learning,
+    global_partner,
+    gmc_message,
+    household,
+    major_revision,
+    project_compassion,
+    project_lifecycle_event,
+    weekly_demand,
+)

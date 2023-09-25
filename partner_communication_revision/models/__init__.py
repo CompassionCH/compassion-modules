@@ -8,7 +8,9 @@
 #
 ##############################################################################
 
-from . import communication_revision
-from . import communication_config
-from . import communication_keyword
-from . import communication_revision_history
+from . import (
+    communication_config,
+    communication_keyword,
+    communication_revision,
+    communication_revision_history,
+)

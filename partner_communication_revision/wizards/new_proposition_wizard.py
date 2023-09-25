@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -59,7 +59,7 @@ class NewRevisionProposition(models.TransientModel):
             "res_id": master.id,
             "context": self.with_context(
                 form_view_ref="partner_communication_revision."
-                              "revision_form_proposition"
+                "revision_form_proposition"
             ).env.context,
             "target": "current",
         }

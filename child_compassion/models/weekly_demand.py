@@ -9,7 +9,7 @@
 ##############################################################################
 from datetime import datetime, timedelta
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class WeeklyDemand(models.Model):
@@ -48,23 +48,23 @@ class WeeklyDemand(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def get_values(self):
-        """ Returns the values of a given week. """
+        """Returns the values of a given week."""
         self.ensure_one()
         return self.read(
             ["week_start_date", "week_end_date", "total_demand", "total_resupply"]
         )[0]
 
     def get_defaults(self):
-        """ Returns the computation defaults in a dictionary. """
+        """Returns the computation defaults in a dictionary."""
         demand = (
             self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("child_compassion.default_demand", 0)
+            .sudo()
+            .get_param("child_compassion.default_demand", 0)
         )
         resupply = (
             self.env["ir.config_parameter"]
-                .sudo()
-                .get_param("child_compassion.default_resupply", 0)
+            .sudo()
+            .get_param("child_compassion.default_resupply", 0)
         )
         return {
             "total_demand": demand,

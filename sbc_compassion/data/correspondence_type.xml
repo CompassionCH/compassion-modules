@@ -4,31 +4,31 @@
         <record id="correspondence_type_bene" model="correspondence.type">
             <field name="name">Beneficiary Initiated Letter</field>
         </record>
-        
+
         <record id="correspondence_type_final" model="correspondence.type">
             <field name="name">Final Letter</field>
         </record>
-        
+
         <record id="correspondence_type_large_gift" model="correspondence.type">
             <field name="name">Large Gift Thank You Letter</field>
         </record>
-        
+
         <record id="correspondence_type_new_sponsor" model="correspondence.type">
             <field name="name">New Sponsor Letter</field>
         </record>
-        
+
         <record id="correspondence_type_reciprocal" model="correspondence.type">
             <field name="name">Reciprocal Letter</field>
         </record>
-        
+
         <record id="correspondence_type_scheduled" model="correspondence.type">
             <field name="name">Scheduled Letter</field>
         </record>
-        
+
         <record id="correspondence_type_small_gift" model="correspondence.type">
             <field name="name">Small Gift Thank You Letter</field>
         </record>
-        
+
         <record id="correspondence_type_supporter" model="correspondence.type">
             <field name="name">Supporter Letter</field>
         </record>

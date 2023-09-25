@@ -47,7 +47,7 @@ class IrHTTP(models.AbstractModel):
         # We iterate over the various certificates provider
         found_right_certificate = False
         jwt_decoded = None
-        for one_cert_url in cert_url.split(','):
+        for one_cert_url in cert_url.split(","):
             one_cert_url = one_cert_url.strip()
             access_token = None
 
@@ -67,13 +67,17 @@ class IrHTTP(models.AbstractModel):
                 try:
                     public_key = jwk.RSAJWK.from_dict(key_json)
                     jwt_decoded = JWT().decode(
-                        access_token, key=public_key, algorithms={"RS256"}, do_verify=True
+                        access_token,
+                        key=public_key,
+                        algorithms={"RS256"},
+                        do_verify=True,
                     )
                 except JWTDecodeError:
                     continue
 
-                # If we did not encounter an error before, it means the certificate allowed to correctly decode the
-                # access token so we hopefully found a matching certificate
+                # If we did not encounter an error before, it means the certificate
+                # allowed to correctly decode the access token so we hopefully found
+                # a matching certificate
                 if jwt_decoded:
                     found_right_certificate = True
                     break

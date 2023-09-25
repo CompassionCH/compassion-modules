@@ -9,7 +9,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, api
+from odoo import fields, models
 
 
 # For more readability we have split "res.partner" by functionality
@@ -34,8 +34,8 @@ class PartnerSponsorshipReport(models.Model):
         "Number of sponsorship",
         compute="_compute_sr_sponsorship",
         help="Count only the sponsorships who "
-             "are fully managed or those who are "
-             "paid (not the correspondent).",
+        "are fully managed or those who are "
+        "paid (not the correspondent).",
     )
 
     sr_nb_boy = fields.Integer("Number of boys", compute="_compute_boy")
@@ -50,7 +50,9 @@ class PartnerSponsorshipReport(models.Model):
     sr_nb_medic_check = fields.Integer(
         "Number of given medical checks", compute="_compute_medic_check"
     )
-    sr_total_donation = fields.Monetary("Total donations", compute="_compute_total_donation")
+    sr_total_donation = fields.Monetary(
+        "Total donations", compute="_compute_total_donation"
+    )
     sr_total_gift = fields.Integer("Gift", compute="_compute_total_gift")
 
     def _compute_related_sponsorship(self):
@@ -112,7 +114,9 @@ class PartnerSponsorshipReport(models.Model):
 
         for partner in self:
             total_meal = sum(
-                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(get_nb_meal)
+                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(
+                    get_nb_meal
+                )
             )
             partner.sr_nb_meal = total_meal
 
@@ -124,13 +128,17 @@ class PartnerSponsorshipReport(models.Model):
 
         for partner in self:
             total_check = sum(
-                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(get_nb_check)
+                partner.related_sponsorships.filtered("gmc_commitment_id").mapped(
+                    get_nb_check
+                )
             )
             partner.sr_nb_medic_check = total_check
 
     def _compute_nb_bible(self):
         for partner in self:
-            total_bible = len(partner.related_sponsorships.filtered("gmc_commitment_id"))
+            total_bible = len(
+                partner.related_sponsorships.filtered("gmc_commitment_id")
+            )
             partner.sr_nb_bible = total_bible
 
     def _compute_total_donation(self):
@@ -204,7 +212,7 @@ class PartnerSponsorshipReport(models.Model):
             "context": self.with_context(
                 search_default_group_product=1,
                 tree_view_ref="sponsorship_compassion"
-                              ".view_invoice_line_partner_tree ",
+                ".view_invoice_line_partner_tree ",
             ).env.context,
             "domain": [
                 "|",

@@ -9,7 +9,9 @@
 ##############################################################################
 import logging
 
-from odoo.addons.recurring_contract.tests.test_recurring_contract import BaseContractTest
+from odoo.addons.recurring_contract.tests.test_recurring_contract import (
+    BaseContractTest,
+)
 
 logger = logging.getLogger(__name__)
 

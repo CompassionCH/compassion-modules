@@ -8,5 +8,4 @@
 #
 ##############################################################################
 
-from . import contracts
-from . import sds_sub_followers
+from . import contracts, sds_sub_followers

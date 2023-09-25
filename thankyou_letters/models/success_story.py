@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class SuccessStory(models.Model):
     )
     only_when_chosen = fields.Boolean(
         help="Set this to use the story only for given products or when "
-             "manually chosen. The story won't be used automatically."
+        "manually chosen. The story won't be used automatically."
     )
     print_count = fields.Integer(copy=False)
     current_usage_count = fields.Integer(compute="_compute_current_usage")
@@ -84,7 +84,10 @@ class SuccessStory(models.Model):
     def validity_cron(self):
         today = fields.Date.today()
         active_stories = self.search(
-            [("is_active", "=", True), ("type", "=", "story"), ]
+            [
+                ("is_active", "=", True),
+                ("type", "=", "story"),
+            ]
         )
         current_stories = self.search(
             [

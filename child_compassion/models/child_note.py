@@ -9,11 +9,11 @@
 ##############################################################################
 
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 
 class ChildNote(models.Model):
-    """ A child Note """
+    """A child Note"""
 
     _name = "compassion.child.note"
     _description = "Child Note"

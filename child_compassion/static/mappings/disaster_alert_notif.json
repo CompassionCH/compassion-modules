@@ -3,8 +3,8 @@
   "model": "fo.disaster.alert",
   "mapping": {
     "Disaster_ID": "disaster_id",
-    "DisasterCommunicationUpdate_Name" : "disaster_communication_update_name",
+    "DisasterCommunicationUpdate_Name": "disaster_communication_update_name",
     "API_URL": "api_url",
-    "Created_Date" : "disaster_date"
+    "Created_Date": "disaster_date"
   }
 }

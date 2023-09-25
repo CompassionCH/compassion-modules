@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class ThankYouConfig(models.Model):
@@ -24,8 +24,10 @@ class ThankYouConfig(models.Model):
         "get_need_call",
         help="Indicates we should have a personal contact with the partner",
     )
-    lang = fields.Selection("_get_lang",
-                            help="If specified will only be used with partners that have the same language.")
+    lang = fields.Selection(
+        "_get_lang",
+        help="If specified will only be used with partners that have the same language.",
+    )
     user_id = fields.Many2one("res.users", string="Thanker", readonly=False)
 
     def for_donation(self, invoice_lines):
@@ -40,8 +42,9 @@ class ThankYouConfig(models.Model):
         # donation amount.
 
         filtered_config = self.filtered(
-            lambda x: x.lang is False or
-            invoice_lines.mapped("partner_id").lang == x.lang)
+            lambda x: x.lang is False
+            or invoice_lines.mapped("partner_id").lang == x.lang
+        )
 
         config = filtered_config[0]
         total_amount = sum(invoice_lines.mapped("price_subtotal"))
@@ -57,7 +60,7 @@ class ThankYouConfig(models.Model):
         return self.env["partner.communication.config"].get_need_call()
 
     def build_inform_mode(self, partner, print_if_not_email=False):
-        """ Returns how the partner should be informed for the given
+        """Returns how the partner should be informed for the given
         thank you letter (digital, physical or False).
         It makes the product of the thank you preference and the partner
         :returns: send_mode (physical/digital/False), auto_mode (True/False)
@@ -72,4 +75,4 @@ class ThankYouConfig(models.Model):
     @api.model
     def _get_lang(self):
         langs = self.env["res.lang"].search([])
-        return [(l.code, l.name) for l in langs]
+        return [(lang.code, lang.name) for lang in langs]

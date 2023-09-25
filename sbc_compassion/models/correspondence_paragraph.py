@@ -7,10 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import html
 import logging
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +18,7 @@ PAGE_SEPARATOR = "#PAGE#"
 
 
 class CorrespondenceParagraph(models.Model):
-    """ This class defines a page used for in sponsorship correspondence"""
+    """This class defines a page used for in sponsorship correspondence"""
 
     _inherit = "compassion.mapped.model"
     _name = "correspondence.paragraph"

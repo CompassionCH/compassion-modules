@@ -38,7 +38,11 @@
         "partner_salutation",
         "account",
     ],
-    "external_dependencies": {"python": ["babel", ]},
+    "external_dependencies": {
+        "python": [
+            "babel",
+        ]
+    },
     "data": [
         "security/ir.model.access.csv",
         "report/donation_report.xml",

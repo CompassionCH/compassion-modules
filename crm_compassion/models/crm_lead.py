@@ -8,10 +8,11 @@
 #
 ##############################################################################
 
-from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
-
-from odoo import api, models, fields
 import datetime
+
+from odoo import api, fields, models
+
+from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
 
 
 class CrmLead(models.Model):

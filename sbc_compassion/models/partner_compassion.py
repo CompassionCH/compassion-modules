@@ -8,11 +8,11 @@
 #
 ##############################################################################
 
-from odoo import fields, models, api
+from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
-    """ Add correspondence preferences to Partners """
+    """Add correspondence preferences to Partners"""
 
     _inherit = "res.partner"
 
@@ -67,7 +67,7 @@ class ResPartner(models.Model):
         return super().create(vals)
 
     def open_letters(self):
-        """ Open the tree view correspondence of partner """
+        """Open the tree view correspondence of partner"""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
@@ -92,6 +92,5 @@ class ResPartner(models.Model):
     def anonymize(self, vals=None):
         # Delete correspondence
         self.spoken_lang_ids = False
-        self.env["correspondence"].search(
-            [("partner_id", "=", self.id)]).unlink()
+        self.env["correspondence"].search([("partner_id", "=", self.id)]).unlink()
         return super().anonymize(vals)

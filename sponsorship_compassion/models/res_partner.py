@@ -10,7 +10,8 @@
 import functools
 import random
 import string
-from odoo import api, fields, models, _
+
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from .contracts import SPONSORSHIP_TYPE_LIST
@@ -129,10 +130,16 @@ class ResPartner(models.Model):
                 + partner.contracts_paid
                 + partner.contracts_fully_managed
             )
-            partner.other_contract_ids = contract_obj.search([
-                ("partner_id", "=", partner.id),
-                ("type", "not in", SPONSORSHIP_TYPE_LIST)
-            ],order="start_date desc").ids or False
+            partner.other_contract_ids = (
+                contract_obj.search(
+                    [
+                        ("partner_id", "=", partner.id),
+                        ("type", "not in", SPONSORSHIP_TYPE_LIST),
+                    ],
+                    order="start_date desc",
+                ).ids
+                or False
+            )
 
     def _compute_count_items(self):
         move_line_obj = self.env["account.move.line"]

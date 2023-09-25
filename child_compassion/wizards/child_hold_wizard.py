@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, fields, _
+from odoo import _, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -45,18 +45,16 @@ class ChildHoldWizard(models.TransientModel):
         holds = self.env["compassion.hold"]
         child_search = (
             self.env["compassion.childpool.search"]
-                .browse(self.env.context.get("active_id"))
-                .global_child_ids
+            .browse(self.env.context.get("active_id"))
+            .global_child_ids
         )
         chunk_size = 10
         for i in range(0, len(child_search), chunk_size):
             _logger.debug(f"Processing chunk {i} for sending hold requests")
             messages = self.env["gmc.message"]
-            for child in child_search[i: i + chunk_size]:
+            for child in child_search[i : i + chunk_size]:
                 # Save children form global children to compassion children
-                child_comp = self.env["compassion.child"].create(
-                    child.get_child_vals()
-                )
+                child_comp = self.env["compassion.child"].create(child.get_child_vals())
 
                 # Create Holds for children to reserve
                 hold_vals = self.get_hold_values()
@@ -78,7 +76,7 @@ class ChildHoldWizard(models.TransientModel):
     #                             PRIVATE METHODS                            #
     ##########################################################################
     def _get_action(self, holds):
-        """ Returns the action after closing the wizard. """
+        """Returns the action after closing the wizard."""
         action = {
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",

@@ -10,15 +10,15 @@
 
 import logging
 
-from odoo import api, models, _, fields
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
 try:
     import regex as re
-    from pyquery import PyQuery
     from bs4 import BeautifulSoup
+    from pyquery import PyQuery
 except ImportError:
     _logger.warning("Please install python pyquery, regex and bs4")
 
@@ -139,7 +139,7 @@ class CommunicationRevision(models.Model):
         comodel_name="partner.communication.revision.history",
         string="Active version",
         domain="[('linked_revision_id.id', '=', id), "
-               "('linked_revision_id.lang', '=', lang)]",
+        "('linked_revision_id.lang', '=', lang)]",
     )
     is_old_version = fields.Boolean(compute="_compute_old_version")
 
@@ -176,7 +176,8 @@ class CommunicationRevision(models.Model):
                 lambda k: (
                     (revision.show_all_keywords and k.type in ("code", "var"))
                     or k.type == "code"
-                ) and (revision.show_all_keywords or k.is_visible)
+                )
+                and (revision.show_all_keywords or k.is_visible)
             )
             revision.if_keyword_ids = revision.keyword_ids.filtered(
                 lambda k: k.type == "if"
@@ -256,10 +257,12 @@ class CommunicationRevision(models.Model):
             # Change the revision (only one at a time is possible)
             self.ensure_one()
             if self.active_revision_id and not self.env.context.get(
-                    "skip_revision_backup"):
+                "skip_revision_backup"
+            ):
                 self.save_current_revision()
-            backup = self.env["partner.communication.revision.history"]\
-                .browse(vals["active_revision_id"])
+            backup = self.env["partner.communication.revision.history"].browse(
+                vals["active_revision_id"]
+            )
             if backup:
                 # Restore all fields from the backup
                 vals.update(backup.get_vals())
@@ -291,12 +294,14 @@ class CommunicationRevision(models.Model):
         Useful to just edit one language regardless of other translations
         """
         # Enable revision editing mode
-        self.write({
-            "state": "pending",
-            "user_id": self.env.uid,
-            "correction_user_id": False,
-            "is_master_version": False,
-        })
+        self.write(
+            {
+                "state": "pending",
+                "user_id": self.env.uid,
+                "correction_user_id": False,
+                "is_master_version": False,
+            }
+        )
         return True
 
     def edit_revision(self):
@@ -338,7 +343,7 @@ class CommunicationRevision(models.Model):
         return self._open_revision()
 
     def edit_proposition(self):
-        """ This is used to open the revision proposition text. """
+        """This is used to open the revision proposition text."""
         self.ensure_one()
         return self._open_revision(form_view_mode="proposition")
 
@@ -348,9 +353,11 @@ class CommunicationRevision(models.Model):
 
     def get_latest_revision(self):
         self.ensure_one()
-        return self.env["partner.communication.revision.history"].search([
-            ("linked_revision_id", "=", self.id)
-        ], order="revision_number desc", limit=1)
+        return self.env["partner.communication.revision.history"].search(
+            [("linked_revision_id", "=", self.id)],
+            order="revision_number desc",
+            limit=1,
+        )
 
     ##########################################################################
     #                             VIEW CALLBACKS                             #
@@ -361,7 +368,7 @@ class CommunicationRevision(models.Model):
         """
         text = PyQuery(self.simplified_text)
         for key in self.keyword_ids.filtered(
-                lambda k: k.type in ("if", "for", "for_ul")
+            lambda k: k.type in ("if", "for", "for_ul")
         ):
             text_selector = text("#" + key.html_id)
             current_text = text_selector.html()
@@ -403,10 +410,14 @@ class CommunicationRevision(models.Model):
                 context["working_text"] = self.proposition_correction
                 context["working_subject"] = self.subject_correction
         preview = (
-            self.env[preview_model].with_context(context).create({
-                "revision_id": self.id,
-                "state": "working_revision" if working_mode else "active_revision",
-            })
+            self.env[preview_model]
+            .with_context(context)
+            .create(
+                {
+                    "revision_id": self.id,
+                    "state": "working_revision" if working_mode else "active_revision",
+                }
+            )
         )
         preview.preview()
         return {
@@ -495,7 +506,7 @@ class CommunicationRevision(models.Model):
         )
 
     def cancel_approve(self):
-        """ Set back a text approved in revision mode. """
+        """Set back a text approved in revision mode."""
         return {
             "name": "Cancel proposition",
             "type": "ir.actions.act_window",
@@ -801,7 +812,7 @@ class CommunicationRevision(models.Model):
         return simple_text, found_keywords
 
     def _replace_for_type(
-            self, text, nested_position, keyword_number, for_type, for_pattern
+        self, text, nested_position, keyword_number, for_type, for_pattern
     ):
         simple_text = text
         keywords = self.env["partner.communication.keyword"]
@@ -883,21 +894,27 @@ class CommunicationRevision(models.Model):
 
     def _get_backup(self, revision_number):
         self.ensure_one()
-        return self.env["partner.communication.revision.history"].search([
-            ("revision_number", "=", revision_number),
-            ("linked_revision_id", "=", self.id),
-        ])
+        return self.env["partner.communication.revision.history"].search(
+            [
+                ("revision_number", "=", revision_number),
+                ("linked_revision_id", "=", self.id),
+            ]
+        )
 
     def _create_backup(self, backup_revision_number):
         self.ensure_one()
-        self.active_revision_id = self.env["partner.communication.revision.history"]\
-            .with_context(skip_revision_backup=True)\
-            .create({
-                "revision_number": backup_revision_number,
-                "revision_date": self.revision_date,
-                "subject": self.subject,
-                "body_html": self.body_html,
-                "linked_revision_id": self.id,
-                "proposition_text": self.proposition_text,
-                "raw_subject": self.raw_subject,
-            })
+        self.active_revision_id = (
+            self.env["partner.communication.revision.history"]
+            .with_context(skip_revision_backup=True)
+            .create(
+                {
+                    "revision_number": backup_revision_number,
+                    "revision_date": self.revision_date,
+                    "subject": self.subject,
+                    "body_html": self.body_html,
+                    "linked_revision_id": self.id,
+                    "proposition_text": self.proposition_text,
+                    "raw_subject": self.raw_subject,
+                }
+            )
+        )

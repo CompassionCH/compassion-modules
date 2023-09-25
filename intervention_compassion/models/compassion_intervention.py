@@ -11,7 +11,7 @@
 import logging
 import time
 
-from odoo import models, fields, _, api
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)

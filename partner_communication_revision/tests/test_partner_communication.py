@@ -23,7 +23,7 @@ class TestPartnerCommunicationRevision(TransactionCase):
         )
 
     def test_config_state(self):
-        """ The config state should only be active if all its revisions are """
+        """The config state should only be active if all its revisions are"""
         self.assertEqual(self.test_communication.state, "active")
 
         de_revision = self.env["partner.communication.revision"].create(
@@ -38,7 +38,7 @@ class TestPartnerCommunicationRevision(TransactionCase):
         self.assertEqual(self.test_communication.state, "pending")
 
     def test_install_revision(self):
-        """ Should not fail if applied once again"""
+        """Should not fail if applied once again"""
         self.env["partner.communication.revision.install"].install()
 
     def test_creating_keyword(self):

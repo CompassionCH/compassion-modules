@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, api, _
+from odoo import _, api, models
 from odoo.exceptions import UserError
 
 
@@ -40,7 +40,7 @@ class CompassionMappedModel(models.AbstractModel):
         for record in self:
             json = {}
             for json_spec in mapping.json_spec_ids.filtered(
-                    lambda jspec: not jspec.exclude_from_json
+                lambda jspec: not jspec.exclude_from_json
             ):
                 if json_spec.sub_mapping_id:
                     sub_record = record
@@ -94,13 +94,11 @@ class CompassionMappedModel(models.AbstractModel):
         for single_json in json:
             data = {}
             for json_spec in all_fields:
-                for attempt in range(10):  # try x attempts, avoid while loop
+                for _n in range(10):  # try x attempts, avoid while loop
                     json_value = single_json.get(json_spec.json_name)
                     if json_spec.sub_mapping_id and json_value:
                         # Convert data using sub_mapping
-                        sub_model = self.env[
-                            json_spec.sub_mapping_id.model_id.model
-                        ]
+                        sub_model = self.env[json_spec.sub_mapping_id.model_id.model]
                         sub_data = sub_model.json_to_data(
                             json_value, json_spec.sub_mapping_id.name
                         )

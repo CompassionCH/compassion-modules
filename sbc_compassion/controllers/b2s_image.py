@@ -9,15 +9,16 @@
 ##############################################################################
 import logging
 from datetime import datetime
-from zipfile import ZipFile
 from os import path, remove
+from zipfile import ZipFile
 
 from werkzeug.datastructures import Headers
 from werkzeug.exceptions import BadRequest, NotFound
 from werkzeug.wrappers import Response
 
-from odoo import http, fields
+from odoo import fields, http
 from odoo.http import request
+
 from odoo.addons.web.controllers.main import content_disposition
 
 _logger = logging.getLogger(__name__)
@@ -40,12 +41,18 @@ def _get_data(letter, file_type=None):
 
 def _get_child_correspondence(partner, child):
     sponsorship_ids = child.sponsorship_ids.filtered(
-        lambda contract: contract.correspondent_id == partner or
-        contract.partner_id == partner
+        lambda contract: contract.correspondent_id == partner
+        or contract.partner_id == partner
     )
-    return request.env["correspondence"].sudo().search([
-        ("sponsorship_id", "=", sponsorship_ids[0].id),
-    ])
+    return (
+        request.env["correspondence"]
+        .sudo()
+        .search(
+            [
+                ("sponsorship_id", "=", sponsorship_ids[0].id),
+            ]
+        )
+    )
 
 
 def _fill_archive(archive, letters, file_path=""):
@@ -66,7 +73,7 @@ class RestController(http.Controller):
     # We don't want to rename parameter id because it's used by our sponsors
     # pylint: disable=redefined-builtin
     def handler_b2s_image(self, id=None, disp=None, type=None, **parameters):
-        """ Handler for `/b2s_image` url for json data.
+        """Handler for `/b2s_image` url for json data.
 
         It accepts only Communication Kit Notifications.
 
@@ -85,8 +92,7 @@ class RestController(http.Controller):
             "zip" if correspondence.letter_format == "zip" else "pdf"
         )
         data, fname = _get_data(correspondence, type)
-        headers = Headers([("Content-Disposition",
-                            f"{disposition}; filename={fname}")])
+        headers = Headers([("Content-Disposition", f"{disposition}; filename={fname}")])
         return Response(data or "No data", content_type=content_type, headers=headers)
 
     @http.route("/b2s_image/child", type="http", auth="user", methods=["GET"])
@@ -101,11 +107,15 @@ class RestController(http.Controller):
                 _fill_archive(archive, letters)
         else:  # We want to download all children correspondence
             children = (
-                partner.contracts_fully_managed +
-                partner.contracts_correspondant +
-                partner.contracts_paid
-            ).mapped("child_id").sorted("preferred_name")
-            archive_name = f"children_correspondence.zip"
+                (
+                    partner.contracts_fully_managed
+                    + partner.contracts_correspondant
+                    + partner.contracts_paid
+                )
+                .mapped("child_id")
+                .sorted("preferred_name")
+            )
+            archive_name = "children_correspondence.zip"
             with ZipFile(archive_name, "w") as archive:
                 for child in children:
                     letters = _get_child_correspondence(partner, child)
@@ -119,8 +129,10 @@ class RestController(http.Controller):
 
         return request.make_response(
             zip_data,
-            [("Content-Type", "application/zip"),
-             ("Content-Disposition", content_disposition(archive_name))]
+            [
+                ("Content-Type", "application/zip"),
+                ("Content-Disposition", content_disposition(archive_name)),
+            ],
         )
 
     def _validate_headers(self, headers):

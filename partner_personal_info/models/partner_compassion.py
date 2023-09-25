@@ -15,9 +15,13 @@ from odoo import fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    uuid = fields.Char("Personal unique identifier",
-                       copy=False, index=True, readonly=True,
-                       default=uuid.uuid4)
+    uuid = fields.Char(
+        "Personal unique identifier",
+        copy=False,
+        index=True,
+        readonly=True,
+        default=uuid.uuid4,
+    )
 
     _sql_constraints = [
         ("uuid_uniq", "unique (uuid)", "The uuid must be unique."),

@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, api
+from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 

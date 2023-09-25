@@ -7,15 +7,14 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ChildHoldWizard(models.TransientModel):
     _inherit = "child.hold.wizard"
 
     return_action = fields.Selection(
-        selection_add=[("event", "Go back to event")],
-        ondelete={"event": "set default"}
+        selection_add=[("event", "Go back to event")], ondelete={"event": "set default"}
     )
 
     def _get_action(self, holds):

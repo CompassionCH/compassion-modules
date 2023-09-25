@@ -8,9 +8,11 @@
 #
 ##############################################################################
 
-from . import generate_gift_wizard
-from . import end_contract_wizard
-from . import child_hold_wizard
-from . import download_child_pictures
-from . import contract_activation_wizard
-from . import res_config_settings
+from . import (
+    child_hold_wizard,
+    contract_activation_wizard,
+    download_child_pictures,
+    end_contract_wizard,
+    generate_gift_wizard,
+    res_config_settings,
+)

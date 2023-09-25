@@ -8,15 +8,17 @@
 #
 ##############################################################################
 
-from . import product_names
-from . import account_move
-from . import account_move_line
-from . import child_compassion
-from . import contract_group
-from . import contract_origin
-from . import contracts
-from . import contracts_report
-from . import product
-from . import project_compassion
-from . import recurring_contract_line
-from . import res_partner
+from . import (
+    account_move,
+    account_move_line,
+    child_compassion,
+    contract_group,
+    contract_origin,
+    contracts,
+    contracts_report,
+    product,
+    product_names,
+    project_compassion,
+    recurring_contract_line,
+    res_partner,
+)

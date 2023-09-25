@@ -1,8 +1,10 @@
-from . import availability_settings
-from . import global_child_search
-from . import child_hold_wizard
-from . import child_description
-from . import project_description
-from . import print_childpack
-from . import staff_notification_settings
-from . import child_reservation_wizard
+from . import (
+    availability_settings,
+    child_description,
+    child_hold_wizard,
+    child_reservation_wizard,
+    global_child_search,
+    print_childpack,
+    project_description,
+    staff_notification_settings,
+)

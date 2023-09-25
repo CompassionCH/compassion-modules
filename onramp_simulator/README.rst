@@ -20,7 +20,7 @@ Compassion Onramp Simulator
     :target: https://translation.odoo-community.org/projects/compassion-modules-11-0/compassion-modules-11-0-onramp_simulator
     :alt: Translate me on Weblate
 
-|badge1| |badge2| |badge3| |badge4| 
+|badge1| |badge2| |badge3| |badge4|
 
 This module enables a user to send any message to any Compassion Onramp
 directly from a wizard, and view the returned result.

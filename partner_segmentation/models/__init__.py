@@ -7,8 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import partner_compassion
-from . import survey
-from . import survey_user_input
-from . import partner_segment
-from . import parter_segment_affinity
+from . import (
+    parter_segment_affinity,
+    partner_compassion,
+    partner_segment,
+    survey,
+    survey_user_input,
+)

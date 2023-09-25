@@ -23,35 +23,35 @@ class CompassionHold(models.Model):
         )
 
         # Check communications already pending and put them back to their state
-        first_reminders = self.env["partner.communication.job"].search([
-            ("config_id", "=", first_reminder_config.id),
-            ("state", "=", "pending")
-        ])
+        first_reminders = self.env["partner.communication.job"].search(
+            [("config_id", "=", first_reminder_config.id), ("state", "=", "pending")]
+        )
         if first_reminders:
             first_pending_holds = first_reminders.get_objects().mapped(
-                "child_id.hold_id")
+                "child_id.hold_id"
+            )
             (first_pending_holds & self).write({"no_money_extension": 0})
-        second_reminders = self.env["partner.communication.job"].search([
-            ("config_id", "=", second_reminder_config.id),
-            ("state", "=", "pending")
-        ])
+        second_reminders = self.env["partner.communication.job"].search(
+            [("config_id", "=", second_reminder_config.id), ("state", "=", "pending")]
+        )
         if second_reminders:
             second_pending_holds = second_reminders.get_objects().mapped(
-                "child_id.hold_id")
+                "child_id.hold_id"
+            )
             (second_pending_holds & self).write({"no_money_extension": 1})
-        third_reminders = self.env["partner.communication.job"].search([
-            ("config_id", "=", third_reminder_config.id),
-            ("state", "=", "pending")
-        ])
+        third_reminders = self.env["partner.communication.job"].search(
+            [("config_id", "=", third_reminder_config.id), ("state", "=", "pending")]
+        )
         if third_reminders:
             third_pending_holds = third_reminders.get_objects().mapped(
-                "child_id.hold_id")
+                "child_id.hold_id"
+            )
             (third_pending_holds & self).write({"no_money_extension": 2})
 
         # Generate reminders while postponing the hold expiration
-        failed += self.filtered(
-            lambda h: h.no_money_extension > 1
-        )._send_hold_reminder(third_reminder_config)
+        failed += self.filtered(lambda h: h.no_money_extension > 1)._send_hold_reminder(
+            third_reminder_config
+        )
         failed += self.filtered(
             lambda h: h.no_money_extension == 1
         )._send_hold_reminder(second_reminder_config)
@@ -78,7 +78,7 @@ class CompassionHold(models.Model):
                     "author_id": self.env.user.partner_id.id,
                     "recipient_ids": self.env.user.partner_id.id,
                     "body_html": "These holds should be urgently verified: <br/>"
-                                 "<br/>" + ", ".join(hold_string),
+                    "<br/>" + ", ".join(hold_string),
                 }
             ).send()
 
@@ -103,7 +103,7 @@ class CompassionHold(models.Model):
             # Filter draft sponsorships and where we wait for
             # the bank authorization
             if sponsorship.state == "draft" or (
-                    sponsorship.state == "mandate" and sponsor.bank_ids
+                sponsorship.state == "mandate" and sponsor.bank_ids
             ):
                 try:
                     previous_extension = hold.no_money_extension
@@ -111,7 +111,7 @@ class CompassionHold(models.Model):
                     if previous_extension < hold.no_money_extension:
                         hold.no_money_extension = previous_extension
                     continue
-                except:
+                except Exception:
                     failed += hold
                     continue
             try:
@@ -119,6 +119,6 @@ class CompassionHold(models.Model):
                     notification_text.format(sponsor.name, sponsor.ref)
                 )
                 sponsorship.send_communication(communication, correspondent=False)
-            except:
+            except Exception:
                 failed += hold
         return failed

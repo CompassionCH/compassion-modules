@@ -11,7 +11,7 @@ import re
 
 from pandas.tseries.offsets import BDay
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -52,7 +52,7 @@ class HolidayClosure(models.Model):
 </p>
 <p>
     Until then, we wish you happy holidays.
-</p>       
+</p>
 """
         )
 

@@ -10,7 +10,7 @@
 import logging
 import os
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 
 try:
     from pyquery import PyQuery
@@ -43,7 +43,7 @@ class ProjectDescription(models.TransientModel):
 
     @api.model
     def create(self, vals):
-        """ This will automatically generate all descriptions and save them
+        """This will automatically generate all descriptions and save them
         in the related child.
         """
         generator = super().create(vals)
@@ -63,7 +63,7 @@ class ProjectDescription(models.TransientModel):
         return {"en_US": "description_en"}
 
     def _generate_translation(self):
-        """ Generate project description. """
+        """Generate project description."""
         desc = PyQuery(HTML_TEMPLATE)
 
         # 1. Basic Information
@@ -72,12 +72,13 @@ class ProjectDescription(models.TransientModel):
 
         # Put country if not the same as National Office
         if (
-                project.country_id
-                and project.country_id != project.field_office_id.country_id
+            project.country_id
+            and project.country_id != project.field_office_id.country_id
         ):
-            desc(".project_country")[0].text = _(
-                "The project is located in %s, close to the border."
-            ) % project.country_id.name
+            desc(".project_country")[0].text = (
+                _("The project is located in %s, close to the border.")
+                % project.country_id.name
+            )
         else:
             desc("#project_country").remove()
 
@@ -188,7 +189,7 @@ class ProjectDescription(models.TransientModel):
         return desc.html()
 
     def _show_field(self, field, container, value):
-        """ Used to display a field in the description, or hide it
+        """Used to display a field in the description, or hide it
         if the value is not set.
         """
         if value:

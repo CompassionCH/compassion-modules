@@ -2,7 +2,7 @@
 #    @author: Stephane Eicher <seicher@compassion.ch>
 
 
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models
 
 
 class RequestCategory(models.Model):
@@ -39,7 +39,6 @@ class RequestCategory(models.Model):
                             )
                         )
 
-    
     def get_keys(self):
         keywords_list = []
         for record in self:

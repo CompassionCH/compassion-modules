@@ -11,7 +11,6 @@ import logging
 
 from odoo import api, fields, models
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -55,8 +54,7 @@ class ResPartner(models.Model):
         readonly=False,
     )
     survey_input_count = fields.Integer(
-        string="Survey number", compute="_compute_survey_input_count",
-        store=True
+        string="Survey number", compute="_compute_survey_input_count", store=True
     )
 
     @api.depends("segments_affinity_ids", "segments_affinity_ids.affinity")

@@ -8,16 +8,15 @@
 #
 ##############################################################################
 import logging
-
 from datetime import date, timedelta
 
-from odoo.addons.sponsorship_compassion.models.product_names import (
-    GIFT_PRODUCTS_REF,
-    GIFT_CATEGORY,
-)
-
-from odoo import fields, models, api, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+
+from odoo.addons.sponsorship_compassion.models.product_names import (
+    GIFT_CATEGORY,
+    GIFT_PRODUCTS_REF,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -210,7 +209,7 @@ class SponsorshipGift(models.Model):
             pay_dates = invoice_lines.filtered("last_payment").mapped(
                 "last_payment"
             ) or [False]
-            gift.date_partner_paid = fields.Date.to_string(max([d for d in pay_dates]))
+            gift.date_partner_paid = fields.Date.to_string(max(d for d in pay_dates))
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
@@ -448,13 +447,15 @@ class SponsorshipGift(models.Model):
             if this_amount < minimum_amount:
                 return (
                     False,
-                    f"""Gift amount is small than minimal amount, Gift amount: {round(this_amount, 2)}$, 
+                    f"""Gift amount is small than minimal amount, Gift amount:
+                    {round(this_amount, 2)}$,
                 Minimal amount :{round(minimum_amount, 2)}$. """,
                 )
             if this_amount > maximum_amount:
                 return (
                     False,
-                    f"""Gift amount is higher than maximum amount, Gift amount: {round(this_amount, 2)}$, 
+                    f"""Gift amount is higher than maximum amount, Gift amount:
+                    {round(this_amount, 2)}$,
                 Maximum amount :{round(maximum_amount, 2)}$. """,
                 )
 
@@ -490,9 +491,12 @@ class SponsorshipGift(models.Model):
                 if total_amount > (maximum_amount * threshold_rule.gift_frequency):
                     return (
                         False,
-                        f"""Yearly threshold exceed: total_amount: {round(total_amount)}$, Yearly threshold: 
-                                        {round(maximum_amount, 2)}*{round(threshold_rule.gift_frequency, 2)} 
-                                        = {round(maximum_amount * threshold_rule.gift_frequency, 2)}$ """,
+                        f"""Yearly threshold exceed: total_amount:
+                        {round(total_amount)}$, Yearly threshold:
+                        {round(maximum_amount, 2)}*{round(
+                            threshold_rule.gift_frequency, 2)}
+                        = {round(maximum_amount * threshold_rule.gift_frequency, 2)}$
+                        """,
                     )
 
         return True, ""
@@ -645,7 +649,8 @@ class SponsorshipGift(models.Model):
             data["payment_id"] = move.id
         else:
             _logger.warning(
-                "Please setup income, expense and analytic accounts for gifts if you want to track payments to GMC."
+                "Please setup income, expense and analytic accounts for gifts "
+                "if you want to track payments to GMC."
             )
         self.write(data)
 

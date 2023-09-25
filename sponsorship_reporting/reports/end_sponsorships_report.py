@@ -1,4 +1,4 @@
-from odoo import api, models, fields, tools, _
+from odoo import _, api, fields, models, tools
 
 
 class EndSponsorshipsMonthReport(models.Model):

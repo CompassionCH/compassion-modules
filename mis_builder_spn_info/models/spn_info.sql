@@ -1,8 +1,7 @@
 CREATE OR REPLACE VIEW mis_spn_info AS (
     SELECT row_number() OVER (ORDER BY a.date) AS id, a.*
     FROM (
-        SELECT 
---            CASE
+        SELECT--            CASE
 --                WHEN start_date::date < activation_date::date THEN start_date::date
 --                ELSE activation_date::date
 --            END AS date,
