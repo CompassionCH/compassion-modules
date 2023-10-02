@@ -30,6 +30,7 @@ SPONSORSHIP_TYPE_LIST = ["S", "SC", "SWP"]
 class SponsorshipContract(models.Model):
     _inherit = ["recurring.contract", "compassion.mapped.model"]
     _name = "recurring.contract"
+    # _order = "child_id"  # , id desc"
 
     ##########################################################################
     #                                 FIELDS                                 #
@@ -106,7 +107,7 @@ class SponsorshipContract(models.Model):
         "Sponsored child name", related="child_id.name", readonly=True
     )
     child_code = fields.Char(
-        "Sponsored child code", related="child_id.local_id", readonly=True
+        "Sponsored child code", related="child_id.local_id", readonly=True, store=True
     )
     is_active = fields.Boolean(
         "Contract Active",
