@@ -30,6 +30,7 @@ SPONSORSHIP_TYPE_LIST = ["S", "SC", "SWP"]
 class SponsorshipContract(models.Model):
     _inherit = ["recurring.contract", "compassion.mapped.model"]
     _name = "recurring.contract"
+    # _order = "child_id"  # , id desc"
 
     ##########################################################################
     #                                 FIELDS                                 #
