@@ -13,7 +13,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-i18next": "^7.9.1",
-    "react-scripts": "1.1.4",
+    "react-scripts": "5.0.1",
     "react-swipeable-views": "^0.12.15",
     "classnames": "latest"
   },
