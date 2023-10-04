@@ -227,7 +227,7 @@ class ResPartner(models.Model):
             'Family': unset,
         }
         for partner in self:
-            title = partner.with_context(lang='en_US').name
+            title = partner.with_context(lang='en_US').title.name
             partner.gmc_gender = title_mapping.get(title, unknown)
 
     ##########################################################################
