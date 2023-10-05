@@ -106,7 +106,7 @@ class SponsorshipContract(models.Model):
         "Sponsored child name", related="child_id.name", readonly=True
     )
     child_code = fields.Char(
-        "Sponsored child code", related="child_id.local_id", readonly=True
+        "Sponsored child code", related="child_id.local_id", readonly=True, store=True
     )
     is_active = fields.Boolean(
         "Contract Active",
