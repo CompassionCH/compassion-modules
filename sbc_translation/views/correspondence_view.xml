@@ -61,6 +61,7 @@
                         <group>
                             <field name="partner_id"/>
                             <field name="src_translation_lang_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
+                            <field name="scanned_date"/>
                             <field name="translate_date" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
                             <field name="translation_priority" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
                             <field name="letter_image"/>
