@@ -398,6 +398,26 @@ class ResPartner(models.Model):
         # referenced users are unlinked to avoid error when self.active is set to False
         self.user_ids.sudo().unlink()
 
+        # Delete message and mail history
+        self.message_ids.unlink()
+        self.env["mail.mail"].search([("recipient_ids", "=", self.id)]).unlink()
+        self.env["ir.attachment"].search(
+            [("res_model", "=", "res.partner"), ("res_id", "=", self.id)]
+        ).unlink()
+        self.bank_ids.unlink()
+        self.privacy_statement_ids.unlink()
+        self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
+            {"res_name": self.name}
+        )
+
+        # Delete all logs
+        # Use a subquery to get the mail_message IDs associated with self.id
+        mail_message_ids = self.env['mail.message'].search([('res_id', '=', self.id)]).ids
+        # Delete mail_tracking_value records where mail_message_id matches the IDs from the subquery
+        self.env['mail.tracking.value'].search([('mail_message_id', 'in', mail_message_ids)]).unlink()
+        # Now we are sure that all mail_message_ids have been deleted, we can delete the mail_message records
+        self.env['mail.message'].search([('res_id', '=', self.id)]).unlink()
+
         # Anonymize and delete partner data
         self.with_context(no_upsert=True).write(
             {
@@ -416,18 +436,17 @@ class ResPartner(models.Model):
                 "category_id": [(5, 0, 0)],
                 "comment": False,
                 "active": False,
+                "gender": False,
+                "title": False,
+                "zip": False,
+                "city": False,
+                "country_id": False,
+                "currency_id": False,
+                "gmc_gender": False,
+                "phone_sanitized": False,
+                "short_address": False,
+                "social_sec_nr": False,
             }
-        )
-        # Delete message and mail history
-        self.message_ids.unlink()
-        self.env["mail.mail"].search([("recipient_ids", "=", self.id)]).unlink()
-        self.env["ir.attachment"].search(
-            [("res_model", "=", "res.partner"), ("res_id", "=", self.id)]
-        ).unlink()
-        self.bank_ids.unlink()
-        self.privacy_statement_ids.unlink()
-        self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
-            {"res_name": self.name}
         )
         return True
 
