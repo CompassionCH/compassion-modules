@@ -13,7 +13,7 @@ class MisSpnInfo(models.Model):
     account_id = fields.Many2one(
         comodel_name="account.account", string="Account", readonly=True
     )
-    date = fields.Date()
+    date = fields.Date("Start Date", readonly=True)
     partner_id = fields.Many2one("res.partner", string="Partner", readonly=True)
     correspondent_id = fields.Many2one("res.partner", string="Partner", readonly=True)
     contract_id = fields.Many2one("recurring.contract", string="sponsorship", readonly=True)
@@ -36,6 +36,7 @@ class MisSpnInfo(models.Model):
     credit = fields.Float()
     sponsorship_line_id = fields.Integer()
     debit = fields.Float()
+    activation_date = fields.Date("Activation Date", readonly=True)
 
     def init(self):
         script = opj(os.path.dirname(__file__), "spn_info.sql")
