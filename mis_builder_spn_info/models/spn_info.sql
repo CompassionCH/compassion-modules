@@ -2,7 +2,10 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
     SELECT row_number() OVER (ORDER BY a.date) AS id, a.*
     FROM (
         SELECT 
-            activation_date::date AS date,
+            CASE
+                WHEN start_date::date < activation_date::date THEN start_date::date
+                ELSE activation_date::date
+            END AS date,
             aa.id AS account_id,
             correspondent_id,
             rc.partner_id,
@@ -67,7 +70,10 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
         UNION
 
         SELECT
-            start_date::date AS date,
+            CASE
+                WHEN start_date::date < activation_date::date THEN start_date::date
+                ELSE activation_date::date
+            END AS date,
             aa.id AS account_id,
             correspondent_id,
             rc.partner_id,
@@ -94,16 +100,18 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Child Sponsored'
         WHERE
             (activation_date IS NULL OR
-            (EXTRACT(YEAR FROM activation_date) * 100 + EXTRACT(MONTH FROM activation_date)) >
-            (EXTRACT(YEAR FROM start_date) * 100 + EXTRACT(MONTH FROM start_date)))
-            AND end_date IS NOT NULL
+            date_trunc('month', activation_date) > date_trunc('month', start_date))
             AND child_id IS NOT NULL
+
 
         UNION
 
 --      Query to get the contracts which have been created but not activated yet
         SELECT
-            start_date::date AS date,
+            CASE
+                WHEN start_date::date < activation_date::date THEN start_date::date
+                ELSE activation_date::date
+            END AS date,
             aa.id AS account_id,
             correspondent_id,
             rc.partner_id,
@@ -129,8 +137,10 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
             LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Contract Created'
         WHERE
-            end_date IS NOT NULL
+            (activation_date IS NULL OR
+            date_trunc('month', activation_date) > date_trunc('month', start_date))
             AND child_id IS NOT NULL
+
 
         UNION
 
@@ -162,8 +172,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
             LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Contract Created'
         WHERE
-            end_date IS NOT NULL
-            AND child_id IS NOT NULL
+            child_id IS NOT NULL
 
         ) a
 )
