@@ -78,10 +78,12 @@ class Household(models.Model):
     def _compute_siblings(self):
         for household in self:
             brothers = household.member_ids.filtered(
-                lambda member: member.role in ("Brother", "Beneficiary - Male")
+                lambda member: member.role in ("Brother", "Beneficiary - Male",
+                                               "Participant - Male")
             )
             sisters = household.member_ids.filtered(
-                lambda member: member.role in ("Sister", "Beneficiary - Female")
+                lambda member: member.role in ("Sister", "Beneficiary - Female",
+                                               "Participant - Female")
             )
             household.nb_brothers = (
                 len(brothers) - 1
@@ -122,7 +124,8 @@ class Household(models.Model):
             lambda member: member.is_caregiver
             and member.role
             not in ("Brother", "Sister", "Beneficiary - Male",
-                    "Beneficiary - Female")
+                    "Beneficiary - Female", "Participant - Male", "Participant - "
+                                                                  "Female")
         )
         return caregivers
 
@@ -271,7 +274,8 @@ class HouseholdMembers(models.Model):
             ("Stepfather", _("step father")),
             ("Godfather", _("godfather")),
             ("Brother", _("brother")),
-            ("Beneficiary - Male", "Beneficiary - Male"),
+            ("Beneficiary - Male", "Participant - Male"),
+            ("Participant - Male", "Participant - Male"),
         ]
 
     @api.model
@@ -284,7 +288,8 @@ class HouseholdMembers(models.Model):
             ("Stepmother", _("step mother")),
             ("Godmother", _("godmother")),
             ("Sister", _("sister")),
-            ("Beneficiary - Female", "Beneficiary - Female"),
+            ("Beneficiary - Female", "Participant - Female"),
+            ("Beneficiary - Female", "Participant - Female"),
         ]
 
     @api.model
@@ -295,6 +300,7 @@ class HouseholdMembers(models.Model):
             ("Other non-relative", _("Other non-relative")),
             ("Other relative", _("Other relative")),
             ("Beneficiary – Unborn", _("Beneficiary - Unborn")),
+            ("Participant – Unborn", _("Participant - Unborn")),
         ]
 
     @api.depends("role")

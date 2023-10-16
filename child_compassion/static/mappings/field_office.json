@@ -1,5 +1,5 @@
 {
-  "name": "Field Office",
+  "name": "National Office",
   "model": "compassion.field.office",
   "mapping": {
     "BeneficiaryHighRisk_Name": {
