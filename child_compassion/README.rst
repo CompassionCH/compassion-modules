@@ -22,7 +22,7 @@ Setup Compassion children, Church Partners, Field Offices and related objects fo
 data between GPA and GMC Connect (following TCPT R4 designs).
 
 Contains Beneficiary, Beneficiary Lifecycle, FCP, FCP Lifecycle,
-Child Holds and Global Child Pool management, Field Office,
+Child Holds and Global Child Pool management, National Office,
 Household, and other related objects...
 
 **Table of contents**
@@ -41,7 +41,7 @@ Configuration menu
 ~~~~~~~~~~~~~~~~~~
 * Find the configuration menu in Sponsorship/Configuration (must be given rights)
 * Configure the default hold durations in the menu Global Childpool/Availability Management
-* Assign people to be notified when receiving Field Office Disaster Alerts using the menu Communication/Staff Notifications
+* Assign people to be notified when receiving National Office Disaster Alerts using the menu Communication/Staff Notifications
 
 Odoo.conf file
 ~~~~~~~~~~~~~~

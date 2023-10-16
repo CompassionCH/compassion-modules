@@ -17,7 +17,7 @@
     </record>
     <record id="mapping_field_office" model="compassion.mapping">
         <field name="model_id" ref="model_compassion_field_office"/>
-        <field name="name">Field Office</field>
+        <field name="name">National Office</field>
     </record>
     <record id="mapping_reservation" model="compassion.mapping">
         <field name="model_id" ref="model_compassion_reservation"/>

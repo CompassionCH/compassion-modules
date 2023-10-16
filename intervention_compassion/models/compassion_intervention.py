@@ -149,7 +149,7 @@ class CompassionIntervention(models.Model):
     )
     sla_comments = fields.Char(readonly=True)
     fo_proposed_sla_costs = fields.Float(
-        readonly=True, help="The costs proposed by the Field Office for the SLA"
+        readonly=True, help="The costs proposed by the National Office for the SLA"
     )
     approved_sla_costs = fields.Float(
         readonly=True, help="The final approved Service Level Agreement Cost"

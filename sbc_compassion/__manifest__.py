@@ -27,10 +27,10 @@
 ##############################################################################
 # pylint: disable=C8101
 {
-    "name": "Sponsor to beneficiary communication",
+    "name": "Sponsor to Participant communication",
     "version": "14.0.1.0.1",
     "category": "Compassion",
-    "summary": "SBC - Supporter to Beneficiary Communication",
+    "summary": "SBC - Supporter to Participant Communication",
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",

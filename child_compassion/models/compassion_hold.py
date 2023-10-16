@@ -418,7 +418,7 @@ class CompassionHold(models.Model):
 
         # avoid realising a hold (and related child) that has already been released
         if hold and hold.state == "expired":
-            logger.warning("Received Beneficiary Hold Removal order from GMC for"
+            logger.warning("Received Participant Hold Removal order from GMC for"
                            "already expired hold.")
             return hold.ids
 

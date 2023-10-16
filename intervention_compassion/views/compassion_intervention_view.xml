@@ -256,7 +256,7 @@
                     <field name="commitment_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
                 </group>
                 <div attrs="{'invisible': [('additional_fund_amount', '=', 0)]}">
-                    <p>Additional fundings were requested by the Field Office for this Intervention:</p>
+                    <p>Additional fundings were requested by the National Office for this Intervention:</p>
                     <group>
                         <field name="additional_fund_amount" widget="monetary" options="{'currency_field': 'usd'}"/>
                         <field name="additional_info"/>
