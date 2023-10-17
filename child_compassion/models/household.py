@@ -80,12 +80,12 @@ class Household(models.Model):
     def _compute_siblings(self):
         for household in self:
             brothers = household.member_ids.filtered(
-                lambda member: member.role in ("Brother", "Beneficiary - Male",
-                                               "Participant - Male")
+                lambda member: member.role
+                in ("Brother", "Beneficiary - Male", "Participant - Male")
             )
             sisters = household.member_ids.filtered(
-                lambda member: member.role in ("Sister", "Beneficiary - Female",
-                                               "Participant - Female")
+                lambda member: member.role
+                in ("Sister", "Beneficiary - Female", "Participant - Female")
             )
             household.nb_brothers = (
                 len(brothers) - 1
@@ -125,8 +125,14 @@ class Household(models.Model):
         caregivers = self.member_ids.filtered(
             lambda member: member.is_caregiver
             and member.role
-            not in ("Brother", "Sister", "Beneficiary - Male", "Beneficiary - Female", "Participant - Male", "Participant - "
-                                                                  "Female")
+            not in (
+                "Brother",
+                "Sister",
+                "Beneficiary - Male",
+                "Beneficiary - Female",
+                "Participant - Male",
+                "Participant - " "Female",
+            )
         )
         return caregivers
 

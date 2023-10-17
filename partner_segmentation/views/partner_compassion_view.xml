@@ -1,9 +1,9 @@
 <odoo>
     <!-- Move all personal fields in the tab from OCA partner-birthdate -->
-    <record id="view_partner_form_compassion_birthdate" model="ir.ui.view">
+    <record id="view_partner_form_segmentation" model="ir.ui.view">
         <field name="name">res.partner.form.compassion.personal.info</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="partner_personal_info.view_partner_form_compassion_birthdate"/>
+        <field name="inherit_id" ref="partner_personal_info.view_partner_form_compassion_personal"/>
         <field name="arch" type="xml">
             <!-- Add fields in the tab -->
             <group name="personal_information_group">

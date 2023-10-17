@@ -20,7 +20,7 @@ class ResPartner(models.Model):
         copy=False,
         index=True,
         readonly=True,
-        default=uuid.uuid4,
+        default=lambda s: uuid.uuid4(),
     )
 
     _sql_constraints = [

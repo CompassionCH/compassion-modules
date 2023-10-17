@@ -30,7 +30,8 @@ class ChildLifecycle(models.Model):
                 communication_type = self.env["partner.communication.config"].search(
                     [
                         ("name", "ilike", lifecycle.type),
-                        "|", ("name", "like", "Beneficiary"),
+                        "|",
+                        ("name", "like", "Beneficiary"),
                         ("name", "like", "Participant"),
                     ]
                 )

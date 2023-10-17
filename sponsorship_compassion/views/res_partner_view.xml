@@ -3,12 +3,12 @@
     <record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
         <field name="name">res.partner.sponsorships.form</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="inherit_id" ref="partner_personal_info.view_partner_form_compassion_personal"/>
         <field name="priority">2</field>
         <field name="arch" type="xml">
 
             <!-- Add the church-->
-            <field name="email" position="after">
+            <field name="uuid" position="after">
                 <field name="is_church" invisible="1"/>
                 <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"/>
             </field>
