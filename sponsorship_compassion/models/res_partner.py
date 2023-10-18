@@ -371,26 +371,26 @@ class ResPartner(models.Model):
         This will call the GDPR Data Protection Request on Connect,
         Remove all letters and communication history, and attachments.
         """
-        if self.global_id:
-            action = self.env.ref("sponsorship_compassion.anonymize_partner")
-            message = (
-                self.env["gmc.message"]
-                .with_context(async_mode=False)
-                .create(
-                    {
-                        "action_id": action.id,
-                        "object_id": self.id,
-                        "partner_id": self.id,
-                    }
-                )
-            )
-            if "failure" in message.state:
-                answer = message.get_answer_dict()
-                raise UserError(
-                    answer
-                    and answer.get("DataProtection Error", message.failure_reason)
-                    or message.failure_reason
-                )
+        # if self.global_id:
+        #     action = self.env.ref("sponsorship_compassion.anonymize_partner")
+        #     message = (
+        #         self.env["gmc.message"]
+        #         .with_context(async_mode=False)
+        #         .create(
+        #             {
+        #                 "action_id": action.id,
+        #                 "object_id": self.id,
+        #                 "partner_id": self.id,
+        #             }
+        #         )
+        #     )
+        #     if "failure" in message.state:
+        #         answer = message.get_answer_dict()
+        #         raise UserError(
+        #             answer
+        #             and answer.get("DataProtection Error", message.failure_reason)
+        #             or message.failure_reason
+        #         )
 
         def _random_str():
             return "".join([random.choice(string.ascii_letters) for n in range(8)])
