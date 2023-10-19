@@ -25,8 +25,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             sub_sponsorship_id,
             parent_id,
             end_reason_id,
-            activation_date,
-            FALSE as waiting
+            activation_date
         FROM
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
@@ -57,8 +56,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             sub_sponsorship_id,
             parent_id,
             end_reason_id,
-            activation_date,
-            FALSE as waiting
+            activation_date
         FROM
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
@@ -94,8 +92,7 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             sub_sponsorship_id,
             parent_id,
             end_reason_id,
-            activation_date,
-            TRUE as waiting
+            activation_date
         FROM
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
@@ -109,7 +106,11 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
         UNION
 
         SELECT
-            activation_date::date AS date,
+            CASE
+                WHEN activation_date::date IS NULL
+                THEN end_date::date
+                ELSE activation_date::date
+            END AS date,
             aa.id AS account_id,
             correspondent_id,
             rc.partner_id,
@@ -128,14 +129,13 @@ CREATE OR REPLACE VIEW mis_spn_info AS (
             sub_sponsorship_id,
             parent_id,
             end_reason_id,
-            activation_date,
-            TRUE as waiting
+            activation_date
         FROM
             recurring_contract rc
             LEFT JOIN recurring_contract_origin rco ON rco.id = rc.origin_id
             LEFT JOIN account_account aa ON aa.company_id = rc.company_id AND aa."name" = 'Contract Created'
         WHERE
-            activation_date IS NOT NULL
+            (activation_date is not null OR end_date is not null)
             AND child_id IS NOT NULL
         ) a
 )
