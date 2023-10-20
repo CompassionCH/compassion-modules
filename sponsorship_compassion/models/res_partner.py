@@ -398,8 +398,11 @@ class ResPartner(models.Model):
         # referenced users are unlinked to avoid error when self.active is set to False
         self.user_ids.sudo().unlink()
 
+        # myContext = dict(self.env.context)
+        # myContext['tracking_disable'] = True
+
         # Anonymize and delete partner data
-        self.with_context(no_upsert=True).write(
+        self.with_context(no_upsert=True, tracking_disable=True).write(
             {
                 "name": _random_str(),
                 "firstname": False,
@@ -416,15 +419,49 @@ class ResPartner(models.Model):
                 "category_id": [(5, 0, 0)],
                 "comment": False,
                 "active": False,
+                "city": False,
+                "zip": False,
+                "commercial_company_name": False,
+                "company_name": False,
+                "contact_address": False,
+                "display_name": False,
+                "email_formatted": False,
+                "email_normalized": False,
+                "gmc_gender": False,
+                "lastname": _random_str(),
+                "phone_sanitized": False,
+                "salutation": False,
+                "short_address": False,
+                "partner_latitude": False,
+                "partner_longitude": False,
+                "age": False,
+                "spoken_lang_ids": False,
+                "company_type": False,
+                "gender": False,
+                "lang": False,
+                "title": False,
+                "country_id": False
             }
         )
+
         # Delete message and mail history
         self.message_ids.unlink()
         self.env["mail.mail"].search([("recipient_ids", "=", self.id)]).unlink()
         self.env["ir.attachment"].search(
             [("res_model", "=", "res.partner"), ("res_id", "=", self.id)]
         ).unlink()
-        self.bank_ids.unlink()
+
+        # Update values with random integer of length 10
+        all_records = self.env["res.partner.bank"].search([("partner_id", "=", self.id)])
+        for record in all_records:
+            new_value = random.randint(10 ** 9, 10 ** 10 - 1)
+            # TODO is it possible that the acc_number is the same accross multiple records?
+            # if yes we will use a dictionary to store old and new values and replace them with the right one
+            record.acc_number = new_value
+            record.sanitized_acc_number = new_value
+
+        # self.bank_ids.unlink()
+
         self.privacy_statement_ids.unlink()
         self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
             {"res_name": self.name}
