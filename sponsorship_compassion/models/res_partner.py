@@ -398,9 +398,6 @@ class ResPartner(models.Model):
         # referenced users are unlinked to avoid error when self.active is set to False
         self.user_ids.sudo().unlink()
 
-        # myContext = dict(self.env.context)
-        # myContext['tracking_disable'] = True
-
         # Anonymize and delete partner data
         self.with_context(no_upsert=True, tracking_disable=True).write(
             {
