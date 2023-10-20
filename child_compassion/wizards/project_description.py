@@ -70,7 +70,7 @@ class ProjectDescription(models.TransientModel):
         ######################
         project = self.project_id
 
-        # Put country if not the same as Field Office
+        # Put country if not the same as National Office
         if (
                 project.country_id
                 and project.country_id != project.field_office_id.country_id

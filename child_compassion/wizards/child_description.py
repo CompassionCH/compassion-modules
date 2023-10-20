@@ -330,9 +330,9 @@ class ChildDescription(models.TransientModel):
             caregiver = household.primary_caregiver_id
             if caregiver:
                 caregiver_role = household.primary_caregiver
-                if caregiver_role == "Beneficiary - Male":
+                if caregiver_role in ("Beneficiary - Male", "Participant - Male"):
                     caregiver_role = _("brother")
-                if caregiver_role == "Beneficiary - Female":
+                if caregiver_role in ("Beneficiary - Female", "Participant - Female"):
                     caregiver_role = _("sister")
                 live_with += (
                     _("with")

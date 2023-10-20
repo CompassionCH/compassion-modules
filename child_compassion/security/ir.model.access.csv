@@ -48,14 +48,14 @@ access_icp_sociological,Write access on fcp sociological,model_fcp_sociological_
 access_icp_spiritual_activity,Write access on fcp spiritual activity,model_fcp_spiritual_activity,group_sponsorship,1,1,1,0
 access_suspension_extension_reason,Read access on suspension extension reason,model_fcp_suspension_extension_reason,group_sponsorship,1,0,0,0
 access_learning_info,access_user_learning_info,model_field_office_learning,group_sponsorship,1,0,0,0
-access_fo_disaster_alert,Full access on Field Office Disaster Alert,model_fo_disaster_alert,message_center_compassion.group_gmc_user,1,1,1,1
-access_fo_disaster_alert_spo,User access on Field Office Disaster Alert,model_fo_disaster_alert,group_sponsorship,1,0,0,0
-access_fo_disaster_loss,Full access on Field Office Disaster Loss,model_fo_disaster_loss,message_center_compassion.group_gmc_user,1,1,1,1
-access_fo_disaster_loss_spo,User access on Field Office Disaster Loss,model_fo_disaster_loss,group_sponsorship,1,0,0,0
-access_fo_disaster_update,Full access on Field Office Disaster Update,model_fo_disaster_update,message_center_compassion.group_gmc_user,1,1,1,1
-access_fo_disaster_update_spo,User access on Field Office Disaster Update,model_fo_disaster_update,group_sponsorship,1,0,0,0
-access_fo_high_risk,Full access on Field Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc_user,1,1,1,1
-access_fo_high_risk_user,User access on Field Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
+access_fo_disaster_alert,Full access on National Office Disaster Alert,model_fo_disaster_alert,message_center_compassion.group_gmc_user,1,1,1,1
+access_fo_disaster_alert_spo,User access on National Office Disaster Alert,model_fo_disaster_alert,group_sponsorship,1,0,0,0
+access_fo_disaster_loss,Full access on National Office Disaster Loss,model_fo_disaster_loss,message_center_compassion.group_gmc_user,1,1,1,1
+access_fo_disaster_loss_spo,User access on National Office Disaster Loss,model_fo_disaster_loss,group_sponsorship,1,0,0,0
+access_fo_disaster_update,Full access on National Office Disaster Update,model_fo_disaster_update,message_center_compassion.group_gmc_user,1,1,1,1
+access_fo_disaster_update_spo,User access on National Office Disaster Update,model_fo_disaster_update,group_sponsorship,1,0,0,0
+access_fo_high_risk,Full access on National Office High Risk,model_fo_high_risk,message_center_compassion.group_gmc_user,1,1,1,1
+access_fo_high_risk_user,User access on National Office High Risk,model_fo_high_risk,group_sponsorship,1,0,0,0
 access_res_lang_compassion,Read only access on res_lang_compassion,advanced_translation.model_res_lang_compassion,,1,0,0,0
 write_access_res_lang_compassion,Write access on res_lang_compassion,advanced_translation.model_res_lang_compassion,group_sponsorship,1,1,1,0
 access_gmc_message,Access gmc.message,message_center_compassion.model_gmc_message,group_sponsorship,1,1,1,0

@@ -41,7 +41,7 @@ class ICPDisasterImpact(models.Model):
 
 class FieldOfficeDisasterUpdate(models.Model):
     _name = "fo.disaster.update"
-    _description = "Field Office Disaster Update"
+    _description = "National Office Disaster Update"
     _order = "id desc"
     _inherit = "compassion.mapped.model"
 
@@ -49,7 +49,7 @@ class FieldOfficeDisasterUpdate(models.Model):
         "fo.disaster.alert", "Disaster Alert", ondelete="cascade", readonly=False
     )
     fo_id = fields.Many2one(
-        "compassion.field.office", "Field Office", ondelete="cascade", readonly=False
+        "compassion.field.office", "National Office", ondelete="cascade", readonly=False
     )
 
     fodu_id = fields.Char()
@@ -129,14 +129,14 @@ class ChildDisasterImpact(models.Model):
 class DisasterLoss(models.Model):
     _inherit = "connect.multipicklist"
     _name = "fo.disaster.loss"
-    _description = "Field office disaster loss"
+    _description = "National office disaster loss"
     res_model = "child.disaster.impact"
     res_field = "loss_ids"
 
 
 class FieldOfficeDisasterAlert(models.Model):
     _name = "fo.disaster.alert"
-    _description = "Field Office Disaster Alert"
+    _description = "National Office Disaster Alert"
     _inherit = ["mail.thread", "compassion.mapped.model"]
     _order = "disaster_date desc, id desc"
 
@@ -192,7 +192,7 @@ class FieldOfficeDisasterAlert(models.Model):
 
     field_office_id = fields.Many2one(
         "compassion.field.office",
-        string="Field Offices",
+        string="National Offices",
         ondelete="cascade",
         readonly=False,
     )
@@ -226,7 +226,7 @@ class FieldOfficeDisasterAlert(models.Model):
         "fcp.disaster.impact", "disaster_id", "FCP Disaster Impact", readonly=False
     )
     fo_disaster_update_ids = fields.One2many(
-        "fo.disaster.update", "disaster_id", "Field Office Update", readonly=False
+        "fo.disaster.update", "disaster_id", "National Office Update", readonly=False
     )
     child_disaster_impact_ids = fields.One2many(
         "child.disaster.impact", "disaster_id", "Child Disaster Impact", readonly=False

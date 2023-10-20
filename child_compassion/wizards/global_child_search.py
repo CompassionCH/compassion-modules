@@ -119,7 +119,7 @@ class GlobalChildSearch(models.TransientModel):
         "Number of restricted children",
         readonly=True,
         help="These children were removed from the search results because "
-             "of a Field Office restriction configuration.",
+             "of a National Office restriction configuration.",
     )
     missing_dates = fields.Text(help="All birthdates not found when using 365 search")
 

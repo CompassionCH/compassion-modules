@@ -2,7 +2,7 @@
     <data noupdate="1">
         <!-- Hold Removal Notification -->
         <record id="email_hold_removal" model="mail.template">
-            <field name="name">Beneficiary Hold Removal</field>
+            <field name="name">Participant Hold Removal</field>
             <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
             <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>

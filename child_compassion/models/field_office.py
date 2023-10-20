@@ -15,7 +15,7 @@ from odoo import api, models, fields
 class FieldOffice(models.Model):
     _name = "compassion.field.office"
     _inherit = "compassion.mapped.model"
-    _description = "Field Office"
+    _description = "National Office"
     _order = "country_name,field_office_id"
 
     name = fields.Char("Name")
@@ -25,7 +25,7 @@ class FieldOffice(models.Model):
     )
     region = fields.Char()
     country_director = fields.Char()
-    date_start = fields.Date("Field office start")
+    date_start = fields.Date("National office start")
     issue_email = fields.Char()
     phone_number = fields.Char()
     website = fields.Char()
@@ -70,7 +70,7 @@ class FieldOffice(models.Model):
     staff_number = fields.Integer()
     country_information = fields.Char()
     high_risk_ids = fields.Many2many(
-        "fo.high.risk", string="Beneficiary high risks", readonly=False
+        "fo.high.risk", string="Participant high risks", readonly=False
     )
 
     disaster_alert_ids = fields.Many2many(

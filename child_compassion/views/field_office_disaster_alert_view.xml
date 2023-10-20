@@ -5,7 +5,7 @@
             <field name="name">fo.disaster.alert.form</field>
             <field name="model">fo.disaster.alert</field>
             <field name="arch" type="xml">
-                <form string="Field Office Disaster Alert">
+                <form>
                     <header>
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -53,7 +53,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Field Office">
+                            <page string="National Office">
                                 <group>
                                     <group>
                                         <field name="field_office_id">

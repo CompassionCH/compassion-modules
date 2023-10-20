@@ -30,7 +30,7 @@ class GenericIntervention(models.AbstractModel):
     name = fields.Char(readonly=True)
     intervention_id = fields.Char(required=True, readonly=True)
     field_office_id = fields.Many2one(
-        "compassion.field.office", "Field Office", readonly=True
+        "compassion.field.office", "National Office", readonly=True
     )
     description = fields.Text(readonly=True)
     additional_marketing_information = fields.Text(readonly=True)
@@ -43,7 +43,7 @@ class GenericIntervention(models.AbstractModel):
 
     # Schedule Information
     ######################
-    is_fo_priority = fields.Boolean("Is Field Office priority", readonly=True)
+    is_fo_priority = fields.Boolean("Is National Office priority", readonly=True)
     proposed_start_date = fields.Date(readonly=True)
     start_no_later_than = fields.Date(readonly=True)
     expected_duration = fields.Integer(

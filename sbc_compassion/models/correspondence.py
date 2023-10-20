@@ -82,8 +82,8 @@ class Correspondence(models.Model):
         "Kit id", copy=False, readonly=True, tracking=True)
     direction = fields.Selection(
         selection=[
-            ("Supporter To Beneficiary", _("Supporter to beneficiary")),
-            ("Beneficiary To Supporter", _("Beneficiary to supporter")),
+            ("Supporter To Beneficiary", _("Supporter to participant")),
+            ("Beneficiary To Supporter", _("Participant to supporter")),
         ],
         required=True,
         default="Supporter To Beneficiary",
@@ -104,12 +104,12 @@ class Correspondence(models.Model):
             ("Quality check queue", _("Quality Check Queue")),
             ("Quality check process", _("Quality Check Process")),
             ("Translation and quality check complete", _("Quality Check Done")),
-            ("Field Office translation queue", _("SDL FO Translation Queue")),
+            ("Field Office translation queue", _("National Office Translation Queue")),
             ("Composition process", _("Composition Process")),
             ("Printed and sent to ICP", _("Sent to FCP")),
             ("Exception", _("Exception")),
             ("Quality check unsuccessful", _("Quality check failed")),
-            ("Translation check unsuccessful", _("Translation check " "unsuccessful")),
+            ("Translation check unsuccessful", _("Translation check unsuccessful")),
         ],
         compute="_compute_states",
     )
@@ -117,10 +117,10 @@ class Correspondence(models.Model):
         [
             ("Ready to be printed", _("Ready to be printed")),  # *
             (
-                "Field Office transcribing translation and content check " "process",
-                _("FO content check"),
+                "Field Office transcribing translation and content check process",
+                _("National Office content check"),
             ),  # *
-            ("Field Office translation queue", _("SDL FO Translation Queue")),
+            ("Field Office translation queue", _("National Office Translation Queue")),
             ("In Translation", _("SDL FO Translation")),  # *
             ("Quality check queue", _("Quality Check Queue")),
             ("Quality check process", _("Quality Check Process")),
@@ -130,7 +130,7 @@ class Correspondence(models.Model):
             ("Composition process", _("Composition Process")),
             ("Published to Global Partner", _("Published")),
             ("Quality check unsuccessful", _("Quality check unsuccessful")),
-            ("Translation check unsuccessful", _("Translation check " "unsuccessful")),
+            ("Translation check unsuccessful", _("Translation check unsuccessful")),
             ("Exception", _("Exception")),
         ],
         compute="_compute_states",
@@ -206,7 +206,7 @@ class Correspondence(models.Model):
         compute="_compute_is_first",
         store=True,
         readonly=True,
-        string="First letter from Beneficiary",
+        string="First letter from Participant",
     )
     marked_for_rework = fields.Boolean(readonly=True)
     rework_reason = fields.Char()
@@ -287,7 +287,7 @@ class Correspondence(models.Model):
     @api.model
     def get_communication_types(self):
         return [
-            ("Beneficiary Initiated Letter", _("Beneficiary Initiated")),
+            ("Beneficiary Initiated Letter", _("Participant Initiated")),
             ("Final Letter", _("Final Letter")),
             ("Large Gift Thank You Letter", _("Large Gift Thank You")),
             ("Small Gift Thank You Letter", _("Small Gift Thank You")),
