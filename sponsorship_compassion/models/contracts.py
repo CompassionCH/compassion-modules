@@ -353,14 +353,14 @@ class SponsorshipContract(models.Model):
                         ("default_code", "=", PRODUCT_GIFT_CHRISTMAS)])
 
     @api.depends(
-        "correspondent_id", "correspondent_id.ref", "child_id", "child_id.local_id"
+        "partner_id", "partner_id.ref", "child_id", "child_id.local_id"
     )
     def name_get(self):
         """ Gives a friendly name for a sponsorship """
         result = []
         for contract in self:
-            if contract.correspondent_id.ref or contract.reference:
-                name = contract.correspondent_id.ref or contract.reference
+            if contract.partner_id.ref or contract.reference:
+                name = contract.partner_id.ref or contract.reference
                 if contract.child_id:
                     name += " - " + contract.child_code
                 elif contract.contract_line_ids:

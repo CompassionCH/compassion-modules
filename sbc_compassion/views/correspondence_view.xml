@@ -99,7 +99,7 @@
                             <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
                             <field name="email"/>
                         </group>
-                        <group string="Beneficiary">
+                        <group string="Participant">
                             <field name="child_id"/>
                             <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
                             <field name="sponsorship_state"/>

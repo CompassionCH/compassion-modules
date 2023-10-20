@@ -102,7 +102,7 @@ class CompassionChild(models.Model):
         related="hold_id.expiration_date", string="Hold expiration", store=True
     )
 
-    # Beneficiary Favorites
+    # Participant Favorites
     #######################
     hobby_ids = fields.Many2many("child.hobby", string="Hobbies", readonly=True)
     duty_ids = fields.Many2many(

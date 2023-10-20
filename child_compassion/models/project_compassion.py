@@ -79,7 +79,7 @@ class CompassionProject(models.Model):
     territory = fields.Char(readonly=True)
     field_office_id = fields.Many2one(
         "compassion.field.office",
-        "Field Office",
+        "National Office",
         compute="_compute_field_office",
         store=True,
         readonly=False,

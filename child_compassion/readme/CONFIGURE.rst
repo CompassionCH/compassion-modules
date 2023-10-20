@@ -6,7 +6,7 @@ Configuration menu
 ~~~~~~~~~~~~~~~~~~
 * Find the configuration menu in Sponsorship/Configuration (must be given rights)
 * Configure the default hold durations in the menu Global Childpool/Availability Management
-* Assign people to be notified when receiving Field Office Disaster Alerts using the menu Communication/Staff Notifications
+* Assign people to be notified when receiving National Office Disaster Alerts using the menu Communication/Staff Notifications
 
 Odoo.conf file
 ~~~~~~~~~~~~~~

@@ -70,7 +70,7 @@
             <field name="name">FieldOfficeDetails</field>
             <field name="mapping_id" ref="mapping_field_office"/>
             <field name="connect_answer_wrapper">FieldOfficeResponseList</field>
-            <field name="description">This will update the Field Office</field>
+            <field name="description">This will update the National Office</field>
             <field name="connect_service">fieldoffices/${object.field_office_id}/kits/fieldofficekit</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
@@ -91,12 +91,12 @@
             <field name="failure_method">reservation_create_answer_fail</field>
             <field name="priority">50</field>
         </record>
-        <!-- Reservation Message Creation for Beneficiary -->
+        <!-- Reservation Message Creation for Participant -->
         <record id="beneficiary_reservation" model="gmc.action">
             <field name="direction">out</field>
             <field name="name">CreateBeneficiaryReservation</field>
             <field name="mapping_id" ref="mapping_reservation_child"/>
-            <field name="description">This will send a new Beneficiary Reservation to GMC.</field>
+            <field name="description">This will send a new Participant Reservation to GMC.</field>
             <field name="connect_service">beneficiaries/reservations</field>
             <field name="connect_outgoing_wrapper">GlobalPartnerReservationRequestList</field>
             <field name="connect_answer_wrapper">GlobalPartnerReservationResponseList</field>
@@ -124,7 +124,7 @@
             <field name="direction">out</field>
             <field name="name">CancelBeneficiaryReservation</field>
             <field name="mapping_id" ref="mapping_reservation_cancel"/>
-            <field name="description">This will send a Beneficiary reservation cancelling request to GMC.</field>
+            <field name="description">This will send a Participant reservation cancelling request to GMC.</field>
             <field name="connect_service">beneficiaries/reservations/cancellations</field>
             <field name="connect_outgoing_wrapper">ReservationCancelRequestList</field>
             <field name="connect_answer_wrapper">ReservationCancelResponseList</field>
@@ -133,7 +133,7 @@
             <field name="success_method">reservation_cancel_answer</field>
             <field name="priority">50</field>
         </record>
-        <!-- Beneficiary Major Revision -->
+        <!-- Participant Major Revision -->
         <record id="major_revision" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">BeneficiaryMajorRevision</field>
@@ -159,12 +159,12 @@
             <field name="description">This will update the project with the fresh information.</field>
             <field name="auto_process">1</field>
         </record>
-        <!-- Beneficiary CDPR Messages -->
+        <!-- Participant CDPR Messages -->
         <record id="beneficiary_cdpr" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">BeneficiaryCDPR</field>
             <field name="mapping_id" ref="mapping_child_cdpr"/>
-            <field name="description">This handles the reception of a Beneficiary CDPR.</field>
+            <field name="description">This handles the reception of a Participant CDPR.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
         </record>
@@ -174,7 +174,7 @@
             <field name="name">ReservationToHold</field>
             <field name="mapping_id" ref="mapping_hold_create"/>
             <field name="incoming_method">reservation_to_hold</field>
-            <field name="description">This handles the reception of a reserved Beneficiary.</field>
+            <field name="description">This handles the reception of a reserved Participant.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
         </record>
@@ -187,12 +187,12 @@
             <field name="incoming_method">process_commkit</field>
             <field name="auto_process">1</field>
         </record>
-        <!-- Beneficiary Note -->
+        <!-- Participant Note -->
         <record id="beneficiary_note" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">BeneficiaryNote</field>
             <field name="mapping_id" ref="mapping_child_note"/>
-            <field name="description">This handles the reception of a Beneficiary note.</field>
+            <field name="description">This handles the reception of a Participant note.</field>
             <field name="auto_process">1</field>
         </record>
         <!-- Lifecycle Message -->
@@ -241,19 +241,19 @@
             <field name="direction">out</field>
             <field name="name">FieldOfficeDisasterDetail</field>
             <field name="mapping_id" ref="mapping_fo_disaster"/>
-            <field name="description">This handles the reception of a Field Office Disaster.</field>
+            <field name="description">This handles the reception of a National Office Disaster.</field>
             <field name="connect_service">disaster-communication-update/v1/${object.disaster_communication_update_name}</field>
             <field name="request_type">GET</field>
             <field name="auto_process">1</field>
             <field name="no_outgoing_data" eval="True"/>
         </record>
-        <!--Beneficiary Hold Removal-->
+        <!--Participant Hold Removal-->
         <record id="beneficiary_hold_removal" model="gmc.action">
             <field name="direction">in</field>
             <field name="name">BeneficiaryHoldRemoval</field>
             <field name="mapping_id" ref="mapping_hold_release"/>
             <field name="incoming_method">beneficiary_hold_removal</field>
-            <field name="description">This handles the reception of a Beneficiary Hold Removal.</field>
+            <field name="description">This handles the reception of a Participant Hold Removal.</field>
             <field name="auto_process">1</field>
             <field name="priority">50</field>
         </record>

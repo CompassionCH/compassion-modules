@@ -12,7 +12,7 @@ from odoo import models, fields
 
 class LearningInfo(models.Model):
     _name = "field.office.learning"
-    _description = "Field Office Learning information"
+    _description = "National Office Learning information"
     _rec_name = "title"
     _order = "field_office_id asc, sequence asc"
 
@@ -25,7 +25,7 @@ class LearningInfo(models.Model):
         translate=True, help="Contains the description of the learning information.",
     )
     field_office_id = fields.Many2one(
-        "compassion.field.office", "Field office", required=True, readonly=False
+        "compassion.field.office", "National office", required=True, readonly=False
     )
 
     def get_learning_json(self):
