@@ -444,14 +444,29 @@ class ResPartner(models.Model):
             [("res_model", "=", "res.partner"), ("res_id", "=", self.id)]
         ).unlink()
 
-        # Update values with random integer of length 10
-        all_records = self.env["res.partner.bank"].search([("partner_id", "=", self.id)])
-        for record in all_records:
-            new_value = random.randint(10 ** 9, 10 ** 10 - 1)
-            # TODO is it possible that the acc_number is the same accross multiple records?
-            # if yes we will use a dictionary to store old and new values and replace them with the right one
-            record.acc_number = new_value
-            record.sanitized_acc_number = new_value
+        # ---------- Remove banking information ----------
+        # Get partner_bank_ids for partner_id = self.id
+        partner_bank_ids = self.env['res.partner.bank'].search([('partner_id', '=', self.id)]).ids
+
+        # Update account_payment_line set partner_bank_id to NULL
+        payment_lines = self.env['account.payment.line'].search([('partner_bank_id', 'in', partner_bank_ids)])
+        for payment_line in payment_lines:
+            payment_line.write({'partner_bank_id': False})
+
+        # Update account_move set mandate_id and partner_bank_id to NULL
+        mandate_ids = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)]).ids
+        account_moves = self.env['account.move'].search([
+            '|', ('partner_bank_id', 'in', partner_bank_ids), ('mandate_id', 'in', mandate_ids)
+        ])
+        for account_move in account_moves:
+            account_move.write({'mandate_id': False, 'partner_bank_id': False})
+
+        # Delete records from account_banking_mandate
+        mandates = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)])
+        mandates.with_context(tracking_disable=True).unlink()
+
+        self.bank_ids.with_context(tracking_disable=True).unlink()
+        # ---------- End of Remove banking information ----------
 
         self.privacy_statement_ids.unlink()
         self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
