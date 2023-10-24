@@ -424,10 +424,6 @@ class ResPartner(models.Model):
                 "display_name": False,
                 "email_formatted": False,
                 "email_normalized": False,
-                "gmc_gender": False,
-                "lastname": _random_str(),
-                "phone_sanitized": False,
-                "salutation": False,
                 "short_address": False,
                 "partner_latitude": False,
                 "partner_longitude": False,
@@ -457,14 +453,11 @@ class ResPartner(models.Model):
             record.acc_number = new_value
             record.sanitized_acc_number = new_value
 
-        # self.bank_ids.unlink()
-
         self.privacy_statement_ids.unlink()
         self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
             {"res_name": self.name}
         )
         return True
-
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
