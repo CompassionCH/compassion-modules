@@ -97,7 +97,8 @@ class SponsorshipGift(models.Model):
     )
     currency_id = fields.Many2one(
         "res.currency",
-        compute_sudo="_compute_currency",
+        compute="_compute_currency",
+        compute_sudo=True,
         readonly=False,
     )
     currency_usd = fields.Many2one(
@@ -218,8 +219,9 @@ class SponsorshipGift(models.Model):
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
-        self.currency_id = (self.mapped("invoice_line_ids.move_id.currency_id")
-                            or self.sponsorship_id.company_id.currency_id)[:1]
+        for gift in self:
+            gift.currency_id = (self.mapped("invoice_line_ids.move_id.currency_id")
+                                or self.sponsorship_id.company_id.currency_id)[:1]
 
     def _compute_name(self):
         for gift in self:
