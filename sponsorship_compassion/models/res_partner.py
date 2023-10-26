@@ -399,7 +399,7 @@ class ResPartner(models.Model):
         self.user_ids.sudo().unlink()
 
         # Anonymize and delete partner data
-        self.with_context(no_upsert=True).write(
+        self.with_context(no_upsert=True, tracking_disable=True).write(
             {
                 "name": _random_str(),
                 "firstname": False,
@@ -416,15 +416,50 @@ class ResPartner(models.Model):
                 "category_id": [(5, 0, 0)],
                 "comment": False,
                 "active": False,
+                "city": False,
+                "zip": False,
+                "commercial_company_name": False,
+                "company_name": False,
+                "display_name": False,
+                "partner_latitude": False,
+                "partner_longitude": False,
+                "birthdate_date": False,
+                "spoken_lang_ids": False,
+                "gender": False,
+                "lang": False,
+                "title": False,
+                "country_id": False
             }
         )
+
         # Delete message and mail history
         self.message_ids.unlink()
         self.env["mail.mail"].search([("recipient_ids", "=", self.id)]).unlink()
         self.env["ir.attachment"].search(
             [("res_model", "=", "res.partner"), ("res_id", "=", self.id)]
         ).unlink()
-        self.bank_ids.unlink()
+
+        # ---------- Remove banking information ----------
+        # Get partner_bank_ids for partner_id = self.id
+        partner_bank_ids = self.env['res.partner.bank'].search([('partner_id', '=', self.id)]).ids
+
+        # Update account_payment_line set partner_bank_id to NULL
+        payment_lines = self.env['account.payment.line'].search([('partner_bank_id', 'in', partner_bank_ids)])
+        payment_lines.write({'partner_bank_id': False})
+
+        # Update account_move set mandate_id and partner_bank_id to NULL
+        mandates = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)])
+        account_moves = self.env['account.move'].search([
+            '|', ('partner_bank_id', 'in', partner_bank_ids), ('mandate_id', 'in', mandates.ids)
+        ])
+        account_moves.write({'mandate_id': False, 'partner_bank_id': False})
+
+        # Delete records from account_banking_mandate
+        mandates.with_context(tracking_disable=True).unlink()
+
+        self.bank_ids.with_context(tracking_disable=True).unlink()
+        # ---------- End of Remove banking information ----------
+
         self.privacy_statement_ids.unlink()
         self.env["gmc.message"].search([("partner_id", "=", self.id)]).write(
             {"res_name": self.name}
