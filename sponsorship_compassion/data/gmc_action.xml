@@ -20,6 +20,7 @@
             <field name="connect_service">supporters/${object.global_id}/dataprotection</field>
             <field name="request_type">POST</field>
             <field name="auto_process">true</field>
+            <field name="success_method">anonymize</field>
         </record>
         <!-- Sponsorship Message Creation -->
         <record id="create_sponsorship" model="gmc.action">

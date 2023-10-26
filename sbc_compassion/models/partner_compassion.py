@@ -89,9 +89,9 @@ class ResPartner(models.Model):
         if spoken_lang:
             self.spoken_lang_ids += spoken_lang
 
-    def forget_me(self):
-        super().forget_me()
+    def anonymize(self, vals=None):
         # Delete correspondence
+        self.spoken_lang_ids = False
         self.env["correspondence"].search(
             [("partner_id", "=", self.id)]).unlink()
-        return True
+        return super().anonymize(vals)

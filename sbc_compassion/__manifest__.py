@@ -41,7 +41,7 @@
     "external_dependencies": {
         "bin": ["php"],
         "python": [
-            "magic",
+            "python-magic",
             "wand",
             "pyzbar",
             "PyMuPDF",  # TODO replace by Odoo standard library

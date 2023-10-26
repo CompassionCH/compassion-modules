@@ -33,3 +33,9 @@ class ResPartner(models.Model):
         required=True,
         help="Delivery preference for Child photo",
     )
+
+    def anonymize(self, vals=None):
+        self.env["partner.communication.job"].search([
+            ("partner_id", "=", self.id)
+        ]).unlink()
+        return super().anonymize(vals)
