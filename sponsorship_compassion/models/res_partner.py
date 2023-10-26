@@ -423,7 +423,7 @@ class ResPartner(models.Model):
                 "display_name": False,
                 "partner_latitude": False,
                 "partner_longitude": False,
-                "birthdate_date: False,
+                "birthdate_date": False,
                 "spoken_lang_ids": False,
                 "gender": False,
                 "lang": False,
