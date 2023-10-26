@@ -452,8 +452,7 @@ class ResPartner(models.Model):
         account_moves = self.env['account.move'].search([
             '|', ('partner_bank_id', 'in', partner_bank_ids), ('mandate_id', 'in', mandate_ids)
         ])
-        for account_move in account_moves:
-            account_move.write({'mandate_id': False, 'partner_bank_id': False})
+        account_moves.write({'mandate_id': False, 'partner_bank_id': False})
 
         # Delete records from account_banking_mandate
         mandates = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)])
