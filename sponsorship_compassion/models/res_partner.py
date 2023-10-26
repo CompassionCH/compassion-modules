@@ -425,7 +425,6 @@ class ResPartner(models.Model):
                 "partner_longitude": False,
                 "birthdate_date: False,
                 "spoken_lang_ids": False,
-                "company_type": False,
                 "gender": False,
                 "lang": False,
                 "title": False,
