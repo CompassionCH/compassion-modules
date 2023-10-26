@@ -449,7 +449,6 @@ class ResPartner(models.Model):
         partner.bank_ids.unlink()
         # ---------- End of Remove banking information ----------
 
-        self.privacy_statement_ids.unlink()
         partner.env["gmc.message"].search([("partner_id", "=", partner.id)]).write(
             {"res_name": partner.name}
         )
