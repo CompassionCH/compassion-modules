@@ -455,7 +455,6 @@ class ResPartner(models.Model):
         account_moves.write({'mandate_id': False, 'partner_bank_id': False})
 
         # Delete records from account_banking_mandate
-        mandates = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)])
         mandates.with_context(tracking_disable=True).unlink()
 
         self.bank_ids.with_context(tracking_disable=True).unlink()
