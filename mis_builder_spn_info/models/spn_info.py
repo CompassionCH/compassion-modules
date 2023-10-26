@@ -36,6 +36,7 @@ class MisSpnInfo(models.Model):
     credit = fields.Float()
     sponsorship_line_id = fields.Integer()
     debit = fields.Float()
+    activation_date = fields.Date("Activation date", readonly=True)
 
     def init(self):
         script = opj(os.path.dirname(__file__), "spn_info.sql")
