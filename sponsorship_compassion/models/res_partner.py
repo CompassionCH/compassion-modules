@@ -421,7 +421,6 @@ class ResPartner(models.Model):
                 "commercial_company_name": False,
                 "company_name": False,
                 "display_name": False,
-                "short_address": False,
                 "partner_latitude": False,
                 "partner_longitude": False,
                 "birthdate_date: False,
