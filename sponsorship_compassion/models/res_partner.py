@@ -419,6 +419,7 @@ class ResPartner(models.Model):
                 "lang": False,
                 "title": False,
                 "country_id": False,
+                "uuid": False,
             }
         )
         partner.env["mail.mail"].search([("recipient_ids", "=", partner.id)]).unlink()
@@ -453,9 +454,9 @@ class ResPartner(models.Model):
             {"res_name": partner.name}
         )
         # Delete message and mail history
-        partner.env["ir.attachment"].search(
-            [("res_model", "=", self._name), ("res_id", "=", partner.id)]
-        ).unlink()
+        partner.env["ir.attachment"].search([
+            ("res_model", "=", self._name),
+            ("res_id", "=", partner.id)]).unlink()
         partner.message_follower_ids.unlink()
         partner.with_delay().clear_message_history()
         return True
