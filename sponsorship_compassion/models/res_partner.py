@@ -450,7 +450,7 @@ class ResPartner(models.Model):
         # Update account_move set mandate_id and partner_bank_id to NULL
         mandates = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)])
         account_moves = self.env['account.move'].search([
-            '|', ('partner_bank_id', 'in', partner_bank_ids), ('mandate_id', 'in', mandate_ids)
+            '|', ('partner_bank_id', 'in', partner_bank_ids), ('mandate_id', 'in', mandates.ids)
         ])
         account_moves.write({'mandate_id': False, 'partner_bank_id': False})
 
