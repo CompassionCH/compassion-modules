@@ -427,7 +427,7 @@ class ResPartner(models.Model):
                 "short_address": False,
                 "partner_latitude": False,
                 "partner_longitude": False,
-                "age": False,
+                "birthdate_date: False,
                 "spoken_lang_ids": False,
                 "company_type": False,
                 "gender": False,
