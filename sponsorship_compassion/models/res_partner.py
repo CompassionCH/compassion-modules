@@ -422,8 +422,6 @@ class ResPartner(models.Model):
                 "company_name": False,
                 "contact_address": False,
                 "display_name": False,
-                "email_formatted": False,
-                "email_normalized": False,
                 "short_address": False,
                 "partner_latitude": False,
                 "partner_longitude": False,
