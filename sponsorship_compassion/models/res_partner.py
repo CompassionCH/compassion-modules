@@ -445,8 +445,7 @@ class ResPartner(models.Model):
 
         # Update account_payment_line set partner_bank_id to NULL
         payment_lines = self.env['account.payment.line'].search([('partner_bank_id', 'in', partner_bank_ids)])
-        for payment_line in payment_lines:
-            payment_line.write({'partner_bank_id': False})
+        payment_lines.write({'partner_bank_id': False})
 
         # Update account_move set mandate_id and partner_bank_id to NULL
         mandate_ids = self.env['account.banking.mandate'].search([('partner_id', '=', self.id)]).ids
