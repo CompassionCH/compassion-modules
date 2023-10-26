@@ -420,7 +420,6 @@ class ResPartner(models.Model):
                 "zip": False,
                 "commercial_company_name": False,
                 "company_name": False,
-                "contact_address": False,
                 "display_name": False,
                 "short_address": False,
                 "partner_latitude": False,
