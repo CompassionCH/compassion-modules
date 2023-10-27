@@ -45,7 +45,9 @@ class TranslationUser(models.Model):
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters(self):
         for translator in self:
-            translator.nb_translated_letters = len(translator.translated_letter_ids)
+            translator.nb_translated_letters = len(translator.translated_letter_ids.filtered(
+                lambda letter: letter.translation_status == "done"
+            ))
 
     @api.multi
     @api.depends("translated_letter_ids")
