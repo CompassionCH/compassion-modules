@@ -145,8 +145,7 @@ class AdvancedTranslatable(models.AbstractModel):
         return res_string
 
     def translate_selection_strings(self, selection_field_name):
-        """Translates the selection strings of the given field.
-        """
+        """Translates the selection strings of the given field."""
         if not hasattr(self, selection_field_name):
             return []
         return self.fields_get()[selection_field_name]["selection"]

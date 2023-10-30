@@ -454,18 +454,19 @@ class ResPartner(models.Model):
             {"res_name": partner.name}
         )
         # Delete message and mail history
-        partner.env["ir.attachment"].search([
-            ("res_model", "=", self._name),
-            ("res_id", "=", partner.id)]).unlink()
+        partner.env["ir.attachment"].search(
+            [("res_model", "=", self._name), ("res_id", "=", partner.id)]
+        ).unlink()
         partner.message_follower_ids.unlink()
         partner.with_delay().clear_message_history()
         return True
 
     def clear_message_history(self):
-        return self.env["mail.message"].search([
-            ("model", "=", self._name),
-            ("res_id", "in", self.ids)
-        ]).unlink()
+        return (
+            self.env["mail.message"]
+            .search([("model", "=", self._name), ("res_id", "in", self.ids)])
+            .unlink()
+        )
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
