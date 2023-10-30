@@ -487,8 +487,11 @@ class ResPartner(models.Model):
             [("res_model", "=", self._name), ("res_id", "=", partner.id)]
         ).unlink()
         partner.message_follower_ids.unlink()
-        partner.message_ids.with_delay().unlink()
+        partner.with_delay().clear_message_history()
         return True
+
+    def clear_message_history(self):
+        return self.mapped("message_ids").unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
