@@ -998,6 +998,22 @@ class SponsorshipContract(models.Model):
                     or eval(f"contract.{gift_type}_invoice") <= 0:
                 contracts -= contract
 
+            # checks if there is already a gift for this year which has been cancelled
+            current_year = fields.Datetime.now().year
+            start_of_year = fields.Datetime.from_string(f"{current_year}-01-01 00:00:00")
+            end_of_year = fields.Datetime.from_string(f"{current_year}-12-31 23:59:59")
+            gift_this_year = self.env["account.move.line"].search(
+                [
+                    ("partner_id", "=", contract.partner_id.id),
+                    ("name", "ilike", f"{gift_type}"),
+                    ("date", ">=", start_of_year),
+                    ("date", "<=", end_of_year),
+                    ("parent_state", "=", "cancel"),
+                ]
+            )
+            if gift_this_year:
+                contracts -= contract
+
         if contracts:
             total = str(len(contracts))
             count = 1
