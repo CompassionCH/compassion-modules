@@ -404,8 +404,7 @@ class ResPartner(models.Model):
                 else:
                     error_message = message.failure_reason
                 raise UserError(error_message)
-        else:
-            self.anonymize()
+        self.anonymize()
         # Reload the view
         return {"type": "ir.actions.client", "tag": "reload"}
 
@@ -491,7 +490,10 @@ class ResPartner(models.Model):
         return True
 
     def clear_message_history(self):
-        return self.mapped("message_ids").unlink()
+        return self.env["mail.message"].search([
+            ("model", "=", self._name),
+            ("res_id", "in", self.ids)
+        ]).unlink()
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
