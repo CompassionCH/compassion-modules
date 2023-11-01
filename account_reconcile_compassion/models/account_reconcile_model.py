@@ -16,6 +16,15 @@ class AccountReconcileModel(models.Model):
         default=True,
         help="Check to disable thank you letter for donation"
     )
+    only_this_month = fields.Boolean(
+        default=False,
+        help="Check to search only from the start of the month"
+    )
+
+    @api.onchange("past_months_limit")
+    def _uncheck_only_this_month(self):
+        if self.past_months_limit and self.only_this_month:
+            self.only_this_month = False
 
     @api.model
     def product_changed(self, product_id, statement_id):
@@ -69,8 +78,33 @@ class AccountReconcileModel(models.Model):
         :return:                (query, params)
         '''
         query, params = super()._get_invoice_matching_query(st_lines_with_partner, excluded_ids)
-        bank_statement_date = self.env.context.get("bank_statement_date")
-        if params.get("aml_date_limit") and bank_statement_date:
-            date_limit = bank_statement_date - relativedelta(months=self.past_months_limit)
-            params['aml_date_limit'] = date_limit
+        for line in st_lines_with_partner:
+            line = line[0]
+            bank_statement_date = line['date']
+            if self.past_months_limit == 0 and self.only_this_month:
+                if bank_statement_date:
+                    date_limit = bank_statement_date - relativedelta(days=bank_statement_date.day)
+                else:
+                    date_limit = fields.Date.context_today(self) - relativedelta(
+                        days=fields.Date.context_today(self).day
+                    )
+
+            elif self.past_months_limit:
+                if bank_statement_date:
+                    date_limit = bank_statement_date - relativedelta(months=self.past_months_limit)
+                else:
+                    date_limit = fields.Date.context_today(self) - relativedelta(months=self.past_months_limit)
+
+            else:
+                continue
+
+            query = (query[:query.find("{} AND (".format(line.id)) + 6 + len(str(line.id))] +
+                     " aml.date >= %(aml_date_limit{})s AND ".format(line.id) +
+                     query[query.find("{} AND (".format(line.id)) + 6 + len(str(line.id)):])
+            params['aml_date_limit{}'.format(line.id)] = date_limit
+
+        if params.get("aml_date_limit"):
+            # On enlève la partie date de la query de base vu qu'on l'ajoute pour toutes les lignes.
+            query = query.replace(" AND aml.date >= %(aml_date_limit)s", "")
+
         return query, params
