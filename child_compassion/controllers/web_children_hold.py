@@ -26,7 +26,6 @@ class RestController(http.Controller):
 
     @http.route("/web_children_hold", type="http", auth="public", methods=["GET"])
     def handler_web_children_hold(self):
-
         headers = request.httprequest.headers
         self._validate_headers(headers)
 

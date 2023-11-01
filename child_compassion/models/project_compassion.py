@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 try:
     from pytz import timezone
     from timezonefinder import TimezoneFinder
-except (ImportError, IOError):
+except (OSError, ImportError):
     logger.warning("Please install timezonefinder and pytz")
 
 

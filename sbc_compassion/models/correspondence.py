@@ -558,7 +558,7 @@ class Correspondence(models.Model):
         # Extract pages and additional images
         pages = []
         images = []
-        with (Image(blob=image_data, resolution=150)) as page_image:
+        with Image(blob=image_data, resolution=150) as page_image:
             for i in page_image.sequence:
                 pages.append(base64.b64encode(Image(i).make_blob("jpg")))
                 # For additional pages, check if the page contains text.

@@ -505,7 +505,6 @@ class ResPartner(models.Model):
 
     @api.model
     def json_to_data(self, json, mapping_name=None):
-
         if "GPID" in json:
             json["GPID"] = json["GPID"][3:]
 

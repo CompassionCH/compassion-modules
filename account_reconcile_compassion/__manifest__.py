@@ -29,7 +29,7 @@
 # pylint: disable=C8101
 {
     "name": "Bank Statement Reconcile for Compassion CH",
-    "version": "14.0.1.1.0",
+    "version": "14.0.1.1.1",
     "author": "Compassion CH",
     "license": "AGPL-3",
     "category": "Finance",
@@ -54,6 +54,7 @@
         "views/statement_view.xml",
         "views/statement_operation_view.xml",
         "views/view_bank_statement_form.xml",
+        "views/view_account_reconcile_compassion.xml",
     ],
     "qweb": ["static/src/xml/account_move_reconciliation.xml"],
     "auto_install": False,

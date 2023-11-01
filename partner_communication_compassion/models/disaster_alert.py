@@ -35,7 +35,7 @@ class DisasterAlert(models.Model):
                     "child_compassion.open_view_field_office_disaster"
                 ).id,
             }
-            action = "/web?{}#{}".format(urlencode(query), urlencode(fragment))
+            action = f"/web?{urlencode(query)}#{urlencode(fragment)}"
             disaster.access_link = urljoin(base_url, action)
 
 

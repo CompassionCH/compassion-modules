@@ -316,8 +316,8 @@ class CrmClaim(models.Model):
                 "mail.mail_activity_data_todo",
                 summary=_("A support request require your attention"),
                 note=_(
-                    "The request {} you were assigned to requires"
-                    " your attention.".format(req.code)
+                    f"The request {req.code} you were assigned to requires"
+                    " your attention."
                 ),
                 user_id=req.user_id.id,
             )

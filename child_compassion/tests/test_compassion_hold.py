@@ -8,8 +8,8 @@
 #
 ##############################################################################
 from datetime import datetime
+from unittest import mock
 
-import mock
 from dateutil.relativedelta import relativedelta
 
 from odoo.exceptions import UserError

@@ -48,7 +48,6 @@ class CommunicationDefaults(models.AbstractModel):
 
 
 class CommunicationDefaultConfig(models.Model):
-
     _name = "partner.communication.default.config"
     _inherit = "partner.communication.defaults"
     _description = "Communication Default Config"

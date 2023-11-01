@@ -42,7 +42,6 @@ class IrActionsServer(models.Model):
 
         model_name = action.model_name
         if "records" in eval_context:
-
             for raw_record in eval_context["records"]:
                 is_self = action.partner_field == "self"
                 partner = raw_record if is_self else raw_record[action.partner_field]
