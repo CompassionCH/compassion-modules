@@ -188,7 +188,7 @@ class TestGifts(BaseSponsorshipTest):
                 "gift_type": "Beneficiary Gift",
                 "attribution": "Sponsorship",
                 "sponsorship_gift_type": "Birthday",
-                "instructions": "Take these ${}".format(amount),
+                "instructions": f"Take these ${amount}",
                 "amount": amount,
             }
         )

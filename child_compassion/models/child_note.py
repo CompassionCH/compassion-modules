@@ -37,7 +37,6 @@ class ChildNote(models.Model):
 
     @api.model
     def process_commkit(self, commkit_data):
-
         note_ids = list()
         for notes_data in commkit_data.get("GPPublicNotesKit", [commkit_data]):
             vals = self.json_to_data(notes_data)

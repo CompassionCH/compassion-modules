@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from mock import patch
+from unittest.mock import patch
 
 from .onramp_base_test import TestOnramp
 

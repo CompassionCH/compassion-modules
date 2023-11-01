@@ -108,7 +108,7 @@ class ProjectDescription(models.TransientModel):
         self._show_field(
             desc(".community_population")[1],
             desc("#community_population"),
-            "{:,}".format(project.community_population).replace(",", "'"),
+            f"{project.community_population:,}".replace(",", "'"),
         )
         desc(".community_language")[0].text = _("Language")
         self._show_field(

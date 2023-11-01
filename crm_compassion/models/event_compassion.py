@@ -279,7 +279,6 @@ class EventCompassion(models.Model):
         super().write(vals)
         if not self.env.context.get("no_sync"):
             for event in self:
-
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
                 if "user_id" in vals and event.origin_id:

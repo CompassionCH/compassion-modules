@@ -23,12 +23,10 @@ class PartnerCommunicationJob(models.Model):
         extension_mapping = {
             self.env.ref(
                 "partner_communication_reminder.sponsorship_activation_reminder_1"
-            ): first_extension
-            + 7,
+            ): first_extension + 7,
             self.env.ref(
                 "partner_communication_reminder.sponsorship_activation_reminder_2"
-            ): second_extension
-            + 7,
+            ): second_extension + 7,
             self.env.ref(
                 "partner_communication_reminder.sponsorship_activation_reminder_3"
             ): 10,

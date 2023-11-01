@@ -411,7 +411,6 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     @api.model
     def create_intervention(self, commkit_data):
-
         # Two messages can call this method. Try to find which one.
         intervention_details_request = commkit_data.get(
             "GPInitiatedInterventionHoldNotification",

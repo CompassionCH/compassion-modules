@@ -63,7 +63,7 @@ class AccountStatement(models.Model):
         )
         invoices.button_draft()
         invoices.button_cancel()
-        return super(AccountStatement, self).unlink()
+        return super().unlink()
 
     def button_reopen(self):
         self.invoice_ids.filtered(lambda i: i.payment_state != "paid").button_draft()

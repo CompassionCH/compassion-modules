@@ -15,7 +15,7 @@ from odoo.exceptions import UserError
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
-class SBCConnector(object):
+class SBCConnector:
     def __init__(self, env):
         self.connector = OnrampConnector(env)
 

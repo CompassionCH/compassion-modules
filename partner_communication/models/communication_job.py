@@ -409,7 +409,6 @@ class CommunicationJob(models.Model):
 
         if "need_call" in vals or "state" in vals:
             for job in self:
-
                 # if the call must be done after the sending, we unlink all activities
                 # associated with the job (as for the moment, there is only one activity
                 # type)
@@ -518,7 +517,7 @@ class CommunicationJob(models.Model):
                     TemplateSyntaxError,
                 ) as e:
                     _logger.error(
-                        "Failed to generate communication {}".format(str(e)),
+                        f"Failed to generate communication {str(e)}",
                         exc_info=True,
                     )
                     job.env.clear()
@@ -526,7 +525,7 @@ class CommunicationJob(models.Model):
                         job.write(
                             {
                                 "state": "failure",
-                                "body_html": "{} {}".format(str(type(e)), str(e)),
+                                "body_html": f"{str(type(e))} {str(e)}",
                             }
                         )
         return True

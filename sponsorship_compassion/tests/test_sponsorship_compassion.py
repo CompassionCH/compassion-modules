@@ -9,8 +9,8 @@
 ##############################################################################
 
 import logging
+from unittest import mock
 
-import mock
 from dateutil.relativedelta import relativedelta
 from dateutil.utils import today
 

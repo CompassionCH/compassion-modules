@@ -41,7 +41,7 @@ class CommunicationRevisionHistory(models.Model):
     def name_get(self):
         names = []
         for backup in self:
-            name = "{:.2f}".format(round(backup.revision_number, 2))
+            name = f"{round(backup.revision_number, 2):.2f}"
             names.append((backup.id, name))
         return names
 

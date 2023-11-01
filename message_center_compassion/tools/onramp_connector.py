@@ -22,7 +22,7 @@ from odoo.tools.config import config
 _logger = logging.getLogger(__name__)
 
 
-class OnrampConnector(object):
+class OnrampConnector:
     """Singleton class to connect to U.S. Onramp in order to send
     messages."""
 

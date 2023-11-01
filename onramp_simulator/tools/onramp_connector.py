@@ -12,7 +12,7 @@ import json
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
-class TestOnrampConnector(object):
+class TestOnrampConnector:
     def __init__(self, env):
         self.connector = OnrampConnector(env)
 
