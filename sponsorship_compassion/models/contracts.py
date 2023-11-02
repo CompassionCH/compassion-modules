@@ -1005,10 +1005,11 @@ class SponsorshipContract(models.Model):
             gift_this_year = self.env["account.move.line"].search(
                 [
                     ("partner_id", "=", contract.partner_id.id),
-                    ("name", "ilike", f"{gift_type}"),
+                    ("product_id", "=", product_id),
                     ("date", ">=", start_of_year),
                     ("date", "<=", end_of_year),
                     ("parent_state", "=", "cancel"),
+                    ("contract_id", "=", contract.id),
                 ]
             )
             if gift_this_year:
