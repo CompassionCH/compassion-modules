@@ -1014,6 +1014,22 @@ class SponsorshipContract(models.Model):
             if gift_this_year:
                 contracts -= contract
 
+            # we don't generate christmas gifts if the current month is not the one defined
+            # in sponsorship_compassion.christmas_inv_due_month
+            if gift_type == "christmas":
+                current_month = fields.Datetime.now().month
+                christ_inv_due = int(self.env["ir.config_parameter"].sudo().get_param(
+                        "sponsorship_compassion.christmas_inv_due_month", 10))
+                if current_month != christ_inv_due:
+                    contracts -= contract
+
+            # we don't generate birthday gifts if the current month is not 3 months before the birthday
+            if gift_type == "birthday":
+                current_month = fields.Datetime.now().month
+                birthday_month = contract.child_id.birthdate.month
+                if current_month != (birthday_month - 3) % 12:
+                    contracts -= contract
+
         if contracts:
             total = str(len(contracts))
             count = 1
