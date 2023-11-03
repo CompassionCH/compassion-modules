@@ -11,7 +11,7 @@
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
@@ -19,7 +19,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 
-from .product_names import GIFT_PRODUCTS_REF, BIRTHDAY_GIFT, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
+from .product_names import GIFT_PRODUCTS_REF, BIRTHDAY_GIFT, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS, CHRISTMAS_GIFT
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -474,12 +474,12 @@ class SponsorshipContract(models.Model):
     @api.depends("correspondent_id")
     def _compute_is_first_sponsorship(self):
         for sponsorship in self:
-            old_sponsorships = sponsorship.correspondent_id.sponsorship_ids\
+            old_sponsorships = sponsorship.correspondent_id.sponsorship_ids \
                 .filtered(
-                    lambda c: c.state != "cancelled" and c.start_date
-                    and c.start_date < (
-                        sponsorship.start_date or sponsorship.create_date
-                        ))
+                lambda c: c.state != "cancelled" and c.start_date
+                          and c.start_date < (
+                                  sponsorship.start_date or sponsorship.create_date
+                          ))
             sponsorship.is_first_sponsorship = not old_sponsorships
 
     ##########################################################################
@@ -1015,21 +1015,73 @@ class SponsorshipContract(models.Model):
             if gift_this_year:
                 contracts -= contract
 
-            # we don't generate christmas gifts if the current month is not the one defined
-            # in sponsorship_compassion.christmas_inv_due_month
-            if gift_type == "christmas":
-                current_month = fields.Datetime.now().month
+            # TODO check if the last possible bascule date for the contract is not passed
+
+            current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).date()
+            event_date_str = str(contract.child_id.birthdate) if gift_type == BIRTHDAY_GIFT else f"{current_year}-12-25"
+            event_date = date.fromisoformat(event_date_str)
+
+            # Get the parameters to determine the bascule date
+            company_id = contract.company_id.id
+            param_string = f"recurring_contract.do_generate_curr_month_{company_id}"
+            curr_month = bool(self.env["ir.config_parameter"].sudo().get_param(param_string))
+            block_day = int(self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
+                                                                  31))
+            if curr_month:
+                event_date = event_date.replace(year=current_year)
+                event_bascule_date = event_date.replace(day=block_day)
+
+            else:
+                event_date = event_date.replace(year=current_year)
+                event_bascule_date = event_date.replace(day=block_day) + relativedelta(months=-1)
+
+            # If the bascule date is after the event date, the true bascule date is 1 month before
+            if event_bascule_date > event_date:
+                event_bascule_date = event_bascule_date + relativedelta(months=-1)
+
+            if gift_type == BIRTHDAY_GIFT:
+                # We only generate the birthday gift if the current date is between 3 months and 2 weeks before the
+                # birthday
+                if not (event_bascule_date + relativedelta(months=-3) <= current_date
+                        <= event_bascule_date + relativedelta(weeks=-2)):
+                    contracts -= contract
+            else:
+                # If the gift is Christmas, and it is the month defined in
+                # sponsorship_compassion.christmas_inv_due_month we generate the gift
                 christ_inv_due = int(self.env["ir.config_parameter"].sudo().get_param(
-                        "sponsorship_compassion.christmas_inv_due_month", 10))
-                if current_month != christ_inv_due:
+                    "sponsorship_compassion.christmas_inv_due_month", 10))
+                christ_inv_due_date = event_date.replace(month=christ_inv_due, day=block_day)
+
+                bla0 = current_date
+                bla1 = contract.activation_date.year
+                bla2 = contract.activation_date.date()
+                bla3 = event_bascule_date + relativedelta(weeks=-2)
+                if not (contract.activation_date.year == current_year and contract.activation_date.date() >= christ_inv_due_date and current_date <= event_bascule_date + relativedelta(weeks=-2)):
+                    # Here we handle the case where a sponsorship is activated after the due month for the Christmas
+                    # gift but still could potentially offer a gift
+                    contracts -= contract
+                elif not (contract.activation_date.date() < christ_inv_due_date and current_date.month == christ_inv_due):
+                    # Here we handle the case where a sponsorship is activated before the due month for the Christmas
+                    # and the current month is not the due month
                     contracts -= contract
 
-            # we don't generate birthday gifts if the current month is not 3 months before the birthday
-            if gift_type == "birthday":
-                current_month = fields.Datetime.now().month
-                birthday_month = contract.child_id.birthdate.month
-                if current_month != (birthday_month - 3) % 12:
-                    contracts -= contract
+
+            # We generate the Christmas gift only if the current month is 3 months before the due month defined
+            # in sponsorship_compassion.christmas_inv_due_month
+            # if gift_type == CHRISTMAS_GIFT:
+            #     current_month = fields.Datetime.now().month
+            #     christ_inv_due = int(self.env["ir.config_parameter"].sudo().get_param(
+            #         "sponsorship_compassion.christmas_inv_due_month", 10))
+            #     christ_inv_due -= 0
+            #     if current_month != christ_inv_due:
+            #         contracts -= contract
+            #
+            # # we don't generate birthday gifts if the current month is not 3 months before the birthday
+            # if gift_type == "birthday":
+            #     current_month = fields.Datetime.now().month
+            #     birthday_month = contract.child_id.birthdate.month
+            #     if current_month != (birthday_month - 3) % 12:
+            #         contracts -= contract
 
         if contracts:
             total = str(len(contracts))
