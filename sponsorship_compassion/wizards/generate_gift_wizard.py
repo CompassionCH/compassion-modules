@@ -33,7 +33,7 @@ class GenerateGiftWizard(models.TransientModel):
     force = fields.Boolean("Force creation", help="Creates the gift even if one was already made the same year.")
     quantity = fields.Integer(default=1)
 
-    def generate_invoice(self):
+    def generate_invoice(self, due_date):
         self.ensure_one()
         if not self.description:
             self.description = self.product_id.display_name
@@ -47,23 +47,10 @@ class GenerateGiftWizard(models.TransientModel):
             if self.product_id.default_code == GIFT_PRODUCTS_REF[0] and not contract.child_id.birthdate:
                 logger.error("The birthdate of the child is missing!")
                 return 1
+
             # Sets the invoice date to the one in the context if it exists
-            invoice_date = self.invoice_date if self.env.context.get("force_date") else False
-            if not invoice_date:
-                # Computes the invoice date for birthday gifts
-                if self.product_id.default_code == GIFT_PRODUCTS_REF[0]:
-                    invoice_date = self.compute_date_gift_invoice(
-                        contract.child_id.birthdate, self.invoice_date
-                    )
-                # Computes the invoice date for Christmas gifts
-                else:
-                    invoice_date = self.compute_date_gift_invoice(
-                        date(date.today().year, 12, 25),
-                        date(
-                            date.today().year,
-                            self.env["res.config.settings"].get_param("christmas_inv_due_month", 10),
-                            1)
-                    )
+            invoice_date = self.invoice_date if self.env.context.get("force_date") else due_date
+
             # if the generation is suspended we don't want the gift to be generated
             if contract.group_id.invoice_suspended_until and contract.group_id.invoice_suspended_until > invoice_date:
                 logger.warning("The invoices are suspended")
@@ -97,21 +84,6 @@ class GenerateGiftWizard(models.TransientModel):
             "domain": [("id", "in", invoice_ids)],
             "type": "ir.actions.act_window",
         }
-
-    @staticmethod
-    def compute_date_gift_invoice(gift_event_date, invoice_due_date):
-        """
-        Set date of invoice two months before gift event
-        :param gift_event_date: date of the gift event
-        :param invoice_due_date: due date of the invoice
-        :return: new_date, late (new invoice due date, whether the invoice is late or not)
-        """
-        new_date = gift_event_date.replace(year=date.today().year) + relativedelta(months=-2)
-        if new_date < invoice_due_date:
-            new_date = new_date + relativedelta(years=1)
-        # Ensure that the day of the new date is within the range of days in the month
-        new_date = new_date.replace(day=1)
-        return new_date
 
     def _build_invoice_gen_data(self, invoicing_date, invoicer):
         """ Setup a dict with data passed to invoice.create.

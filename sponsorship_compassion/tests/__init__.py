@@ -8,6 +8,5 @@
 #
 ##############################################################################
 
-from . import test_gift
 from . import test_sponsorship_compassion
 from . import test_sponsorship_impact

@@ -981,7 +981,32 @@ class SponsorshipContract(models.Model):
 
     def _generate_gifts(self, invoicer, gift_type):
         """ Creates the annual gifts for sponsorships that
-        have set the option for automatic birthday or christmas gifts creation. """
+        have set the option for automatic birthday or Christmas gifts creation. """
+        def compute_bascule_date(contract_inner, event_date_inner):
+            # Get the parameters to determine the bascule date
+            company_id = contract_inner.company_id.id
+            param_string = f"recurring_contract.do_generate_curr_month_{company_id}"
+            curr_month = bool(self.env["ir.config_parameter"].sudo().get_param(param_string))
+            block_day_inner = int(
+                self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
+                                                                 31))
+            # we subtract 1 to the block_day to get the last day possible to make the payment
+            block_day_inner = block_day_inner - 1 if block_day_inner > 1 else block_day_inner
+
+            if curr_month:
+                event_date_inner = event_date_inner.replace(year=current_year)
+                event_bascule_date_inner = event_date_inner.replace(day=block_day_inner)
+
+            else:
+                event_date_inner = event_date_inner.replace(year=current_year)
+                event_bascule_date_inner = event_date_inner.replace(day=block_day_inner) + relativedelta(months=-1)
+
+                # If the bascule date is after the event date, the true bascule date is 1 month before
+            if event_bascule_date_inner > event_date_inner:
+                event_bascule_date_inner = event_bascule_date_inner + relativedelta(months=-1)
+
+            return event_bascule_date_inner, block_day_inner
+
         logger.debug(f"Automatic {gift_type} Gift Generation Started.")
         # Search active Sponsorships with automatic birthday gift
         contracts = self
@@ -992,6 +1017,7 @@ class SponsorshipContract(models.Model):
                 limit=1).id
         )
 
+        due_dates = {} # Dict to store the due dates of the contracts
         # Don't generate gift for contract that are holding gifts or if they don't have an amount for the gift
         for contract in contracts:
             if contract.project_id.hold_gifts \
@@ -1014,78 +1040,45 @@ class SponsorshipContract(models.Model):
             )
             if gift_this_year:
                 contracts -= contract
-
-            # TODO check if the last possible bascule date for the contract is not passed
+                continue
 
             current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).date()
-            event_date_str = str(contract.child_id.birthdate) if gift_type == BIRTHDAY_GIFT else f"{current_year}-12-25"
-            event_date = date.fromisoformat(event_date_str)
-
-            # Get the parameters to determine the bascule date
-            company_id = contract.company_id.id
-            param_string = f"recurring_contract.do_generate_curr_month_{company_id}"
-            curr_month = bool(self.env["ir.config_parameter"].sudo().get_param(param_string))
-            block_day = int(self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
-                                                                  31))
-            if curr_month:
-                event_date = event_date.replace(year=current_year)
-                event_bascule_date = event_date.replace(day=block_day)
-
-            else:
-                event_date = event_date.replace(year=current_year)
-                event_bascule_date = event_date.replace(day=block_day) + relativedelta(months=-1)
-
-            # If the bascule date is after the event date, the true bascule date is 1 month before
-            if event_bascule_date > event_date:
-                event_bascule_date = event_bascule_date + relativedelta(months=-1)
-
             if gift_type == BIRTHDAY_GIFT:
+                event_date_str = str(contract.child_id.birthdate)
+                event_date = date.fromisoformat(event_date_str)
+
+                event_bascule_date, _ = compute_bascule_date(contract, event_date)
+
                 # We only generate the birthday gift if the current date is between 3 months and 2 weeks before the
-                # birthday
-                if not (event_bascule_date + relativedelta(months=-3) <= current_date
-                        <= event_bascule_date + relativedelta(weeks=-2)):
+                # bascule date
+                if event_bascule_date + relativedelta(months=-3) <= current_date <= event_bascule_date + relativedelta(weeks=-2):
+                    due_dates[contract] = event_bascule_date
+                else:
                     contracts -= contract
-            else:
-                # If the gift is Christmas, and it is the month defined in
-                # sponsorship_compassion.christmas_inv_due_month we generate the gift
+            else:  # gift_type == CHRISTMAS_GIFT
                 christ_inv_due = int(self.env["ir.config_parameter"].sudo().get_param(
                     "sponsorship_compassion.christmas_inv_due_month", 10))
-                christ_inv_due_date = event_date.replace(month=christ_inv_due, day=block_day)
 
-                bla0 = current_date
-                bla1 = contract.activation_date.year
-                bla2 = contract.activation_date.date()
-                bla3 = event_bascule_date + relativedelta(weeks=-2)
-                if not (contract.activation_date.year == current_year and contract.activation_date.date() >= christ_inv_due_date and current_date <= event_bascule_date + relativedelta(weeks=-2)):
-                    # Here we handle the case where a sponsorship is activated after the due month for the Christmas
-                    # gift but still could potentially offer a gift
+                christmas_date = current_date.replace(month=12, day=25)
+                event_bascule_date, block_day = compute_bascule_date(contract, christmas_date)
+                # maybe pas besoin car la deadline est vraiment celle défini dans
+                # sponsorship_compassion.christmas_inv_due_month
+
+                if current_date.month == christ_inv_due and current_date.day <= block_day:
+                    # Here we generate the Christmas gifts as long as the current date is before the block day and
+                    # during the month defined in sponsorship_compassion.christmas_inv_due_month
+                    due_dates[contract] = current_date.replace(month=christ_inv_due, day=block_day)
+                elif current_date < event_bascule_date:
+                    # Here we handle the case where a sponsorship is created after the
+                    # sponsorship_compassion.christmas_inv_due_month and block day but could still have a Christmas
+                    # gift since the sponsorship is created before the final possible date to pay
+                    # TODO need to check if correct
+                    due_dates[contract] = event_bascule_date
+                else:
                     contracts -= contract
-                elif not (contract.activation_date.date() < christ_inv_due_date and current_date.month == christ_inv_due):
-                    # Here we handle the case where a sponsorship is activated before the due month for the Christmas
-                    # and the current month is not the due month
-                    contracts -= contract
-
-
-            # We generate the Christmas gift only if the current month is 3 months before the due month defined
-            # in sponsorship_compassion.christmas_inv_due_month
-            # if gift_type == CHRISTMAS_GIFT:
-            #     current_month = fields.Datetime.now().month
-            #     christ_inv_due = int(self.env["ir.config_parameter"].sudo().get_param(
-            #         "sponsorship_compassion.christmas_inv_due_month", 10))
-            #     christ_inv_due -= 0
-            #     if current_month != christ_inv_due:
-            #         contracts -= contract
-            #
-            # # we don't generate birthday gifts if the current month is not 3 months before the birthday
-            # if gift_type == "birthday":
-            #     current_month = fields.Datetime.now().month
-            #     birthday_month = contract.child_id.birthdate.month
-            #     if current_month != (birthday_month - 3) % 12:
-            #         contracts -= contract
 
         if contracts:
             total = str(len(contracts))
-            count = 1
             logger.debug(f"Found {total} {gift_type} Gifts to generate.")
 
             gift_wizard = (
@@ -1103,22 +1096,23 @@ class SponsorshipContract(models.Model):
             )
 
             # Generate invoices
+            count = 1
             for contract in contracts:
                 logger.debug(f"{gift_type} Gift Generation: {count}/{total} ")
-                self._generate_gift(gift_wizard, contract, invoicer, gift_type)
+                self._generate_gift(gift_wizard, contract, invoicer, gift_type, due_dates[contract])
                 count += 1
 
         logger.debug(f"Automatic {gift_type} Gift Generation Finished !!")
         return True
 
-    def _generate_gift(self, gift_wizard, contract, invoicer, gift_type):
+    def _generate_gift(self, gift_wizard, contract, invoicer, gift_type, due_date):
         gift_wizard.write(
             {
                 "amount": eval(f"contract.{gift_type}_invoice"),
                 "contract_id": contract.id
             }
         )
-        gift_wizard.with_context(invoicer=invoicer).generate_invoice()
+        gift_wizard.with_context(invoicer=invoicer).generate_invoice(due_date)
 
     def invoice_paid(self, invoice):
         """ Prevent to reconcile invoices for sponsorships older than 6 months. """
