@@ -991,7 +991,7 @@ class SponsorshipContract(models.Model):
                 self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
                                                                  31))
             # we subtract 1 to the block_day to get the last day possible to make the payment
-            block_day_inner = block_day_inner - 1 if block_day_inner > 1 else block_day_inner
+            block_day_inner = block_day_inner - 1 if block_day_inner > 1 else block_day_inner  # TODO check if correct
 
             if curr_month:
                 event_date_inner = event_date_inner.replace(year=current_year)
@@ -1001,7 +1001,7 @@ class SponsorshipContract(models.Model):
                 event_date_inner = event_date_inner.replace(year=current_year)
                 event_bascule_date_inner = event_date_inner.replace(day=block_day_inner) + relativedelta(months=-1)
 
-                # If the bascule date is after the event date, the true bascule date is 1 month before
+            # If the bascule date is after the event date, the true bascule date is 1 month before
             if event_bascule_date_inner > event_date_inner:
                 event_bascule_date_inner = event_bascule_date_inner + relativedelta(months=-1)
 
@@ -1042,6 +1042,7 @@ class SponsorshipContract(models.Model):
                 contracts -= contract
                 continue
 
+            # Checks if we need to generate the birthday gifts or the Christmas gifts
             current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).date()
             if gift_type == BIRTHDAY_GIFT:
                 event_date_str = str(contract.child_id.birthdate)
@@ -1061,8 +1062,8 @@ class SponsorshipContract(models.Model):
 
                 christmas_date = current_date.replace(month=12, day=25)
                 event_bascule_date, block_day = compute_bascule_date(contract, christmas_date)
-                # maybe pas besoin car la deadline est vraiment celle défini dans
-                # sponsorship_compassion.christmas_inv_due_month
+                # TODO checks if we need this. Because maybe the deadline defined in
+                #  sponsorship_compassion.christmas_inv_due_month is really the deadline
 
                 if current_date.month == christ_inv_due and current_date.day <= block_day:
                     # Here we generate the Christmas gifts as long as the current date is before the block day and
@@ -1072,7 +1073,7 @@ class SponsorshipContract(models.Model):
                     # Here we handle the case where a sponsorship is created after the
                     # sponsorship_compassion.christmas_inv_due_month and block day but could still have a Christmas
                     # gift since the sponsorship is created before the final possible date to pay
-                    # TODO need to check if correct
+                    # TODO need to check if correct (generate even though we are after the block day/ month)
                     due_dates[contract] = event_bascule_date
                 else:
                     contracts -= contract
