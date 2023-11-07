@@ -990,8 +990,6 @@ class SponsorshipContract(models.Model):
             block_day_inner = int(
                 self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
                                                                  31))
-            # we subtract 1 to the block_day to get the last day possible to make the payment
-            block_day_inner = block_day_inner - 1 if block_day_inner > 1 else block_day_inner  # TODO check if correct
 
             if curr_month:
                 event_date_inner = event_date_inner.replace(year=current_year)
@@ -1040,7 +1038,6 @@ class SponsorshipContract(models.Model):
             )
             if gift_this_year:
                 contracts -= contract
-                continue
 
             # Checks if we need to generate the birthday gifts or the Christmas gifts
             current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).date()
@@ -1069,7 +1066,7 @@ class SponsorshipContract(models.Model):
                     # Here we generate the Christmas gifts as long as the current date is before the block day and
                     # during the month defined in sponsorship_compassion.christmas_inv_due_month
                     due_dates[contract] = current_date.replace(month=christ_inv_due, day=block_day)
-                elif current_date < event_bascule_date:
+                elif current_date < event_bascule_date: # todo remove
                     # Here we handle the case where a sponsorship is created after the
                     # sponsorship_compassion.christmas_inv_due_month and block day but could still have a Christmas
                     # gift since the sponsorship is created before the final possible date to pay
