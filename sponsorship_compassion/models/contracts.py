@@ -11,7 +11,7 @@
 import json
 import logging
 import os
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 from odoo.addons.child_compassion.models.compassion_hold import HoldType
@@ -19,7 +19,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError, ValidationError
 
-from .product_names import GIFT_PRODUCTS_REF, BIRTHDAY_GIFT, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS, CHRISTMAS_GIFT
+from .product_names import GIFT_PRODUCTS_REF, BIRTHDAY_GIFT, GIFT_CATEGORY, PRODUCT_GIFT_CHRISTMAS
 
 logger = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(__file__)
@@ -476,10 +476,10 @@ class SponsorshipContract(models.Model):
         for sponsorship in self:
             old_sponsorships = sponsorship.correspondent_id.sponsorship_ids \
                 .filtered(
-                lambda c: c.state != "cancelled" and c.start_date
-                          and c.start_date < (
-                                  sponsorship.start_date or sponsorship.create_date
-                          ))
+                    lambda c: c.state != "cancelled" and c.start_date
+                              and c.start_date < (
+                                      sponsorship.start_date or sponsorship.create_date
+                              ))
             sponsorship.is_first_sponsorship = not old_sponsorships
 
     ##########################################################################
@@ -1019,7 +1019,7 @@ class SponsorshipContract(models.Model):
 
             # Checks if we need to generate the birthday gifts or the Christmas gifts
             current_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).date()
-            if gift_type == BIRTHDAY_GIFT: # case of birthday gift
+            if gift_type == BIRTHDAY_GIFT:  # case of birthday gift
                 event_date_str = str(contract.child_id.birthdate)
                 event_date = date.fromisoformat(event_date_str)
 
@@ -1027,7 +1027,8 @@ class SponsorshipContract(models.Model):
 
                 # We only generate the birthday gift if the current date is between 3 months and 2 weeks before the
                 # bascule date
-                if event_bascule_date + relativedelta(months=-3) <= current_date <= event_bascule_date + relativedelta(weeks=-2):
+                if event_bascule_date + relativedelta(months=-3) <= current_date <= event_bascule_date + relativedelta(
+                        weeks=-2):
                     due_dates[contract] = event_bascule_date
                 else:
                     contracts -= contract
