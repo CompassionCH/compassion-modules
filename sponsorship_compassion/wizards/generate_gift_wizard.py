@@ -33,7 +33,7 @@ class GenerateGiftWizard(models.TransientModel):
     force = fields.Boolean("Force creation", help="Creates the gift even if one was already made the same year.")
     quantity = fields.Integer(default=1)
 
-    def generate_invoice(self, due_date):
+    def generate_invoice(self, due_date=None):
         self.ensure_one()
         if not self.description:
             self.description = self.product_id.display_name
