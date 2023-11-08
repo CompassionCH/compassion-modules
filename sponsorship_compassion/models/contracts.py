@@ -1217,7 +1217,7 @@ class SponsorshipContract(models.Model):
         # Get the parameters to determine the bascule date
         company_id = contract_inner.company_id.id
         param_string = f"recurring_contract.do_generate_curr_month_{company_id}"
-        curr_month = bool(self.env["ir.config_parameter"].sudo().get_param(param_string))
+        curr_month = self.env["ir.config_parameter"].sudo().get_param(param_string) == "True"
         block_day_inner = int(
             self.env['ir.config_parameter'].sudo().get_param(f'recurring_contract.invoice_block_day_{company_id}',
                                                              31))
