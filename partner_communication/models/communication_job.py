@@ -16,8 +16,8 @@ from io import BytesIO
 
 from jinja2 import TemplateSyntaxError
 
+from odoo.exceptions import UserError, QWebException, MissingError
 from odoo import _, api, fields, models, tools
-from odoo.exceptions import QWebException, UserError
 
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
@@ -502,21 +502,21 @@ class CommunicationJob(models.Model):
                         .with_context(lang=lang)
                         .get_generated_fields(job.email_template_id, [job.id])
                     )
-                    assert fields["body_html"] and fields["subject"]
-                    job.write(
-                        {
-                            "body_html": fields["body_html"],
-                            "subject": fields["subject"],
-                            "state": job.state if job.state != "failure" else "pending",
-                        }
-                    )
-                except (UserError, QWebException, TemplateSyntaxError, AssertionError):
-                    _logger.error("Failed to generate communication", exc_info=True)
+                    if not fields["body_html"] and not fields["subject"]:
+                        raise MissingError("Fields don't have a subject and a body")
+                    job.write({
+                        "body_html": fields["body_html"],
+                        "subject": fields["subject"],
+                        "state": job.state if job.state != "failure" else "pending"
+                    })
+                except (MissingError, UserError, QWebException, TemplateSyntaxError) as e:
+                    _logger.error("Failed to generate communication {}".format(str(e)), exc_info=True)
                     job.env.clear()
                     if job.state == "pending":
-                        job.write(
-                            {"state": "failure", "body_html": "Error in template"}
-                        )
+                        job.write({
+                            "state": "failure",
+                            "body_html": "{} {}".format(str(type(e)), str(e))
+                        })
         return True
 
     def quick_refresh(self):
