@@ -143,3 +143,11 @@ class AdvancedTranslatable(models.AbstractModel):
         else:
             res_string = dates and dates[0] or ""
         return res_string
+
+    def translate_selection_strings(self, selection_field_name):
+        """Translates the selection strings of the given field.
+        """
+        if not hasattr(self, selection_field_name):
+            return []
+        selection = self._fields[selection_field_name].selection
+        return [_(s[1]) for s in selection]
