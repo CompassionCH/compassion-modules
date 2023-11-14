@@ -18,12 +18,12 @@ class PartnerForm(models.AbstractModel):
     _description = "Object for partner fields in forms"
 
     partner_title = fields.Many2one("res.partner.title", "Title")
-    partner_lastname = fields.Char("Lastname", required=True)
-    partner_firstname = fields.Char("Firstname", required=True)
+    partner_lastname = fields.Char("Lastname")
+    partner_firstname = fields.Char("Firstname")
     partner_street = fields.Char("Street")
     partner_zip = fields.Char("Zip")
     partner_city = fields.Char("City")
-    partner_email = fields.Char("Email", required=True)
+    partner_email = fields.Char("Email")
     partner_birthdate_date = fields.Date("Birthdate")
     partner_phone = fields.Char("Phone")
     partner_mobile = fields.Char("Mobile")

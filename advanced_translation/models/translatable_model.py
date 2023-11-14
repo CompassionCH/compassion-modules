@@ -150,4 +150,4 @@ class AdvancedTranslatable(models.AbstractModel):
         if not hasattr(self, selection_field_name):
             return []
         selection = self._fields[selection_field_name].selection
-        return [_(s[1]) for s in selection]
+        return [(s[0], _(s[1])) for s in selection]
