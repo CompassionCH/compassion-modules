@@ -7,7 +7,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import import_review
-from . import download_letters
-from . import get_letter_image_wizard
-from . import sbc_settings
+from . import download_letters, get_letter_image_wizard, import_review, sbc_settings

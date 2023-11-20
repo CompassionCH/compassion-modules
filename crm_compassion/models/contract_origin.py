@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class ContractOrigin(models.Model):
@@ -33,7 +33,10 @@ class ContractOrigin(models.Model):
             for origin in self:
                 old_ambassador_id = origin.partner_id.id
                 sponsorships = self.env["recurring.contract"].search(
-                    [("origin_id", "=", origin.id), ("ambassador_id", "=", old_ambassador_id)]
+                    [
+                        ("origin_id", "=", origin.id),
+                        ("ambassador_id", "=", old_ambassador_id),
+                    ]
                 )
                 sponsorships.write({"ambassador_id": vals["partner_id"]})
                 invoice_lines = self.env["account.move.line"].search(
@@ -57,6 +60,11 @@ class ContractOrigin(models.Model):
         )
 
     def get_ambassador(self):
-        """Returns the partner considered as the 'Ambassador' that brought this origin of sponsorships."""
+        """Returns the partner considered as the 'Ambassador' that brought
+        this origin of sponsorships."""
         self.ensure_one()
-        return self.partner_id or self.event_id.user_id.partner_id or self.analytic_id.partner_id
+        return (
+            self.partner_id
+            or self.event_id.user_id.partner_id
+            or self.analytic_id.partner_id
+        )

@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, api, fields, _
+from odoo import _, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class CallWizard(models.TransientModel):
         return self.call_log(state)
 
     def call_log(self, state):
-        """ Prepare crm.phonecall creation. """
+        """Prepare crm.phonecall creation."""
         communication_id = self.env.context.get("click2dial_id")
         communication = self.env["partner.communication.job"].browse(communication_id)
         call_vals = {

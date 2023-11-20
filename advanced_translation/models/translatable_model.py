@@ -3,20 +3,26 @@ import re
 
 from babel.dates import format_datetime
 
-from odoo import models, fields, api, _
+from odoo import _, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class AdvancedTranslatable(models.AbstractModel):
-    """ Inherit this class in order to let your model fetch keywords
+    """Inherit this class in order to let your model fetch keywords
     based on the source recordset and a gender field in the model.
     """
 
     _name = "translatable.model"
     _description = "Translatable Model"
 
-    gender = fields.Selection([("M", "Male"), ("F", "Female"), ], default="M")
+    gender = fields.Selection(
+        [
+            ("M", "Male"),
+            ("F", "Female"),
+        ],
+        default="M",
+    )
 
     def get(self, keyword):
         """
@@ -39,7 +45,7 @@ class AdvancedTranslatable(models.AbstractModel):
             return advanced_translation.get(keyword)
 
     def translate(self, field):
-        """ helps getting the translated value of a
+        """helps getting the translated value of a
         char/selection field by adding a translate function.
         """
         if not self.exists():
@@ -63,9 +69,9 @@ class AdvancedTranslatable(models.AbstractModel):
                         continue
                     val = False
                     if (
-                            definition["type"] in ("char", "text")
-                            or isinstance(raw_value, str)
-                            and definition["type"] != "selection"
+                        definition["type"] in ("char", "text")
+                        or isinstance(raw_value, str)
+                        and definition["type"] != "selection"
                     ):
                         val = _(raw_value)
                     elif definition["type"] == "selection":
@@ -94,8 +100,9 @@ class AdvancedTranslatable(models.AbstractModel):
         if isinstance(values, list):
             seen = set()
             values = [
-                x for x in values if not (x in seen or seen.add(x))
-                and x != _("Unknown")
+                x
+                for x in values
+                if not (x in seen or seen.add(x)) and x != _("Unknown")
             ]
             if len(values) > limit:
                 if substitution:
@@ -121,13 +128,14 @@ class AdvancedTranslatable(models.AbstractModel):
         _lang = self.env.context.get("lang") or self.env.lang or "en_US"
         _tz = self.env.user.tz or "Europe/Zurich"
         _format = self.env["ir.advanced.translation"].get(date_type)
-        dates = sorted(
-            set(self.filtered(field).mapped(field))
-        )
+        dates = sorted(set(self.filtered(field).mapped(field)))
 
-        dates = [format_datetime(
-            fields.Datetime.to_datetime(d), _format,
-            tzinfo=_tz, locale=_lang) for d in dates]
+        dates = [
+            format_datetime(
+                fields.Datetime.to_datetime(d), _format, tzinfo=_tz, locale=_lang
+            )
+            for d in dates
+        ]
 
         if len(dates) > 1:
             res_string = ", ".join(dates[:-1])
@@ -135,3 +143,9 @@ class AdvancedTranslatable(models.AbstractModel):
         else:
             res_string = dates and dates[0] or ""
         return res_string
+
+    def translate_selection_strings(self, selection_field_name):
+        """Translates the selection strings of the given field."""
+        if not hasattr(self, selection_field_name):
+            return []
+        return self.fields_get()[selection_field_name]["selection"]

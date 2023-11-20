@@ -9,11 +9,12 @@
 ##############################################################################
 import base64
 import logging
-import requests
 from io import BytesIO
 from zipfile import ZipFile
 
-from odoo import models, api, fields
+import requests
+
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,9 @@ class DownloadChildPictures(models.TransientModel):
     type = fields.Selection(
         [("headshot", "Headshot"), ("fullshot", "Fullshot")], default="headshot"
     )
-    child_ids = fields.Many2many("compassion.child", default=lambda s: s._get_children())
+    child_ids = fields.Many2many(
+        "compassion.child", default=lambda s: s._get_children()
+    )
     height = fields.Integer()
     width = fields.Integer()
     download_data = fields.Binary(readonly=True)
@@ -47,7 +50,9 @@ class DownloadChildPictures(models.TransientModel):
 
     def get_picture_url(self, child):
         if self.type.lower() == "headshot":
-            cloudinary = "g_face,c_thumb,h_" + str(self.height) + ",w_" + str(self.width)
+            cloudinary = (
+                "g_face,c_thumb,h_" + str(self.height) + ",w_" + str(self.width)
+            )
         elif self.type.lower() == "fullshot":
             cloudinary = "w_" + str(self.width) + ",h_" + str(self.height) + ",c_fit"
         overlay = ""
@@ -59,7 +64,10 @@ class DownloadChildPictures(models.TransientModel):
         if self.include_child_ref:
             overlay += f" ({child.local_id})" if overlay else child.local_id
         if overlay:
-            cloudinary += f"/c_fit,l_text:Montserrat_{font_size}_bold:{overlay},g_south,y_40,w_{self.width}"
+            cloudinary += (
+                f"/c_fit,l_text:Montserrat_{font_size}_bold:{overlay},"
+                f"g_south,y_40,w_{self.width}"
+            )
 
         image_split = child.image_url.split("/")
         ind = image_split.index("media.ci.org")
@@ -68,7 +76,7 @@ class DownloadChildPictures(models.TransientModel):
         return url
 
     def get_pictures(self):
-        """ Create the zip archive from the selected letters. """
+        """Create the zip archive from the selected letters."""
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, "w") as zip_data:
             found = 0
@@ -123,8 +131,7 @@ class DownloadChildPictures(models.TransientModel):
         if children_with_no_url:
             child_codes = children_with_no_url.mapped("local_id")
             self.information += (
-                "No image url for child(ren):\n\t" + "\n\t".join(
-                    child_codes) + "\n\n"
+                "No image url for child(ren):\n\t" + "\n\t".join(child_codes) + "\n\n"
             )
 
         # Now we want children having an invalid 'image_url'.

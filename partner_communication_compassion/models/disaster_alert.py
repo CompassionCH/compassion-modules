@@ -7,9 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from urllib.parse import urlencode
-from urllib.parse import urljoin
-from odoo import api, models, fields
+from urllib.parse import urlencode, urljoin
+
+from odoo import api, fields, models
 
 
 class DisasterAlert(models.Model):
@@ -35,7 +35,7 @@ class DisasterAlert(models.Model):
                     "child_compassion.open_view_field_office_disaster"
                 ).id,
             }
-            action = "/web?%s#%s" % (urlencode(query), urlencode(fragment))
+            action = f"/web?{urlencode(query)}#{urlencode(fragment)}"
             disaster.access_link = urljoin(base_url, action)
 
 

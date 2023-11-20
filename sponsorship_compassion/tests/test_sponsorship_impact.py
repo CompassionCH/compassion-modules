@@ -20,7 +20,7 @@ class TestSponsorshipImpact(BaseSponsorshipTest):
         child3 = self.create_child("Pk012304563")
 
         # Set child3 as a girl
-        child3.gender = u"F"
+        child3.gender = "F"
 
         # Creation of the sponsorship contract
         partner = self.partner_1

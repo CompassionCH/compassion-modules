@@ -12,9 +12,9 @@ from odoo import fields, models
 
 
 class CorrespondencePositionedObject(models.Model):
-    """ This class represents any object that is positioned in a PDF. A
+    """This class represents any object that is positioned in a PDF. A
     positioned object is anything that is located with its left-highest and
-    right-lowest point. """
+    right-lowest point."""
 
     _name = "correspondence.positioned.object"
     _description = "Correspondence positioned object"
@@ -50,7 +50,10 @@ class CorrespondenceTextBox(models.Model):
 
     text_line_height = fields.Float(help="Line height in millimeters", required=True)
     text_type = fields.Selection(
-        [("Original", "Original"), ("Translation", "Translation"), ]
+        [
+            ("Original", "Original"),
+            ("Translation", "Translation"),
+        ]
     )
 
     def get_json_repr(self):

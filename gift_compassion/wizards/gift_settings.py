@@ -8,11 +8,11 @@
 #
 ##############################################################################
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class GiftNotificationSettings(models.TransientModel):
-    """ Settings configuration for Gift Notifications."""
+    """Settings configuration for Gift Notifications."""
 
     _inherit = "res.config.settings"
 
@@ -20,24 +20,34 @@ class GiftNotificationSettings(models.TransientModel):
     gift_notify_ids = fields.Many2many(
         "res.partner",
         string="Gift Undeliverable",
-        domain=[("user_ids", "!=", False), ("user_ids.share", "=", False), ],
+        domain=[
+            ("user_ids", "!=", False),
+            ("user_ids.share", "=", False),
+        ],
         compute="_compute_gift_notify_ids",
-        inverse="_inverse_gift_notify_ids"
+        inverse="_inverse_gift_notify_ids",
     )
     gift_expense_account_id = fields.Many2one(
-        "account.account", "Gift expense account",
+        "account.account",
+        "Gift expense account",
     )
     gift_income_account_id = fields.Many2one(
-        "account.account", "Payable gift account",
+        "account.account",
+        "Payable gift account",
     )
     gift_analytic_id = fields.Many2one(
-        "account.analytic.account", "Gift analytic account", config_parameter="gift_compassion.analytic_id"
+        "account.analytic.account",
+        "Gift analytic account",
+        config_parameter="gift_compassion.analytic_id",
     )
     gift_analytic_tag_id = fields.Many2one(
-        "account.analytic.tag", "Gift analytic tag", config_parameter="gift_compassion.analytic_tag_id"
+        "account.analytic.tag",
+        "Gift analytic tag",
+        config_parameter="gift_compassion.analytic_tag_id",
     )
     gift_journal_id = fields.Many2one(
-        "account.journal", "Gift journal id",
+        "account.journal",
+        "Gift journal id",
     )
 
     def _compute_gift_notify_ids(self):
@@ -54,32 +64,49 @@ class GiftNotificationSettings(models.TransientModel):
         res = super().get_values()
         param_obj = self.env["ir.config_parameter"]
         company_id = self.env.company.id
-        res.update({
-            "gift_notify_ids": self._get_gift_notify_ids(),
-            "gift_expense_account_id": int(param_obj.get_param(
-                f"gift_compassion.gift_expense_account_{company_id}") or 0),
-            "gift_income_account_id": int(param_obj.get_param(
-                f"gift_compassion.gift_income_account_{company_id}") or 0),
-            "gift_journal_id": int(param_obj.get_param(
-                f"gift_compassion.gift_journal_id{company_id}") or 0),
-        })
+        res.update(
+            {
+                "gift_notify_ids": self._get_gift_notify_ids(),
+                "gift_expense_account_id": int(
+                    param_obj.get_param(
+                        f"gift_compassion.gift_expense_account_{company_id}"
+                    )
+                    or 0
+                ),
+                "gift_income_account_id": int(
+                    param_obj.get_param(
+                        f"gift_compassion.gift_income_account_{company_id}"
+                    )
+                    or 0
+                ),
+                "gift_journal_id": int(
+                    param_obj.get_param(f"gift_compassion.gift_journal_id{company_id}")
+                    or 0
+                ),
+            }
+        )
         return res
 
     def set_values(self):
         company_id = self.env.company.id
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_expense_account_{company_id}", str(self.gift_expense_account_id.id or 0)
+            f"gift_compassion.gift_expense_account_{company_id}",
+            str(self.gift_expense_account_id.id or 0),
         )
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_income_account_{company_id}", str(self.gift_income_account_id.id or 0)
+            f"gift_compassion.gift_income_account_{company_id}",
+            str(self.gift_income_account_id.id or 0),
         )
         self.env["ir.config_parameter"].set_param(
-            f"gift_compassion.gift_journal_id{company_id}", str(self.gift_journal_id.id or 0)
+            f"gift_compassion.gift_journal_id{company_id}",
+            str(self.gift_journal_id.id or 0),
         )
         super().set_values()
 
     def _get_gift_notify_ids(self):
-        partners = self.env["ir.config_parameter"].get_param("gift_compassion.gift_notify_ids", False)
+        partners = self.env["ir.config_parameter"].get_param(
+            "gift_compassion.gift_notify_ids", False
+        )
         if partners:
             return [(6, 0, list(map(int, partners.split(","))))]
         else:

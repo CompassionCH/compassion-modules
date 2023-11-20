@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="partner_segmentation_form" model="ir.ui.view">
+        <field name="name">res.partner.segment.form</field>
+        <field name="model">res.partner.segment</field>
+        <field name="arch" type="xml">
+            <form string="Partner Segmentation">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="segment_total" widget="percentpie"/>
+                            <field name="segment_size"/>
+                        </group>
+                        <group>
+                            <field name="main_driver"/>
+                            <field name="image" widget="image"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="survey_result"/>
+                        <field name="personalized_links"/>
+                    </group>
+                    <group>
+                        <group string="Primary Partners">
+                            <field name="primary_partners_ids" class="pr-2" widget="one2many" nolabel="1">
+                                <tree>
+                                    <field name="firstname"/>
+                                    <field name="lastname"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Secondary Partners">
+                            <field name="secondary_partners_ids" class="pl-2" widget="one2many" nolabel="1">
+                                <tree>
+                                    <field name="firstname"/>
+                                    <field name="lastname"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="partner_segmentation_tree" model="ir.ui.view">
+        <field name="name">res.partner.segment.tree</field>
+        <field name="model">res.partner.segment</field>
+        <field name="arch" type="xml">
+            <tree default_order="segment_total desc">
+                <field name="name"/>
+                <field name="segment_size"/>
+                <field name="segment_total" sum="segment_total"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="open_view_partner_segmentation" model="ir.actions.act_window">
+        <field name="name">Partners segmentation</field>
+        <field name="res_model">res.partner.segment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_segmentation"
+              name="Segmentation"
+              parent="contacts.menu_contacts"
+              sequence="1"/>
+
+    <menuitem id="menu_partner_segment"
+              parent="menu_segmentation"
+              name="Partners Segmentation"
+              action="open_view_partner_segmentation"
+              sequence="1"/>
+
+</odoo>

@@ -8,12 +8,14 @@
 #
 ##############################################################################
 
-from . import communication_config
-from . import communication_job
-from . import communication_attachment
-from . import res_partner
-from . import email
-from . import ir_attachment
-from . import mail_template
-from . import ir_actions
-from . import queue_job
+from . import (
+    communication_attachment,
+    communication_config,
+    communication_job,
+    email,
+    ir_actions,
+    ir_attachment,
+    mail_template,
+    queue_job,
+    res_partner,
+)

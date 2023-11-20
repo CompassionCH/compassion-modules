@@ -3,12 +3,12 @@
     <record id="view_res_partner_invoice_line_button_form" model="ir.ui.view">
         <field name="name">res.partner.sponsorships.form</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="inherit_id" ref="partner_personal_info.view_partner_form_compassion_personal"/>
         <field name="priority">2</field>
         <field name="arch" type="xml">
 
             <!-- Add the church-->
-            <field name="email" position="after">
+            <field name="uuid" position="after">
                 <field name="is_church" invisible="1"/>
                 <field name="church_id" attrs="{'invisible': ['|',('is_company','=',True),('is_church','=',True)]}"/>
             </field>
@@ -146,22 +146,6 @@
                     </group>
                     <field name="member_ids" mode="kanban"
                            context="{'default_church_id': active_id, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id}"/>
-                </page>
-            </xpath>
-
-            <xpath expr="//page[last()]" position="after">
-                <page string="Privacy data" name="privacy_data" groups="child_compassion.group_sponsorship">
-                    <group>
-                        <field name="privacy_statement_ids"
-                               context="{'default_partner_id': active_id}" groups="child_compassion.group_sponsorship">
-                            <tree>
-                                <field name="version"/>
-                                <field name="agreement_date"/>
-                                <field name="origin_signature"/>
-                                <button name="open_contract" type="object" icon="fa-external-link"/>
-                            </tree>
-                        </field>
-                    </group>
                 </page>
             </xpath>
         </field>

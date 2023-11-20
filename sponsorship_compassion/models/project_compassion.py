@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 
 class ProjectCompassion(models.Model):
@@ -17,7 +17,6 @@ class ProjectCompassion(models.Model):
     sponsorships_count = fields.Integer(compute="_compute_sponsorships_count")
 
     def _compute_sponsorships_count(self):
-
         for project in self:
             project.sponsorships_count = self.env["recurring.contract"].search_count(
                 [
@@ -27,7 +26,6 @@ class ProjectCompassion(models.Model):
             )
 
     def open_sponsorships(self):
-
         contract_list = self.env["recurring.contract"].search(
             [("child_id.project_id", "=", self.id)]
         )

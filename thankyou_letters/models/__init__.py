@@ -8,10 +8,12 @@
 #
 ##############################################################################
 
-from . import account_invoice_line
-from . import account_invoice
-from . import res_partner
-from . import partner_communication
-from . import product
-from . import success_story
-from . import thankyou_config
+from . import (
+    account_invoice,
+    account_invoice_line,
+    partner_communication,
+    product,
+    res_partner,
+    success_story,
+    thankyou_config,
+)

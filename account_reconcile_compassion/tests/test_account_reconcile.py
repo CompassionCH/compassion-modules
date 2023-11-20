@@ -8,7 +8,8 @@
 ##############################################################################
 import datetime
 
-from odoo import fields, _
+from odoo import _, fields
+
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
     BaseSponsorshipTest,
 )

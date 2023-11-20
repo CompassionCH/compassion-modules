@@ -24,12 +24,13 @@
                                 <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             </h1>
                         </div>
-                        <group>
+                        <group context="{'default_source': 'compassion'}">
                             <field name="selection_domain" widget="domain" options="{'model': 'recurring.contract'}" string="Sponsorships" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="sponsorship_ids" widget="many2many_tags" invisible="1"/>
-                            <field name="s2b_template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="template_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="language_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="month" string="Filter birthday month"/>
+                            <field name="source"/>
                         </group>
                         <div states="draft">
                             <p>Available keywords:</p>
@@ -60,7 +61,7 @@
                 <tree decoration-primary="state == 'draft'">
                     <field name="date"/>
                     <field name="name"/>
-                    <field name="s2b_template_id"/>
+                    <field name="template_id"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -72,6 +73,7 @@
             <field name="res_model">correspondence.s2b.generator</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'default_source': 'compassion'}</field>
         </record>
 
         <!-- Menu Definition -->

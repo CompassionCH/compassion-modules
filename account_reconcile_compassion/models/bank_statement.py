@@ -13,7 +13,7 @@ from odoo import fields, models
 
 
 class AccountStatement(models.Model):
-    """ Adds a relation to a recurring invoicer. """
+    """Adds a relation to a recurring invoicer."""
 
     _name = "account.bank.statement"
     _inherit = ["account.bank.statement", "mail.thread"]
@@ -27,7 +27,9 @@ class AccountStatement(models.Model):
         string="Invoices",
         readonly=False,
     )
-    generated_invoices_count = fields.Integer("Number invoices", compute="_compute_invoices")
+    generated_invoices_count = fields.Integer(
+        "Number invoices", compute="_compute_invoices"
+    )
 
     ##########################################################################
     #                             FIELDS METHODS                             #
@@ -52,14 +54,16 @@ class AccountStatement(models.Model):
                 "form_view_ref": "account.view_move_form",
                 "journal_type": "sale",
             },
-            "domain": [("id", "in", self.invoice_ids.ids)]
+            "domain": [("id", "in", self.invoice_ids.ids)],
         }
 
     def unlink(self):
-        invoices = self.mapped("invoice_ids").filtered(lambda i: i.payment_state != "paid")
+        invoices = self.mapped("invoice_ids").filtered(
+            lambda i: i.payment_state != "paid"
+        )
         invoices.button_draft()
         invoices.button_cancel()
-        return super(AccountStatement, self).unlink()
+        return super().unlink()
 
     def button_reopen(self):
         self.invoice_ids.filtered(lambda i: i.payment_state != "paid").button_draft()
@@ -70,38 +74,46 @@ class AccountStatement(models.Model):
         return super().button_post()
 
     def auto_reconcile(self):
-        """ Auto reconcile matching invoices through jobs to avoid timeouts """
-        if self.env.context.get('async_mode', True):
-            self.with_company(self.journal_id.company_id.id).with_delay()._auto_reconcile()
+        """Auto reconcile matching invoices through jobs to avoid timeouts"""
+        if self.env.context.get("async_mode", True):
+            self.with_company(
+                self.journal_id.company_id.id
+            ).with_delay()._auto_reconcile()
             return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Auto reconcile',
-                    'type': 'success',
-                    'message': 'Reconciliation job has been queued',
-                    'sticky': False,
-                }
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Auto reconcile",
+                    "type": "success",
+                    "message": "Reconciliation job has been queued",
+                    "sticky": False,
+                },
             }
         else:
             self._auto_reconcile()
 
     def _auto_reconcile(self):
-        """ Inspired by the `if model.auto_reconcile` part of _apply_rules() """
-        reconcile_model = self.env["account.reconcile.model"].search([
-            ("rule_type", "!=", "writeoff_button"),
-            "|", ("company_id", "=", self.journal_id.company_id.id),
-            ("company_id", "=", False)
-        ], limit=1)
+        """Inspired by the `if model.auto_reconcile` part of _apply_rules()"""
+        reconcile_model = self.env["account.reconcile.model"].search(
+            [
+                ("rule_type", "!=", "writeoff_button"),
+                "|",
+                ("company_id", "=", self.journal_id.company_id.id),
+                ("company_id", "=", False),
+            ],
+            limit=1,
+        )
 
         for bank_statement in self.filtered("line_ids"):
-            reconcile_model = reconcile_model.with_context({
-                "bank_statement_date": bank_statement.date
-            })
+            reconcile_model = reconcile_model.with_context(
+                {"bank_statement_date": bank_statement.date}
+            )
             matching_amls = reconcile_model._apply_rules(bank_statement.line_ids)
 
             for line_id, result in matching_amls.items():
-               self.with_delay()._reconcile_single_line(line_id, result, bank_statement, reconcile_model)
+                self.with_delay()._reconcile_single_line(
+                    line_id, result, bank_statement, reconcile_model
+                )
 
     def _reconcile_single_line(self, line_id, result, bank_statement, reconcile_model):
         """Reconcile method to run it as a job"""
@@ -110,6 +122,5 @@ class AccountStatement(models.Model):
             move_lines = self.env["account.move.line"].browse(result["aml_ids"])
             # Check that line wasn't already reconciled
             move_lines = move_lines.filtered(lambda a: not a.reconciled)
-            reconcile = reconcile_model._prepare_reconciliation(
-                line, move_lines.ids)
+            reconcile = reconcile_model._prepare_reconciliation(line, move_lines.ids)
             line.with_context({"default_journal_id": None}).reconcile(reconcile)

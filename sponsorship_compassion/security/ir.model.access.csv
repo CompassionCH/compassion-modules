@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-compassion_privacy_statement,Privacy Statement,model_compassion_privacy_statement,base.group_user,1,1,1,1
-public_privacy_statement,Public Privacy Statement,model_compassion_privacy_statement,base.group_public,1,0,0,0
-privacy_statement_agreement,Privacy Statement Agreement,model_privacy_statement_agreement,base.group_user,1,1,1,1
 access_recurring_contract,Full access on recurring.contract,recurring_contract.model_recurring_contract,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_contract_line,Full access on recurring.contract.line,recurring_contract.model_recurring_contract_line,child_compassion.group_sponsorship,1,1,1,1
 access_recurring_contract_group,Full access on recurring.contract.group,recurring_contract.model_recurring_contract_group,child_compassion.group_sponsorship,1,1,1,1

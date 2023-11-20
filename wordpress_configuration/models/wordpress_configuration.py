@@ -1,7 +1,7 @@
 import logging
 
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
@@ -18,6 +18,8 @@ class WordpressConfiguration(models.Model):
 
     host = fields.Char(required=True)
     sponsorship_url = fields.Char(translate=True)
+    fund_gift_url = fields.Char(translate=True)
+    child_gift_url = fields.Char(translate=True)
     user = fields.Char(required=True)
     password = fields.Char(required=True)
 

@@ -16,8 +16,8 @@ from io import BytesIO
 
 from jinja2 import TemplateSyntaxError
 
-from odoo import api, models, fields, _, tools
-from odoo.exceptions import UserError, QWebException
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import MissingError, QWebException, UserError
 
 _logger = logging.getLogger(__name__)
 testing = tools.config.get("test_enable")
@@ -32,7 +32,7 @@ except ImportError:
 
 
 class MLStripper(HTMLParser):
-    """ Used to remove HTML tags. """
+    """Used to remove HTML tags."""
 
     def __init__(self):
         super().__init__()
@@ -53,15 +53,15 @@ def strip_tags(html):
 
 
 class CommunicationJob(models.Model):
-    """ Communication Jobs are task that will either generate and send
-     an e-mail or print a document when executed.
+    """Communication Jobs are task that will either generate and send
+    an e-mail or print a document when executed.
 
-     It is useful to keep a history of the communication sent to partners
-     and to send again (or print again) a particular communication.
+    It is useful to keep a history of the communication sent to partners
+    and to send again (or print again) a particular communication.
 
-     It is also useful to batch send communications without manually looking
-     for which one to send by e-mail and which one to print.
-     """
+    It is also useful to batch send communications without manually looking
+    for which one to send by e-mail and which one to print.
+    """
 
     _name = "partner.communication.job"
     _description = "Communication Job"
@@ -84,15 +84,21 @@ class CommunicationJob(models.Model):
         required=True,
         default=lambda s: s.env.ref("partner_communication.default_communication"),
         readonly=False,
-        index=True
+        index=True,
     )
     model = fields.Char(related="config_id.model", store=True, index=True)
     partner_id = fields.Many2one(
-        "res.partner", "Send to", required=True, ondelete="cascade", readonly=False,
-        index=True, check_company=True
+        "res.partner",
+        "Send to",
+        required=True,
+        ondelete="cascade",
+        readonly=False,
+        index=True,
+        check_company=True,
     )
     company_id = fields.Many2one(
-        "res.company", compute="_compute_company", store=True, index=True)
+        "res.company", compute="_compute_company", store=True, index=True
+    )
     country_id = fields.Many2one(related="partner_id.country_id", readonly=False)
     parent_id = fields.Many2one(related="partner_id.parent_id", readonly=False)
     object_ids = fields.Char("Resource ids", required=True)
@@ -103,7 +109,7 @@ class CommunicationJob(models.Model):
             ("pending", _("Pending")),
             ("done", _("Done")),
             ("cancel", _("Cancelled")),
-            ("failure", _("Failure"))
+            ("failure", _("Failure")),
         ],
         default="pending",
         tracking=True,
@@ -146,7 +152,7 @@ class CommunicationJob(models.Model):
     )
     printed_pdf_data = fields.Binary(
         help="Technical field used when the report was not sent to printer but to client "
-             "in order to download the result afterwards."
+        "in order to download the result afterwards."
     )
     printed_pdf_name = fields.Char(compute="_compute_print_pdfname")
 
@@ -171,8 +177,12 @@ class CommunicationJob(models.Model):
                         pdf_str = report.sudo()._render_qweb_pdf(record.ids)
                         pdf = PdfFileReader(BytesIO(pdf_str[0]))
                         record.pdf_page_count = pdf.getNumPages()
-                    except (UserError, PdfReadError, QWebException,
-                            TemplateSyntaxError):
+                    except (
+                        UserError,
+                        PdfReadError,
+                        QWebException,
+                        TemplateSyntaxError,
+                    ):
                         self.env.clear()
                         record.pdf_page_count = 0
 
@@ -182,7 +192,7 @@ class CommunicationJob(models.Model):
             for attachment in job.ir_attachment_ids:
                 if attachment not in job.attachment_ids.mapped("attachment_id"):
                     if not attachment.report_id and not self.env.context.get(
-                            "no_print"
+                        "no_print"
                     ):
                         raise UserError(
                             _(
@@ -215,12 +225,17 @@ class CommunicationJob(models.Model):
         for job in self:
             company = job.partner_id.company_id
             first_object = self.get_objects()[:1]
-            if first_object and hasattr(first_object, "company_id") and first_object.company_id:
+            if (
+                first_object
+                and hasattr(first_object, "company_id")
+                and first_object.company_id
+            ):
                 company = first_object.company_id
             if not company and job.partner_id.country_id:
-                company = self.env["res.company"].search([(
-                    "partner_id.country_id", "=", job.partner_id.country_id.id)
-                ], limit=1)
+                company = self.env["res.company"].search(
+                    [("partner_id.country_id", "=", job.partner_id.country_id.id)],
+                    limit=1,
+                )
             if not company:
                 company = self._fallback_company()
             job.company_id = company
@@ -239,14 +254,16 @@ class CommunicationJob(models.Model):
 
     def _compute_print_pdfname(self):
         for job in self:
-            job.printed_pdf_name = fields.Datetime.to_string(job.sent_date) + "-" + job.subject + ".pdf"
+            job.printed_pdf_name = (
+                fields.Datetime.to_string(job.sent_date) + "-" + job.subject + ".pdf"
+            )
 
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
     @api.model
     def create(self, vals):
-        """ If a pending communication for same partner exists,
+        """If a pending communication for same partner exists,
         add the object_ids to it. Otherwise, create a new communication.
         opt-out partners won't create any communication.
         """
@@ -261,12 +278,15 @@ class CommunicationJob(models.Model):
             vals["object_ids"] = str(vals["partner_id"])
 
         same_job_search = [
-                              ("partner_id", "=", vals.get("partner_id")),
-                              ("config_id", "=", vals.get("config_id")),
-                              ("config_id", "!=", self.env.ref(
-                                  "partner_communication.default_communication").id),
-                              ("state", "in", ["pending", "failure"]),
-                          ] + self.env.context.get("same_job_search", [])
+            ("partner_id", "=", vals.get("partner_id")),
+            ("config_id", "=", vals.get("config_id")),
+            (
+                "config_id",
+                "!=",
+                self.env.ref("partner_communication.default_communication").id,
+            ),
+            ("state", "in", ["pending", "failure"]),
+        ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search, limit=1)
         if job:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
@@ -283,7 +303,11 @@ class CommunicationJob(models.Model):
 
         if "send_mode" not in vals and "default_send_mode" not in self.env.context:
             job.send_mode = send_mode[0]
-        if "auto_send" not in vals and "default_auto_send" not in self.env.context and send_mode[1]:
+        if (
+            "auto_send" not in vals
+            and "default_auto_send" not in self.env.context
+            and send_mode[1]
+        ):
             job.auto_send = send_mode[1]
 
         if not job.body_html or not strip_tags(job.body_html):
@@ -325,11 +349,13 @@ class CommunicationJob(models.Model):
         """
         if default_vals is None:
             default_vals = []
-        default_vals.extend([
-            "report_id",
-            "need_call",
-            "print_if_not_email",
-        ])
+        default_vals.extend(
+            [
+                "report_id",
+                "need_call",
+                "print_if_not_email",
+            ]
+        )
 
         partner = self.env["res.partner"].browse(vals.get("partner_id"))
         lang_of_partner = self.env["res.lang"].search(
@@ -360,7 +386,9 @@ class CommunicationJob(models.Model):
         # Check all default_vals fields
         for default_val in default_vals:
             if default_val not in vals:
-                value = getattr(default_config, default_val, False) or getattr(config, default_val, False)
+                value = getattr(default_config, default_val, False) or getattr(
+                    config, default_val, False
+                )
                 if default_val.endswith("_id"):
                     value = value.id
                 vals[default_val] = value
@@ -381,7 +409,6 @@ class CommunicationJob(models.Model):
 
         if "need_call" in vals or "state" in vals:
             for job in self:
-
                 # if the call must be done after the sending, we unlink all activities
                 # associated with the job (as for the moment, there is only one activity
                 # type)
@@ -391,9 +418,9 @@ class CommunicationJob(models.Model):
                 # if the call must be done before the sending, and if there isn't an
                 # activity already scheduled, we schedule a new activity
                 # (there's only one activity type associated with the communication job)
-                if ((job.need_call == "before_sending"
-                     and job.state == "pending")
-                        and not job.activity_ids):
+                if (
+                    job.need_call == "before_sending" and job.state == "pending"
+                ) and not job.activity_ids:
                     job.with_user(job.user_id.id).schedule_call()
 
         return True
@@ -402,10 +429,11 @@ class CommunicationJob(models.Model):
     #                             PUBLIC METHODS                             #
     ##########################################################################
     def send(self):
-        """ Executes the job. """
+        """Executes the job."""
         todo = self.filtered(
-            lambda j: j.state == "pending" and not (
-                    j.need_call == "before_sending" and j.activity_ids))
+            lambda j: j.state == "pending"
+            and not (j.need_call == "before_sending" and j.activity_ids)
+        )
         to_print = todo.filtered(lambda j: j.send_mode == "physical")
         for job in todo.filtered(lambda j: j.send_mode in ("both", "digital")):
             origin = self.env.context.get("origin")
@@ -437,12 +465,12 @@ class CommunicationJob(models.Model):
     def schedule_call(self):
         self.ensure_one()
         self.activity_schedule(
-            'mail.mail_activity_data_call',
+            "mail.mail_activity_data_call",
             summary="Call " + self.partner_id.name,
             user_id=self.user_id.id,
             note=f"Call {self.partner_id.name} at (phone) "
-                 f"{self.partner_id.phone or self.partner_id.mobile} regarding "
-                 f"the communication."
+            f"{self.partner_id.phone or self.partner_id.mobile} regarding "
+            f"the communication.",
         )
 
     def cancel(self):
@@ -452,7 +480,12 @@ class CommunicationJob(models.Model):
     def reset(self):
         self.mapped("attachment_ids").write({"printed_pdf_data": False})
         self.write(
-            {"state": "pending", "sent_date": False, "email_id": False, "printed_pdf_data": False}
+            {
+                "state": "pending",
+                "sent_date": False,
+                "email_id": False,
+                "printed_pdf_data": False,
+            }
         )
         return True
 
@@ -468,20 +501,33 @@ class CommunicationJob(models.Model):
                         .with_context(lang=lang)
                         .get_generated_fields(job.email_template_id, [job.id])
                     )
-                    assert fields["body_html"] and fields["subject"]
-                    job.write({
-                        "body_html": fields["body_html"],
-                        "subject": fields["subject"],
-                        "state": job.state if job.state != "failure" else "pending"
-                    })
-                except (UserError, QWebException, TemplateSyntaxError, AssertionError):
-                    _logger.error("Failed to generate communication", exc_info=True)
+                    if not fields["body_html"] and not fields["subject"]:
+                        raise MissingError("Fields don't have a subject and a body")
+                    job.write(
+                        {
+                            "body_html": fields["body_html"],
+                            "subject": fields["subject"],
+                            "state": job.state if job.state != "failure" else "pending",
+                        }
+                    )
+                except (
+                    MissingError,
+                    UserError,
+                    QWebException,
+                    TemplateSyntaxError,
+                ) as e:
+                    _logger.error(
+                        f"Failed to generate communication {str(e)}",
+                        exc_info=True,
+                    )
                     job.env.clear()
                     if job.state == "pending":
-                        job.write({
-                            "state": "failure",
-                            "body_html": "Error in template"
-                        })
+                        job.write(
+                            {
+                                "state": "failure",
+                                "body_html": f"{str(type(e))} {str(e)}",
+                            }
+                        )
         return True
 
     def quick_refresh(self):
@@ -576,14 +622,16 @@ class CommunicationJob(models.Model):
                                     "data": data[1],
                                 }
                             )
-                except:
+                except Exception:
                     _logger.error("Error during attachment creation", exc_info=True)
                     job.env.clear()
                     if job.state == "pending":
-                        job.write({
-                            "state": "failure",
-                            "body_html": "Error in attachments creation."
-                        })
+                        job.write(
+                            {
+                                "state": "failure",
+                                "body_html": "Error in attachments creation.",
+                            }
+                        )
                     failed += job
         return failed
 
@@ -611,15 +659,18 @@ class CommunicationJob(models.Model):
         to_download = self.filtered("printed_pdf_data")
         if to_download:
             # Redirect user for fetching the printed data
-            res_wizard = self.env["partner.communication.download.print.job.wizard"].create({
-                "communication_job_ids": [(6, 0, to_download.ids)]})
-            action.update({
-                "view_mode": "form",
-                "res_model": "partner.communication.download.print.job.wizard",
-                "res_id": res_wizard.id,
-                "target": "new",
-                "domain": []
-            })
+            res_wizard = self.env[
+                "partner.communication.download.print.job.wizard"
+            ].create({"communication_job_ids": [(6, 0, to_download.ids)]})
+            action.update(
+                {
+                    "view_mode": "form",
+                    "res_model": "partner.communication.download.print.job.wizard",
+                    "res_id": res_wizard.id,
+                    "target": "new",
+                    "domain": [],
+                }
+            )
         return action
 
     ##########################################################################
@@ -647,17 +698,22 @@ class CommunicationJob(models.Model):
             if "default_email_vals" in self.env.context:
                 email_vals.update(self.env.context["default_email_vals"])
 
-            email = self.env["mail.compose.message"] \
-                .with_context(lang=partner.lang) \
+            email = (
+                self.env["mail.compose.message"]
+                .with_context(lang=partner.lang)
                 .create_emails(self.email_template_id, [self.id], email_vals)
+            )
             self.email_id = email
 
             try:
                 with self.env.cr.savepoint():
                     email.send()
-            except:
-                _logger.error("Error while sending communication by email to %s ",
-                              partner.email, exc_info=True)
+            except Exception:
+                _logger.error(
+                    "Error while sending communication by email to %s ",
+                    partner.email,
+                    exc_info=True,
+                )
                 return "failure"
 
             # Subscribe author to thread, so that the reply
@@ -691,25 +747,21 @@ class CommunicationJob(models.Model):
                         job.attachment_ids.print_attachments(
                             # output_tray=output_tray,
                         )
-                        job.write({
-                            "state": state,
-                            "sent_date": fields.Datetime.now()
-                        })
-                except:
+                        job.write({"state": state, "sent_date": fields.Datetime.now()})
+                except Exception:
                     _logger.error("Error printing job %s", [job.id])
             else:
                 batch_print[job.partner_id.lang][job.config_id.name] += job
 
-        for lang, configs in batch_print.items():
+        for configs in batch_print.values():
             for config, jobs in configs.items():
                 try:
                     with self.env.cr.savepoint():
                         print_name = name[:3] + " " + config
                         jobs.print_letter(print_name)
                         jobs.write({"state": state, "sent_date": fields.Datetime.now()})
-                except:
-                    _logger.error(
-                        "Error while printing jobs %s", [str(jobs.ids)])
+                except Exception:
+                    _logger.error("Error while printing jobs %s", [str(jobs.ids)])
         return self.download_data()
 
     def print_letter(self, print_name, **print_options):
@@ -736,7 +788,9 @@ class CommunicationJob(models.Model):
         )
 
         if len(report) > 1 or len(config_lang) > 1:
-            raise UserError(_("Cannot print multiple communication types at the same time."))
+            raise UserError(
+                _("Cannot print multiple communication types at the same time.")
+            )
 
         behaviour = report.behaviour()
 
@@ -747,7 +801,8 @@ class CommunicationJob(models.Model):
         # # The get the print options in the following order of priority:
         # # - partner.communication.job (only for output bin)
         # # - partner.communication.config
-        # # - ir.actions.report (behaviour: which can be specific for the user currently logged in)
+        # # - ir.actions.report (behaviour: which can be specific for the user
+        # currently logged in)
         # def get_first(source):
         #     return next((v for v in source if v), False)
         #

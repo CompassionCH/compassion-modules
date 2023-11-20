@@ -14,7 +14,7 @@ Compassion CH Message Center
     :target: https://github.com/compassionch/compassion-modules/tree/12.0/message_center_compassion
     :alt: compassionch/compassion-modules
 
-|badge1| |badge2| 
+|badge1| |badge2|
 
 Message Center that offers a queue of messages that have to be sent
 to GMC and a queue of messages received from GMC.

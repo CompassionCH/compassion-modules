@@ -7,5 +7,4 @@
 #
 ##############################################################################
 
-from . import test_thankyou_letters
-from . import test_thankyou_config
+from . import test_thankyou_config, test_thankyou_letters

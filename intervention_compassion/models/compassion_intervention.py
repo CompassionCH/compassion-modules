@@ -11,7 +11,7 @@
 import logging
 import time
 
-from odoo import models, fields, _, api
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 logger = logging.getLogger(__name__)
@@ -411,7 +411,6 @@ class CompassionIntervention(models.Model):
     ##########################################################################
     @api.model
     def create_intervention(self, commkit_data):
-
         # Two messages can call this method. Try to find which one.
         intervention_details_request = commkit_data.get(
             "GPInitiatedInterventionHoldNotification",

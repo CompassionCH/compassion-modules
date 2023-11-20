@@ -10,7 +10,7 @@
 import logging
 import os
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,10 @@ class ChildDescription(models.TransientModel):
     # ] values
     # You can add other languages by overriding __init__ method in submodules
     his_lang = {
-        "en_US": {"M": [["his"] * 3] * 2, "F": [["her"] * 3] * 2, },
+        "en_US": {
+            "M": [["his"] * 3] * 2,
+            "F": [["her"] * 3] * 2,
+        },
     }
 
     he_lang = {
@@ -57,8 +60,10 @@ class ChildDescription(models.TransientModel):
 
     home_based_lang = {
         "en_US": {
-            "M": "{preferred_name} participates in the homebased program for the youngest children.",
-            "F": "{preferred_name} participates in the homebased program for the youngest children.",
+            "M": "{preferred_name} participates in the homebased program for the "
+            "youngest children.",
+            "F": "{preferred_name} participates in the homebased program for the "
+            "youngest children.",
         }
     }
 
@@ -98,14 +103,18 @@ class ChildDescription(models.TransientModel):
     }
 
     def he(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        return self.he_lang.get(self.env.lang, self.he_lang["en_US"])[gender][number][tense]
+        return self.he_lang.get(self.env.lang, self.he_lang["en_US"])[gender][number][
+            tense
+        ]
 
     def his(self, gender, number=SINGULAR, tense=NOMINATIVE):
-        return self.his_lang.get(self.env.lang, self.his_lang["en_US"])[gender][number][tense]
+        return self.his_lang.get(self.env.lang, self.his_lang["en_US"])[gender][number][
+            tense
+        ]
 
     @api.model
     def create(self, vals):
-        """ This will automatically generate all descriptions and save them
+        """This will automatically generate all descriptions and save them
         in the related child.
         """
         generator = super().create(vals)
@@ -124,7 +133,7 @@ class ChildDescription(models.TransientModel):
         return {"en_US": "desc_en"}
 
     def _generate_translation(self):
-        """ Generate child description. """
+        """Generate child description."""
         desc = PyQuery(HTML_TEMPLATE)
 
         # 1. Program type only if Home Based + Birthday estimate
@@ -132,9 +141,9 @@ class ChildDescription(models.TransientModel):
         child = self.child_id
         if child.cdsp_type == "Home Based":
             desc(".program_type").html(
-                self.home_based_lang.get(self.env.lang, self.home_based_lang["en_US"])[child.gender].format(
-                    preferred_name=child.preferred_name
-                )
+                self.home_based_lang.get(self.env.lang, self.home_based_lang["en_US"])[
+                    child.gender
+                ].format(preferred_name=child.preferred_name)
             )
         else:
             desc("#program_type").remove()
@@ -183,18 +192,17 @@ class ChildDescription(models.TransientModel):
             child.convert_us_grade_to_education_level()
             desc("#school_attending").remove()
             desc(".school_level")[0].text = _("School level")
-            desc(".school_level")[1].text = child.translate(
-                "education_level"
-            )
+            desc(".school_level")[1].text = child.translate("education_level")
             if child.major_course_study:
                 desc(".school_subject")[0].text = _("Best school subject")
                 desc(".school_subject")[1].text = child.translate("major_course_study")
             else:
                 desc("#school_subject").remove()
-            if child.vocational_training_type and \
-                    child.vocational_training_type.lower() not in (
-                    "not enrolled",
-                    "other"):
+            if (
+                child.vocational_training_type
+                and child.vocational_training_type.lower()
+                not in ("not enrolled", "other")
+            ):
                 desc(".vocational_training")[0].text = _("Vocational training")
                 desc(".vocational_training")[1].text = child.translate(
                     "vocational_training_type"
@@ -203,9 +211,9 @@ class ChildDescription(models.TransientModel):
                 desc("#vocational_training").remove()
         else:
             desc(".school_attending_title").html(
-                self.school_no_lang.get(self.env.lang, self.school_no_lang["en_US"])[child.gender].format(
-                    preferred_name=child.preferred_name
-                )
+                self.school_no_lang.get(self.env.lang, self.school_no_lang["en_US"])[
+                    child.gender
+                ].format(preferred_name=child.preferred_name)
             )
             desc(".school").remove()
 
@@ -213,7 +221,9 @@ class ChildDescription(models.TransientModel):
         #################
         if child.duty_ids:
             desc("#house_duties_intro").html(
-                self.duties_intro_lang.get(self.env.lang, self.duties_intro_lang["en_US"])[child.gender]
+                self.duties_intro_lang.get(
+                    self.env.lang, self.duties_intro_lang["en_US"]
+                )[child.gender]
             )
             desc("#house_duties_list").html(
                 "".join(["<li>" + duty.value + "</li>" for duty in child.duty_ids[:3]])
@@ -225,7 +235,9 @@ class ChildDescription(models.TransientModel):
         ######################
         if child.christian_activity_ids:
             desc("#church_activities_intro").html(
-                self.church_intro_lang.get(self.env.lang, self.church_intro_lang["en_US"])[child.gender]
+                self.church_intro_lang.get(
+                    self.env.lang, self.church_intro_lang["en_US"]
+                )[child.gender]
             )
             desc("#church_activities_list").html(
                 "".join(
@@ -242,9 +254,9 @@ class ChildDescription(models.TransientModel):
         ############
         if child.hobby_ids:
             desc("#hobbies_intro").html(
-                self.hobbies_intro_lang.get(self.env.lang, self.hobbies_intro_lang["en_US"])[child.gender].format(
-                    preferred_name=child.preferred_name
-                )
+                self.hobbies_intro_lang.get(
+                    self.env.lang, self.hobbies_intro_lang["en_US"]
+                )[child.gender].format(preferred_name=child.preferred_name)
             )
             desc("#hobbies_list").html(
                 "".join(
@@ -258,9 +270,9 @@ class ChildDescription(models.TransientModel):
         ###########
         if child.physical_disability_ids or child.chronic_illness_ids:
             desc("#handicap_intro").html(
-                self.handicap_intro_lang.get(self.env.lang, self.handicap_intro_lang["en_US"])[child.gender].format(
-                    preferred_name=child.preferred_name
-                )
+                self.handicap_intro_lang.get(
+                    self.env.lang, self.handicap_intro_lang["en_US"]
+                )[child.gender].format(preferred_name=child.preferred_name)
             )
             handicap_list = []
             if child.physical_disability_ids:
@@ -284,17 +296,17 @@ class ChildDescription(models.TransientModel):
         return desc.html()
 
     def _gender(self, default):
-        """ In all languages except English, the gender is defined
+        """In all languages except English, the gender is defined
         by the complement. For English, the gender is taken by the subject.
         """
         return self.child_id.gender if self.env.lang == "en_US" else default
 
     def _he(self):
-        """ Utility to quickly return he or she. """
+        """Utility to quickly return he or she."""
         return self.he(self.child_id.gender)
 
     def _live_with(self):
-        """ Generates the small 'Live with' sentence. """
+        """Generates the small 'Live with' sentence."""
         household = self.child_id.household_id
         father_with_child = household.father_living_with_child
         mother_with_child = household.mother_living_with_child
@@ -352,7 +364,7 @@ class ChildDescription(models.TransientModel):
         return live_with
 
     def _job(self, desc, guardian):
-        """ Generates the job part of the guardians. """
+        """Generates the job part of the guardians."""
         at = self.env["ir.advanced.translation"]
         household = self.child_id.household_id
         en = household.with_context(lang="en_US")

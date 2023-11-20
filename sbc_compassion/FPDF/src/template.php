@@ -15,7 +15,7 @@ class Template
     protected $header;
     protected $textBoxes;
     protected $imageBoxes;
-    
+
     function __construct($filename, $header, $textBoxes, $imageBoxes)
     {
         $this->filename = $filename;
@@ -23,14 +23,14 @@ class Template
         {
             $this->header = new Header(...$header);
         }
-        
+
         $boxes = array();
         foreach ($textBoxes as $textBox)
         {
             array_push($boxes, new PositionedTextBox(...$textBox));
         }
         $this->textBoxes = $boxes;
-        
+
         $boxes = array();
         foreach ($imageBoxes as $imageBox)
         {
@@ -38,27 +38,27 @@ class Template
         }
         $this->imageBoxes = $boxes;
     }
-    
+
     function GetFilename()
     {
         return $this->filename;
     }
-    
+
     function GetHeader()
     {
         return $this->header;
     }
-    
+
     function GetTextBoxes()
     {
         return $this->textBoxes;
     }
-    
+
     function GetImageBoxes()
     {
         return $this->imageBoxes;
     }
-    
+
     function HasRemainingImageBox()
     {
         foreach ($this->imageBoxes as $imageBox)
@@ -70,7 +70,7 @@ class Template
         }
         return false;
     }
-    
+
     function ResetImageBoxes()
     {
         foreach ($this->imageBoxes as $imageBox)

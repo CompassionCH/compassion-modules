@@ -1,10 +1,12 @@
-from . import compassion_mapped_model
-from . import compassion_mapping
-from . import field_to_json
-from . import gmc_message
-from . import gmc_action
-from . import gmc_action_connect
-from . import ir_http
-from . import connect_multipicklist
-from . import advanced_query
-from . import res_partner_test
+from . import compassion_mapped_model  # isort:skip
+from . import (
+    advanced_query,
+    compassion_mapping,
+    connect_multipicklist,
+    field_to_json,
+    gmc_action,
+    gmc_action_connect,
+    gmc_message,
+    ir_http,
+    res_partner_test,
+)

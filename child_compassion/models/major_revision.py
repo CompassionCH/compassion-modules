@@ -9,7 +9,7 @@
 ##############################################################################
 from datetime import date
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class MajorRevision(models.Model):
@@ -94,11 +94,14 @@ class MajorRevision(models.Model):
             child_res_object = revision.child_id
             if child_res_object and revision.name in child_field_mapping:
                 vals_list = child_res_object.mapped(child_field_mapping[revision.name])
-                values.extend(map(
-                    lambda val: fields.Date.to_string(val) if isinstance(val, date)
-                    else val,
-                    vals_list
-                ))
+                values.extend(
+                    map(
+                        lambda val: fields.Date.to_string(val)
+                        if isinstance(val, date)
+                        else val,
+                        vals_list,
+                    )
+                )
             else:
                 field_mapping = revision.get_field_mapping()
                 household_res_object = revision.household_id
@@ -107,4 +110,4 @@ class MajorRevision(models.Model):
                         household_res_object.mapped(field_mapping[revision.name])
                     )
 
-        return u", ".join(values)
+        return ", ".join(values)

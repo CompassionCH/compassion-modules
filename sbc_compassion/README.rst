@@ -17,7 +17,7 @@ Sponsor to beneficiary communication
     :target: https://github.com/compassionCH/compassion-modules/tree/11.0/sbc_compassion
     :alt: compassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 The sbc.compassion module can handle the different interactions of
 correspondence between sponsors and their children sponsorships

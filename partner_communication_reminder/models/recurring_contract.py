@@ -8,20 +8,20 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime, date
+from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, api, _
+from odoo import api, models
 
 _logger = logging.getLogger(__name__)
 
 
 class RecurringContract(models.Model):
-    _inherit = 'recurring.contract'
+    _inherit = "recurring.contract"
 
     def contract_active(self):
-        """ Remove waiting reminders if any """
+        """Remove waiting reminders if any"""
         self.env["partner.communication.job"].search(
             [
                 ("config_id.name", "ilike", "Waiting reminder"),
@@ -41,13 +41,15 @@ class RecurringContract(models.Model):
 
     @api.model
     def create_reminder_communication(self):
-        """ Creation of the reminder for active and waiting contracts """
+        """Creation of the reminder for active and waiting contracts"""
         _logger.info("Creating Sponsorship Reminders")
         today = datetime.now()
         first_day_of_month = today.replace(day=1)
-        reminder_conf_list = self.env['partner.communication.config']
+        reminder_conf_list = self.env["partner.communication.config"]
         for i in range(1, 4):
-            reminder_conf_list += self.env.ref(f"partner_communication_reminder.sponsorship_reminder_{i}")
+            reminder_conf_list += self.env.ref(
+                f"partner_communication_reminder.sponsorship_reminder_{i}"
+            )
         twenty_days_ago = today - relativedelta(days=20)
         partnerCommunicationJob = self.env["partner.communication.job"]
         search_domain = [
@@ -62,15 +64,11 @@ class RecurringContract(models.Model):
         contracts_eligible_reminder_dict = {
             "first": self.env[(self._name)],
             "second": self.env[(self._name)],
-            "third": self.env[(self._name)]
+            "third": self.env[(self._name)],
         }
         for sponsorship in self.search(search_domain):
             reminder_search = [
-                (
-                    "config_id",
-                    "in",
-                    reminder_conf_list.ids
-                ),
+                ("config_id", "in", reminder_conf_list.ids),
                 ("state", "=", "done"),
                 ("object_ids", "like", str(sponsorship.id)),
             ]
@@ -79,19 +77,25 @@ class RecurringContract(models.Model):
             # avoid taking into account reminder that the partner already took care of
             # we substract month due to the first of the month to get the older threshold
             # this also prevent reminder_1 to be sent after an already sent reminder_2
-            older_threshold = first_day_of_month - relativedelta(months=sponsorship.months_due)
+            older_threshold = first_day_of_month - relativedelta(
+                months=sponsorship.months_due
+            )
 
             has_first_reminder = partnerCommunicationJob.search_count(
                 reminder_search
-                + [("sent_date", ">=", older_threshold),
-                   ("sent_date", "<", twenty_days_ago)]
+                + [
+                    ("sent_date", ">=", older_threshold),
+                    ("sent_date", "<", twenty_days_ago),
+                ]
             )
             if has_first_reminder:
                 has_second_reminder = partnerCommunicationJob.search_count(
                     reminder_search
-                    + [("sent_date", ">=", older_threshold),
-                       ("sent_date", "<", twenty_days_ago),
-                       ("config_id", "=", reminder_conf_list[1].id)]
+                    + [
+                        ("sent_date", ">=", older_threshold),
+                        ("sent_date", "<", twenty_days_ago),
+                        ("config_id", "=", reminder_conf_list[1].id),
+                    ]
                 )
                 if has_second_reminder:
                     contracts_eligible_reminder_dict["third"] += sponsorship
@@ -105,10 +109,13 @@ class RecurringContract(models.Model):
                 if not has_first_reminder:
                     contracts_eligible_reminder_dict["first"] += sponsorship
         contracts_eligible_reminder_dict["first"].with_delay().send_communication(
-            reminder_conf_list[0], correspondent=False)
+            reminder_conf_list[0], correspondent=False
+        )
         contracts_eligible_reminder_dict["second"].with_delay().send_communication(
-            reminder_conf_list[1], correspondent=False)
+            reminder_conf_list[1], correspondent=False
+        )
         contracts_eligible_reminder_dict["third"].with_delay().send_communication(
-            reminder_conf_list[2], correspondent=False)
+            reminder_conf_list[2], correspondent=False
+        )
         _logger.info("Sponsorship Reminders created!")
         return True

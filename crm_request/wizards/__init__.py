@@ -1,2 +1,1 @@
-from . import assign_request_wizard
-from . import holiday_template_preview
+from . import assign_request_wizard, holiday_template_preview

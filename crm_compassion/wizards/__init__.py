@@ -8,8 +8,10 @@
 #
 ##############################################################################
 
-from . import portal_wizard
-from . import demand_settings
-from . import child_hold_wizard
-from . import partner_log_interaction_wizard
-from . import partner_log_other_interaction_wizard
+from . import (
+    child_hold_wizard,
+    demand_settings,
+    partner_log_interaction_wizard,
+    partner_log_other_interaction_wizard,
+    portal_wizard,
+)

@@ -8,11 +8,13 @@
 #
 ##############################################################################
 
-from . import bank_statement
-from . import bank_statement_line
-from . import account_partial_reconcile
-from . import res_config
-from . import account_journal
-from . import account_reconciliation_widget
-from . import account_reconcile_model
-from . import account_move
+from . import (
+    account_journal,
+    account_move,
+    account_partial_reconcile,
+    account_reconcile_model,
+    account_reconciliation_widget,
+    bank_statement,
+    bank_statement_line,
+    res_config,
+)

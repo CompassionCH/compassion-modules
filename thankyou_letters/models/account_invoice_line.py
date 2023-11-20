@@ -10,7 +10,7 @@
 
 import logging
 
-from odoo import models, api
+from odoo import models
 
 _logger = logging.getLogger(__name__)
 
@@ -57,13 +57,17 @@ class AccountInvoiceLine(models.Model):
                     f"falling back to the default"
                 )
                 new_communication_config = self.env.ref(
-                    "thankyou_letters.config_thankyou_standard")
+                    "thankyou_letters.config_thankyou_standard"
+                )
 
         partner = self.mapped("partner_id")
         partner.ensure_one()
 
-        all_thanks_config_ids = self.env["partner.communication.config"].search(
-            [("send_mode_pref_field", "like", "thankyou_preference")]).ids
+        all_thanks_config_ids = (
+            self.env["partner.communication.config"]
+            .search([("send_mode_pref_field", "like", "thankyou_preference")])
+            .ids
+        )
 
         all_existing_comm = self.env["partner.communication.job"].search(
             [
@@ -84,11 +88,18 @@ class AccountInvoiceLine(models.Model):
         generated_comms = self.env["partner.communication.job"]
         if not thankyou_config:
             return False
-        for communication_config in new_communication_config | all_existing_comm.mapped("config_id"):
-            invoice_lines = new_invoice_lines \
-                if new_communication_config == communication_config else self.env[self._name]
+        for communication_config in new_communication_config | all_existing_comm.mapped(
+            "config_id"
+        ):
+            invoice_lines = (
+                new_invoice_lines
+                if new_communication_config == communication_config
+                else self.env[self._name]
+            )
 
-            existing_comm = all_existing_comm.filtered(lambda x: x.config_id.id == communication_config.id)
+            existing_comm = all_existing_comm.filtered(
+                lambda x: x.config_id.id == communication_config.id
+            )
 
             if existing_comm:
                 invoice_lines |= existing_comm.get_objects()
@@ -101,10 +112,11 @@ class AccountInvoiceLine(models.Model):
                 "partner_id": partner.id,
                 "config_id": communication_config.id,
                 "object_ids": invoice_lines.ids,
-                "need_call": thankyou_config.need_call or communication_config.need_call,
+                "need_call": thankyou_config.need_call
+                or communication_config.need_call,
                 "print_subject": False,
                 "user_id": self.env.context.get("default_user_id")
-                           or thankyou_config.user_id.id,
+                or thankyou_config.user_id.id,
                 "send_mode": send_mode,
                 "auto_send": auto_mode,
             }

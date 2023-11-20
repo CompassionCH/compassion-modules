@@ -8,6 +8,4 @@
 #
 ##############################################################################
 
-from . import intervention_search
-from . import hold_wizard
-from . import commitment_wizard
+from . import commitment_wizard, hold_wizard, intervention_search

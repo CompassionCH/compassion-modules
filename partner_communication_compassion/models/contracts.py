@@ -8,11 +8,11 @@
 #
 ##############################################################################
 import logging
-from datetime import datetime, date
+from datetime import date, datetime
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, models, fields, _
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 

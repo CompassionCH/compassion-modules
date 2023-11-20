@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, api, fields
+from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -19,8 +19,7 @@ class GenerateCommunicationWizard(models.TransientModel):
     _inherit = "partner.communication.generate.wizard"
 
     sponsorship_ids = fields.Many2many(
-        "recurring.contract", string="Sponsorships",
-        compute="_compute_sponsorships"
+        "recurring.contract", string="Sponsorships", compute="_compute_sponsorships"
     )
     res_model = fields.Selection(
         [("res.partner", "Partners"), ("recurring.contract", "Sponsorships")],
@@ -87,12 +86,13 @@ class GenerateCommunicationWizard(models.TransientModel):
     def _compute_sponsorships(self):
         if self.res_model == "recurring.contract" and self.selection_domain:
             self.sponsorship_ids = self.env["recurring.contract"].search(
-                safe_eval(self.selection_domain))
+                safe_eval(self.selection_domain)
+            )
         else:
             self.sponsorship_ids = False
 
     def generate_communications(self, async_mode=True):
-        """ Create the communication records """
+        """Create the communication records"""
         if self.res_model == "recurring.contract":
             for sponsorship in self.sponsorship_ids:
                 if self.partner_source == "send_gifts_to":
@@ -105,15 +105,16 @@ class GenerateCommunicationWizard(models.TransientModel):
                     "config_id": self.model_id.id,
                 }
                 if self.send_mode:
-                    vals.update({
-                        "send_mode": self.send_mode,
-                        "auto_send": False,
-                    })
+                    vals.update(
+                        {
+                            "send_mode": self.send_mode,
+                            "auto_send": False,
+                        }
+                    )
                 options = {"force_language": self.force_language}
                 if async_mode or self.scheduled_date:
                     self.with_delay(
-                        eta=self.scheduled_date,
-                        priority=50
+                        eta=self.scheduled_date, priority=50
                     ).create_communication(vals, options)
                 else:
                     self.create_communication(vals, options)

@@ -22,7 +22,7 @@ class MyFPDF extends FPDF
 	function __construct($utils, $orientation='P', $unit='mm', $size='A4')
 	{
 	    $this->utils = $utils;
-	    
+
 		parent::__construct($orientation, $unit, $size);
 	}
 
@@ -211,12 +211,12 @@ class MyFPDF extends FPDF
 	    }
 		return false;
 	}
-	
+
 	function GetWidth()
 	{
 	    return $this->w;
 	}
-	
+
 	function GetHeight()
 	{
 	    return $this->h;

@@ -10,9 +10,10 @@
 import json
 import logging
 
-from odoo import http, exceptions
+from odoo import exceptions, http
 from odoo.exceptions import ValidationError
 from odoo.http import request
+
 from ..tools.onramp_connector import OnrampConnector
 
 _logger = logging.getLogger(__name__)
@@ -35,7 +36,6 @@ _logger = logging.getLogger(__name__)
 
 
 class RestController(http.Controller):
-
     @http.route("/onramp", type="json", auth="oauth2", methods=["POST"], csrf=False)
     def handler_onramp(self):
         headers = request.httprequest.headers

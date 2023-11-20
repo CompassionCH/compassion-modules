@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import models, fields
+from odoo import fields, models
 
 
 class ProjectCovidStatus(models.Model):
@@ -17,9 +17,7 @@ class ProjectCovidStatus(models.Model):
     _description = "Project covid status"
     _order = "update_date desc,id desc"
 
-    fcp_id = fields.Many2one(
-        "compassion.project", required=True, ondelete="cascade"
-    )
+    fcp_id = fields.Many2one("compassion.project", required=True, ondelete="cascade")
     update_date = fields.Date("updated on", default=fields.Date.today)
     re_opening_status = fields.Char()
     comments = fields.Char()

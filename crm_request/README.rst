@@ -17,7 +17,7 @@ CRM Request
     :target: https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_request
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module helps Compassion CH to manage the request of supporter, by updating the module *crm_claim* by OCA.
 It uses the *partner_auto_match* module to automatically match incoming emails to existing partners and adds tools
@@ -93,7 +93,7 @@ Maintainers
 
 Current maintainer:
 
-|maintainer-ecino| 
+|maintainer-ecino|
 
 This module is part of the `CompassionCH/compassion-modules <https://github.com/CompassionCH/compassion-modules/tree/14.0/crm_request>`_ project on GitHub.
 

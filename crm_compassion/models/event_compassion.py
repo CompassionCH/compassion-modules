@@ -10,7 +10,7 @@
 import math
 from datetime import datetime, timedelta
 
-from odoo import api, models, fields, exceptions, _
+from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import html2plaintext
 
@@ -77,11 +77,13 @@ class EventCompassion(models.Model):
     )
     description = fields.Html()
     analytic_id = fields.Many2one(
-        "account.analytic.account", "Analytic Account", copy=False, readonly=False, check_company=True
+        "account.analytic.account",
+        "Analytic Account",
+        copy=False,
+        readonly=False,
+        check_company=True,
     )
-    origin_id = fields.Many2one(
-        "recurring.contract.origin", "Origin", copy=False
-    )
+    origin_id = fields.Many2one("recurring.contract.origin", "Origin", copy=False)
     contract_ids = fields.One2many(
         "recurring.contract", related="origin_id.contract_ids"
     )
@@ -102,7 +104,9 @@ class EventCompassion(models.Model):
     )
     total_expense = fields.Float(compute="_compute_expense", readonly=True, store=True)
     total_income = fields.Float(compute="_compute_income", readonly=True, store=True)
-    balance = fields.Float("Profit/Loss", compute="_compute_balance", readonly=True, store=True)
+    balance = fields.Float(
+        "Profit/Loss", compute="_compute_balance", readonly=True, store=True
+    )
     currency_id = fields.Many2one("res.currency", related="analytic_id.currency_id")
     number_allocate_children = fields.Integer(
         "Number of children to allocate",
@@ -275,7 +279,6 @@ class EventCompassion(models.Model):
         super().write(vals)
         if not self.env.context.get("no_sync"):
             for event in self:
-
                 # Update Analytic Account and Origin
                 event.analytic_id.write(event._get_analytic_vals())
                 if "user_id" in vals and event.origin_id:
@@ -380,7 +383,8 @@ class EventCompassion(models.Model):
             "view_mode": "tree,form",
             "res_model": "account.move",
             "context": self.with_context(
-                default_analytic_account_id=self.analytic_id.id, default_company_id=self.company_id.id,
+                default_analytic_account_id=self.analytic_id.id,
+                default_company_id=self.company_id.id,
                 default_move_type="out_invoice",
                 search_default_paid=True,
             ).env.context,
@@ -406,7 +410,9 @@ class EventCompassion(models.Model):
     @api.onchange("end_date")
     def onchange_end_date(self):
         if self.end_date:
-            days_after = self.env["res.config.settings"].get_param("days_hold_after_event")
+            days_after = self.env["res.config.settings"].get_param(
+                "days_hold_after_event"
+            )
             self.hold_end_date = (self.end_date + timedelta(days=days_after)).date()
 
     @api.onchange("partner_id")
@@ -486,8 +492,9 @@ class EventCompassion(models.Model):
             "target": "current",
             "context": self.with_context(
                 {
-                    "default_take": (self.number_allocate_children
-                                     - self.effective_allocated),
+                    "default_take": (
+                        self.number_allocate_children - self.effective_allocated
+                    ),
                     "default_event_id": self.id,
                     "default_channel": "event",
                     "default_ambassador": self.user_id.partner_id.id,
@@ -507,11 +514,15 @@ class EventCompassion(models.Model):
         """
         for event in self:
             context = event.allocate_children()["context"]
-            childpool = self.env["compassion.childpool.search"].with_context(
-                context).create({})
+            childpool = (
+                self.env["compassion.childpool.search"].with_context(context).create({})
+            )
             childpool.rich_mix()
-            hold_wizard = self.env["child.hold.wizard"].with_context(
-                active_id=childpool.id, active_model=childpool._name).create({})
+            hold_wizard = (
+                self.env["child.hold.wizard"]
+                .with_context(active_id=childpool.id, active_model=childpool._name)
+                .create({})
+            )
             hold_wizard.with_delay().send()
 
     ##########################################################################

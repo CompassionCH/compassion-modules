@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import fields, models, api, _
+from odoo import _, api, fields, models
 
 
 class ImportLetterLine(models.Model):
@@ -39,7 +39,9 @@ class ImportLetterLine(models.Model):
     letter_image = fields.Binary(readonly=True)
     file_name = fields.Char(readonly=True)
     letter_image_preview = fields.Image(readonly=True)
-    import_id = fields.Many2one("import.letters.history", readonly=False, ondelete="cascade")
+    import_id = fields.Many2one(
+        "import.letters.history", readonly=False, ondelete="cascade"
+    )
     reviewed = fields.Boolean()
     status = fields.Selection(
         [
@@ -87,8 +89,7 @@ class ImportLetterLine(models.Model):
         "import_id.template_id",
     )
     def _compute_check_status(self):
-        """ At each change, check if all the fields are OK
-        """
+        """At each change, check if all the fields are OK"""
         default_template = self.env.ref("sbc_compassion.default_template")
         for line in self:
             valid_template = line.template_id and not (
@@ -108,7 +109,7 @@ class ImportLetterLine(models.Model):
 
     @api.depends("partner_id", "child_id")
     def _compute_sponsorship(self):
-        """ From the partner codega and the child code, find the record
+        """From the partner codega and the child code, find the record
         linking them together.
         At the same time, check if the child, the partner and the sponsorship
         are found.
@@ -137,7 +138,7 @@ class ImportLetterLine(models.Model):
                 line.name = line.file_name
 
     def get_letter_data(self):
-        """ Create a list of dictionaries in order to create some lines inside
+        """Create a list of dictionaries in order to create some lines inside
         import_letters_history.
 
         :returns: list to use in a write

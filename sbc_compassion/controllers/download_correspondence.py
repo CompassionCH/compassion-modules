@@ -8,11 +8,12 @@
 ##############################################################################
 import logging
 
-from odoo.addons.web.controllers.main import content_disposition
 from werkzeug.exceptions import BadRequest, NotFound
 
 from odoo import http
 from odoo.http import request
+
+from odoo.addons.web.controllers.main import content_disposition
 
 _logger = logging.getLogger(__name__)
 

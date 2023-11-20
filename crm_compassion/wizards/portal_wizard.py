@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import api, models
+from odoo import models
 
 
 class PortalWizard(models.TransientModel):

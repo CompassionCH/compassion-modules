@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -56,7 +56,7 @@ class GmcAction(models.Model):
     success_method = fields.Char(
         default="write",
         help="method to call on the object upon success delivery "
-             "(will pass the received answer as parameter as dictionary)",
+        "(will pass the received answer as parameter as dictionary)",
     )
     failure_method = fields.Char(
         help="method called on the object when the response contain error"
@@ -65,7 +65,7 @@ class GmcAction(models.Model):
     incoming_method = fields.Char(
         default="process_commkit",
         help="method called on the object when receiving incoming message "
-             "(will pass the received json as parameter as dictionary)",
+        "(will pass the received json as parameter as dictionary)",
     )
     batch_send = fields.Boolean(
         help="True if multiple objects can be sent through a single message"
@@ -74,14 +74,18 @@ class GmcAction(models.Model):
         help="Set to True for processing the message as soon as it is created."
     )
     request_type = fields.Selection(
-        [("GET", "GET"), ("POST", "POST"), ("PUT", "PUT"), ])
-    no_outgoing_data = fields.Boolean(
-        help="Put to true to force sending empty message"
+        [
+            ("GET", "GET"),
+            ("POST", "POST"),
+            ("PUT", "PUT"),
+        ]
     )
+    no_outgoing_data = fields.Boolean(help="Put to true to force sending empty message")
     priority = fields.Integer(
-        help="Define the priority at which the messages associated with this action will be treated."
-             "The more you're close to one the faster it will be proceeded.",
-        default=100
+        help="Define the priority at which the messages associated with this action "
+        "will be treated. The more you're close to one the faster it will be "
+        "proceeded.",
+        default=100,
     )
 
     def write(self, vals):
@@ -89,12 +93,11 @@ class GmcAction(models.Model):
         vals.pop("direction", False)
         return super().write(vals)
 
-    
     @api.constrains(
         "mapping_id", "direction", "incoming_method", "success_method", "failure_method"
     )
     def _validate_action(self):
-        """ Test if the action can be performed on given model. """
+        """Test if the action can be performed on given model."""
         for action in self:
             valid = True
             model_obj = self.env[action.mapping_id.model_id.model]
@@ -107,6 +110,5 @@ class GmcAction(models.Model):
 
             if not valid:
                 raise ValidationError(
-                    _("Invalid action (%s, %s).")
-                    % (action.direction, action.model)
+                    _("Invalid action (%s, %s).") % (action.direction, action.model)
                 )

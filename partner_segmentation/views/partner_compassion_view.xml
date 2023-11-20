@@ -1,0 +1,42 @@
+<odoo>
+    <!-- Move all personal fields in the tab from OCA partner-birthdate -->
+    <record id="view_partner_form_segmentation" model="ir.ui.view">
+        <field name="name">res.partner.form.compassion.personal.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="partner_personal_info.view_partner_form_compassion_personal"/>
+        <field name="arch" type="xml">
+            <!-- Add fields in the tab -->
+            <group name="personal_information_group">
+                <group string="Segmentation" name="segmentation">
+                    <field name="primary_segment_id" />
+                    <field name="secondary_segment_id" />
+                </group>
+            </group>
+            <div class="oe_button_box" position="inside">
+                <button name="%(partner_segmentation.act_partner_survey_input)d"
+                        type="action"
+                        class="oe_stat_button oe_inline"
+                        icon="fa-list-alt">
+                    <field name="survey_input_count"
+                           widget="statinfo"
+                           string="Surveys"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+
+    <!-- Extends the search on partners -->
+    <record model="ir.ui.view" id="res_partner_compassion_search">
+        <field name="name">res.partner.compassion.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group">
+                <filter string="Primary Segment" name="primary_segment_id" context="{'group_by':'primary_segment_id'}"/>
+                <filter string="Secondary Segment" name="secondary_segment_id" context="{'group_by':'secondary_segment_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

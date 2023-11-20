@@ -9,7 +9,7 @@
 ##############################################################################
 import logging
 
-from odoo import models, fields
+from odoo import fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class ResPartner(models.Model):
     )
 
     def anonymize(self, vals=None):
-        self.env["partner.communication.job"].search([
-            ("partner_id", "=", self.id)
-        ]).unlink()
+        self.env["partner.communication.job"].search(
+            [("partner_id", "=", self.id)]
+        ).unlink()
         return super().anonymize(vals)

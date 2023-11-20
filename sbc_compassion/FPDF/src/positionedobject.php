@@ -20,7 +20,7 @@ class PositionedObject
 		$this->maxX = $maxX;
 		$this->maxY = $maxY;
 	}
-	
+
 	function GetCoordinates()
 	{
 	    return array($this->minX, $this->minY, $this->maxX, $this->maxY);

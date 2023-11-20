@@ -9,13 +9,13 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class Phonecall(models.Model):
-    """ Add a communication when phonecall is logged. """
+    """Add a communication when phonecall is logged."""
 
     _inherit = "crm.phonecall"
 
@@ -45,12 +45,17 @@ class Phonecall(models.Model):
     def log_partner_communication(self):
         config = self.env.ref("partner_communication.phonecall_communication")
         for phonecall in self:
-            if phonecall.state == "done" and phonecall.partner_id \
-                    and not phonecall.communication_id:
+            if (
+                phonecall.state == "done"
+                and phonecall.partner_id
+                and not phonecall.communication_id
+            ):
                 # Phone call was made outside from communication call wizard.
                 # Create a communication to log the call.
-                phonecall.communication_id = \
-                    self.env["partner.communication.job"].create({
+                phonecall.communication_id = self.env[
+                    "partner.communication.job"
+                ].create(
+                    {
                         "config_id": config.id,
                         "partner_id": phonecall.partner_id.id,
                         "user_id": self.env.uid,
@@ -61,5 +66,6 @@ class Phonecall(models.Model):
                         "body_html": phonecall.name,
                         "subject": phonecall.name,
                         "auto_send": False,
-                    })
+                    }
+                )
         return True

@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 
 
 class Household(models.Model):
@@ -44,7 +44,9 @@ class Household(models.Model):
     mother_alive = fields.Selection("_get_yes_no")
     mother_living_with_child = fields.Boolean()
     youth_headed_household = fields.Boolean()
-    primary_caregiver = fields.Char(string="Primary caregiver", compute="_compute_primary_caregiver")
+    primary_caregiver = fields.Char(
+        string="Primary caregiver", compute="_compute_primary_caregiver"
+    )
     primary_caregiver_id = fields.Many2one(
         "compassion.household.member",
         compute="_compute_primary_caregiver",
@@ -78,12 +80,12 @@ class Household(models.Model):
     def _compute_siblings(self):
         for household in self:
             brothers = household.member_ids.filtered(
-                lambda member: member.role in ("Brother", "Beneficiary - Male",
-                                               "Participant - Male")
+                lambda member: member.role
+                in ("Brother", "Beneficiary - Male", "Participant - Male")
             )
             sisters = household.member_ids.filtered(
-                lambda member: member.role in ("Sister", "Beneficiary - Female",
-                                               "Participant - Female")
+                lambda member: member.role
+                in ("Sister", "Beneficiary - Female", "Participant - Female")
             )
             household.nb_brothers = (
                 len(brothers) - 1
@@ -118,14 +120,19 @@ class Household(models.Model):
         return caregiver.translate("role")
 
     def get_caregivers(self):
-        """ Returns valid names for caregivers. """
+        """Returns valid names for caregivers."""
         self.ensure_one()
         caregivers = self.member_ids.filtered(
             lambda member: member.is_caregiver
             and member.role
-            not in ("Brother", "Sister", "Beneficiary - Male",
-                    "Beneficiary - Female", "Participant - Male", "Participant - "
-                                                                  "Female")
+            not in (
+                "Brother",
+                "Sister",
+                "Beneficiary - Male",
+                "Beneficiary - Female",
+                "Participant - Male",
+                "Participant - " "Female",
+            )
         )
         return caregivers
 
@@ -199,10 +206,10 @@ class Household(models.Model):
         ]
 
     def process_commkit(self, commkit_data):
-        """ Household Major Revision """
+        """Household Major Revision"""
         household_ids = list()
         for household_data in commkit_data.get(
-                "BeneficiaryHouseholdList", [commkit_data]
+            "BeneficiaryHouseholdList", [commkit_data]
         ):
             household = self.search(
                 [("household_id", "=", household_data.get("Household_ID"))]
@@ -211,8 +218,9 @@ class Household(models.Model):
                 household_ids.append(household.id)
                 household_vals = self.json_to_data(household_data)
                 # First write revision values
-                household.write({
-                    "revised_value_ids": household_vals.pop("revised_value_ids")})
+                household.write(
+                    {"revised_value_ids": household_vals.pop("revised_value_ids")}
+                )
                 household.write(household_vals)
         return household_ids
 

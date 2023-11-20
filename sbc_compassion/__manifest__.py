@@ -45,7 +45,7 @@
             "wand",
             "pyzbar",
             "PyMuPDF",  # TODO replace by Odoo standard library
-        ]
+        ],
     },
     "data": [
         "security/ir.model.access.csv",
@@ -69,7 +69,9 @@
         "data/gmc_action.xml",
         "data/queue_job.xml",
     ],
-    "demo": ["demo/correspondence_template.xml", ],
+    "demo": [
+        "demo/correspondence_template.xml",
+    ],
     "installable": True,
     "auto_install": False,
     "post_init_hook": "load_mappings",

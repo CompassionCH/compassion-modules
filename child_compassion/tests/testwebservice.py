@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestWebservice(common.TransactionCase):
-    """ Test Project Webservices """
+    """Test Project Webservices"""
 
     def setUp(self):
         super().setUp()
@@ -27,25 +27,32 @@ class TestWebservice(common.TransactionCase):
     def _create_project(self, project_code, project_name):
         project_obj = self.env["compassion.project"]
         project_id = project_obj.create(
-            {"fcp_id": project_code, "name": project_name, }
+            {
+                "fcp_id": project_code,
+                "name": project_name,
+            }
         ).id
         return project_id
 
     def _create_child(self, child_code, child_name):
         child_obj = self.env["compassion.child"]
-        child_id = child_obj.create({"local_id": child_code, "name": child_name, }).id
+        child_id = child_obj.create(
+            {
+                "local_id": child_code,
+                "name": child_name,
+            }
+        ).id
         return child_id
 
     def test_config_set(self):
-        """Test that the config is properly set on the server
-        """
+        """Test that the config is properly set on the server"""
         url = config.get("compass_url")
         api_key = config.get("compass_api_key")
         self.assertTrue(url)
         self.assertTrue(api_key)
 
     def test_project_tz112(self):
-        """ Test the webservice on Project TZ112. """
+        """Test the webservice on Project TZ112."""
         # Test the basics
         self.assertTrue(self.project_id)
         project_obj = self.env["compassion.project"]
@@ -70,7 +77,7 @@ class TestWebservice(common.TransactionCase):
         self.assertTrue(project.country_id.description_en)
 
     def test_child_tz1120316(self):
-        """ Test the webservice on child TZ1120316"""
+        """Test the webservice on child TZ1120316"""
         # Test the basics
         self.assertTrue(self.child_id)
         child_obj = self.env["compassion.child"]
@@ -88,8 +95,8 @@ class TestWebservice(common.TransactionCase):
         child.generate_descriptions()
         child_desc_wiz = (
             self.env["child.description.wizard"]
-                .with_context(child_id=child.id)
-                .create(
+            .with_context(child_id=child.id)
+            .create(
                 {
                     "child_id": child.id,
                     "case_study_id": child.case_study_ids[0].id,
@@ -112,8 +119,8 @@ class TestWebservice(common.TransactionCase):
         child.project_id.generate_descriptions()
         project_desc_wiz = (
             self.env["project.description.wizard"]
-                .with_context(active_id=child.project_id.id)
-                .create(
+            .with_context(active_id=child.project_id.id)
+            .create(
                 {
                     "project_id": child.project_id.id,
                     "keep_desc_fr": True,

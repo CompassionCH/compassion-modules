@@ -30,7 +30,7 @@ class AccountInvoice(models.Model):
     )
 
     def _compute_children(self):
-        """ View children contained in invoice. """
+        """View children contained in invoice."""
         for invoice in self:
             children = invoice.mapped("line_ids.contract_id.child_id")
             if len(children) > 1:
@@ -47,8 +47,12 @@ class AccountInvoice(models.Model):
         sponsorship_cat = self.env.ref(
             "sponsorship_compassion.product_category_sponsorship", categ_obj
         )
-        fund_cat = self.env.ref("sponsorship_compassion.product_category_fund", categ_obj)
-        gift_cat = self.env.ref("sponsorship_compassion.product_category_gift", categ_obj)
+        fund_cat = self.env.ref(
+            "sponsorship_compassion.product_category_fund", categ_obj
+        )
+        gift_cat = self.env.ref(
+            "sponsorship_compassion.product_category_gift", categ_obj
+        )
         for invoice in self:
             categories = invoice.invoice_line_ids.mapped("product_id.categ_id")
             if sponsorship_cat and sponsorship_cat in categories:
@@ -69,6 +73,8 @@ class AccountInvoice(models.Model):
             parent = super()
         else:
             # Handle a gift or fund change
-            parent = super(AccountInvoice, self.with_context(
-                open_invoices_exclude_sponsorship=True))
+            parent = super(
+                AccountInvoice,
+                self.with_context(open_invoices_exclude_sponsorship=True),
+            )
         return parent._build_invoice_lines_from_contracts(modified_contracts)

@@ -7,10 +7,10 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.addons.child_compassion.models.compassion_hold import HoldType
-
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.fields import Datetime
+
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 
 class WeeklyRevision(models.Model):

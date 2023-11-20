@@ -1,7 +1,7 @@
 # Copyright (C) 2019 Compassion CH
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class AssignRequestWizard(models.TransientModel):
@@ -13,7 +13,6 @@ class AssignRequestWizard(models.TransientModel):
     )
     intern_note = fields.Text("Internal note")
 
-    
     def assign_to(self):
         self.ensure_one()
         model = self.env.context.get("active_model")

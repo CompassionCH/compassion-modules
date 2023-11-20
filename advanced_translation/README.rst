@@ -14,7 +14,7 @@ Advanced Translation
     :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/advanced_translation
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| 
+|badge1| |badge2|
 
 Use this module to add application terms that can be translated in context
 for male / female and singular / plural.

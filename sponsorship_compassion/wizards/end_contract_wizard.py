@@ -8,9 +8,9 @@
 #
 ##############################################################################
 
-from odoo.addons.child_compassion.models.compassion_hold import HoldType
+from odoo import fields, models
 
-from odoo import models, fields, api
+from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 
 class EndContractWizard(models.TransientModel):

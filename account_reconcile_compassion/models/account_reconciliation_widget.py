@@ -19,9 +19,16 @@ class AccountReconciliationWidget(models.AbstractModel):
         return results
 
     @api.model
-    def get_move_lines_for_bank_statement_line(self, st_line_id, partner_id=None,
-                                               excluded_ids=None, search_str=False,
-                                               offset=0, limit=None, mode=None):
+    def get_move_lines_for_bank_statement_line(
+        self,
+        st_line_id,
+        partner_id=None,
+        excluded_ids=None,
+        search_str=False,
+        offset=0,
+        limit=None,
+        mode=None,
+    ):
         """
         Propose up to 12 move lines for a complete year, and avoid too much propositions
         """
@@ -33,8 +40,9 @@ class AccountReconciliationWidget(models.AbstractModel):
             st_line_id, partner_id, excluded_ids, search_str, offset, limit, mode
         )
 
-    def _prepare_move_lines(self, move_lines, target_currency=False, target_date=False,
-                            recs_count=0):
+    def _prepare_move_lines(
+        self, move_lines, target_currency=False, target_date=False, recs_count=0
+    ):
         """
         Sort move lines according to Compassion criterias :
         Move line for current month at first,
@@ -50,10 +58,7 @@ class AccountReconciliationWidget(models.AbstractModel):
             limit_year = date.year - 5
             index = limit_year
             mv_date = move_line.date_maturity or move_line.date
-            if (
-                    mv_date.month == date.month
-                    and mv_date.year == date.year
-            ):
+            if mv_date.month == date.month and mv_date.year == date.year:
                 index += 1
             else:
                 index += mv_date.month + (mv_date.year - limit_year) * 12
@@ -61,4 +66,5 @@ class AccountReconciliationWidget(models.AbstractModel):
 
         move_lines = move_lines.sorted(_sort_move_line)
         return super()._prepare_move_lines(
-            move_lines, target_currency, target_date, recs_count)
+            move_lines, target_currency, target_date, recs_count
+        )

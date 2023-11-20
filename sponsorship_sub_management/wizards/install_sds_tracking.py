@@ -7,7 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 from psycopg2 import sql
 
@@ -81,12 +81,14 @@ class InstallSdsTracking(models.TransientModel):
                         color = %s
                     WHERE id IN %s
                 """
-            ).format(column=sql.Identifier(sds_change_date))  # Safely inserting a column name in the query
+            ).format(
+                column=sql.Identifier(sds_change_date)
+            )  # Safely inserting a column name in the query
             query_params = (
                 sds_state,
                 date_delta,
                 SDS_COLORS[sds_state],
-                tuple(contract_ids)
+                tuple(contract_ids),
             )
             self.env.cr.execute(query, query_params)
 

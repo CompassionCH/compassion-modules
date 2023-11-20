@@ -9,13 +9,13 @@
 class TemplateUtils
 {
     const DEFAULT_CELL_HEIGHT = 6;
-    
+
     public $templates;
     private $numberOfPages;
     public  $overflowTemplate;    // Can be used for overflow pages instead of repeating the template => Template
     private $oddPageNumber;
     private $oneOrTwoPages;
-    
+
     function __construct($templates, $numberOfPages, $overflowTemplate)
     {
         $this->templates = $templates;
@@ -24,7 +24,7 @@ class TemplateUtils
         $this->oneOrTwoPages = count($templates) <= 2;
         $this->overflowTemplate = $overflowTemplate;
     }
-    
+
     function GetTemplateForPageNo($pageNo)
     {
         // Not every page was displayed once, we return the page at index pageNo.

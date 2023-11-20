@@ -4,13 +4,12 @@
 import logging
 from email.utils import parseaddr
 
-from dateutil import parser
 from dateutil.relativedelta import relativedelta
 from psycopg2 import IntegrityError
 
-from odoo import api, fields, models, exceptions, _
+from odoo import _, api, exceptions, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import html_sanitize, prepend_html_content, email_normalize
+from odoo.tools import email_normalize, html_sanitize, prepend_html_content
 
 _logger = logging.getLogger(__name__)
 
@@ -37,7 +36,9 @@ class CrmClaim(models.Model):
     holiday_closure_id = fields.Many2one(
         "holiday.closure", "Holiday closure", readonly=True
     )
-    incoming_message_id = fields.Many2one("mail.message", compute="_compute_incoming_message")
+    incoming_message_id = fields.Many2one(
+        "mail.message", compute="_compute_incoming_message"
+    )
     incoming_message = fields.Html(compute="_compute_incoming_message")
     quoted_reply = fields.Html(compute="_compute_incoming_message")
     reply_to = fields.Char(compute="_compute_incoming_message")
@@ -56,17 +57,24 @@ class CrmClaim(models.Model):
     @api.model
     def _get_lang(self):
         langs = self.env["res.lang"].search([])
-        return [(l.code, l.name) for l in langs]
+        return [(lang.code, lang.name) for lang in langs]
 
     def _compute_incoming_message(self):
         for request in self:
             messages = request.mapped("message_ids").filtered(
-                lambda m: m.body and (m.author_id == request.partner_id or m.email_from == request.email_from))
+                lambda m: m.body
+                and (
+                    m.author_id == request.partner_id
+                    or m.email_from == request.email_from
+                )
+            )
             message = request.incoming_message_id = messages[:1]
             request.incoming_message = message.body
             request.quoted_reply = f"""
-                <blockquote style="padding-right:0px;padding-left:5px; border-left-color: #000; margin-left:5px;
-                                   margin-right:0px;border-left-width: 2px; border-left-style:solid">
+                <blockquote style="padding-right:0px;padding-left:5px;
+                    border-left-color: #000; margin-left:5px;
+                    margin-right:0px;border-left-width: 2px; border-left-style:solid"
+                >
                     From: {message.email_from.replace('<', '(').replace('>', ')')}<br/>
                     Date: {message.date}<br/>
                     Subject: {message.subject}<br/>
@@ -103,7 +111,9 @@ class CrmClaim(models.Model):
             "mark_so_as_sent": True,
             "salutation_language": self.language,
             "default_body": prepend_html_content(
-                self.quoted_reply, f"<div style='margin-bottom: 20px;'><p>{self.partner_id.salutation}</p></div>")
+                self.quoted_reply,
+                f"<div style='margin-bottom: 20px;'><p>{self.partner_id.salutation}</p></div>",
+            ),
         }
 
         return {
@@ -154,7 +164,9 @@ class CrmClaim(models.Model):
 
         if "partner_id" not in custom_values:
             match_obj = self.env["res.partner.match"]
-            partner = match_obj.match_values_to_partner({"email": email_normalize(defaults["email_from"])})
+            partner = match_obj.match_values_to_partner(
+                {"email": email_normalize(defaults["email_from"])}
+            )
             if partner:
                 defaults["partner_id"] = partner.id
                 defaults["language"] = partner.lang
@@ -188,7 +200,7 @@ class CrmClaim(models.Model):
             _logger.error(f"The automatic mail failed\n{e}")
 
         return request_id
-    
+
     def message_update(self, msg_dict, update_vals=None):
         """Change the stage to "Waiting on support" when the customer writes a
         new mail on the thread, Unassign and put as "New" if the User in charge is in leave.
@@ -198,10 +210,7 @@ class CrmClaim(models.Model):
         stage_new = self.env.ref("crm_claim.stage_claim1")
         in_leave = self.filtered("user_id.employee_ids.current_leave_id")
         (self - in_leave).write({"stage_id": wait_support})
-        in_leave.write({
-            "stage_id": stage_new,
-            "user_id": False
-        })
+        in_leave.write({"stage_id": stage_new, "user_id": False})
         return result
 
     def message_post(self, **kwargs):
@@ -259,7 +268,13 @@ class CrmClaim(models.Model):
                     if partner.email and request.email_from:
                         try:
                             with self.env.cr.savepoint():
-                                partner.write({"email_alias_ids": [(0, 0, {"email": request.email_from})]})
+                                partner.write(
+                                    {
+                                        "email_alias_ids": [
+                                            (0, 0, {"email": request.email_from})
+                                        ]
+                                    }
+                                )
                         except (IntegrityError, ValidationError):
                             _logger.warning("Unable to sync email to partner")
                     else:
@@ -268,7 +283,7 @@ class CrmClaim(models.Model):
                     partner.phone = request.partner_phone
 
         return True
-    
+
     def send_holiday_answer(self):
         """This will use the holiday mail template and enforce a
         mail sending to the requester."""
@@ -301,8 +316,8 @@ class CrmClaim(models.Model):
                 "mail.mail_activity_data_todo",
                 summary=_("A support request require your attention"),
                 note=_(
-                    "The request {} you were assigned to requires"
-                    " your attention.".format(req.code)
+                    f"The request {req.code} you were assigned to requires"
+                    " your attention."
                 ),
                 user_id=req.user_id.id,
             )

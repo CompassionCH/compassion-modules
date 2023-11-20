@@ -7,13 +7,9 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo.addons.message_center_compassion.tools.load_mappings import \
-    load_mapping_files
+from odoo.addons.message_center_compassion.tools.load_mappings import load_mapping_files
 
-from . import tools
-from . import controllers
-from . import models
-from . import wizards
+from . import controllers, models, tools, wizards
 
 
 def load_mappings(cr, registry):

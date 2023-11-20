@@ -7,14 +7,15 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from odoo import api, models, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
 from ..tools.onramp_connector import SBCConnector
 
 
 class GetLetterImageWizard(models.TransientModel):
-    """ Wizard for retrieving image of letter from Perceptive
-        (Remote storage of U.S. servers)
+    """Wizard for retrieving image of letter from Perceptive
+    (Remote storage of U.S. servers)
     """
 
     _name = "letter.image.wizard"
@@ -39,7 +40,7 @@ class GetLetterImageWizard(models.TransientModel):
                 raise ValidationError(_("Dpi value must be between 96 and 1200"))
 
     def get_image_letter(self, letter_id):
-        """ Allows to call get_image and specify a letter id. """
+        """Allows to call get_image and specify a letter id."""
         return self.with_context(active_id=letter_id).get_image()
 
     def get_image(self):
@@ -56,7 +57,12 @@ class GetLetterImageWizard(models.TransientModel):
             )
         if image_data is None:
             raise UserError(_("Image requested was not found remotely."))
-        self.write({"image_preview": image_data if self.format != "pdf" else None, "image_download": image_data})
+        self.write(
+            {
+                "image_preview": image_data if self.format != "pdf" else None,
+                "image_download": image_data,
+            }
+        )
         return {
             "name": _("Retrieve letter image"),
             "type": "ir.actions.act_window",

@@ -8,10 +8,10 @@
 #
 ##############################################################################
 import logging
-from odoo import api, models, fields, _
 
-from functools import reduce
 from babel.dates import format_date
+
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -126,15 +126,21 @@ class CompassionChild(models.Model):
         repeat_preposition=False,
     ):
         """
-        Returns a string with children names and associated countries with the correct preposition
-        :param preposition_field: name of the preposition field to use ('in_preposition', 'from_preposition')
+        Returns a string with children names and associated countries with the correct
+        preposition
+        :param preposition_field: name of the preposition field to use
+        ('in_preposition', 'from_preposition')
         :param with_child_name: include or not the name of the children in the string
         :param child_limit: max number of children names to display in string
         :param country_limit: max number of country names to display in string
-        :param child_substitution: alternative string to display if there are more than child_limit children
-        :param country_substitution: alternative string to display if there are more than country_limit countries
-        :param repeat_preposition: set to true if you want to repeat each time the country preposition
-        :return: a nice string to use in communications (ex: "John and Jack in Ghana and July in Ecuador")
+        :param child_substitution: alternative string to display if there are more
+        than child_limit children
+        :param country_substitution: alternative string to display if there are more
+        than country_limit countries
+        :param repeat_preposition: set to true if you want to repeat each time the
+        country preposition
+        :return: a nice string to use in communications
+        (ex: "John and Jack in Ghana and July in Ecuador")
         """
         res_list = []
         if len(self.mapped("field_office_id")) > country_limit:

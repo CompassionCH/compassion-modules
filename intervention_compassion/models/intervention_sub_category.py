@@ -12,7 +12,7 @@ import csv
 import logging
 import os
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
@@ -40,9 +40,7 @@ class InterventionSubCategory(models.Model):
     @api.model
     def install_cat_rel(self):
         logger.info("Intervention Installation : Loading Category Relations")
-        with open(
-            IMPORT_DIR + "compassion.intervention.cat.subcat.rel.csv", "r"
-        ) as csvfile:
+        with open(IMPORT_DIR + "compassion.intervention.cat.subcat.rel.csv") as csvfile:
             csvreader = csv.reader(csvfile)
             # Skip header
             next(csvreader, None)

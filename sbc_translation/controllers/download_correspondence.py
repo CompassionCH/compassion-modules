@@ -21,7 +21,9 @@ class RestController(http.Controller):
     def generate_correspondence_pdf(self, object_id, api_key=None):
         if not object_id:
             raise BadRequest()
-        if not api_key or api_key != request.env["ir.config_parameter"].sudo().get_param("sbc_translation.api_key"):
+        if not api_key or api_key != request.env[
+            "ir.config_parameter"
+        ].sudo().get_param("sbc_translation.api_key"):
             raise Unauthorized()
 
         correspondence = request.env["correspondence"].sudo().browse(object_id).exists()

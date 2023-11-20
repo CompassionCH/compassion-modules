@@ -17,7 +17,7 @@ Thank You Letters
     :target: https://github.com/compassionCH/compassion-modules/tree/11.0/thankyou_letters
     :alt: compassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 Adds everything needed for thank you letters.
 

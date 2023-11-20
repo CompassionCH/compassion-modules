@@ -9,13 +9,13 @@
 ##############################################################################
 import logging
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class ResPartner(models.Model):
-    """ Add a field for communication preference. """
+    """Add a field for communication preference."""
 
     _inherit = "res.partner"
 
@@ -46,7 +46,10 @@ class ResPartner(models.Model):
             partner.communication_count = self.env[
                 "partner.communication.job"
             ].search_count(
-                [("partner_id", "=", partner.id), ("state", "=", "pending"), ]
+                [
+                    ("partner_id", "=", partner.id),
+                    ("state", "=", "pending"),
+                ]
             )
 
     @api.model

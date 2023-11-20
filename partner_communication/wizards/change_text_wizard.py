@@ -8,7 +8,7 @@
 #
 ##############################################################################
 
-from odoo import models, api, fields, _
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -36,7 +36,7 @@ class ChangeTextWizard(models.TransientModel):
         return config.email_template_id.with_context(lang=lang[0]).body_html
 
     def update(self):
-        """ Refresh the texts of communications given the new template. """
+        """Refresh the texts of communications given the new template."""
         self.ensure_one()
         context = self.env.context
         communications = self.env[context["active_model"]].browse(context["active_ids"])

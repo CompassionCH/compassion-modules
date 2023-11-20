@@ -1,3 +1,1 @@
-from . import import_json_mapping
-from . import pool_process_wizard
-from . import settings
+from . import import_json_mapping, pool_process_wizard, settings

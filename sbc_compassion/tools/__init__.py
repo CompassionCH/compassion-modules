@@ -7,5 +7,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import onramp_connector
-from . import read_barcode
+from . import onramp_connector, read_barcode

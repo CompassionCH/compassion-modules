@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import api, models, fields
+from odoo import fields, models
 
 
 class FieldOffice(models.Model):
@@ -78,14 +78,11 @@ class FieldOffice(models.Model):
     )
     fcp_hours_week = fields.Integer("Hours/week", default=8)
     fcp_meal_week = fields.Integer("Meals/week", default=1)
-    fcp_medical_check = fields.Integer(
-        "Medical check/year", default=1
-    )
+    fcp_medical_check = fields.Integer("Medical check/year", default=1)
     fcp_ids = fields.One2many(
         "compassion.project",
         "field_office_id",
         "FCP",
-
         readonly=False,
     )
 
@@ -101,8 +98,8 @@ class FieldOffice(models.Model):
     #                             VIEW CALLBACKS                             #
     ##########################################################################
     def update_informations(self):
-        """ Get the most recent informations for selected field offices and
-        update them accordingly. """
+        """Get the most recent informations for selected field offices and
+        update them accordingly."""
         message_obj = self.env["gmc.message"]
         action_id = self.env.ref("child_compassion.field_office_details").id
 

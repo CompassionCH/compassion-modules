@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+read_access_partner_segmentation, Read access on partner segmentation,model_res_partner_segment,,1,0,0,0
+full_access_partner_segmentation, Full access on partner segmentation,model_res_partner_segment,base.group_system,1,1,1,1
+read_access_partner_segmentation_affinity, Read access on partner segmentation affinity,model_res_partner_segment_affinity,,1,0,0,0
+full_access_partner_segmentation_affinity, Full access on partner segmentation affinity,model_res_partner_segment_affinity,base.group_system,1,1,1,1

@@ -8,7 +8,9 @@
 #
 ##############################################################################
 
-from . import report_with_omr
-from . import communication_job
-from . import communication_config
-from . import communication_attachment
+from . import (
+    communication_attachment,
+    communication_config,
+    communication_job,
+    report_with_omr,
+)

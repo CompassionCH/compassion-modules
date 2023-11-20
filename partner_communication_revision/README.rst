@@ -17,7 +17,7 @@ Partner Communication Revisions
     :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/partner_communication_revision
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 This module adds a new way of defining e-mail templates so that non-technical staff can edit text templates.
 

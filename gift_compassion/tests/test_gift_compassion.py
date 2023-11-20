@@ -10,6 +10,7 @@ import logging
 from datetime import date
 
 from odoo import fields
+
 from odoo.addons.sponsorship_compassion.tests.test_sponsorship_compassion import (
     BaseSponsorshipTest,
 )
@@ -18,14 +19,14 @@ logger = logging.getLogger(__name__)
 
 
 class TestGifts(BaseSponsorshipTest):
-    def setUp(cls):
-        super(TestGifts, cls).setUp()
-        child = cls.create_child("AB123456789")
-        sp_group = cls.create_group({"partner_id": cls.thomas.id})
+    def setUp(self):
+        super().setUp()
+        child = self.create_child("AB123456789")
+        sp_group = self.create_group({"partner_id": self.thomas.id})
 
-        cls.sponsorship = cls.create_contract(
+        self.sponsorship = self.create_contract(
             {
-                "partner_id": cls.thomas.id,
+                "partner_id": self.thomas.id,
                 "group_id": sp_group.id,
                 "child_id": child.id,
                 "correspondent_id": sp_group.partner_id.id,
@@ -34,7 +35,7 @@ class TestGifts(BaseSponsorshipTest):
         )
 
     def test_normal_case(self):
-        """ create a gift and verify it's correct """
+        """create a gift and verify it's correct"""
         gift = self._create_birthday_gift()
 
         # test gift eligibility based on amount
@@ -44,7 +45,8 @@ class TestGifts(BaseSponsorshipTest):
 
         # tests for gift types changes
         product = self.env.ref(
-            "sponsorship_compassion.product_template_gift_birthday").product_variant_id
+            "sponsorship_compassion.product_template_gift_birthday"
+        ).product_variant_id
         self.assertEqual(
             gift.get_gift_types(product),
             {
@@ -67,7 +69,10 @@ class TestGifts(BaseSponsorshipTest):
         product.write({"name": "Family Gift", "default_code": "gift_family"})
         self.assertEqual(
             gift.get_gift_types(product),
-            {"gift_type": "Family Gift", "attribution": "Sponsored Child Family", },
+            {
+                "gift_type": "Family Gift",
+                "attribution": "Sponsored Child Family",
+            },
         )
 
         # test for on_connect
@@ -76,9 +81,10 @@ class TestGifts(BaseSponsorshipTest):
         self.assertEqual(gift.state, "open")
 
     def test_gift_creation_with_account_invoice_line(self):
-        """ Data creation """
+        """Data creation"""
         product = self.env.ref(
-            "sponsorship_compassion.product_template_gift_birthday").product_variant_id
+            "sponsorship_compassion.product_template_gift_birthday"
+        ).product_variant_id
 
         sponsorship = self.sponsorship
 
@@ -146,8 +152,9 @@ class TestGifts(BaseSponsorshipTest):
         # gift information
         self.assertEqual(gift.name, "Birthday Gift [" + gift.sponsorship_id.name + "]")
         # it's a birthday gift, so due_date is 2 month before the birthday
-        self.assertEqual(fields.Date.to_string(gift.gift_date),
-                         "%s-11-28" % str(today.year))
+        self.assertEqual(
+            fields.Date.to_string(gift.gift_date), "%s-11-28" % str(today.year)
+        )
         self.assertEqual(gift.amount, 50)
         self.assertEqual(gift.gift_type, "Beneficiary Gift")
         self.assertEqual(gift.state, "verify")
@@ -181,7 +188,7 @@ class TestGifts(BaseSponsorshipTest):
                 "gift_type": "Beneficiary Gift",
                 "attribution": "Sponsorship",
                 "sponsorship_gift_type": "Birthday",
-                "instructions": "Take these ${}".format(amount),
+                "instructions": f"Take these ${amount}",
                 "amount": amount,
             }
         )

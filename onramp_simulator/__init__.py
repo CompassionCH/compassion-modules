@@ -7,5 +7,4 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-from . import tools
-from . import wizards
+from . import tools, wizards

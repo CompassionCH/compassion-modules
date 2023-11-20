@@ -15,15 +15,15 @@ from urllib.request import urlopen
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 logger = logging.getLogger(__name__)
 
 
 class GenericChild(models.AbstractModel):
-    """ Generic information of children shared by subclasses:
-        - compassion.child : sponsored children
-        - compassion.global.child : available children in global pool
+    """Generic information of children shared by subclasses:
+    - compassion.child : sponsored children
+    - compassion.global.child : available children in global pool
     """
 
     _name = "compassion.generic.child"
@@ -55,7 +55,11 @@ class GenericChild(models.AbstractModel):
     is_area_hiv_affected = fields.Boolean()
     beneficiary_state = fields.Selection("_get_availability_state", readonly=True)
     sponsorship_status = fields.Selection(
-        [("Sponsored", "Sponsored"), ("Unsponsored", "Unsponsored"), ], readonly=True
+        [
+            ("Sponsored", "Sponsored"),
+            ("Unsponsored", "Unsponsored"),
+        ],
+        readonly=True,
     )
     unsponsored_since = fields.Date(readonly=True)
     image_url = fields.Char()
@@ -102,9 +106,9 @@ class GenericChild(models.AbstractModel):
         ]
 
     def get_child_vals(self):
-        """ Get the required field values of one record for other record
-            creation.
-            :return: Dictionary of values for the fields
+        """Get the required field values of one record for other record
+        creation.
+        :return: Dictionary of values for the fields
         """
         self.ensure_one()
         vals = self.read(self.get_fields())[0]
@@ -155,9 +159,13 @@ class GenericChild(models.AbstractModel):
         preferred_name = odoo_data.get("preferred_name")
         if not preferred_name and "firstname" in odoo_data:
             odoo_data["preferred_name"] = odoo_data.get("firstname")
-        if 'hold_expiration_date' in odoo_data:
-            odoo_data['hold_expiration_date'] = odoo_data['hold_expiration_date'].replace('T', ' ')
-            odoo_data['hold_expiration_date'] = odoo_data['hold_expiration_date'].replace('Z', '')
+        if "hold_expiration_date" in odoo_data:
+            odoo_data["hold_expiration_date"] = odoo_data[
+                "hold_expiration_date"
+            ].replace("T", " ")
+            odoo_data["hold_expiration_date"] = odoo_data[
+                "hold_expiration_date"
+            ].replace("Z", "")
         return odoo_data
 
     def _load_image(self, thumb=False, binar=False):
@@ -183,13 +191,12 @@ class GenericChild(models.AbstractModel):
                 url = child.image_url if not thumb else child.thumbnail_url
                 try:
                     child.portrait = base64.encodebytes(urlopen(url).read())
-                except:
+                except Exception:
                     logger.error("Image cannot be fetched : " + str(url))
 
 
 class GlobalChild(models.TransientModel):
-    """ Available child in the global childpool
-    """
+    """Available child in the global childpool"""
 
     _name = "compassion.global.child"
     _inherit = "compassion.generic.child"

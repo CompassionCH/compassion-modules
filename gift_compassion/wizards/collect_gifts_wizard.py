@@ -1,4 +1,4 @@
-﻿##############################################################################
+##############################################################################
 #
 #    Copyright (C) 2014 Compassion CH (http://www.compassion.ch)
 #    Releasing children from poverty in Jesus' name
@@ -13,7 +13,7 @@ from odoo.tools.safe_eval import safe_eval
 
 
 class CollectGiftWizard(models.TransientModel):
-    """ This wizard generates a Gift Invoice for a given contract. """
+    """This wizard generates a Gift Invoice for a given contract."""
 
     _name = "gift.collect.wizard"
     _description = "Gift Collect Wizard"
@@ -21,18 +21,18 @@ class CollectGiftWizard(models.TransientModel):
     invoice_line_ids = fields.Many2many(
         "account.move.line", string="Invoice lines", readonly=False
     )
-    domain = fields.Char(
-        default=lambda s: s._get_domain()
-    )
+    domain = fields.Char(default=lambda s: s._get_domain())
 
     @api.model
     def _get_domain(self):
         category = self.env.ref("sponsorship_compassion.product_category_gift")
-        return str([
-            ("product_id.categ_id", "=", category.id),
-            ("payment_state", "=", "paid"),
-            ("gift_id", "=", False)
-        ])
+        return str(
+            [
+                ("product_id.categ_id", "=", category.id),
+                ("payment_state", "=", "paid"),
+                ("gift_id", "=", False),
+            ]
+        )
 
     @api.onchange("domain")
     def apply_domain(self):

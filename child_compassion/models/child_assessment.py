@@ -9,11 +9,11 @@
 ##############################################################################
 
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class ChildAssessment(models.Model):
-    """ A child CDPR (Child Development Progress Report) """
+    """A child CDPR (Child Development Progress Report)"""
 
     _name = "compassion.child.cdpr"
     _description = "Child CDPR Assessment"
@@ -37,7 +37,7 @@ class ChildAssessment(models.Model):
     def process_commkit(self, commkit_data):
         assessment_ids = list()
         for cdpr_data in commkit_data.get(
-                "BeneficiaryAssessmentResponseList", [commkit_data]
+            "BeneficiaryAssessmentResponseList", [commkit_data]
         ):
             vals = self.json_to_data(cdpr_data)
             child_assessment = self.create(vals)

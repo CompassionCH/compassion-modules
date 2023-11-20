@@ -9,18 +9,18 @@
 ##############################################################################
 import base64
 import logging
-
 from datetime import datetime
+from functools import reduce
+
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, api, fields
+from odoo import api, fields, models
 
 from odoo.addons.sbc_compassion.models.correspondence import DEFAULT_LETTER_DPI
 from odoo.addons.sbc_compassion.models.correspondence_page import (
     BOX_SEPARATOR,
     PAGE_SEPARATOR,
 )
-from functools import reduce
 
 _logger = logging.getLogger(__name__)
 
@@ -96,11 +96,13 @@ class Correspondence(models.Model):
                     )
 
     def _compute_preferred_dpi(self):
-        """ Compute DPI based on letter delivery preference """
+        """Compute DPI based on letter delivery preference"""
         for letter in self:
-            letter.preferred_dpi =\
-                DEFAULT_LETTER_DPI if "digital" in letter.letter_delivery_preference and letter.email \
+            letter.preferred_dpi = (
+                DEFAULT_LETTER_DPI
+                if "digital" in letter.letter_delivery_preference and letter.email
                 else PHYSICAL_LETTER_DPI
+            )
 
     ##########################################################################
     #                             PUBLIC METHODS                             #
@@ -171,8 +173,12 @@ class Correspondence(models.Model):
         if self.env.context.get("force_send"):
             eligible_letters = self
         else:
-            eligible_letters = self.filtered(lambda l: l.sponsorship_id.state == 'active')
-            (self - eligible_letters).mapped("communication_id").filtered(lambda c: c.state != "done").unlink()
+            eligible_letters = self.filtered(
+                lambda l: l.sponsorship_id.state == "active"
+            )
+            (self - eligible_letters).mapped("communication_id").filtered(
+                lambda c: c.state != "done"
+            ).unlink()
 
         partners = eligible_letters.mapped("partner_id")
         final_letter = self.env.ref("sbc_compassion.correspondence_type_final")
@@ -187,7 +193,7 @@ class Correspondence(models.Model):
             letters = eligible_letters.filtered(lambda l: l.partner_id == partner)
             is_first = eligible_letters.filtered(
                 lambda l: l.communication_type_ids
-                          == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
+                == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
             )
             no_comm = letters.filtered(lambda l: not l.communication_id)
             to_generate = letters if self.env.context.get("overwrite") else no_comm
@@ -207,7 +213,9 @@ class Correspondence(models.Model):
                 first_letter_template if is_first else old_template
             )
         if self.env.context.get("force_send"):
-            eligible_letters.mapped("communication_id").filtered(lambda c: c.state != "done").send()
+            eligible_letters.mapped("communication_id").filtered(
+                lambda c: c.state != "done"
+            ).send()
         return True
 
     ##########################################################################
@@ -223,9 +231,10 @@ class Correspondence(models.Model):
             return True
 
         partner = self.mapped("partner_id")
-        auto_send = [l._can_auto_send() for l in self]
+        auto_send = [letter._can_auto_send() for letter in self]
         auto_send = reduce(lambda l1, l2: l1 and l2, auto_send) and (
-            "auto" in config.send_mode or config.send_mode in ["partner_preference", "both"]
+            "auto" in config.send_mode
+            or config.send_mode in ["partner_preference", "both"]
         )
         comm_vals = {
             "partner_id": partner.id,

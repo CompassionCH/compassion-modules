@@ -11,13 +11,14 @@
 import logging
 from functools import reduce
 
+from odoo import _, models
+from odoo.exceptions import UserError
+from odoo.tools import mod10r
+
 from odoo.addons.sponsorship_compassion.models.product_names import (
     GIFT_CATEGORY,
     SPONSORSHIP_CATEGORY,
 )
-from odoo import models, _
-from odoo.exceptions import UserError
-from odoo.tools import mod10r
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +32,7 @@ class BankStatementLine(models.Model):
     ##########################################################################
     def get_statement_line_for_reconciliation_widget(self):
         # Add partner reference for reconcile view
-        res = super(
-            BankStatementLine, self
-        ).get_statement_line_for_reconciliation_widget()
+        res = super().get_statement_line_for_reconciliation_widget()
         res["partner_ref"] = self.partner_id.ref
         return res
 
@@ -43,8 +42,8 @@ class BankStatementLine(models.Model):
     def process_reconciliation(
         self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None
     ):
-        """ Create invoice if product_id is set in move_lines
-        to be created. """
+        """Create invoice if product_id is set in move_lines
+        to be created."""
         self.ensure_one()
         partner_invoices = dict()
         partner_inv_data = dict()
@@ -131,10 +130,15 @@ class BankStatementLine(models.Model):
 
         if invoice:
             invoice.button_draft()
-            invoice.write({
-                "invoice_origin": self.statement_id.name,
-                "invoice_line_ids": [(0, 0, self._get_invoice_line_data(vals)) for vals in mv_line_dicts]
-            })
+            invoice.write(
+                {
+                    "invoice_origin": self.statement_id.name,
+                    "invoice_line_ids": [
+                        (0, 0, self._get_invoice_line_data(vals))
+                        for vals in mv_line_dicts
+                    ],
+                }
+            )
 
         else:
             # Lookup for an existing open invoice matching the criterias
@@ -151,7 +155,9 @@ class BankStatementLine(models.Model):
                 return True
 
             # Setup a new invoice if no existing invoice is found
-            invoice = self.env["account.move"].create(self._get_invoice_data(ref, mv_line_dicts))
+            invoice = self.env["account.move"].create(
+                self._get_invoice_data(ref, mv_line_dicts)
+            )
 
         invoice.action_post()
         self.ref = ref
@@ -168,13 +174,17 @@ class BankStatementLine(models.Model):
         :return: dict of account.move vals
         """
         journal_id = (
-            self.env["account.journal"].search([
-                ("type", "=", "sale"),
-                ("company_id", "=", self.company_id.id)
-            ], limit=1).id
+            self.env["account.journal"]
+            .search(
+                [("type", "=", "sale"), ("company_id", "=", self.company_id.id)],
+                limit=1,
+            )
+            .id
         )
 
-        avoid_thankyou = any(map(lambda mvl: mvl.pop("avoid_thankyou_letter"), mv_line_dicts))
+        avoid_thankyou = any(
+            map(lambda mvl: mvl.pop("avoid_thankyou_letter"), mv_line_dicts)
+        )
         comment = ";".join([d.pop("comment", "") for d in mv_line_dicts])
 
         return {
@@ -188,8 +198,10 @@ class BankStatementLine(models.Model):
             "currency_id": self.foreign_currency_id.id or self.currency_id.id,
             "payment_mode_id": self.statement_id.journal_id.payment_mode_id.id,
             "avoid_thankyou_letter": avoid_thankyou,
-            "invoice_line_ids": [(0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts],
-            "bank_statement_id": self.statement_id.id
+            "invoice_line_ids": [
+                (0, 0, self._get_invoice_line_data(mld)) for mld in mv_line_dicts
+            ],
+            "bank_statement_id": self.statement_id.id,
         }
 
     def _get_invoice_line_data(self, mv_line_dict):
@@ -238,8 +250,8 @@ class BankStatementLine(models.Model):
         return invl_vals
 
     def _find_open_invoice(self, mv_line_dicts):
-        """ Find an open invoice that matches the statement line and which
-        could be reconciled with. """
+        """Find an open invoice that matches the statement line and which
+        could be reconciled with."""
         invoice_line_obj = self.env["account.move.line"]
         inv_lines = invoice_line_obj
         for mv_line_dict in mv_line_dicts:

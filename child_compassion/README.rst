@@ -14,7 +14,7 @@ Compassion Children
     :target: https://github.com/CompassionCH/compassion-modules/tree/11.0/child_compassion
     :alt: CompassionCH/compassion-modules
 
-|badge1| |badge2| 
+|badge1| |badge2|
 
 Compassion Childpool Availability Management objects.
 

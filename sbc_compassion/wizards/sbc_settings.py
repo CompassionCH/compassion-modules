@@ -8,11 +8,11 @@
 #
 ##############################################################################
 
-from odoo import api, models, fields
+from odoo import api, fields, models
 
 
 class SBCSettings(models.TransientModel):
-    """ Settings configuration for any Notifications."""
+    """Settings configuration for any Notifications."""
 
     _inherit = "res.config.settings"
 

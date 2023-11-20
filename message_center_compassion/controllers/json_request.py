@@ -16,11 +16,11 @@ import werkzeug
 
 from odoo import exceptions
 from odoo.http import (
-    Response,
+    AuthenticationError,
     JsonRequest,
+    Response,
     Root,
     SessionExpiredException,
-    AuthenticationError,
 )
 from odoo.tools import config, date_utils
 
@@ -44,42 +44,41 @@ Root.get_request = get_request
 
 
 class RESTJsonRequest(JsonRequest):
-    """ Special RestJson Handler to enable custom formatted answers to
-Compassion Connect calls and error handling.
+    """Special RestJson Handler to enable custom formatted answers to
+    Compassion Connect calls and error handling.
 
-Sample Succesful Response
-=========================
-{
-    "ConfirmationId": "e0f05e27-97af-47d0-b162-5e935052aab7",
-    "Timestamp": "2015-10-07T23:03:51.626Z",
-    "Message": "Your message was successfully received."
-}
+    Sample Succesful Response
+    =========================
+    {
+        "ConfirmationId": "e0f05e27-97af-47d0-b162-5e935052aab7",
+        "Timestamp": "2015-10-07T23:03:51.626Z",
+        "Message": "Your message was successfully received."
+    }
 
-Sample Unsuccessful Response
-============================
-{
-    "ErrorId":"156b633d-2fe7-48ca-94e8-fbe0b8cd560a",
-    "ErrorTimestamp":"2015-10-07T23:04:40.876Z",
-    "ErrorClass":"BusinessException",
-    "ErrorCategory":"InputValidationError",
-    "ErrorCode":"ESB4000",
-    "ErrorMessage":"Request Invalid: Request contains invalid json.",
-    "ErrorRetryable":false,
-    "ErrorModule":"REST OnRamp",
-    "ErrorSubModule":"Rest OnRamp Request Checking",
-    "ErrorMethod":"RequestIsValidJson",
-    "ErrorLoggedInUser":"",
-    "RelatedRecordId":""
-}
-"""
+    Sample Unsuccessful Response
+    ============================
+    {
+        "ErrorId":"156b633d-2fe7-48ca-94e8-fbe0b8cd560a",
+        "ErrorTimestamp":"2015-10-07T23:04:40.876Z",
+        "ErrorClass":"BusinessException",
+        "ErrorCategory":"InputValidationError",
+        "ErrorCode":"ESB4000",
+        "ErrorMessage":"Request Invalid: Request contains invalid json.",
+        "ErrorRetryable":false,
+        "ErrorModule":"REST OnRamp",
+        "ErrorSubModule":"Rest OnRamp Request Checking",
+        "ErrorMethod":"RequestIsValidJson",
+        "ErrorLoggedInUser":"",
+        "RelatedRecordId":""
+    }"""
 
     def __init__(self, *args):
-        """ Setup a GUID for any message and keep track of timestamp. """
+        """Setup a GUID for any message and keep track of timestamp."""
         self.uuid = str(uuid.uuid4())
         self.timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")
         try:
             super(RESTJsonRequest, self).__init__(*args)
-        except:
+        except Exception:
             # We pass the error at this step to avoid sending back HTML result
             # the error will be catched later by JsonRequest and return a
             # json content error message
@@ -87,7 +86,7 @@ Sample Unsuccessful Response
             self.context = dict(self.session.context)
 
     def dispatch(self):
-        """ Log the received message before processing it. """
+        """Log the received message before processing it."""
         _logger.debug(
             "[%s] %s %s %s",
             self.httprequest.environ["REQUEST_METHOD"],
@@ -98,7 +97,7 @@ Sample Unsuccessful Response
         return super().dispatch()
 
     def _json_response(self, result=None, error=None):
-        """ Format the answer and add required headers. """
+        """Format the answer and add required headers."""
         response = {}
         status = 200
         if error is not None:

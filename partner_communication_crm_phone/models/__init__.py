@@ -8,6 +8,4 @@
 #
 ##############################################################################
 
-from . import communication_job
-from . import crm_phonecall
-from . import phone_common
+from . import communication_job, crm_phonecall, phone_common

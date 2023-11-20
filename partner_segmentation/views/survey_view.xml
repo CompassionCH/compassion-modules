@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="survey_survey_view_form" model="ir.ui.view">
+        <field name="name">survey.survey.segmentation</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="description" position="after">
+                <group>
+                    <field name="description_done"/>
+                </group>
+            </field>
+        </field>
+    </record>
+
+    <record id="survey_question_view" model="ir.ui.view">
+        <field name="name">survey.question.segmentation</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="question_type" position="after">
+                <field name="max_checked_option" attrs="{'invisible': [('question_type', '!=', 'multiple_choice')]}"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="survey_question_form">
+        <field name="name">Right label for matrix</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='matrix_row_ids']//field[@name='value']" position="attributes">
+                <attribute name="string">Answer (left)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='matrix_row_ids']//field[@name='value']" position="after">
+                <field name="value_right" string="Answer (right)"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="act_partner_survey_input" model="ir.actions.act_window">
+        <field name="res_model">survey.user_input</field>
+        <field name="name">Surveys</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_partner_id': active_id, 'default_partner_id': active_id}</field>
+    </record>
+</odoo>
