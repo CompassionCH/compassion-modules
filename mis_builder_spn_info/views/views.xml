@@ -11,6 +11,7 @@
                 <field name="account_id"/>
                 <field name="debit" sum="debit" />
                 <field name="credit" sum="credit" />
+                <field name="amount_currency" sum="amount_currency" />
                 <field name="analytic_id"/>
             </tree>
         </field>
