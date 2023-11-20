@@ -25,7 +25,7 @@ class ChildLifecycleEvent(models.Model):
     date = fields.Date(readonly=True)
     type = fields.Selection(
         [
-            ("Participant Update", "Participant Update"),
+            ("Beneficiary Update", "Beneficiary Update"),
             ("Home Based Caregiver Death", "Home Based Caregiver Death"),
             ("Planned Exit", "Planned Exit"),
             ("Registration", "Registration"),
