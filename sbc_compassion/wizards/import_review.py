@@ -136,8 +136,8 @@ class ImportReview(models.TransientModel):
     def _get_sponsorship_from_line(self, line_idx):
         import_line_id = self.env.context.get("line_ids")[line_idx]
         import_line = self.env["import.letter.line"].browse(import_line_id)
-        # if no sponsorship are attached to current import line trigger the compute function
-        # to ensure the field was computed properly before it is used
+        # if no sponsorship are attached to current import line trigger the
+        # compute function to ensure the field was computed properly before it is used
         if not import_line.sponsorship_id:
             import_line._compute_sponsorship()
 

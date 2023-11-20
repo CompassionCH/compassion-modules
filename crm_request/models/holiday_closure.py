@@ -67,7 +67,7 @@ class HolidayClosure(models.Model):
     def _compute_holiday_template_message(self):
         for holiday in self:
 
-            def var_replace(match):
+            def var_replace(match, holiday=holiday):
                 value = getattr(holiday, match.group(1), "")
                 if isinstance(value, datetime.date):
                     value = holiday.get_date(match.group(1), "date_full")

@@ -47,9 +47,7 @@ class SBCConnector:
         return letter_url
 
     def get_letter_image(self, letter_url, img_type="jpeg", pages=0, dpi=96):
-        """Calls Letter Image Service from Onramp U.S. and get the data
-        https://developer.compassion.com/docs/read/compassion_connect2/service_catalog/Image_Retrieval  # noqa: B950
-        """
+        """Calls Letter Image Service from Onramp U.S. and get the data"""
         params = {"format": img_type, "pg": pages, "dpi": dpi}
         return base64.b64encode(
             self.connector.send_message(

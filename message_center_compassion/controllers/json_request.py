@@ -77,7 +77,7 @@ class RESTJsonRequest(JsonRequest):
         self.uuid = str(uuid.uuid4())
         self.timestamp = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")
         try:
-            super(RESTJsonRequest, self).__init__(*args)
+            super().__init__(*args)
         except Exception:
             # We pass the error at this step to avoid sending back HTML result
             # the error will be catched later by JsonRequest and return a

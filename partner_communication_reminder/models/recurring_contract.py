@@ -75,7 +75,8 @@ class RecurringContract(models.Model):
             # Look if first reminder was sent previous month (send second
             # reminder in that case)
             # avoid taking into account reminder that the partner already took care of
-            # we substract month due to the first of the month to get the older threshold
+            # we substract month due to the first of the month to get the older
+            # threshold
             # this also prevent reminder_1 to be sent after an already sent reminder_2
             older_threshold = first_day_of_month - relativedelta(
                 months=sponsorship.months_due

@@ -34,9 +34,9 @@ class RecurringContractGroup(models.Model):
             lambda d: not d.is_direct_debit
         )
         for move_line in contract_not_dd.mapped("invoice_line_ids").filtered(
-            lambda l: l.move_id.payment_state != "paid"
-            and l.move_id.state == "posted"
-            and l.product_id.default_code
+            lambda line: line.move_id.payment_state != "paid"
+            and line.move_id.state == "posted"
+            and line.product_id.default_code
             in [PRODUCT_GIFT_CHRISTMAS, GIFT_PRODUCTS_REF[0]]
         ):
             move = move_line.move_id

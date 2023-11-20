@@ -62,7 +62,7 @@ class EndSponsorshipsMonthReport(models.Model):
         # We disable the check for SQL injection. The only risk of sql
         # injection is from 'self._table' which is not controlled by an
         # external source.
-        # pylint:disable=E8103
+        # ruff: noqa: UP031
         self.env.cr.execute(
             """
             CREATE OR REPLACE VIEW %s AS

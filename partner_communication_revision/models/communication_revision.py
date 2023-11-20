@@ -173,18 +173,18 @@ class CommunicationRevision(models.Model):
     def _compute_keyword_ids(self):
         for revision in self:
             revision.edit_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: (
+                lambda k, revision=revision: (
                     (revision.show_all_keywords and k.type in ("code", "var"))
                     or k.type == "code"
                 )
                 and (revision.show_all_keywords or k.is_visible)
             )
             revision.if_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: k.type == "if"
+                lambda k, revision=revision: k.type == "if"
                 and (revision.show_all_keywords or k.is_visible)
             )
             revision.for_keyword_ids = revision.keyword_ids.filtered(
-                lambda k: "for" in k.type
+                lambda k, revision=revision: "for" in k.type
                 and (revision.show_all_keywords or k.is_visible)
             )
 
@@ -695,7 +695,8 @@ class CommunicationRevision(models.Model):
             if not raw_code:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code
+                lambda k, raw_code=raw_code, keyword_number=keyword_number: k.raw_code
+                == raw_code
                 and (k.index == keyword_number if kw_type == "var" else 1)
             )
             if not keyword:
@@ -742,7 +743,9 @@ class CommunicationRevision(models.Model):
             if number_nested > 0:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code and k.index == keyword_number
+                lambda k, raw_code=raw_code, keyword_number=keyword_number: k.raw_code
+                == raw_code
+                and k.index == keyword_number
             )
 
             # Convert nested for loops in if text
@@ -827,7 +830,8 @@ class CommunicationRevision(models.Model):
             if number_nested > 0:
                 continue
             keyword = self.keyword_ids.filtered(
-                lambda k: k.raw_code == raw_code
+                lambda k, raw_code=raw_code, keyword_number=keyword_number: k.raw_code
+                == raw_code
                 and k.index == keyword_number
                 and k.type == for_type
             )

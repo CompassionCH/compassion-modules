@@ -285,7 +285,7 @@ class SponsorshipGift(models.Model):
         )
         if gift_to_verify:
             vals["state"] = "verify"
-        new_gift = super(SponsorshipGift, self).create(vals)
+        new_gift = super().create(vals)
         if new_gift.invoice_line_ids:
             new_gift.invoice_line_ids.write({"gift_id": new_gift.id})
         else:

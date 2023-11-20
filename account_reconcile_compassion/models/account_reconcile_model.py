@@ -7,7 +7,6 @@ class AccountReconcileModel(models.Model):
     _inherit = "account.reconcile.model"
 
     product_id = fields.Many2one("product.product", "Product", readonly=False)
-    # user_id = fields.Many2one("res.partner", "Ambassador", readonly=False)
     comment = fields.Char("Gift instructions", readonly=False)
     sponsorship_id = fields.Many2one(
         "recurring.contract", "Sponsorship", readonly=False

@@ -84,14 +84,14 @@ class OnrampConnector:
         """Sends a message to Compassion Connect.
                 :param service_name: The service name to reach inside Connect
                 :param message_type: GET, POST, PUT or GET_RAW.
-        GET_RAW is a special type used to fetch files and binary data that should be returned
-        as it is.
+        GET_RAW is a special type used to fetch files and binary data
+        that should be returned as it is.
                 :param body: Body of the message to send.
                 :param params: Optional Dictionary of HTTP Request parameters
                                         (put inside the url)
                 :param headers: Optional headers for the request
-                :param full_url: Optional boolean to indicate the service_name is a full url
-                                 that should be called as it is.
+                :param full_url: Optional boolean to indicate the service_name
+                                 is a full url that should be called as it is.
                 :param data: Post messages with a non json format
 
                 :returns: A dictionary with the content of the answer to the message.

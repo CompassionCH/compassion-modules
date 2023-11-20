@@ -26,7 +26,8 @@ class ThankYouConfig(models.Model):
     )
     lang = fields.Selection(
         "_get_lang",
-        help="If specified will only be used with partners that have the same language.",
+        help="If specified will only be used with partners "
+        "that have the same language.",
     )
     user_id = fields.Many2one("res.users", string="Thanker", readonly=False)
 

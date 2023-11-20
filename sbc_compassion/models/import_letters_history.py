@@ -181,9 +181,11 @@ class ImportLettersHistory(models.Model):
 
         Using generators allows us to be more flexible
         on what we analyse without code duplication.
-        Additionally, since it uses generators, it does flood the memory with all the documents
+        Additionally, since it uses generators, it does flood
+        the memory with all the documents
         before the analysis
-        (With generators don't need to read all the documents before sending them to analysis)
+        (With generators don't need to read all the documents before sending
+        them to analysis)
 
         The generator must yield the following values:
             int: the current step in the analysis
@@ -268,8 +270,8 @@ class ImportLettersHistory(models.Model):
 
             self.env["import.letter.line"].create(data)
             # this commit is really important
-            # it avoid having to keep the "data"s in memory until the whole process is finished
-            # each time a letter is scanned, it is also inserted in the DB
+            # it avoid having to keep the "data"s in memory until the whole process is
+            # finished each time a letter is scanned, it is also inserted in the DB
             self._cr.commit()
         except Exception:
             logger.error(

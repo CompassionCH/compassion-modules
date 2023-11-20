@@ -47,8 +47,8 @@ class CommunicationAttachment(models.Model):
     )
     data = fields.Binary(compute="_compute_data")
     printed_pdf_data = fields.Binary(
-        help="Technical field used when the report was not sent to printer but to client "
-        "in order to download the result afterwards."
+        help="Technical field used when the report was not sent to printer "
+        "but to client in order to download the result afterwards."
     )
     printed_pdf_name = fields.Char(related="attachment_id.name")
 

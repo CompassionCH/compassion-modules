@@ -622,7 +622,7 @@ class Correspondence(models.Model):
         for index, text in enumerate(text_pages):
             # Skip pages that should not contain anything
             page_layout = self.template_id.page_ids.filtered(
-                lambda p: p.page_index == index + 1
+                lambda p, index=index: p.page_index == index + 1
             )
             if not text.strip() and not page_layout.text_box_ids:
                 continue
@@ -668,7 +668,7 @@ class Correspondence(models.Model):
         Upload the image to Persistence if not already done.
         """
         onramp = SBCConnector(self.env)
-        for letter in self.filtered(lambda l: not l.original_letter_url):
+        for letter in self.filtered(lambda letter: not letter.original_letter_url):
             letter.original_letter_url = onramp.send_letter_image(
                 letter.get_image(), letter.letter_format, base64encoded=False
             )

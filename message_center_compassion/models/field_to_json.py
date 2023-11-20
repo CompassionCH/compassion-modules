@@ -202,7 +202,8 @@ class FieldToJson(models.Model):
         if self.relational_field or self.sub_mapping_id:
             converted_value = self._json_to_relational_value(converted_value)
             if converted_value == "deep_relation":
-                # We cannot handle data for a complex relational field (only one descendent).
+                # We cannot handle data for a complex relational field
+                # (only one descendent).
                 _logger.warning(
                     "Cannot handle JSON conversion of field %s:%s",
                     self.model,
@@ -213,16 +214,15 @@ class FieldToJson(models.Model):
 
     def _json_to_relational_value(self, value):
         """
-                Converts a received JSON value into valid data for a relational record
-        https://www.odoo.com/documentation/12.0/developer/reference/orm.html#odoo.models.Model.write  # noqa: B950
-                Example of output:
-                {
-                    "partner_id": 12,
-                    "follower_ids": [(6, 0, [12, 34, 53])],
-                    "my_teacher_ids": [(0, 0, {'name'; 'Emanuel Cino'})]
-                }
-                :param value: JSON value (could be dict, list of dict, or string)
-                :return: odoo value for a relational field
+        Converts a received JSON value into valid data for a relational record
+        Example of output:
+        {
+            "partner_id": 12,
+            "follower_ids": [(6, 0, [12, 34, 53])],
+            "my_teacher_ids": [(0, 0, {'name'; 'Emanuel Cino'})]
+        }
+        :param value: JSON value (could be dict, list of dict, or string)
+        :return: odoo value for a relational field
         """
         self.ensure_one()
         field = self.field_id
@@ -318,7 +318,7 @@ class FieldToJson(models.Model):
         # No records found given the values
         raise UserError(
             "Associated object not found using mapping %s, "
-            "JSON Key %s, JSON value %s" % (self.mapping_id.name, self.json_name, value)
+            f"JSON Key {self.mapping_id.name}, JSON value {self.json_name}"
         )
 
     def _get_relational_creation_values(self, field_values):

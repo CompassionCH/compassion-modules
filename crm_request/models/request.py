@@ -62,11 +62,8 @@ class CrmClaim(models.Model):
     def _compute_incoming_message(self):
         for request in self:
             messages = request.mapped("message_ids").filtered(
-                lambda m: m.body
-                and (
-                    m.author_id == request.partner_id
-                    or m.email_from == request.email_from
-                )
+                lambda m, r=request: m.body
+                and (m.author_id == r.partner_id or m.email_from == r.email_from)
             )
             message = request.incoming_message_id = messages[:1]
             request.incoming_message = message.body
@@ -112,7 +109,8 @@ class CrmClaim(models.Model):
             "salutation_language": self.language,
             "default_body": prepend_html_content(
                 self.quoted_reply,
-                f"<div style='margin-bottom: 20px;'><p>{self.partner_id.salutation}</p></div>",
+                f"<div style='margin-bottom: 20px;'>"
+                f"<p>{self.partner_id.salutation}</p></div>",
             ),
         }
 
@@ -203,7 +201,8 @@ class CrmClaim(models.Model):
 
     def message_update(self, msg_dict, update_vals=None):
         """Change the stage to "Waiting on support" when the customer writes a
-        new mail on the thread, Unassign and put as "New" if the User in charge is in leave.
+        new mail on the thread, Unassign and put as "New" if the User in charge
+        is in leave.
         """
         result = super().message_update(msg_dict, update_vals)
         wait_support = self.env.ref("crm_request.stage_wait_support")
@@ -260,7 +259,7 @@ class CrmClaim(models.Model):
             for request in self:
                 # Put the partner as author of the incoming message
                 request.message_ids.filtered(
-                    lambda m: m.email_from == request.email_from
+                    lambda m, r=request: m.email_from == r.email_from
                 ).write({"author_id": values["partner_id"]})
                 # Sync partner fields
                 partner = request.partner_id
@@ -297,7 +296,8 @@ class CrmClaim(models.Model):
 
     @api.model
     def cron_reminder_request(self):
-        """Periodically sends a reminder to unaddressed request (new, waiting for support)"""
+        """Periodically sends a reminder to unaddressed request
+        (new, waiting for support)"""
 
         new_stage_id = self.env.ref("crm_claim.stage_claim1").id
         wait_support_stage_id = self.env.ref("crm_request.stage_wait_support").id

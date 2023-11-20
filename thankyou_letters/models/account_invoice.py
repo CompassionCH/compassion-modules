@@ -60,7 +60,9 @@ class AccountInvoice(models.Model):
         """Returns a dict with {partner_id: invoices}"""
         res = dict()
         for partner in self.mapped("partner_id"):
-            res[partner.id] = self.filtered(lambda i: i.partner_id == partner)
+            res[partner.id] = self.filtered(
+                lambda i, partner=partner: i.partner_id == partner
+            )
         return OrderedDict(
             sorted(
                 res.items(),
@@ -112,7 +114,7 @@ class AccountInvoice(models.Model):
         )
         for partner in partners.mapped("commercial_partner_id"):
             invoice_lines = self.mapped("invoice_line_ids").filtered(
-                lambda l: l.partner_id == partner
+                lambda line, partner=partner: line.partner_id == partner
             )
             if invoice_lines:
                 invoice_lines.with_delay().generate_thank_you()

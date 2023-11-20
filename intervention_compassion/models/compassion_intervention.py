@@ -830,7 +830,8 @@ class CompassionIntervention(models.Model):
                 _("This intervention has been modified by amendment.")
                 + f"""<br/>
                 <ul>
-                    <li>Amendment ID: {interventionamendment['InterventionAmendment_ID']}</li>
+                    <li>Amendment ID:
+                    {interventionamendment['InterventionAmendment_ID']}</li>
                     <li>Amendment Type: {amendment_type}</li>
                     <li>Amendment Reason: {amendment_reason}</li>
                     <li>Amendment Amount: {amendment_amount}</li>

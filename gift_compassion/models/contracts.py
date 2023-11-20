@@ -51,10 +51,10 @@ class SponsorshipContract(models.Model):
                     gift.message_post(body="Associated contract is not active")
                     gift.state = "verify"
 
-        super(SponsorshipContract, self).invoice_paid(invoice)
+        super().invoice_paid(invoice)
 
     def contract_active(self):
-        res = super(SponsorshipContract, self).contract_active()
+        res = super().contract_active()
 
         for contract in self:
             if contract.is_active:

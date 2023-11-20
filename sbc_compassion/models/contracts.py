@@ -52,10 +52,10 @@ class Contracts(models.Model):
             letters_obj = self.env["correspondence"]
             letters = letters_obj.search([("sponsorship_id", "=", sponsorship.id)])
             sponsorship.child_letter_ids = letters.filtered(
-                lambda l: l.direction == "Beneficiary To Supporter"
+                lambda letter: letter.direction == "Beneficiary To Supporter"
             )
             sponsorship.sponsor_letter_ids = letters.filtered(
-                lambda l: l.direction == "Supporter To Beneficiary"
+                lambda letter: letter.direction == "Supporter To Beneficiary"
             )
             sponsorship.nb_letters = len(letters)
 
@@ -112,7 +112,9 @@ class Contracts(models.Model):
             reading_language = (
                 (spoken_langs & child.correspondence_language_id)
                 or (spoken_langs & english)
-                or spoken_langs.filtered(lambda l: l.lang_id.code == correspondent.lang)
+                or spoken_langs.filtered(
+                    lambda lang: lang.lang_id.code == correspondent.lang
+                )
             )
             vals["reading_language"] = reading_language.id
         return super().create(vals)

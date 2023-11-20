@@ -32,7 +32,8 @@ class RecurringContract(models.Model):
         string="Send B2S intro letter to sponsor", default=True
     )
     new_picture = fields.Boolean(
-        help="Indicates a new picture was received and not yet transmitted to the sponsor."
+        help="Indicates a new picture was received and not yet "
+        "transmitted to the sponsor."
     )
 
     @api.onchange("origin_id")
@@ -86,7 +87,7 @@ class RecurringContract(models.Model):
         else:
             for partner in partners:
                 objects = self.filtered(
-                    lambda c: c.correspondent_id == partner
+                    lambda c, partner=partner: c.correspondent_id == partner
                     if correspondent
                     else c.partner_id == partner
                 )

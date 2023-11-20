@@ -151,8 +151,8 @@ class CommunicationJob(models.Model):
         readonly=False,
     )
     printed_pdf_data = fields.Binary(
-        help="Technical field used when the report was not sent to printer but to client "
-        "in order to download the result afterwards."
+        help="Technical field used when the report was not sent to printer "
+        "but to client in order to download the result afterwards."
     )
     printed_pdf_name = fields.Char(compute="_compute_print_pdfname")
 
@@ -210,7 +210,7 @@ class CommunicationJob(models.Model):
                     )
             # Remove deleted attachments
             job.attachment_ids.filtered(
-                lambda a: a.attachment_id not in job.ir_attachment_ids
+                lambda a, job=job: a.attachment_id not in job.ir_attachment_ids
             ).unlink()
 
     @api.depends("partner_id", "object_ids")
@@ -220,7 +220,8 @@ class CommunicationJob(models.Model):
             1. Check the related records and use the company set in those
             2. Check for a company linked to the partner
             3. Look if a company exists at the country of the partner
-            4. Call a fallback function that can provide a custom rule for finding a company
+            4. Call a fallback function that can provide a custom rule for finding a
+               company
         """
         for job in self:
             company = job.partner_id.company_id
@@ -335,7 +336,7 @@ class CommunicationJob(models.Model):
         if vals is None:
             vals = {}
         vals["auto_send"] = False
-        return super(CommunicationJob, self).copy(vals)
+        return super().copy(vals)
 
     @api.model
     def _get_default_vals(self, vals, default_vals=None):
@@ -822,7 +823,8 @@ class CommunicationJob(models.Model):
             # Get pdf should directly send it to the printer
             printer.print_document(report.report_name, to_print[0], **print_options)
         else:
-            # Store result in one communication (for later download from the result wizard)
+            # Store result in one communication
+            # (for later download from the result wizard)
             self[:1].printed_pdf_data = base64.b64encode(to_print[0])
 
         return print_options

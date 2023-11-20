@@ -151,7 +151,7 @@ class CompassionChild(models.Model):
         if (with_child_name and not res) or repeat_preposition:
             for country in self.mapped("field_office_id.country_id"):
                 children = self.filtered(
-                    lambda c: c.field_office_id.country_id == country
+                    lambda c, country=country: c.field_office_id.country_id == country
                 )
                 res_list.append(
                     (
@@ -167,7 +167,9 @@ class CompassionChild(models.Model):
                 set(self.mapped("field_office_id.country_id." + preposition_field))
             ):
                 children = self.filtered(
-                    lambda c: getattr(c.field_office_id.country_id, preposition_field)
+                    lambda c, prep=prep: getattr(
+                        c.field_office_id.country_id, preposition_field
+                    )
                     == prep
                 )
                 countries = list(

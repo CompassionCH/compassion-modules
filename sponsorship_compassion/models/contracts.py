@@ -304,8 +304,8 @@ class SponsorshipContract(models.Model):
             contract.last_paid_invoice_date = max(
                 contract.invoice_line_ids.with_context(lang="en_US")
                 .filtered(
-                    lambda l: l.payment_state == "paid"
-                    and l.product_id.categ_name != GIFT_CATEGORY
+                    lambda line: line.payment_state == "paid"
+                    and line.product_id.categ_name != GIFT_CATEGORY
                 )
                 .mapped("move_id.invoice_date")
                 or [False]
@@ -502,7 +502,7 @@ class SponsorshipContract(models.Model):
     def _compute_is_first_sponsorship(self):
         for sponsorship in self:
             old_sponsorships = sponsorship.correspondent_id.sponsorship_ids.filtered(
-                lambda c: c.state != "cancelled"
+                lambda c, sponsorship=sponsorship: c.state != "cancelled"
                 and c.start_date
                 and c.start_date < (sponsorship.start_date or sponsorship.create_date)
             )

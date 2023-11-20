@@ -143,21 +143,21 @@ class EventCompassion(models.Model):
     def _compute_expense_lines(self):
         for event in self:
             event.expense_line_ids = event.analytic_id.line_ids.filtered(
-                lambda l: l.amount < 0.0
+                lambda line: line.amount < 0.0
             )
 
     def _compute_income_lines(self):
         for event in self:
             event.income_line_ids = event.invoice_line_ids.filtered(
-                lambda l: l.payment_state == "paid"
-                and not l.contract_id
-                and l.move_id.move_type == "out_invoice"
+                lambda line: line.payment_state == "paid"
+                and not line.contract_id
+                and line.move_id.move_type == "out_invoice"
             )
 
     @api.depends("analytic_id.line_ids")
     def _compute_expense(self):
         for event in self:
-            expenses = event.expense_line_ids.filtered(lambda l: l.amount < 0)
+            expenses = event.expense_line_ids.filtered(lambda line: line.amount < 0)
             event.total_expense = abs(sum(expenses.mapped("amount") or [0]))
 
     @api.depends("invoice_line_ids.payment_state")

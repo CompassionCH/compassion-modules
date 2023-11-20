@@ -356,7 +356,7 @@ class CompassionChild(models.Model):
     def _compute_exit_reason(self):
         for child in self:
             exit_details = child.lifecycle_ids.with_context(lang="en_US").filtered(
-                lambda l: l.type in ("Planned Exit", "Unplanned Exit")
+                lambda lifecycle: lifecycle.type in ("Planned Exit", "Unplanned Exit")
             )
             if exit_details:
                 child.exit_reason = exit_details[0].request_reason
@@ -655,15 +655,16 @@ class CompassionChild(models.Model):
             child.write(values)
             if update_hold:
                 try:
+                    expiration_date = child.hold_id.get_default_hold_expiration(
+                        HoldType.CONSIGNMENT_HOLD
+                    )
                     child.hold_id.write(
                         {
                             "type": HoldType.CONSIGNMENT_HOLD.value,
-                            "expiration_date": child.hold_id.get_default_hold_expiration(
-                                HoldType.CONSIGNMENT_HOLD
-                            ),
+                            "expiration_date": expiration_date,
                         }
                     )
-                except Exception:
+                except UserError:
                     # If the hold cannot be changed it means it's no more valid
                     child.env.clear()
                     child.hold_id = False

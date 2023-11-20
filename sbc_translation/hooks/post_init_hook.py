@@ -28,6 +28,7 @@ def post_init_hook(cr, registry):
                     [{"source_language_id": src.id, "dest_language_id": dst.id}]
                 )
             cr.execute(
-                "UPDATE correspondence SET translation_competence_id = %s WHERE id = %s",
+                "UPDATE correspondence SET translation_competence_id = %s "
+                "WHERE id = %s",
                 [competence.id, letter.id],
             )

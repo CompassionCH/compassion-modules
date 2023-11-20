@@ -113,7 +113,8 @@ class TestThankYouLetters(SavepointCase):
         """send multiple donation of different config and expect communication
         To be adapt to big donors as total pending donation goes over 1000CHF"""
 
-        # use the first thanks comm to avoid other issue (missing user_id reference in test db)
+        # use the first thanks comm to avoid other issue
+        # (missing user_id reference in test db)
         thanks_partner_comm1 = self.env["partner.communication.config"].search(
             [("send_mode_pref_field", "like", "thankyou_preference")], limit=1
         )

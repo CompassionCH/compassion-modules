@@ -413,7 +413,8 @@ class Correspondence(models.Model):
     def approve_translation(self):
         for letter in self:
             skill_to_validate = letter.new_translator_id.translation_skills.filtered(
-                lambda s: s.competence_id == letter.translation_competence_id
+                lambda s, letter=letter: s.competence_id
+                == letter.translation_competence_id
                 and not s.verified
             )
             if skill_to_validate:
@@ -448,7 +449,7 @@ class Correspondence(models.Model):
 
     @api.multi
     def _post_process_translation(self):
-        for letter in self.filtered(lambda l: l.translation_status == "done"):
+        for letter in self.filtered(lambda letter: letter.translation_status == "done"):
             if letter.direction == "Supporter To Beneficiary":
                 if self.translation_language_id.code_iso == "eng":
                     # Copy translation text into english text field

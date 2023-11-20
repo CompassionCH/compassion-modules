@@ -32,7 +32,7 @@ class OSD(models.AbstractModel):
         logger.debug(languages)
 
         # ensure that the probabilities are sorted in decreasing order
-        languages.sort(key=lambda l: -l[1])
+        languages.sort(key=lambda lang: -lang[1])
         # filter out languages hat are not looked for
         languages = [lang for lang in languages if lang[0] in self.languages_langdetect]
         sum_p = sum(lang[1] for lang in languages)

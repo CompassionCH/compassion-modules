@@ -75,7 +75,8 @@ class InteractionResume(models.TransientModel):
         """
         Creates the rows for the resume of given partner
         :param partner_id: the partner
-        :param full_resume: boolean to define if we limit the interaction on a time period
+        :param full_resume: boolean to define if we limit the interaction
+                            on a time period
         :return: True
         """
         original_partner = self.env["res.partner"].browse(partner_id)

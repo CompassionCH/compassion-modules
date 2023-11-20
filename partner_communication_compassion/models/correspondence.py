@@ -174,7 +174,7 @@ class Correspondence(models.Model):
             eligible_letters = self
         else:
             eligible_letters = self.filtered(
-                lambda l: l.sponsorship_id.state == "active"
+                lambda letter: letter.sponsorship_id.state == "active"
             )
             (self - eligible_letters).mapped("communication_id").filtered(
                 lambda c: c.state != "done"
@@ -190,19 +190,23 @@ class Correspondence(models.Model):
         old_limit = datetime.today() - relativedelta(months=2)
 
         for partner in partners:
-            letters = eligible_letters.filtered(lambda l: l.partner_id == partner)
+            letters = eligible_letters.filtered(
+                lambda letter, partner=partner: letter.partner_id == partner
+            )
             is_first = eligible_letters.filtered(
-                lambda l: l.communication_type_ids
+                lambda letter: letter.communication_type_ids
                 == self.env.ref("sbc_compassion.correspondence_type_new_sponsor")
             )
-            no_comm = letters.filtered(lambda l: not l.communication_id)
+            no_comm = letters.filtered(lambda letter: not letter.communication_id)
             to_generate = letters if self.env.context.get("overwrite") else no_comm
 
             final_letters = to_generate.filtered(
-                lambda l: final_letter in l.communication_type_ids
+                lambda letter: final_letter in letter.communication_type_ids
             )
             new_letters = to_generate - final_letters
-            old_letters = new_letters.filtered(lambda l: l.create_date < old_limit)
+            old_letters = new_letters.filtered(
+                lambda letter: letter.create_date < old_limit
+            )
             new_letters -= old_letters
 
             final_letters._generate_communication(final_template)

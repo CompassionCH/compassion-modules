@@ -142,8 +142,10 @@ class MappedModel(models.AbstractModel):
         domain_parts = []
         for f_name, t_field in self._get_ir_translated_fields().items():
             if t_field.ttype == "selection":
+                field_names = self.mapped(t_field.name)
                 f_sel = t_field.selection_ids.filtered(
-                    lambda s: s.value in self.mapped(t_field.name)
+                    lambda selection, field_names=field_names: selection.value
+                    in field_names
                 )
                 if f_sel:
                     domain_parts += [
@@ -246,7 +248,7 @@ class MappedModel(models.AbstractModel):
         field_mappings = gmc_action.mapping_id.json_spec_ids
         for field_part in field_path:
             field_mappings = field_mappings.filtered(
-                lambda m: m.field_name == field_part
+                lambda m, field_part=field_part: m.field_name == field_part
                 or m.relational_field_id.name == field_part
             )
             keys_to_keep = field_mappings.mapped("json_name")

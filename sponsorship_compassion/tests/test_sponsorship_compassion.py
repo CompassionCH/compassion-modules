@@ -466,7 +466,8 @@ class TestSponsorship(BaseSponsorshipTest):
 
     def test_partly_paid_sponsorship_activation(self):
         """
-        Correspondence sponsorship with partial payment should not be automatically activated
+        Correspondence sponsorship with partial payment should
+        not be automatically activated
         unlink SC sponsorship with total_amount of 0.
         """
         child = self.create_child("PE012304567")

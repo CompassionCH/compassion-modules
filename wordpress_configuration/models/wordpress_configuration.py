@@ -27,15 +27,15 @@ class WordpressConfiguration(models.Model):
     def create(self, values):
         self._check_values(values)
         self._remove_previous_config(values)
-        return super(WordpressConfiguration, self).create(values)
+        return super().create(values)
 
     def write(self, values):
         self._check_values(values)
         self._remove_previous_config(values)
-        return super(WordpressConfiguration, self).write(values)
+        return super().write(values)
 
     def copy(self, values=None):
-        res = super(WordpressConfiguration, self).copy(values)
+        res = super().copy(values)
         res.company_id = False
         return res
 

@@ -98,7 +98,7 @@ class AccountInvoiceLine(models.Model):
             )
 
             existing_comm = all_existing_comm.filtered(
-                lambda x: x.config_id.id == communication_config.id
+                lambda x, cf=communication_config: x.config_id.id == cf.id
             )
 
             if existing_comm:
