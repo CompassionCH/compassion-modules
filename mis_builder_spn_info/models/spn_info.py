@@ -24,9 +24,9 @@ class MisSpnInfoSettings(models.TransientModel):
     def get_values(self):
         res = super(MisSpnInfoSettings,self).get_values()
         config = self.env["ir.config_parameter"].sudo()
-        res["mis_contract_created_id"] = int(config.get_param("mis_contract_created_id", default=""))
-        res["mis_child_sponsored_id"] = int(config.get_param("mis_child_sponsored_id", default=""))
-        res["mis_main_company_id"] = int(config.get_param("mis_main_company_id", default=""))
+        res["mis_contract_created_id"] = int(config.get_param("mis_contract_created_id", default="0"))
+        res["mis_child_sponsored_id"] = int(config.get_param("mis_child_sponsored_id", default="0"))
+        res["mis_main_company_id"] = int(config.get_param("mis_main_company_id", default="0"))
         return res
 
     @api.model
