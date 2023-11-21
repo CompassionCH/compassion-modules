@@ -22,6 +22,7 @@ from odoo.addons.child_compassion.models.compassion_hold import HoldType
 
 from .product_names import (
     BIRTHDAY_GIFT,
+    CHRISTMAS_GIFT,
     GIFT_CATEGORY,
     GIFT_PRODUCTS_REF,
     PRODUCT_GIFT_CHRISTMAS,
@@ -1094,10 +1095,8 @@ class SponsorshipContract(models.Model):
 
             # Checks if we need to generate the birthday gifts or the Christmas gifts
             current_date = date.today()
-            if gift_type == BIRTHDAY_GIFT:  # case of birthday gift
-                event_date_str = str(contract.child_id.birthdate)
-                event_date = date.fromisoformat(event_date_str)
-
+            if gift_type == BIRTHDAY_GIFT and contract.child_id.birthdate:
+                event_date = contract.child_id.birthdate
                 event_bascule_date = self._get_bascule_date(contract, event_date)
 
                 # We only generate the birthday gift if the current date
@@ -1110,7 +1109,7 @@ class SponsorshipContract(models.Model):
                     due_dates[contract] = event_bascule_date
                 else:
                     contracts -= contract
-            else:  # case of Christmas gift
+            elif gift_type == CHRISTMAS_GIFT:  # case of Christmas gift
                 christ_inv_due = int(
                     self.env["ir.config_parameter"]
                     .sudo()
@@ -1126,6 +1125,8 @@ class SponsorshipContract(models.Model):
                     )
                 else:
                     contracts -= contract
+            else:
+                contracts -= contract
 
         if contracts:
             total = str(len(contracts))
