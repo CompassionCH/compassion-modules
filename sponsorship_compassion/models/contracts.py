@@ -1073,6 +1073,7 @@ class SponsorshipContract(models.Model):
                 or eval(f"contract.{gift_type}_invoice") <= 0
             ):
                 contracts -= contract
+                continue
 
             # checks if there is already a gift for this year which has been cancelled
             current_year = fields.Datetime.now().year
@@ -1092,6 +1093,7 @@ class SponsorshipContract(models.Model):
             )
             if gift_this_year:
                 contracts -= contract
+                continue
 
             # Checks if we need to generate the birthday gifts or the Christmas gifts
             current_date = date.today()
@@ -1116,13 +1118,10 @@ class SponsorshipContract(models.Model):
                     .get_param("sponsorship_compassion.christmas_inv_due_month", 10)
                 )
 
-                if current_date.month == christ_inv_due and current_date.day == 1:
+                if current_date.month == christ_inv_due:
                     # Here we generate the Christmas gifts only if we are in the month
-                    # defined in sponsorship_compassion.christmas_inv_due_month and
-                    # the 1st is not passed
-                    due_dates[contract] = current_date.replace(
-                        month=christ_inv_due, day=1
-                    )
+                    # defined in sponsorship_compassion.christmas_inv_due_month
+                    due_dates[contract] = self._get_bascule_date(contract, current_date)
                 else:
                     contracts -= contract
             else:
@@ -1335,13 +1334,11 @@ class SponsorshipContract(models.Model):
             event_date_inner = event_date_inner.replace(year=current_year)
             event_bascule_date_inner = event_date_inner.replace(
                 day=block_day_inner
-            ) + relativedelta(months=-1)
+            ) - relativedelta(months=1)
 
         # If the bascule date is after the event date,
         # the true bascule date is 1 month before
         if event_bascule_date_inner > event_date_inner:
-            event_bascule_date_inner = event_bascule_date_inner + relativedelta(
-                months=-1
-            )
+            event_bascule_date_inner -= relativedelta(months=1)
 
         return event_bascule_date_inner
