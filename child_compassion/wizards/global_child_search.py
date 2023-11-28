@@ -447,7 +447,8 @@ class GlobalChildSearch(models.TransientModel):
             )
         values = ";".join(self.field_office_ids.mapped("country_code"))
         create_filter("field_office_ids", anyof_id, values)
-        create_filter("gender", anyof_id, self.gender[0])
+        if self.gender:
+            create_filter("gender", anyof_id, self.gender[0])
         values = ";".join(self.holding_gp_ids.mapped("country_id.code"))
         create_filter("holding_gp_ids", anyof_id, values)
         values = ";".join(self.fcp_ids.mapped("fcp_id"))
