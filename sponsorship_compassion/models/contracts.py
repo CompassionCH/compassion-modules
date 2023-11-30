@@ -1200,16 +1200,6 @@ class SponsorshipContract(models.Model):
                     if gift_contract_lines:
                         gift_contract_lines.mapped("contract_id").contract_active()
 
-                if (
-                    len(
-                        contract.invoice_line_ids.filtered(
-                            lambda i: i.payment_state == "paid"
-                        )
-                    )
-                    == 1
-                ):
-                    contract.partner_id.set_privacy_statement(origin="first_payment")
-
         # Super method will activate waiting contracts
         # Only activate sponsorships with sponsorship invoice
         to_activate = self
