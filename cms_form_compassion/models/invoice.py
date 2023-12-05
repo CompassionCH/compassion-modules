@@ -23,6 +23,6 @@ class AccountInvoice(models.Model):
         invoices = self.search([
             ("auto_cancel_date", "<=", fields.Datetime.now()),
             ("state", "in", ["draft", "open"])
-        ])
+        ], limit=100)
         invoices.action_invoice_cancel()
         return True
