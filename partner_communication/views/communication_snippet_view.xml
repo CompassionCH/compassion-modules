@@ -6,15 +6,17 @@
             <form>
                 <sheet>
                     <group>
-                        <div class="alert alert-info" role="alert">
-                            You can use this snippet inside communications with the following code:
-                            <p class="user-select-all text-monospace">
-                                ${object.get_snippet('<field name="name" class="o_readonly"/> ')}
-                            </p>
-                        </div>
                         <field name="name"/>
                         <field name="snippet_text"/>
                     </group>
+                    <hr/>
+                    <div class="alert alert-info" role="alert">
+                        <p>You can use this snippet inside communications with the following code:</p>
+                        <hr/>
+                        <p class="user-select-all text-monospace">
+                            ${object.get_snippet('<field name="name" readonly="1"/>') | safe}
+                        </p>
+                    </div>
                 </sheet>
             </form>
         </field>
@@ -37,5 +39,5 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="communication_snippet_menu" name="Communication Snippet" parent="partner_communication.menu_communication_config" action="action_communication_snippet" sequence="10"/>
+    <menuitem id="communication_snippet_menu" name="Communication Snippet" parent="partner_communication.menu_communication" action="action_communication_snippet" sequence="3"/>
 </odoo>
