@@ -56,6 +56,7 @@
         "views/generate_communication_wizard_view.xml",
         "views/ir_attachment_view.xml",
         "views/ir_actions_view.xml",
+        "views/communication_snippet_view.xml",
         "data/default_communication.xml",
         "data/queue_job.xml",
     ],

@@ -18,3 +18,4 @@ from . import mail_template
 from . import report_with_omr
 from . import ir_actions
 from . import queue_job
+from . import communication_snippet

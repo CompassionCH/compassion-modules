@@ -9,3 +9,4 @@ access_communication_attachment,Read access on communication_attachment,model_pa
 full_access_communication_attachment,Full access on communication_attachment,model_partner_communication_attachment,base.group_erp_manager,1,1,1,1
 full_access_communication_printer_config,Full access on communication_printer_config,model_partner_communication_printer_config,base.group_erp_manager,1,1,1,1
 access_communication_printer_config,Write access on communication_printer_config,model_partner_communication_printer_config,base.group_user,1,1,0,0
+access_communication_snippets,Full access on communication_snippets,model_partner_communication_snippets,base.group_user,1,1,1,1
