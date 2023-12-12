@@ -14,7 +14,7 @@
                         <p>You can use this snippet inside communications with the following code:</p>
                         <hr/>
                         <p class="user-select-all text-monospace">
-                            ${object.get_snippet('<field name="name" readonly="1"/>') | safe}
+                            <field name="snippet_code"/>
                         </p>
                     </div>
                 </sheet>
@@ -28,6 +28,7 @@
             <tree editable="top">
                 <field name="name"/>
                 <field name="snippet_text"/>
+                <field name="snippet_code"/>
                 <button name="action_edit_snippet" type="object" string="Edit" icon="fa-external-link"/>
             </tree>
         </field>

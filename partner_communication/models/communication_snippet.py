@@ -7,6 +7,11 @@ class CommunicationSnippet(models.Model):
 
     name = fields.Char(required=True, index=True)
     snippet_text = fields.Html(required=True, translate=True)
+    snippet_code = fields.Char(compute="_compute_snippet_code")
+
+    def _compute_snippet_code(self):
+        for snippet in self:
+            snippet.snippet_code = f"${{object.get_snippet('{snippet.name}') | safe}}"
 
     def action_edit_snippet(self):
         self.ensure_one()
