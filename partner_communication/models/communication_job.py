@@ -675,6 +675,14 @@ class CommunicationJob(models.Model):
             )
         return action
 
+    @api.model
+    def get_snippet(self, snippet_name):
+        return (
+            self.env["communication.snippet"]
+            .search([("name", "=", snippet_name)])
+            .snippet_text
+        )
+
     ##########################################################################
     #                             PRIVATE METHODS                            #
     ##########################################################################
