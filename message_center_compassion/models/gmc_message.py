@@ -50,7 +50,8 @@ class GmcMessage(models.Model):
     partner_id = fields.Many2one("res.partner", "Partner", readonly=False)
 
     request_id = fields.Char("Request ID", readonly=True)
-    date = fields.Datetime("Message Date", required=True, default=fields.Datetime.now)
+    date = fields.Datetime("Message Date", required=True, default=fields.Datetime.now,
+                           index=True)
     action_id = fields.Many2one(
         "gmc.action", "GMC Message", ondelete="restrict", required=False, readonly=True
     )
