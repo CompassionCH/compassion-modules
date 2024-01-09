@@ -69,6 +69,7 @@ class GmcMessage(models.Model):
         readonly=True,
         default="new",
         tracking=True,
+        index=True,
     )
     failure_reason = fields.Text("Failure details", tracking=True)
     headers = fields.Text(readonly=True)
