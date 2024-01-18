@@ -36,6 +36,7 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <field name="translation_status" widget="statusbar" readonly="0"/>
+                    <button name="approve_translation" string="Approve translation" type="object" class="oe_highlight" attrs="{'invisible': [('translation_status', '!=', 'to validate')]}"/>
                     <button name="remove_local_translate" type="object"
                             string="Remove from translation" class="oe_highlight"
                             states="Global Partner translation queue"/>
@@ -87,7 +88,7 @@
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -188,6 +189,7 @@
             </field>
             <filter name="state_published" position="after">
                 <filter name="translation_pending" string="In Translation" domain="[('state', '=', 'Global Partner translation queue')]"/>
+                <separator/>
                 <filter name="my_supervision" string="My supervision" domain="[('translation_supervisor_id', '=', uid)]"/>
             </filter>
             <filter name="group_state" position="after">

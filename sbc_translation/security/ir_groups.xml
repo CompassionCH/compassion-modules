@@ -10,6 +10,7 @@
             <field name="name">User</field>
             <field name="comment">the user will have access to the translation platform.</field>
             <field name="category_id" ref="module_category_translator"/>
+            <field name="share" eval="True"/>
         </record>
         <record id="group_manager" model="res.groups">
             <field name="name">Manager</field>

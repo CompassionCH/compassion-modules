@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, models, fields
 
 
 class TranslationUser(models.Model):
@@ -10,9 +10,7 @@ class TranslationUser(models.Model):
     name = fields.Char(related="user_id.name", store=True)
     active = fields.Boolean(default=True)
     translator_since = fields.Datetime(default=fields.Datetime.now)
-    translation_skills = fields.One2many(
-        "translation.user.skill", "translator_id", "Skills"
-    )
+    translation_skills = fields.One2many("translation.user.skill", "translator_id", "Skills")
     translated_letter_ids = fields.One2many(
         "correspondence", "new_translator_id", readonly=False
     )
@@ -20,29 +18,24 @@ class TranslationUser(models.Model):
         "Total translations", compute="_compute_nb_translated_letters", store=True
     )
     nb_translated_letters_this_year = fields.Integer(
-        "Translations this year",
-        compute="_compute_nb_translated_letters_this_year",
-        store=True,
+        "Translations this year", compute="_compute_nb_translated_letters_this_year", store=True
     )
     nb_translated_letters_last_year = fields.Integer(
-        "Translations last year",
-        compute="_compute_nb_translated_letters_last_year",
-        store=True,
+        "Translations last year", compute="_compute_nb_translated_letters_last_year", store=True
     )
     search_source_lang = fields.Many2one(
-        "res.lang.compassion",
-        domain=[("translatable", "=", True)],
-        help="Utility field only used for the search view",
+        "res.lang.compassion", domain=[("translatable", "=", True)],
+        help="Utility field only used for the search view"
     )
     search_dest_lang = fields.Many2one(
-        "res.lang.compassion",
-        domain=[("translatable", "=", True)],
-        help="Utility field only used for the search view",
+        "res.lang.compassion", domain=[("translatable", "=", True)],
+        help="Utility field only used for the search view"
     )
     search_competence_id = fields.Many2one(
-        "translation.competence", help="Utility field only used for the search view"
+        "translation.competence",
+        help="Utility field only used for the search view"
     )
-    avatar = fields.Image(related="partner_id.image_128")
+    avatar = fields.Binary(related="partner_id.image_small")
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
@@ -58,21 +51,15 @@ class TranslationUser(models.Model):
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_this_year(self):
         for translator in self:
-            translator.nb_translated_letters_this_year = len(
-                translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date.year == fields.Datetime.now().year
-                )
-            )
+            translator.nb_translated_letters_this_year = len(translator.translated_letter_ids.filtered(
+                lambda it: it.translate_date.year == fields.Datetime.now().year))
 
     @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_last_year(self):
         for translator in self:
-            translator.nb_translated_letters_last_year = len(
-                translator.translated_letter_ids.filtered(
-                    lambda it: it.translate_date.year == fields.Datetime.now().year - 1
-                )
-            )
+            translator.nb_translated_letters_last_year = len(translator.translated_letter_ids.filtered(
+                lambda it: it.translate_date.year == fields.Datetime.now().year - 1))
 
     @api.model
     def create(self, vals_list):
@@ -82,9 +69,10 @@ class TranslationUser(models.Model):
         records = super().create(vals_list)
         user_group = self.env.ref("sbc_translation.group_user")
         for translator in records:
-            translator.user_id.write(
-                {"groups_id": [(4, user_group.id)], "translator_id": translator.id}
-            )
+            translator.user_id.write({
+                "groups_id": [(4, user_group.id)],
+                "translator_id": translator.id
+            })
         return records
 
     @api.multi
@@ -116,11 +104,9 @@ class TranslationUser(models.Model):
             "res_model": "correspondence",
             "view_type": "form",
             "view_mode": "tree,form",
-            "context": {
-                "search_default_new_translator_id": self.id,
-                "form_view_ref": "sbc_translation.view_correspondence_form_translation",
-                "tree_view_ref": "sbc_translation.view_correspondence_translation_tree",
-            },
+            "context": {"search_default_new_translator_id": self.id,
+                        "form_view_ref": "sbc_translation.view_correspondence_form_translation",
+                        "tree_view_ref": "sbc_translation.view_correspondence_translation_tree"},
         }
 
     @api.multi
@@ -144,19 +130,24 @@ class TranslationUser(models.Model):
         Translation Platform API. Adds a new skill to the translator
         :param competence_id: translation.competence ID to add
         """
-        return (
-            self.env["translation.user.skill"]
-            .create(
-                [
-                    {
-                        "translator_id": translator.id,
-                        "competence_id": competence_id,
-                    }
-                    for translator in self
-                ]
-            )
-            .id
-        )
+        return self.env["translation.user.skill"].create([{
+            "translator_id": translator.id,
+            "competence_id": competence_id,
+        } for translator in self]).id
+
+    @api.multi
+    def unlink_skill(self, skill_dict):
+        """
+        Translation Platform API. Delete a skill to the translator
+        :param skill_dict: Data about the skill to delete
+        """
+        for translation_usr in self:
+            translation_usr.translation_skills.filtered(
+                lambda s: s.competence_id.dest_language_id.name == skill_dict.get("target")
+                and s.competence_id.source_language_id.name == skill_dict.get("source")
+                and s.verified == skill_dict.get("verified")
+            ).unlink()
+        return True
 
     @api.multi
     def get_user_info(self):
@@ -164,42 +155,28 @@ class TranslationUser(models.Model):
         Translation Platform API call to fetch user info.
         """
         self.ensure_one()
-        user = self.user_id
-        partner = self.partner_id
+        user = self.user_id.sudo()
+        partner = self.partner_id.sudo()
         group_user = self.env.ref("sbc_translation.group_user")
         group_admin = self.env.ref("sbc_translation.group_manager")
-        role = (
-            "admin"
-            if group_admin in user.groups_id
-            else ("user" if group_user in user.groups_id else None)
-        )
-        language = (
-            self.env["res.lang"]
-            .with_context(lang="en_US")
-            .search([("code", "=", partner.lang)])
-        )
+        role = "admin" if group_admin in user.groups_id else ("user" if group_user in user.groups_id else None)
+        language = self.env["res.lang"].search([("code", "=", partner.lang)])
         return {
-            "email": self.user_id.email or "None",
+            "email": user.email or "None",
             "role": role,
             "name": partner.name or "None",
+            "preferredName": partner.preferred_name,
             "age": partner.age or "None",
             "language": language.name or "None",
             "total": self.nb_translated_letters or "None",
             "year": self.nb_translated_letters_this_year or "None",
             "lastYear": self.nb_translated_letters_last_year or "None",
             "translatorId": self.id,
-            "skills": [
-                {
-                    "source": skill.competence_id.source_language_id.name,
-                    "target": skill.competence_id.dest_language_id.name,
-                    "verified": skill.verified,
-                }
-                for skill in self.translation_skills.with_context(lang="en_US")
-            ]
-            or "None",
-            "api_key": self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("sbc_translation.api_key"),
+            "skills": [{
+                "source": skill.competence_id.source_language_id.name,
+                "target": skill.competence_id.dest_language_id.name,
+                "verified": skill.verified
+            } for skill in self.translation_skills] or "None",
         }
 
 

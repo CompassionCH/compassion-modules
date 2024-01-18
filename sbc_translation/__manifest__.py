@@ -29,13 +29,16 @@
 {
     "name": "SBC Translation Platform",
     "version": "12.0.1.0.0",
-    "category": "Compassion",
+    "category": "Other",
     "summary": "SBC - Translation Platform",
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://www.compassion.ch",
-    "depends": ["sbc_compassion", "partner_contact_birthdate"],
+    "depends": [
+        "sbc_compassion",
+        "partner_contact_birthdate"
+    ],
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
@@ -44,6 +47,7 @@
         "data/mail_template.xml",
         "data/increment_translation_priority_cron.xml",
         "data/website.xml",
+        "data/queue_job.xml",
         "views/translation_user_view.xml",
         "views/correspondence_view.xml",
         "views/translation_pool_view.xml",
@@ -51,5 +55,5 @@
     "demo": [],
     "installable": True,
     "auto_install": False,
-    "post_init_hook": "post_init_hook",
+    "post_init_hook": "post_init_hook"
 }
