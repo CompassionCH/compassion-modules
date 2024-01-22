@@ -28,6 +28,7 @@ AUTHORIZED_SENDERS = [
     "SFDC-CI",
     "SFCI",
     "SponsorshipPool",
+    "AMInterventions",
 ]
 
 _logger = logging.getLogger(__name__)
