@@ -43,7 +43,6 @@
         "views/settings_view.xml",
         "views/end_reason_view.xml",
         "data/sponsorship_action_rules.xml",
-        "data/install.xml",
         "security/ir.model.access.csv",
     ],
     "demo": [],

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate='1'>
-        <function model="install.sds.tracking" name="set_sds_states"/>
-    </data>
-</odoo>
