@@ -131,6 +131,9 @@ class CommunicationConfig(models.Model):
         string="Custom Configuration",
         readonly=False,
     )
+    forbid_merging = fields.Boolean(default=False,
+                                    help='introduce some info about the function',
+    )
     active = fields.Boolean(default=True)
 
     ##########################################################################
