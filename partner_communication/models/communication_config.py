@@ -132,7 +132,7 @@ class CommunicationConfig(models.Model):
         readonly=False,
     )
     forbid_merging = fields.Boolean(default=False,
-                                    help='introduce some info about the function',
+                                    help='If selected, disable the automatic merging of communications',
     )
     active = fields.Boolean(default=True)
 
