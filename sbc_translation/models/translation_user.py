@@ -48,13 +48,11 @@ class TranslationUser(models.Model):
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters(self):
         for translator in self:
             translator.nb_translated_letters = len(translator.translated_letter_ids)
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_this_year(self):
         for translator in self:
@@ -64,7 +62,6 @@ class TranslationUser(models.Model):
                 )
             )
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_last_year(self):
         for translator in self:
@@ -87,7 +84,6 @@ class TranslationUser(models.Model):
             )
         return records
 
-    @api.multi
     def write(self, vals):
         """
         When activating/deactivating a translator, update rights accordingly.
@@ -99,7 +95,6 @@ class TranslationUser(models.Model):
             self.mapped("user_id").write({"groups_id": [(action, user_group.id)]})
         return True
 
-    @api.multi
     def unlink(self):
         """
         Remove Translation Platform rights when removing translator.
@@ -108,7 +103,6 @@ class TranslationUser(models.Model):
         self.mapped("user_id").write({"groups_id": [(3, user_group.id)]})
         return super().unlink()
 
-    @api.multi
     def open_translated_letters(self):
         return {
             "type": "ir.actions.act_window",
@@ -123,7 +117,6 @@ class TranslationUser(models.Model):
             },
         }
 
-    @api.multi
     def list_users(self):
         """
         Translation Platform API call to fetch user info.
@@ -138,7 +131,6 @@ class TranslationUser(models.Model):
         translator = self.search([("user_id", "=", self.env.uid)])
         return translator.get_user_info()
 
-    @api.multi
     def add_skill(self, competence_id):
         """
         Translation Platform API. Adds a new skill to the translator
@@ -158,7 +150,6 @@ class TranslationUser(models.Model):
             .id
         )
 
-    @api.multi
     def unlink_skill(self, skill_dict):
         """
         Translation Platform API. Delete a skill to the translator
@@ -173,7 +164,6 @@ class TranslationUser(models.Model):
             ).unlink()
         return True
 
-    @api.multi
     def get_user_info(self):
         """
         Translation Platform API call to fetch user info.

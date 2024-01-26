@@ -192,7 +192,6 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def open_full_view(self):
         return {
             "type": "ir.actions.act_window",
@@ -202,7 +201,6 @@ class Correspondence(models.Model):
             "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
-    @api.multi
     def process_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
@@ -218,7 +216,6 @@ class Correspondence(models.Model):
                 letter.send_local_translate()
         return True
 
-    @api.multi
     def send_local_translate(self):
         """
         Sends the letter to the local translation platform.
@@ -256,7 +253,6 @@ class Correspondence(models.Model):
         ).unlink()
         return True
 
-    @api.multi
     def assign_supervisor(self):
         """
         This method assigns a supervisor for a letter.
@@ -275,7 +271,6 @@ class Correspondence(models.Model):
             ]
         return True
 
-    @api.multi
     def raise_translation_issue(self, issue_type, body_html):
         """
         TP API for translator to raise an issue with the letter
@@ -289,7 +284,6 @@ class Correspondence(models.Model):
         # self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
         return True
 
-    @api.multi
     def reply_to_comments(self, body_html):
         """
         TP API for sending to the translator a message regarding his or her comments.
@@ -305,11 +299,9 @@ class Correspondence(models.Model):
         )
         return self.write({"unread_comments": False})
 
-    @api.multi
     def mark_comments_read(self):
         return self.write({"unread_comments": False})
 
-    @api.multi
     def remove_local_translate(self):
         """
         Remove a letter from local translation platform and change state of
@@ -325,7 +317,6 @@ class Correspondence(models.Model):
             self.with_context(force_publish=True).process_letter()
         return True
 
-    @api.multi
     def save_translation(self, letter_elements, translator_id=None):
         """
         TP API for saving a translation
@@ -366,7 +357,6 @@ class Correspondence(models.Model):
         self.write(letter_vals)
         return True
 
-    @api.multi
     def submit_translation(self, letter_elements, translator_id=None):
         """
         TP API for saving a translation
@@ -384,7 +374,6 @@ class Correspondence(models.Model):
             self.translation_status = "to validate"
         return True
 
-    @api.multi
     def approve_translation(self):
         for letter in self:
             skill_to_validate = letter.new_translator_id.translation_skills.filtered(
@@ -404,7 +393,6 @@ class Correspondence(models.Model):
         self._post_process_translation()
         return True
 
-    @api.multi
     def resubmit_to_translation(self):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
@@ -421,7 +409,6 @@ class Correspondence(models.Model):
             )
             letter.send_local_translate()
 
-    @api.multi
     def _post_process_translation(self):
         self.ensure_one()
         is_s2b = self.direction == "Supporter To Beneficiary"
@@ -441,12 +428,10 @@ class Correspondence(models.Model):
             # Recompose the letter image and process letter
             self.sudo().with_context(force_publish=True).process_letter()
 
-    @api.multi
     def list_letters(self):
         """API call to fetch letters to translate"""
         return [letter.get_letter_info() for letter in self.sorted("scanned_date")]
 
-    @api.multi
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
         self.ensure_one()
@@ -489,7 +474,6 @@ class Correspondence(models.Model):
             "pdfUrl": f"{base_url}b2s_image?id={self.uuid}&disposition=inline",
         }
 
-    @api.multi
     def get_translated_elements(self):
         res = []
         for page in self.page_ids:

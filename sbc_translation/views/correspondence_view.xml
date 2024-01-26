@@ -213,7 +213,6 @@
     <record id="action_letters_kanban" model="ir.actions.act_window">
         <field name="name">Letter translation pool</field>
         <field name="res_model">correspondence</field>
-        <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="view_id" ref="correspondence_translation_kanban"/>
         <field name="context">{

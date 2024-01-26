@@ -74,7 +74,6 @@
     <record id="action_compassion_translation_competence_form" model="ir.actions.act_window">
         <field name="name">Competences</field>
         <field name="res_model">translation.competence</field>
-        <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
