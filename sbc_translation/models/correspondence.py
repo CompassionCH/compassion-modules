@@ -216,6 +216,31 @@ class Correspondence(models.Model):
                 letter.send_local_translate()
         return True
 
+    def calculate_translation_priority(self):
+        """
+        Calculate the translation priority based on the scanned date or creation date.
+        :return: string
+        """
+
+        # Dynamically get the list of priority keys from the selection field definition
+        priorities = [
+            int(priority[0]) for priority in self._fields["translation_priority"].selection
+        ]
+
+        # Handle the case where scanned_date is not set
+        letter_date = (
+            self.scanned_date if self.scanned_date else self.create_date.date()
+        )
+
+        # Calculate the difference in weeks between the current date and the scanned date.
+        calculated_priority = min((fields.Date.today() - letter_date).days // 7, len(priorities) - 1)
+
+        # If the user had manually set a higher priority, we stick to it
+        if self.translation_priority and int(self.translation_priority) >= calculated_priority:
+            return self.translation_priority
+
+        return str(calculated_priority)
+
     def send_local_translate(self):
         """
         Sends the letter to the local translation platform.
@@ -230,9 +255,7 @@ class Correspondence(models.Model):
             {
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
-                "translation_priority": str(
-                    min((fields.Date.today() - self.scanned_date).days // 7, 4)
-                ),
+                "translation_priority": self.calculate_translation_priority(),
                 "translation_status": "to do",
                 "translate_date": fields.Datetime.now(),
                 "translate_done": False,
@@ -447,7 +470,8 @@ class Correspondence(models.Model):
             "status": self.translate("translation_issue")
             or self.translate("translation_status")
             or "None",
-            "priority": self.translation_priority or "0",
+            "priority": self.translation_priority
+            or self._fields["translation_priority"].selection[0][0],
             "title": self.sudo().name,
             "source": self.src_translation_lang_id.name,
             "target": self.translation_language_id.name,
@@ -499,19 +523,26 @@ class Correspondence(models.Model):
         return res
 
     @api.model
-    def increment_priority_cron(self):
+    def update_translation_priority_cron(self):
         """
-        Increment priority of letters to translate, maximum
-        priority is 4.
+        Update the priority of letters to translate if the letter is not already at the highest priority.
+        When the letter is already at the highest priority, it moves it to another suitable pool.
+        :return: None
         """
         letters_to_translate = self.search(
             [("translation_status", "not in", [False, "done"])]
         )
 
+        # Update priority for each letters
         for letter in letters_to_translate:
-            old_priority = int(letter.translation_priority)
-            if old_priority < 4:
-                letter.translation_priority = str(old_priority + 1)
+
+            current_priority = letter.translation_priority
+            new_priority = letter.calculate_translation_priority()
+
+            if current_priority != new_priority:
+                letter.translation_priority = new_priority
+
+            # If the letter is already at the highest priority and has a fallback competence, move it to another pool
             elif letter.translation_competence_id.fallback_competence_id:
                 letter.with_delay().move_pool()
 

@@ -35,13 +35,13 @@ class TranslationCompetence(models.Model):
         "correspondence", string="Current letters", compute="_compute_current_letters"
     )
     number_current_letters = fields.Integer(
-        compute="_compute_current_letters", store=True
+        compute="_compute_current_letters", store=True, compute_sudo=False
     )
     skill_ids = fields.One2many(
         "translation.user.skill", "competence_id", "Translator skills"
     )
     number_translators = fields.Integer(
-        compute="_compute_number_translators", store=True
+        compute="_compute_number_translators", store=True, compute_sudo=False
     )
     number_active_translators = fields.Integer(compute="_compute_number_translators")
 

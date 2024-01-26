@@ -142,7 +142,7 @@
                 <field name="translation_url"/>
                 <field name="translation_priority_name"/>
                 <field name="unread_comments"/>
-                <progressbar field="translation_priority_name" colors="{&quot;High&quot;: &quot;success&quot;, &quot;Very high&quot;: &quot;warning&quot;, &quot;Urgent&quot;: &quot;danger&quot;}"/>
+                <progressbar field="translation_priority" colors='{"2": "success", "3": "warning", "4": "danger"}'/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{(record.unread_comments.raw_value || record.translation_issue.raw_value) ? 'oe_kanban_color_1' : ''}">
