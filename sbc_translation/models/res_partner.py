@@ -7,11 +7,7 @@
 #    The licence is in the file __manifest__.py
 #
 ##############################################################################
-import functools
-import random
-import string
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo import fields, models
 
 
 class ResPartner(models.Model):
@@ -23,9 +19,11 @@ class ResPartner(models.Model):
         help="Allow to engage the partner in translations.",
         compute="_compute_translator",
         readonly=False,
-        store=True
+        store=True,
     )
 
     def _compute_translator(self):
         for partner in self:
-            partner.translation_user_id = self.env["translation.user"].search([("partner_id", "=", partner.id)], limit=1)
+            partner.translation_user_id = self.env["translation.user"].search(
+                [("partner_id", "=", partner.id)], limit=1
+            )

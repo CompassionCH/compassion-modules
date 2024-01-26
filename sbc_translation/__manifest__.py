@@ -35,10 +35,7 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "website": "https://www.compassion.ch",
-    "depends": [
-        "sbc_compassion",
-        "partner_contact_birthdate"
-    ],
+    "depends": ["sbc_compassion", "partner_contact_birthdate"],
     "data": [
         "security/ir_groups.xml",
         "security/ir.model.access.csv",
@@ -55,5 +52,5 @@
     "demo": [],
     "installable": True,
     "auto_install": False,
-    "post_init_hook": "post_init_hook"
+    "post_init_hook": "post_init_hook",
 }
