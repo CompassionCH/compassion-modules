@@ -30,10 +30,6 @@ class GenerateGiftWizard(models.TransientModel):
     contract_id = fields.Many2one("recurring.contract", "Contract")
     invoice_date = fields.Date(default=fields.Date.today)
     description = fields.Char("Additional comments", size=200)
-    force = fields.Boolean(
-        "Force creation",
-        help="Creates the gift even if one was already made the same year.",
-    )
     quantity = fields.Integer(default=1)
 
     def generate_invoice(self, due_date=None):
@@ -68,24 +64,6 @@ class GenerateGiftWizard(models.TransientModel):
             ):
                 logger.warning("The invoices are suspended")
                 return 1
-            if not self.force:
-                date_start = date.today().replace(month=1, day=1)
-                inv_lines = self.env["account.move.line"].search(
-                    [
-                        "|",
-                        ("due_date", "=", invoice_date),
-                        "&",
-                        ("move_id.date", ">=", date_start),
-                        ("move_id.date", "<=", date_start.replace(month=12)),
-                        "&",
-                        "&",
-                        ("product_id", "=", self.product_id.id),
-                        ("contract_id", "=", contract.id),
-                        ("parent_state", "!=", "cancel"),
-                    ]
-                )
-                if inv_lines:
-                    return 1
             inv_data = self._build_invoice_gen_data(
                 invoice_date, self.env.context.get("invoicer")
             )
