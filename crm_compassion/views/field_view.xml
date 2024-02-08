@@ -1,25 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <menuitem id="menu_crm_field_section"
-              name="Field"
-              parent="crm.crm_menu_root"
-              sequence="3"/>
+    <menuitem
+    id="menu_crm_field_section"
+    name="Field"
+    parent="crm.crm_menu_root"
+    sequence="3"
+  />
 
-    <menuitem id="menu_crm_field_project"
-              parent="menu_crm_field_section"
-              name="Projects"
-              sequence="0"
-              action="child_compassion.open_view_project_tree"/>
+    <menuitem
+    id="menu_crm_field_project"
+    parent="menu_crm_field_section"
+    name="Projects"
+    sequence="0"
+    action="child_compassion.open_view_project_tree"
+  />
 
-    <menuitem id="menu_crm_field_office"
-              name="Field Offices"
-              parent="menu_crm_field_section"
-              sequence="1"
-              action="child_compassion.open_view_field_office"/>
+    <menuitem
+    id="menu_crm_field_office"
+    name="Field Offices"
+    parent="menu_crm_field_section"
+    sequence="1"
+    action="child_compassion.open_view_field_office"
+  />
 
-    <menuitem id="menu_crm_field_disaster_alert"
-              parent="menu_crm_field_section"
-              name="Disaster Alerts"
-              sequence="6"
-              action="child_compassion.open_view_field_office_disaster"/>
+    <menuitem
+    id="menu_crm_field_disaster_alert"
+    parent="menu_crm_field_section"
+    name="Disaster Alerts"
+    sequence="6"
+    action="child_compassion.open_view_field_office_disaster"
+  />
 </odoo>

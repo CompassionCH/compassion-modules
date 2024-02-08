@@ -31,7 +31,7 @@ class StaffNotificationSettings(models.TransientModel):
 
     christmas_inv_gen_month = fields.Integer(
         help="Chose the month at which the Christmas invoices will be generated. The "
-             "due date will be one month after.",
+        "due date will be one month after.",
         config_parameter="sponsorship_compassion.christmas_inv_gen_month",
         # Default invoices for Christmas gift are due for two months before Christmas
         default=9,

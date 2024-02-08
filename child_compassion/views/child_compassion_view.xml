@@ -1,35 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Top menu item -->
-    <menuitem id="menu_sponsorship_root"
-              name="Sponsorship"
-              groups="group_sponsorship"
-              sequence="0"
-              web_icon="child_compassion,static/description/icon.png"/>
-    <menuitem id="menu_sponsorship_section"
-              name="Sponsorship"
-              parent="menu_sponsorship_root"
-              sequence="1"/>
-    <menuitem id="menu_pool_section"
-              name="Global Childpool"
-              parent="menu_sponsorship_root"
-              sequence="2"/>
-    <menuitem id="menu_field_section"
-              name="Field"
-              parent="menu_sponsorship_root"
-              sequence="3"/>
+    <menuitem
+    id="menu_sponsorship_root"
+    name="Sponsorship"
+    groups="group_sponsorship"
+    sequence="0"
+    web_icon="child_compassion,static/description/icon.png"
+  />
+    <menuitem
+    id="menu_sponsorship_section"
+    name="Sponsorship"
+    parent="menu_sponsorship_root"
+    sequence="1"
+  />
+    <menuitem
+    id="menu_pool_section"
+    name="Global Childpool"
+    parent="menu_sponsorship_root"
+    sequence="2"
+  />
+    <menuitem
+    id="menu_field_section"
+    name="Field"
+    parent="menu_sponsorship_root"
+    sequence="3"
+  />
 
     <!--Compassion child kanban view -->
-    <record model="ir.ui.view"
-            id="view_compassion_child_kanban">
+    <record model="ir.ui.view" id="view_compassion_child_kanban">
         <field name="name">compassion.child.kanban</field>
         <field name="model">compassion.child</field>
         <field name="type">kanban</field>
-        <field name="arch"
-               type="xml">
+        <field name="arch" type="xml">
             <kanban>
-                <field name="pictures_ids"/>
-                <field name="state"/>
+                <field name="pictures_ids" />
+                <field name="state" />
                 <templates>
                     <t t-name="kanban-box">
                         <div class="oe_kanban_vignette">
@@ -38,25 +44,30 @@
                                 <!-- Title and data -->
                                 <div class="oe_product_desc">
                                     <a type="open">
-                                        <img class="oe_kanban_image" alt="child"
-                                             t-att-src="kanban_image('compassion.child.pictures', 'headshot', record.pictures_ids.raw_value)"/>
+                                        <img
+                      class="oe_kanban_image"
+                      alt="child"
+                      t-att-src="kanban_image('compassion.child.pictures', 'headshot', record.pictures_ids.raw_value)"
+                    />
                                         <h4>
-                                            <field name="name"/>
+                                            <field name="name" />
                                         </h4>
                                     </a>
                                     <strong>
-                                        <field name="local_id"/>
+                                        <field name="local_id" />
                                     </strong>
                                     <ul>
                                         <li>Gender :
-                                            <field name="gender"/>
+                                            <field name="gender" />
                                         </li>
                                         <li>State :
-                                            <field name="state"/>
+                                            <field name="state" />
                                         </li>
-                                        <li t-if="record.state.raw_value == 'P'">
+                                        <li
+                      t-if="record.state.raw_value == 'P'"
+                    >
                                             Sponsor :
-                                            <field name="sponsor_id"/>
+                                            <field name="sponsor_id" />
                                         </li>
                                     </ul>
                                 </div>
@@ -75,176 +86,254 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar"
-                           statusbar_visible="N,P,F"/>
+                    <field
+            name="state"
+            widget="statusbar"
+            statusbar_visible="N,P,F"
+          />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="buttons">
-                        <button name="get_infos" string="Get info" type="object" icon="fa-refresh" class="oe_stat_button"
-                                context="{'async_mode': False}"/>
-                        <button name="get_lifecycle_event" string="Get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        <button name="edit_translations" string="Edit translations" type="object" icon="fa-language" class="oe_stat_button"/>
+                        <button
+              name="get_infos"
+              string="Get info"
+              type="object"
+              icon="fa-refresh"
+              class="oe_stat_button"
+              context="{'async_mode': False}"
+            />
+                        <button
+              name="get_lifecycle_event"
+              string="Get lifecycle"
+              type="object"
+              icon="fa-refresh"
+              class="oe_stat_button"
+              context="{'async_mode': False}"
+            />
+                        <button
+              name="edit_translations"
+              string="Edit translations"
+              type="object"
+              icon="fa-language"
+              class="oe_stat_button"
+            />
                     </div>
                     <div class="row">
                         <div class="col-2">
-                            <field name="portrait" widget="image" options='{"size": [90, 90]}'/>
+                            <field
+                name="portrait"
+                widget="image"
+                options='{"size": [90, 90]}'
+              />
                         </div>
                         <div class="col-6">
                             <h1>
-                                <field name="name"/>
+                                <field name="name" />
                             </h1>
                             <group>
-                                <field name="preferred_name"/>
+                                <field name="preferred_name" />
                             </group>
                         </div>
-                        <div class="col-4"/>
+                        <div class="col-4" />
                     </div>
                     <notebook>
                         <page string="General Information">
                             <group>
                                 <group>
-                                    <field name="local_id"/>
-                                    <field name="project_id"/>
-                                    <field name="gender"/>
-                                    <field name="birthdate"/>
-                                    <field name="age"/>
-                                    <field name="estimated_birthdate"/>
-                                    <field name="sponsor_id"/>
-                                    <field name="beneficiary_state"/>
-                                    <field name="hold_id"/>
+                                    <field name="local_id" />
+                                    <field name="project_id" />
+                                    <field name="gender" />
+                                    <field name="birthdate" />
+                                    <field name="age" />
+                                    <field name="estimated_birthdate" />
+                                    <field name="sponsor_id" />
+                                    <field name="beneficiary_state" />
+                                    <field name="hold_id" />
                                     <!--newly added-->
-                                    <field name="correspondence_language_id"/>
-                                    <field name="field_office_id"/>
+                                    <field name="correspondence_language_id" />
+                                    <field name="field_office_id" />
                                 </group>
                                 <group>
-                                    <field name="global_id"/>
-                                    <field name="type"/>
-                                    <field name="cdsp_type"/>
-                                    <field name="date"/>
-                                    <field name="completion_date"/>
-                                    <field name="completion_date_change_reason"
-                                           attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"/>
-                                    <field name="exit_reason"
-                                           attrs="{'invisible': [('state', '!=', 'F')]}"/>
+                                    <field name="global_id" />
+                                    <field name="type" />
+                                    <field name="cdsp_type" />
+                                    <field name="date" />
+                                    <field name="completion_date" />
+                                    <field
+                    name="completion_date_change_reason"
+                    attrs="{'invisible': [('completion_date_change_reason', '=', False)]}"
+                  />
+                                    <field
+                    name="exit_reason"
+                    attrs="{'invisible': [('state', '!=', 'F')]}"
+                  />
                                     <!--newly added-->
-                                    <field name="compass_id"/>
-                                    <field name="is_available"/>
-                                    <field name="has_been_sponsored"/>
-                                    <field name="non_latin_name"/>
-                                    <field name="revised_value_ids"
-                                           widget="many2many_tags"/>
+                                    <field name="compass_id" />
+                                    <field name="is_available" />
+                                    <field name="has_been_sponsored" />
+                                    <field name="non_latin_name" />
+                                    <field
+                    name="revised_value_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                                 <group colspan="2">
-                                    <field name="pictures_ids"/>
+                                    <field name="pictures_ids" />
                                 </group>
                             </group>
                         </page>
                         <page string="Lifecycle Events">
                             <group>
-                                <field name="lifecycle_ids" context="{'default_child_id': active_id}">
+                                <field
+                  name="lifecycle_ids"
+                  context="{'default_child_id': active_id}"
+                >
                                     <tree>
-                                        <field name="date"/>
-                                        <field name="type"/>
-                                        <field name="comments"/>
+                                        <field name="date" />
+                                        <field name="type" />
+                                        <field name="comments" />
                                     </tree>
                                 </field>
-                                <field name="revised_value_ids" attrs="{'invisible': [('revised_value_ids', '=', False)]}">
+                                <field
+                  name="revised_value_ids"
+                  attrs="{'invisible': [('revised_value_ids', '=', False)]}"
+                >
                                     <tree>
-                                        <field name="create_date" string="Date"/>
-                                        <field name="name"/>
-                                        <field name="old_value"/>
+                                        <field
+                      name="create_date"
+                      string="Date"
+                    />
+                                        <field name="name" />
+                                        <field name="old_value" />
                                     </tree>
                                 </field>
-                                <field name="assessment_ids" readonly="1" attrs="{'invisible': [('assessment_ids', '=', False)]}">
+                                <field
+                  name="assessment_ids"
+                  readonly="1"
+                  attrs="{'invisible': [('assessment_ids', '=', False)]}"
+                >
                                     <tree>
-                                        <field name="date"/>
-                                        <field name="physical_score"/>
-                                        <field name="cognitive_score"/>
-                                        <field name="spiritual_score"/>
-                                        <field name="sociological_score"/>
+                                        <field name="date" />
+                                        <field name="physical_score" />
+                                        <field name="cognitive_score" />
+                                        <field name="spiritual_score" />
+                                        <field name="sociological_score" />
                                     </tree>
                                 </field>
-                                <field name="child_disaster_impact_ids" attrs="{'invisible': [('child_disaster_impact_ids', '=', False)]}">
+                                <field
+                  name="child_disaster_impact_ids"
+                  attrs="{'invisible': [('child_disaster_impact_ids', '=', False)]}"
+                >
                                     <tree>
-                                        <field name="name"/>
-                                        <field name="beneficiary_location"/>
-                                        <field name="beneficiary_physical_condition"/>
-                                        <field name="caregivers_died_number"/>
-                                        <field name="siblings_died_number"/>
-                                        <field name="state"/>
-                                        <field name="disaster_status"/>
+                                        <field name="name" />
+                                        <field name="beneficiary_location" />
+                                        <field
+                      name="beneficiary_physical_condition"
+                    />
+                                        <field name="caregivers_died_number" />
+                                        <field name="siblings_died_number" />
+                                        <field name="state" />
+                                        <field name="disaster_status" />
                                     </tree>
                                 </field>
-                                <field name="note_ids" attrs="{'invisible': [('lifecycle_ids', '=', False)]}">
+                                <field
+                  name="note_ids"
+                  attrs="{'invisible': [('lifecycle_ids', '=', False)]}"
+                >
                                     <tree>
-                                        <field name="body"/>
-                                        <field name="record_type"/>
-                                        <field name="type"/>
-                                        <field name="visibility"/>
-                                        <field name="source_code"/>
+                                        <field name="body" />
+                                        <field name="record_type" />
+                                        <field name="type" />
+                                        <field name="visibility" />
+                                        <field name="source_code" />
                                     </tree>
                                 </field>
                             </group>
                         </page>
                         <page string="Descriptions">
                             <group>
-                                <field name="desc_en" widget="html"/>
+                                <field name="desc_en" widget="html" />
                             </group>
                         </page>
                         <page string="Detailed Information">
                             <group>
                                 <group>
-                                    <field name="last_review_date"/>
+                                    <field name="last_review_date" />
                                 </group>
-                                <group/>
+                                <group />
                                 <group string="Activities">
-                                    <field name="hobby_ids"
-                                           widget="many2many_tags"/>
-                                    <field name="christian_activity_ids"
-                                           widget="many2many_tags"/>
-                                    <field name="project_activity_ids"
-                                           widget="many2many_tags"/>
+                                    <field
+                    name="hobby_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="christian_activity_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="project_activity_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                                 <group string="Household">
-                                    <field name="is_orphan"/>
-                                    <field name="household_id" context="{'active_gender': gender}"/>
-                                    <field name="duty_ids"
-                                           widget="many2many_tags"/>
+                                    <field name="is_orphan" />
+                                    <field
+                    name="household_id"
+                    context="{'active_gender': gender}"
+                  />
+                                    <field
+                    name="duty_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                                 <group string="Education">
-                                    <field name="education_level"/>
-                                    <field name="not_enrolled_reason"
-                                           attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"/>
-                                    <field name="local_grade_level"/>
-                                    <field name="us_grade_level"/>
-                                    <field name="vocational_training_type"/>
-                                    <field name="academic_performance"
-                                           attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                    <field name="subject_ids"
-                                           widget="many2many_tags"
-                                           attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                    <field name="major_course_study"
-                                           attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"/>
-                                    <field name="university_year"
-                                           attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"/>
+                                    <field name="education_level" />
+                                    <field
+                    name="not_enrolled_reason"
+                    attrs="{'invisible': [('education_level', '!=', 'Not Enrolled')]}"
+                  />
+                                    <field name="local_grade_level" />
+                                    <field name="us_grade_level" />
+                                    <field name="vocational_training_type" />
+                                    <field
+                    name="academic_performance"
+                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                  />
+                                    <field
+                    name="subject_ids"
+                    widget="many2many_tags"
+                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                  />
+                                    <field
+                    name="major_course_study"
+                    attrs="{'invisible': [('education_level', '=', 'Not Enrolled')]}"
+                  />
+                                    <field
+                    name="university_year"
+                    attrs="{'invisible': [('education_level', '!=', 'University Graduate')]}"
+                  />
                                 </group>
                                 <group string="Health">
-                                    <field name="cognitive_age_group"/>
-                                    <field name="weight"/>
-                                    <field name="height"/>
-                                    <field name="chronic_illness_ids"
-                                           widget="many2many_tags"/>
-                                    <field name="physical_disability_ids"
-                                           widget="many2many_tags"/>
+                                    <field name="cognitive_age_group" />
+                                    <field name="weight" />
+                                    <field name="height" />
+                                    <field
+                    name="chronic_illness_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="physical_disability_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -255,24 +344,26 @@
         <field name="name">compassion.child.tree</field>
         <field name="model">compassion.child</field>
         <field name="arch" type="xml">
-            <tree decoration-warning="state == 'W'"
-                  decoration-muted="state in ('F', 'R')">
-                <field name="preferred_name"/>
-                <field name="name"/>
-                <field name="local_id"/>
-                <field name="date"/>
-                <field name="unsponsored_since" optional="true"/>
-                <field name="sponsor_id" optional="true"/>
-                <field name="gender"/>
-                <field name="birthdate"/>
-                <field name="birthday_dm"/>
-                <field name="completion_date"/>
-                <field name="hold_channel"/>
-                <field name="hold_type"/>
-                <field name="hold_owner"/>
-                <field name="hold_ambassador" optional="true"/>
-                <field name="hold_expiration"/>
-                <field name="state"/>
+            <tree
+        decoration-warning="state == 'W'"
+        decoration-muted="state in ('F', 'R')"
+      >
+                <field name="preferred_name" />
+                <field name="name" />
+                <field name="local_id" />
+                <field name="date" />
+                <field name="unsponsored_since" optional="true" />
+                <field name="sponsor_id" optional="true" />
+                <field name="gender" />
+                <field name="birthdate" />
+                <field name="birthday_dm" />
+                <field name="completion_date" />
+                <field name="hold_channel" />
+                <field name="hold_type" />
+                <field name="hold_owner" />
+                <field name="hold_ambassador" optional="true" />
+                <field name="hold_expiration" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -283,24 +374,58 @@
         <field name="model">compassion.child</field>
         <field name="arch" type="xml">
             <search string="Search child">
-                <field name="local_id"/>
-                <field name="global_id"/>
-                <field name="sponsor_id"/>
-                <field name="state"/>
-                <field name="hold_type"/>
-                <field name="hold_channel"/>
-                <field name="hold_owner"/>
-                <field name="hold_ambassador"/>
-                <field name="birthday_month"/>
-                <separator/>
-                <filter name="my_children" string="My Allocations" domain="[('hold_owner','=',uid)]"/>
+                <field name="local_id" />
+                <field name="global_id" />
+                <field name="sponsor_id" />
+                <field name="state" />
+                <field name="hold_type" />
+                <field name="hold_channel" />
+                <field name="hold_owner" />
+                <field name="hold_ambassador" />
+                <field name="birthday_month" />
+                <separator />
+                <filter
+          name="my_children"
+          string="My Allocations"
+          domain="[('hold_owner','=',uid)]"
+        />
                 <group expand="0" string="Group By...">
-                    <filter string="State" name="group_state" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Hold Type" name="hold_type" domain="[]" context="{'group_by':'hold_type'}"/>
-                    <filter string="Channel" name="channel" domain="[]" context="{'group_by':'hold_channel'}"/>
-                    <filter string="Owner" name="owner" domain="[]" context="{'group_by':'hold_owner'}"/>
-                    <filter name="ambassador" string="Ambassador" domain="[]" context="{'group_by':'hold_ambassador'}"/>
-                    <filter string="Allocation Date" name="allocation_date" domain="[]" context="{'group_by':'date'}"/>
+                    <filter
+            string="State"
+            name="group_state"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
+                    <filter
+            string="Hold Type"
+            name="hold_type"
+            domain="[]"
+            context="{'group_by':'hold_type'}"
+          />
+                    <filter
+            string="Channel"
+            name="channel"
+            domain="[]"
+            context="{'group_by':'hold_channel'}"
+          />
+                    <filter
+            string="Owner"
+            name="owner"
+            domain="[]"
+            context="{'group_by':'hold_owner'}"
+          />
+                    <filter
+            name="ambassador"
+            string="Ambassador"
+            domain="[]"
+            context="{'group_by':'hold_ambassador'}"
+          />
+                    <filter
+            string="Allocation Date"
+            name="allocation_date"
+            domain="[]"
+            context="{'group_by':'date'}"
+          />
                 </group>
             </search>
         </field>
@@ -314,53 +439,69 @@
             <form>
                 <group>
                     <group>
-                        <field name="date"/>
-                        <field name="type"/>
-                        <field name="education_plan"/>
-                        <field name="request_reason"/>
+                        <field name="date" />
+                        <field name="type" />
+                        <field name="education_plan" />
+                        <field name="request_reason" />
                         <!--<field name="comments"/>-->
-                        <field name="status"/>
+                        <field name="status" />
                     </group>
-                    <group/>
-                    <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
-                        <field name="last_attended_project"/>
-                        <field name="primary_school_finished"/>
+                    <group />
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Planned Exit')]}"
+          >
+                        <field name="last_attended_project" />
+                        <field name="primary_school_finished" />
                         <!--<field name="confesses_jesus_savior"/>-->
-                        <field name="final_letter_sent"/>
+                        <field name="final_letter_sent" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Planned Exit')]}">
-                        <field name="sponsor_impact"/>
-                        <field name="new_situation"/>
-                        <field name="future_hope_ids" widget="many2many_tags"/>
-                        <field name="family_impact"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Planned Exit')]}"
+          >
+                        <field name="sponsor_impact" />
+                        <field name="new_situation" />
+                        <field name="future_hope_ids" widget="many2many_tags" />
+                        <field name="family_impact" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
-                        <field name="child_death_date"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}"
+          >
+                        <field name="child_death_date" />
                         <!--<field name="child_death_circumstances"/>-->
-                        <field name="death_intervention_information"/>
+                        <field name="death_intervention_information" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}">
-                        <field name="child_death_category"/>
-                        <field name="child_death_subcategory"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Unplanned Exit')]}"
+          >
+                        <field name="child_death_category" />
+                        <field name="child_death_subcategory" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Reinstatement')]}"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Reinstatement')]}"
+          />
                     <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
-                        <field name="old_project_id"/>
-                        <field name="transfer_arrival_date"/>
-                        <field name="other_transfer_reason"/>
+                        <field name="old_project_id" />
+                        <field name="transfer_arrival_date" />
+                        <field name="other_transfer_reason" />
                     </group>
                     <group attrs="{'invisible': [('type', '!=', 'Transfer')]}">
-                        <field name="current_project"/>
-                        <field name="new_project"/>
-                        <field name="new_program"/>
-                        <field name="previously_active_program"/>
-                        <field name="new_beneficiary_local_number"/>
+                        <field name="current_project" />
+                        <field name="new_project" />
+                        <field name="new_program" />
+                        <field name="previously_active_program" />
+                        <field name="new_beneficiary_local_number" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
-                        <field name="transition_type"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Transition')]}"
+          >
+                        <field name="transition_type" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Transition')]}"/>
-                    <group attrs="{'invisible': [('type', '!=', 'Registration')]}">
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Transition')]}"
+          />
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Registration')]}"
+          >
                     </group>
                 </group>
             </form>
@@ -375,38 +516,38 @@
             <form>
                 <group>
                     <group>
-                        <field name="name"/>
-                        <field name="household_id"/>
+                        <field name="name" />
+                        <field name="household_id" />
                     </group>
-                    <group/>
+                    <group />
                     <group>
-                        <field name="parents_together"/>
-                        <field name="marital_status"/>
-                        <field name="youth_headed_household"/>
+                        <field name="parents_together" />
+                        <field name="marital_status" />
+                        <field name="youth_headed_household" />
                     </group>
-                    <group/>
+                    <group />
                     <group string="Father">
-                        <field name="father_alive"/>
-                        <field name="father_living_with_child"/>
-                        <field name="male_guardian_job_type"/>
-                        <field name="male_guardian_job"/>
+                        <field name="father_alive" />
+                        <field name="father_living_with_child" />
+                        <field name="male_guardian_job_type" />
+                        <field name="male_guardian_job" />
                     </group>
                     <group string="Mother">
-                        <field name="mother_alive"/>
-                        <field name="mother_living_with_child"/>
-                        <field name="female_guardian_job_type"/>
-                        <field name="female_guardian_job"/>
+                        <field name="mother_alive" />
+                        <field name="mother_living_with_child" />
+                        <field name="female_guardian_job_type" />
+                        <field name="female_guardian_job" />
                     </group>
                 </group>
-                <separator string="Members"/>
+                <separator string="Members" />
                 <field name="member_ids">
                     <tree>
-                        <field name="child_id"/>
-                        <field name="name"/>
-                        <field name="role"/>
-                        <field name="unknown_role"/>
-                        <field name="is_primary_caregiver"/>
-                        <field name="is_caregiver"/>
+                        <field name="child_id" />
+                        <field name="name" />
+                        <field name="role" />
+                        <field name="unknown_role" />
+                        <field name="is_primary_caregiver" />
+                        <field name="is_caregiver" />
                     </tree>
                 </field>
             </form>
@@ -425,29 +566,31 @@
     <record id="update_child_pictures" model="ir.actions.server">
         <field name="name">Update pictures</field>
         <field name="model_id" ref="model_compassion_child" />
-        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="binding_model_id" ref="model_compassion_child" />
         <field name="state">code</field>
         <field name="code">records.update_child_pictures()</field>
     </record>
 
     <record id="fetch_missing_child_terms" model="ir.actions.server">
         <field name="name">Fetch missing terms from GMC</field>
-        <field name="model_id" ref="model_compassion_child"/>
-        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="model_id" ref="model_compassion_child" />
+        <field name="binding_model_id" ref="model_compassion_child" />
         <field name="state">code</field>
         <field name="code">action = records.fetch_translations()</field>
     </record>
 
-    <menuitem id="menu_sponsorship_children"
-              parent="menu_sponsorship_section"
-              name="Children"
-              action="open_view_children_tree"
-              sequence="1"/>
+    <menuitem
+    id="menu_sponsorship_children"
+    parent="menu_sponsorship_section"
+    name="Children"
+    action="open_view_children_tree"
+    sequence="1"
+  />
 
     <record model="ir.actions.server" id="get_info_action">
         <field name="name">Get info</field>
-        <field name="model_id" ref="model_compassion_child"/>
-        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="model_id" ref="model_compassion_child" />
+        <field name="binding_model_id" ref="model_compassion_child" />
         <field name="state">code</field>
         <field name="code">records.get_infos()</field>
     </record>

@@ -7,11 +7,11 @@
                 <sheet>
                     <p>You can download an archive file from here.</p>
                     <group>
-                        <field name="fname" invisible="1"/>
+                        <field name="fname" invisible="1" />
                         <group>
-                            <field name="type"/>
-                            <field name="include_child_name"/>
-                            <field name="include_child_ref"/>
+                            <field name="type" />
+                            <field name="include_child_name" />
+                            <field name="include_child_ref" />
                         </group>
                         <group>
                             <field name="height" />
@@ -19,16 +19,21 @@
                         </group>
                     </group>
                     <group>
-                        <field name="preview" widget="image_url"/>
+                        <field name="preview" widget="image_url" />
                     </group>
                     <group>
-                        <field name="download_data" filename="fname"/>
+                        <field name="download_data" filename="fname" />
                         <field name="information" />
                     </group>
                 </sheet>
                 <footer>
-                    <button name="get_pictures" string="Make Zip" type="object" class="oe_highlight"/>
-                    <button name="close" special="cancel" string="Close"/>
+                    <button
+            name="get_pictures"
+            string="Make Zip"
+            type="object"
+            class="oe_highlight"
+          />
+                    <button name="close" special="cancel" string="Close" />
                 </footer>
             </form>
         </field>
@@ -37,7 +42,7 @@
     <record id="action_download_child_pictures" model="ir.actions.act_window">
         <field name="name">Download child pictures</field>
         <field name="res_model">child.pictures.download.wizard</field>
-        <field name="binding_model_id" ref="account.model_res_partner"/>
+        <field name="binding_model_id" ref="account.model_res_partner" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
@@ -45,7 +50,7 @@
     <record id="action_download_child_pictures_2" model="ir.actions.act_window">
         <field name="name">Download child pictures</field>
         <field name="res_model">child.pictures.download.wizard</field>
-        <field name="binding_model_id" ref="model_recurring_contract"/>
+        <field name="binding_model_id" ref="model_recurring_contract" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
@@ -53,7 +58,7 @@
     <record id="action_download_child_pictures_3" model="ir.actions.act_window">
         <field name="name">Download child pictures</field>
         <field name="res_model">child.pictures.download.wizard</field>
-        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="binding_model_id" ref="model_compassion_child" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

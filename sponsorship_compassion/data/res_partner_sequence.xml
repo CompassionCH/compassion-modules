@@ -3,9 +3,9 @@
         <record id="sequence_partner_ref" model="ir.sequence">
             <field name="name">Partner sequence</field>
             <field name="code">partner.ref</field>
-            <field name="padding" eval="7"/>
-            <field eval="1" name="number_next"/>
-            <field eval="1" name="number_increment"/>
+            <field name="padding" eval="7" />
+            <field eval="1" name="number_next" />
+            <field eval="1" name="number_increment" />
         </record>
     </data>
 </odoo>

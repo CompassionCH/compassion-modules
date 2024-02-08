@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="thankyou_config_view" model="ir.ui.view">
         <field name="name">thankyou.config.tree</field>
         <field name="model">thankyou.config</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
-                <field name="min_donation_amount"/>
-                <field name="user_id"/>
-                <field name="lang"/>
-                <field name="send_mode"/>
-                <field name="need_call"/>
+                <field name="min_donation_amount" />
+                <field name="user_id" />
+                <field name="lang" />
+                <field name="send_mode" />
+                <field name="need_call" />
             </tree>
         </field>
     </record>
@@ -22,6 +22,11 @@
     </record>
 
     <!-- Add an entry in Sales \ Communications \ Settings -->
-    <menuitem name="Thank you configuration" id="thank_you_config_item" parent="partner_communication.menu_communication_settings_root"
-              action="action_thank_you_config" sequence="40"/>
+    <menuitem
+    name="Thank you configuration"
+    id="thank_you_config_item"
+    parent="partner_communication.menu_communication_settings_root"
+    action="action_thank_you_config"
+    sequence="40"
+  />
 </odoo>

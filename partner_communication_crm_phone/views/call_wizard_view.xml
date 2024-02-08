@@ -5,11 +5,22 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="comments"/>
+                    <field name="comments" />
                 </group>
                 <footer>
-                    <button name="call_success" string="Log the call" type="object" class="oe_highlight" icon="fa-save"/>
-                    <button name="log_fail" string="Still pending" type="object" icon="fa-ban"/>
+                    <button
+            name="call_success"
+            string="Log the call"
+            type="object"
+            class="oe_highlight"
+            icon="fa-save"
+          />
+                    <button
+            name="log_fail"
+            string="Still pending"
+            type="object"
+            icon="fa-ban"
+          />
                 </footer>
             </form>
         </field>

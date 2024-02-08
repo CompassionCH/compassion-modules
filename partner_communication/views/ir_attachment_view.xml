@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Add report option on attachments -->
     <record model="ir.ui.view" id="attachment_report_view">
         <field name="name">ir.attachment.print.report</field>
         <field name="model">ir.attachment</field>
-        <field name="inherit_id" ref="base.view_attachment_form"/>
+        <field name="inherit_id" ref="base.view_attachment_form" />
         <field name="arch" type="xml">
             <field name="type" position="after">
-                <field name="report_id"/>
+                <field name="report_id" />
             </field>
             <field name="type" position="after">
-                <field name="enable_omr"/>
+                <field name="enable_omr" />
             </field>
         </field>
     </record>

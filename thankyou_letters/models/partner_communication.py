@@ -134,8 +134,8 @@ class PartnerCommunication(models.Model):
         """
         self.ensure_one()
         usage_count = dict()
-        type = stories.mapped("type")[0]
-        field = "success_story_id" if type == "story" else "success_sentence_id"
+        story_type = stories.mapped("type")[0]
+        field = "success_story_id" if story_type == "story" else "success_sentence_id"
         # Put the least used stories at end of list to choose them in case
         # of equality use for a partner.
         stories = reversed(stories.sorted(lambda s: s.current_usage_count))

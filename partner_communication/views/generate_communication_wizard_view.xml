@@ -4,32 +4,67 @@
         <field name="model">partner.communication.generate.wizard</field>
         <field name="arch" type="xml">
             <form>
-                <field name="state" invisible="1"/>
+                <field name="state" invisible="1" />
                 <sheet>
                     <group states="edit" name="template">
-                        <field name="model_id"/>
+                        <field name="model_id" />
                     </group>
-                    <group states="edit" name="selection" string="Partner Selection">
-                        <field name="selection_domain" string="Partners" widget="domain" options="{'model': 'res.partner'}"/>
-                        <field name="partner_ids" invisible="1"/>
+                    <group
+            states="edit"
+            name="selection"
+            string="Partner Selection"
+          >
+                        <field
+              name="selection_domain"
+              string="Partners"
+              widget="domain"
+              options="{'model': 'res.partner'}"
+            />
+                        <field name="partner_ids" invisible="1" />
                     </group>
                     <group states="edit" string="Options" name="options">
-                        <field name="customize_template"/>
-                        <field name="send_mode" attrs="{'invisible': [('customize_template', '=', False)]}"/>
-                        <field name="force_language" attrs="{'invisible': [('customize_template', '=', False)]}"/>
-                        <field name="scheduled_date"/>
+                        <field name="customize_template" />
+                        <field
+              name="send_mode"
+              attrs="{'invisible': [('customize_template', '=', False)]}"
+            />
+                        <field
+              name="force_language"
+              attrs="{'invisible': [('customize_template', '=', False)]}"
+            />
+                        <field name="scheduled_date" />
                     </group>
                     <div states="generation">
-                        <p>The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
-                        <br/>
-                        <field name="progress" widget="progressbar"/>
+                        <p
+            >The communications are being generated! You can track here the progress by clicking the reload button, or close the wizard.</p>
+                        <br />
+                        <field name="progress" widget="progressbar" />
                     </div>
                 </sheet>
                 <footer>
-                    <button name="generate" string="Generate Communications" type="object" class="oe_highlight" icon="fa-cog" states="edit"/>
-                    <button name="reload" string="Reload" type="object" class="oe_highlight" icon="fa-refresh" states="generation"/>
-                    <button name="close" string="Close" type="object" states="generation"/>
-                    <button string="Cancel" special="cancel" states="edit"/>
+                    <button
+            name="generate"
+            string="Generate Communications"
+            type="object"
+            class="oe_highlight"
+            icon="fa-cog"
+            states="edit"
+          />
+                    <button
+            name="reload"
+            string="Reload"
+            type="object"
+            class="oe_highlight"
+            icon="fa-refresh"
+            states="generation"
+          />
+                    <button
+            name="close"
+            string="Close"
+            type="object"
+            states="generation"
+          />
+                    <button string="Cancel" special="cancel" states="edit" />
                 </footer>
             </form>
         </field>
@@ -40,9 +75,14 @@
         <field name="res_model">partner.communication.generate.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_model_id" ref="model_res_partner" />
     </record>
 
-    <menuitem name="Generate communications" parent="menu_communication" id="menu_communication_generate" sequence="30"
-              action="action_generate_communication"/>
+    <menuitem
+    name="Generate communications"
+    parent="menu_communication"
+    id="menu_communication_generate"
+    sequence="30"
+    action="action_generate_communication"
+  />
 </odoo>

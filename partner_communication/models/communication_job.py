@@ -503,7 +503,7 @@ class CommunicationJob(models.Model):
                         .get_generated_fields(job.email_template_id, [job.id])
                     )
                     if not fields["body_html"] and not fields["subject"]:
-                        raise MissingError("Fields don't have a subject and a body")
+                        raise MissingError(_("Fields don't have a subject and a body"))
                     job.write(
                         {
                             "body_html": fields["body_html"],

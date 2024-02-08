@@ -3,11 +3,20 @@
         <!-- New letter -->
         <record id="new_letter" model="mail.template">
             <field name="name">B2S New letter</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">
                 <div>
                     % set letter = object.get_objects()
@@ -16,7 +25,7 @@
                 </div>
                 <p>
                     We are pleased to send you a new letter from ${child.get_list('firstname', 3, child.get_number())}!
-                    <br/>
+                    <br />
                     % if object.send_mode == 'digital':
                         Download your letters here:
                         <ul>
@@ -26,27 +35,39 @@
                            </li>
                            % endfor
                         </ul>
-                        <br/>
+                        <br />
                     % endif
                 </p>
             </field>
         </record>
         <record id="mail_onboarding_first_letter" model="mail.template">
             <field name="name">Sponsorship Onboarding - First B2S Letter</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="use_default_to" eval="True"/>
+            <field name="use_default_to" eval="True" />
         </record>
 
         <!-- B2S email not read -->
         <record id="b2s_email_not_read" model="mail.template">
             <field name="name">B2S e-mail not read</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="use_default_to" eval="True"/>
-            <field name="subject">You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
+            <field name="use_default_to" eval="True" />
+            <field
+        name="subject"
+      >You received a letter from ${object.get_objects().mapped('child_id').get_list('firstname', 3, 'your children')}!</field>
             <field name="body_html" type="html">
                 <div>
                     % set letter = object.get_objects()
@@ -55,7 +76,7 @@
                 </div>
                 <p>
                     We are pleased to send you a new letter from ${child.get_list('preferred_name', 3, child.get_number())}!
-                    <br/>
+                    <br />
                     PS: We sent you the letter by e-mail but it seems that the letter was never downloaded. Please inform us in case you want to receive your letters only by e-mail, or only on paper.
                 </p>
             </field>

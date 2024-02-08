@@ -4,246 +4,409 @@
         <record id="child_letter_config" model="partner.communication.config">
             <field name="name">B2S Letter</field>
             <field name="send_mode">digital</field>
-            <field name="send_mode_pref_field">letter_delivery_preference</field>
+            <field
+        name="send_mode_pref_field"
+      >letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="new_letter"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
-            <field name="model_id" ref="model_correspondence"/>
-            <field name="attachments_function">get_correspondence_attachments</field>
+            <field name="email_template_id" ref="new_letter" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="model_id" ref="model_correspondence" />
+            <field
+        name="attachments_function"
+      >get_correspondence_attachments</field>
         </record>
-        <record id="child_letter_final_config" model="partner.communication.config">
+        <record
+      id="child_letter_final_config"
+      model="partner.communication.config"
+    >
             <field name="name">B2S Final Letter</field>
             <field name="send_mode">digital</field>
-            <field name="send_mode_pref_field">letter_delivery_preference</field>
+            <field
+        name="send_mode_pref_field"
+      >letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="new_letter"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
-            <field name="model_id" ref="model_correspondence"/>
-            <field name="attachments_function">get_correspondence_attachments</field>
+            <field name="email_template_id" ref="new_letter" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="model_id" ref="model_correspondence" />
+            <field
+        name="attachments_function"
+      >get_correspondence_attachments</field>
         </record>
-        <record id="child_letter_old_config" model="partner.communication.config">
+        <record
+      id="child_letter_old_config"
+      model="partner.communication.config"
+    >
             <field name="name">B2S Old letter published</field>
             <field name="send_mode">digital</field>
-            <field name="send_mode_pref_field">letter_delivery_preference</field>
+            <field
+        name="send_mode_pref_field"
+      >letter_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="email_template_id" ref="new_letter"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
-            <field name="model_id" ref="model_correspondence"/>
-            <field name="attachments_function">get_correspondence_attachments</field>
+            <field name="email_template_id" ref="new_letter" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="model_id" ref="model_correspondence" />
+            <field
+        name="attachments_function"
+      >get_correspondence_attachments</field>
         </record>
-        <record id="config_onboarding_first_letter" model="partner.communication.config">
+        <record
+      id="config_onboarding_first_letter"
+      model="partner.communication.config"
+    >
             <field name="name">Sponsorship Onboarding - First B2S Letter</field>
             <field name="send_mode">digital</field>
-            <field name="send_mode_pref_field">letter_delivery_preference</field>
-            <field name="email_template_id" ref="mail_onboarding_first_letter"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
-            <field name="model_id" ref="sbc_compassion.model_correspondence"/>
-            <field name="attachments_function">get_correspondence_attachments</field>
+            <field
+        name="send_mode_pref_field"
+      >letter_delivery_preference</field>
+            <field
+        name="email_template_id"
+        ref="mail_onboarding_first_letter"
+      />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="model_id" ref="sbc_compassion.model_correspondence" />
+            <field
+        name="attachments_function"
+      >get_correspondence_attachments</field>
         </record>
         <record id="child_letter_unread" model="partner.communication.config">
             <field name="name">B2S Letter e-mail not read</field>
             <field name="send_mode">physical</field>
-            <field name="send_mode_pref_field">letter_delivery_preference</field>
-            <field name="email_template_id" ref="b2s_email_not_read"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
-            <field name="model_id" ref="model_correspondence"/>
-            <field name="attachments_function">get_correspondence_attachments</field>
+            <field
+        name="send_mode_pref_field"
+      >letter_delivery_preference</field>
+            <field name="email_template_id" ref="b2s_email_not_read" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="model_id" ref="model_correspondence" />
+            <field
+        name="attachments_function"
+      >get_correspondence_attachments</field>
         </record>
 
         <!-- Major Revision Communication Config -->
-        <record id="major_revision_birthdate" model="partner.communication.config">
+        <record
+      id="major_revision_birthdate"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Birthdate</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_birthdate"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_birthdate" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_disability" model="partner.communication.config">
+        <record
+      id="major_revision_disability"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Chronic Disabilities</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_disability"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_disability" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_illness" model="partner.communication.config">
+        <record
+      id="major_revision_illness"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Chronic Illness</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_illness"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_illness" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="major_revision_name" model="partner.communication.config">
-            <field name="name">Major Revision - First Name / Last Name / Preferred Name</field>
+            <field
+        name="name"
+      >Major Revision - First Name / Last Name / Preferred Name</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_name"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_name" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="major_revision_gender" model="partner.communication.config">
             <field name="name">Major Revision - Gender</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_gender"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_gender" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_completion_date_change" model="partner.communication.config">
+        <record
+      id="major_revision_completion_date_change"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Planned Completion Date</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_completion_date_change"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field
+        name="email_template_id"
+        ref="email_completion_date_change"
+      />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_parent_alive" model="partner.communication.config">
-            <field name="name">Major Revision - Natural Father Alive / Natural Mother Alive</field>
+        <record
+      id="major_revision_parent_alive"
+      model="partner.communication.config"
+    >
+            <field
+        name="name"
+      >Major Revision - Natural Father Alive / Natural Mother Alive</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_parent_alive"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_parent_alive" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_caregiver" model="partner.communication.config">
+        <record
+      id="major_revision_caregiver"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Primary Caregiver</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_caregiver_change"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_caregiver_change" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="major_revision_multiple" model="partner.communication.config">
+        <record
+      id="major_revision_multiple"
+      model="partner.communication.config"
+    >
             <field name="name">Major Revision - Multiple Changes</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_multiple_changes"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_multiple_changes" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
 
         <!-- Lifecycle Events Communication Config-->
-        <record id="lifecycle_child_transfer" model="partner.communication.config">
+        <record
+      id="lifecycle_child_transfer"
+      model="partner.communication.config"
+    >
             <field name="name">Participant Transfer</field>
             <field name="send_mode">physical</field>
-            <field name="email_template_id" ref="email_child_transfer"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_child_transfer" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="lifecycle_child_transition" model="partner.communication.config">
+        <record
+      id="lifecycle_child_transition"
+      model="partner.communication.config"
+    >
             <field name="name">Participant Transition</field>
             <field name="send_mode">digital</field>
-            <field name="email_template_id" ref="email_child_transition"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_child_transition" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="print_if_not_email">True</field>
-            <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
-        <record id="lifecycle_child_reinstatement" model="partner.communication.config">
+        <record
+      id="lifecycle_child_reinstatement"
+      model="partner.communication.config"
+    >
             <field name="name">Participant Reinstatement</field>
-            <field name="email_template_id" ref="email_child_reinstatement"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_child_reinstatement" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
 
         <!-- Project Lifecycle -->
         <record id="project_suspension" model="partner.communication.config">
             <field name="name">Project Suspension</field>
-            <field name="email_template_id" ref="email_project_suspension"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_project_suspension" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="project_suspension_e1" model="partner.communication.config">
             <field name="name">Project Suspension Extension 1</field>
-            <field name="email_template_id" ref="email_project_suspension_e1"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_project_suspension_e1" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="project_suspension_e2" model="partner.communication.config">
             <field name="name">Project Suspension Extension 2</field>
-            <field name="email_template_id" ref="email_project_suspension_e2"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_project_suspension_e2" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="project_reactivation" model="partner.communication.config">
             <field name="name">Project Reactivation</field>
-            <field name="email_template_id" ref="email_project_reactivation"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_project_reactivation" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
         <record id="project_transition" model="partner.communication.config">
             <field name="name">Project Transition</field>
-            <field name="email_template_id" ref="email_project_transition"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_project_transition" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">physical</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
 
         <!-- Sponsorship Planned Communications -->
         <record id="planned_dossier" model="partner.communication.config">
             <field name="name">Sponsorship - New Dossier</field>
-            <field name="email_template_id" ref="email_sponsorship_dossier"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_sponsorship_dossier" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="model_id" ref="model_recurring_contract" />
         </record>
-        <record id="sponsorship_cancellation" model="partner.communication.config">
+        <record
+      id="sponsorship_cancellation"
+      model="partner.communication.config"
+    >
             <field name="name">Sponsorship Cancellation</field>
-            <field name="email_template_id" ref="email_sponsorship_cancellation"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field
+        name="email_template_id"
+        ref="email_sponsorship_cancellation"
+      />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="model_id" ref="model_recurring_contract" />
         </record>
 
         <!-- Other emails -->
         <record id="biennial" model="partner.communication.config">
             <field name="name">New Biennial</field>
-            <field name="email_template_id" ref="email_biennial"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_biennial" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
             <field name="send_mode_pref_field">photo_delivery_preference</field>
             <field name="print_if_not_email">True</field>
-            <field name="model_id" ref="model_compassion_child"/>
-            <field name="attachments_function">get_child_picture_attachment</field>
+            <field name="model_id" ref="model_compassion_child" />
+            <field
+        name="attachments_function"
+      >get_child_picture_attachment</field>
         </record>
 
         <record id="child_notes" model="partner.communication.config">
             <field name="name">New Child Notes</field>
-            <field name="email_template_id" ref="email_child_notes"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_child_notes" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
-            <field name="model_id" ref="model_compassion_child"/>
+            <field name="model_id" ref="model_compassion_child" />
         </record>
 
         <record id="disaster_alert" model="partner.communication.config">
             <field name="name">Disaster Alert</field>
-            <field name="email_template_id" ref="email_disaster_alert"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field name="email_template_id" ref="email_disaster_alert" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
-            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="model_id" ref="model_recurring_contract" />
         </record>
 
         <record id="new_dossier_transfer" model="partner.communication.config">
             <field name="name">Sponsorship Transfer - New Dossier</field>
-            <field name="email_template_id" ref="email_sponsorship_transfer_dossier"/>
-            <field name="report_id" ref="partner_communication.report_a4_communication"/>
+            <field
+        name="email_template_id"
+        ref="email_sponsorship_transfer_dossier"
+      />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
             <field name="send_mode">digital</field>
-            <field name="model_id" ref="model_recurring_contract"/>
+            <field name="model_id" ref="model_recurring_contract" />
         </record>
 
     </data>

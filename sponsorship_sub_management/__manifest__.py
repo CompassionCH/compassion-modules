@@ -34,7 +34,7 @@
     "author": "Compassion CH",
     "maintainers": ["ecino", "NoeBerdoz"],
     "license": "AGPL-3",
-    "website": "https://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": ["sponsorship_compassion"],
     "data": [
         "views/sub_sponsorship_wizard_view.xml",

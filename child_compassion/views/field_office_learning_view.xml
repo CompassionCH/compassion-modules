@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!--Compassion field office form view -->
     <record id="view_field_office_learning_form" model="ir.ui.view">
@@ -8,11 +8,11 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="field_office_id"/>
-                        <field name="sequence"/>
-                        <field name="time"/>
-                        <field name="title"/>
-                        <field name="description"/>
+                        <field name="field_office_id" />
+                        <field name="sequence" />
+                        <field name="time" />
+                        <field name="title" />
+                        <field name="description" />
                     </group>
                 </sheet>
             </form>
@@ -24,10 +24,10 @@
         <field name="model">field.office.learning</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="field_office_id"/>
-                <field name="time"/>
-                <field name="title"/>
-                <field name="description"/>
+                <field name="field_office_id" />
+                <field name="time" />
+                <field name="title" />
+                <field name="description" />
             </tree>
         </field>
     </record>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <odoo>
     <!--Demand Planning Form View -->
     <record id="view_demand_weekly_revision_form" model="ir.ui.view">
@@ -8,18 +8,18 @@
             <form string="Demand Weekly Revision">
                 <sheet>
                     <group>
-                        <field name="type"/>
-                        <field name="week_start_date"/>
-                        <field name="week_end_date"/>
+                        <field name="type" />
+                        <field name="week_start_date" />
+                        <field name="week_end_date" />
                     </group>
                     <group>
                         <group string="Previsions">
-                            <field name="demand"/>
-                            <field name="resupply"/>
+                            <field name="demand" />
+                            <field name="resupply" />
                         </group>
                         <group string="Results">
-                            <field name="holds"/>
-                            <field name="effective_resupply"/>
+                            <field name="holds" />
+                            <field name="effective_resupply" />
                         </group>
                     </group>
                 </sheet>
@@ -33,13 +33,13 @@
         <field name="model">demand.weekly.revision</field>
         <field name="arch" type="xml">
             <tree string="Weekly Revision">
-                <field name="week_start_date"/>
-                <field name="week_end_date"/>
-                <field name="type"/>
-                <field name="demand" sum="Total demand"/>
-                <field name="resupply" sum="Total resupply"/>
-                <field name="holds" sum="Total holds"/>
-                <field name="effective_resupply" sum="Total eff. resupply"/>
+                <field name="week_start_date" />
+                <field name="week_end_date" />
+                <field name="type" />
+                <field name="demand" sum="Total demand" />
+                <field name="resupply" sum="Total resupply" />
+                <field name="holds" sum="Total holds" />
+                <field name="effective_resupply" sum="Total eff. resupply" />
             </tree>
         </field>
     </record>
@@ -49,10 +49,20 @@
         <field name="model">demand.weekly.revision</field>
         <field name="arch" type="xml">
             <search>
-                <field name="type"/>
+                <field name="type" />
                 <group expand="0" string="Group By...">
-                    <filter name="date" string="Date" domain="[]" context="{'group_by':'week_start_date'}"/>
-                    <filter name="type" string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter
+            name="date"
+            string="Date"
+            domain="[]"
+            context="{'group_by':'week_start_date'}"
+          />
+                    <filter
+            name="type"
+            string="Type"
+            domain="[]"
+            context="{'group_by':'type'}"
+          />
                 </group>
             </search>
         </field>
@@ -63,10 +73,10 @@
         <field name="model">demand.weekly.revision</field>
         <field name="arch" type="xml">
             <pivot string="Demand Planning">
-                <field name="demand" type="measure"/>
-                <field name="resupply" type="measure"/>
-                <field name="holds" type="measure"/>
-                <field name="effective_resupply" type="measure"/>
+                <field name="demand" type="measure" />
+                <field name="resupply" type="measure" />
+                <field name="holds" type="measure" />
+                <field name="effective_resupply" type="measure" />
             </pivot>
         </field>
     </record>
@@ -76,8 +86,15 @@
         <field name="name">Demand Weekly Revision</field>
         <field name="res_model">demand.weekly.revision</field>
         <field name="view_mode">pivot,tree,form</field>
-        <field name="context">{'search_default_date': 1, 'search_default_type': 1}</field>
+        <field
+      name="context"
+    >{'search_default_date': 1, 'search_default_type': 1}</field>
     </record>
 
-    <menuitem id="menu_demand_revision" name="Demand Weekly Revision" parent="crm.crm_menu_report" action="open_view_demand_revision"/>
+    <menuitem
+    id="menu_demand_revision"
+    name="Demand Weekly Revision"
+    parent="crm.crm_menu_report"
+    action="open_view_demand_revision"
+  />
 </odoo>

@@ -3,8 +3,13 @@
         <!-- E-mail for Sponsorship Reminders -->
         <record id="email_sponsorship_reminder_1" model="mail.template">
             <field name="name">Sponsorship Reminder 1</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -26,30 +31,30 @@
                 <p>
                     <p>
                         ${partner.salutation}
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                         Thank you for being a Compassion sponsor!
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                         Unfortunately, we are missing your sponsorship contribution for ${number} months = ${amount}
                         EUR. We would be
                         grateful if you could transfer the missing amount to Compassion:
-                        <br/>
+                        <br />
                         IBAN: ${bank.acc_number}
-                        <br/>
+                        <br />
                         BIC: ${bank.bank_id.bic}
-                        <br/>
+                        <br />
                         and note your sponsor number ${partner.ref}.
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                         If you do not have that possibility or if you have questions about the payments, please contact
                         us by replying to this email or calling us on +46 8 23 62 00, so we can find a solution together
                         for a regular
                         sponsorship support.
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                         Best regards,
-                        <br/>
+                        <br />
                         Compassion
                     </p>
                 </p>
@@ -57,8 +62,13 @@
         </record>
         <record id="email_sponsorship_reminder_2" model="mail.template">
             <field name="name">Sponsorship Reminder 2</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -76,36 +86,46 @@
                 </div>
                 <p>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We very warmly thank you for your decision to support ${firstname} so as to help us to release this
                     child from poverty in Jesus’ name.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     It may have escaped your attention that
-                    <b>the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
-                    <br/>
-                    We send you a payment slip so you can settle the payment <b>within 10 days</b>. Otherwise, we will
+                    <b
+          >the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
+                    <br />
+                    We send you a payment slip so you can settle the payment <b
+          >within 10 days</b>. Otherwise, we will
                     feel forced to end your sponsorship.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Please contact us if you are facing financial challenges or if you want to pay by installments.
                     Together we will look for a solution which guarantees an ongoing support for
                     ${children.get('your sponsored child')}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Thanks for making the payment of your sponsorship a priority. If this letter has crossed with your
                     payment, please accept our thanks and disregard this notice.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Sincerely,
                 </p>
             </field>
         </record>
-        <record id="email_sponsorship_reminder_3" model="mail.template"> <!-- TODO info pauline -->
+        <record
+      id="email_sponsorship_reminder_3"
+      model="mail.template"
+    > <!-- TODO info pauline -->
             <field name="name">Sponsorship Reminder 3</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -123,38 +143,48 @@
                 </div>
                 <p>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We very warmly thank you for your decision to support ${firstname} so as to help us to release this
                     child from poverty in Jesus’ name.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     It may have escaped your attention that
-                    <b>the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
-                    <br/>
-                    We send you a payment slip so you can settle the payment <b>within 10 days</b>. Otherwise, we will
+                    <b
+          >the sponsorship is due for ${number} months in the amount of CHF ${amount}.-</b>
+                    <br />
+                    We send you a payment slip so you can settle the payment <b
+          >within 10 days</b>. Otherwise, we will
                     feel forced to end your sponsorship.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Please contact us if you are facing financial challenges or if you want to pay by installments.
                     Together we will look for a solution which guarantees an ongoing support for
                     ${children.get('your sponsored child')}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Thanks for making the payment of your sponsorship a priority. If this letter has crossed with your
                     payment, please accept our thanks and disregard this notice.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Sincerely,
                 </p>
             </field>
         </record>
 
         <!-- E-mail for Waiting Sponsorship Reminders -->
-        <record id="email_sponsorship_activation_reminder_1" model="mail.template">
+        <record
+      id="email_sponsorship_activation_reminder_1"
+      model="mail.template"
+    >
             <field name="name">Sponsorship Activation Reminder 1</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -174,8 +204,8 @@
                 </div>
                 <p>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We very warmly thank you for your commitment to our sponsorship program and for supporting
                     ${firstname}.
                     However, we have not yet activated your ${'sponsorship' if len(children) == 1 else 'sponsorships'}
@@ -187,27 +217,36 @@
                     % else:
                     It may have escaped your attention that the sponsorship is not yet paid in the amount of CHF
                     ${amount}.-
-                    <br/>
-                    <br/>
-                    We send you a payment slip so you can settle the payment <b>within ${extension} days</b>.
+                    <br />
+                    <br />
+                    We send you a payment slip so you can settle the payment <b
+          >within ${extension} days</b>.
                     Please contact us if you are facing financial challenges. Together we will look for a solution which
                     guarantees an ongoing support for ${children.get('your sponsored child')}.
                     If this letter has crossed with your payment, please accept our thanks and disregard this notice.
                     Thanks for making the payment of your sponsorship a priority.
                     % endif
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We wish you plenty of joy and blessings through your sponsorship.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
         </record>
-        <record id="email_sponsorship_activation_reminder_2" model="mail.template">
+        <record
+      id="email_sponsorship_activation_reminder_2"
+      model="mail.template"
+    >
             <field name="name">Sponsorship Activation Reminder 2</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -222,23 +261,31 @@
                 </div>
                 <p>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We are sorry to inform you of the cancellation of your sponsorship toward ${firstname}, due to
                     unpaid sponsorship.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We will now look for a new sponsor to continue the follow up with ${children.get('him')}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Kind regards
                 </p>
             </field>
         </record>
-        <record id="email_sponsorship_activation_reminder_3" model="mail.template">
+        <record
+      id="email_sponsorship_activation_reminder_3"
+      model="mail.template"
+    >
             <field name="name">Sponsorship Activation Reminder 3</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;compassion@compassion.ch&gt;</field>
             <field name="reply_to">info@compassion.ch</field>
             <field name="partner_to">
                 ${object.partner_id and object.partner_id.email and object.partner_id.id or False }
@@ -253,15 +300,15 @@
                 </div>
                 <p>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We are sorry to inform you of the cancellation of your sponsorship toward ${firstname}, due to
                     unpaid sponsorship.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We will now look for a new sponsor to continue the follow up with ${children.get('him')}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Kind regards
                 </p>
             </field>

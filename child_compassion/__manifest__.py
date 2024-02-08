@@ -33,8 +33,8 @@
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
-    "development_status": "Stable",
+    "website": "https://github.com/CompassionCH/compassion-modules",
+    "development_status": "Production/Stable",
     "depends": [
         "message_center_compassion",
         "advanced_translation",

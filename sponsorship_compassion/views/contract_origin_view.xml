@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_contract_origin_tree" model="ir.ui.view">
         <field name="name">contract.origin.tree</field>
         <field name="model">recurring.contract.origin</field>
         <field name="arch" type="xml">
             <tree string="Origins">
-                <field name="name"/>
-                <field name="type"/>
-                <field name="partner_id"/>
-                <field name="analytic_id"/>
-                <field name="country_id"/>
-                <field name="won_sponsorships"/>
-                <field name="conversion_rate" widget="progressbar"/>
+                <field name="name" />
+                <field name="type" />
+                <field name="partner_id" />
+                <field name="analytic_id" />
+                <field name="country_id" />
+                <field name="won_sponsorships" />
+                <field name="conversion_rate" widget="progressbar" />
             </tree>
         </field>
     </record>
@@ -24,26 +24,41 @@
                 <sheet>
                     <div class="oe_title">
                         <group>
-                            <field name="name"/>
-                            <field name="type"/>
+                            <field name="name" />
+                            <field name="type" />
                         </group>
                     </div>
                     <separator />
                     <group>
-                        <field name="partner_id" attrs="{'required': [('type', '=', 'partner')]}"
-                               options="{'create': false, 'm2o_dialog': false}"/>
-                        <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner', 'event'))],
+                        <field
+              name="partner_id"
+              attrs="{'required': [('type', '=', 'partner')]}"
+              options="{'create': false, 'm2o_dialog': false}"
+            />
+                        <field
+              name="analytic_id"
+              attrs="{'invisible': [('type', 'not in', ('marketing','partner', 'event'))],
                                                           'required': [('type', 'in', ('marketing', 'event'))]}"
-                               domain="[('partner_id.parent_id.name','=','Campaign')]"/>
-                        <field name="country_id" attrs="{'invisible': [('type', '!=', 'transfer')],
-                                                         'required': [('type','=','transfer')]}"/>
-                        <field name="other_name" attrs="{'invisible': [('type', '!=', 'other')]}"/>
-                        <field name="won_sponsorships"/>
-                        <field name="conversion_rate"/>
+              domain="[('partner_id.parent_id.name','=','Campaign')]"
+            />
+                        <field
+              name="country_id"
+              attrs="{'invisible': [('type', '!=', 'transfer')],
+                                                         'required': [('type','=','transfer')]}"
+            />
+                        <field
+              name="other_name"
+              attrs="{'invisible': [('type', '!=', 'other')]}"
+            />
+                        <field name="won_sponsorships" />
+                        <field name="conversion_rate" />
                     </group>
                     <notebook>
                         <page string="Originated Sponsorships">
-                            <field name="contract_ids" attrs="{'invisible': [('contract_ids', '=', False)]}"/>
+                            <field
+                name="contract_ids"
+                attrs="{'invisible': [('contract_ids', '=', False)]}"
+              />
                         </page>
                     </notebook>
                 </sheet>
@@ -57,11 +72,16 @@
         <field name="model">recurring.contract.origin</field>
         <field name="arch" type="xml">
             <search string="Search origin">
-                <field name="name"/>
-                <field name="type"/>
-                <field name="partner_id"/>
+                <field name="name" />
+                <field name="type" />
+                <field name="partner_id" />
                 <group expand="0" string="Group By...">
-                    <filter name="group_type" string="Type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter
+            name="group_type"
+            string="Type"
+            domain="[]"
+            context="{'group_by':'type'}"
+          />
                 </group>
             </search>
         </field>
@@ -71,10 +91,15 @@
         <field name="name">Origins</field>
         <field name="res_model">recurring.contract.origin</field>
         <field name="view_mode">form,tree</field>
-        <field name="view_id" ref="view_contract_origin_tree"/>
+        <field name="view_id" ref="view_contract_origin_tree" />
     </record>
 
-    <menuitem id="menu_sponsorship_origin" parent="child_compassion.menu_sponsorship_section"
-              name="Origins" groups="child_compassion.group_sponsorship" sequence="6"
-              action="open_view_origin_tree"/>
+    <menuitem
+    id="menu_sponsorship_origin"
+    parent="child_compassion.menu_sponsorship_section"
+    name="Origins"
+    groups="child_compassion.group_sponsorship"
+    sequence="6"
+    action="open_view_origin_tree"
+  />
 </odoo>

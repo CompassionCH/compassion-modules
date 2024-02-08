@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2022 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
@@ -9,27 +9,42 @@
     <record id="view_settings" model="ir.ui.view">
         <field name="name">MIS report SPN</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.compassion_settings"
+    />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']">
                 <h2>MIS report SPN</h2>
-                <div class="row mt16 o_settings_container" name="wordpress_settings">
+                <div
+          class="row mt16 o_settings_container"
+          name="wordpress_settings"
+        >
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div name="left_group" class="o_setting_right_pane">
                             <div name="api_key">
                                 <div class="row">
-                                    <label for="mis_main_company_id" class="col-md-5 o_light_label"/>
-                                    <field name="mis_main_company_id"/>
-                                    <label for="mis_child_sponsored_id" class="col-md-5 o_light_label"/>
-                                    <field name="mis_child_sponsored_id"/>
-                                    <label for="mis_contract_created_id" class="col-md-5 o_light_label"/>
-                                    <field name="mis_contract_created_id"/>
+                                    <label
+                    for="mis_main_company_id"
+                    class="col-md-5 o_light_label"
+                  />
+                                    <field name="mis_main_company_id" />
+                                    <label
+                    for="mis_child_sponsored_id"
+                    class="col-md-5 o_light_label"
+                  />
+                                    <field name="mis_child_sponsored_id" />
+                                    <label
+                    for="mis_contract_created_id"
+                    class="col-md-5 o_light_label"
+                  />
+                                    <field name="mis_contract_created_id" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="right_group" class="o_setting_right_pane"/>
+                        <div name="right_group" class="o_setting_right_pane" />
                     </div>
                 </div>
             </xpath>

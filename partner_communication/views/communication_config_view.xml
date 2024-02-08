@@ -8,30 +8,33 @@
                     <div class="oe_button_box" name="button_box">
                         <field name="active" invisible="1" />
                         <widget
-                            name="web_ribbon"
-                            title="Archived"
-                            bg_color="bg-danger"
-                            attrs="{'invisible': [('active', '=', True)]}"
-                        />
+              name="web_ribbon"
+              title="Archived"
+              bg_color="bg-danger"
+              attrs="{'invisible': [('active', '=', True)]}"
+            />
                     </div>
                     <group string="General configuration" name="general_config">
                         <group>
-                            <field name="name"/>
-                            <field name="send_mode"/>
-                            <field name="send_mode_pref_field"/>
-                            <field name="print_if_not_email"/>
-                            <field name="need_call"/>
+                            <field name="name" />
+                            <field name="send_mode" />
+                            <field name="send_mode_pref_field" />
+                            <field name="print_if_not_email" />
+                            <field name="need_call" />
                         </group>
                         <group>
-                            <field name="user_id"/>
-                            <field name="model_id"/>
-                            <field name="email_template_id"/>
-                            <field name="report_id"/>
-                            <field name="attachments_function"/>
+                            <field name="user_id" />
+                            <field name="model_id" />
+                            <field name="email_template_id" />
+                            <field name="report_id" />
+                            <field name="attachments_function" />
                         </group>
                     </group>
-                    <separator string="Custom configuration"/>
-                    <field name="default_config_ids" context="{'default_config_id': active_id}"/>
+                    <separator string="Custom configuration" />
+                    <field
+            name="default_config_ids"
+            context="{'default_config_id': active_id}"
+          />
                 </sheet>
             </form>
         </field>
@@ -42,13 +45,13 @@
         <field name="model">partner.communication.config</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
-                <field name="model"/>
-                <field name="send_mode"/>
-                <field name="print_if_not_email"/>
-                <field name="need_call"/>
-                <field name="email_template_id"/>
-                <field name="report_id"/>
+                <field name="name" />
+                <field name="model" />
+                <field name="send_mode" />
+                <field name="print_if_not_email" />
+                <field name="need_call" />
+                <field name="email_template_id" />
+                <field name="report_id" />
             </tree>
         </field>
     </record>
@@ -58,11 +61,23 @@
         <field name="model">partner.communication.config</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Name"/>
-                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
-                <separator/>
-                <filter name="communication" string="Communication" domain="[('email_template_id.model', '=', 'partner.communication.job')]"/>
-                <filter name="support" string="Support" domain="[('email_template_id.model', '=', 'crm.claim')]"/>
+                <field name="name" string="Name" />
+                <filter
+          name="archived"
+          string="Archived"
+          domain="[('active', '=', False)]"
+        />
+                <separator />
+                <filter
+          name="communication"
+          string="Communication"
+          domain="[('email_template_id.model', '=', 'partner.communication.job')]"
+        />
+                <filter
+          name="support"
+          string="Support"
+          domain="[('email_template_id.model', '=', 'crm.claim')]"
+        />
             </search>
         </field>
      </record>
@@ -72,11 +87,11 @@
         <field name="model">partner.communication.default.config</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="lang_id"/>
-                <field name="user_id"/>
-                <field name="need_call"/>
-                <field name="print_if_not_email"/>
-                <field name="report_id"/>
+                <field name="lang_id" />
+                <field name="user_id" />
+                <field name="need_call" />
+                <field name="print_if_not_email" />
+                <field name="report_id" />
             </tree>
         </field>
     </record>
@@ -88,13 +103,13 @@
             <form>
                 <group>
                     <group>
-                        <field name="lang_id"/>
-                        <field name="user_id"/>
+                        <field name="lang_id" />
+                        <field name="user_id" />
                     </group>
                     <group>
-                        <field name="print_if_not_email"/>
-                        <field name="need_call"/>
-                        <field name="report_id"/>
+                        <field name="print_if_not_email" />
+                        <field name="need_call" />
+                        <field name="report_id" />
                     </group>
                 </group>
             </form>
@@ -107,6 +122,17 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_communication_settings_root" parent="menu_communication" name="Settings" sequence="50"/>
-    <menuitem name="Communication Templates" id="menu_communication_config" parent="menu_communication_settings_root" sequence="10" action="action_communication_config"/>
+    <menuitem
+    id="menu_communication_settings_root"
+    parent="menu_communication"
+    name="Settings"
+    sequence="50"
+  />
+    <menuitem
+    name="Communication Templates"
+    id="menu_communication_config"
+    parent="menu_communication_settings_root"
+    sequence="10"
+    action="action_communication_config"
+  />
 </odoo>

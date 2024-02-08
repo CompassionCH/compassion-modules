@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 
     <!-- Form Definition -->
@@ -8,48 +8,81 @@
         <field name="arch" type="xml">
             <form string="Imports">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
-                    <field name="import_completed" invisible="1"/>
-                    <button name="button_save" string="Import Letters" states="ready" type="object" class="oe_highlight"/>
-                    <button name="button_import" string="Load Files" type="object" states="draft"/>
+                    <field
+            name="state"
+            widget="statusbar"
+            statusbar_visible="draft,open,done"
+          />
+                    <field name="import_completed" invisible="1" />
+                    <button
+            name="button_save"
+            string="Import Letters"
+            states="ready"
+            type="object"
+            class="oe_highlight"
+          />
+                    <button
+            name="button_import"
+            string="Load Files"
+            type="object"
+            states="draft"
+          />
                 </header>
                 <sheet>
                     <h1>Imported Letters</h1>
                     <group>
-                        <label for="data" string="Files" states="draft"/>
+                        <label for="data" string="Files" states="draft" />
                         <div states="draft">
-                            <field name="data" widget="many2many_binary"/>
+                            <field name="data" widget="many2many_binary" />
                         </div>
-                        <field name="config_id" widget="radio"/>
-                        <field name="nber_letters"/>
-                        <field name="physical_attachments"/>
-                        <field name="attachments_description"/>
-                        <field name="template_id" states="draft,open"/>
+                        <field name="config_id" widget="radio" />
+                        <field name="nber_letters" />
+                        <field name="physical_attachments" />
+                        <field name="attachments_description" />
+                        <field name="template_id" states="draft,open" />
                     </group>
                     <group>
-                        <button name="button_review" string="Review Imports" type="object" states="open" colspan="2"/>
-                        <field name="import_line_ids" states="open,pending,ready" domain="[('id','=','-1')]">
-                            <tree decoration-danger="status != 'ok'" decoration-success="status == 'ok'" create="false" editable="bottom">
-                                <field name="status"/>
-                                <field name="partner_id"/>
-                                <field name="child_id"/>
-                                <field name="template_id"/>
-                                <field name="letter_language_id"/>
-                                <field name="original_text"/>
-                                <field name="physical_attachments"/>
-                                <field name="attachments_description"/>
-                                <field name="letter_image_preview"
-                                       widget='image' height="400"
-                                       string="Letter image preview" readonly="1"
-                                />
+                        <button
+              name="button_review"
+              string="Review Imports"
+              type="object"
+              states="open"
+              colspan="2"
+            />
+                        <field
+              name="import_line_ids"
+              states="open,pending,ready"
+              domain="[('id','=','-1')]"
+            >
+                            <tree
+                decoration-danger="status != 'ok'"
+                decoration-success="status == 'ok'"
+                create="false"
+                editable="bottom"
+              >
+                                <field name="status" />
+                                <field name="partner_id" />
+                                <field name="child_id" />
+                                <field name="template_id" />
+                                <field name="letter_language_id" />
+                                <field name="original_text" />
+                                <field name="physical_attachments" />
+                                <field name="attachments_description" />
+                                <field
+                  name="letter_image_preview"
+                  widget='image'
+                  height="400"
+                  string="Letter image preview"
+                  readonly="1"
+                />
                             </tree>
                         </field>
-                        <field name="letters_ids" states="done"/>
+                        <field name="letters_ids" states="done" />
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -60,16 +93,18 @@
         <field name="name">import.letters.history.tree</field>
         <field name="model">import.letters.history</field>
         <field name="arch" type="xml">
-            <tree string="Imports"
-                  decoration-primary="state == 'draft'"
-                  decoration-info="state in ('open','pending')"
-                  decoration-success="state == 'ready'"
-                  decoration-muted="state == 'done'">
-                <field name="create_date"/>
-                <field name="write_date"/>
-                <field name="nber_letters"/>
-                <field name="config_id"/>
-                <field name="state"/>
+            <tree
+        string="Imports"
+        decoration-primary="state == 'draft'"
+        decoration-info="state in ('open','pending')"
+        decoration-success="state == 'ready'"
+        decoration-muted="state == 'done'"
+      >
+                <field name="create_date" />
+                <field name="write_date" />
+                <field name="nber_letters" />
+                <field name="config_id" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -82,14 +117,21 @@
             <search>
                 <field name="state" />
                 <field name="config_id" />
-                <filter name="open" string="Open" domain="[('state','!=','done')]" />
+                <filter
+          name="open"
+          string="Open"
+          domain="[('state','!=','done')]"
+        />
             </search>
         </field>
     </record>
 
 
     <!-- Action Definition -->
-    <record id="action_compassion_import_letters_action" model="ir.actions.act_window">
+    <record
+    id="action_compassion_import_letters_action"
+    model="ir.actions.act_window"
+  >
         <field name="name">Imports</field>
         <field name="res_model">import.letters.history</field>
         <field name="type">ir.actions.act_window</field>
@@ -99,6 +141,11 @@
 
 
     <!-- Menu Definition -->
-    <menuitem id="import_letters_menu" parent="menu_correspondence"
-              name="Imports" action="action_compassion_import_letters_action" sequence="3"/>
+    <menuitem
+    id="import_letters_menu"
+    parent="menu_correspondence"
+    name="Imports"
+    action="action_compassion_import_letters_action"
+    sequence="3"
+  />
 </odoo>

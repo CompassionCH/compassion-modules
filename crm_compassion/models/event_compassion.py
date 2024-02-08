@@ -542,8 +542,8 @@ class EventCompassion(models.Model):
                     # Hack to address the mail to the correct user, change
                     # user_id field(bypass ORM to avoid tracking field change)
                     self.env.cr.execute(
-                        "UPDATE crm_event_compassion "
-                        f"SET user_id = {user.id} WHERE id = {event.id}"
+                        "UPDATE crm_event_compassion SET user_id = %s WHERE id = %s",
+                        (user.id, event.id),
                     )
                     values = {"user_ids": user.id}
                     super(EventCompassion, event).message_auto_subscribe(
@@ -554,8 +554,8 @@ class EventCompassion(models.Model):
                 if ambassador.id:
                     user_id = ambassador.id
                 self.env.cr.execute(
-                    "UPDATE crm_event_compassion "
-                    f"SET user_id = {user_id} WHERE id = {event.id}"
+                    "UPDATE crm_event_compassion SET user_id = %s WHERE id = %s",
+                    (user_id, event.id),
                 )
         return True
 

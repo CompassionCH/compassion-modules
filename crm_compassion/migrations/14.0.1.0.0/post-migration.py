@@ -10,4 +10,5 @@ def migrate(env, version):
 
     # Recompute balances
     env["crm.event.compassion"].search([]).with_context(
-        dont_notify=True)._compute_balance()
+        dont_notify=True
+    )._compute_balance()

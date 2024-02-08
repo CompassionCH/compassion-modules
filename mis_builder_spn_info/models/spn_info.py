@@ -124,7 +124,8 @@ class MisSpnInfo(models.Model):
         )
         with open(script) as f:
             tools.drop_view_if_exists(self.env.cr, "mid_spn_info")
-            sql = f.read() % (
+            sql = f.read()
+            params = (
                 mis_child_sponsored_id,
                 currency,
                 mis_main_company_id.id,
@@ -138,4 +139,4 @@ class MisSpnInfo(models.Model):
                 currency,
                 mis_main_company_id.id,
             )
-            self.env.cr.execute(sql)
+            self.env.cr.execute(sql, params)

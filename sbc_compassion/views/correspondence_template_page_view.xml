@@ -4,8 +4,8 @@
         <field name="model">correspondence.template.page</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="page_index" widget="handle"/>
-                <field name="name"/>
+                <field name="page_index" widget="handle" />
+                <field name="name" />
             </tree>
         </field>
     </record>
@@ -18,16 +18,16 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="template_id"/>
-                            <field name="page_index"/>
-                            <field name="background"/>
+                            <field name="name" />
+                            <field name="template_id" />
+                            <field name="page_index" />
+                            <field name="background" />
                         </group>
                     </group>
                     <group>
-                        <field name="header_box_id"/>
-                        <field name="text_box_ids"/>
-                        <field name="image_box_ids"/>
+                        <field name="header_box_id" />
+                        <field name="text_box_ids" />
+                        <field name="image_box_ids" />
                     </group>
                 </sheet>
             </form>

@@ -3,14 +3,17 @@
         <field name="name">Partner e-mail alis</field>
         <field name="model">res.partner</field>
         <field name="type">form</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <xpath expr="//notebook">
                 <page string="Email aliases">
                     <group>
-                        <field name="email_alias_ids" context="{'default_partner_id': active_id}">
+                        <field
+              name="email_alias_ids"
+              context="{'default_partner_id': active_id}"
+            >
                             <tree editable="bottom">
-                                <field name="email"/>
+                                <field name="email" />
                             </tree>
                         </field>
                     </group>
@@ -22,11 +25,13 @@
     <record model="ir.ui.view" id="res_partner_email_alias_search">
         <field name="name">res.partner.email.alias.search</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
         <field name="arch" type="xml">
             <!-- Use fuzzy search on name -->
-            <field name="email" position="attributes"> <!-- pylint: disable=dangerous-view-replace-wo-priority -->
-                <attribute name="filter_domain">['|', ('email', 'ilike', self), ('email_alias_ids.email','ilike',self)]</attribute>>
+            <field name="email" position="attributes">
+                <attribute
+          name="filter_domain"
+        >['|', ('email', 'ilike', self), ('email_alias_ids.email','ilike',self)]</attribute>>
             </field>
         </field>
     </record>

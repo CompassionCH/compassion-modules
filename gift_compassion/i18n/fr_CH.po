@@ -482,11 +482,6 @@ msgid "Process date"
 msgstr "Date de traitement"
 
 #. module: gift_compassion
-#: field:sponsorship.gift,project_id:0
-msgid "Project"
-msgstr "Project"
-
-#. module: gift_compassion
 #: code:addons/gift_compassion/models/sponsorship_gift.py:113
 #, python-format
 msgid "Project"
@@ -523,11 +518,6 @@ msgstr "Famille de l'enfant"
 #: code:addons/gift_compassion/models/sponsorship_gift.py:124
 #: field:sponsorship.gift,sponsorship_id:0
 #, python-format
-msgid "Sponsorship"
-msgstr "Parrainage"
-
-#. module: gift_compassion
-#: model:ir.model,name:gift_compassion.model_sponsorship_gift
 msgid "Sponsorship"
 msgstr "Parrainage"
 

@@ -4,42 +4,68 @@
         <field name="model">import.letters.review</field>
         <field name="arch" type="xml">
             <form>
-                <field name="current_line_index" invisible="1"/>
+                <field name="current_line_index" invisible="1" />
                 <header>
                     <div class="oe_inline">
-                        <field name="count" class="oe_inline"/> / <field name="nb_lines" class="oe_inline"/>
+                        <field name="count" class="oe_inline" /> / <field
+              name="nb_lines"
+              class="oe_inline"
+            />
                     </div>
-                    <button name="postpone" string="Postpone" type="object" class="oe_inline"/>
-                    <button name="next" string="Next" type="object" attrs="{'invisible': [('progress', '=', 100.0)]}" class="oe_inline"/>
-                    <button name="finish" string="Finish" type="object" attrs="{'invisible': [('progress', '!=', 100.0)]}" class="oe_inline"/>
+                    <button
+            name="postpone"
+            string="Postpone"
+            type="object"
+            class="oe_inline"
+          />
+                    <button
+            name="next"
+            string="Next"
+            type="object"
+            attrs="{'invisible': [('progress', '=', 100.0)]}"
+            class="oe_inline"
+          />
+                    <button
+            name="finish"
+            string="Finish"
+            type="object"
+            attrs="{'invisible': [('progress', '!=', 100.0)]}"
+            class="oe_inline"
+          />
                 </header>
-                <field name="progress" widget="progressbar"/>
+                <field name="progress" widget="progressbar" />
                 <sheet>
                     <group>
                         <group colspan="2">
-                            <field name="current_line_id"/>
-                            <field name="state"/>
-                            <field name="edit"/>
-                            <field name="partner_id" attrs="{'invisible': [('partner_id', '!=', False), ('edit', '=', False)]}"/>
-                            <field name="child_id" invisible="1"/>
-                            <field name="sponsorship_id" attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False), ('edit', '=', False)]}"
-                                   options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
+                            <field name="current_line_id" />
+                            <field name="state" />
+                            <field name="edit" />
+                            <field
+                name="partner_id"
+                attrs="{'invisible': [('partner_id', '!=', False), ('edit', '=', False)]}"
+              />
+                            <field name="child_id" invisible="1" />
+                            <field
+                name="sponsorship_id"
+                attrs="{'invisible': [('child_id', '!=', False), ('partner_id', '!=', False), ('edit', '=', False)]}"
+                options="{'colors':{'waiting':'green','terminated':'grey','cancelled':'grey','mandate':'red'},
                                              'field_color':'state',
                                              'create': false, 'create_edit': false}"
-                                   domain="[('correspondent_id', '=', partner_id), ('type', 'like', 'S')]"/>
+                domain="[('correspondent_id', '=', partner_id), ('type', 'like', 'S')]"
+              />
                         </group>
                         <group>
-                            <field name="template_id"/>
-                            <field name="language_id"/>
-                            <field name="fname" invisible="1"/>
-                            <field name="letter_file" filename="fname"/>
+                            <field name="template_id" />
+                            <field name="language_id" />
+                            <field name="fname" invisible="1" />
+                            <field name="letter_file" filename="fname" />
                         </group>
                         <group>
-                            <field name="physical_attachments"/>
-                            <field name="attachments_description"/>
+                            <field name="physical_attachments" />
+                            <field name="attachments_description" />
                         </group>
                         <group colspan="2">
-                            <field name="letter_image" widget="image"/>
+                            <field name="letter_image" widget="image" />
                         </group>
                     </group>
                 </sheet>

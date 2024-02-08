@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="lang_compassion_view_tree" model="ir.ui.view">
         <field name="name">Compassion languages</field>
         <field name="model">res.lang.compassion</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
-                <field name="code_iso"/>
-                <field name="translatable"/>
-                <field name="lang_id"/>
+                <field name="name" />
+                <field name="code_iso" />
+                <field name="translatable" />
+                <field name="lang_id" />
             </tree>
         </field>
     </record>
@@ -19,10 +19,10 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="lang_id"/>
-                        <field name="code_iso"/>
-                        <field name="translatable"/>
+                        <field name="name" />
+                        <field name="lang_id" />
+                        <field name="code_iso" />
+                        <field name="translatable" />
                     </group>
                 </sheet>
             </form>
@@ -33,10 +33,10 @@
         <field name="model">res.lang.compassion</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="code_iso" string="Iso code"/>
-                <field name="translatable"/>
-                <field name="lang_id"/>
+                <field name="name" />
+                <field name="code_iso" string="Iso code" />
+                <field name="translatable" />
+                <field name="lang_id" />
             </search>
         </field>
     </record>
@@ -46,5 +46,10 @@
         <field name="res_model">res.lang.compassion</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem name="Compassion langugages" action="action_lang_compassion_view" id="menu_lang_compassion" parent="base.menu_translation"/>
+    <menuitem
+    name="Compassion langugages"
+    action="action_lang_compassion_view"
+    id="menu_lang_compassion"
+    parent="base.menu_translation"
+  />
 </odoo>

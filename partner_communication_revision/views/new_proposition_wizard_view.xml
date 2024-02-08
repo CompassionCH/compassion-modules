@@ -5,9 +5,14 @@
         <field name="arch" type="xml">
             <form>
                 <h3>Select the master language for the new revision</h3>
-                <field name="lang"/>
+                <field name="lang" />
                 <footer>
-                    <button string="Start new revision" class="oe_highlight" type="object" name="new_proposition"/>
+                    <button
+            string="Start new revision"
+            class="oe_highlight"
+            type="object"
+            name="new_proposition"
+          />
                 </footer>
             </form>
         </field>

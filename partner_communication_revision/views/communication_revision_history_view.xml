@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id='revision_history_action' model='ir.actions.act_window'>
         <field name="name">Revision history</field>
@@ -12,11 +12,11 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="linked_revision_id"/>
-                    <field name="revision_number"/>
-                    <field name="raw_subject"/>
-                    <field name="proposition_text"/>
-                    <field name="body_html"/>
+                    <field name="linked_revision_id" />
+                    <field name="revision_number" />
+                    <field name="raw_subject" />
+                    <field name="proposition_text" />
+                    <field name="body_html" />
                 </group>
             </form>
         </field>

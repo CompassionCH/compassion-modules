@@ -115,14 +115,14 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l1_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l1"/>
+            <field name="template_id" ref="b2s_l1" />
             <field name="page_index">1</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_1'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_1'))]" />
         </record>
         <record id="b2s_l1_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l1"/>
+            <field name="template_id" ref="b2s_l1" />
             <field name="page_index">2</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_2'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l1_box_2'))]" />
         </record>
 
         <record id="b2s_l2" model="correspondence.template">
@@ -133,14 +133,14 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l2_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l2"/>
+            <field name="template_id" ref="b2s_l2" />
             <field name="page_index">1</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_1'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_1'))]" />
         </record>
         <record id="b2s_l2_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l2"/>
+            <field name="template_id" ref="b2s_l2" />
             <field name="page_index">2</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_2'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l2_box_2'))]" />
         </record>
 
         <record id="b2s_l3" model="correspondence.template">
@@ -151,14 +151,14 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l3_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l3"/>
+            <field name="template_id" ref="b2s_l3" />
             <field name="page_index">1</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_1'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_1'))]" />
         </record>
         <record id="b2s_l3_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l3"/>
+            <field name="template_id" ref="b2s_l3" />
             <field name="page_index">2</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_2'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l3_box_2'))]" />
         </record>
 
         <record id="b2s_l4" model="correspondence.template">
@@ -169,13 +169,13 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l4_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l4"/>
+            <field name="template_id" ref="b2s_l4" />
             <field name="page_index">1</field>
         </record>
         <record id="b2s_l4_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l4"/>
+            <field name="template_id" ref="b2s_l4" />
             <field name="page_index">2</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l4_box_1'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l4_box_1'))]" />
         </record>
 
         <record id="b2s_l5" model="correspondence.template">
@@ -186,14 +186,17 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l5_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l5"/>
+            <field name="template_id" ref="b2s_l5" />
             <field name="page_index">1</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_l5_box_1'))]"/>
+            <field name="text_box_ids" eval="[(4, ref('b2s_l5_box_1'))]" />
         </record>
         <record id="b2s_l5_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l5"/>
+            <field name="template_id" ref="b2s_l5" />
             <field name="page_index">2</field>
-            <field name="text_box_ids" eval="[(4,ref('b2s_l5_box_2')),(4,ref('b2s_l5_box_3'))]"/>
+            <field
+        name="text_box_ids"
+        eval="[(4,ref('b2s_l5_box_2')),(4,ref('b2s_l5_box_3'))]"
+      />
         </record>
 
         <record id="b2s_l6" model="correspondence.template">
@@ -204,16 +207,19 @@
             <field name="page_height">3508</field>
         </record>
         <record id="b2s_l6_p1" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l6"/>
+            <field name="template_id" ref="b2s_l6" />
             <field name="page_index">1</field>
         </record>
         <record id="b2s_l6_p2" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_l6"/>
+            <field name="template_id" ref="b2s_l6" />
             <field name="page_index">2</field>
         </record>
 
          <!--  Specific configuration for B2S additional pages  -->
-        <record id="b2s_additional_page_template" model="correspondence.template">
+        <record
+      id="b2s_additional_page_template"
+      model="correspondence.template"
+    >
             <field name="name">B2S Additional translation page</field>
             <field name="type">b2s</field>
             <field name="layout">CH-A-6S11-1</field>
@@ -230,9 +236,12 @@
             <field name="text_type">Translation</field>
         </record>
         <record id="b2s_additional_page" model="correspondence.template.page">
-            <field name="template_id" ref="b2s_additional_page_template"/>
+            <field name="template_id" ref="b2s_additional_page_template" />
             <field name="page_index">1</field>
-            <field name="text_box_ids" eval="[(4, ref('b2s_additional_page_box_1'))]"/>
+            <field
+        name="text_box_ids"
+        eval="[(4, ref('b2s_additional_page_box_1'))]"
+      />
         </record>
     </data>
 </odoo>

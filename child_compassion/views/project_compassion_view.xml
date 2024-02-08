@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!--Compassion project form view -->
     <record id="view_compassion_project_form" model="ir.ui.view">
@@ -7,18 +7,42 @@
         <field name="arch" type="xml">
             <form string="Project">
                 <header>
-                    <field name="status" widget="statusbar" statusbar_visible="A,P,T"/>
+                    <field
+            name="status"
+            widget="statusbar"
+            statusbar_visible="A,P,T"
+          />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="update_informations" type="object" string="Get info" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        <button name="get_lifecycle_event" string="Get lifecycle" type="object" icon="fa-refresh" class="oe_stat_button" context="{'async_mode': False}"/>
-                        <button name="edit_translations" string="Edit translations" type="object" icon="fa-globe" class="oe_stat_button"/>
+                        <button
+              name="update_informations"
+              type="object"
+              string="Get info"
+              icon="fa-refresh"
+              class="oe_stat_button"
+              context="{'async_mode': False}"
+            />
+                        <button
+              name="get_lifecycle_event"
+              string="Get lifecycle"
+              type="object"
+              icon="fa-refresh"
+              class="oe_stat_button"
+              context="{'async_mode': False}"
+            />
+                        <button
+              name="edit_translations"
+              string="Edit translations"
+              type="object"
+              icon="fa-globe"
+              class="oe_stat_button"
+            />
                     </div>
                     <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
+                        <label for="name" class="oe_edit_only" />
                         <h1>
-                            <field name="name"/>
+                            <field name="name" />
                         </h1>
                     </div>
                     <group>
@@ -40,167 +64,266 @@
                         <page string="General Information">
                             <group>
                                 <group string="Community">
-                                    <field name="child_center_original_name"/>
-                                    <field name="local_church_name"/>
-                                    <field name="local_church_original_name"/>
-                                    <field name="community_name"/>
-                                    <field name="involvement_ids" widget="many2many_tags"/>
-                                    <field name="website"/>
-                                    <field name="social_media_site"/>
-                                    <field name="available_for_visits"/>
-                                    <field name="nb_csp_kids"/>
-                                    <field name="nb_cdsp_kids"/>
+                                    <field name="child_center_original_name" />
+                                    <field name="local_church_name" />
+                                    <field name="local_church_original_name" />
+                                    <field name="community_name" />
+                                    <field
+                    name="involvement_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="website" />
+                                    <field name="social_media_site" />
+                                    <field name="available_for_visits" />
+                                    <field name="nb_csp_kids" />
+                                    <field name="nb_cdsp_kids" />
                                 </group>
                                 <group string="FCP Re-opening Status">
                                     <field name="covid_status_ids">
                                         <tree>
-                                            <field name="update_date"/>
-                                            <field name="re_opening_status"/>
-                                            <field name="comments"/>
+                                            <field name="update_date" />
+                                            <field name="re_opening_status" />
+                                            <field name="comments" />
                                         </tree>
                                     </field>
                                 </group>
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">
                                         <tree>
-                                            <field name="date"/>
-                                            <field name="type"/>
+                                            <field name="date" />
+                                            <field name="type" />
                                         </tree>
                                     </field>
                                 </group>
                                 <group string="Field Status">
-                                    <field name="hold_cdsp_funds"/>
-                                    <field name="hold_csp_funds"/>
-                                    <field name="hold_gifts"/>
-                                    <field name="hold_s2b_letters"/>
-                                    <field name="hold_b2s_letters"/>
+                                    <field name="hold_cdsp_funds" />
+                                    <field name="hold_csp_funds" />
+                                    <field name="hold_gifts" />
+                                    <field name="hold_s2b_letters" />
+                                    <field name="hold_b2s_letters" />
                                 </group>
                                 <group string="Partnership">
-                                    <field name="partnership_start_date"/>
-                                    <field name="first_scheduled_letter"/>
-                                    <field name="second_scheduled_letter"/>
-                                    <field name="interested_partner_ids" widget="many2many_tags"/>
+                                    <field name="partnership_start_date" />
+                                    <field name="first_scheduled_letter" />
+                                    <field name="second_scheduled_letter" />
+                                    <field
+                    name="interested_partner_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                                 <group string="Reservation">
-                                    <field name="reservation_id" context="{'default_project_id': active_id}"/>
+                                    <field
+                    name="reservation_id"
+                    context="{'default_project_id': active_id}"
+                  />
                                 </group>
                             </group>
                         </page>
                         <page string="Descriptions">
                             <group>
-                                <field name="description_en" widget="html"/>
+                                <field name="description_en" widget="html" />
                             </group>
                         </page>
                         <page string="Detailed Information">
                             <group>
                                 <group string="Location">
-                                    <field name="street"/>
-                                    <field name="zip_code" class="oe_inline"/>
-                                    <field name="city"/>
-                                    <field name="state_province"/>
-                                    <field name="cluster"/>
-                                    <field name="territory"/>
-                                    <field name="closest_city"/>
-                                    <field name="closest_airport_distance"/>
-                                    <field name="time_to_airport"/>
-                                    <field name="transport_mode_to_airport"/>
-                                    <field name="time_to_medical_facility"/>
-                                    <field name="gps_latitude"/>
-                                    <field name="gps_longitude"/>
-                                    <field name="timezone"/>
+                                    <field name="street" />
+                                    <field name="zip_code" class="oe_inline" />
+                                    <field name="city" />
+                                    <field name="state_province" />
+                                    <field name="cluster" />
+                                    <field name="territory" />
+                                    <field name="closest_city" />
+                                    <field name="closest_airport_distance" />
+                                    <field name="time_to_airport" />
+                                    <field name="transport_mode_to_airport" />
+                                    <field name="time_to_medical_facility" />
+                                    <field name="gps_latitude" />
+                                    <field name="gps_longitude" />
+                                    <field name="timezone" />
                                 </group>
                                 <group string="Church Information">
-                                    <field name="church_foundation_date"/>
-                                    <field name="church_denomination"/>
-                                    <field name="international_affiliation"/>
-                                    <field name="ministry_ids" widget="many2many_tags"/>
-                                    <field name="preferred_lang_id"/>
-                                    <field name="number_church_members"/>
-                                    <field name="weekly_child_attendance"/>
-                                    <field name="implemented_program_ids" widget="many2many_tags"/>
-                                    <field name="interested_program_ids" widget="many2many_tags"/>
-                                    <field name="number_church_members"/>
+                                    <field name="church_foundation_date" />
+                                    <field name="church_denomination" />
+                                    <field name="international_affiliation" />
+                                    <field
+                    name="ministry_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="preferred_lang_id" />
+                                    <field name="number_church_members" />
+                                    <field name="weekly_child_attendance" />
+                                    <field
+                    name="implemented_program_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="interested_program_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="number_church_members" />
                                 </group>
                                 <group string="Church Infrastructure">
-                                    <field name="church_building_size"/>
-                                    <field name="church_ownership"/>
-                                    <field name="facility_ids" widget="many2many_tags"/>
-                                    <field name="nb_staff_computers"/>
-                                    <field name="nb_child_computers"/>
-                                    <field name="nb_classrooms"/>
-                                    <field name="nb_latrines"/>
-                                    <field name="church_internet_access"/>
-                                    <field name="mobile_device_ids" widget="many2many_tags"/>
-                                    <field name="utility_ids" widget="many2many_tags"/>
-                                    <field name="electrical_power"/>
+                                    <field name="church_building_size" />
+                                    <field name="church_ownership" />
+                                    <field
+                    name="facility_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="nb_staff_computers" />
+                                    <field name="nb_child_computers" />
+                                    <field name="nb_classrooms" />
+                                    <field name="nb_latrines" />
+                                    <field name="church_internet_access" />
+                                    <field
+                    name="mobile_device_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="utility_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="electrical_power" />
                                 </group>
                                 <group string="FCP Activities">
-                                    <field name="spiritual_activity_babies_ids" widget="many2many_tags"/>
-                                    <field name="spiritual_activity_kids_ids" widget="many2many_tags"/>
-                                    <field name="spiritual_activity_ados_ids" widget="many2many_tags"/>
-                                    <field name="cognitive_activity_babies_ids" widget="many2many_tags"/>
-                                    <field name="cognitive_activity_kids_ids" widget="many2many_tags"/>
-                                    <field name="cognitive_activity_ados_ids" widget="many2many_tags"/>
-                                    <field name="physical_activity_babies_ids" widget="many2many_tags"/>
-                                    <field name="physical_activity_kids_ids" widget="many2many_tags"/>
-                                    <field name="physical_activity_ados_ids" widget="many2many_tags"/>
-                                    <field name="socio_activity_babies_ids" widget="many2many_tags"/>
-                                    <field name="socio_activity_kids_ids" widget="many2many_tags"/>
-                                    <field name="socio_activity_ados_ids" widget="many2many_tags"/>
-                                    <field name="activities_for_parents"/>
+                                    <field
+                    name="spiritual_activity_babies_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="spiritual_activity_kids_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="spiritual_activity_ados_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="cognitive_activity_babies_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="cognitive_activity_kids_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="cognitive_activity_ados_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="physical_activity_babies_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="physical_activity_kids_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="physical_activity_ados_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="socio_activity_babies_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="socio_activity_kids_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="socio_activity_ados_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="activities_for_parents" />
                                 </group>
                                 <group string="Community">
-                                    <field name="local_currency" invisible="1"/>
-                                    <field name="usd" invisible="1"/>
-                                    <field name="community_name"/>
-                                    <field name="community_population"/>
-                                    <field name="primary_ethnic_group_name"/>
-                                    <field name="primary_language_id"/>
-                                    <field name="primary_adults_occupation_ids" widget="many2many_tags"/>
-                                    <field name="monthly_income" widget="monetary" options="{'currency_field': 'usd'}"/>
-                                    <field name="unemployment_rate"/>
-                                    <field name="typical_roof_material"/>
-                                    <field name="typical_floor_material"/>
-                                    <field name="typical_wall_material"/>
-                                    <field name="cultural_rituals"/>
-                                    <field name="primary_diet_ids" widget="many2many_tags"/>
+                                    <field
+                    name="local_currency"
+                    invisible="1"
+                  />
+                                    <field name="usd" invisible="1" />
+                                    <field name="community_name" />
+                                    <field name="community_population" />
+                                    <field name="primary_ethnic_group_name" />
+                                    <field name="primary_language_id" />
+                                    <field
+                    name="primary_adults_occupation_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="monthly_income"
+                    widget="monetary"
+                    options="{'currency_field': 'usd'}"
+                  />
+                                    <field name="unemployment_rate" />
+                                    <field name="typical_roof_material" />
+                                    <field name="typical_floor_material" />
+                                    <field name="typical_wall_material" />
+                                    <field name="cultural_rituals" />
+                                    <field
+                    name="primary_diet_ids"
+                    widget="many2many_tags"
+                  />
                                 </group>
                                 <group string="School">
-                                    <field name="annual_primary_school_cost" widget="monetary" options="{'currency_field': 'local_currency'}"/>
-                                    <field name="annual_secondary_school_cost" widget="monetary" options="{'currency_field': 'local_currency'}"/>
-                                    <field name="school_cost_paid_ids" widget="many2many_tags"/>
-                                    <field name="school_year_begins"/>
+                                    <field
+                    name="annual_primary_school_cost"
+                    widget="monetary"
+                    options="{'currency_field': 'local_currency'}"
+                  />
+                                    <field
+                    name="annual_secondary_school_cost"
+                    widget="monetary"
+                    options="{'currency_field': 'local_currency'}"
+                  />
+                                    <field
+                    name="school_cost_paid_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="school_year_begins" />
                                 </group>
                                 <group string="Geography">
-                                    <field name="community_locale"/>
-                                    <field name="community_climate"/>
-                                    <field name="community_terrain"/>
-                                    <field name="average_coolest_temperature"/>
-                                    <field name="coolest_month"/>
-                                    <field name="average_warmest_temperature"/>
-                                    <field name="warmest_month"/>
-                                    <field name="rainy_month_ids" widget="many2many_tags"/>
-                                    <field name="planting_month_ids" widget="many2many_tags"/>
-                                    <field name="harvest_month_ids" widget="many2many_tags"/>
-                                    <field name="hunger_month_ids" widget="many2many_tags"/>
-                                    <field name="current_temperature"/>
-                                    <field name="current_weather"/>
+                                    <field name="community_locale" />
+                                    <field name="community_climate" />
+                                    <field name="community_terrain" />
+                                    <field name="average_coolest_temperature" />
+                                    <field name="coolest_month" />
+                                    <field name="average_warmest_temperature" />
+                                    <field name="warmest_month" />
+                                    <field
+                    name="rainy_month_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="planting_month_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="harvest_month_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field
+                    name="hunger_month_ids"
+                    widget="many2many_tags"
+                  />
+                                    <field name="current_temperature" />
+                                    <field name="current_weather" />
                                 </group>
                                 <group string="Needs">
-                                    <field name="economic_needs"/>
-                                    <field name="health_needs"/>
-                                    <field name="education_needs"/>
-                                    <field name="social_needs"/>
-                                    <field name="spiritual_needs"/>
+                                    <field name="economic_needs" />
+                                    <field name="health_needs" />
+                                    <field name="education_needs" />
+                                    <field name="social_needs" />
+                                    <field name="spiritual_needs" />
                                 </group>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -225,13 +348,22 @@
         <field name="model">compassion.project</field>
         <field name="arch" type="xml">
             <search string="Search project">
-                <field name="name"/>
-                <field name="fcp_id"/>
-                <field name="status"/>
-                <field name="last_update_date"/>
-                <filter name="suspended" string="Suspended" domain="[('suspension','=','fund-suspended')]"/>
+                <field name="name" />
+                <field name="fcp_id" />
+                <field name="status" />
+                <field name="last_update_date" />
+                <filter
+          name="suspended"
+          string="Suspended"
+          domain="[('suspension','=','fund-suspended')]"
+        />
                 <group expand="0" string="Group By...">
-                    <filter string="Last Update" name="last_update" domain="[]" context="{'group_by':'last_update_date'}"/>
+                    <filter
+            string="Last Update"
+            name="last_update"
+            domain="[]"
+            context="{'group_by':'last_update_date'}"
+          />
                 </group>
             </search>
         </field>
@@ -245,37 +377,64 @@
             <form>
                 <group>
                     <group>
-                        <field name="date"/>
-                        <field name="type"/>
-                        <field string="Lifecycle details" name="details"/>
+                        <field name="date" />
+                        <field name="type" />
+                        <field string="Lifecycle details" name="details" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}">
-                        <field name="reactivation_date"/>
-                        <field name="fcp_improvement_desc"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Reactivation')]}"
+          >
+                        <field name="reactivation_date" />
+                        <field name="fcp_improvement_desc" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Reactivation')]}"/>
-                    <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
-                        <field name="suspension_start_date"/>
-                        <field name="suspension_end_date"/>
-                        <field name="suspension_reason_ids" widget="many2many_tags"/>
-                        <field name="extension_1"/>
-                        <field name="extension_1_reason_ids" attrs="{'invisible': [('extension_1', '=', False)]}" widget="many2many_tags"/>
-                        <field name="extension_2"/>
-                        <field name="extension_2_reason_ids" attrs="{'invisible': [('extension_2', '=', False)]}" widget="many2many_tags"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Reactivation')]}"
+          />
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Suspension')]}"
+          >
+                        <field name="suspension_start_date" />
+                        <field name="suspension_end_date" />
+                        <field
+              name="suspension_reason_ids"
+              widget="many2many_tags"
+            />
+                        <field name="extension_1" />
+                        <field
+              name="extension_1_reason_ids"
+              attrs="{'invisible': [('extension_1', '=', False)]}"
+              widget="many2many_tags"
+            />
+                        <field name="extension_2" />
+                        <field
+              name="extension_2_reason_ids"
+              attrs="{'invisible': [('extension_2', '=', False)]}"
+              widget="many2many_tags"
+            />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
-                        <field name="hold_cdsp_funds"/>
-                        <field name="hold_csp_funds"/>
-                        <field name="hold_gifts"/>
-                        <field name="hold_s2b_letters"/>
-                        <field name="hold_b2s_letters"/>
-                        <field name="hold_child_updates"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Suspension')]}"
+          >
+                        <field name="hold_cdsp_funds" />
+                        <field name="hold_csp_funds" />
+                        <field name="hold_gifts" />
+                        <field name="hold_s2b_letters" />
+                        <field name="hold_b2s_letters" />
+                        <field name="hold_child_updates" />
                     </group>
-                    <group attrs="{'invisible': [('type', '!=', 'Transition')]}">
-                        <field name="transition_date"/>
-                        <field name="transition_reason_ids" widget="many2many_tags"/>
-                        <field name="transition_complete"/>
-                        <field name="future_involvement_ids" widget="many2many_checkboxes"/>
+                    <group
+            attrs="{'invisible': [('type', '!=', 'Transition')]}"
+          >
+                        <field name="transition_date" />
+                        <field
+              name="transition_reason_ids"
+              widget="many2many_tags"
+            />
+                        <field name="transition_complete" />
+                        <field
+              name="future_involvement_ids"
+              widget="many2many_checkboxes"
+            />
                     </group>
                     <!--<group attrs="{'invisible': [('type', '!=', 'Transition')]}">-->
                         <!--<field name="celebration_details"/>-->
@@ -283,8 +442,8 @@
                     <!--</group>-->
                 </group>
                 <group attrs="{'invisible': [('type', '!=', 'Suspension')]}">
-                    <field name="suspension_detail"/>
-                    <field name="action_plan"/>
+                    <field name="suspension_detail" />
+                    <field name="action_plan" />
                 </group>
             </form>
         </field>
@@ -294,24 +453,30 @@
         <field name="name">projects</field>
         <field name="res_model">compassion.project</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_compassion_project_tree"/>
+        <field name="view_id" ref="view_compassion_project_tree" />
     </record>
 
     <record id="fetch_missing_project_terms" model="ir.actions.server">
         <field name="name">Fetch missing terms from GMC</field>
-        <field name="model_id" ref="model_compassion_project"/>
-        <field name="binding_model_id" ref="model_compassion_project"/>
+        <field name="model_id" ref="model_compassion_project" />
+        <field name="binding_model_id" ref="model_compassion_project" />
         <field name="state">code</field>
         <field name="code">action = records.fetch_translations()</field>
     </record>
 
     <record model="ir.actions.server" id="get_info_project_action">
         <field name="name">Get info</field>
-        <field name="model_id" ref="model_compassion_project"/>
-        <field name="binding_model_id" ref="model_compassion_project"/>
+        <field name="model_id" ref="model_compassion_project" />
+        <field name="binding_model_id" ref="model_compassion_project" />
         <field name="state">code</field>
         <field name="code">records.update_informations()</field>
     </record>
 
-    <menuitem id="menu_sponsorship_project" parent="menu_field_section" name="Projects" action="open_view_project_tree" sequence="3"/>
+    <menuitem
+    id="menu_sponsorship_project"
+    parent="menu_field_section"
+    name="Projects"
+    action="open_view_project_tree"
+    sequence="3"
+  />
 </odoo>

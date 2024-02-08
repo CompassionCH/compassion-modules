@@ -3,24 +3,27 @@
 
         <record id="partner_oauth_client" model="res.partner">
             <field name="name">Oauth demo</field>
-            <field name="company_id" ref="base.main_company"/>
+            <field name="company_id" ref="base.main_company" />
             <field name="email">demo@yourcompany.example.com</field>
         </record>
 
         <record id="user_oauth_client" model="res.users">
-            <field name="partner_id" ref="partner_oauth_client"/>
+            <field name="partner_id" ref="partner_oauth_client" />
             <field name="login">Compassion.CH</field>
             <field name="password">B-QabY5hH9{I</field>
-            <field name="groups_id" eval="[(6,0,[
+            <field
+        name="groups_id"
+        eval="[(6,0,[
                                         ref('message_center_compassion.group_gmc_user'),
                                         ref('base.group_user'),
                                         ref('base.group_partner_manager')
-                                        ])]"/>
+                                        ])]"
+      />
         </record>
 
         <!-- Add country in base user -->
         <record id="base.main_partner" model="res.partner">
-            <field name="country_id" search="[('code', '=', 'CH')]"/>
+            <field name="country_id" search="[('code', '=', 'CH')]" />
         </record>
 
     </data>

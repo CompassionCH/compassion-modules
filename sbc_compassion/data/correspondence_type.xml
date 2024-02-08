@@ -13,7 +13,10 @@
             <field name="name">Large Gift Thank You Letter</field>
         </record>
 
-        <record id="correspondence_type_new_sponsor" model="correspondence.type">
+        <record
+      id="correspondence_type_new_sponsor"
+      model="correspondence.type"
+    >
             <field name="name">New Sponsor Letter</field>
         </record>
 

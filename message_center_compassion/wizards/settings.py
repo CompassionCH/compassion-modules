@@ -22,7 +22,7 @@ class Settings(models.TransientModel):
         "res.users",
         string="Translate missing GMC values",
         domain=[("share", "=", False)],
-        compute="compute_relation_translate_notify_ids",
+        compute="_compute_relation_translate_notify_ids",
         inverse="_inverse_relation_translate_notify_ids",
     )
     connect_api_key = fields.Char(
@@ -41,7 +41,7 @@ class Settings(models.TransientModel):
         "Secret", config_parameter="message_center_compassion.connect_secret"
     )
 
-    def compute_relation_translate_notify_ids(self):
+    def _compute_relation_translate_notify_ids(self):
         self.translate_notify_ids = self._get_translate_notify_ids()
 
     @api.model

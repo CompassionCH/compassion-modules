@@ -33,8 +33,8 @@
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
-    "development_status": "Stable",
+    "website": "https://github.com/CompassionCH/compassion-modules",
+    "development_status": "Production/Stable",
     "depends": ["base"],
     "external_dependencies": {
         "python": ["babel", "pytesseract", "langdetect", "iso639-lang"]

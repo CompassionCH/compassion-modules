@@ -33,7 +33,7 @@
     "license": "AGPL-3",
     "author": "Compassion CH",
     "development_status": "Production/Stable",
-    "website": "https://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "category": "Accounting",
     "depends": ["partner_communication", "recurring_contract", "child_compassion"],
     "external_dependencies": {},

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2016 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
@@ -13,19 +13,25 @@
             <form>
                 <group>
                     <group>
-                        <field name="gift_type"/>
-                        <field name="gift_attribution"/>
-                        <field name="sponsorship_gift_type"/>
-                        <field name="product_id"/>
+                        <field name="gift_type" />
+                        <field name="gift_attribution" />
+                        <field name="sponsorship_gift_type" />
+                        <field name="product_id" />
                     </group>
                     <group>
-                        <field name="currency_id"/>
-                        <field name="min_amount" widget="monetary"
-                               options="{'currency_field': 'currency_id'}"/>
-                        <field name="max_amount" widget="monetary"
-                               options="{'currency_field': 'currency_id'}"/>
-                        <field name="gift_frequency"/>
-                        <field name="yearly_threshold"/>
+                        <field name="currency_id" />
+                        <field
+              name="min_amount"
+              widget="monetary"
+              options="{'currency_field': 'currency_id'}"
+            />
+                        <field
+              name="max_amount"
+              widget="monetary"
+              options="{'currency_field': 'currency_id'}"
+            />
+                        <field name="gift_frequency" />
+                        <field name="yearly_threshold" />
                     </group>
                 </group>
             </form>
@@ -37,15 +43,15 @@
         <field name="model">gift.threshold.settings</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="gift_type"/>
-                <field name="gift_attribution"/>
-                <field name="sponsorship_gift_type"/>
-                <field name="product_id"/>
-                <field name="min_amount"/>
-                <field name="max_amount"/>
-                <field name="currency_id"/>
-                <field name="gift_frequency"/>
-                <field name="yearly_threshold"/>
+                <field name="gift_type" />
+                <field name="gift_attribution" />
+                <field name="sponsorship_gift_type" />
+                <field name="product_id" />
+                <field name="min_amount" />
+                <field name="max_amount" />
+                <field name="currency_id" />
+                <field name="gift_frequency" />
+                <field name="yearly_threshold" />
             </tree>
         </field>
     </record>
@@ -53,12 +59,20 @@
     <record id="gift_notification_settings_form" model="ir.ui.view">
         <field name="name">gift.notification.settings.form</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.notification_settings"/>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.notification_settings"
+    />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']">
+            <xpath
+        expr="//div[@name='compassion_settings']//div[@name='notification_configuration']//div[@name='left_group']"
+      >
                 <div class="row" name="gift_undeliverable">
-                    <label for="gift_notify_ids" class="col-md-5 o_light_label"/>
-                    <field name="gift_notify_ids" widget="many2many_tags"/>
+                    <label
+            for="gift_notify_ids"
+            class="col-md-5 o_light_label"
+          />
+                    <field name="gift_notify_ids" widget="many2many_tags" />
                 </div>
             </xpath>
         </field>
@@ -67,36 +81,66 @@
     <record id="gift_accounting_settings_form" model="ir.ui.view">
         <field name="name">gift.accounting.settings.form</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.compassion_settings"
+    />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']" position="inside">
                 <h2>Accounting</h2>
-                <div class="row mt16 o_settings_container" name="accounting_configuration">
+                <div
+          class="row mt16 o_settings_container"
+          name="accounting_configuration"
+        >
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div name="left_group" class="o_setting_right_pane">
                             <div class="row">
-                                <label for="gift_income_account_id" class="col-md-5 o_light_label"/>
-                                <field name="gift_income_account_id" domain="[('company_id', '=', context.company_id)]"/>
+                                <label
+                  for="gift_income_account_id"
+                  class="col-md-5 o_light_label"
+                />
+                                <field
+                  name="gift_income_account_id"
+                  domain="[('company_id', '=', context.company_id)]"
+                />
                             </div>
                             <div class="row">
-                                <label for="gift_expense_account_id" class="col-md-5 o_light_label"/>
-                                <field name="gift_expense_account_id" domain="[('company_id', '=', context.company_id)]"/>
+                                <label
+                  for="gift_expense_account_id"
+                  class="col-md-5 o_light_label"
+                />
+                                <field
+                  name="gift_expense_account_id"
+                  domain="[('company_id', '=', context.company_id)]"
+                />
                             </div>
                             <div class="row">
-                                <label for="gift_journal_id" class="col-md-5 o_light_label"/>
-                                <field name="gift_journal_id" domain="[('company_id', '=', context.company_id)]"/>
+                                <label
+                  for="gift_journal_id"
+                  class="col-md-5 o_light_label"
+                />
+                                <field
+                  name="gift_journal_id"
+                  domain="[('company_id', '=', context.company_id)]"
+                />
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div name="right_group" class="o_setting_right_pane">
                             <div class="row">
-                                <label for="gift_analytic_id" class="col-md-5 o_light_label"/>
-                                <field name="gift_analytic_id"/>
+                                <label
+                  for="gift_analytic_id"
+                  class="col-md-5 o_light_label"
+                />
+                                <field name="gift_analytic_id" />
                             </div>
                             <div class="row">
-                                <label for="gift_analytic_tag_id" class="col-md-5 o_light_label"/>
-                                <field name="gift_analytic_tag_id"/>
+                                <label
+                  for="gift_analytic_tag_id"
+                  class="col-md-5 o_light_label"
+                />
+                                <field name="gift_analytic_tag_id" />
                             </div>
                         </div>
                     </div>
@@ -105,13 +149,19 @@
         </field>
     </record>
 
-    <record id="open_view_gift_threshold_settings" model="ir.actions.act_window">
+    <record
+    id="open_view_gift_threshold_settings"
+    model="ir.actions.act_window"
+  >
         <field name="name">Gift Threshold Configuration</field>
         <field name="res_model">gift.threshold.settings</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_gift_configuration" name="Gift Thresholds"
-              parent="child_compassion.menu_configuration"
-              action="open_view_gift_threshold_settings"/>
+    <menuitem
+    id="menu_gift_configuration"
+    name="Gift Thresholds"
+    parent="child_compassion.menu_configuration"
+    action="open_view_gift_threshold_settings"
+  />
 </odoo>

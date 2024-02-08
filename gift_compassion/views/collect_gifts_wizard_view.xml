@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2016 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
@@ -12,11 +12,19 @@
         <field name="arch" type="xml">
             <form>
                 <group string="Invoice Lines">
-                    <field name="domain" invisible="1"/>
-                    <field name="invoice_line_ids" context="{'tree_view_ref': 'sponsorship_compassion.view_invoice_line_partner_tree', 'lang': 'en_US'}"/>
+                    <field name="domain" invisible="1" />
+                    <field
+            name="invoice_line_ids"
+            context="{'tree_view_ref': 'sponsorship_compassion.view_invoice_line_partner_tree', 'lang': 'en_US'}"
+          />
                 </group>
                 <footer>
-                    <button name="collect_invoices" string="_Add to gift" type="object" class="oe_highlight"/>
+                    <button
+            name="collect_invoices"
+            string="_Add to gift"
+            type="object"
+            class="oe_highlight"
+          />
                 </footer>
             </form>
         </field>

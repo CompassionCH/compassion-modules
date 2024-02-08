@@ -4,13 +4,13 @@
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
             <tree string="Correspondence" decoration-danger="is_final_letter">
-                <field name="scanned_date"/>
-                <field name="sponsorship_id"/>
-                <field name="kit_identifier"/>
-                <field name="direction"/>
-                <field name="status_date"/>
-                <field name="state"/>
-                <field name="is_final_letter" invisible="1"/>
+                <field name="scanned_date" />
+                <field name="sponsorship_id" />
+                <field name="kit_identifier" />
+                <field name="direction" />
+                <field name="status_date" />
+                <field name="state" />
+                <field name="is_final_letter" invisible="1" />
             </tree>
         </field>
     </record>
@@ -20,13 +20,13 @@
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
             <tree string="Correspondence">
-                <field name="scanned_date"/>
-                <field name="communication_type_ids"/>
-                <field name="template_id"/>
-                <field name="original_language_id"/>
-                <field name="translation_language_id"/>
-                <field name="relationship"/>
-                <field name="state"/>
+                <field name="scanned_date" />
+                <field name="communication_type_ids" />
+                <field name="template_id" />
+                <field name="original_language_id" />
+                <field name="translation_language_id" />
+                <field name="relationship" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -34,10 +34,13 @@
     <!-- Resubmit letter to GMC mass action-->
     <record id="resubmit_letter_action" model="ir.actions.server">
         <field name="name">Resubmit to GMC</field>
-        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="model_id" ref="sbc_compassion.model_correspondence" />
         <field name="state">code</field>
         <field name="code">records.resubmit_letter()</field>
-        <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
+        <field
+      name="binding_model_id"
+      ref="sbc_compassion.model_correspondence"
+    />
         <field name="binding_type">action</field>
     </record>
 
@@ -48,86 +51,145 @@
         <field name="arch" type="xml">
             <form string="Correspondence">
                 <header>
-                    <field name="state" invisible="1"/>
-                    <field name="s2b_state" widget="statusbar" attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"
-                           statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"/>
-                    <field name="b2s_state" widget="statusbar" attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"
-                           statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"/>
-                    <button type="object" name="compose_letter_button"
-                            string="Compose letter"
-                            attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"/>
-                    <button name="download_pdf" type="object"
-                            string="Download PDF"
-                            attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"/>
-                    <button name="resubmit_letter" type="object"
-                            string="Resubmit Letter"
-                            attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
-                    <button name="quality_check_failed" type="object"
-                            string="Quality Check Failed"
-                            attrs="{'invisible': ['|', ('state', 'in', ['Printed and sent to ICP', 'Quality check unsuccessful']), ('direction', '=', 'Beneficiary To Supporter')]}"/>
+                    <field name="state" invisible="1" />
+                    <field
+            name="s2b_state"
+            widget="statusbar"
+            attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"
+            statusbar_visible="Received in the system,Global Partner translation queue,Field Office translation queue,Composition process,Printed and sent to ICP"
+          />
+                    <field
+            name="b2s_state"
+            widget="statusbar"
+            attrs="{'invisible': [('direction', '=', 'Supporter To Beneficiary')]}"
+            statusbar_visible="Field Office translation queue,Global Partner translation queue,Composition process,Published to Global Partner"
+          />
+                    <button
+            type="object"
+            name="compose_letter_button"
+            string="Compose letter"
+            attrs="{'invisible': ['|', ('state', '!=', 'Published to Global Partner'), ('direction', '=', 'Supporter To Beneficiary')]}"
+          />
+                    <button
+            name="download_pdf"
+            type="object"
+            string="Download PDF"
+            attrs="{'invisible': [('direction', '!=', 'Supporter To Beneficiary')]}"
+          />
+                    <button
+            name="resubmit_letter"
+            type="object"
+            string="Resubmit Letter"
+            attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"
+          />
+                    <button
+            name="quality_check_failed"
+            type="object"
+            string="Quality Check Failed"
+            attrs="{'invisible': ['|', ('state', 'in', ['Printed and sent to ICP', 'Quality check unsuccessful']), ('direction', '=', 'Beneficiary To Supporter')]}"
+          />
                 </header>
                 <sheet>
                     <h1>
-                        <field name="name"/>
+                        <field name="name" />
                     </h1>
                     <group>
                         <group>
-                            <field name="scanned_date"/>
-                            <field name="sponsorship_id" options="{
+                            <field name="scanned_date" />
+                            <field
+                name="sponsorship_id"
+                options="{
                                     'create_edit':false,'field_color': 'state', 'search_more':true,
-                                    'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"/>
-                            <field name="file_name" invisible="1"/>
-                            <field name="letter_image" filename="file_name"/>
-                            <field name="template_id"/>
-                            <field name="direction"/>
-                            <field name="communication_type_ids" widget="many2many_checkboxes"/>
+                                    'colors': {'terminated': 'gray', 'mandate': 'blue', 'waiting': 'blue'}}"
+              />
+                            <field name="file_name" invisible="1" />
+                            <field name="letter_image" filename="file_name" />
+                            <field name="template_id" />
+                            <field name="direction" />
+                            <field
+                name="communication_type_ids"
+                widget="many2many_checkboxes"
+              />
                         </group>
                         <group>
-                            <field name="status_date"/>
-                            <field name="kit_identifier"/>
-                            <field name="relationship"/>
-                            <field name="source"/>
-                            <field name="is_first_letter"/>
-                            <field name="physical_attachments"/>
-                            <field name="attachments_description" attrs="{'invisible': [('physical_attachments', '=', False)]}"/>
-                            <field name="marked_for_rework" invisible="1"/>
-                            <field name="rework_reason" attrs="{'invisible': [('rework_reason', '=', False)]}"/>
-                            <field name="rework_comments" attrs="{'invisible': [('rework_comments', '=', False)]}"/>
+                            <field name="status_date" />
+                            <field name="kit_identifier" />
+                            <field name="relationship" />
+                            <field name="source" />
+                            <field name="is_first_letter" />
+                            <field name="physical_attachments" />
+                            <field
+                name="attachments_description"
+                attrs="{'invisible': [('physical_attachments', '=', False)]}"
+              />
+                            <field name="marked_for_rework" invisible="1" />
+                            <field
+                name="rework_reason"
+                attrs="{'invisible': [('rework_reason', '=', False)]}"
+              />
+                            <field
+                name="rework_comments"
+                attrs="{'invisible': [('rework_comments', '=', False)]}"
+              />
                         </group>
                         <group string="Supporter">
-                            <field name="partner_id"/>
-                            <field name="supporter_languages_ids" string="Partner spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                            <field name="email"/>
+                            <field name="partner_id" />
+                            <field
+                name="supporter_languages_ids"
+                string="Partner spoken languages"
+                widget="many2many_tags"
+                options="{'create':False}"
+              />
+                            <field name="email" />
                         </group>
                         <group string="Participant">
-                            <field name="child_id"/>
-                            <field name="beneficiary_language_ids" string="Child spoken languages" widget="many2many_tags" options="{'create':False}"/>
-                            <field name="sponsorship_state"/>
+                            <field name="child_id" />
+                            <field
+                name="beneficiary_language_ids"
+                string="Child spoken languages"
+                widget="many2many_tags"
+                options="{'create':False}"
+              />
+                            <field name="sponsorship_state" />
                         </group>
                     </group>
-                    <separator string="Letter content"/>
+                    <separator string="Letter content" />
                     <group>
                         <group>
                             <field name="nbr_pages" />
-                            <field name="original_language_id" string="Original language" options="{'create':False}" required="1"/>
+                            <field
+                name="original_language_id"
+                string="Original language"
+                options="{'create':False}"
+                required="1"
+              />
                         </group>
                         <group>
-                            <field name="translator" attrs="{'invisible': [('translator', '=', False)]}"/>
-                            <field name="translation_language_id" options="{'create':False}"/>
+                            <field
+                name="translator"
+                attrs="{'invisible': [('translator', '=', False)]}"
+              />
+                            <field
+                name="translation_language_id"
+                options="{'create':False}"
+              />
                         </group>
                     </group>
-                    <field name="page_ids" context="{'default_correspondence_id': active_id}">
+                    <field
+            name="page_ids"
+            context="{'default_correspondence_id': active_id}"
+          >
                         <tree>
-                            <field name="original_text"/>
-                            <field name="english_text"/>
-                            <field name="translated_text"/>
+                            <field name="original_text" />
+                            <field name="english_text" />
+                            <field name="translated_text" />
                         </tree>
                     </field>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -140,18 +202,18 @@
             <form>
                 <group>
                     <group>
-                        <field name="correspondence_id"/>
-                        <field name="original_page_url"/>
-                        <field name="final_page_url"/>
+                        <field name="correspondence_id" />
+                        <field name="original_page_url" />
+                        <field name="final_page_url" />
                     </group>
                 </group>
                 <group>
                     <field name="paragraph_ids">
                         <tree editable="bottom">
-                            <field name="original_text"/>
-                            <field name="english_text"/>
-                            <field name="translated_text"/>
-                            <field name="sequence" widget="handle"/>
+                            <field name="original_text" />
+                            <field name="english_text" />
+                            <field name="translated_text" />
+                            <field name="sequence" widget="handle" />
                         </tree>
                     </field>
                 </group>
@@ -159,11 +221,16 @@
         </field>
     </record>
 
-    <record id="action_compassion_correspondence_form" model="ir.actions.act_window">
+    <record
+    id="action_compassion_correspondence_form"
+    model="ir.actions.act_window"
+  >
         <field name="name">Correspondence</field>
         <field name="res_model">correspondence</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_state_published':1, 'search_default_unread':1,}</field>
+        <field
+      name="context"
+    >{'search_default_state_published':1, 'search_default_unread':1,}</field>
     </record>
 
     <!-- Extends the search on sponsorship correspondence -->
@@ -172,21 +239,48 @@
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
             <search>
-                <field name="kit_identifier"/>
+                <field name="kit_identifier" />
                 <field name="child_id" />
                 <field name="partner_id" />
                 <field name="direction" />
                 <field name="state" />
                 <field name="sponsorship_id" />
-                <filter name="direction_stb" string="Supporter To Beneficiary" domain="[('direction','=','Supporter To Beneficiary')]" />
+                <filter
+          name="direction_stb"
+          string="Supporter To Beneficiary"
+          domain="[('direction','=','Supporter To Beneficiary')]"
+        />
                 <separator />
-                <filter name="direction_bts" string="Beneficiary To Supporter" domain="[('direction','=','Beneficiary To Supporter')]" />
+                <filter
+          name="direction_bts"
+          string="Beneficiary To Supporter"
+          domain="[('direction','=','Beneficiary To Supporter')]"
+        />
                 <separator />
-                <filter name="state_published" string="Published state" domain="[('state','=','Published to Global Partner')]" />
+                <filter
+          name="state_published"
+          string="Published state"
+          domain="[('state','=','Published to Global Partner')]"
+        />
                 <group expand="0" string="Group By">
-                    <filter string="Partner" name="partner" domain="[]" context="{'group_by': 'partner_id'}" />
-                    <filter string="Sponsorship" name="sponsorship" domain="[]" context="{'group_by': 'sponsorship_id'}" />
-                    <filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}" />
+                    <filter
+            string="Partner"
+            name="partner"
+            domain="[]"
+            context="{'group_by': 'partner_id'}"
+          />
+                    <filter
+            string="Sponsorship"
+            name="sponsorship"
+            domain="[]"
+            context="{'group_by': 'sponsorship_id'}"
+          />
+                    <filter
+            string="State"
+            name="group_state"
+            domain="[]"
+            context="{'group_by': 'state'}"
+          />
                 </group>
             </search>
         </field>
@@ -198,9 +292,16 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="message_center_compassion.view_gmc_message_filter"/>
-        <field name="context">{'search_default_pending':1, 'search_default_failure':1}</field>
-        <field name="domain">[('action_id.model', '=', 'correspondence'),('direction','=','out')]</field>
+        <field
+      name="search_view_id"
+      ref="message_center_compassion.view_gmc_message_filter"
+    />
+        <field
+      name="context"
+    >{'search_default_pending':1, 'search_default_failure':1}</field>
+        <field
+      name="domain"
+    >[('action_id.model', '=', 'correspondence'),('direction','=','out')]</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 No messages.
@@ -210,24 +311,38 @@
 
     <record id="replace_by_original_action" model="ir.actions.server">
         <field name="name">Replace PDF by original</field>
-        <field name="model_id" ref="model_correspondence"/>
-        <field name="binding_model_id" ref="model_correspondence"/>
+        <field name="model_id" ref="model_correspondence" />
+        <field name="binding_model_id" ref="model_correspondence" />
         <field name="state">code</field>
         <field name="code">records.attach_original()</field>
     </record>
     <record id="replace_by_final_action" model="ir.actions.server">
         <field name="name">Replace PDF by final</field>
-        <field name="model_id" ref="model_correspondence"/>
-        <field name="binding_model_id" ref="model_correspondence"/>
+        <field name="model_id" ref="model_correspondence" />
+        <field name="binding_model_id" ref="model_correspondence" />
         <field name="state">code</field>
         <field name="code">records.attach_final()</field>
     </record>
 
-    <menuitem id="menu_message_letter_create" parent="message_center_compassion.menu_message_outgoing" action="action_gmc_message_create_letter" sequence="9"/>
+    <menuitem
+    id="menu_message_letter_create"
+    parent="message_center_compassion.menu_message_outgoing"
+    action="action_gmc_message_create_letter"
+    sequence="9"
+  />
 
-    <menuitem id="menu_correspondence" parent="child_compassion.menu_sponsorship_root"
-              name="Correspondence" sequence="4"/>
+    <menuitem
+    id="menu_correspondence"
+    parent="child_compassion.menu_sponsorship_root"
+    name="Correspondence"
+    sequence="4"
+  />
 
-    <menuitem id="menu_sponsorship_letters" parent="menu_correspondence"
-              name="Letters" action="action_compassion_correspondence_form" sequence="0"/>
+    <menuitem
+    id="menu_sponsorship_letters"
+    parent="menu_correspondence"
+    name="Letters"
+    action="action_compassion_correspondence_form"
+    sequence="0"
+  />
 </odoo>

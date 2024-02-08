@@ -60,9 +60,6 @@ def find_barcode_using_multiple_strategies(original):
         for operation in strategy:
             img = operation(img)
         barcodes = detect_barcode_in_image(img)
-
-        if len(barcodes) > 1:
-            print("multiple barcode detected, used the first one")
         if barcodes:
             return barcodes[0].data.decode("utf8")
 
