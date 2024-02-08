@@ -13,4 +13,5 @@ from odoo import fields, models
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    gift_id = fields.Many2one("sponsorship.gift", "GMC Gift", readonly=False)
+    gift_id = fields.Many2one(
+        "sponsorship.gift", "GMC Gift", readonly=False, copy=False)
