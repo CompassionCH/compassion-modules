@@ -272,6 +272,7 @@ class ImportLettersHistory(models.Model):
             # this commit is really important
             # it avoid having to keep the "data"s in memory until the whole process is
             # finished each time a letter is scanned, it is also inserted in the DB
+            # pylint: disable=invalid-commit
             self._cr.commit()
         except Exception:
             logger.error(

@@ -25,11 +25,11 @@ SDS_COLORS = {
 }
 
 
-class InstallSdsTracking(models.TransientModel):
+class InstallSdsTracking(models.AbstractModel):
     _name = "install.sds.tracking"
     _description = "Install SDS Tracking"
 
-    # Only at module installation
+    # Use this from a shell to initialize the SDS tracking data.
     @api.model
     def set_sds_states(self):
         """Rules for setting the SDS State of a contract.

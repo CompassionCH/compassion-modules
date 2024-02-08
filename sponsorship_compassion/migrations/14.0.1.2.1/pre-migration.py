@@ -2,6 +2,8 @@ import logging
 
 from openupgradelib.openupgrade import migrate
 
+from odoo.tools import email_normalize_all, flatten
+
 _logger = logging.getLogger(__name__)
 
 
@@ -32,6 +34,8 @@ def migrate(env, version):
             {
                 "email": email,
             }
-            for email in opt_out_partners.mapped("email")
+            for email in flatten(
+                map(email_normalize_all, opt_out_partners.mapped("email"))
+            )
         ]
     )

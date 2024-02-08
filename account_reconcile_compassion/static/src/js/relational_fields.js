@@ -1,4 +1,6 @@
-odoo.define("account_reconcile_compassion.relational_fields", function (require) {
+odoo.define("account_reconcile_compassion.relational_fields", function (
+  require
+) {
   "use strict";
   var FieldMany2One = require("web.relational_fields").FieldMany2One;
 

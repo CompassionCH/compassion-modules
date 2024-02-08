@@ -1,11 +1,13 @@
-beautifulsoup4
+# generated from manifests external_dependencies
+babel
+bs4
 iso639-lang
 jwt
 langdetect
 pandas>=1.5.3
 phonenumbers
-pycups
 PyMuPDF
+PyPDF2
 pyquery
 pytesseract
 python-magic

@@ -1,26 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <record id="module_category_message_center" model="ir.module.category">
             <field name="name">Compassion Message Center</field>
-            <field name="description">Send/Receive and manage messages between GPA and GMC</field>
+            <field
+        name="description"
+      >Send/Receive and manage messages between GPA and GMC</field>
             <field name="sequence">1</field>
         </record>
         <record id="group_gmc_user" model="res.groups">
             <field name="name">User</field>
-            <field name="comment">The user will have access to the message center of Compassion and process messages received from GMC.</field>
-            <field name="category_id" ref="module_category_message_center"/>
+            <field
+        name="comment"
+      >The user will have access to the message center of Compassion and process messages received from GMC.</field>
+            <field name="category_id" ref="module_category_message_center" />
         </record>
         <record id="group_gmc_manager" model="res.groups">
             <field name="name">Manager</field>
-            <field name="comment">The user can configure the message center of Compassion.</field>
-            <field name="category_id" ref="module_category_message_center"/>
-            <field name="implied_ids" eval="[(4, ref('group_gmc_user'))]"/>
+            <field
+        name="comment"
+      >The user can configure the message center of Compassion.</field>
+            <field name="category_id" ref="module_category_message_center" />
+            <field name="implied_ids" eval="[(4, ref('group_gmc_user'))]" />
         </record>
 
         <!-- Add group to Administrator -->
         <record id="base.user_admin" model="res.users">
-            <field name="groups_id" eval="[(4, ref('group_gmc_manager'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_gmc_manager'))]" />
         </record>
     </data>
 </odoo>

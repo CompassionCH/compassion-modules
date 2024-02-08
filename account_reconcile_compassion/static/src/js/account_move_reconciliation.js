@@ -56,9 +56,13 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
   });
 
   reconciliation_renderer.StatementRenderer.include({
-    events: _.extend({}, reconciliation_renderer.StatementRenderer.prototype.events, {
-      "click div:first h1.statement_name": "statementNameClickHandler",
-    }),
+    events: _.extend(
+      {},
+      reconciliation_renderer.StatementRenderer.prototype.events,
+      {
+        "click div:first h1.statement_name": "statementNameClickHandler",
+      }
+    ),
 
     // Change behaviour when clicking on name of bank statement
     statementNameClickHandler: function () {
@@ -178,8 +182,8 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             account_id: {
               string: _t("Account"),
             },
-            label: {string: _t("Label")},
-            amount: {string: _t("Account")},
+            label: { string: _t("Label") },
+            amount: { string: _t("Account") },
             // CHANGE: Product, sponsorship, user_id and comment
             // added from original function
             product_id: {
@@ -207,14 +211,14 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             self,
             "account_id",
             record,
-            {mode: "edit", attrs: {can_create: false}}
+            { mode: "edit", attrs: { can_create: false } }
           );
 
           self.fields.journal_id = new relational_fields.FieldMany2One(
             self,
             "journal_id",
             record,
-            {mode: "edit"}
+            { mode: "edit" }
           );
 
           self.fields.tax_ids = new relational_fields.FieldMany2ManyTags(
@@ -223,7 +227,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             record,
             {
               mode: "edit",
-              additionalContext: {append_type_to_tax_name: true},
+              additionalContext: { append_type_to_tax_name: true },
             }
           );
 
@@ -231,30 +235,40 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             self,
             "analytic_account_id",
             record,
-            {mode: "edit"}
+            { mode: "edit" }
           );
 
           self.fields.analytic_tag_ids = new relational_fields.FieldMany2ManyTags(
             self,
             "analytic_tag_ids",
             record,
-            {mode: "edit"}
+            { mode: "edit" }
           );
 
           self.fields.force_tax_included = new basic_fields.FieldBoolean(
             self,
             "force_tax_included",
             record,
-            {mode: "edit"}
+            { mode: "edit" }
           );
 
-          self.fields.label = new basic_fields.FieldChar(self, "label", record, {
-            mode: "edit",
-          });
+          self.fields.label = new basic_fields.FieldChar(
+            self,
+            "label",
+            record,
+            {
+              mode: "edit",
+            }
+          );
 
-          self.fields.amount = new basic_fields.FieldFloat(self, "amount", record, {
-            mode: "edit",
-          });
+          self.fields.amount = new basic_fields.FieldFloat(
+            self,
+            "amount",
+            record,
+            {
+              mode: "edit",
+            }
+          );
 
           self.fields.date = new basic_fields.FieldDate(self, "date", record, {
             mode: "edit",
@@ -264,7 +278,7 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             self,
             "to_check",
             record,
-            {mode: "edit"}
+            { mode: "edit" }
           );
 
           // CHANGE: Product, sponsorship, user_id and comment
@@ -296,9 +310,14 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           //                        }
           //                    );
 
-          self.fields.comment = new basic_fields.FieldChar(self, "comment", record, {
-            mode: "edit",
-          });
+          self.fields.comment = new basic_fields.FieldChar(
+            self,
+            "comment",
+            record,
+            {
+              mode: "edit",
+            }
+          );
 
           self.fields.avoid_thankyou_letter = new basic_fields.FieldBoolean(
             self,
@@ -325,7 +344,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           self.fields.journal_id.appendTo(
             $create.find(".create_journal_id .o_td_field")
           );
-          self.fields.tax_ids.appendTo($create.find(".create_tax_id .o_td_field"));
+          self.fields.tax_ids.appendTo(
+            $create.find(".create_tax_id .o_td_field")
+          );
           self.fields.analytic_account_id.appendTo(
             $create.find(".create_analytic_account_id .o_td_field")
           );
@@ -342,7 +363,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             .appendTo($create.find(".create_amount .o_td_field"))
             .then(addRequiredStyle.bind(self, self.fields.amount));
           self.fields.date.appendTo($create.find(".create_date .o_td_field"));
-          self.fields.to_check.appendTo($create.find(".create_to_check .o_td_field"));
+          self.fields.to_check.appendTo(
+            $create.find(".create_to_check .o_td_field")
+          );
           // CHANGE: Product, sponsorship, user_id and comment
           // added from original function
           self.fields.product_id.appendTo(
@@ -352,7 +375,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
             $create.find(".create_sponsorship_id .o_td_field")
           );
           //                    self.fields.user_id.appendTo($create.find(".create_user_id .o_td_field"));
-          self.fields.comment.appendTo($create.find(".create_comment .o_td_field"));
+          self.fields.comment.appendTo(
+            $create.find(".create_comment .o_td_field")
+          );
           self.fields.avoid_thankyou_letter.appendTo(
             $create.find(".create_avoid_thankyou_letter .o_td_field")
           );
@@ -478,11 +503,14 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
           if (changes) {
             if (changes.account_id) values.account_id = changes.account_id;
             if (changes.tax_id) values.tax_id = changes.tax_id;
-            if (changes.analytic_id) values.analytic_account_id = changes.analytic_id;
+            if (changes.analytic_id)
+              values.analytic_account_id = changes.analytic_id;
             if (changes.analytic_tag_ids) {
               // Replace analytic tags as the parent method doesn't support several tags added
               var line = self.getLine(handle);
-              var prop = _.last(_.filter(line.reconciliation_proposition, "__focus"));
+              var prop = _.last(
+                _.filter(line.reconciliation_proposition, "__focus")
+              );
               prop.analytic_tag_ids = changes.analytic_tag_ids;
             }
           }
@@ -547,7 +575,9 @@ odoo.define("account_reconcile_compassion.reconciliation", function (require) {
     _formatToProcessReconciliation: function (line, prop) {
       var result = this._super(line, prop);
       result.product_id = prop.product_id ? prop.product_id.id : null;
-      result.sponsorship_id = prop.sponsorship_id ? prop.sponsorship_id.id : null;
+      result.sponsorship_id = prop.sponsorship_id
+        ? prop.sponsorship_id.id
+        : null;
       //            result.user_id = prop.user_id ? prop.user_id.id : null;
       result.comment = prop.comment;
       result.avoid_thankyou_letter = prop.avoid_thankyou_letter

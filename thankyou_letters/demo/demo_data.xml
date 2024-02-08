@@ -30,7 +30,7 @@
 
     <!-- Associate success story 2 to iPod product -->
     <record id="product.product_product_11" model="product.product">
-        <field name="success_story_id" ref="success_story_2"/>
+        <field name="success_story_id" ref="success_story_2" />
         <field name="requires_thankyou">True</field>
         <field name="thanks_name">a great iPod</field>
     </record>

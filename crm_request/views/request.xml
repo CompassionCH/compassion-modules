@@ -1,23 +1,30 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <odoo>
     <!-- Search view -->
     <record id="support_search_view" model="ir.ui.view">
         <field name="name">support.search.view</field>
         <field name="model">crm.claim</field>
-        <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter"/>
+        <field name="inherit_id" ref="crm_claim.view_crm_case_claims_filter" />
         <field name="arch" type="xml">
             <xpath expr="//filter[1]" position="attributes">
                 <attribute name="string">Unassigned</attribute>
                 <attribute name="name">unassigned</attribute>
             </xpath>
             <field name="partner_id" position="before">
-                <field name="categ_id"/>
-                <filter string="Assigned to me" name="assigned_to_me" domain="[('user_id','=',uid)]"/>
+                <field name="categ_id" />
+                <filter
+          string="Assigned to me"
+          name="assigned_to_me"
+          domain="[('user_id','=',uid)]"
+        />
             </field>
             <field name="user_id" position="after">
-                <separator/>
-                <filter string="Request open" name="stage_open"
-                        domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d),('stage_id', '!=', %(crm_claim.stage_claim3)d)]"/>
+                <separator />
+                <filter
+          string="Request open"
+          name="stage_open"
+          domain="[('stage_id', '!=', %(crm_claim.stage_claim2)d),('stage_id', '!=', %(crm_claim.stage_claim3)d)]"
+        />
             </field>
         </field>
     </record>
@@ -35,40 +42,44 @@
         <field name="model">crm.claim</field>
         <field name="type">kanban</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="stage_id"
-                    group_create='false'
-                    group_delete='false'
-                    group_edit="false"
-                    quick_create='false'>
-                <field name='partner_id'/>
-                <field name='color'/>
+            <kanban
+        default_group_by="stage_id"
+        group_create='false'
+        group_delete='false'
+        group_edit="false"
+        quick_create='false'
+      >
+                <field name='partner_id' />
+                <field name='color' />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                        <div
+              t-attf-class="#{kanban_color(record.color.raw_value)}"
+            >
                             <div class="oe_kanban_vignette">
                                 <div class='oe_kanban_card'>
                                     <h4>
                                         <a type="open">
-                                            <field name="name"/>
+                                            <field name="name" />
                                         </a>
                                     </h4>
                                     <ul>
                                         <li>
-                                            <field name='partner_id'/>
+                                            <field name='partner_id' />
                                         </li>
                                         <li>
-                                            <field name='ref'/>
+                                            <field name='ref' />
                                         </li>
                                         <li>
-                                            <field name='stage_id'/>
+                                            <field name='stage_id' />
                                         </li>
                                     </ul>
                                 </div>
                                 <div class='oe_kanban_bottom_right'>
-                                    <field name='user_id'/>
+                                    <field name='user_id' />
                                 </div>
                                 <div class='oe_kanban_footer_left'>
-                                    <field name='date'/>
+                                    <field name='date' />
                                 </div>
                             </div>
                         </div>
@@ -82,43 +93,68 @@
     <record model="ir.ui.view" id="crm_request_form_view_id">
         <field name="name">CRM - Requests Form</field>
         <field name="model">crm.claim</field>
-        <field name ="priority" eval="15"/>
+        <field name="priority" eval="15" />
         <field name="arch" type="xml">
             <form string="Claim">
                 <header>
-                    <button name="action_reply" string="Reply" type="object" class="btn-primary"/>
-                    <button name="%(action_wizard_request_assign)d" string="Assign to" type="action" class="btn-default"/>
-                    <field name="stage_id" widget="statusbar" clickable="True"/>
+                    <button
+            name="action_reply"
+            string="Reply"
+            type="object"
+            class="btn-primary"
+          />
+                    <button
+            name="%(action_wizard_request_assign)d"
+            string="Assign to"
+            type="action"
+            class="btn-default"
+          />
+                    <field
+            name="stage_id"
+            widget="statusbar"
+            clickable="True"
+          />
                 </header>
                 <sheet>
                     <h1>
-                        <field name="name"/>
+                        <field name="name" />
                     </h1>
                     <group>
                         <group>
-                            <field name="team_id"/>
-                            <field name="user_id" domain="[('share', '!=', True)]"/>
-                            <field name="categ_id" string="Category" options="{'no_create': True}"/>
-                            <field name="alias_id" groups="base.group_no_one"/>
+                            <field name="team_id" />
+                            <field
+                name="user_id"
+                domain="[('share', '!=', True)]"
+              />
+                            <field
+                name="categ_id"
+                string="Category"
+                options="{'no_create': True}"
+              />
+                            <field name="alias_id" groups="base.group_no_one" />
                         </group>
                         <group>
-                            <field name="language"/>
-                            <field name="date"/>
-                            <field name="priority" widget="priority"/>
+                            <field name="language" />
+                            <field name="date" />
+                            <field name="priority" widget="priority" />
                         </group>
                     </group>
                     <group>
                         <group groups="base.group_user" string="Reporter">
-                            <field name="partner_id" string="Partner"/>
-                            <field name="partner_phone"/>
-                            <field name="email_from" widget="email"/>
+                            <field name="partner_id" string="Partner" />
+                            <field name="partner_phone" />
+                            <field name="email_from" widget="email" />
                         </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
+                    <field
+            name="message_follower_ids"
+            widget="mail_followers"
+            groups="base.group_user"
+          />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
                 </div>
             </form>
         </field>
@@ -132,20 +168,27 @@
             <form string="Assign">
                 <sheet>
                     <group>
-                        <field name='user_id' domain="[('share', '!=', True)]"/>
+                        <field
+              name='user_id'
+              domain="[('share', '!=', True)]"
+            />
                     </group>
                     <group>
-                        <field name='intern_note'/>
+                        <field name='intern_note' />
                     </group>
                 </sheet>
                 <footer>
-                    <button name='assign_to'
-                            string='OK'
-                            class='btn-primary'
-                            type='object'/>
-                    <button string='Cancel'
-                            class='btn-default'
-                            special='cancel'/>
+                    <button
+            name='assign_to'
+            string='OK'
+            class='btn-primary'
+            type='object'
+          />
+                    <button
+            string='Cancel'
+            class='btn-default'
+            special='cancel'
+          />
                 </footer>
             </form>
         </field>
@@ -155,10 +198,16 @@
     <record id="view_res_partner_crm_remove_claims" model="ir.ui.view">
         <field name="name">res.partner.crm.compassion.remove.claims</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="crm_claim.view_claim_res_partner_info_form"/>
-        <field eval="18" name="priority"/>
+        <field
+      name="inherit_id"
+      ref="crm_claim.view_claim_res_partner_info_form"
+    />
+        <field eval="18" name="priority" />
         <field name="arch" type="xml">
-            <button name="%(crm_claim.crm_claim_category_claim0)d" position="attributes">
+            <button
+        name="%(crm_claim.crm_claim_category_claim0)d"
+        position="attributes"
+      >
                 <attribute name="invisible">1</attribute>
             </button>
         </field>
@@ -169,12 +218,20 @@
         <field name="name">Requests</field>
         <field name="res_model">crm.claim</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="view_ids" eval="[(5, 0, 0),
+        <field
+      name="view_ids"
+      eval="[(5, 0, 0),
     (0, 0, {'view_mode': 'kanban', 'view_id': ref('crm_request.crm_request_kanban_view')}),
     (0, 0, {'view_mode': 'tree', 'view_id': ref('crm_claim.crm_case_claims_tree_view')}),
-    (0, 0, {'view_mode': 'form', 'view_id': ref('crm_request.crm_request_form_view_id')})]"/>
-        <field name="context">{"search_default_assigned_to_me":1, "search_default_stage_open":1, "stage_type":'claim'}</field>
-        <field name="search_view_id" ref="crm_claim.view_crm_case_claims_filter"/>
+    (0, 0, {'view_mode': 'form', 'view_id': ref('crm_request.crm_request_form_view_id')})]"
+    />
+        <field
+      name="context"
+    >{"search_default_assigned_to_me":1, "search_default_stage_open":1, "stage_type":'claim'}</field>
+        <field
+      name="search_view_id"
+      ref="crm_claim.view_crm_case_claims_filter"
+    />
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Record and track your customers' requests. Requests may be linked to a sales order or a lot.You can send emails with attachments and keep the full history for a request (emails sent, intervention type and so on).Requests may automatically be linked to an email address using the mail gateway module.
@@ -183,25 +240,42 @@
     </record>
 
     <!-- Top menu -->
-    <menuitem id="support_root"
-              name="Support"
-              groups="sales_team.group_sale_salesman"
-              sequence="1"
-              web_icon="crm_request,static/description/icon.png"/>
+    <menuitem
+    id="support_root"
+    name="Support"
+    groups="sales_team.group_sale_salesman"
+    sequence="1"
+    web_icon="crm_request,static/description/icon.png"
+  />
 
-    <menuitem id="menu_crm_case_claims" name="Requests"
-              parent="support_root" action="request_action" sequence="0"
-              groups="sales_team.group_sale_salesman"/>
+    <menuitem
+    id="menu_crm_case_claims"
+    name="Requests"
+    parent="support_root"
+    action="request_action"
+    sequence="0"
+    groups="sales_team.group_sale_salesman"
+  />
 
     <!-- Configuration menu-->
-    <menuitem id="crm_claim.menu_config_claim" name="Configuration"
-              parent="support_root" sequence="10"
-              groups="sales_team.group_sale_manager"/>
-    <menuitem id="crm_claim.menu_crm_case_claim-act" name="Categories"
-              groups="sales_team.group_sale_manager"
-              parent="crm_claim.menu_config_claim"/>
-    <menuitem id="crm_holiday_act_menu" name="Holidays"
-              groups="sales_team.group_sale_manager"
-              parent="crm_claim.menu_crm_case_claim-act"/>
+    <menuitem
+    id="crm_claim.menu_config_claim"
+    name="Configuration"
+    parent="support_root"
+    sequence="10"
+    groups="sales_team.group_sale_manager"
+  />
+    <menuitem
+    id="crm_claim.menu_crm_case_claim-act"
+    name="Categories"
+    groups="sales_team.group_sale_manager"
+    parent="crm_claim.menu_config_claim"
+  />
+    <menuitem
+    id="crm_holiday_act_menu"
+    name="Holidays"
+    groups="sales_team.group_sale_manager"
+    parent="crm_claim.menu_crm_case_claim-act"
+  />
 
 </odoo>

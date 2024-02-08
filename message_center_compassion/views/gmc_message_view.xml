@@ -1,18 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_gmc_message_incoming_tree" model="ir.ui.view">
         <field name="name">gmc.message.incoming.tree</field>
         <field name="model">gmc.message</field>
         <field name="priority">17</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="state in ('failure', 'odoo_failure')"
-                  decoration-primary="state == 'new'"
-                  decoration-muted="state == 'success'">
-                <field name="action_id"/>
-                <field name="res_name"/>
-                <field name="date"/>
-                <field name="process_date"/>
-                <field name="state"/>
+            <tree
+        decoration-danger="state in ('failure', 'odoo_failure')"
+        decoration-primary="state == 'new'"
+        decoration-muted="state == 'success'"
+      >
+                <field name="action_id" />
+                <field name="res_name" />
+                <field name="date" />
+                <field name="process_date" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -22,15 +24,17 @@
         <field name="model">gmc.message</field>
         <field name="priority">12</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="state in ('failure', 'odoo_failure')"
-                  decoration-primary="state == 'new'"
-                  decoration-muted="state == 'success'">
-                <field name="action_id"/>
-                <field name="partner_id"/>
-                <field name="res_name"/>
-                <field name="date"/>
-                <field name="process_date"/>
-                <field name="state"/>
+            <tree
+        decoration-danger="state in ('failure', 'odoo_failure')"
+        decoration-primary="state == 'new'"
+        decoration-muted="state == 'success'"
+      >
+                <field name="action_id" />
+                <field name="partner_id" />
+                <field name="res_name" />
+                <field name="date" />
+                <field name="process_date" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -41,41 +45,68 @@
         <field name="arch" type="xml">
             <form string="GMC Message" create="false">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="new,pending,success"/>
-                    <button name="process_messages" type="object" class="oe_highlight" string="Process Message"
-                            states="new,failure,odoo_failure"/>
-                    <button name="reset_message" type="object" string="Set back to New" states="failure,pending"/>
-                    <button name="force_success" type="object" string="Success" groups="base.group_erp_manager"
-                            attrs="{'invisible':[('state','in',['postponed', 'success'])]}"/>
-                    <button name="open_related" type="object" string="Related"/>
+                    <field
+            name="state"
+            widget="statusbar"
+            statusbar_visible="new,pending,success"
+          />
+                    <button
+            name="process_messages"
+            type="object"
+            class="oe_highlight"
+            string="Process Message"
+            states="new,failure,odoo_failure"
+          />
+                    <button
+            name="reset_message"
+            type="object"
+            string="Set back to New"
+            states="failure,pending"
+          />
+                    <button
+            name="force_success"
+            type="object"
+            string="Success"
+            groups="base.group_erp_manager"
+            attrs="{'invisible':[('state','in',['postponed', 'success'])]}"
+          />
+                    <button
+            name="open_related"
+            type="object"
+            string="Related"
+          />
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="action_id"/>
-                            <field name="name" invisible="1"/>
+                            <field name="action_id" />
+                            <field name="name" invisible="1" />
                         </h1>
                     </div>
                     <group>
-                        <field name="direction" invisible="1"/>
-                        <field name="date"/>
-                        <field name="process_date"/>
-                        <field name="res_name"/>
-                        <field name="partner_id"/>
-                        <field name="request_id" attrs="{'invisible':[('direction','=','in')]}" states="pending"/>
-                        <field name="failure_reason"/>
+                        <field name="direction" invisible="1" />
+                        <field name="date" />
+                        <field name="process_date" />
+                        <field name="res_name" />
+                        <field name="partner_id" />
+                        <field
+              name="request_id"
+              attrs="{'invisible':[('direction','=','in')]}"
+              states="pending"
+            />
+                        <field name="failure_reason" />
                     </group>
                     <group>
-                        <field name="description" colspan="4"/>
-                        <field name="headers" colspan="4"/>
-                        <field name="content" colspan="4"/>
-                        <field name="answer" colspan="4"/>
+                        <field name="description" colspan="4" />
+                        <field name="headers" colspan="4" />
+                        <field name="content" colspan="4" />
+                        <field name="answer" colspan="4" />
                     </group>
 
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" />
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -89,23 +120,23 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="direction"/>
-                            <field name="priority"/>
-                            <field name="description"/>
-                            <field name="connect_service"/>
-                            <field name="request_type"/>
-                            <field name="batch_send"/>
-                            <field name="auto_process"/>
-                            <field name="no_outgoing_data"/>
+                            <field name="name" />
+                            <field name="direction" />
+                            <field name="priority" />
+                            <field name="description" />
+                            <field name="connect_service" />
+                            <field name="request_type" />
+                            <field name="batch_send" />
+                            <field name="auto_process" />
+                            <field name="no_outgoing_data" />
                         </group>
                         <group>
-                            <field name="mapping_id"/>
-                            <field name="connect_outgoing_wrapper"/>
-                            <field name="connect_answer_wrapper"/>
-                            <field name="incoming_method"/>
-                            <field name="success_method"/>
-                            <field name="failure_method"/>
+                            <field name="mapping_id" />
+                            <field name="connect_outgoing_wrapper" />
+                            <field name="connect_answer_wrapper" />
+                            <field name="incoming_method" />
+                            <field name="success_method" />
+                            <field name="failure_method" />
                         </group>
                     </group>
                 </sheet>
@@ -117,8 +148,8 @@
         <field name="model">gmc.action</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
-                <field name="direction"/>
+                <field name="name" />
+                <field name="direction" />
             </tree>
         </field>
     </record>
@@ -127,9 +158,9 @@
         <field name="model">gmc.action.connect</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="connect_schema"/>
-                <field name="action_id"/>
-                <field name="ignored"/>
+                <field name="connect_schema" />
+                <field name="action_id" />
+                <field name="ignored" />
             </tree>
         </field>
     </record>
@@ -140,18 +171,53 @@
         <field name="model">gmc.message</field>
         <field name="arch" type="xml">
             <search>
-                <field name="action_id"/>
-                <field name="partner_id"/>
-                <filter string="Incoming" name="incoming" domain="[('direction','=','in')]"/>
-                <filter string="Outgoing" name="outgoing" domain="[('direction','=','out')]"/>
-                <separator/>
-                <filter string="Pending" name="pending" domain="['|', ('state','=','pending'), ('state','=','new')]"/>
-                <filter string="Failed" name="failure" domain="[('state','in',('failure','odoo_failure'))]"/>
-                <filter string="Success" name="success" domain="[('state','=','success')]"/>
+                <field name="action_id" />
+                <field name="partner_id" />
+                <filter
+          string="Incoming"
+          name="incoming"
+          domain="[('direction','=','in')]"
+        />
+                <filter
+          string="Outgoing"
+          name="outgoing"
+          domain="[('direction','=','out')]"
+        />
+                <separator />
+                <filter
+          string="Pending"
+          name="pending"
+          domain="['|', ('state','=','pending'), ('state','=','new')]"
+        />
+                <filter
+          string="Failed"
+          name="failure"
+          domain="[('state','in',('failure','odoo_failure'))]"
+        />
+                <filter
+          string="Success"
+          name="success"
+          domain="[('state','=','success')]"
+        />
                 <group expand="0" string="Group By...">
-                    <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Partner" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'action_id'}"/>
+                    <filter
+            string="Status"
+            name="group_status"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
+                    <filter
+            string="Partner"
+            name="partner"
+            domain="[]"
+            context="{'group_by':'partner_id'}"
+          />
+                    <filter
+            string="Type"
+            name="group_type"
+            domain="[]"
+            context="{'group_by':'action_id'}"
+          />
                 </group>
             </search>
         </field>
@@ -175,7 +241,9 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_incoming': 1, 'search_default_pending': 1,
+        <field
+      name="context"
+    >{'search_default_incoming': 1, 'search_default_pending': 1,
                                'search_default_failure': 1, 'search_default_group_type': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -189,7 +257,9 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">gmc.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'search_default_outgoing': 1, 'search_default_pending': 1,
+        <field
+      name="context"
+    >{'search_default_outgoing': 1, 'search_default_pending': 1,
                                'search_default_failure': 1, 'search_default_group_type': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -212,17 +282,53 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_message_center" name="Message Center" groups="group_gmc_user" sequence="4"
-              web_icon="message_center_compassion,static/description/icon.png"/>/>
-    <menuitem id="menu_message_incoming" parent="menu_message_center" name="Incoming Messages" sequence="1"/>
-    <menuitem id="menu_message_incoming_all" parent="menu_message_incoming" action="action_gmc_message_incoming_form"
-              sequence="1"/>
-    <menuitem id="menu_message_outgoing" name="Outgoing Messages" parent="menu_message_center" sequence="2"/>
-    <menuitem id="menu_message_outgoing_all" parent="menu_message_outgoing" action="action_gmc_message_outgoing_form"
-              sequence="20"/>
-    <menuitem id="menu_message_config" parent="menu_message_center" name="Configuration" groups="group_gmc_manager"/>
-    <menuitem id="menu_message_action" action="action_gmc_action" parent="menu_message_config"/>
-    <menuitem id="menu_message_action_connect" action="action_gmc_action_connect" parent="menu_message_config"/>
+    <menuitem
+    id="menu_message_center"
+    name="Message Center"
+    groups="group_gmc_user"
+    sequence="4"
+    web_icon="message_center_compassion,static/description/icon.png"
+  />/>
+    <menuitem
+    id="menu_message_incoming"
+    parent="menu_message_center"
+    name="Incoming Messages"
+    sequence="1"
+  />
+    <menuitem
+    id="menu_message_incoming_all"
+    parent="menu_message_incoming"
+    action="action_gmc_message_incoming_form"
+    sequence="1"
+  />
+    <menuitem
+    id="menu_message_outgoing"
+    name="Outgoing Messages"
+    parent="menu_message_center"
+    sequence="2"
+  />
+    <menuitem
+    id="menu_message_outgoing_all"
+    parent="menu_message_outgoing"
+    action="action_gmc_message_outgoing_form"
+    sequence="20"
+  />
+    <menuitem
+    id="menu_message_config"
+    parent="menu_message_center"
+    name="Configuration"
+    groups="group_gmc_manager"
+  />
+    <menuitem
+    id="menu_message_action"
+    action="action_gmc_action"
+    parent="menu_message_config"
+  />
+    <menuitem
+    id="menu_message_action_connect"
+    action="action_gmc_action_connect"
+    parent="menu_message_config"
+  />
 
     <record id="message_pool_process" model="ir.ui.view">
         <field name="name">gmc.message.process.form</field>
@@ -233,10 +339,15 @@
                     This will execute the action defined for each new message in the pool.
                 </p>
                 <footer>
-                    <button string="Process Messages" name="process_messages" type="object" default_focus="1"
-                            class="oe_highlight"/>
+                    <button
+            string="Process Messages"
+            name="process_messages"
+            type="object"
+            default_focus="1"
+            class="oe_highlight"
+          />
                     or
-                    <button string="Cancel" class="oe_link" special="cancel"/>
+                    <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>
@@ -247,7 +358,7 @@
         <field name="res_model">gmc.message.process</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="binding_model_id" ref="model_gmc_message"/>
+        <field name="binding_model_id" ref="model_gmc_message" />
         <field name="binding_view_types">list</field>
     </record>
 </odoo>

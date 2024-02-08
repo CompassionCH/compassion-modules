@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_change_attribution_form" model="ir.ui.view">
         <field name="name">change.attribution.wizard.form</field>
@@ -6,15 +6,21 @@
         <field name="arch" type="xml">
             <form string="Change attribution of payment">
                 <sheet>
-                    <p>This will cancel the following invoice lines, for letting you changing them. Please verify the validity of your selection</p>
+                    <p
+          >This will cancel the following invoice lines, for letting you changing them. Please verify the validity of your selection</p>
                     <group>
                         <field name="invoice_line_ids" />
-                        <field name="comment"/>
+                        <field name="comment" />
                     </group>
                 </sheet>
 
                 <footer>
-                    <button name="unreconcile" type="object" string="Unreconcile payment" class="oe_highlight"/>
+                    <button
+            name="unreconcile"
+            type="object"
+            string="Unreconcile payment"
+            class="oe_highlight"
+          />
                     <button string="Cancel" special="cancel" class="oe_link" />
                 </footer>
             </form>
@@ -23,14 +29,21 @@
 
 
     <!-- Actions : call wizard from either invoices or move lines -->
-    <act_window id="action_change_attribution"
-                name="Change attribution"
-                res_model="unreconcile.change.attribution.wizard" binding_model="account.move.line"
-                view_mode="form" target="new"/>
+    <act_window
+    id="action_change_attribution"
+    name="Change attribution"
+    res_model="unreconcile.change.attribution.wizard"
+    binding_model="account.move.line"
+    view_mode="form"
+    target="new"
+  />
 
-    <act_window id="action_change_attribution_invoice"
-                name="Change attribution"
-                res_model="unreconcile.change.attribution.wizard" binding_model="account.move"
-               view_mode="form" target="new"
-    />
+    <act_window
+    id="action_change_attribution_invoice"
+    name="Change attribution"
+    res_model="unreconcile.change.attribution.wizard"
+    binding_model="account.move"
+    view_mode="form"
+    target="new"
+  />
 </odoo>

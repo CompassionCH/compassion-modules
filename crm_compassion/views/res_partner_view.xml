@@ -1,36 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!--    Change priority of CRM buttons-->
     <record id="crm.view_partners_form_crm1" model="ir.ui.view">
-        <field eval="25" name="priority"/>
+        <field eval="25" name="priority" />
     </record>
 
     <record id="view_res_partner_crm" model="ir.ui.view">
         <field name="name">res.partner.crm.compassion</field>
         <field name="model">res.partner</field>
-        <field name="inherit_id" ref="account.partner_view_buttons"/>
-        <field eval="18" name="priority"/>
+        <field name="inherit_id" ref="account.partner_view_buttons" />
+        <field eval="18" name="priority" />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="open_events" string="Events" type="object" groups="sales_team.group_sale_salesman"
-                        class="oe_stat_button" icon="fa-calendar"/>
+                <button
+          name="open_events"
+          string="Events"
+          type="object"
+          groups="sales_team.group_sale_salesman"
+          class="oe_stat_button"
+          icon="fa-calendar"
+        />
             </xpath>
-            <xpath expr="//div[@name='button_box']/button[@name='action_view_partner_invoices']" position="after">
-                <button name="open_interaction"
-                        string="Newest Interactions"
-                        title="Interaction for this partner on the last two years"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-envelope-o">
+            <xpath
+        expr="//div[@name='button_box']/button[@name='action_view_partner_invoices']"
+        position="after"
+      >
+                <button
+          name="open_interaction"
+          string="Newest Interactions"
+          title="Interaction for this partner on the last two years"
+          type="object"
+          class="oe_stat_button"
+          icon="fa-envelope-o"
+        >
                 </button>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="open_interaction_full"
-                        string="Full Interactions"
-                        title="Interaction for this partner since the beginning"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-envelope-o">
+                <button
+          name="open_interaction_full"
+          string="Full Interactions"
+          title="Interaction for this partner since the beginning"
+          type="object"
+          class="oe_stat_button"
+          icon="fa-envelope-o"
+        >
                 </button>
             </xpath>
         </field>
@@ -38,19 +51,19 @@
 
     <record id="partner_ambassador_action" model="ir.actions.server">
         <field name="name">Create Odoo User</field>
-        <field name="model_id" ref="model_res_partner"/>
+        <field name="model_id" ref="model_res_partner" />
         <field name="state">code</field>
         <field name="code">action = records.create_odoo_user()</field>
-        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_model_id" ref="model_res_partner" />
         <field name="binding_type">action</field>
     </record>
 
     <record id="log_call_action" model="ir.actions.server">
-        <field name="model_id" ref="model_res_partner"/>
+        <field name="model_id" ref="model_res_partner" />
         <field name="name">Log your call</field>
         <field name="state">code</field>
         <field name="code">action = record.log_call()</field>
-        <field name="binding_model_id" ref="model_res_partner"/>
+        <field name="binding_model_id" ref="model_res_partner" />
         <field name="binding_type">action</field>
     </record>
 </odoo>

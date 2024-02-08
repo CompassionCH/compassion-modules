@@ -1,6 +1,6 @@
 <odoo>
     <template id="report_label">
-        <link rel="stylesheet" href="/label/static/src/css/label.css"/>
+        <link rel="stylesheet" href="/label/static/src/css/label.css" />
         <t t-call="web.basic_layout">
             <div class="page" style="margin-top:10px;margin-left:10px;">
                 <t t-foreach="docs" t-as="o">
@@ -11,13 +11,13 @@
                                 <t t-foreach="3" t-as="col">
                                     <td>
                                         <!-- One Label -->
-                                        <t t-call="label.one_label"/>
+                                        <t t-call="label.one_label" />
                                     </td>
                                 </t>
                             </tr>
                         </table>
                     </div>
-                    <p style="page-break-after:always;"/>
+                    <p style="page-break-after:always;" />
                 </t>
             </div>
         </t>

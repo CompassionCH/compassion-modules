@@ -5,18 +5,23 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
-                <field name="state" invisible="1"/>
+                <field name="state" invisible="1" />
                 <group>
-                    <field name="type"/>
-                    <field name="lang"/>
-                    <field name="pdf"/>
+                    <field name="type" />
+                    <field name="lang" />
+                    <field name="pdf" />
                 </group>
                 <group states="pdf">
-                    <field name="pdf_name" invisible="1"/>
-                    <field name="pdf_download" filename="pdf_name"/>
+                    <field name="pdf_name" invisible="1" />
+                    <field name="pdf_download" filename="pdf_name" />
                 </group>
                 <footer>
-                    <button name="get_report" string="Print" type="object" class="oe_highlight"/>
+                    <button
+            name="get_report"
+            string="Print"
+            type="object"
+            class="oe_highlight"
+          />
                 </footer>
             </form>
         </field>
@@ -29,6 +34,6 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_type">report</field>
-        <field name="binding_model_id" ref="model_compassion_child"/>
+        <field name="binding_model_id" ref="model_compassion_child" />
    </record>
 </odoo>

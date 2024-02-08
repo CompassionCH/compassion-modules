@@ -1,31 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <record id="module_category_sponsorship" model="ir.module.category">
             <field name="name">Sponsorship</field>
-            <field name="description">Security groups for Compassion activities</field>
+            <field
+        name="description"
+      >Security groups for Compassion activities</field>
             <field name="sequence">1</field>
         </record>
         <record id="group_sponsorship" model="res.groups">
             <field name="name">User</field>
-            <field name="comment">the user will have access to all sponsorships and related data.</field>
-            <field name="category_id" ref="module_category_sponsorship"/>
+            <field
+        name="comment"
+      >the user will have access to all sponsorships and related data.</field>
+            <field name="category_id" ref="module_category_sponsorship" />
         </record>
         <record id="group_manager" model="res.groups">
             <field name="name">Manager</field>
-            <field name="comment">the user will have access to sponsorship configuration.</field>
-            <field name="category_id" ref="module_category_sponsorship"/>
-            <field name="implied_ids" eval="[(4, ref('child_compassion.group_sponsorship'))]"/>
+            <field
+        name="comment"
+      >the user will have access to sponsorship configuration.</field>
+            <field name="category_id" ref="module_category_sponsorship" />
+            <field
+        name="implied_ids"
+        eval="[(4, ref('child_compassion.group_sponsorship'))]"
+      />
         </record>
 
         <!-- Message center users should be able to update sponsorship records when processing message -->
-        <record id="message_center_compassion.group_gmc_user" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('child_compassion.group_sponsorship'))]"/>
+        <record
+      id="message_center_compassion.group_gmc_user"
+      model="res.groups"
+    >
+            <field
+        name="implied_ids"
+        eval="[(4, ref('child_compassion.group_sponsorship'))]"
+      />
         </record>
 
         <!-- Add group to Administrator -->
         <record id="base.user_admin" model="res.users">
-            <field name="groups_id" eval="[(4, ref('group_manager'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_manager'))]" />
         </record>
     </data>
 </odoo>

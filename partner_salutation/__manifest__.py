@@ -33,7 +33,7 @@
     "version": "14.0.1.0.0",
     "development_status": "Beta",
     "category": "Partner Management",
-    "website": "https://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "author": "Compassion CH",
     "maintainers": ["ecino"],
     "license": "AGPL-3",

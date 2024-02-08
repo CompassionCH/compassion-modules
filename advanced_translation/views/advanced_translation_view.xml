@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
      <record id="advanced_translation_view_tree" model="ir.ui.view">
         <field name="name">Advanced translation</field>
         <field name="model">ir.advanced.translation</field>
         <field name="arch" type="xml">
             <tree editable="bottom">
-                <field name="lang"/>
-                <field name="src"/>
-                <field name="male_singular"/>
-                <field name="female_singular"/>
-                <field name="male_plural"/>
-                <field name="female_plural"/>
-                <field name="group"/>
+                <field name="lang" />
+                <field name="src" />
+                <field name="male_singular" />
+                <field name="female_singular" />
+                <field name="male_plural" />
+                <field name="female_plural" />
+                <field name="group" />
             </tree>
         </field>
     </record>
@@ -20,12 +20,22 @@
         <field name="model">ir.advanced.translation</field>
         <field name="arch" type="xml">
             <search>
-                <field name="src"/>
-                <field name="lang"/>
-                <field name="group"/>
+                <field name="src" />
+                <field name="lang" />
+                <field name="group" />
                 <group expand="0" string="Group By...">
-                    <filter string="Language" name="language" domain="[]" context="{'group_by':'lang'}"/>
-                    <filter string="Group" name="group" domain="[]" context="{'group_by':'group'}"/>
+                    <filter
+            string="Language"
+            name="language"
+            domain="[]"
+            context="{'group_by':'lang'}"
+          />
+                    <filter
+            string="Group"
+            name="group"
+            domain="[]"
+            context="{'group_by':'group'}"
+          />
                 </group>
             </search>
         </field>
@@ -36,5 +46,9 @@
         <field name="res_model">ir.advanced.translation</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <menuitem action="action_advanced_translation_view" id="menu_open_advanced_translation" parent="base.menu_translation_app"/>
+    <menuitem
+    action="action_advanced_translation_view"
+    id="menu_open_advanced_translation"
+    parent="base.menu_translation_app"
+  />
 </odoo>

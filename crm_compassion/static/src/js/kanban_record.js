@@ -1,5 +1,6 @@
 odoo.define("crm_compassion.KanbanRecord", function (require) {
   "use strict";
+  const _t = require("web.core")._t;
 
   var KanbanRecord = require("web.KanbanRecord");
   var KANBAN_RECORD_COLORS = [

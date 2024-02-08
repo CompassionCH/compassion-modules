@@ -1,25 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2014 Compassion (http://www.compassion.ch)
     @author Cyril Sester <cyril.sester@outlook.com>
     The licence is in the file __manifest__.py
 -->
-
 <odoo>
     <record id="view_contract_group_form_compassion" model="ir.ui.view">
         <field name="name">contract.group.compassion.form</field>
         <field name="model">recurring.contract.group</field>
-        <field name="inherit_id" ref="recurring_contract.view_group_contract_form"/>
-        <field eval="10" name="priority"/>
+        <field
+      name="inherit_id"
+      ref="recurring_contract.view_group_contract_form"
+    />
+        <field eval="10" name="priority" />
         <field name="arch" type="xml">
             <group name="info" position="inside">
-                <field name="contains_sponsorship" invisible="1"/>
+                <field name="contains_sponsorship" invisible="1" />
             </group>
             <field name="recurring_value" position="attributes">
-                <attribute name="attrs">{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+                <attribute
+          name="attrs"
+        >{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
             </field>
             <field name="recurring_unit" position="attributes">
-                <attribute name="attrs">{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
+                <attribute
+          name="attrs"
+        >{'readonly':[('contains_sponsorship', '=', True)]}</attribute>
             </field>
         </field>
     </record>

@@ -1,31 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="interaction_resume_tree_view" model="ir.ui.view">
         <field name="name">interaction_resume_tree_view</field>
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="'in' in [direction, logged_mail_direction] and not mass_mailing_id"
-                  decoration-success="'out' in [direction, logged_mail_direction] and not mass_mailing_id"
-                  decoration-info="phone_id"
-                  decoration-muted="mass_mailing_id"
-                  edit="0" create="0" delete="0">
-                <button name="out" icon="fa-arrow-up" states="out" attrs="{'readonly': True}" title="Outgoing"/>
-                <button name="in" icon="fa-arrow-down" states="in" attrs="{'readonly': True}" title="Incoming"/>
-                <field name="communication_date"/>
-                <field name="communication_type" string="Send mode"/>
-                <field name="rule_id"/>
-                <field name="other_type"/>
-                <field name="state" invisible="1"/>
-                <field name="phone_id" invisible="1"/>
-                <field name="direction" invisible="1"/>
-                <field name="mass_mailing_id" invisible="1"/>
-                <field name="logged_mail_direction" invisible="1"/>
-                <field name="is_from_employee" invisible="1"/>
-                <field name="email"/>
-                <field name="tracking_status"/>
-                <field name="subject"/>
-                <field name="has_attachment" invisible="1"/>
-                <button icon="fa-paperclip" attrs="{'invisible': [('has_attachment', '=', False)]}" title="Attachments"/>
+            <tree
+        decoration-danger="'in' in [direction, logged_mail_direction] and not mass_mailing_id"
+        decoration-success="'out' in [direction, logged_mail_direction] and not mass_mailing_id"
+        decoration-info="phone_id"
+        decoration-muted="mass_mailing_id"
+        edit="0"
+        create="0"
+        delete="0"
+      >
+                <button
+          name="out"
+          icon="fa-arrow-up"
+          states="out"
+          attrs="{'readonly': True}"
+          title="Outgoing"
+        />
+                <button
+          name="in"
+          icon="fa-arrow-down"
+          states="in"
+          attrs="{'readonly': True}"
+          title="Incoming"
+        />
+                <field name="communication_date" />
+                <field name="communication_type" string="Send mode" />
+                <field name="rule_id" />
+                <field name="other_type" />
+                <field name="state" invisible="1" />
+                <field name="phone_id" invisible="1" />
+                <field name="direction" invisible="1" />
+                <field name="mass_mailing_id" invisible="1" />
+                <field name="logged_mail_direction" invisible="1" />
+                <field name="is_from_employee" invisible="1" />
+                <field name="email" />
+                <field name="tracking_status" />
+                <field name="subject" />
+                <field name="has_attachment" invisible="1" />
+                <button
+          icon="fa-paperclip"
+          attrs="{'invisible': [('has_attachment', '=', False)]}"
+          title="Attachments"
+        />
             </tree>
         </field>
     </record>
@@ -36,22 +56,57 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="communication_date"/>
-                    <field name="communication_type" readonly="1"/>
-                    <field name="other_type" attrs="{'invisible': [('other_type', '=', '')]}" readonly="1"/>
-                    <field name="email" attrs="{'invisible': [('communication_type','!=','Email')]}" readonly="1"/>
-                    <field name="direction" attrs="{'readonly': ['|', '&amp;', '&amp;', ('other_interaction_id', '=', False), ('email_id', '=', False), ('message_id', '=', False), ('paper_id', '!=', False)]}"/>
-                    <field name="phone_id" attrs="{'invisible': [('phone_id','=',False)]}" readonly="1"/>
-                    <field name="paper_id" attrs="{'invisible': [('paper_id','=',False)]}" readonly="1"/>
-                    <field name="email_id" attrs="{'invisible': [('email_id','=',False)]}" readonly="1"/>
-                    <field name="other_interaction_id" attrs="{'invisible': [('other_interaction_id','=',False)]}" readonly="1"/>
-                    <field name="tracking_status" attrs="{'invisible': [('email_id','=',False)]}" readonly="1"/>
-                    <field name="message_id" attrs="{'invisible': [('message_id','=',False)]}" readonly="1"/>
+                    <field name="communication_date" />
+                    <field name="communication_type" readonly="1" />
+                    <field
+            name="other_type"
+            attrs="{'invisible': [('other_type', '=', '')]}"
+            readonly="1"
+          />
+                    <field
+            name="email"
+            attrs="{'invisible': [('communication_type','!=','Email')]}"
+            readonly="1"
+          />
+                    <field
+            name="direction"
+            attrs="{'readonly': ['|', '&amp;', '&amp;', ('other_interaction_id', '=', False), ('email_id', '=', False), ('message_id', '=', False), ('paper_id', '!=', False)]}"
+          />
+                    <field
+            name="phone_id"
+            attrs="{'invisible': [('phone_id','=',False)]}"
+            readonly="1"
+          />
+                    <field
+            name="paper_id"
+            attrs="{'invisible': [('paper_id','=',False)]}"
+            readonly="1"
+          />
+                    <field
+            name="email_id"
+            attrs="{'invisible': [('email_id','=',False)]}"
+            readonly="1"
+          />
+                    <field
+            name="other_interaction_id"
+            attrs="{'invisible': [('other_interaction_id','=',False)]}"
+            readonly="1"
+          />
+                    <field
+            name="tracking_status"
+            attrs="{'invisible': [('email_id','=',False)]}"
+            readonly="1"
+          />
+                    <field
+            name="message_id"
+            attrs="{'invisible': [('message_id','=',False)]}"
+            readonly="1"
+          />
                 </group>
                 <group>
-                    <field name="subject" readonly="1"/>
-                    <field name="has_attachment" readonly="1"/>
-                    <field name="body" readonly="1"/>
+                    <field name="subject" readonly="1" />
+                    <field name="has_attachment" readonly="1" />
+                    <field name="body" readonly="1" />
                 </group>
             </form>
         </field>
@@ -61,19 +116,58 @@
         <field name="model">interaction.resume</field>
         <field name="arch" type="xml">
             <search string="interaction_resume">
-                <field name="subject" filter_domain="['|', ('subject', 'ilike', self), ('body', 'ilike', self)]"/>
-                <separator/>
-                <filter name="filter_email" string="Email" domain="[('communication_type', '=', 'Email')]"/>
-                <filter name="filter_paper" string="Paper" domain="[('communication_type', '=', 'Paper')]"/>
-                <filter name="filter_phonecall" string="Phonecall" domain="[('communication_type', '=', 'Phone')]"/>
-                <filter name="filter_sms" string="SMS" domain="[('communication_type', '=', 'SMS')]"/>
-                <separator/>
-                <filter name="filter_incoming" string="Incoming" domain="[('direction', '=', 'in')]"/>
-                <filter name="filter_outgoing" string="Outgoing" domain="[('direction', '=', 'out')]"/>
+                <field
+          name="subject"
+          filter_domain="['|', ('subject', 'ilike', self), ('body', 'ilike', self)]"
+        />
+                <separator />
+                <filter
+          name="filter_email"
+          string="Email"
+          domain="[('communication_type', '=', 'Email')]"
+        />
+                <filter
+          name="filter_paper"
+          string="Paper"
+          domain="[('communication_type', '=', 'Paper')]"
+        />
+                <filter
+          name="filter_phonecall"
+          string="Phonecall"
+          domain="[('communication_type', '=', 'Phone')]"
+        />
+                <filter
+          name="filter_sms"
+          string="SMS"
+          domain="[('communication_type', '=', 'SMS')]"
+        />
+                <separator />
+                <filter
+          name="filter_incoming"
+          string="Incoming"
+          domain="[('direction', '=', 'in')]"
+        />
+                <filter
+          name="filter_outgoing"
+          string="Outgoing"
+          domain="[('direction', '=', 'out')]"
+        />
                 <group expand="0" string="Group By...">
-                    <filter name="Type" domain="[]" context="{'group_by':'communication_type'}"/>
-                    <filter name="Direction" domain="[]" context="{'group_by':'direction'}"/>
-                    <filter name="Communication Date" domain="[]" context="{'group_by':'communication_date'}"/>
+                    <filter
+            name="Type"
+            domain="[]"
+            context="{'group_by':'communication_type'}"
+          />
+                    <filter
+            name="Direction"
+            domain="[]"
+            context="{'group_by':'direction'}"
+          />
+                    <filter
+            name="Communication Date"
+            domain="[]"
+            context="{'group_by':'communication_date'}"
+          />
                 </group>
             </search>
         </field>

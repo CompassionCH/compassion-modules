@@ -1,20 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="bank_statement_view_form_compassion" model="ir.ui.view">
         <field name="name">bank_statement_compassion.view_form</field>
         <field name="model">account.bank.statement</field>
         <field name="inherit_id" ref="account.view_bank_statement_form" />
-        <field eval="16" name="priority"/>
+        <field eval="16" name="priority" />
         <field name="type">form</field>
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
-                <button name="to_invoices" class="oe_stat_button" widget="statinfo" icon="fa-pencil-square-o" type="object">
-                    <field name="generated_invoices_count" widget="statinfo" string="Invoices"/>
+                <button
+          name="to_invoices"
+          class="oe_stat_button"
+          widget="statinfo"
+          icon="fa-pencil-square-o"
+          type="object"
+        >
+                    <field
+            name="generated_invoices_count"
+            widget="statinfo"
+            string="Invoices"
+          />
                 </button>
             </div>
             <!-- Permit to select non accounting partners (contact/company) -->
-            <xpath expr="//field[@name='line_ids']//field[@name='partner_id']" position="attributes">
-                <attribute name="domain" position="replace"/>
+            <xpath
+        expr="//field[@name='line_ids']//field[@name='partner_id']"
+        position="attributes"
+      >
+                <attribute name="domain">[(1, '=', 1)]</attribute>
             </xpath>
         </field>
     </record>

@@ -5,17 +5,18 @@
         <field name="name">A4 Donation</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">thankyou_letters.donation</field>
-    </record>
-    <record id="report_donation" model="ir.actions.report">
-        <field name="paperformat_id" ref="base.paperformat_euro"/>
+        <field name="paperformat_id" ref="base.paperformat_euro" />
     </record>
 
     <template id="donation">
-        <t t-set="success_story" t-value="docs.mapped('success_story_id')"/>
+        <t t-set="success_story" t-value="docs.mapped('success_story_id')" />
         <t t-call="web.html_container">
             <div class="article">
                 <t t-foreach="docs" t-as="o">
-                    <t t-call="thankyou_letters.donation_document" t-lang="o.partner_id.lang"/>
+                    <t
+            t-call="thankyou_letters.donation_document"
+            t-lang="o.partner_id.lang"
+          />
                 </t>
             </div>
         </t>
@@ -126,40 +127,45 @@
                 }
             </style>
             <t t-if="o.print_header">
-                <t t-call="web.external_layout"/>
+                <t t-call="web.external_layout" />
             </t>
             <div id="letter">
                 <div id="address" class="right">
                     <div id="pp">
                         <div id="pp-box">
                             <div>P.P.</div>
-                            <div>CH-<t t-esc="o.user_id.company_id.zip"/> <t t-esc="o.user_id.company_id.city"/></div>
+                            <div>CH-<t t-esc="o.user_id.company_id.zip" /> <t
+                  t-esc="o.user_id.company_id.city"
+                /></div>
                         </div>
                         <div id="pp-post">
                             <p>Poste CH SA</p>
                         </div>
-                        <hr/>
+                        <hr />
                     </div>
-                    <span t-raw="o.partner_id.short_address"/>
+                    <span t-raw="o.partner_id.short_address" />
                 </div>
                 <div id="date" class="right">
-                    <span t-raw="o.partner_id.date_communication"/>
+                    <span t-raw="o.partner_id.date_communication" />
                 </div>
 
                 <div id="title" t-if="o.print_subject">
-                    <b><span t-raw="o.subject"/></b>
-                    <hr/>
+                    <b><span t-raw="o.subject" /></b>
+                    <hr />
                 </div>
 
                 <div id="content">
                     <div id="success-story" t-if="o.success_story_id">
-                        <span t-raw="o.success_story_id.body"/>
+                        <span t-raw="o.success_story_id.body" />
                     </div>
                     <div id="body">
-                        <span t-raw="o.body_html" class="body_text"/>
+                        <span t-raw="o.body_html" class="body_text" />
                         <div class="right" style="margin-top: 10mm">
-                            <img t-if="o.show_signature and o.user_id.signature_image" t-attf-src="data:image/jpg;base64,{{ o.user_id.signature_image }}"/>
-                            <t t-raw="o.user_id.signature"/>
+                            <img
+                t-if="o.show_signature and o.user_id.signature_image"
+                t-attf-src="data:image/jpg;base64,{{ o.user_id.signature_image }}"
+              />
+                            <t t-raw="o.user_id.signature" />
                         </div>
                     </div>
                 </div>

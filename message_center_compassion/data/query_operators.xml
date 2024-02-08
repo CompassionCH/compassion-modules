@@ -2,7 +2,9 @@
     <record id="anyof" model="compassion.query.operator">
         <field name="name">any of</field>
         <field name="gmc_name">anyof</field>
-        <field name="field_types_supported">many2one,one2many,many2many,selection</field>
+        <field
+      name="field_types_supported"
+    >many2one,one2many,many2many,selection</field>
     </record>
     <record id="between" model="compassion.query.operator">
         <field name="name">in range</field>
@@ -22,7 +24,9 @@
     <record id="is" model="compassion.query.operator">
         <field name="name">is</field>
         <field name="gmc_name">is</field>
-        <field name="field_types_supported">char,text,html,many2one,selection</field>
+        <field
+      name="field_types_supported"
+    >char,text,html,many2one,selection</field>
     </record>
     <record id="on" model="compassion.query.operator">
         <field name="name">is on</field>

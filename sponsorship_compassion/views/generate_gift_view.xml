@@ -1,23 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_generate_gift" model="ir.ui.view">
         <field name="name">contract.generate.gift.form</field>
         <field name="model">generate.gift.wizard</field>
         <field name="arch" type="xml">
             <form string="Gift Generation">
-                <separator string="Gift generation from contract"/>
+                <separator string="Gift generation from contract" />
                 <group>
-                    <field name="contract_id"/>
-                    <field name="product_id" domain="[('categ_name', '=', 'Sponsor gifts')]"
-                           options="{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}"/>
+                    <field name="contract_id" />
+                    <field
+            name="product_id"
+            domain="[('categ_name', '=', 'Sponsor gifts')]"
+            options="{'colors': {'Sponsorship':'blue', 'Fund':'green', 'Sponsor gifts':'blueviolet'}, 'field_color':'categ_name'}"
+          />
                     <field name="amount" />
-                    <field name="quantity"/>
+                    <field name="quantity" />
                     <field name="invoice_date" />
                     <field name="description" />
-                    <field name="force" />
                 </group>
                 <footer>
-                    <button name="generate_invoice" string="Generate" type="object" class="oe_highlight" context="{'force_date': True}"/>
+                    <button
+            name="generate_invoice"
+            string="Generate"
+            type="object"
+            class="oe_highlight"
+            context="{'force_date': True}"
+          />
                 </footer>
             </form>
         </field>
@@ -27,7 +35,7 @@
     <record id="action_generate_gift" model="ir.actions.act_window">
         <field name="name">Generate Gift</field>
         <field name="res_model">generate.gift.wizard</field>
-        <field name="binding_model_id" ref="model_recurring_contract"/>
+        <field name="binding_model_id" ref="model_recurring_contract" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{'default_contract_id': active_ids[0]}</field>

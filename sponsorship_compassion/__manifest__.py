@@ -33,7 +33,7 @@
     "category": "Compassion",
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "recurring_contract",  # compassion-accounting
         "utm",
@@ -81,6 +81,6 @@
     ],
     "installable": True,
     "auto_install": False,
-    "development_status": "Stable",
+    "development_status": "Production/Stable",
     "post_init_hook": "load_mappings",
 }

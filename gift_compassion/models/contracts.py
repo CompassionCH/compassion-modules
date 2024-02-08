@@ -48,6 +48,7 @@ class SponsorshipContract(models.Model):
                 gift = self.env["sponsorship.gift"].create_from_invoice_line(invl)
 
                 if not invl.contract_id.is_active:
+                    # pylint: disable=translation-required
                     gift.message_post(body="Associated contract is not active")
                     gift.state = "verify"
 

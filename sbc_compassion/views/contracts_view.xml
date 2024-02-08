@@ -2,27 +2,51 @@
     <record id="view_contracts_correspondence_form" model="ir.ui.view">
         <field name="name">recurring.contract.correspondence</field>
         <field name="model">recurring.contract</field>
-        <field name="inherit_id" ref="recurring_contract.view_recurring_contract_form"/>
+        <field
+      name="inherit_id"
+      ref="recurring_contract.view_recurring_contract_form"
+    />
         <field name="arch" type="xml">
             <!-- Add correspondence to sponsorships -->
             <button name="open_invoices" position="after">
-                <button name="open_letters" type="object" class="oe_inline oe_stat_button" icon="fa-pencil">
-                    <field name="nb_letters" widget="statinfo" string="Letters"/>
+                <button
+          name="open_letters"
+          type="object"
+          class="oe_inline oe_stat_button"
+          icon="fa-pencil"
+        >
+                    <field
+            name="nb_letters"
+            widget="statinfo"
+            string="Letters"
+          />
                 </button>
             </button>
 
             <xpath expr="//page[1]" position="after">
-                <page string="Correspondence" attrs="{'invisible': [('type', 'not in', ['S','SC','SWP'])]}">
+                <page
+          string="Correspondence"
+          attrs="{'invisible': [('type', 'not in', ['S','SC','SWP'])]}"
+        >
                     <group>
-                        <field name="reading_language" options="{'create':False}"/>
-                        <field name="last_letter"/>
+                        <field
+              name="reading_language"
+              options="{'create':False}"
+            />
+                        <field name="last_letter" />
                     </group>
                     <group>
                         <group>
-                            <field name="sponsor_letter_ids" context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"/>
+                            <field
+                name="sponsor_letter_ids"
+                context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
+              />
                         </group>
                         <group>
-                            <field name="child_letter_ids" context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"/>
+                            <field
+                name="child_letter_ids"
+                context="{'tree_view_ref': 'sbc_compassion.view_correspondence_tree_details'}"
+              />
                         </group>
                     </group>
                 </page>

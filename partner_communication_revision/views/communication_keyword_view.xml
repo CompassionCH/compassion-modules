@@ -5,17 +5,17 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="name"/>
-                    <field name="short_code"/>
-                    <field name="raw_code"/>
-                    <field name="type"/>
+                    <field name="name" />
+                    <field name="short_code" />
+                    <field name="raw_code" />
+                    <field name="type" />
                 </group>
                 <group>
                     <group>
-                        <field name="final_text"/>
+                        <field name="final_text" />
                     </group>
                     <group>
-                        <field name="replacement"/>
+                        <field name="replacement" />
                     </group>
                 </group>
             </form>
@@ -28,11 +28,21 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="color" invisible="1" />
-                <field name="edit_value" invisible="1"/>
-                <button name="toggle_edit_value" string="Toggle true" type="object" attrs="{'invisible':[('edit_value','=',True)]}"/>
-                <button name="toggle_edit_value" string="Toggle false" type="object" attrs="{'invisible':[('edit_value','=', False)]}"/>
+                <field name="edit_value" invisible="1" />
+                <button
+          name="toggle_edit_value"
+          string="Toggle true"
+          type="object"
+          attrs="{'invisible':[('edit_value','=',True)]}"
+        />
+                <button
+          name="toggle_edit_value"
+          string="Toggle false"
+          type="object"
+          attrs="{'invisible':[('edit_value','=', False)]}"
+        />
                 <field name="short_code" />
-                <field name="name" string="Description"/>
+                <field name="name" string="Description" />
             </tree>
         </field>
     </record>
@@ -43,9 +53,9 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="color" invisible="1" />
-                <field name="type"/>
-                <field name="short_code"/>
-                <field name="name" string="Description"/>
+                <field name="type" />
+                <field name="short_code" />
+                <field name="name" string="Description" />
             </tree>
         </field>
     </record>

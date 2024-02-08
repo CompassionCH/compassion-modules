@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
 <!--    Add auto reconcile button to bank statement view-->
     <record id="view_bank_statement_form_auto_reconcile" model="ir.ui.view">
@@ -6,8 +6,17 @@
         <field name="model">account.bank.statement</field>
         <field name="inherit_id" ref="account.view_bank_statement_form" />
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_bank_reconcile_bank_statements']" position="before">
-                <button name="auto_reconcile" type="object" string="Launch auto reconciliation" class="oe_highlight" attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '!=', 'posted')]}"/>
+            <xpath
+        expr="//button[@name='action_bank_reconcile_bank_statements']"
+        position="before"
+      >
+                <button
+          name="auto_reconcile"
+          type="object"
+          string="Launch auto reconciliation"
+          class="oe_highlight"
+          attrs="{'invisible':['|','|',('all_lines_reconciled','=',True),('line_ids','=',[]),('state', '!=', 'posted')]}"
+        />
             </xpath>
 <!--            <xpath expr="/form/sheet" position="after">-->
 <!--                <div class="oe_chatter">-->

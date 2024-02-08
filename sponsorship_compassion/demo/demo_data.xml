@@ -7,7 +7,7 @@
     <record id="post_account_receivable" model="account.account">
         <field name="code">1050</field>
         <field name="name">Receivables</field>
-        <field name="reconcile" eval="True"/>
-        <field name="user_type_id" ref="account_type_debiteur"/>
+        <field name="reconcile" eval="True" />
+        <field name="user_type_id" ref="account_type_debiteur" />
     </record>
 </odoo>

@@ -2,12 +2,14 @@
     <record id="end_sponsorship_view" model="ir.ui.view">
         <field name="name">end.sponsorship.wizard.view</field>
         <field name="model">end.contract.wizard</field>
-        <field name="inherit_id" ref="recurring_contract.end_contract_view"/>
+        <field name="inherit_id" ref="recurring_contract.end_contract_view" />
         <field name="arch" type="xml">
             <field name="end_date" position="after">
-                    <field name="keep_child_on_hold"/>
-                    <field name="hold_expiration_date"
-                           attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"/>
+                    <field name="keep_child_on_hold" />
+                    <field
+          name="hold_expiration_date"
+          attrs="{'invisible': [('keep_child_on_hold', '=', False)]}"
+        />
             </field>
         </field>
     </record>

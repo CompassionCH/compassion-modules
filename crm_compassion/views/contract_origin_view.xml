@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_contract_origin_tree_event" model="ir.ui.view">
         <field name="name">contract.origin.tree.event</field>
         <field name="model">recurring.contract.origin</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_tree"/>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_contract_origin_tree"
+    />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="event_id"/>
+                <field name="event_id" />
             </field>
         </field>
     </record>
@@ -14,16 +17,26 @@
     <record id="view_contract_origin_form_event" model="ir.ui.view">
         <field name="name">contract.origin.form.event</field>
         <field name="model">recurring.contract.origin</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_form"/>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_contract_origin_form"
+    />
         <field name="arch" type="xml">
+            <!-- oca-hooks:disable=xml-view-dangerous-replace-low-priority -->
             <field name="analytic_id" position="replace">
-                <field name="analytic_id" attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
-                                                              'required': [('type', '=', 'marketing')]}"/>
+                <field
+          name="analytic_id"
+          attrs="{'invisible': [('type', 'not in', ('marketing','partner'))],
+                                                              'required': [('type', '=', 'marketing')]}"
+        />
             </field>
             <field name="partner_id" position="after">
-                <field name="event_id" attrs="{'invisible': [('type', '!=', 'event')],
+                <field
+          name="event_id"
+          attrs="{'invisible': [('type', '!=', 'event')],
                         'required': [('type','=','event')]}"
-                       options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"/>
+          options="{'create': false, 'm2o_dialog': false, 'create_edit': false}"
+        />
             </field>
         </field>
     </record>
@@ -31,10 +44,13 @@
     <record id="view_crm_contract_origin_filter" model="ir.ui.view">
         <field name="name">recurring.contract.origin.crm.select</field>
         <field name="model">recurring.contract.origin</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_contract_origin_filter"/>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_contract_origin_filter"
+    />
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="event_id"/>
+                <field name="event_id" />
             </field>
         </field>
     </record>

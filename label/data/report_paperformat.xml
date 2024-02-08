@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="paperformat_label" model="report.paperformat">
       <field name="name">Label A4</field>
@@ -16,10 +16,12 @@
       <field name="dpi">96</field>
     </record>
 
-    <report id="dynamic_label"
-            string="Sponsorship Label"
-            model="recurring.contract"
-            name="label.report_label"
-            paperformat="paperformat_label"
-            report_type="qweb-pdf"/>
+    <report
+    id="dynamic_label"
+    string="Sponsorship Label"
+    model="recurring.contract"
+    name="label.report_label"
+    paperformat="paperformat_label"
+    report_type="qweb-pdf"
+  />
 </odoo>

@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2016 Compassion (http://www.compassion.ch)
     @author Maxime Beck <mbcompte@gmail.com>
     The licence is in the file __manifest__.py
 -->
-
 <odoo>
     <data noupdate="1">
         <record id="compassion_hold_cron" model="ir.cron">
@@ -12,8 +11,11 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="child_compassion.model_compassion_hold"/>
+            <field name="active" eval="True" />
+            <field
+        name="model_id"
+        ref="child_compassion.model_compassion_hold"
+      />
             <field name="state">code</field>
             <field name="code">model.check_hold_validity()</field>
         </record>
@@ -22,8 +24,11 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="child_compassion.model_compassion_hold"/>
+            <field name="active" eval="True" />
+            <field
+        name="model_id"
+        ref="child_compassion.model_compassion_hold"
+      />
             <field name="state">code</field>
             <field name="code">model.postpone_no_money_cron()</field>
         </record>
@@ -32,18 +37,21 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="model_id" ref="child_compassion.model_compassion_reservation"/>
+            <field name="active" eval="True" />
+            <field
+        name="model_id"
+        ref="child_compassion.model_compassion_reservation"
+      />
             <field name="state">code</field>
             <field name="code">model.check_reservation_validity()</field>
         </record>
         <record id="Retrieve_all_project_icp" model="ir.cron">
             <field name="name">Retrieve all ICP Projects</field>
-            <field name="model_id" ref="model_compassion_project"/>
+            <field name="model_id" ref="model_compassion_project" />
             <field name="interval_number">1</field>
             <field name="numbercall">-1</field>
             <field name="interval_type">months</field>
-            <field name="active" eval="True"/>
+            <field name="active" eval="True" />
             <field name="state">code</field>
             <field name="code">model.get_all_projects()</field>
         </record>

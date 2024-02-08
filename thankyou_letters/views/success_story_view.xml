@@ -5,24 +5,43 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
-                    <label for="name"/>
-                    <field name="name"/>
+                    <label for="name" />
+                    <field name="name" />
                     <group>
                         <group>
-                            <field name="type"/>
-                            <field name="only_when_chosen" string="Use story only when manually chosen"/>
-                            <field name="date_start" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
-                            <field name="date_stop" attrs="{'invisible': [('type', '=', 'sentence')]}"/>
-                            <field name="is_active" attrs="{'invisible': [('type', '=', 'story')]}"/>
-                            <field name="print_count"/>
+                            <field name="type" />
+                            <field
+                name="only_when_chosen"
+                string="Use story only when manually chosen"
+              />
+                            <field
+                name="date_start"
+                attrs="{'invisible': [('type', '=', 'sentence')]}"
+              />
+                            <field
+                name="date_stop"
+                attrs="{'invisible': [('type', '=', 'sentence')]}"
+              />
+                            <field
+                name="is_active"
+                attrs="{'invisible': [('type', '=', 'story')]}"
+              />
+                            <field name="print_count" />
                         </group>
                     </group>
                     <group>
-                        <field name="body" widget="text_ckeditor4" attrs="{'invisible': [('type', '!=', 'story')]}"/>
-                        <field name="body_text" attrs="{'invisible': [('type', '!=', 'sentence')]}"/>
+                        <field
+              name="body"
+              widget="text_ckeditor4"
+              attrs="{'invisible': [('type', '!=', 'story')]}"
+            />
+                        <field
+              name="body_text"
+              attrs="{'invisible': [('type', '!=', 'sentence')]}"
+            />
                     </group>
                 </sheet>
             </form>
@@ -33,14 +52,17 @@
         <field name="name">success.story.tree</field>
         <field name="model">success.story</field>
         <field name="arch" type="xml">
-            <tree string="Success stories"
-                  decoration-info="state=='used'" decoration-primary="state=='new'">
-                <field name="name"/>
-                <field name="date_start"/>
-                <field name="date_stop"/>
-                <field name="print_count"/>
-                <field name="type"/>
-                <field name="state"/>
+            <tree
+        string="Success stories"
+        decoration-info="state=='used'"
+        decoration-primary="state=='new'"
+      >
+                <field name="name" />
+                <field name="date_start" />
+                <field name="date_stop" />
+                <field name="print_count" />
+                <field name="type" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -50,14 +72,32 @@
         <field name="model">success.story</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="state"/>
-                <field name="type"/>
-                <filter name="story" string="Story" domain="[('type', '=', 'story')]"/>
-                <filter name="sentence" string="Sentence" domain="[('type', '=', 'sentence')]"/>
+                <field name="name" />
+                <field name="state" />
+                <field name="type" />
+                <filter
+          name="story"
+          string="Story"
+          domain="[('type', '=', 'story')]"
+        />
+                <filter
+          name="sentence"
+          string="Sentence"
+          domain="[('type', '=', 'sentence')]"
+        />
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Type" name="group_type" domain="[]" context="{'group_by':'type'}"/>
+                    <filter
+            string="Status"
+            name="group_status"
+            domain="[]"
+            context="{'group_by':'state'}"
+          />
+                    <filter
+            string="Type"
+            name="group_type"
+            domain="[]"
+            context="{'group_by':'type'}"
+          />
                 </group>
             </search>
         </field>
@@ -71,10 +111,12 @@
     </record>
 
     <!-- Add menu in Sales-->
-    <menuitem id="menu_donation_success_story_sales"
-              name="Success Stories"
-              parent="partner_communication.menu_communication_settings_root"
-              sequence="30"
-              action="action_success_story"/>
+    <menuitem
+    id="menu_donation_success_story_sales"
+    name="Success Stories"
+    parent="partner_communication.menu_communication_settings_root"
+    sequence="30"
+    action="action_success_story"
+  />
 
 </odoo>
