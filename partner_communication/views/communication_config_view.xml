@@ -21,6 +21,7 @@
                             <field name="send_mode_pref_field" />
                             <field name="print_if_not_email" />
                             <field name="need_call" />
+                          <field name="forbid_merging" />
                         </group>
                         <group>
                             <field name="user_id" />

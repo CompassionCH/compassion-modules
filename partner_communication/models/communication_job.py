@@ -225,7 +225,7 @@ class CommunicationJob(models.Model):
         """
         for job in self:
             company = job.partner_id.company_id
-            first_object = self.get_objects()[:1]
+            first_object = job.object_ids and job.get_objects()[:1]
             if (
                 first_object
                 and hasattr(first_object, "company_id")
@@ -289,7 +289,8 @@ class CommunicationJob(models.Model):
             ("state", "in", ["pending", "failure"]),
         ] + self.env.context.get("same_job_search", [])
         job = self.search(same_job_search, limit=1)
-        if job:
+
+        if job and not job.config_id.forbid_merging:
             job.object_ids = job.object_ids + "," + vals["object_ids"]
             job.refresh_text()
             if job.auto_send:
