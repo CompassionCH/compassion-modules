@@ -131,8 +131,7 @@ class CommunicationConfig(models.Model):
         string="Custom Configuration",
         readonly=False,
     )
-    forbid_merging = fields.Boolean(default=False,
-                                    help='If selected, disable the automatic merging of communications',
+    forbid_merging = fields.Boolean(help='If selected, disable the automatic merging of communications',
     )
     active = fields.Boolean(default=True)
 

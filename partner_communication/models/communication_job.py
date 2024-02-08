@@ -225,7 +225,7 @@ class CommunicationJob(models.Model):
         """
         for job in self:
             company = job.partner_id.company_id
-            first_object = job.object_ids and self.get_objects()[:1]
+            first_object = job.object_ids and job.get_objects()[:1]
             if (
                 first_object
                 and hasattr(first_object, "company_id")
