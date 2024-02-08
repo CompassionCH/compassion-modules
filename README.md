@@ -9,8 +9,8 @@
 
 # Compassion Modules
 
-All accounting extensions needed for supporting Compassion's mission, in particular with
-the child sponsosrhip program.
+This project holds Odoo modules needed for any Compassion office in order to manage
+sponsorships of its country. It connects Odoo with GMC webservices.
 
 <!-- /!\ do not modify below this line -->
 
