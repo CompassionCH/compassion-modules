@@ -49,9 +49,10 @@ class InterventionSubCategory(models.Model):
                 subcategory = self.env.ref("intervention_compassion." + row[2])
                 if cat_id not in subcategory.category_ids.ids:
                     self.env.cr.execute(
-                        f"""
+                        """
                         INSERT INTO compassion_intervention_cat_subcat_rel
                         ("category_id", "subcategory_id")
-                        VALUES ({cat_id}, {subcategory.id})
-                        """
+                        VALUES (%s, %s)
+                        """,
+                        (cat_id, subcategory.id),
                     )

@@ -33,7 +33,7 @@
     "author": "Compassion CH",
     "license": "AGPL-3",
     "category": "Finance",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "account",
         "account_reconciliation_widget",

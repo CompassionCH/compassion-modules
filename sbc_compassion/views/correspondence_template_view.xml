@@ -4,10 +4,10 @@
         <field name="model">correspondence.template</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
-                <field name="type"/>
-                <field name="layout"/>
-                <field name="usage_count"/>
+                <field name="name" />
+                <field name="type" />
+                <field name="layout" />
+                <field name="usage_count" />
             </tree>
         </field>
     </record>
@@ -20,21 +20,32 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="layout"/>
-                            <field name="active"/>
-                            <field name="usage_count"/>
+                            <field name="name" />
+                            <field name="layout" />
+                            <field name="active" />
+                            <field name="usage_count" />
                         </group>
                         <group string="Metadata">
-                            <field name="page_width"/>
-                            <field name="page_height"/>
-                            <separator colspan="2"/>
-                            <separator string="Pages layout" colspan="2"/>
-                            <field name="page_ids" context="{'default_template_id': active_id}"/>
-                            <field name="additional_page_id" context="{'default_template_id': active_id}"/>
+                            <field name="page_width" />
+                            <field name="page_height" />
+                            <separator colspan="2" />
+                            <separator string="Pages layout" colspan="2" />
+                            <field
+                name="page_ids"
+                context="{'default_template_id': active_id}"
+              />
+                            <field
+                name="additional_page_id"
+                context="{'default_template_id': active_id}"
+              />
                         </group>
                         <group>
-                            <field name="template_image" widget="image" width="210px" height="297px"/>
+                            <field
+                name="template_image"
+                widget="image"
+                width="210px"
+                height="297px"
+              />
                         </group>
                     </group>
                 </sheet>
@@ -49,27 +60,35 @@
             <form>
                 <group>
                     <group>
-                        <field name="name"/>
-                        <field name="x_min"/>
-                        <field name="x_max"/>
-                        <field name="text_line_height"/>
+                        <field name="name" />
+                        <field name="x_min" />
+                        <field name="x_max" />
+                        <field name="text_line_height" />
                     </group>
                     <group>
-                        <field name="text_type"/>
-                        <field name="y_min"/>
-                        <field name="y_max"/>
+                        <field name="text_type" />
+                        <field name="y_min" />
+                        <field name="y_max" />
                     </group>
                 </group>
             </form>
         </field>
     </record>
 
-    <record id="action_compassion_correspondence_template_form" model="ir.actions.act_window">
+    <record
+    id="action_compassion_correspondence_template_form"
+    model="ir.actions.act_window"
+  >
         <field name="name">Correspondence Templates</field>
         <field name="res_model">correspondence.template</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_correspondence_template" parent="correspondence_config" action="action_compassion_correspondence_template_form"
-              name="Correspondence Templates" sequence="1"/>
+    <menuitem
+    id="menu_correspondence_template"
+    parent="correspondence_config"
+    action="action_compassion_correspondence_template_form"
+    name="Correspondence Templates"
+    sequence="1"
+  />
 </odoo>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
     Copyright (C) 2022 Compassion (http://www.compassion.ch)
     @author Emanuel Cino <ecino@compassion.ch>
@@ -9,28 +9,52 @@
     <record id="view_settings" model="ir.ui.view">
         <field name="name">sponsorship_compassion.settings</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.compassion_settings"/>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.compassion_settings"
+    />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='compassion_settings']">
                 <h2>Sponsorship</h2>
-                <div class="row mt16 o_settings_container" name="sponsorship_settings">
+                <div
+          class="row mt16 o_settings_container"
+          name="sponsorship_settings"
+        >
                     <div class="col-xs-12 col-md-6 o_setting_box">
                         <div name="left_group" class="o_setting_right_pane">
                             <div name="gift_duration">
                                 <div class="col">
                                     <div class="row">
-                                        <label for="time_allowed_for_gifts" class="col-md-5 o_light_label"/>
-                                        <field name="time_allowed_for_gifts" class="w-25"/>
+                                        <label
+                      for="time_allowed_for_gifts"
+                      class="col-md-5 o_light_label"
+                    />
+                                        <field
+                      name="time_allowed_for_gifts"
+                      class="w-25"
+                    />
                                     </div>
                                     <div class="row">
-                                        <label for="time_allowed_for_letters" class="col-md-5 o_light_label"/>
-                                        <field name="time_allowed_for_letters" class="w-25"/>
+                                        <label
+                      for="time_allowed_for_letters"
+                      class="col-md-5 o_light_label"
+                    />
+                                        <field
+                      name="time_allowed_for_letters"
+                      class="w-25"
+                    />
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="row">
-                                        <label for="christmas_inv_gen_month" class="col-md-5 o_light_label"/>
-                                        <field name="christmas_inv_gen_month" class="w-25"/>
+                                        <label
+                      for="christmas_inv_gen_month"
+                      class="col-md-5 o_light_label"
+                    />
+                                        <field
+                      name="christmas_inv_gen_month"
+                      class="w-25"
+                    />
                                     </div>
 
                                 </div>
@@ -38,7 +62,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 o_setting_box">
-                        <div name="right_group" class="o_setting_right_pane"/>
+                        <div name="right_group" class="o_setting_right_pane" />
                     </div>
                 </div>
             </xpath>

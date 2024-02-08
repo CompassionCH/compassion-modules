@@ -2,41 +2,89 @@
     <record model="ir.ui.view" id="communication_config_form">
         <field name="name">communication.config.revision.form</field>
         <field name="model">partner.communication.config</field>
-        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_config_form"
+    />
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
                 <header>
-                    <button name="%(action_new_proposition)d" type="action" string="New revision" class="oe_highlight"/>
-                    <field name="state" widget="statusbar"/>
+                    <button
+            name="%(action_new_proposition)d"
+            type="action"
+            string="New revision"
+            class="oe_highlight"
+          />
+                    <field name="state" widget="statusbar" />
                 </header>
             </xpath>
             <xpath expr="//div[@name='button_box']">
-                <button class="oe_stat_button" name="open_translation_view" icon="fa-edit" string="Edit raw translations" type="object" groups="base.group_system"/>
+                <button
+          class="oe_stat_button"
+          name="open_translation_view"
+          icon="fa-edit"
+          string="Edit raw translations"
+          type="object"
+          groups="base.group_system"
+        />
             </xpath>
             <group name="general_config" position="after">
                 <group string="Revisions">
                     <group colspan="4">
-                        <field name="revision_number"/>
-                        <field name="revision_date"/>
-                        <field name="revision_ids" context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}">
+                        <field name="revision_number" />
+                        <field name="revision_date" />
+                        <field
+              name="revision_ids"
+              context="{'default_config_id': id, 'form_view_ref': 'partner_communication_revision.revision_simplified_form'}"
+            >
                             <tree
-                                    decoration-primary="state in ('pending','submit','corrected')"
-                                    decoration-success="state=='approved'"
-                                    decoration-muted="is_old_version">
-                                <field name="is_old_version" invisible="1"/>
-                                <field name="config_id" invisible="1"/>
-                                <field name="lang" readonly="1"/>
-                                <field name="user_id" readonly="1"/>
-                                <field name="correction_user_id" readonly="1"/>
-                                <button name="edit_proposition" type="object" icon="fa-file" context="{'config_id': config_id}" string="Show/Edit revision text"/>
-                                <field name="active_revision_id"/>
-                                <field name="revision_date" readonly="1"/>
-                                <field name="update_user_id" readonly="1"/>
-                                <button name="show_revision" type="object" icon="fa-eye" string="Show active text"/>
-                                <button name="edit_revision" type="object" icon="fa-edit" string="Correct active text" attrs="{'invisible': [('is_old_version', '=', True)]}"/>
-                                <button name="new_revision" type="object" icon="fa-plus-square" groups="base.group_erp_manager" attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'approved')]}"/>
-                                <field name="state" readonly="1"/>
-                                <button name="save_current_revision" type="object" icon="fa-save" string="Create backup of current revision" attrs="{'invisible': ['|', ('state', '!=', 'active'), ('active_revision_id', '!=', False)]}"/>
+                decoration-primary="state in ('pending','submit','corrected')"
+                decoration-success="state=='approved'"
+                decoration-muted="is_old_version"
+              >
+                                <field name="is_old_version" invisible="1" />
+                                <field name="config_id" invisible="1" />
+                                <field name="lang" readonly="1" />
+                                <field name="user_id" readonly="1" />
+                                <field name="correction_user_id" readonly="1" />
+                                <button
+                  name="edit_proposition"
+                  type="object"
+                  icon="fa-file"
+                  context="{'config_id': config_id}"
+                  string="Show/Edit revision text"
+                />
+                                <field name="active_revision_id" />
+                                <field name="revision_date" readonly="1" />
+                                <field name="update_user_id" readonly="1" />
+                                <button
+                  name="show_revision"
+                  type="object"
+                  icon="fa-eye"
+                  string="Show active text"
+                />
+                                <button
+                  name="edit_revision"
+                  type="object"
+                  icon="fa-edit"
+                  string="Correct active text"
+                  attrs="{'invisible': [('is_old_version', '=', True)]}"
+                />
+                                <button
+                  name="new_revision"
+                  type="object"
+                  icon="fa-plus-square"
+                  groups="base.group_erp_manager"
+                  attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'approved')]}"
+                />
+                                <field name="state" readonly="1" />
+                                <button
+                  name="save_current_revision"
+                  type="object"
+                  icon="fa-save"
+                  string="Create backup of current revision"
+                  attrs="{'invisible': ['|', ('state', '!=', 'active'), ('active_revision_id', '!=', False)]}"
+                />
                             </tree>
                         </field>
                     </group>
@@ -48,10 +96,13 @@
     <record model="ir.ui.view" id="communication_config_tree">
         <field name="name">communication.config.revision.tree</field>
         <field name="model">partner.communication.config</field>
-        <field name="inherit_id" ref="partner_communication.communication_config_tree"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_config_tree"
+    />
         <field name="arch" type="xml">
             <field name="report_id" position="after">
-                <field name="state"/>
+                <field name="state" />
             </field>
             <xpath expr="//tree" position="attributes">
                 <attribute name="decoration-info">state=='pending'</attribute>
@@ -62,14 +113,29 @@
      <record model="ir.ui.view" id="communication_config_search">
         <field name="name">communication.config.search</field>
         <field name="model">partner.communication.config</field>
-        <field name="inherit_id" ref="partner_communication.communication_config_search"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_config_search"
+    />
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <filter name="need_action" string="Need Action" domain="['|', '&amp;', ('revision_ids.state', '=', 'pending'), ('revision_ids.user_id', '=', uid), '&amp;', ('revision_ids.state', '=', 'submit'), ('revision_ids.correction_user_id', '=', uid)]"/>
-                <separator/>
-                <filter name="active" string="Active" domain="[('state', '=', 'active')]"/>
-                <filter name="pending" string="In Revision" domain="[('state', '=', 'pending')]"/>
-                <separator/>
+                <filter
+          name="need_action"
+          string="Need Action"
+          domain="['|', '&amp;', ('revision_ids.state', '=', 'pending'), ('revision_ids.user_id', '=', uid), '&amp;', ('revision_ids.state', '=', 'submit'), ('revision_ids.correction_user_id', '=', uid)]"
+        />
+                <separator />
+                <filter
+          name="active"
+          string="Active"
+          domain="[('state', '=', 'active')]"
+        />
+                <filter
+          name="pending"
+          string="In Revision"
+          domain="[('state', '=', 'pending')]"
+        />
+                <separator />
             </field>
         </field>
      </record>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <odoo>
     <!--Demand Planning Form View -->
     <record id="view_demand_planning_form" model="ir.ui.view">
@@ -7,18 +7,36 @@
         <field name="arch" type="xml">
             <form string="Demand Planning">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
-                    <button name="send_planning" type="object" string="Send Planning" class="oe_highlight" states="draft"/>
-                    <button name="reset" type="object" string="Reset" states="error"/>
+                    <field
+            name="state"
+            widget="statusbar"
+            statusbar_visible="draft,sent"
+          />
+                    <button
+            name="send_planning"
+            type="object"
+            string="Send Planning"
+            class="oe_highlight"
+            states="draft"
+          />
+                    <button
+            name="reset"
+            type="object"
+            string="Reset"
+            states="error"
+          />
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="date" />
-                            <field name="sent_date"/>
+                            <field name="sent_date" />
                         </group>
                         <group colspan="2">
-                            <field name="weekly_demand_ids" context="{'default_demand_id': active_id}"/>
+                            <field
+                name="weekly_demand_ids"
+                context="{'default_demand_id': active_id}"
+              />
                         </group>
                     </group>
                 </sheet>
@@ -31,11 +49,13 @@
         <field name="name">demand.planning.tree</field>
         <field name="model">demand.planning</field>
         <field name="arch" type="xml">
-            <tree decoration-primary="state=='draft'"
-                  decoration-danger="state=='error'">
-                <field name="date"/>
-                <field name="sent_date"/>
-                <field name="state"/>
+            <tree
+        decoration-primary="state=='draft'"
+        decoration-danger="state=='error'"
+      >
+                <field name="date" />
+                <field name="sent_date" />
+                <field name="state" />
             </tree>
         </field>
     </record>
@@ -47,16 +67,22 @@
         <field name="arch" type="xml">
             <form string="Weekly Demand">
                 <group>
-                    <field name="week_start_date"/>
-                    <field name="week_end_date"/>
-                    <field name="period_locked"/>
+                    <field name="week_start_date" />
+                    <field name="week_end_date" />
+                    <field name="period_locked" />
                 </group>
                 <group>
                     <group string="Demand">
-                        <field name="total_demand" attrs="{'readonly': [('period_locked', '=', True)]}"/>
+                        <field
+              name="total_demand"
+              attrs="{'readonly': [('period_locked', '=', True)]}"
+            />
                     </group>
                     <group string="Resupply">
-                        <field name="total_resupply" attrs="{'readonly': [('period_locked', '=', True)]}"/>
+                        <field
+              name="total_resupply"
+              attrs="{'readonly': [('period_locked', '=', True)]}"
+            />
                     </group>
                 </group>
             </form>
@@ -68,11 +94,11 @@
         <field name="model">demand.weekly.demand</field>
         <field name="arch" type="xml">
             <tree string="Weekly Demand" editable="bottom">
-                <field name="period_locked"/>
-                <field name="week_start_date"/>
-                <field name="week_end_date"/>
-                <field name="total_demand"/>
-                <field name="total_resupply"/>
+                <field name="period_locked" />
+                <field name="week_start_date" />
+                <field name="week_end_date" />
+                <field name="total_demand" />
+                <field name="total_resupply" />
             </tree>
         </field>
     </record>
@@ -84,5 +110,11 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_demand_planning_compassion" name="Demand Planning" parent="menu_configuration" action="open_view_demand_planning_form" sequence="2"/>
+    <menuitem
+    id="menu_demand_planning_compassion"
+    name="Demand Planning"
+    parent="menu_configuration"
+    action="open_view_demand_planning_form"
+    sequence="2"
+  />
 </odoo>

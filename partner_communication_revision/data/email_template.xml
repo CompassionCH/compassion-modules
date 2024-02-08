@@ -2,8 +2,11 @@
     <data noupdate="1">
         <record id="revision_reminder_template" model="mail.template">
             <field name="name">Communication revision reminder</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="use_default_to" eval="True"/>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
             <field name="subject">Your revision texts await!</field>
             <field name="body_html" type="html">
                 <div>
@@ -13,8 +16,8 @@
                 </div>
                 <p>
                     Dear ${object.partner_id.firstname},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     % if revisions:
                         You have been assigned to the following revision texts, for which an action is still needed from you:
                     % else:
@@ -31,7 +34,9 @@
                         % if revision.state == 'submit':
                             % set action = 'Proofread the text and approve/correct it.'
                         % endif
-                        <li>[<a href="${base_url + '/web#id={}&amp;view_type=form&amp;model=partner.communication.revision'.format(revision.id)}">${revision.display_name}</a>]: ${action}</li>
+                        <li>[<a
+              href="${base_url + '/web#id={}&amp;view_type=form&amp;model=partner.communication.revision'.format(revision.id)}"
+            >${revision.display_name}</a>]: ${action}</li>
                     % endfor
                 </ul>
                 <p>Have a nice day</p>

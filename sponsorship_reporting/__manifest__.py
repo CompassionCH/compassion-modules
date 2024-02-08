@@ -32,7 +32,7 @@
     "version": "14.0.1.0.0",
     "author": "Compassion CH",
     "category": "Finance",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "account_fiscal_year",  # OCA/account-financial-reporting
         "account_fiscal_month",  # OCA/account-financial-reporting

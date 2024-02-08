@@ -19,7 +19,8 @@ class RestJSONRequest(JsonRequest):
             # The following statement seems to have no effect but it is not the
             # case. It prevents the *super* of emptying the stream containing
             # the post data. Without it, we loose access to the post data.
-            args[0].values  # noqa: B018
+            # pylint: disable=pointless-statement
+            args[0].values
 
             super().__init__(*args)
             self.params = {key: val for key, val in self.httprequest.args.items()}

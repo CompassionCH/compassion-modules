@@ -1,40 +1,55 @@
 <odoo>
     <record model="ir.ui.view" id="download_print_wizard_form">
-        <field name="name">partner.communication.download.print.wizard.form</field>
-        <field name="model">partner.communication.download.print.job.wizard</field>
+        <field
+      name="name"
+    >partner.communication.download.print.wizard.form</field>
+        <field
+      name="model"
+    >partner.communication.download.print.job.wizard</field>
         <field name="arch" type="xml">
             <form edit="false">
                 <group string="Generated documents">
                     <field name="communication_job_ids">
                         <tree>
-                            <field name="config_id"/>
-                            <field name="printed_pdf_data"/>
+                            <field name="config_id" />
+                            <field name="printed_pdf_data" />
                         </tree>
                         <form>
                             <group>
-                                <field name="printed_pdf_name" invisible="1"/>
-                                <field name="printed_pdf_data" filename="printed_pdf_name"/>
+                                <field name="printed_pdf_name" invisible="1" />
+                                <field
+                  name="printed_pdf_data"
+                  filename="printed_pdf_name"
+                />
                             </group>
                         </form>
                     </field>
                     <field name="attachment_ids" widget="one2many">
                         <tree>
-                            <field name="name"/>
-                            <field name="printed_pdf_data"/>
+                            <field name="name" />
+                            <field name="printed_pdf_data" />
                         </tree>
                         <form>
-                            <field name="printed_pdf_name" invisible="1"/>
-                            <field name="printed_pdf_data" filename="printed_pdf_name"/>
+                            <field name="printed_pdf_name" invisible="1" />
+                            <field
+                name="printed_pdf_data"
+                filename="printed_pdf_name"
+              />
                         </form>
                     </field>
                 </group>
                 <group string="Merged document">
-                    <field name="merged_name" invisible="1"/>
-                    <field name="merged_data" filename="merged_name"/>
+                    <field name="merged_name" invisible="1" />
+                    <field name="merged_data" filename="merged_name" />
                 </group>
                 <footer>
-                    <button name="clear_data" string="Clear data and close" type="object" class="oe_highlight"/>
-                    <button special="cancel" string="Close and keep data"/>
+                    <button
+            name="clear_data"
+            string="Clear data and close"
+            type="object"
+            class="oe_highlight"
+          />
+                    <button special="cancel" string="Close and keep data" />
                 </footer>
             </form>
         </field>

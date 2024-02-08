@@ -1,14 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_activate_sponsorship" model="ir.ui.view">
         <field name="name">contract.activate.form</field>
         <field name="model">recurring.contract.activate.wizard</field>
-        <field eval="18" name="priority"/>
+        <field eval="18" name="priority" />
         <field name="arch" type="xml">
             <form string="Contract activation">
-                <p>This will mark the contract as Active, even if the partner has made no payment. Please be sure that you want to do this.</p>
+                <p
+        >This will mark the contract as Active, even if the partner has made no payment. Please be sure that you want to do this.</p>
                 <footer>
-                    <button name="activate_contract" string="Activate" type="object" class="oe_highlight"/>
+                    <button
+            name="activate_contract"
+            string="Activate"
+            type="object"
+            class="oe_highlight"
+          />
                 </footer>
             </form>
         </field>

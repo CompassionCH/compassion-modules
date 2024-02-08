@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <!--
@@ -6,17 +6,17 @@
         -->
 
         <record id="product_category_sponsorship" model="product.category">
-            <field name="parent_id" ref="product.product_category_1"/>
+            <field name="parent_id" ref="product.product_category_1" />
             <field name="name">Sponsorship</field>
         </record>
 
         <record id="product_category_gift" model="product.category">
-            <field name="parent_id" ref="product_category_sponsorship"/>
+            <field name="parent_id" ref="product_category_sponsorship" />
             <field name="name">Sponsor gifts</field>
         </record>
 
         <record id="product_category_fund" model="product.category">
-            <field name="parent_id" ref="product.product_category_1"/>
+            <field name="parent_id" ref="product.product_category_1" />
             <field name="name">Fund</field>
         </record>
 

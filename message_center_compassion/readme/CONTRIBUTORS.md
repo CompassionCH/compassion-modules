@@ -1,0 +1,4 @@
+- Emanuel Cino \<<ecino@compassion.ch>\>
+- Cyril Sester \<<cyril.sester@outlook.com>\>
+- David Coninckx \<<david@coninckx.com>\>
+- Nathan Flückiger \<<nathan.fluckiger@hotmail.ch>\>

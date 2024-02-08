@@ -4,17 +4,31 @@
         <field name="model">partner.communication.pdf.wizard</field>
         <field name="arch" type="xml">
             <form>
-                <field name="state" invisible="1"/>
+                <field name="state" invisible="1" />
                 <group states="physical,both">
-                    <field name="preview" widget="image" width="500"/>
+                    <field name="preview" widget="image" width="500" />
                 </group>
                 <div states="digital,both">
-                    <field name="body_html"/>
+                    <field name="body_html" />
                 </div>
                 <footer>
-                    <field name="send_state" invisible="1"/>
-                    <button name="send" string="Send Now" icon="fa-envelope" type="object" class="oe_highlight" attrs="{'invisible':['|',('state', '=', 'physical'),('send_state', 'not in', 'pending')]}"/>
-                    <button name="send" string="Print Now" icon="fa-print" type="object" class="oe_highlight" attrs="{'invisible':['|',('state', '=', 'digital'),('send_state', 'not in', 'pending')]}"/>
+                    <field name="send_state" invisible="1" />
+                    <button
+            name="send"
+            string="Send Now"
+            icon="fa-envelope"
+            type="object"
+            class="oe_highlight"
+            attrs="{'invisible':['|',('state', '=', 'physical'),('send_state', 'not in', 'pending')]}"
+          />
+                    <button
+            name="send"
+            string="Print Now"
+            icon="fa-print"
+            type="object"
+            class="oe_highlight"
+            attrs="{'invisible':['|',('state', '=', 'digital'),('send_state', 'not in', 'pending')]}"
+          />
                 </footer>
             </form>
         </field>

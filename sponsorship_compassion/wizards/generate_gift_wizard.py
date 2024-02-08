@@ -8,7 +8,6 @@
 #
 ##############################################################################
 import logging
-from datetime import date
 
 from odoo import _, fields, models
 

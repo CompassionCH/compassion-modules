@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- new sponsorships -->
     <record id="view_new_sponsorships_report_search" model="ir.ui.view">
@@ -8,21 +8,76 @@
         <field name="priority">20</field>
         <field name="arch" type="xml">
             <search>
-                <filter string="Last 6 Months" name="last_6_months" domain="[('activation_date','&gt;=', (context_today()-relativedelta(months=5)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="Last 12 Months" name="last_12_months" domain="[('activation_date','&gt;=', (context_today()-relativedelta(months=11)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="Last 24 Months" name="last_24_months" domain="[('activation_date','&gt;=', (context_today()-relativedelta(years=1, months=11)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <separator/>
-                <filter string="This Year" name="this_year" domain="[('activation_date','&gt;=', time.strftime('%Y-01-01'))]"/>
-                <filter string="Last Year" name="last_year" domain="[('activation_date','&gt;=', (context_today()-relativedelta(years=1)).strftime('%Y-01-01')), ('activation_date','&lt;', time.strftime('%Y-01-01'))]"/>
+                <filter
+          string="Last 6 Months"
+          name="last_6_months"
+          domain="[('activation_date','&gt;=', (context_today()-relativedelta(months=5)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"
+        />
+                <filter
+          string="Last 12 Months"
+          name="last_12_months"
+          domain="[('activation_date','&gt;=', (context_today()-relativedelta(months=11)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"
+        />
+                <filter
+          string="Last 24 Months"
+          name="last_24_months"
+          domain="[('activation_date','&gt;=', (context_today()-relativedelta(years=1, months=11)).strftime('%Y-%m-01')), ('activation_date','&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"
+        />
+                <separator />
+                <filter
+          string="This Year"
+          name="this_year"
+          domain="[('activation_date','&gt;=', time.strftime('%Y-01-01'))]"
+        />
+                <filter
+          string="Last Year"
+          name="last_year"
+          domain="[('activation_date','&gt;=', (context_today()-relativedelta(years=1)).strftime('%Y-01-01')), ('activation_date','&lt;', time.strftime('%Y-01-01'))]"
+        />
 
-                <filter name="state" string="State" domain="[]" context="{'group_by': 'state'}"/>
-                <filter name="origin" string="Origin" domain="[]" context="{'group_by': 'origin_id'}"/>
-                <filter name="medium" string="Medium" domain="[]" context="{'group_by': 'medium_id'}"/>
-                <filter name="language" string="Language" domain="[]" context="{'group_by': 'partner_lang'}"/>
-                <filter name="reprise" string="Reprise" domain="[]" context="{'group_by': 'is_first_sponsorship'}"/>
+                <filter
+          name="state"
+          string="State"
+          domain="[]"
+          context="{'group_by': 'state'}"
+        />
+                <filter
+          name="origin"
+          string="Origin"
+          domain="[]"
+          context="{'group_by': 'origin_id'}"
+        />
+                <filter
+          name="medium"
+          string="Medium"
+          domain="[]"
+          context="{'group_by': 'medium_id'}"
+        />
+                <filter
+          name="language"
+          string="Language"
+          domain="[]"
+          context="{'group_by': 'partner_lang'}"
+        />
+                <filter
+          name="reprise"
+          string="Reprise"
+          domain="[]"
+          context="{'group_by': 'is_first_sponsorship'}"
+        />
 
-                <filter string="By weeks" name="by_weeks" domain="[]" context="{'group_by': 'activation_date:week'}" />
-                <filter string="By months" name="by_months" domain="[]" context="{'group_by': 'activation_date:month'}" />
+                <filter
+          string="By weeks"
+          name="by_weeks"
+          domain="[]"
+          context="{'group_by': 'activation_date:week'}"
+        />
+                <filter
+          string="By months"
+          name="by_months"
+          domain="[]"
+          context="{'group_by': 'activation_date:month'}"
+        />
             </search>
         </field>
     </record>
@@ -32,8 +87,8 @@
          <field name="model">recurring.contract</field>
          <field name="arch" type="xml">
              <graph string="New Sponsorships" type="bar">
-                 <field name="activation_date" interval="month"/>
-                 <field name="state"/>
+                 <field name="activation_date" interval="month" />
+                 <field name="state" />
              </graph>
          </field>
     </record>
@@ -43,8 +98,8 @@
          <field name="model">recurring.contract</field>
          <field name="arch" type="xml">
              <pivot string="New Sponsorships">
-                 <field name="activation_date" interval="month"/>
-                 <field name="state"/>
+                 <field name="activation_date" interval="month" />
+                 <field name="state" />
              </pivot>
          </field>
     </record>
@@ -53,15 +108,33 @@
         <field name="name">Sponsorships Activations Report</field>
         <field name="res_model">recurring.contract</field>
         <field name="view_mode">graph</field>
-        <field name="search_view_id" ref="view_new_sponsorships_report_search"/>
-        <field name="context">{"graph_mode": "bar", "search_default_last_6_months": 1}</field>
-        <field name="domain">[('activation_date', '!=', False), ('child_id', '!=', False)]</field>
-        <field name="help">From this report, you can have an overview of the new sponsorships. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>
-        <field name="view_ids" eval="[(5, 0, 0),
+        <field
+      name="search_view_id"
+      ref="view_new_sponsorships_report_search"
+    />
+        <field
+      name="context"
+    >{"graph_mode": "bar", "search_default_last_6_months": 1}</field>
+        <field
+      name="domain"
+    >[('activation_date', '!=', False), ('child_id', '!=', False)]</field>
+        <field
+      name="help"
+    >From this report, you can have an overview of the new sponsorships. The search tool can also be used to personalise your Sponsorships reports and so, match this analysis to your needs.</field>
+        <field
+      name="view_ids"
+      eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'graph', 'view_id': ref('sponsorship_reporting.view_new_sponsorships_report_graph')}),
-                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_reporting.view_new_sponsorships_report_pivot')})]"/>
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sponsorship_reporting.view_new_sponsorships_report_pivot')})]"
+    />
     </record>
 
     <!-- sponsorships reports menu -->
-    <menuitem id="sponsorships_report_menu_new_sponsorships" name="Sponsorship Activations" parent="sponsorships_report_menu_metrics" action="action_new_sponsorships_report"  sequence="3"/>
+    <menuitem
+    id="sponsorships_report_menu_new_sponsorships"
+    name="Sponsorship Activations"
+    parent="sponsorships_report_menu_metrics"
+    action="action_new_sponsorships_report"
+    sequence="3"
+  />
 </odoo>

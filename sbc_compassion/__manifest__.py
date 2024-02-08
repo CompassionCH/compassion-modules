@@ -34,7 +34,7 @@
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "sponsorship_compassion",
     ],

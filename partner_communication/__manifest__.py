@@ -31,9 +31,9 @@
     "name": "Partner Communication",
     "version": "14.0.1.0.0",
     "category": "Other",
-    "author": "Compassion CH",
+    "author": "Compassion Switzerland",
     "license": "AGPL-3",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "base_report_to_printer",  # OCA/report-print-send
         "contacts",

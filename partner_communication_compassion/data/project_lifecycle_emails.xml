@@ -3,10 +3,17 @@
         <!-- Project lifecycle -->
         <record id="email_project_suspension" model="mail.template">
             <field name="name">Project Suspension</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Project Suspension</field>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -17,12 +24,12 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We received the news that the project ${project.fcp_id} which ${child.get('your sponsored child')} ${'attends' if len(child) == 1 else 'attend'} is on suspension at the moment.
                     That means that no donations will be transferred there.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     % if reasons:
                         The following problems have been discovered at one of the regular audit from Compassion.
                         <ul>
@@ -31,36 +38,36 @@
                             % endfor
                         </ul>
                     % endif
-                    <br/>
+                    <br />
                     % if details:
                         ${details}
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                     % endif
                     At the moment that has no influence on ${child.get('your sponsored child')}.
                     The children will continue to visit the project ${"but won't receive any letters" if suspension.hold_s2b_letters else 'and receive letters'}.
                     % if suspension.hold_gifts:
                         However, you must know that no gifts will be delivered to the center during this time.
                     % endif
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Many projects are temporarily suspended in order for the Compassion staff to make some checkups. This is not a reason to worry.
                     Nevertheless we want to inform our sponsors, whenever there is a change about their donation. Transparency is very important to us.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     It is up to you if you want to continue to pay or stop your payment, until we receive further information.
                     In case we don’t hear anything from you, the money will go to the fund for unsponsored children.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Please take note that if you are paying by LSV/Debit Direct we will continue the withdrawal and allocate it to the fund for unsponsored children.
                     If this is not your wish, please contact us as soon as possible.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Be assured, that our co-workers from Compassion will do their best to solve the problems in the project as quick as possible in order for the project to work in line with the Compassion standards.
                     We are very sorry to inform you about this. We will let you know more as soon as possible.
                     If you have any questions, please do not hesitate to contact us.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
@@ -68,10 +75,17 @@
 
         <record id="email_project_suspension_e1" model="mail.template">
             <field name="name">Project Suspension Extension 1</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Extension of the project suspension</field>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -82,22 +96,22 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We informed you some time ago about the project suspension of the center ${project.fcp_id}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We received the information that the suspension was extended for 3 months
                     % if suspension.extension_1_reason_ids:
                         <!-- space --> because of ${suspension.get_list('extension_1_reason_ids.value')}.
                     % else:
                         in order to put back the project on a sustainable process.
                     % endif
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     You will receive updated information as soon as we get them.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
@@ -105,10 +119,17 @@
 
         <record id="email_project_suspension_e2" model="mail.template">
             <field name="name">Project Suspension Extension 2</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Extension of the project suspension</field>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -119,11 +140,11 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We informed you some time ago about the extension of the project suspension ${project.fcp_id}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We received the information that the suspension was again extended for 3 months
                     % if suspension.extension_2_reason_ids:
                         <!-- space --> because of ${suspension.get_list('extension_2_reason_ids.value')}.
@@ -131,11 +152,11 @@
                         in order to put back the project on a sustainable process.
                     % endif
                     <!-- space --> This is the last chance for the center to correct their processes or the project will be closed.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     You will receive updated information as soon as we get them.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
@@ -143,10 +164,17 @@
 
         <record id="email_project_reactivation" model="mail.template">
             <field name="name">Project Reactivation</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Project Reactivation</field>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -156,17 +184,17 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     A few time ago the project ${project.fcp_id} where ${child.get('your sponsored child')} ${child.get('is')} registered was on suspension.
                     We are happy to inform you that the problem is resolved and that the project is again sane and active.
                     The project will do regular tuitions and spiritual activites to keep the situation healthy.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     % if details:
                         ${details}
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                     % endif
                     Yours sincerely
                 </p>
@@ -176,10 +204,15 @@
         <!-- FCP Transition -->
         <record id="email_project_transition" model="mail.template">
             <field name="name">Project Transition</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="use_default_to" eval="True"/>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
             <field name="subject">Project Closure</field>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
@@ -189,11 +222,11 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     A few time ago the project ${project.fcp_id} where ${child.get('your sponsored child')} ${child.get('is')} registered was on suspension.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Unfortunately the local church will definitely end its partnership with Compassion
                     % if transition.transition_date:
                         <!-- --> on ${transition.get_date('transition date', 'date_full')}
@@ -205,29 +238,31 @@
                     % if transition.future_involvement_ids:
                         The project will continue to work and offer ${transition.get_list('future_involvement_ids.value')} in its area.
                     % endif
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     % if details:
                         <span style="font-style: italic;">${details}</span>
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                     % endif
                     % if transition.action_plan:
-                        <span style="font-style: italic;">${transition.action_plan}</span>
-                        <br/>
-                        <br/>
+                        <span
+            style="font-style: italic;"
+          >${transition.action_plan}</span>
+                        <br />
+                        <br />
                     % endif
                     The children living close to another project will be transfered, but it is unfortunately not the case for
                     ${child.get_list('preferred_name', 3, 'your children') or child.get_list('firstname', 3, 'your children')}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We feel sorry for this situation and hope you will understand. You will receive soon another letter that will give you more details about the end
                     of your sponsorship and about ${child.get('your sponsored child')}. Thank you so much for the support you gave to ${child.get('him')} during this time.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Please don't hesitate to contact us in case you have any questions regarding the situation.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>

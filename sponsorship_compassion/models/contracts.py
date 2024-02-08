@@ -1068,7 +1068,8 @@ class SponsorshipContract(models.Model):
         start_of_year = fields.Datetime.from_string(f"{current_year}-01-01")
         end_of_year = fields.Datetime.from_string(f"{current_year}-12-31")
         christ_inv_due = int(
-            self.env["ir.config_parameter"].sudo()
+            self.env["ir.config_parameter"]
+            .sudo()
             .get_param("sponsorship_compassion.christmas_inv_gen_month", 9)
         )
         due_dates = {}  # Dict to store the due dates of the contracts
@@ -1078,7 +1079,7 @@ class SponsorshipContract(models.Model):
         for contract in self:
             if (
                 contract.project_id.hold_gifts
-                or eval(f"contract.{gift_type}_invoice") <= 0
+                or getattr(contract, f"{gift_type}_invoice") <= 0
             ):
                 contracts -= contract
                 continue
@@ -1110,7 +1111,11 @@ class SponsorshipContract(models.Model):
                 # is within the previous and same month as the contract group current
                 # invoice.
                 days_in_advance = contract.group_id.advance_billing_months * 31
-                if 0 <= (due_date - contract.group_id.current_invoice_date).days <= days_in_advance:
+                if (
+                    0
+                    <= (due_date - contract.group_id.current_invoice_date).days
+                    <= days_in_advance
+                ):
                     due_dates[contract] = due_date
                 else:
                     contracts -= contract
@@ -1151,7 +1156,7 @@ class SponsorshipContract(models.Model):
                     )
                 gift_wizard.write(
                     {
-                        "amount": eval(f"contract.{gift_type}_invoice"),
+                        "amount": getattr(contract, f"{gift_type}_invoice"),
                         "contract_id": contract.id,
                         "description": description,
                     }

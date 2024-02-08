@@ -2,21 +2,44 @@
     <record model="ir.ui.view" id="communication_job_orm_form">
         <field name="name">communication.job.omr.form</field>
         <field name="model">partner.communication.job</field>
-        <field name="inherit_id" ref="partner_communication.communication_job_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_job_form"
+    />
         <field name="arch" type="xml">
             <xpath expr="//notebook[@id='advancedConfig']">
                 <page string="OMR">
-                    <group attrs="{'invisible': [ ('send_mode', 'not in', ['physical', 'both'])]}">
+                    <group
+            attrs="{'invisible': [ ('send_mode', 'not in', ['physical', 'both'])]}"
+          >
                         <group>
-                            <field name="omr_enable_marks"/>
-                            <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field name="omr_enable_marks" />
+                            <field
+                name="omr_should_close_envelope"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
+                            <field
+                name="omr_add_attachment_tray_1"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
+                            <field
+                name="omr_add_attachment_tray_2"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
                         </group>
                         <group>
-                            <field name="omr_single_sided" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_top_mark_x" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                            <field name="omr_top_mark_y" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                            <field
+                name="omr_single_sided"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
+                            <field
+                name="omr_top_mark_x"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
+                            <field
+                name="omr_top_mark_y"
+                attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+              />
                         </group>
                     </group>
                 </page>

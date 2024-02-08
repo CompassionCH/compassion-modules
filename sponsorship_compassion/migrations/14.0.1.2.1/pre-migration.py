@@ -34,7 +34,8 @@ def migrate(env, version):
             {
                 "email": email,
             }
-            for email in flatten(map(email_normalize_all, opt_out_partners.mapped(
-                "email")))
+            for email in flatten(
+                map(email_normalize_all, opt_out_partners.mapped("email"))
+            )
         ]
     )

@@ -5,10 +5,17 @@
         -->
         <record id="email_sponsorship_dossier" model="mail.template">
             <field name="name">Sponsorship - New Dossier</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Your new sponsorship</field>
             <field name="body_html" type="html">
                 <div>
@@ -23,42 +30,45 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     % if sponsorships.mapped('parent_id'):
                         We thank you for renewing your commitment with Compassion Switzerland.
                     % else:
                         Welcome to the family of Compassion Switzerland and thank you very much for sponsoring ${firstname}!
                     % endif
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     With this letter you will find:
-                    <br/>
+                    <br />
                     <ul>
                         <li>1 photo of ${child.get('your sponsored child')}
                         % if not planned_sub:
                              <!-- space --> and an explanation concerning ${his} situation
                         % endif
                         </li>
-                        <li>1 label sheet. Please use the labels on everything you are going to send to ${him} (cards, letters, stickers, drawings, etc.).</li>
+                        <li
+            >1 label sheet. Please use the labels on everything you are going to send to ${him} (cards, letters, stickers, drawings, etc.).</li>
                         <li>An introduction letter for you to write</li>
-                        <li>3 payment slips for a payment in favour of ${child.get('your sponsored child')} (birthday, family present or other)</li>
+                        <li
+            >3 payment slips for a payment in favour of ${child.get('your sponsored child')} (birthday, family present or other)</li>
                         <li>${sponsorships[0].payment_type_attachment}</li>
-                        <li>A booklet with information about child sponsorship</li>
+                        <li
+            >A booklet with information about child sponsorship</li>
                     </ul>
-                    <br/>
+                    <br />
                     As soon as we receive your first payment, ${child.get('your sponsored child')} will be informed that ${he} found a sponsor.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     If you want to visit ${child.get('your sponsored child')} some day, we can give you all the necessary information or you can register for one of our organized trips. You’ll get more informations on www.compassion.ch.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     It may occur that children leave Compassion's sponsorship program. There are several reasons for this: war, famine, but also new job opportunities, better income of the family or simply the free choice of the child to work rather than to continue to go to the school program. We will inform you as soon as possible if this happens, and will suggest a new sponsorship to you. There are still a lot of children in need!
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     If you have any questions, please feel free to write to us and we will be glad to answer.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely,
                 </p>
             </field>
@@ -67,65 +77,88 @@
         <!-- Child Transfer -->
         <record id="email_child_transfer" model="mail.template">
             <field name="name">Child Lifecycle - Transfer</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Change of reference for your child ${object.get_objects().firstname}</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >Change of reference for your child ${object.get_objects().firstname}</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
                 </div>
                 <p>
                     Dear sponsor,
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We warmly thank you for your precious sponsorship of ${child.firstname}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Your sponsored child has moved to another project and thereby received the new reference number ${child.local_id}. We send you therefore a new label sheet that is valid as of today.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We wish you plenty of joy and blessings in the continuing support of your sponsored child.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
         </record>
         <record id="email_sponsorship_transfer_dossier" model="mail.template">
             <field name="name">Sponsorship Transfer - New Dossier</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="use_default_to" eval="True"/>
+            <field name="use_default_to" eval="True" />
         </record>
 
         <!-- Child Transition -->
         <record id="email_child_transition" model="mail.template">
             <field name="name">Child Lifecycle - Transition</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Your child ${object.get_objects().firstname} transitioned to ${object.get_objects().cdsp_type} Sponsorship</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >Your child ${object.get_objects().firstname} transitioned to ${object.get_objects().cdsp_type} Sponsorship</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
                 </div>
                 <p>
                     Dear sponsor,
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We warmly thank you for your precious sponsorship of ${child.firstname}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Your sponsored child is starting now the ${child.cdsp_type} sponsorship program.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We encourage you to send a letter to your child to encourage him participating to the program.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </p>
             </field>
@@ -134,23 +167,33 @@
         <!-- Child Reinstatement -->
         <record id="email_child_reinstatement" model="mail.template">
             <field name="name">Child Lifecycle - Reinstatement</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
-            <field name="subject">Your child ${object.get_objects().firstname} is back in project.</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="subject"
+      >Your child ${object.get_objects().firstname} is back in project.</field>
             <field name="body_html" type="html">
                 <div>
                     % set child = object.get_objects()
                 </div>
                 <p>
                     Dear sponsor,
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     <ul>
-                        <li>Reinstatement reason: ${child.lifecycle_ids[0].translate('request_reason')}</li>
+                        <li
+            >Reinstatement reason: ${child.lifecycle_ids[0].translate('request_reason')}</li>
                     </ul>
-                    <br/>
+                    <br />
                     Yours sincerely
                 </p>
             </field>
@@ -159,10 +202,17 @@
         <!-- Sponsorship Cancellation -->
         <record id="email_sponsorship_cancellation" model="mail.template">
             <field name="name">Sponsorship Cancellation</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="email_from">"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field
+        name="email_from"
+      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
             <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="partner_to">${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
+            <field
+        name="partner_to"
+      >${object.partner_id and object.partner_id.email and object.partner_id.id or False }</field>
             <field name="subject">Sponsorship Cancellation</field>
             <field name="body_html" type="html">
                 <div>
@@ -173,19 +223,19 @@
                 </div>
                 <p>
                     ${object.partner_id.salutation}
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We took note of the cancellation of your sponsorship toward ${firstname}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Thank you so much for having sponsored ${children.get('this child')}!
                     Thanks to your sponsorship, ${children.get('he')} could participate in all the activities offered by the Compassion child project:
                     food, clothes, academic support, health screenings and treatments, Bible studies, games, field trips, birthday and Christmas gifts and a lot more.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We will now look for a new sponsor to continue the follow up with ${firstname}.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Kind regards,
                 </p>
             </field>

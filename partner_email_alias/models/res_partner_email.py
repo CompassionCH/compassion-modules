@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import email_normalize
 
@@ -27,7 +27,7 @@ class PartnerEmail(models.Model):
                 [("email_normalized", "=", alias.email)]
             ):
                 raise ValidationError(
-                    "This email address is already set in one partner"
+                    _("This email address is already set in one partner")
                 )
 
     @api.model_create_multi
@@ -39,3 +39,4 @@ class PartnerEmail(models.Model):
     def write(self, vals):
         if "email" in vals:
             vals["email"] = email_normalize(vals["email"])
+        return super().write(vals)

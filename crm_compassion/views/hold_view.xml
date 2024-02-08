@@ -1,13 +1,16 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <odoo>
     <record id="view_hold_crm_tree" model="ir.ui.view">
         <field name="name">compassion.hold.crm.tree</field>
         <field name="model">compassion.hold</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_holds_tree"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_holds_tree"
+    />
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
-                <field name="campaign_id"/>
-                <field name="event_id"/>
+                <field name="campaign_id" />
+                <field name="event_id" />
             </field>
         </field>
     </record>
@@ -15,11 +18,14 @@
     <record id="view_hold_crm_form" model="ir.ui.view">
         <field name="name">compassion.hold.crm.form</field>
         <field name="model">compassion.hold</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_holds_form"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_holds_form"
+    />
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
-                <field name="campaign_id"/>
-                <field name="event_id"/>
+                <field name="campaign_id" />
+                <field name="event_id" />
             </field>
         </field>
     </record>
@@ -27,14 +33,19 @@
     <record id="view_hold_crm_search" model="ir.ui.view">
         <field name="name">compassion.hold.crm.select</field>
         <field name="model">compassion.hold</field>
-        <field name="inherit_id" ref="child_compassion.view_hold_filter"/>
+        <field name="inherit_id" ref="child_compassion.view_hold_filter" />
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
-                <field name="campaign_id"/>
-                <field name="event_id"/>
+                <field name="campaign_id" />
+                <field name="event_id" />
             </field>
             <filter name="ambassador" position="before">
-                <filter string="Event" name="event" domain="[]" context="{'group_by':'event_id'}"/>
+                <filter
+          string="Event"
+          name="event"
+          domain="[]"
+          context="{'group_by':'event_id'}"
+        />
             </filter>
         </field>
     </record>
@@ -42,10 +53,13 @@
     <record id="view_child_crm_tree" model="ir.ui.view">
         <field name="name">compassion.child.crm.tree</field>
         <field name="model">compassion.child</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_child_tree"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_child_tree"
+    />
         <field name="arch" type="xml">
             <field name="hold_ambassador" position="before">
-                <field name="hold_event" optional="true"/>
+                <field name="hold_event" optional="true" />
             </field>
         </field>
     </record>
@@ -53,13 +67,21 @@
     <record id="view_child_crm_search" model="ir.ui.view">
         <field name="name">compassion.child.crm.select</field>
         <field name="model">compassion.child</field>
-        <field name="inherit_id" ref="child_compassion.view_child_compassion_filter"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_child_compassion_filter"
+    />
         <field name="arch" type="xml">
             <field name="hold_ambassador" position="before">
-                <field name="hold_event"/>
+                <field name="hold_event" />
             </field>
             <filter name="ambassador" position="before">
-                <filter string="Event" name="event" domain="[]" context="{'group_by':'hold_event'}"/>
+                <filter
+          string="Event"
+          name="event"
+          domain="[]"
+          context="{'group_by':'hold_event'}"
+        />
             </filter>
         </field>
     </record>
@@ -67,11 +89,14 @@
     <record id="view_reservation_crm_form" model="ir.ui.view">
         <field name="name">compassion.reservation.crm.form</field>
         <field name="model">compassion.reservation</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_reservation_form"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_reservation_form"
+    />
         <field name="arch" type="xml">
             <field name="ambassador" position="before">
-                <field name="campaign_id"/>
-                <field name="event_id"/>
+                <field name="campaign_id" />
+                <field name="event_id" />
             </field>
         </field>
     </record>
@@ -79,11 +104,17 @@
     <record id="view_hold_wizard_campaign_form" model="ir.ui.view">
         <field name="name">child.hold.wizard.campaign.form</field>
         <field name="model">child.hold.wizard</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_global_child_attributes_form"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_global_child_attributes_form"
+    />
         <field name="arch" type="xml">
             <field name="channel" position="before">
-                <field name="campaign_id" options="{'create': false, 'create_edit': false}"/>
-                <field name="event_id" invisible="1"/>
+                <field
+          name="campaign_id"
+          options="{'create': false, 'create_edit': false}"
+        />
+                <field name="event_id" invisible="1" />
             </field>
         </field>
     </record>

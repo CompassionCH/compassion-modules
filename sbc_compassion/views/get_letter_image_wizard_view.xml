@@ -6,18 +6,28 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="image"/>
-                        <field name="format"/>
-                        <field name="dpi"/>
-                        <field name="page_number"/>
-                        <field name="image_preview" widget="image"
-                               attrs="{'invisible': ['|', ('image_preview', '=', False), ('format', 'not in', ('jpeg', 'png'))]}"/>
-                        <field name="image_download"
-                               attrs="{'invisible': ['|', ('image_download', '=', False), ('format', 'in', ('jpeg', 'png'))]}"/>
+                        <field name="image" />
+                        <field name="format" />
+                        <field name="dpi" />
+                        <field name="page_number" />
+                        <field
+              name="image_preview"
+              widget="image"
+              attrs="{'invisible': ['|', ('image_preview', '=', False), ('format', 'not in', ('jpeg', 'png'))]}"
+            />
+                        <field
+              name="image_download"
+              attrs="{'invisible': ['|', ('image_download', '=', False), ('format', 'in', ('jpeg', 'png'))]}"
+            />
                     </group>
                 </sheet>
                 <footer>
-                    <button name="get_image" type="object" string="Get image" class="oe_highlight"/>
+                    <button
+            name="get_image"
+            type="object"
+            string="Get image"
+            class="oe_highlight"
+          />
                 </footer>
             </form>
         </field>
@@ -26,7 +36,7 @@
     <record id="action_retrieve_image" model="ir.actions.act_window">
         <field name="name">Retrieve image</field>
         <field name="res_model">letter.image.wizard</field>
-        <field name="binding_model_id" ref="model_correspondence"/>
+        <field name="binding_model_id" ref="model_correspondence" />
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

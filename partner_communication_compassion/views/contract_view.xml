@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
      <record id="view_recurring_contract_form" model="ir.ui.view">
         <field name="name">recurring.contract.form</field>
         <field name="model">recurring.contract</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"/>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_sponsorship_contract_form_compassion"
+    />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin_id']" position="after">
-                <field name="send_introduction_letter"/>
+                <field name="send_introduction_letter" />
             </xpath>
         </field>
      </record>
@@ -14,11 +17,18 @@
     <record id="contract_filter" model="ir.ui.view">
         <field name="name">recurring.contract.search</field>
         <field name="model">recurring.contract</field>
-        <field name="inherit_id" ref="sponsorship_compassion.view_recurring_contract_filter_graph"/>
+        <field
+      name="inherit_id"
+      ref="sponsorship_compassion.view_recurring_contract_filter_graph"
+    />
         <field name="arch" type="xml">
             <filter name="last_3_months" position="after">
-                <separator/>
-                <filter name="new_picture" domain="[('new_picture', '=', True)]" string="New picture"/>
+                <separator />
+                <filter
+          name="new_picture"
+          domain="[('new_picture', '=', True)]"
+          string="New picture"
+        />
             </filter>
         </field>
     </record>

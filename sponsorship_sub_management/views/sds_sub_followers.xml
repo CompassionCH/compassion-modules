@@ -11,9 +11,9 @@
             <field name="model">sds.sub.followers</field>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="sequence" widget="handle"/>
-                    <field name="user_id"/>
-                    <field name="res_lang_id"/>
+                    <field name="sequence" widget="handle" />
+                    <field name="user_id" />
+                    <field name="res_lang_id" />
                 </tree>
             </field>
         </record>
@@ -23,6 +23,11 @@
             <field name="res_model">sds.sub.followers</field>
         </record>
 
-        <menuitem action="sds_sub_followers_act_window" id="menu_sds_sub_followers_act_window" parent="menu_tracking" sequence="3"/>
+        <menuitem
+      action="sds_sub_followers_act_window"
+      id="menu_sds_sub_followers_act_window"
+      parent="menu_tracking"
+      sequence="3"
+    />
     </data>
 </odoo>

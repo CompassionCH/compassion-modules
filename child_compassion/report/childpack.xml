@@ -1,7 +1,7 @@
 <odoo>
     <record id="paperformat_childpack" model="report.paperformat">
         <field name="name">Childpack</field>
-        <field name="default" eval="True"/>
+        <field name="default" eval="True" />
         <field name="format">custom</field>
         <field name="page_height">420</field>
         <field name="page_width">210</field>
@@ -10,62 +10,64 @@
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
-        <field name="header_line" eval="False"/>
+        <field name="header_line" eval="False" />
         <field name="header_spacing">35</field>
         <field name="dpi">96</field>
     </record>
 
     <record id="paperformat_a4_childpack" model="report.paperformat">
         <field name="name">Compassion A4 Childpack</field>
-        <field name="default" eval="True"/>
+        <field name="default" eval="True" />
         <field name="format">A4</field>
         <field name="orientation">Landscape</field>
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
-        <field name="header_line" eval="False"/>
+        <field name="header_line" eval="False" />
         <field name="header_spacing">35</field>
         <field name="dpi">96</field>
     </record>
 
-    <report id="report_childpack_full"
-        model="compassion.child"
-        string="Full Childpack"
-        report_type="qweb-pdf"
-        name="child_compassion.childpack_full"
-        menu="False"
-    />
+    <report
+    id="report_childpack_full"
+    model="compassion.child"
+    string="Full Childpack"
+    report_type="qweb-pdf"
+    name="child_compassion.childpack_full"
+    menu="False"
+  />
     <record id="report_childpack_full" model="ir.actions.report">
-        <field name="paperformat_id" ref="paperformat_childpack"/>
+        <field name="paperformat_id" ref="paperformat_childpack" />
     </record>
 
-    <report id="report_childpack_small"
-            model="compassion.child"
-            string="Small Childpack"
-            report_type="qweb-pdf"
-            name="child_compassion.childpack_small"
-            menu="False"
-    />
+    <report
+    id="report_childpack_small"
+    model="compassion.child"
+    string="Small Childpack"
+    report_type="qweb-pdf"
+    name="child_compassion.childpack_small"
+    menu="False"
+  />
     <record id="report_childpack_small" model="ir.actions.report">
-        <field name="paperformat_id" ref="paperformat_a4_childpack"/>
+        <field name="paperformat_id" ref="paperformat_a4_childpack" />
     </record>
 
 
     <template id="childpack_full">
-        <t t-set="formMargin" t-value="124"/>
-        <t t-call="child_compassion.childpack_small"/>
+        <t t-set="formMargin" t-value="124" />
+        <t t-call="child_compassion.childpack_small" />
     </template>
 
     <template id="childpack_small">
-        <t t-set="disable_footer" t-value="1"/>
-        <t t-set="disable_header" t-value="1"/>
-        <t t-set="marginLeft" t-value="formMargin or 0"/>
-        <t t-set="full" t-value="marginLeft > 0"/>
-        <t t-set="small" t-value="not full"/>
+        <t t-set="disable_footer" t-value="1" />
+        <t t-set="disable_header" t-value="1" />
+        <t t-set="marginLeft" t-value="formMargin or 0" />
+        <t t-set="full" t-value="marginLeft > 0" />
+        <t t-set="small" t-value="not full" />
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-call="child_compassion.childpack_document" t-lang="lang"/>
+                <t t-call="child_compassion.childpack_document" t-lang="lang" />
             </t>
         </t>
     </template>
@@ -73,55 +75,70 @@
     <template id="childpack_document">
         <t t-set="o" t-value="o.with_context({'lang': lang})" />
         <t t-call="web.external_layout">
-            <t t-call="child_compassion.childpack_style"/>
+            <t t-call="child_compassion.childpack_style" />
                 <t t-if="is_pdf">
                     <div class="background">
-                        <img t-attf-src="/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"/>
+                        <img
+            t-attf-src="/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"
+          />
                     </div>
                 </t>
                 <t t-if="formMargin">
                     <div class="local_id">
-                        <span>Available until: </span><span t-raw="o.get_date('hold_expiration')" class="due_date"/> <!-- keep space -->
-                        <span t-field="o.local_id"/>
+                        <span>Available until: </span><span
+            t-raw="o.get_date('hold_expiration')"
+            class="due_date"
+          /> <!-- keep space -->
+                        <span t-field="o.local_id" />
                     </div>
                 </t>
-                <div t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}">
+                <div
+        t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}"
+      >
                     <div class="left">
-                        <t t-raw="o.description_left"/>
+                        <t t-raw="o.description_left" />
                         <h6 t-if="o.project_id.description_left">
                             <span>About the child development center</span>
                         </h6>
-                        <t t-raw="o.project_id.description_left"/>
-                        <p t-field="o.local_id" class="child-ref"/>
+                        <t t-raw="o.project_id.description_left" />
+                        <p t-field="o.local_id" class="child-ref" />
                     </div>
                     <div class="right">
-                        <t t-raw="o.description_right"/>
+                        <t t-raw="o.description_right" />
                         <h6 t-if="not o.project_id.description_left">
                             <span>About the child development center</span>
                         </h6>
-                        <t t-raw="o.project_id.description_right"/>
+                        <t t-raw="o.project_id.description_right" />
                     </div>
                 </div>
                 <div class="photo">
-                    <img t-if="o.fullshot" t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"/>
+                    <img
+          t-if="o.fullshot"
+          t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"
+        />
                 </div>
                 <div class="summary">
-                    <p t-field="o.preferred_name" class="summary_field name"/>
+                    <p t-field="o.preferred_name" class="summary_field name" />
                     <p class="summary_field birthday">
                         <t t-if="o.age">
-                            <span t-esc="o.age"/>
+                            <span t-esc="o.age" />
                             <span>(</span>
                         </t>
-                        <t t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')">
+                        <t
+            t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')"
+          >
                             <span>Born (F)</span>
                         </t>
                         <t t-else="">
                             <span>Born</span>
                         </t>
-                        <span t-esc="o.get_date('birthdate', 'date_short')"/>
+                        <span t-esc="o.get_date('birthdate', 'date_short')" />
                         <span t-if="o.age">)</span>
                     </p>
-                    <p t-field="o.project_id.country_id.name" class="summary_field country"/>
+                    <p
+          t-field="o.project_id.country_id.name"
+          class="summary_field country"
+        />
                 </div>
         </t>
     </template>
@@ -151,7 +168,7 @@
                 position: absolute;
                 top: 0mm;
                 left: 0mm;
-                margin-left: <t t-esc="marginLeft+14.7"/>mm;
+                margin-left: <t t-esc="marginLeft+14.7" />mm;
                 margin-top: 29mm;
                 width: 130mm;
                 height: 116mm;
@@ -197,7 +214,7 @@
             }
             .photo {
                 position: absolute;
-                left: <t t-esc="marginLeft+156"/>mm;
+                left: <t t-esc="marginLeft+156" />mm;
                 top: 40mm;
                 width: 88mm;
                 height: 125mm;
@@ -212,7 +229,7 @@
             }
             .summary {
                 position: absolute;
-                left: <t t-esc="marginLeft+189"/>mm;
+                left: <t t-esc="marginLeft+189" />mm;
                 top: 180mm;
                 width: 100%;
             }
@@ -276,7 +293,7 @@
               position: absolute;
               top: 0mm;
               left: 0mm;
-              margin-left: <t t-esc="marginLeft+269"/>mm;
+              margin-left: <t t-esc="marginLeft+269" />mm;
               margin-top: 10mm;
               width: 23mm;
               height: 23mm;

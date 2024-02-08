@@ -1,20 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="1">
         <record id="report_a4_communication" model="ir.actions.report">
-            <field name="paperformat_id" ref="base.paperformat_euro"/>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
             <field name="model">partner.communication.job</field>
             <field name="name">A4 communication</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">partner_communication.a4_communication</field>
+            <field
+        name="report_name"
+      >partner_communication.a4_communication</field>
         </record>
         <template id="a4_communication">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
-                    <t t-set="company" t-value="o.company_id"/>
+                    <t t-set="company" t-value="o.company_id" />
                     <t t-call="web.external_layout">
                         <div class="page">
-                            <t t-raw="o.body_html"/>
+                            <t t-raw="o.body_html" />
                         </div>
                     </t>
                 </t>

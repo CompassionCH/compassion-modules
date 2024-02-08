@@ -2,53 +2,95 @@
     <record model="ir.ui.view" id="communication_job_form_thankyou">
         <field name="name">communication.job.form.thankyou</field>
         <field name="model">partner.communication.job</field>
-        <field name="inherit_id" ref="partner_communication.communication_job_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_job_form"
+    />
         <field name="arch" type="xml">
             <field name="auto_send" position="after">
-                <field name="success_story_id"/>
-                <field name="success_sentence_id"/>
+                <field name="success_story_id" />
+                <field name="success_sentence_id" />
             </field>
             <field name="subject" position="after">
-                <field name="print_subject" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
-                <field name="print_header" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
-                <field name="show_signature" attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"/>
+                <field
+          name="print_subject"
+          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+        />
+                <field
+          name="print_header"
+          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+        />
+                <field
+          name="show_signature"
+          attrs="{'invisible': [('send_mode', 'not in', ('physical','both'))]}"
+        />
             </field>
         </field>
     </record>
     <record model="ir.ui.view" id="communication_job_tree_thankyou">
         <field name="name">communication.job.tree.thankyou</field>
         <field name="model">partner.communication.job</field>
-        <field name="inherit_id" ref="partner_communication.communication_job_tree"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_job_tree"
+    />
         <field name="arch" type="xml">
             <field name="subject" position="after">
-                <field name="success_story_id" optional="true"/>
-                <field name="success_sentence_id" optional="true"/>
+                <field name="success_story_id" optional="true" />
+                <field name="success_sentence_id" optional="true" />
             </field>
         </field>
     </record>
 
-    <record model="ir.ui.view" id="communication_job_tree_thankyou_donation_amount">
-        <field name="name">communication.job.tree.thankyou.donation.amount</field>
+    <record
+    model="ir.ui.view"
+    id="communication_job_tree_thankyou_donation_amount"
+  >
+        <field
+      name="name"
+    >communication.job.tree.thankyou.donation.amount</field>
         <field name="model">partner.communication.job</field>
         <field name="arch" type="xml">
-            <tree decoration-primary="state=='pending'" decoration-muted="state in ('done','cancel')"
-                  decoration-danger="need_call!=False and len(activity_ids)" default_order="amount, date desc">
-                <field name="date"/>
-                <field name="config_id"/>
-                <field name="partner_id"/>
-                <field name="send_mode"/>
-                <field name="subject"/>
-                <field name="success_story_id"/>
-                <field name="success_sentence_id"/>
-                <field name="amount"/>
-                <field name="user_id"/>
-                <field name="state"/>
-                <field name="need_call"/>
-                <field name="activity_ids" invisible="1"/>
-                <field name="sent_date"/>
-                <button name="send" string="Send Now" type="object" icon="fa-paper-plane-o" states='pending'/>
-                <button name="reset" string="Retry" type="object" icon="fa-undo" states='done,cancel'/>
-                <button name="cancel" string="Cancel" type="object" icon="fa-ban" states='pending'/>
+            <tree
+        decoration-primary="state=='pending'"
+        decoration-muted="state in ('done','cancel')"
+        decoration-danger="need_call!=False and len(activity_ids)"
+        default_order="amount, date desc"
+      >
+                <field name="date" />
+                <field name="config_id" />
+                <field name="partner_id" />
+                <field name="send_mode" />
+                <field name="subject" />
+                <field name="success_story_id" />
+                <field name="success_sentence_id" />
+                <field name="amount" />
+                <field name="user_id" />
+                <field name="state" />
+                <field name="need_call" />
+                <field name="activity_ids" invisible="1" />
+                <field name="sent_date" />
+                <button
+          name="send"
+          string="Send Now"
+          type="object"
+          icon="fa-paper-plane-o"
+          states='pending'
+        />
+                <button
+          name="reset"
+          string="Retry"
+          type="object"
+          icon="fa-undo"
+          states='done,cancel'
+        />
+                <button
+          name="cancel"
+          string="Cancel"
+          type="object"
+          icon="fa-ban"
+          states='pending'
+        />
             </tree>
         </field>
     </record>
@@ -56,37 +98,50 @@
     <record model="ir.ui.view" id="communication_config_form_thankyou">
         <field name="name">communication.config.form.thankyou</field>
         <field name="model">partner.communication.config</field>
-        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_config_form"
+    />
         <field name="arch" type="xml">
             <field name="need_call" position="after">
-                <field name="add_success_story"/>
-                <field name="print_subject"/>
-                <field name="print_header"/>
-                <field name="show_signature"/>
+                <field name="add_success_story" />
+                <field name="print_subject" />
+                <field name="print_header" />
+                <field name="show_signature" />
             </field>
         </field>
     </record>
 
     <!-- Add menus for thank you letters -->
-    <record id="partner_communication.action_communication_job" model="ir.actions.act_window">
+    <record
+    id="partner_communication.action_communication_job"
+    model="ir.actions.act_window"
+  >
         <field name="domain">[('model', '!=', 'account.invoice.line')]</field>
     </record>
     <record id="action_thank_you" model="ir.actions.act_window">
         <field name="name">Donation Receipts</field>
         <field name="res_model">partner.communication.job</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"/>
+        <field
+      name="view_ids"
+      eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('communication_job_tree_thankyou_donation_amount')})]"
+    />
         <field name="domain">[('model', '=', 'account.invoice.line')]</field>
-        <field name="context">{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id':
+        <field
+      name="context"
+    >{'search_default_my_communications': 1, 'search_default_pending': True, 'default_user_id':
             uid}
         </field>
     </record>
 
     <!-- add Menu in Sales-->
-    <menuitem id="menu_donation_general"
-              name="Thank you Letters"
-              parent="partner_communication.menu_communication"
-              sequence="11"
-              action="action_thank_you"/>
+    <menuitem
+    id="menu_donation_general"
+    name="Thank you Letters"
+    parent="partner_communication.menu_communication"
+    sequence="11"
+    action="action_thank_you"
+  />
 </odoo>

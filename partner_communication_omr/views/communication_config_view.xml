@@ -2,14 +2,26 @@
     <record model="ir.ui.view" id="config_omr_form">
         <field name="name">communication.config.omr.form</field>
         <field name="model">partner.communication.config</field>
-        <field name="inherit_id" ref="partner_communication.communication_config_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.communication_config_form"
+    />
         <field name="arch" type="xml">
             <xpath expr="//group/group[last()]" position="after">
                 <group>
-                    <field name="omr_enable_marks"/>
-                    <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                    <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                    <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                    <field name="omr_enable_marks" />
+                    <field
+            name="omr_should_close_envelope"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
+                    <field
+            name="omr_add_attachment_tray_1"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
+                    <field
+            name="omr_add_attachment_tray_2"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
                 </group>
             </xpath>
         </field>
@@ -18,14 +30,26 @@
     <record model="ir.ui.view" id="default_config_omr_form">
         <field name="name">communication.default.config.omr.form</field>
         <field name="model">partner.communication.default.config</field>
-        <field name="inherit_id" ref="partner_communication.default_config_form"/>
+        <field
+      name="inherit_id"
+      ref="partner_communication.default_config_form"
+    />
         <field name="arch" type="xml">
             <xpath expr="//group/group[last()]" position="after">
                 <group>
-                    <field name="omr_enable_marks"/>
-                    <field name="omr_should_close_envelope" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                    <field name="omr_add_attachment_tray_1" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
-                    <field name="omr_add_attachment_tray_2" attrs="{'invisible': [('omr_enable_marks', '=', False)]}"/>
+                    <field name="omr_enable_marks" />
+                    <field
+            name="omr_should_close_envelope"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
+                    <field
+            name="omr_add_attachment_tray_1"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
+                    <field
+            name="omr_add_attachment_tray_2"
+            attrs="{'invisible': [('omr_enable_marks', '=', False)]}"
+          />
                 </group>
             </xpath>
         </field>

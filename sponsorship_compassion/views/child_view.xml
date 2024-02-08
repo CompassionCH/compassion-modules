@@ -1,18 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="view_child_compassion_form" model="ir.ui.view">
         <field name="name">child.compassion.form.inherit</field>
         <field name="model">compassion.child</field>
-        <field name="inherit_id" ref="child_compassion.view_compassion_child_form"/>
-        <field eval="18" name="priority"/>
+        <field
+      name="inherit_id"
+      ref="child_compassion.view_compassion_child_form"
+    />
+        <field eval="18" name="priority" />
         <field name="arch" type="xml">
             <!-- Add sponsorships view to children -->
             <xpath expr="//notebook">
                 <page string="Sponsorships">
                     <group>
-                        <field name="unsponsored_since" attrs="{'invisible': [('unsponsored_since', '=', False)]}"/>
+                        <field
+              name="unsponsored_since"
+              attrs="{'invisible': [('unsponsored_since', '=', False)]}"
+            />
                     </group>
-                    <field name="sponsorship_ids" context="{'default_type': 'S'}"/>
+                    <field
+            name="sponsorship_ids"
+            context="{'default_type': 'S'}"
+          />
                 </page>
             </xpath>
         </field>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <!-- Form Definition -->
     <record id="import_letters_config_form" model="ir.ui.view">
@@ -8,13 +8,13 @@
             <form>
                 <group>
                     <group>
-                        <field name="name"/>
-                        <field name="template_id"/>
+                        <field name="name" />
+                        <field name="template_id" />
                     </group>
                     <group>
-                        <field name="physical_attachments"/>
-                        <field name="attachments_description"/>
-                        <field name="source"/>
+                        <field name="physical_attachments" />
+                        <field name="attachments_description" />
+                        <field name="source" />
                     </group>
                 </group>
             </form>
@@ -24,12 +24,21 @@
     <record id="view_sbc_settings_form" model="ir.ui.view">
         <field name="name">sbc.settings.form</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="message_center_compassion.notification_settings"/>
+        <field
+      name="inherit_id"
+      ref="message_center_compassion.notification_settings"
+    />
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='notification_configuration']//div[@name='right_group']" position='inside'>
+            <xpath
+        expr="//div[@name='notification_configuration']//div[@name='right_group']"
+        position='inside'
+      >
                 <div class="row">
-                    <label class="col-md-5 o_light_label" for="letter_responsible"/>
-                    <field name="letter_responsible"/>
+                    <label
+            class="col-md-5 o_light_label"
+            for="letter_responsible"
+          />
+                    <field name="letter_responsible" />
                 </div>
             </xpath>
         </field>
@@ -44,8 +53,17 @@
     </record>
 
     <!-- Menu Definition -->
-    <menuitem id="correspondence_config" name="Correspondence"
-              parent="child_compassion.menu_configuration" sequence="4"/>
-    <menuitem id="import_letter_config_menu" parent="correspondence_config"
-              name="Letter Import" action="import_letter_config_action" sequence="3"/>
+    <menuitem
+    id="correspondence_config"
+    name="Correspondence"
+    parent="child_compassion.menu_configuration"
+    sequence="4"
+  />
+    <menuitem
+    id="import_letter_config_menu"
+    parent="correspondence_config"
+    name="Letter Import"
+    action="import_letter_config_action"
+    sequence="3"
+  />
 </odoo>

@@ -32,7 +32,7 @@
     "version": "14.0.1.0.0",
     "author": "Compassion CH",
     "category": "Tools",
-    "website": "http://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "license": "AGPL-3",
     "depends": ["base", "web", "sponsorship_compassion"],
     "data": [

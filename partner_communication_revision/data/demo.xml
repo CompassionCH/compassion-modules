@@ -1,10 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data>
         <record id="template" model="mail.template">
             <field name="name">Donation - Thank You Letter</field>
-            <field name="model_id" ref="partner_communication.model_partner_communication_job"/>
-            <field name="use_default_to" eval="True"/>
+            <field
+        name="model_id"
+        ref="partner_communication.model_partner_communication_job"
+      />
+            <field name="use_default_to" eval="True" />
             <field name="subject">Donation Receipt</field>
             <field name="body_html" type="html">
                 <div>
@@ -12,8 +15,8 @@
                 </div>
                 <div>
                     ${partner.salutation},
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     We thank you for the donation of CHF
                     % if partner.email:
                         you made by email.
@@ -21,19 +24,21 @@
                         you made.
                     % endif
                     We appreciate your generosity.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     Yours sincerely
                 </div>
             </field>
         </record>
         <record id="test_communication2" model="partner.communication.config">
             <field name="name">Test communication 3</field>
-            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="model_id" ref="base.model_res_partner" />
             <field name="send_mode">partner_preference</field>
-            <field name="send_mode_pref_field">global_communication_delivery_preference</field>
+            <field
+        name="send_mode_pref_field"
+      >global_communication_delivery_preference</field>
             <field name="need_call">before_sending</field>
-            <field name="email_template_id" ref="template"/>
+            <field name="email_template_id" ref="template" />
         </record>
     </data>
 </odoo>
