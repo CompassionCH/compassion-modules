@@ -459,36 +459,52 @@ class CompassionHold(models.Model):
         settings = self.env["res.config.settings"].sudo()
         first_extension = settings.get_param("no_money_hold_duration")
         second_extension = settings.get_param("no_money_hold_extension")
-        body = (
-            "The no money hold for child {local_id} was expiring on "
-            "{old_expiration} and was extended to {new_expiration}."
-            "{additional_text}"
-        )
+
         for hold in self.filtered(lambda h: h.no_money_extension < 3):
+
+            old_date = hold.expiration_date
             hold_extension = (
                 first_extension if not hold.no_money_extension else second_extension
             )
             new_hold_date = hold.expiration_date + timedelta(days=hold_extension)
-            next_extension = hold.no_money_extension
-            if hold.type == HoldType.NO_MONEY_HOLD.value:
-                next_extension += 1
-            hold_vals = {
-                "no_money_extension": next_extension,
-            }
-            hold_vals["expiration_date"] = new_hold_date
-            old_date = hold.expiration_date
-            hold.write(hold_vals)
             values = {
                 "local_id": hold.child_id.local_id,
                 "old_expiration": old_date,
                 "new_expiration": new_hold_date.strftime("%d %B %Y"),
-                "additional_text": additional_text or "",
+                "extension_description": 'first' if not hold.no_money_extension else 'second',
+                "additional_text": str(additional_text) if additional_text else "",
             }
-            hold.message_post(
-                body=_(body.format(**values)),
-                subject=_("No money hold extension"),
-                subtype_xmlid="mail.mt_comment",
-            )
+
+            if hold.child_id.sponsor_id: # Check that a sponsorship exists
+                next_extension = hold.no_money_extension
+                if hold.type == HoldType.NO_MONEY_HOLD.value:
+                    next_extension += 1
+                hold_vals = {
+                    "no_money_extension": next_extension,
+                    "expiration_date": new_hold_date,
+                }
+                hold.write(hold_vals)
+
+                body = (
+                    "The no money hold for child {local_id} was expiring on "
+                    "{old_expiration} and was extended to {new_expiration} ({extension_description} extension)."
+                    "{additional_text}"
+                )
+                hold.message_post(
+                    body=_(body.format(**values)),
+                    subject=_("No money hold extension"),
+                    subtype_xmlid="mail.mt_comment",
+                )
+
+            else:
+                body = (
+                    "The no money hold for child {local_id} is expiring on "
+                    "{old_expiration} and will not be extended since no sponsorship exists for this child."
+                )
+                hold.message_post(
+                    body=_(body.format(**values)),
+                )
+
 
     ##########################################################################
     #                              Mapping METHOD                            #

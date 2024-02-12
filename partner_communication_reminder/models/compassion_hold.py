@@ -72,15 +72,16 @@ class CompassionHold(models.Model):
             hold_string = list()
             for i in range(0, len(failed)):
                 hold_string.append(failed[i].hold_id + " (" + links[i] + " )")
-            self.env["mail.mail"].create(
-                {
-                    "subject": "URGENT: Postpone no money holds failed!",
-                    "author_id": self.env.user.partner_id.id,
-                    "recipient_ids": self.env.user.partner_id.id,
-                    "body_html": "These holds should be urgently verified: <br/>"
-                    "<br/>" + ", ".join(hold_string),
-                }
-            ).send()
+            # TODO Code seems broken T0811
+            # self.env["mail.mail"].create(
+            #     {
+            #         "subject": "URGENT: Postpone no money holds failed!",
+            #         "author_id": self.env.user.partner_id.id,
+            #         "recipient_ids": [(6, 0, self.env.user.partner_id.ids)],
+            #         "body_html": "These holds should be urgently verified: <br/>"
+            #         "<br/>" + ", ".join(hold_string),
+            #     }
+            # ).send()
 
     def _send_hold_reminder(self, communication):
         """
