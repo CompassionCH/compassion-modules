@@ -34,7 +34,7 @@
     "sequence": 150,
     "author": "Compassion CH",
     "license": "AGPL-3",
-    "website": "https://www.compassion.ch",
+    "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": ["sbc_compassion", "partner_contact_birthdate"],
     "data": [
         "security/ir_groups.xml",
@@ -49,7 +49,7 @@
         "views/translation_pool_view.xml",
     ],
     "demo": [],
-    "installable": True,
+    "installable": False,
     "auto_install": False,
     "post_init_hook": "post_init_hook",
 }

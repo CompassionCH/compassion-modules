@@ -44,6 +44,16 @@ Interaction Resume
 New partner view to collect all history of communications with a partner
 and display them all at the same place.
 
+Thank you letters
+-----------------
+
+If donations are received within the context of an event, the module
+offers the possibility to set custom thank you letters for each event.
+In addition, participant of the events become "Ambassadors" and can
+receive notifications about the received donations linked to them.
+Receipts will be sent automatically 5 minutes after receiving the
+donations, if the event enables it.
+
 Demand Planning
 ---------------
 

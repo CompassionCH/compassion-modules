@@ -2,8 +2,10 @@
     <record id="translation_issue_notification" model="mail.template">
         <field name="name">Translation issue notification</field>
         <field name="subject">A translation issue was raised</field>
-        <field name="model_id" ref="model_correspondence"/>
-        <field name="email_from">${object.new_translator_id.partner_id.email}</field>
+        <field name="model_id" ref="model_correspondence" />
+        <field
+      name="email_from"
+    >${object.new_translator_id.partner_id.email}</field>
         <field name="email_to">${object.translation_supervisor_id.email}</field>
         <field name="body_html" type="html">
             <ul>
@@ -16,25 +18,37 @@
     </record>
 
     <template id="comments_reply">
-        <p>Dear <span t-field="object.new_translator_id.partner_id.name"/>,</p>
-        <p>You just received a reply regarding your comments on the translation:</p>
-        <p t-raw="reply"/>
-        <hr/>
+        <p>Dear <span t-field="object.new_translator_id.partner_id.name" />,</p>
+        <p
+    >You just received a reply regarding your comments on the translation:</p>
+        <p t-raw="reply" />
+        <hr />
         <table>
             <tr>
                 <th style="width: 40%">Paragraph</th>
                 <th style="width: 40%">Comments</th>
             </tr>
-            <t t-foreach="object.mapped('page_ids.paragraph_ids')" t-as="paragraph">
+            <t
+        t-foreach="object.mapped('page_ids.paragraph_ids')"
+        t-as="paragraph"
+      >
                 <t t-if="paragraph.comments">
                     <tr>
-                        <td t-esc="paragraph.translated_text" style="width: 40%"/>
-                        <td t-esc="paragraph.comments" style="width: 40%; margin-left: 10px"/>
+                        <td
+              t-esc="paragraph.translated_text"
+              style="width: 40%"
+            />
+                        <td
+              t-esc="paragraph.comments"
+              style="width: 40%; margin-left: 10px"
+            />
                     </tr>
                 </t>
             </t>
         </table>
-        <hr/>
-        <p><a t-att-href="object.translation_url">Open the letter in the translation platform</a></p>
+        <hr />
+        <p><a
+        t-att-href="object.translation_url"
+      >Open the letter in the translation platform</a></p>
     </template>
 </odoo>

@@ -151,6 +151,8 @@
                 widget="daterange"
                 options="{'related_start_date': 'start_date'}"
               />
+                            <field name="communication_config_id" />
+                            <field name="ambassador_config_id" />
                         </group>
                         <group class="oe_red">
                             <field

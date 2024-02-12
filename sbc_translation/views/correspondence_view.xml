@@ -3,27 +3,43 @@
     <record id="view_correspondence_form_translation" model="ir.ui.view">
         <field name="name">correspondence.form.translation</field>
         <field name="model">correspondence</field>
-        <field name="inherit_id" ref="sbc_compassion.view_correspondence_form" />
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.view_correspondence_form"
+    />
         <field name="arch" type="xml">
             <button name="compose_letter_button" position="before">
-                <button name="remove_local_translate" type="object" string="Remove from translation"
-                        class="oe_highlight" states="Global Partner translation queue"/>
-                <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                        states="Published to Global Partner,Received in the system"/>
+                <button
+          name="remove_local_translate"
+          type="object"
+          string="Remove from translation"
+          class="oe_highlight"
+          states="Global Partner translation queue"
+        />
+                <button
+          name="send_local_translate"
+          type="object"
+          string="To Translate"
+          class="oe_highlight"
+          states="Published to Global Partner,Received in the system"
+        />
             </button>
             <button name="resubmit_letter" position="after">
-                <button name="resubmit_to_translation" type="object"
-                        string="Put back into translation"
-                        attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
+                <button
+          name="resubmit_to_translation"
+          type="object"
+          string="Put back into translation"
+          attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"
+        />
             </button>
             <field name="translator" position="after">
-                <field name="new_translator_id"/>
-                <field name="translate_date"/>
-                <field name="translate_done"/>
-                <field name="src_translation_lang_id"/>
+                <field name="new_translator_id" />
+                <field name="translate_date" />
+                <field name="translate_done" />
+                <field name="src_translation_lang_id" />
             </field>
             <field name="translation_language_id" position="after">
-                <field name="translation_status"/>
+                <field name="translation_status" />
             </field>
         </field>
     </record>
@@ -34,60 +50,110 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" invisible="1"/>
-                    <field name="translation_status" widget="statusbar" readonly="0"/>
-                    <button name="remove_local_translate" type="object"
-                            string="Remove from translation" class="oe_highlight"
-                            states="Global Partner translation queue"/>
-                    <button name="send_local_translate" type="object" string="To Translate" class="oe_highlight"
-                            states="Published to Global Partner,Received in the system"/>
-                    <button name="resubmit_to_translation" type="object"
-                        string="Return to translation"
-                        attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"/>
-                    <button name="%(sbc_translation.reply_to_comments_wizard)d"
-                            type="action" string="Reply to comments"
-                        class="oe_highlight"
-                        attrs="{'invisible': [('unread_comments', '!=', True)]}"
-                        context="{'default_paragraph_ids': paragraph_ids}"/>
-                    <button name="open_full_view" type="object" string="Open full view"/>
+                    <field name="state" invisible="1" />
+                    <field
+            name="translation_status"
+            widget="statusbar"
+            readonly="0"
+          />
+                    <button
+            name="remove_local_translate"
+            type="object"
+            string="Remove from translation"
+            class="oe_highlight"
+            states="Global Partner translation queue"
+          />
+                    <button
+            name="send_local_translate"
+            type="object"
+            string="To Translate"
+            class="oe_highlight"
+            states="Published to Global Partner,Received in the system"
+          />
+                    <button
+            name="resubmit_to_translation"
+            type="object"
+            string="Return to translation"
+            attrs="{'invisible': [('state', '!=', 'Translation check unsuccessful')]}"
+          />
+                    <button
+            name="%(sbc_translation.reply_to_comments_wizard)d"
+            type="action"
+            string="Reply to comments"
+            class="oe_highlight"
+            attrs="{'invisible': [('unread_comments', '!=', True)]}"
+            context="{'default_paragraph_ids': paragraph_ids}"
+          />
+                    <button
+            name="open_full_view"
+            type="object"
+            string="Open full view"
+          />
                 </header>
-                <div class="alert alert-danger" role="alert" attrs="{'invisible': [('translation_issue', '=', False)]}">
-                    <h4 class="alert-heading" role="status"><field name="translation_issue"/></h4>
-                    <field name="translation_issue_comments"/>
+                <div
+          class="alert alert-danger"
+          role="alert"
+          attrs="{'invisible': [('translation_issue', '=', False)]}"
+        >
+                    <h4 class="alert-heading" role="status"><field
+              name="translation_issue"
+            /></h4>
+                    <field name="translation_issue_comments" />
                 </div>
                 <sheet>
                     <group>
                         <group>
-                            <field name="partner_id"/>
-                            <field name="src_translation_lang_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translate_date" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translation_priority" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="letter_image"/>
-                            <field name="translation_url" widget="url"/>
+                            <field name="partner_id" />
+                            <field
+                name="src_translation_lang_id"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field
+                name="translate_date"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field
+                name="translation_priority"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field name="letter_image" />
+                            <field name="translation_url" widget="url" />
                         </group>
                         <group>
-                            <field name="child_id" readonly="1"/>
-                            <field name="translation_language_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="new_translator_id" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translate_done" attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"/>
-                            <field name="translation_supervisor_id"/>
+                            <field name="child_id" readonly="1" />
+                            <field
+                name="translation_language_id"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field
+                name="new_translator_id"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field
+                name="translate_done"
+                attrs="{'readonly': [('state', '!=', 'Global Partner translation queue')]}"
+              />
+                            <field name="translation_supervisor_id" />
                         </group>
                     </group>
                     <group string="Letter content">
-                        <field name="unread_comments"/>
+                        <field name="unread_comments" />
                         <field name="paragraph_ids">
-                            <tree editable="bottom" default_order="page_id asc,sequence asc">
-                                <field name="sequence" widget="handle"/>
-                                <field name="original_text"/>
-                                <field name="translated_text"/>
-                                <field name="comments"/>
-                                <field name="page_id" invisible="1"/>
+                            <tree
+                editable="bottom"
+                default_order="page_id asc,sequence asc"
+              >
+                                <field name="sequence" widget="handle" />
+                                <field name="original_text" />
+                                <field name="translated_text" />
+                                <field name="comments" />
+                                <field name="page_id" invisible="1" />
                             </tree>
                         </field>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_ids"/>
+                    <field name="message_ids" />
                 </div>
             </form>
         </field>
@@ -98,18 +164,23 @@
         <field name="model">correspondence</field>
         <field name="priority">30</field>
         <field name="arch" type="xml">
-            <tree decoration-bf="unread_comments" decoration-danger="translation_issue" decoration-muted="state != 'Global Partner translation queue'" default_order="translate_date">
-                <field name="scanned_date"/>
-                <field name="translate_date"/>
-                <field name="name"/>
-                <field name="translation_competence_id"/>
-                <field name="new_translator_id"/>
-                <field name="translation_supervisor_id"/>
-                <field name="translation_issue"/>
-                <field name="unread_comments" invisible="1"/>
-                <field name="translation_priority"/>
-                <field name="translation_status"/>
-                <field name="state" invisible="1"/>
+            <tree
+        decoration-bf="unread_comments"
+        decoration-danger="translation_issue"
+        decoration-muted="state != 'Global Partner translation queue'"
+        default_order="translate_date"
+      >
+                <field name="scanned_date" />
+                <field name="translate_date" />
+                <field name="name" />
+                <field name="translation_competence_id" />
+                <field name="new_translator_id" />
+                <field name="translation_supervisor_id" />
+                <field name="translation_issue" />
+                <field name="unread_comments" invisible="1" />
+                <field name="translation_priority" />
+                <field name="translation_status" />
+                <field name="state" invisible="1" />
             </tree>
         </field>
     </record>
@@ -117,10 +188,16 @@
     <record id="view_correspondence_page_form" model="ir.ui.view">
         <field name="name">correspondence.page.form</field>
         <field name="model">correspondence.page</field>
-        <field name="inherit_id" ref="sbc_compassion.view_correspondence_page_form"/>
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.view_correspondence_page_form"
+    />
         <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='translated_text']" position="after">
-                <field name="comments"/>
+            <xpath
+        expr="//tree/field[@name='translated_text']"
+        position="after"
+      >
+                <field name="comments" />
             </xpath>
         </field>
     </record>
@@ -129,45 +206,82 @@
         <field name="name">correspondence.translation.kanban</field>
         <field name="model">correspondence</field>
         <field name="arch" type="xml">
-            <kanban default_order="unread_comments desc,translation_issue,translation_priority desc,translate_date" default_group_by="translation_competence_id" quick_create="false" group_create="false" group_edit="false">
-                <field name="name"/>
-                <field name="new_translator_id"/>
-                <field name="translate_date"/>
-                <field name="translation_status"/>
-                <field name="translation_priority"/>
-                <field name="translation_supervisor_id"/>
-                <field name="translation_competence_id"/>
-                <field name="translation_issue"/>
-                <field name="translation_url"/>
-                <field name="translation_priority_name"/>
-                <field name="unread_comments"/>
-                <progressbar field="translation_priority_name" colors="{&quot;High&quot;: &quot;success&quot;, &quot;Very high&quot;: &quot;warning&quot;, &quot;Urgent&quot;: &quot;danger&quot;}"/>
+            <kanban
+        default_order="unread_comments desc,translation_issue,translation_priority desc,translate_date"
+        default_group_by="translation_competence_id"
+        quick_create="false"
+        group_create="false"
+        group_edit="false"
+      >
+                <field name="name" />
+                <field name="new_translator_id" />
+                <field name="translate_date" />
+                <field name="translation_status" />
+                <field name="translation_priority" />
+                <field name="translation_supervisor_id" />
+                <field name="translation_competence_id" />
+                <field name="translation_issue" />
+                <field name="translation_url" />
+                <field name="translation_priority_name" />
+                <field name="unread_comments" />
+                <progressbar
+          field="translation_priority_name"
+          colors="{&quot;High&quot;: &quot;success&quot;, &quot;Very high&quot;: &quot;warning&quot;, &quot;Urgent&quot;: &quot;danger&quot;}"
+        />
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{(record.unread_comments.raw_value || record.translation_issue.raw_value) ? 'oe_kanban_color_1' : ''}">
+                        <div
+              t-attf-class="oe_kanban_card oe_kanban_global_click #{(record.unread_comments.raw_value || record.translation_issue.raw_value) ? 'oe_kanban_color_1' : ''}"
+            >
                             <div class="o_primary">
-                                <strong><field name="name"/></strong>
+                                <strong><field name="name" /></strong>
                             </div>
                             <div class="oe_kanban_content">
-                                <field name="translate_date"/>
+                                <field name="translate_date" />
                                 <t t-if="record.translation_issue.value">
-                                    <br/>
-                                    <span style="color: red" t-esc="record.translation_issue.value"/>
+                                    <br />
+                                    <span
+                    style="color: red"
+                    t-esc="record.translation_issue.value"
+                  />
                                 </t>
-                                <br/>
-                                <field name="translation_status"/>
-                                <p t-esc="record.new_translator_id.value"/>
-                                <p class="mb-0">Priority: <span t-esc="record.translation_priority.value"/></p>
+                                <br />
+                                <field name="translation_status" />
+                                <p t-esc="record.new_translator_id.value" />
+                                <p class="mb-0">Priority: <span
+                    t-esc="record.translation_priority.value"
+                  /></p>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
-                                    <br/>
-                                    <img t-attf-src="/sbc_translation/static/img/priority_#{record.translation_priority.raw_value or '0'}.png" height="16" alt="translation priority" style=""/>
-                                    <field name="translation_priority" widget="priority"/>
+                                    <br />
+                                    <img
+                    t-attf-src="/sbc_translation/static/img/priority_#{record.translation_priority.raw_value or '0'}.png"
+                    height="16"
+                    alt="translation priority"
+                    style=""
+                  />
+                                    <field
+                    name="translation_priority"
+                    widget="priority"
+                  />
                                 </div>
                                 <div class="oe_kanban_bottom_right">
-                                    <img t-att-src="kanban_image('translation.user', 'avatar', record.new_translator_id.raw_value)" t-att-alt="record.new_translator_id.value" t-att-title="record.new_translator_id.value" width="24" height="24" class="oe_kanban_avatar"/>
-                                    <a t-att-href="record.translation_url.raw_value" target="_blank"><i class="fa fa-external-link oe_kanban_avatar" role="img"/></a>
+                                    <img
+                    t-att-src="kanban_image('translation.user', 'avatar', record.new_translator_id.raw_value)"
+                    t-att-alt="record.new_translator_id.value"
+                    t-att-title="record.new_translator_id.value"
+                    width="24"
+                    height="24"
+                    class="oe_kanban_avatar"
+                  />
+                                    <a
+                    t-att-href="record.translation_url.raw_value"
+                    target="_blank"
+                  ><i
+                      class="fa fa-external-link oe_kanban_avatar"
+                      role="img"
+                    /></a>
                                 </div>
                             </div>
                         </div>
@@ -180,20 +294,46 @@
     <record id="correspondence_view_search" model="ir.ui.view">
         <field name="name">correspondence.translation.search</field>
         <field name="model">correspondence</field>
-        <field name="inherit_id" ref="sbc_compassion.correspondence_view_search"/>
+        <field
+      name="inherit_id"
+      ref="sbc_compassion.correspondence_view_search"
+    />
         <field name="arch" type="xml">
             <field name="sponsorship_id" position="after">
-                <field name="translation_competence_id"/>
-                <field name="new_translator_id"/>
+                <field name="translation_competence_id" />
+                <field name="new_translator_id" />
             </field>
             <filter name="state_published" position="after">
-                <filter name="translation_pending" string="In Translation" domain="[('state', '=', 'Global Partner translation queue')]"/>
-                <filter name="my_supervision" string="My supervision" domain="[('translation_supervisor_id', '=', uid)]"/>
+                <filter
+          name="translation_pending"
+          string="In Translation"
+          domain="[('state', '=', 'Global Partner translation queue')]"
+        />
+                <filter
+          name="my_supervision"
+          string="My supervision"
+          domain="[('translation_supervisor_id', '=', uid)]"
+        />
             </filter>
             <filter name="group_state" position="after">
-                <filter string="Translator" name="group_translator" domain="[]" context="{'group_by': 'new_translator_id'}"/>
-                <filter string="Competence" name="group_competence" domain="[]" context="{'group_by': 'translation_competence_id'}"/>
-                <filter string="Translation status" name="group_translation_status" domain="[]" context="{'group_by': 'translation_status'}"/>
+                <filter
+          string="Translator"
+          name="group_translator"
+          domain="[]"
+          context="{'group_by': 'new_translator_id'}"
+        />
+                <filter
+          string="Competence"
+          name="group_competence"
+          domain="[]"
+          context="{'group_by': 'translation_competence_id'}"
+        />
+                <filter
+          string="Translation status"
+          name="group_translation_status"
+          domain="[]"
+          context="{'group_by': 'translation_status'}"
+        />
             </filter>
         </field>
     </record>
@@ -201,10 +341,13 @@
     <!-- Resubmit letter to Translation mass action-->
     <record id="resubmit_letter_translation_action" model="ir.actions.server">
         <field name="name">Resubmit to translation</field>
-        <field name="model_id" ref="sbc_compassion.model_correspondence"/>
+        <field name="model_id" ref="sbc_compassion.model_correspondence" />
         <field name="state">code</field>
         <field name="code">records.resubmit_to_translation()</field>
-        <field name="binding_model_id" ref="sbc_compassion.model_correspondence"/>
+        <field
+      name="binding_model_id"
+      ref="sbc_compassion.model_correspondence"
+    />
         <field name="binding_type">action</field>
     </record>
 
@@ -213,7 +356,7 @@
         <field name="res_model">correspondence</field>
         <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="view_id" ref="correspondence_translation_kanban"/>
+        <field name="view_id" ref="correspondence_translation_kanban" />
         <field name="context">{
             'form_view_ref': 'sbc_translation.correspondence_simple_translation_form',
             'tree_view_ref': 'sbc_translation.view_correspondence_translation_tree',
