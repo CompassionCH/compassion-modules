@@ -48,7 +48,6 @@ class EventCompassion(models.Model):
     communication_config_id = fields.Many2one(
         "partner.communication.config",
         "Thank You Template",
-        default=lambda self: self.env.ref("crm_compassion.config_event_standard").id,
         domain=[("model", "=", "account.move.line")],
     )
     ambassador_config_id = fields.Many2one(
@@ -224,16 +223,14 @@ class EventCompassion(models.Model):
 
     @api.model
     def get_event_types(self):
-        return (
-            [
-                ("stand", _("Stand")),
-                ("concert", _("Concert")),
-                ("presentation", _("Presentation")),
-                ("meeting", _("Meeting")),
-                ("sport", _("Sport event")),
-                ("tour", _("Sponsor tour")),
-            ],
-        )
+        return [
+            ("stand", _("Stand")),
+            ("concert", _("Concert")),
+            ("presentation", _("Presentation")),
+            ("meeting", _("Meeting")),
+            ("sport", _("Sport event")),
+            ("tour", _("Sponsor tour")),
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -415,7 +412,6 @@ class EventCompassion(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": "compassion.child",
-            "src_model": "crm.event.compassion",
             "context": self.with_context(search_default_available=1).env.context,
             "domain": [("id", "in", self.allocate_child_ids.ids)],
         }
@@ -442,6 +438,13 @@ class EventCompassion(models.Model):
     def onchange_lead_id(self):
         if self.lead_id.user_id:
             self.user_id = self.lead_id.user_id
+
+    @api.onchange("type")
+    def onchange_type(self):
+        if self.type in ("sport", "tour") and not self.communication_config_id:
+            self.communication_config_id = self.env.ref(
+                "crm_compassion.config_event_standard"
+            )
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

@@ -1,3 +1,5 @@
+from datetime import date
+
 from openupgradelib import openupgrade
 
 
@@ -22,3 +24,12 @@ def migrate(env, version):
     FROM advocate_details a
     WHERE a.partner_id = res_partner.id""",
     )
+    config = env.ref("crm_compassion.config_event_standard")
+    events = env["crm.event.compassion"].search(
+        [
+            ("type", "in", ["sport", "tour"]),
+            ("end_date", ">", date.today()),
+            ("communication_config_id", "=", False),
+        ]
+    )
+    events.write({"communication_config_id": config.id})
