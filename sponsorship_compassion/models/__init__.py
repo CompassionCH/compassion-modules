@@ -21,4 +21,5 @@ from . import (
     project_compassion,
     recurring_contract_line,
     res_partner,
+    res_partner_merge,
 )
