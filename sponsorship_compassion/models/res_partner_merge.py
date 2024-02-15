@@ -4,7 +4,7 @@ from odoo import models, _
 from odoo.exceptions import UserError
 
 
-SPONSORSHIP_TATE_ACTIVE = 'active'
+SPONSORSHIP_STATE_ACTIVE = 'active'
 
 
 class CustomMergePartnerAutomatic(models.TransientModel):
@@ -27,19 +27,15 @@ class CustomMergePartnerAutomatic(models.TransientModel):
         (excluding the destination partner) before proceeding with the merge action.
         If any active contracts are found, it raises a UserError to prevent the merge.
         """
-        partner_ids: List[int] = self.partner_ids.ids
-        dst_partner_id: int = self.dst_partner_id.id
-
-        if dst_partner_id in partner_ids:  # INFO: remove dst_partner_id as it will exist after the merge.
-            partner_ids.remove(dst_partner_id)
+        partner_ids: List[int] = (self.partner_ids - self.dst_partner_id).ids
 
         # INFO: check (partner_id in partner_ids | correspondent_id in partner_ids) & state = active
-        active_sponsorship_contracts = self.env['recurring.contract'].search([
+        active_sponsorship_contracts = self.env['recurring.contract'].search_count([
             '&',
             '|',
             ('partner_id', 'in', partner_ids),
             ('correspondent_id', 'in', partner_ids),
-            ('state', '=', SPONSORSHIP_TATE_ACTIVE)
+            ('state', '=', SPONSORSHIP_STATE_ACTIVE)
         ])
 
         if active_sponsorship_contracts:  # Check if any active contracts are found
