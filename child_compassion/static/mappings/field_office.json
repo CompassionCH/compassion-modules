@@ -18,10 +18,6 @@
     "FieldOfficeDirector": "country_director",
     "FieldOffice_ID": "field_office_id",
     "IssueResolutionEmailAddress": "issue_email",
-    "LanguagesTranslated": {
-      "field": "translated_language_ids.name",
-      "search_relational_record": true
-    },
     "FieldOffice_Name": "name",
     "NumberOfFieldOfficeStaff": "staff_number",
     "Phone": "phone_number",
