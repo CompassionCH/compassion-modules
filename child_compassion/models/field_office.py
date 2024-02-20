@@ -64,7 +64,7 @@ class FieldOffice(models.Model):
         "res.lang.compassion",
         "field_office_translated_langs",
         string="Translated languages",
-        readonly=False,
+        readonly=False
     )
 
     staff_number = fields.Integer()
