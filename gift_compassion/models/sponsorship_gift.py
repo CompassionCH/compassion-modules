@@ -441,15 +441,19 @@ class SponsorshipGift(models.Model):
             limit=1,
         )
         if threshold_rule:
-            current_rate = threshold_rule.currency_id.rate or 1.0
+            if self.company_id.currency_id != self.invoice_line_ids.move_id.currency_id:
+                current_rate = threshold_rule.currency_id.rate / self.invoice_line_ids.move_id.currency_id.rate
+            else:
+                current_rate = threshold_rule.currency_id.rate or 1.0
+
             minimum_amount = threshold_rule.min_amount
             maximum_amount = threshold_rule.max_amount
-
             this_amount = self.amount * current_rate
+
             if this_amount < minimum_amount:
                 return (
                     False,
-                    f"""Gift amount is small than minimal amount, Gift amount:
+                    f"""Gift amount is smaller than minimal amount, Gift amount:
                     {round(this_amount, 2)}$,
                 Minimal amount :{round(minimum_amount, 2)}$. """,
                 )
