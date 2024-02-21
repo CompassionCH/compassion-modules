@@ -474,23 +474,16 @@ class CompassionProject(models.Model):
     @api.depends("lifecycle_ids")
     def _compute_suspension_state(self):
         for project in self.filtered("lifecycle_ids"):
-            most_recent_date = max(project.lifecycle_ids.mapped('date'))
-            most_recent_lifecycles = project.lifecycle_ids.filtered(lambda r: r.date == most_recent_date)
-
-            # Check if there is a lifecyle with type 'Reactivation' in the most recent date
-            reactivation_lifecycle = next(
-                (lifecycle for lifecycle in most_recent_lifecycles if lifecycle.type == 'Reactivation'), None)
+            last_info = project.lifecycle_ids[0]
+            reactivation_lifecycle = project.lifecycle_ids.filtered(
+                lambda r: r.date == last_info.date and r.type == "Reactivation")
 
             # If it exists, lifecycle with type 'Reactivation' is determinant
-            if reactivation_lifecycle is None:
-                determinant_lifecycle = most_recent_lifecycles[-1]
-            else:
-                determinant_lifecycle = reactivation_lifecycle
-                project.suspension = False
-
+            determinant_lifecycle = reactivation_lifecycle or last_info
             if determinant_lifecycle.type == "Suspension":
                 project.suspension = (
-                    "fund-suspended" if determinant_lifecycle.hold_cdsp_funds else "suspended"
+                    "fund-suspended" if determinant_lifecycle.hold_cdsp_funds
+                    else "suspended"
                 )
             elif determinant_lifecycle.type == "Reactivation":
                 project.suspension = False
