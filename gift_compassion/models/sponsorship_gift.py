@@ -201,7 +201,6 @@ class SponsorshipGift(models.Model):
     @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
-        "invoice_line_ids.price_subtotal",
     )
     def _compute_invoice_fields(self):
         for gift in self.filtered("invoice_line_ids"):
@@ -213,8 +212,7 @@ class SponsorshipGift(models.Model):
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
-
-            gift.amount = sum(invoice_lines.mapped("price_subtotal"))
+            gift.amount = sum(invoice_lines.mapped("credit")) - sum(invoice_lines.mapped("debit"))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -431,6 +429,9 @@ class SponsorshipGift(models.Model):
         sponsorship = self.sponsorship_id
         if sponsorship.project_id.hold_gifts:
             return False, "Sponsorship may have a project with hold gifts"
+
+        if not self.account_debit:
+            return False, "No debit account specified for the gift"
 
         threshold_rule = self.env["gift.threshold.settings"].search(
             [
