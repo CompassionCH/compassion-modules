@@ -19,10 +19,12 @@
       "field": "end_date"
     },
     "CorrespondentCorrespondenceLanguage": {
-      "field": null
+      "field": "reading_language.name",
+      "search_relational_record": true
     },
     "CorrespondentSupporterGlobalID": {
-      "field": null
+      "field": "correspondent_id.global_id",
+      "search_relational_record": true
     },
     "FinalCommitmentOfLine": {
       "to_json_conversion": "''"
