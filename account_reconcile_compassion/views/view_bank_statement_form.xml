@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.view_bank_statement_form" />
         <field name="arch" type="xml">
             <xpath
-        expr="//button[@name='action_bank_reconcile_bank_statements']"
+        expr="//button[@name='button_post']"
         position="before"
       >
                 <button
