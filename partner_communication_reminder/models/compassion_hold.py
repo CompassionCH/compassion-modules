@@ -1,8 +1,28 @@
-from odoo import models
+from odoo import fields, models
 
 
 class CompassionHold(models.Model):
     _inherit = "compassion.hold"
+
+    no_money_extension_duration = fields.Integer(
+        compute="_compute_no_money_extension_duration"
+    )
+
+    def _compute_no_money_extension_duration(self):
+        """
+        Gets the default No Money hold extension duration
+        :return: integer: hold duration in days
+        """
+        settings = self.env["res.config.settings"].sudo()
+        for hold in self:
+            if hold.no_money_extension < 2:
+                hold.no_money_extension_duration = settings.get_param(
+                    "no_money_hold_duration"
+                )
+            else:
+                hold.no_money_extension_duration = settings.get_param(
+                    "no_money_hold_extension"
+                )
 
     def postpone_no_money_hold(self, additional_text=None):
         """
