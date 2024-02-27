@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="update_translation_priority_cron" model="ir.cron">
+            <field name="name">Update translation priority</field>
+            <field name="model_id" ref="model_correspondence"/>
+            <field name="type">ir.action.server</field>
+            <field name="state">code</field>
+            <field name="code">model.update_translation_priority_cron()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="datetime.now().strftime('%Y-%m-%d')"/>
+        </record>
+    </data>
+</odoo>

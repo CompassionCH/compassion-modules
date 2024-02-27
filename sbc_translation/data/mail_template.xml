@@ -1,4 +1,4 @@
-<odoo>
+<odoo noupdate="1">
     <record id="translation_issue_notification" model="mail.template">
         <field name="name">Translation issue notification</field>
         <field name="subject">A translation issue was raised</field>

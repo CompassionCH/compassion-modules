@@ -4,9 +4,10 @@
         <field name="model">translation.user</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name" />
-                <field name="translator_since" />
-                <field name="nb_translated_letters" />
+                <field name="name"/>
+                <field name="translator_since"/>
+                <field name="nb_translated_letters_this_year"/>
+                <field name="nb_translated_letters"/>
             </tree>
         </field>
     </record>
@@ -18,58 +19,36 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button
-              name="open_translated_letters"
-              type="object"
-              icon="fa-pencil"
-              class="oe_stat_button"
-            >
-                            <field
-                string="Translations"
-                name="nb_translated_letters"
-                widget="statinfo"
-              />
+                        <button name="open_translated_letters" type="object" icon="fa-pencil" class="oe_stat_button">
+                            <field string="Translations" name="nb_translated_letters" widget="statinfo"/>
                         </button>
-                        <button
-              name="toggle_active"
-              type="object"
-              class="oe_stat_button"
-              icon="fa-archive"
-            >
-                            <field
-                name="active"
-                widget="boolean_button"
-                options="{'terminology': 'archive'}"
-              />
-                        </button>
+                        
+            <field name="active" invisible="1" />
+            <widget
+                name="web_ribbon"
+                title="Archived"
+                bg_color="bg-danger"
+                attrs="{'invisible': [('active', '=', True)]}"
+            />
+            
                     </div>
                     <group>
                         <group>
-                            <field name="user_id" />
-                            <field name="partner_id" />
-                            <field name="translator_since" />
+                            <field name="user_id"/>
+                            <field name="partner_id"/>
+                            <field name="translator_since"/>
                         </group>
                         <group>
-                            <field name="nb_translated_letters_this_year" />
-                            <field name="nb_translated_letters_last_year" />
+                            <field name="nb_translated_letters_this_year"/>
+                            <field name="nb_translated_letters_last_year"/>
                         </group>
                     </group>
                     <group>
-                        <field
-              name="translation_skills"
-              context="{'default_translator_id': active_id}"
-            >
-                            <tree>
-                                <field name="competence_id" />
-                                <field name="verified" />
+                        <field name="translation_skills" context="{'default_translator_id': active_id}">
+                            <tree editable="bottom">
+                                <field name="competence_id"/>
+                                <field name="verified"/>
                             </tree>
-                            <form>
-                                <group>
-                                    <field name="translator_id" invisible="1" />
-                                    <field name="competence_id" />
-                                    <field name="verified" />
-                                </group>
-                            </form>
                         </field>
                     </group>
                 </sheet>
@@ -82,58 +61,23 @@
         <field name="model">translation.user</field>
         <field name="arch" type="xml">
             <search>
-                <field name="partner_id" />
-                <field
-          name="search_competence_id"
-          string="Competence"
-          filter_domain="[('translation_skills.competence_id', '=', self)]"
-        />
-                <field
-          name="search_source_lang"
-          string="Source language"
-          filter_domain="[('translation_skills.competence_id.source_language_id', '=', self)]"
-        />
-                <field
-          name="search_dest_lang"
-          string="Destination language"
-          filter_domain="[('translation_skills.competence_id.dest_language_id', '=', self)]"
-        />
+                <field name="partner_id"/>
+                <field name="search_competence_id" string="Competence" filter_domain="[('translation_skills.competence_id', '=', self)]"/>
+                <field name="search_source_lang" string="Source language" filter_domain="[('translation_skills.competence_id.source_language_id', '=', self)]"/>
+                <field name="search_dest_lang" string="Destination language" filter_domain="[('translation_skills.competence_id.dest_language_id', '=', self)]"/>
                 <separator />
-                <filter
-          name="translated_this_year"
-          string="Translated this year"
-          domain="[('nb_translated_letters_this_year','>',0)]"
-        />
-                <filter
-          name="translated_last_year"
-          string="Translated last year"
-          domain="[('nb_translated_letters_last_year','>',0)]"
-        />
+                <filter name="translated_this_year" string="Translated this year" domain="[('nb_translated_letters_this_year','>',0)]" />
+                <filter name="translated_last_year" string="Translated last year" domain="[('nb_translated_letters_last_year','>',0)]" />
             </search>
         </field>
     </record>
 
-    <record
-    id="action_compassion_translation_user_form"
-    model="ir.actions.act_window"
-  >
+    <record id="action_compassion_translation_user_form" model="ir.actions.act_window">
         <field name="name">Translator</field>
         <field name="res_model">translation.user</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem
-    id="menu_translation_platform"
-    parent="sbc_compassion.menu_correspondence"
-    sequence="4"
-    name="Translation Platform"
-  />
-    <menuitem
-    id="menu_translation_user"
-    parent="menu_translation_platform"
-    name="Translators"
-    action="action_compassion_translation_user_form"
-    sequence="2"
-  />
+    <menuitem id="menu_translation_platform" parent="sbc_compassion.menu_correspondence" sequence="4" name="Translation Platform"/>
+    <menuitem id="menu_translation_user" parent="menu_translation_platform" name="Translators" action="action_compassion_translation_user_form" sequence="2"/>
 </odoo>

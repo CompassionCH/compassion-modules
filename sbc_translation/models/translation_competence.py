@@ -20,7 +20,14 @@ class TranslationCompetence(models.Model):
         required=True,
         index=True,
     )
-    name = fields.Char(compute="_compute_name")
+    fallback_competence_id = fields.Many2one(
+        "translation.competence",
+        "Fallback competence",
+        help="Letters will move to this pool if they sit for too long waiting to be translated.",
+    )
+    name = fields.Char(
+        compute="_compute_name", store=True
+    )  # We need to store it to filter on it
     all_letter_ids = fields.One2many(
         "correspondence", "translation_competence_id", "All letters"
     )
@@ -28,13 +35,13 @@ class TranslationCompetence(models.Model):
         "correspondence", string="Current letters", compute="_compute_current_letters"
     )
     number_current_letters = fields.Integer(
-        compute="_compute_current_letters", store=True
+        compute="_compute_current_letters", store=True, compute_sudo=False
     )
     skill_ids = fields.One2many(
         "translation.user.skill", "competence_id", "Translator skills"
     )
     number_translators = fields.Integer(
-        compute="_compute_number_translators", store=True
+        compute="_compute_number_translators", store=True, compute_sudo=False
     )
     number_active_translators = fields.Integer(compute="_compute_number_translators")
 
@@ -46,6 +53,7 @@ class TranslationCompetence(models.Model):
         )
     ]
 
+    @api.depends("dest_language_id", "source_language_id")
     def _compute_name(self):
         for competence in self:
             competence.name = (
@@ -73,7 +81,6 @@ class TranslationCompetence(models.Model):
             competence.number_translators = self.env["translation.user"].search_count(
                 [
                     ("translation_skills.competence_id", "=", competence.id),
-                    ("translation_skills.competence_id", "!=", False),
                 ]
             )
             competence.number_active_translators = self.env[
@@ -81,8 +88,7 @@ class TranslationCompetence(models.Model):
             ].search_count(
                 [
                     ("translation_skills.competence_id", "=", competence.id),
-                    ("translation_skills.competence_id", "!=", False),
-                    ("nb_translated_letters_this_year", "!=", False),
+                    ("nb_translated_letters_this_year", ">", 0),
                 ]
             )
 

@@ -2,7 +2,7 @@
     <data noupdate="1">
         <record id="translation_website" model="website">
             <field name="name">Translation Platform</field>
-            <field name="domain">translate-test.compassion.ch</field>
+            <field name="domain">translate.compassion.ch</field>
         </record>
     </data>
 </odoo>
