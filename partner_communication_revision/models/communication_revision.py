@@ -359,6 +359,42 @@ class CommunicationRevision(models.Model):
             limit=1,
         )
 
+    def duplicate_revision(self):
+        """
+        Duplicate the current revision by creating a new revision with an incremented revision number.
+
+        This function ensures that only one revision is duplicated at a time. It calculates the new revision number
+        by incrementing the current revision number by 1. It then checks if a revision with the same revision number
+        already exists. If so, it increments the revision number until a unique revision number is found.
+
+        After creating the new revision, it sets the active_revision_id of the current revision to the newly created
+        revision.
+        """
+        self.ensure_one()
+
+        new_revision_number = self.revision_number + 1
+
+        # Vérifier si le nouveau numéro de révision existe déjà
+        while self.env["partner.communication.revision.history"].search_count([
+            ("revision_number", "=", new_revision_number),
+        ]):
+            new_revision_number += 1
+
+        self.active_revision_id = (
+            self.env["partner.communication.revision.history"]
+            .create(
+                {
+                    "revision_number": new_revision_number,
+                    "revision_date": fields.Date.today(),
+                    "subject": self.subject,
+                    "body_html": self.body_html,
+                    "linked_revision_id": self.id,
+                    "proposition_text": self.proposition_text,
+                    "raw_subject": self.raw_subject,
+                }
+            )
+        )
+
     ##########################################################################
     #                             VIEW CALLBACKS                             #
     ##########################################################################
