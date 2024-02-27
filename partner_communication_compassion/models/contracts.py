@@ -36,9 +36,11 @@ class RecurringContract(models.Model):
         "transmitted to the sponsor."
     )
 
-    @api.onchange("origin_id")
+    @api.onchange("origin_id", "correspondent_id")
     def _do_not_send_letter_to_transfer(self):
-        if self.origin_id.type == "transfer" or self.origin_id.name == "Reinstatement":
+        if self.is_active or (
+            self.origin_id.type == "transfer" or self.origin_id.name == "Reinstatement"
+        ):
             self.send_introduction_letter = False
         # If origin is switched back from a transer,
         # field should be reset to default

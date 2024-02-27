@@ -201,37 +201,6 @@ ${object.user_id.signature | safe}
             </field>
         </record>
 
-        <!-- Sponsorship certificate -->
-        <record id="email_sponsorship_certificate" model="mail.template">
-            <field name="name">Sponsorship - Certificate</field>
-            <field
-        name="model_id"
-        ref="partner_communication.model_partner_communication_job"
-      />
-            <field
-        name="email_from"
-      >"${object.user_id.company_id.name}" &lt;${object.user_id.company_id.email}&gt;</field>
-            <field name="reply_to">${object.user_id.company_id.email}</field>
-            <field name="use_default_to" eval="True" />
-            <field name="subject">Thank you for changing one life</field>
-            <field name="body_html" type="html">
-                <p>
-                    % set partner = object.partner_id
-                    % set sponsorships = object.get_objects()
-                    ${partner.salutation}
-                </p>
-                <p>
-                    We recently informed you by email about the end of the sponsorship.
-                </p>
-                <p>
-                    From the bottom of our hearts, we would like to thank you for your valuable contribution!
-                </p>
-                <p>
-                    Best regards
-                </p>
-            </field>
-        </record>
-
         <!-- Communication Rules -->
         <record
       id="planned_exit_notification"
