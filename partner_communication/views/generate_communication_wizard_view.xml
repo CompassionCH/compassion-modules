@@ -76,6 +76,7 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_model_id" ref="model_res_partner" />
+        <field name="context">{}</field>
     </record>
 
     <menuitem
