@@ -111,11 +111,11 @@ class MisSpnInfo(models.Model):
 
     def init(self):
         param_obj = self.env["ir.config_parameter"]
-        mis_contract_created_id = param_obj.get_param("mis_contract_created_id")
+        mis_contract_created_id = int(param_obj.get_param("mis_contract_created_id"))
         mis_main_company_id = self.env["res.company"].browse(
             param_obj.get_param("mis_main_company_id")
         )
-        mis_child_sponsored_id = param_obj.get_param("mis_child_sponsored_id")
+        mis_child_sponsored_id = int(param_obj.get_param("mis_child_sponsored_id"))
         script = opj(os.path.dirname(__file__), "spn_info.sql")
         currency = (
             self.env["res.company"]
@@ -128,15 +128,15 @@ class MisSpnInfo(models.Model):
             params = (
                 mis_child_sponsored_id,
                 currency,
-                mis_main_company_id.id,
+                int(mis_main_company_id.id),
                 mis_child_sponsored_id,
                 currency,
-                mis_main_company_id.id,
+                int(mis_main_company_id.id),
                 mis_contract_created_id,
                 currency,
-                mis_main_company_id.id,
+                int(mis_main_company_id.id),
                 mis_contract_created_id,
                 currency,
-                mis_main_company_id.id,
+                int(mis_main_company_id.id),
             )
             self.env.cr.execute(sql, params)
