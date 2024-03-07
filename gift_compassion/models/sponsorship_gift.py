@@ -201,6 +201,8 @@ class SponsorshipGift(models.Model):
     @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
+        "invoice_line_ids.credit",
+        "invoice_line_ids.debit",
     )
     def _compute_invoice_fields(self):
         for gift in self.filtered("invoice_line_ids"):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
-    Copyright (C) 2016 Compassion (http://www.compassion.ch)
-    @author Emanuel Cino <ecino@compassion.ch>
+    Copyright (C) 2024 Compassion (http://www.compassion.ch)
+    @author Jérémie Lang <jlang@compassion.ch>
     The licence is in the file __manifest__.py
 -->
 <odoo>
