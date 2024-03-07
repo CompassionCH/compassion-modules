@@ -36,7 +36,7 @@
     "website": "https://github.com/CompassionCH/compassion-modules",
     "depends": [
         "partner_communication",
-        "crm_phone",  # OCA/connector-telephony
+        "crm_phonecall",  # OCA/connector-telephony
     ],
     "external_dependencies": {"python": ["phonenumbers"]},
     "data": [
