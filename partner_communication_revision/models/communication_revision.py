@@ -372,13 +372,10 @@ class CommunicationRevision(models.Model):
         """
         self.ensure_one()
 
-        new_revision_number = self.revision_number + 1
-
-        # Vérifier si le nouveau numéro de révision existe déjà
-        while self.env["partner.communication.revision.history"].search_count([
-            ("revision_number", "=", new_revision_number),
-        ]):
-            new_revision_number += 1
+        last_revision = self.env["partner.communication.revision.history"].search([
+            ("linked_revision_id", "=", self.id),
+        ], order="revision_number desc", limit=1)
+        new_revision_number = int(last_revision.revision_number) + 1
 
         self.active_revision_id = (
             self.env["partner.communication.revision.history"]
