@@ -9,7 +9,9 @@
 ##############################################################################
 import json
 
+import odoo
 from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
+from odoo.api import Environment
 
 
 class TestOnrampConnector:
@@ -21,13 +23,17 @@ class TestOnrampConnector:
         :param test_message (onramp.simulator record): the message to send
         """
         config_obj = self.connector._res_config
-        config_obj.env.clear()
-        headers = {
-            "Content-type": "application/json",
-            "x-cim-MessageType": test_message.message_type_url,
-            "x-cim-FromAddress": "OnrampSimulator",
-            "x-cim-ToAddress": config_obj.get_param("connect_gpid"),
-        }
+        with Environment.manage():
+            with odoo.registry(config_obj.env.cr.dbname).cursor() as new_cr:
+                new_env = Environment(
+                    new_cr, config_obj.env.uid, config_obj.env.context)
+                config_obj = config_obj.with_env(new_env)
+                headers = {
+                    "Content-type": "application/json",
+                    "x-cim-MessageType": test_message.message_type_url,
+                    "x-cim-FromAddress": "OnrampSimulator",
+                    "x-cim-ToAddress": config_obj.get_param("connect_gpid"),
+                }
         url = test_message.server_url
         body = test_message.body_json
 

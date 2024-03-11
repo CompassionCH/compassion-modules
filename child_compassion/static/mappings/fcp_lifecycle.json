@@ -23,7 +23,7 @@
     "IsTransitionComplete": "transition_complete",
     "Name": "name",
     "ProjectedTransitionDate": "projected_transition_date",
-    "ReactivationDate": "reactivation_date",
+    "ReactivationDate": "date",
     "ReasonForFirstExtension": {
       "field": "extension_1_reason_ids.value",
       "search_relational_record": true,
@@ -40,17 +40,14 @@
       "search_relational_record": true,
       "search_key": "name"
     },
-    "SuspensionStartDate": "suspension_start_date",
+    "SuspensionStartDate": "date",
     "TransitionDetailsGPAUse": "details",
     "TransitionReason": {
       "field": "transition_reason_ids.value",
       "search_relational_record": true,
       "search_key": "name"
     },
-    "ICPStatus": {
-      "field": "project_status",
-      "from_json_conversion": "json_value and json_value[0]"
-    },
+    "ICPStatus": "project_status",
     "ICP_ID": {
       "field": "project_id.fcp_id",
       "search_relational_record": true,

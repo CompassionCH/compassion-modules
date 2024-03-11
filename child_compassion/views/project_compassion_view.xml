@@ -10,7 +10,7 @@
                     <field
             name="status"
             widget="statusbar"
-            statusbar_visible="A,P,T"
+            statusbar_visible="Active,Phase Out,Transitioned"
           />
                 </header>
                 <sheet>
@@ -384,7 +384,6 @@
                     <group
             attrs="{'invisible': [('type', '!=', 'Reactivation')]}"
           >
-                        <field name="reactivation_date" />
                         <field name="fcp_improvement_desc" />
                     </group>
                     <group
@@ -393,7 +392,6 @@
                     <group
             attrs="{'invisible': [('type', '!=', 'Suspension')]}"
           >
-                        <field name="suspension_start_date" />
                         <field name="suspension_end_date" />
                         <field
               name="suspension_reason_ids"
@@ -425,7 +423,6 @@
                     <group
             attrs="{'invisible': [('type', '!=', 'Transition')]}"
           >
-                        <field name="transition_date" />
                         <field
               name="transition_reason_ids"
               widget="many2many_tags"

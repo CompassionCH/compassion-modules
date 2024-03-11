@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class ProjectLifecycle(models.Model):
@@ -38,7 +38,6 @@ class ProjectLifecycle(models.Model):
 
     # Suspension
     ############
-    suspension_start_date = fields.Date(readonly=True)
     suspension_end_date = fields.Date(readonly=True)
     suspension_detail = fields.Char(readonly=True)
     suspension_reason_ids = fields.Many2many(
@@ -71,7 +70,6 @@ class ProjectLifecycle(models.Model):
 
     # Transition
     ############
-    transition_date = fields.Date(readonly=True)
     transition_complete = fields.Boolean(readonly=True)
     details = fields.Text(readonly=True)
     transition_reason_ids = fields.Many2many(
@@ -86,8 +84,7 @@ class ProjectLifecycle(models.Model):
     )
 
     name = fields.Char(readonly=True, index=True, required=True)
-    reactivation_date = fields.Date(readonly=True)
-    project_status = fields.Selection(related="project_id.status")
+    project_status = fields.Selection("_get_project_status")
 
     gender = fields.Char(size=1, default="M")
 
@@ -98,10 +95,10 @@ class ProjectLifecycle(models.Model):
     @api.model
     def _get_project_status(self):
         return [
-            ("Active", "Active"),
-            ("Phase Out", "Phase Out"),
-            ("Suspended", "Suspended"),
-            ("Transitioned", "Transitioned"),
+            ("Active", _("Active")),
+            ("Phase Out", _("Phase Out")),
+            ("Suspended", _("Suspended")),
+            ("Transitioned", _("Transitioned")),
         ]
 
     @api.model
@@ -118,18 +115,18 @@ class ProjectLifecycle(models.Model):
             lifecycle = super().create(vals)
         if lifecycle.type == "Suspension":
             if lifecycle.hold_cdsp_funds and not fund_suspended:
-                project.suspend_funds()
+                project.with_delay().suspend_funds()
             if lifecycle.hold_gifts and not hold_gifts:
                 project.hold_gifts_action()
             if lifecycle.hold_s2b_letters and not hold_letters:
-                project.hold_letters_action()
+                project.with_delay().hold_letters_action()
         if lifecycle.type == "Reactivation":
             if fund_suspended:
-                project.reactivate_project()
+                project.with_delay().reactivate_project()
             if hold_gifts and not lifecycle.hold_gifts:
-                project.reactivate_gifts()
+                project.with_delay().reactivate_gifts()
             if hold_letters and not lifecycle.hold_s2b_letters:
-                project.reactivate_letters()
+                project.with_delay().reactivate_letters()
         return lifecycle
 
     @api.model
@@ -144,10 +141,7 @@ class ProjectLifecycle(models.Model):
             vals = self.json_to_data(single_data)
             lifecycle = self.create(vals)
             lifecycle_ids.append(lifecycle.id)
-
-            lifecycle.project_id.status = vals["project_status"]
             lifecycle.project_id.last_update_date = fields.Date.today()
-
         return lifecycle_ids
 
     def data_to_json(self, mapped_name=None):
