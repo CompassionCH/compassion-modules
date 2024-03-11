@@ -74,7 +74,7 @@ class RestController(http.Controller):
 
         action = action_connect.action_id
         params = {
-            "request_id": request.uuid,
+            "request_id": result["ConfirmationId"],
             "headers": json.dumps(dict(headers.items())),
             "content": json.dumps(request.jsonrequest, indent=4, sort_keys=True),
             "state": "success" if action_connect.ignored else "new",
