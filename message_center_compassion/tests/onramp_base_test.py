@@ -30,7 +30,7 @@ class TestOnramp(common.HttpCase):
             "Authorization": "Bearer fake_token",
             "x-cim-MessageType": "http://schemas.ci.org/ci/services/"
             "communications/2015/09/SBCStructured",
-            "x-cim-FromAddress": "CHTest",
+            "x-cim-FromAddress": "OnrampSimulator",
             "x-cim-ToAddress": "CH",
         }
         self.opener.headers.update(headers)

@@ -20,11 +20,12 @@ class TestOnrampConnector:
         """Sends a message to any onramp.
         :param test_message (onramp.simulator record): the message to send
         """
+        country_code = self.env["res.company"]._get_main_company().country_id.code
         headers = {
             "Content-type": "application/json",
             "x-cim-MessageType": test_message.message_type_url,
-            "x-cim-FromAddress": "CHTest",
-            "x-cim-ToAddress": "SC",
+            "x-cim-FromAddress": "OnrampSimulator",
+            "x-cim-ToAddress": country_code,
         }
         url = test_message.server_url
         body = test_message.body_json
