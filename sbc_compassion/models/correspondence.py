@@ -158,9 +158,11 @@ class Correspondence(models.Model):
     # 3. Letter language, text information, attached images
     #######################################################
     supporter_languages_ids = fields.Many2many(
+        "res.lang.compassion",
         related="partner_id.spoken_lang_ids", readonly=True
     )
     beneficiary_language_ids = fields.Many2many(
+        "res.lang.compassion",
         compute="_compute_beneficiary_language_ids", readonly=True
     )
     # First spoken lang of partner
