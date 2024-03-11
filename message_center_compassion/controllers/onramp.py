@@ -9,6 +9,8 @@
 ##############################################################################
 import json
 import logging
+import uuid
+from datetime import datetime
 
 from odoo import exceptions, http
 from odoo.exceptions import ValidationError
@@ -45,8 +47,10 @@ class RestController(http.Controller):
         )
         self._validate_headers(headers)
         result = {
-            "ConfirmationId": request.uuid,
-            "Timestamp": request.timestamp,
+            "ConfirmationId": getattr(request, "uuid", str(uuid.uuid4())),
+            "Timestamp": getattr(
+                request, "timestamp",
+                datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")),
             "code": 200,
         }
         action_connect = (
