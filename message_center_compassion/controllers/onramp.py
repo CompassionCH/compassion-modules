@@ -99,8 +99,10 @@ class RestController(http.Controller):
         if from_address not in AUTHORIZED_SENDERS:
             raise exceptions.AccessDenied()
         company_obj = request.env["res.company"].with_user(request.uid)
+        param_obj = request.env["res.config.settings"]
         companies = company_obj.search([])
-        country_codes = companies.mapped("partner_id.country_id.code")
+        country_codes = companies.mapped("partner_id.country_id.code") + [
+            param_obj.get_param("connect_gpid")]
         to_address = headers.get("x-cim-ToAddress") or headers.get("X-Cim-ToAddress")
         if to_address not in country_codes:
             raise AttributeError("This message is not for me.")
