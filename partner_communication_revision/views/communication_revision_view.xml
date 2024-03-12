@@ -20,7 +20,7 @@
                             <field name="subject" />
                         </group>
                         <group>
-                            <field name="raw_subject" widget="text" />
+                            <field name="raw_subject" widget="ace" />
                         </group>
                     </group>
                     <group>
@@ -37,7 +37,7 @@
                         <group>
                             <field
                 name="body_html"
-                widget="text"
+                widget="ace"
                 attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"
               />
                         </group>
