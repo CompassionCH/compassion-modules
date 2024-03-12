@@ -214,9 +214,7 @@ class SponsorshipGift(models.Model):
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
-            gift.amount = sum(invoice_lines.mapped("credit")) - sum(
-                invoice_lines.mapped("debit")
-            )
+            gift.amount = sum(invoice_lines.mapped(lambda il: abs(il.amount_currency)))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
