@@ -48,6 +48,8 @@ class CommunicationConfig(models.Model):
         }
 
     def open_translation_view(self):
+        for revision in self.mapped("revision_ids"):
+            revision.edit_revision()
         return self.env["ir.translation"].translate_fields(
             "mail.template", self.email_template_id.id, "body_html"
         )

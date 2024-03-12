@@ -64,7 +64,7 @@ class CommunicationRevision(models.Model):
     model = fields.Char(related="config_id.model_id.model", readonly=True)
     lang = fields.Selection("select_lang", required=True)
     revision_number = fields.Float(default=0.0)
-    revision_date = fields.Date(default=fields.Date.today())
+    revision_date = fields.Date(default=fields.Date.today, readonly=True)
     state = fields.Selection(
         [
             ("pending", "Pending"),
@@ -100,7 +100,9 @@ class CommunicationRevision(models.Model):
         tracking=True,
         readonly=False,
     )
-    update_user_id = fields.Many2one("res.users", "Modified by", readonly=False)
+    update_user_id = fields.Many2one(
+        "res.users", "Modified by", default=lambda self: self.env.uid, readonly=True
+    )
     proposition_text = fields.Html()
     proposition_correction = fields.Html()
     compare_lang = fields.Selection("select_lang")
@@ -277,7 +279,6 @@ class CommunicationRevision(models.Model):
             return super().write(vals)
 
         for revision in self.filtered("simplified_text"):
-            vals["update_user_id"] = self.env.uid
             super(CommunicationRevision, revision).write(vals)
 
             # 2. Push back the template text
@@ -316,6 +317,7 @@ class CommunicationRevision(models.Model):
         self._create_backup(new_revision_number)
         self.revision_number = new_revision_number
         self.revision_date = fields.Date.today()
+        self.update_user_id = self.env.uid
         return self._open_revision()
 
     def new_revision(self):
@@ -953,7 +955,6 @@ class CommunicationRevision(models.Model):
             .create(
                 {
                     "revision_number": backup_revision_number,
-                    "revision_date": self.revision_date,
                     "subject": self.subject,
                     "body_html": self.body_html,
                     "linked_revision_id": self.id,

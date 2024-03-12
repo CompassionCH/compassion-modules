@@ -17,7 +17,10 @@ class CommunicationRevisionHistory(models.Model):
     _order = "linked_revision_id desc,revision_number desc"
 
     revision_number = fields.Float(required=True, index=True)
-    revision_date = fields.Date(required=True)
+    revision_date = fields.Date(required=True, default=fields.Date.today)
+    update_user_id = fields.Many2one(
+        "res.users", "Modified by", default=lambda self: self.env.uid
+    )
     subject = fields.Char()
     raw_subject = fields.Char()
     body_html = fields.Html(sanitize=False)
@@ -48,7 +51,13 @@ class CommunicationRevisionHistory(models.Model):
         return names
 
     def save_revision_state(self):
-        write_fields = ["revision_number", "revision_date", "body_html", "raw_subject"]
+        write_fields = [
+            "revision_number",
+            "revision_date",
+            "body_html",
+            "raw_subject",
+            "update_user_id",
+        ]
         if self.linked_revision_id.state == "active":
             # Also change revision texts when they are not being edited
             write_fields += ["proposition_text", "subject"]
@@ -56,7 +65,13 @@ class CommunicationRevisionHistory(models.Model):
             revision.write(revision.linked_revision_id.read(write_fields)[0])
 
     def get_vals(self):
-        read_fields = ["revision_number", "revision_date", "body_html", "raw_subject"]
+        read_fields = [
+            "revision_number",
+            "revision_date",
+            "body_html",
+            "raw_subject",
+            "update_user_id",
+        ]
         if self.linked_revision_id.state == "active":
             # Also change revision texts when they are not being edited
             read_fields += ["proposition_text", "subject"]
