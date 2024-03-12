@@ -79,18 +79,31 @@ class InteractionResume(models.TransientModel):
                             on a time period
         :return: True
         """
+
+        """
+        Some comments on the SQL request:
+        - It aims to collect all the communication with a partner identified by
+         its partner id
+        - The communications are collected from different tables:
+                - partner_communication_job
+                - crm_phonecall
+                - mail_mail
+                - mailing_trace
+                - mail_message
+                - partner_log_other_interactions
+        - The phone calls are stored in crm_phonecall as Phone as well as in 
+        partner_communication_job as Email. Only the phone calls from the crm_phone are 
+        collected by the query. 
+        - Pay attention some conditions are hard-coded and may introduce some bugs (e.g.
+        "WHEN 'in' THEN 'in' ELSE 'out'" in crm_phonecall
+        """
+
         original_partner = self.env["res.partner"].browse(partner_id)
         partner_email = original_partner.email
         partner_ids = [partner_id]
         partner_ids += original_partner.mapped("other_contact_ids").ids
-        partner_ids += (
-            self.env["res.partner"]
-            .search([("email", "!=", False), ("email", "=", partner_email)])
-            .ids
-        )
-        self.search(
-            [("partner_id", "in", partner_ids), ("communication_type", "=", "Email")]
-        ).unlink()
+        partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email), ("id", "not in", partner_ids)]).ids
+        self.search([("partner_id", "in", partner_ids)]).unlink()
         self.env.cr.execute(
             f"""
                     -- Partner Communications (both e-mail and physical)
@@ -127,6 +140,7 @@ class InteractionResume(models.TransientModel):
                         ON pcj.email_id = mt.mail_id
                         WHERE pcj.state = 'done'
                         AND pcj.partner_id = ANY(%s)
+                        AND pcj.phonecall_id IS NULL -- skip if it is a phone call
                         {"" if full_resume else
                          "AND pcj.date BETWEEN (NOW() - interval '2 year') AND NOW()"}
             -- phonecalls
@@ -140,7 +154,7 @@ class InteractionResume(models.TransientModel):
                         '' as other_type,
                         crmpc.name as body,
                         CASE crmpc.direction
-                            WHEN 'inbound' THEN 'in' ELSE 'out'
+                            WHEN 'in' THEN 'in' ELSE 'out'
                             END
                         AS direction,
                         crmpc.id as phone_id,
@@ -309,6 +323,8 @@ class InteractionResume(models.TransientModel):
             email = record.email_id
             if not email or email not in emails:
                 emails += email
+                filter_res += record
+            elif record.communication_type == 'Phone':
                 filter_res += record
         (res - filter_res).unlink()
         return filter_res
