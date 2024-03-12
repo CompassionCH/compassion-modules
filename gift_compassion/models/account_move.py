@@ -25,7 +25,7 @@ class AccountMove(models.Model):
             if move.invoice_category in ["gift", "sponsorship"]:
                 gifts = move.invoice_line_ids.mapped("gift_id")
                 move.is_gift_refundable = not gifts or any(
-                    gift.state in ["draft", "Undeliverable"] for gift in gifts
+                    gift.state in ["verify", "draft", "Undeliverable"] for gift in gifts
                 )
             else:
                 move.is_gift_refundable = True
