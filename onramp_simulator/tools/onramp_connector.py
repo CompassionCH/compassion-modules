@@ -10,8 +10,9 @@
 import json
 
 import odoo
-from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 from odoo.api import Environment
+
+from odoo.addons.message_center_compassion.tools.onramp_connector import OnrampConnector
 
 
 class TestOnrampConnector:
@@ -26,7 +27,8 @@ class TestOnrampConnector:
         with Environment.manage():
             with odoo.registry(config_obj.env.cr.dbname).cursor() as new_cr:
                 new_env = Environment(
-                    new_cr, config_obj.env.uid, config_obj.env.context)
+                    new_cr, config_obj.env.uid, config_obj.env.context
+                )
                 config_obj = config_obj.with_env(new_env)
                 headers = {
                     "Content-type": "application/json",

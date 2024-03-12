@@ -9,7 +9,7 @@
 ##############################################################################
 
 
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 
 
 class ProjectLifecycle(models.Model):

@@ -42,7 +42,7 @@ class CommunicationRevisionHistory(models.Model):
         names = []
         for backup in self:
             name = f"{round(backup.revision_number, 2):.2f}"
-            if self._context.get('show_revision_date'):
+            if self._context.get("show_revision_date"):
                 name += f" - {backup.revision_date}"
             names.append((backup.id, name))
         return names

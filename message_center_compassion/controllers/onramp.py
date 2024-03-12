@@ -49,8 +49,10 @@ class RestController(http.Controller):
         result = {
             "ConfirmationId": getattr(request, "uuid", str(uuid.uuid4())),
             "Timestamp": getattr(
-                request, "timestamp",
-                datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S")),
+                request,
+                "timestamp",
+                datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"),
+            ),
             "code": 200,
         }
         action_connect = (
@@ -106,7 +108,8 @@ class RestController(http.Controller):
         param_obj = request.env["res.config.settings"]
         companies = company_obj.search([])
         country_codes = companies.mapped("partner_id.country_id.code") + [
-            param_obj.get_param("connect_gpid")]
+            param_obj.get_param("connect_gpid")
+        ]
         to_address = headers.get("x-cim-ToAddress") or headers.get("X-Cim-ToAddress")
         if to_address not in country_codes:
             raise AttributeError("This message is not for me.")

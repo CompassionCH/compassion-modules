@@ -478,7 +478,8 @@ class CompassionProject(models.Model):
         for project in self:
             last_info = project.lifecycle_ids[:1]
             reactivation_lifecycle = project.lifecycle_ids.filtered(
-                lambda r: r.date == last_info.date and r.type == "Reactivation"
+                lambda r, _last=last_info: r.date == _last.date
+                and r.type == "Reactivation"
             )[:1]
             # If it exists, lifecycle with type 'Reactivation' is determinant
             project.last_lifecycle_id = reactivation_lifecycle or last_info

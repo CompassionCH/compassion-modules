@@ -214,7 +214,9 @@ class SponsorshipGift(models.Model):
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
-            gift.amount = sum(invoice_lines.mapped("credit")) - sum(invoice_lines.mapped("debit"))
+            gift.amount = sum(invoice_lines.mapped("credit")) - sum(
+                invoice_lines.mapped("debit")
+            )
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -445,7 +447,10 @@ class SponsorshipGift(models.Model):
         )
         if threshold_rule:
             if self.company_id.currency_id != self.invoice_line_ids.move_id.currency_id:
-                current_rate = threshold_rule.currency_id.rate / self.invoice_line_ids.move_id.currency_id.rate
+                current_rate = (
+                    threshold_rule.currency_id.rate
+                    / self.invoice_line_ids.move_id.currency_id.rate
+                )
             else:
                 current_rate = threshold_rule.currency_id.rate or 1.0
 

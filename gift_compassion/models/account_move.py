@@ -8,14 +8,13 @@
 #
 ##############################################################################
 
-from odoo import models, fields, api
+from odoo import fields, models
 
 
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    is_gift_refundable = fields.Boolean(
-        compute="_compute_is_gift_refundable")
+    is_gift_refundable = fields.Boolean(compute="_compute_is_gift_refundable")
 
     def button_cancel(self):
         super().button_cancel()
@@ -26,8 +25,7 @@ class AccountMove(models.Model):
             if move.invoice_category in ["gift", "sponsorship"]:
                 gifts = move.invoice_line_ids.mapped("gift_id")
                 move.is_gift_refundable = not gifts or any(
-                    gift.state in ['draft', 'Undeliverable']
-                    for gift in gifts
+                    gift.state in ["draft", "Undeliverable"] for gift in gifts
                 )
             else:
                 move.is_gift_refundable = True
