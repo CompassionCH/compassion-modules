@@ -10,13 +10,18 @@
         <field name="name">communication.revision.history.form</field>
         <field name="model">partner.communication.revision.history</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="false" duplicate="false" edit="false">
                 <group>
                     <field name="linked_revision_id" />
                     <field name="revision_number" />
-                    <field name="raw_subject" />
-                    <field name="proposition_text" />
-                    <field name="body_html" />
+                    <group string="Proposition">
+                        <field name="subject" />
+                        <field name="proposition_text" />
+                    </group>
+                    <group string="Active text">
+                        <field name="raw_subject" widget="ace" />
+                        <field name="body_html" widget="ace" />
+                    </group>
                 </group>
             </form>
         </field>

@@ -55,7 +55,8 @@
                   type="object"
                   icon="fa-file"
                   context="{'config_id': config_id}"
-                  string="Show/Edit revision text"
+                  string="Edit revision text"
+                  attrs="{'invisible': [('state', 'in', ['approved', 'active'])]}"
                 />
                                 <field
                   name="active_revision_id"
@@ -64,8 +65,8 @@
                   context="{'show_revision_date': True}"
                   readonly="False"
                 />
-                                <field name="revision_date" readonly="1" />
-                                <field name="update_user_id" readonly="1" />
+                                <field name="revision_date" />
+                                <field name="update_user_id" />
                                 <button
                   name="show_revision"
                   type="object"
@@ -86,20 +87,14 @@
                   groups="base.group_erp_manager"
                   attrs="{'invisible': ['|', ('is_old_version', '=', True), ('state', '!=', 'approved')]}"
                 />
-                                <field name="state" readonly="1" />
-                                <button
-                  name="save_current_revision"
-                  type="object"
-                  icon="fa-save"
-                  string="Create backup of current revision"
-                  attrs="{'invisible': ['|', ('state', '!=', 'active'), ('active_revision_id', '!=', False)]}"
-                />
                                 <button
                   name="duplicate_revision"
-                  string="Dupliquer révision"
                   type="object"
-                  class="oe_highlight"
+                  icon="fa-copy"
+                  string="Duplicate"
+                  attrs="{'invisible': [('is_old_version', '=', False)]}"
                 />
+                                <field name="state" readonly="1" />
                             </tree>
                         </field>
                     </group>
