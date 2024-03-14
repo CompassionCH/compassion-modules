@@ -201,8 +201,7 @@ class SponsorshipGift(models.Model):
     @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
-        "invoice_line_ids.credit",
-        "invoice_line_ids.debit",
+        "invoice_line_ids.amount_currency",
     )
     def _compute_invoice_fields(self):
         for gift in self.filtered("invoice_line_ids"):
@@ -214,8 +213,7 @@ class SponsorshipGift(models.Model):
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
-            amount_currency_inverse = [-value for value in invoice_lines.mapped("amount_currency")]
-            gift.amount = sum(amount_currency_inverse)
+            gift.amount = sum(invoice_lines.mapped(lambda il: -il.amount_currency))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -320,10 +318,16 @@ class SponsorshipGift(models.Model):
                 ("attribution", "=", vals["attribution"]),
                 ("gift_date", "like", str(gift_date)[:4]),
                 ("sponsorship_gift_type", "=", vals.get("sponsorship_gift_type")),
-                ("state", "in", ["draft", "verify", "error"]),
+                ("state", "in", ["draft", "verify"]),
             ],
             limit=1,
         )
+
+    def _get_gift_from_reversal_invoice_line(self, invoice_line):
+        if invoice_line.move_id.move_type in ["out_refund"]:
+            return invoice_line.move_id.reversed_entry_id.invoice_line_ids.mapped("gift_id")
+        else:
+            return self.env[self._name]
 
     def _blend_in_other_gift(self, other_gift_vals):
         self.ensure_one()
@@ -388,16 +392,31 @@ class SponsorshipGift(models.Model):
         :return: sponsorship.gift record
         """
         gift_vals = self.get_gift_values_from_product(invoice_line)
+        gifts = self.env[self._name]
         if not gift_vals:
-            return False
+            return gifts
 
-        gift = self.create(gift_vals)
-        eligible, message = gift.is_eligible()
-        if not eligible:
-            gift.state = "verify"
-            gift.message_post(body=message)
-            gift.message_id.state = "postponed"
-        return gift
+        if invoice_line.debit == 0 and invoice_line.credit > 0:
+            gift = self.create(gift_vals)
+            eligible, message = gift.is_eligible()
+            if not eligible:
+                gift.state = "verify"
+                gift.message_post(body=message)
+                gift.message_id.state = "postponed"
+            return gift
+        else:
+            for reversal_gift in self._get_gift_from_reversal_invoice_line(invoice_line):
+                blend_gift = reversal_gift._blend_in_other_gift(gift_vals)
+                if reversal_gift.state in ["In Progress", "Delivered"]:
+                    gifts += blend_gift
+                elif reversal_gift.state in ["draft", "verify"]:
+                    if blend_gift.amount == 0:
+                        blend_gift.unlink()
+                    else:
+                        gifts += blend_gift
+            if invoice_line.move_id.move_type not in ["out_refund"]:
+                return self._search_for_similar_pending_gifts(gift_vals)._blend_in_other_gift(gift_vals)
+        return gifts
 
     @api.model
     def get_gift_values_from_product(self, invoice_line):
