@@ -411,8 +411,8 @@ class Correspondence(models.Model):
     def _compute_beneficiary_language_ids(self):
         for letter in self:
             letter.beneficiary_language_ids = (
-                    letter.child_id.project_id.field_office_id.spoken_language_ids
-                    + letter.child_id.project_id.field_office_id.translated_language_ids
+                letter.child_id.project_id.field_office_id.spoken_language_ids
+                + letter.child_id.project_id.field_office_id.translated_language_ids
             )
 
     ##########################################################################
