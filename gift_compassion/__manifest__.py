@@ -42,7 +42,6 @@
         "views/gift_view.xml",
         "views/settings_view.xml",
         "views/contracts_view.xml",
-        "views/account_move_view.xml",
         "data/gift_compassion_mapping.xml",
         "data/gmc_action.xml",
     ],

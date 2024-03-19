@@ -25,7 +25,10 @@ class AccountPartialReconcile(models.Model):
         for line in lines.filtered("gift_id"):
             gift = line.gift_id
             if gift.state in ["draft", "verify"]:
-                gift.unlink()
+                if gift.invoice_line_ids:
+                    gift.write({'invoice_line_ids': [(3, line.id)]})
+                    if not gift.invoice_line_ids:
+                        gift.unlink()
             elif gift.state != "Undeliverable":
                 raise UserError(
                     _("You cannot delete the %s. It is already sent to GMC.")
