@@ -30,14 +30,7 @@ class EventCompassion(models.Model):
     name = fields.Char(required=True, tracking=True)
     full_name = fields.Char(compute="_compute_full_name")
     type = fields.Selection(
-        [
-            ("stand", _("Stand")),
-            ("concert", _("Concert")),
-            ("presentation", _("Presentation")),
-            ("meeting", _("Meeting")),
-            ("sport", _("Sport event")),
-            ("tour", _("Sponsor tour")),
-        ],
+        "get_event_types",
         required=True,
         tracking=True,
     )
@@ -51,6 +44,17 @@ class EventCompassion(models.Model):
     street = fields.Char()
     user_id = fields.Many2one(
         "res.users", "Responsible", tracking=True, readonly=False, check_company=True
+    )
+    communication_config_id = fields.Many2one(
+        "partner.communication.config",
+        "Thank You Template",
+        domain=[("model", "=", "account.move.line")],
+    )
+    ambassador_config_id = fields.Many2one(
+        "partner.communication.config",
+        "Ambassador Receipt Template",
+        help="Template used to generate receipts for ambassadors",
+        domain=[("model", "=", "account.move.line")],
     )
     hold_ids = fields.One2many("compassion.hold", "event_id", readonly=True)
     allocate_child_ids = fields.One2many(
@@ -216,6 +220,17 @@ class EventCompassion(models.Model):
             event.user_ids = event.staff_ids.mapped("user_ids").filtered(
                 lambda u: not u.share
             )
+
+    @api.model
+    def get_event_types(self):
+        return [
+            ("stand", _("Stand")),
+            ("concert", _("Concert")),
+            ("presentation", _("Presentation")),
+            ("meeting", _("Meeting")),
+            ("sport", _("Sport event")),
+            ("tour", _("Sponsor tour")),
+        ]
 
     ##########################################################################
     #                              ORM METHODS                               #
@@ -397,7 +412,6 @@ class EventCompassion(models.Model):
             "type": "ir.actions.act_window",
             "view_mode": "tree,form",
             "res_model": "compassion.child",
-            "src_model": "crm.event.compassion",
             "context": self.with_context(search_default_available=1).env.context,
             "domain": [("id", "in", self.allocate_child_ids.ids)],
         }
@@ -424,6 +438,13 @@ class EventCompassion(models.Model):
     def onchange_lead_id(self):
         if self.lead_id.user_id:
             self.user_id = self.lead_id.user_id
+
+    @api.onchange("type")
+    def onchange_type(self):
+        if self.type in ("sport", "tour") and not self.communication_config_id:
+            self.communication_config_id = self.env.ref(
+                "crm_compassion.config_event_standard"
+            )
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

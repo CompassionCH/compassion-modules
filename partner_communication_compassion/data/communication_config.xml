@@ -408,6 +408,15 @@
             <field name="send_mode">digital</field>
             <field name="model_id" ref="model_recurring_contract" />
         </record>
-
+        <record id="hold_removal" model="partner.communication.config">
+            <field name="name">Beneficiary Hold Removal</field>
+            <field name="email_template_id" ref="email_hold_removal" />
+            <field
+        name="report_id"
+        ref="partner_communication.report_a4_communication"
+      />
+            <field name="send_mode">digital</field>
+            <field name="model_id" ref="model_compassion_hold" />
+        </record>
     </data>
 </odoo>

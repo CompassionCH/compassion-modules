@@ -227,7 +227,7 @@ class BankStatementLine(models.Model):
         # it is only useful in the invoice journal item
         analytic = mv_line_dict.pop("analytic_account_id", False)
         if analytic:
-            invl_vals["account_analytic_id"] = analytic
+            invl_vals["analytic_account_id"] = analytic
 
         # Find sponsorship
         sponsorship_id = mv_line_dict.pop("sponsorship_id")
@@ -243,9 +243,9 @@ class BankStatementLine(models.Model):
         default_analytic = self.env["account.analytic.default"].account_get(
             product.id, self.partner_id.id
         )
-        analytic = invl_vals.get("account_analytic_id")
+        analytic = invl_vals.get("analytic_account_id")
         if not analytic and default_analytic:
-            invl_vals["account_analytic_id"] = default_analytic.analytic_id.id
+            invl_vals["analytic_account_id"] = default_analytic.analytic_id.id
 
         return invl_vals
 

@@ -29,7 +29,7 @@ class MailActivity(models.Model):
                     "date": vals["date_deadline"],
                     "name": vals.get("summary") or "Phonecall",
                     "user_id": vals["user_id"],
-                    "direction": "outbound",
+                    "direction": "out",
                     "state": "open",
                 }
                 if vals["res_model_id"] == partner_model_id:

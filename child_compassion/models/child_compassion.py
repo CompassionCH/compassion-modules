@@ -385,6 +385,7 @@ class CompassionChild(models.Model):
         no_hold = [False]
         valid_states = {
             "W": no_hold,
+            "I": consignment_holds,
             "N": consignment_holds
             + [
                 HoldType.CHANGE_COMMITMENT_HOLD.value,

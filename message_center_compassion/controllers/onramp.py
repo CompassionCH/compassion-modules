@@ -9,6 +9,8 @@
 ##############################################################################
 import json
 import logging
+import uuid
+from datetime import datetime
 
 from odoo import exceptions, http
 from odoo.exceptions import ValidationError
@@ -22,7 +24,7 @@ _logger = logging.getLogger(__name__)
 # Put any authorized sender here. Its address must be part of the headers
 # in order to handle a request.
 AUTHORIZED_SENDERS = [
-    "CHTest",
+    "OnrampSimulator",
     "CISalesforce",
     "CISFDC",
     "CINetsuite",
@@ -45,8 +47,12 @@ class RestController(http.Controller):
         )
         self._validate_headers(headers)
         result = {
-            "ConfirmationId": request.uuid,
-            "Timestamp": request.timestamp,
+            "ConfirmationId": getattr(request, "uuid", str(uuid.uuid4())),
+            "Timestamp": getattr(
+                request,
+                "timestamp",
+                datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"),
+            ),
             "code": 200,
         }
         action_connect = (
@@ -70,7 +76,7 @@ class RestController(http.Controller):
 
         action = action_connect.action_id
         params = {
-            "request_id": request.uuid,
+            "request_id": result["ConfirmationId"],
             "headers": json.dumps(dict(headers.items())),
             "content": json.dumps(request.jsonrequest, indent=4, sort_keys=True),
             "state": "success" if action_connect.ignored else "new",
@@ -99,8 +105,11 @@ class RestController(http.Controller):
         if from_address not in AUTHORIZED_SENDERS:
             raise exceptions.AccessDenied()
         company_obj = request.env["res.company"].with_user(request.uid)
+        param_obj = request.env["res.config.settings"]
         companies = company_obj.search([])
-        country_codes = companies.mapped("partner_id.country_id.code")
+        country_codes = companies.mapped("partner_id.country_id.code") + [
+            param_obj.get_param("connect_gpid")
+        ]
         to_address = headers.get("x-cim-ToAddress") or headers.get("X-Cim-ToAddress")
         if to_address not in country_codes:
             raise AttributeError("This message is not for me.")

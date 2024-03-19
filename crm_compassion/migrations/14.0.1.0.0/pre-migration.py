@@ -38,3 +38,16 @@ def migrate(env, version):
         WHERE il.id = aml.old_invoice_line_id;
     """,
     )
+    openupgrade.rename_xmlids(
+        env.cr,
+        [
+            (
+                "partner_communication_switzerland.config_event_standard",
+                "crm_compassion.config_event_standard",
+            ),
+            (
+                "partner_communication_switzerland.event_letter_template",
+                "crm_compassion.event_letter_template",
+            ),
+        ],
+    )

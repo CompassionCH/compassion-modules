@@ -49,6 +49,23 @@
         </field>
     </record>
 
+    <record id="vie_partner_ambassador_receipt" model="ir.ui.view">
+        <field name="name">res.partner.ambassador.receipt.form</field>
+        <field name="model">res.partner</field>
+        <field
+      name="inherit_id"
+      ref="partner_communication.view_partner_form"
+    />
+        <field name="arch" type="xml">
+            <field
+        name="global_communication_delivery_preference"
+        position="after"
+      >
+                <field name="receive_ambassador_receipts" />
+            </field>
+        </field>
+    </record>
+
     <record id="partner_ambassador_action" model="ir.actions.server">
         <field name="name">Create Odoo User</field>
         <field name="model_id" ref="model_res_partner" />

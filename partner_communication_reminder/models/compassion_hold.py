@@ -1,8 +1,28 @@
-from odoo import models
+from odoo import fields, models
 
 
 class CompassionHold(models.Model):
     _inherit = "compassion.hold"
+
+    no_money_extension_duration = fields.Integer(
+        compute="_compute_no_money_extension_duration"
+    )
+
+    def _compute_no_money_extension_duration(self):
+        """
+        Gets the default No Money hold extension duration
+        :return: integer: hold duration in days
+        """
+        settings = self.env["res.config.settings"].sudo()
+        for hold in self:
+            if hold.no_money_extension < 2:
+                hold.no_money_extension_duration = settings.get_param(
+                    "no_money_hold_duration"
+                )
+            else:
+                hold.no_money_extension_duration = settings.get_param(
+                    "no_money_hold_extension"
+                )
 
     def postpone_no_money_hold(self, additional_text=None):
         """
@@ -72,15 +92,16 @@ class CompassionHold(models.Model):
             hold_string = list()
             for i in range(0, len(failed)):
                 hold_string.append(failed[i].hold_id + " (" + links[i] + " )")
-            self.env["mail.mail"].create(
-                {
-                    "subject": "URGENT: Postpone no money holds failed!",
-                    "author_id": self.env.user.partner_id.id,
-                    "recipient_ids": self.env.user.partner_id.id,
-                    "body_html": "These holds should be urgently verified: <br/>"
-                    "<br/>" + ", ".join(hold_string),
-                }
-            ).send()
+            # TODO Code seems broken T0811
+            # self.env["mail.mail"].create(
+            #     {
+            #         "subject": "URGENT: Postpone no money holds failed!",
+            #         "author_id": self.env.user.partner_id.id,
+            #         "recipient_ids": [(6, 0, self.env.user.partner_id.ids)],
+            #         "body_html": "These holds should be urgently verified: <br/>"
+            #         "<br/>" + ", ".join(hold_string),
+            #     }
+            # ).send()
 
     def _send_hold_reminder(self, communication):
         """

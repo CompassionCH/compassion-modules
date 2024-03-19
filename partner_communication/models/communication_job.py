@@ -498,17 +498,13 @@ class CommunicationJob(models.Model):
             lang = self.env.context.get("lang_preview", job.partner_id.lang)
             if job.email_template_id and job.object_ids:
                 try:
-                    fields = (
-                        self.env["mail.compose.message"]
-                        .with_context(lang=lang)
-                        .get_generated_fields(job.email_template_id, [job.id])
-                    )
-                    if not fields["body_html"] and not fields["subject"]:
-                        raise MissingError(_("Fields don't have a subject and a body"))
+                    fields = job.email_template_id.with_context(
+                        template_preview_lang=lang
+                    ).generate_email(job.ids, ["body_html", "subject"])
                     job.write(
                         {
-                            "body_html": fields["body_html"],
-                            "subject": fields["subject"],
+                            "body_html": fields[job.id]["body_html"],
+                            "subject": fields[job.id]["subject"],
                             "state": job.state if job.state != "failure" else "pending",
                         }
                     )
@@ -539,18 +535,14 @@ class CommunicationJob(models.Model):
         template = jobs.mapped("email_template_id")
         if len(template) > 1:
             raise UserError(_("This is only possible for one template at time"))
-        values = (
-            self.env["mail.compose.message"]
-            .with_context(lang=lang)
-            .get_generated_fields(template, jobs.ids)
+        values = template.with_context(template_preview_lang=lang).generate_email(
+            jobs.ids, ["body_html", "subject"]
         )
-        if not isinstance(values, list):
-            values = [values]
-        for index in range(0, len(values)):
-            jobs[index].write(
+        for job, vals in zip(jobs, values.values()):
+            job.write(
                 {
-                    "body_html": values[index]["body_html"],
-                    "subject": values[index]["subject"],
+                    "body_html": vals["body_html"],
+                    "subject": vals["subject"],
                 }
             )
         return True
@@ -674,6 +666,14 @@ class CommunicationJob(models.Model):
                 }
             )
         return action
+
+    @api.model
+    def get_snippet(self, snippet_name):
+        return (
+            self.env["communication.snippet"]
+            .search([("name", "=", snippet_name)])
+            .snippet_text
+        )
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

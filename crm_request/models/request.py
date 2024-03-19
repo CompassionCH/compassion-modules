@@ -19,15 +19,12 @@ class CrmClaim(models.Model):
     _description = "Request"
 
     date = fields.Datetime(string="Date", readonly=True, index=False)
-    name = fields.Char(compute="_compute_name", store=True)
-    subject = fields.Char()
     alias_id = fields.Many2one(
         "mail.alias",
         "Alias",
         help="The destination email address that the contacts used.",
         readonly=False,
     )
-    code = fields.Char(string="Number")
     user_id = fields.Many2one(string="Assign to", readonly=False)
     stage_id = fields.Many2one(group_expand="_read_group_stage_ids", readonly=False)
     ref = fields.Char(related="partner_id.ref")
@@ -42,11 +39,6 @@ class CrmClaim(models.Model):
     incoming_message = fields.Html(compute="_compute_incoming_message")
     quoted_reply = fields.Html(compute="_compute_incoming_message")
     reply_to = fields.Char(compute="_compute_incoming_message")
-
-    @api.depends("subject")
-    def _compute_name(self):
-        for rd in self:
-            rd.name = f"{rd.code} - {rd.subject}"
 
     def _compute_color(self):
         for request in self:

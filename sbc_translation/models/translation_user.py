@@ -42,19 +42,17 @@ class TranslationUser(models.Model):
     search_competence_id = fields.Many2one(
         "translation.competence", help="Utility field only used for the search view"
     )
-    avatar = fields.Image(related="partner_id.image_128")
+    avatar = fields.Binary(related="partner_id.image_128")
 
     _sql_constraints = [
         ("unique_translator", "unique(user_id)", "This translator already exists.")
     ]
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters(self):
         for translator in self:
             translator.nb_translated_letters = len(translator.translated_letter_ids)
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_this_year(self):
         for translator in self:
@@ -64,7 +62,6 @@ class TranslationUser(models.Model):
                 )
             )
 
-    @api.multi
     @api.depends("translated_letter_ids")
     def _compute_nb_translated_letters_last_year(self):
         for translator in self:
@@ -87,7 +84,6 @@ class TranslationUser(models.Model):
             )
         return records
 
-    @api.multi
     def write(self, vals):
         """
         When activating/deactivating a translator, update rights accordingly.
@@ -99,7 +95,6 @@ class TranslationUser(models.Model):
             self.mapped("user_id").write({"groups_id": [(action, user_group.id)]})
         return True
 
-    @api.multi
     def unlink(self):
         """
         Remove Translation Platform rights when removing translator.
@@ -108,7 +103,6 @@ class TranslationUser(models.Model):
         self.mapped("user_id").write({"groups_id": [(3, user_group.id)]})
         return super().unlink()
 
-    @api.multi
     def open_translated_letters(self):
         return {
             "type": "ir.actions.act_window",
@@ -123,7 +117,6 @@ class TranslationUser(models.Model):
             },
         }
 
-    @api.multi
     def list_users(self):
         """
         Translation Platform API call to fetch user info.
@@ -138,7 +131,6 @@ class TranslationUser(models.Model):
         translator = self.search([("user_id", "=", self.env.uid)])
         return translator.get_user_info()
 
-    @api.multi
     def add_skill(self, competence_id):
         """
         Translation Platform API. Adds a new skill to the translator
@@ -158,14 +150,27 @@ class TranslationUser(models.Model):
             .id
         )
 
-    @api.multi
+    def unlink_skill(self, skill_dict):
+        """
+        Translation Platform API. Delete a skill to the translator
+        :param skill_dict: Data about the skill to delete
+        """
+        for translation_usr in self:
+            translation_usr.translation_skills.filtered(
+                lambda s: s.competence_id.dest_language_id.name
+                == skill_dict.get("target")
+                and s.competence_id.source_language_id.name == skill_dict.get("source")
+                and s.verified == skill_dict.get("verified")
+            ).unlink()
+        return True
+
     def get_user_info(self):
         """
         Translation Platform API call to fetch user info.
         """
         self.ensure_one()
-        user = self.user_id
-        partner = self.partner_id
+        user = self.user_id.sudo()
+        partner = self.partner_id.sudo()
         group_user = self.env.ref("sbc_translation.group_user")
         group_admin = self.env.ref("sbc_translation.group_manager")
         role = (
@@ -173,15 +178,12 @@ class TranslationUser(models.Model):
             if group_admin in user.groups_id
             else ("user" if group_user in user.groups_id else None)
         )
-        language = (
-            self.env["res.lang"]
-            .with_context(lang="en_US")
-            .search([("code", "=", partner.lang)])
-        )
+        language = self.env["res.lang"].search([("code", "=", partner.lang)])
         return {
-            "email": self.user_id.email or "None",
+            "email": user.email or "None",
             "role": role,
             "name": partner.name or "None",
+            "preferredName": partner.preferred_name,
             "age": partner.age or "None",
             "language": language.name or "None",
             "total": self.nb_translated_letters or "None",
@@ -194,12 +196,9 @@ class TranslationUser(models.Model):
                     "target": skill.competence_id.dest_language_id.name,
                     "verified": skill.verified,
                 }
-                for skill in self.translation_skills.with_context(lang="en_US")
+                for skill in self.translation_skills
             ]
             or "None",
-            "api_key": self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("sbc_translation.api_key"),
         }
 
 

@@ -364,32 +364,30 @@ class CompassionProject(models.Model):
     suspension = fields.Selection(
         [("suspended", "Suspended"), ("fund-suspended", "Suspended & fund retained")],
         "Suspension",
-        compute="_compute_suspension_state",
+        compute="_compute_suspension",
         store=True,
         tracking=True,
     )
     status = fields.Selection(
-        [
-            ("A", _("Active")),
-            ("P", _("Phase-out")),
-            ("T", _("Terminated")),
-            ("S", _("Suspended")),
-        ],
+        "_status_selection",
         tracking=True,
-        default="A",
-        readonly=True,
+        compute="_compute_suspension",
+        store=True,
     )
     last_reviewed_date = fields.Date(
         "Last reviewed date",
         tracking=True,
         readonly=True,
     )
-    status_comment = fields.Text(related="lifecycle_ids.details", store=True)
-    hold_cdsp_funds = fields.Boolean(related="lifecycle_ids.hold_cdsp_funds")
-    hold_csp_funds = fields.Boolean(related="lifecycle_ids.hold_csp_funds")
-    hold_gifts = fields.Boolean(related="lifecycle_ids.hold_gifts")
-    hold_s2b_letters = fields.Boolean(related="lifecycle_ids.hold_s2b_letters")
-    hold_b2s_letters = fields.Boolean(related="lifecycle_ids.hold_b2s_letters")
+    last_lifecycle_id = fields.Many2one(
+        "compassion.project.ile", compute="_compute_last_lifecycle"
+    )
+    status_comment = fields.Text(related="last_lifecycle_id.details")
+    hold_cdsp_funds = fields.Boolean(related="last_lifecycle_id.hold_cdsp_funds")
+    hold_csp_funds = fields.Boolean(related="last_lifecycle_id.hold_csp_funds")
+    hold_gifts = fields.Boolean(related="last_lifecycle_id.hold_gifts")
+    hold_s2b_letters = fields.Boolean(related="last_lifecycle_id.hold_s2b_letters")
+    hold_b2s_letters = fields.Boolean(related="last_lifecycle_id.hold_b2s_letters")
 
     # Project Descriptions
     ######################
@@ -402,6 +400,10 @@ class CompassionProject(models.Model):
         store=True,
         tracking=True,
     )
+
+    @api.model
+    def _status_selection(self):
+        return self.env["compassion.project.ile"]._get_project_status()
 
     @property
     def translated_fields(self):
@@ -471,15 +473,27 @@ class CompassionProject(models.Model):
     def _get_months(self):
         return self.env["connect.month"].get_months_selection()
 
-    @api.depends("lifecycle_ids")
-    def _compute_suspension_state(self):
-        for project in self.filtered("lifecycle_ids"):
-            last_info = project.lifecycle_ids[0]
-            if last_info.type == "Suspension":
+    @api.depends("lifecycle_ids", "lifecycle_ids.date")
+    def _compute_last_lifecycle(self):
+        for project in self:
+            last_info = project.lifecycle_ids[:1]
+            reactivation_lifecycle = project.lifecycle_ids.filtered(
+                lambda r, _last=last_info: r.date == _last.date
+                and r.type == "Reactivation"
+            )[:1]
+            # If it exists, lifecycle with type 'Reactivation' is determinant
+            project.last_lifecycle_id = reactivation_lifecycle or last_info
+
+    @api.depends("lifecycle_ids", "lifecycle_ids.write_date")
+    def _compute_suspension(self):
+        for project in self:
+            last_lifecycle = project.last_lifecycle_id
+            project.status = last_lifecycle.project_status
+            if last_lifecycle.type == "Suspension":
                 project.suspension = (
-                    "fund-suspended" if last_info.hold_cdsp_funds else "suspended"
+                    "fund-suspended" if last_lifecycle.hold_cdsp_funds else "suspended"
                 )
-            elif last_info.type == "Reactivation":
+            else:
                 project.suspension = False
 
     @api.depends("covid_status_ids")
@@ -637,26 +651,6 @@ class CompassionProject(models.Model):
 
     def json_to_data(self, json, mapping_name=None):
         odoo_data = super().json_to_data(json, mapping_name)
-        status = odoo_data.get("status")
-        if status:
-            status_mapping = {
-                "Active": "A",
-                "Phase Out": "P",
-                "Suspended": "S",
-                "Transitioned": "T",
-            }
-            odoo_data["status"] = status_mapping[status]
-
-        for key, val in odoo_data.items():
-            if isinstance(val, str) and val.lower() in (
-                "null",
-                "false",
-                "none",
-                "other",
-                "unknown",
-            ):
-                odoo_data[key] = False
-
         monthly_income = odoo_data.get("monthly_income")
         if monthly_income:
             monthly_income = monthly_income.replace(",", "")

@@ -83,7 +83,7 @@ class SponsorshipGift(models.Model):
     date_sent = fields.Datetime(
         related="message_id.process_date", store=True, readonly=True
     )
-    amount = fields.Float(
+    amount = fields.Monetary(
         compute="_compute_invoice_fields",
         inverse=lambda g: True,
         store=True,
@@ -201,7 +201,8 @@ class SponsorshipGift(models.Model):
     @api.depends(
         "invoice_line_ids",
         "invoice_line_ids.parent_state",
-        "invoice_line_ids.price_subtotal",
+        "invoice_line_ids.credit",
+        "invoice_line_ids.debit",
     )
     def _compute_invoice_fields(self):
         for gift in self.filtered("invoice_line_ids"):
@@ -213,8 +214,7 @@ class SponsorshipGift(models.Model):
             gift.gift_date = max(
                 invoice_lines.mapped("move_id").mapped("invoice_date") or [False]
             )
-
-            gift.amount = sum(invoice_lines.mapped("price_subtotal"))
+            gift.amount = sum(invoice_lines.mapped(lambda il: -il.amount_currency))
 
     def _compute_currency(self):
         # Set gift currency depending on its invoice currency
@@ -432,6 +432,9 @@ class SponsorshipGift(models.Model):
         if sponsorship.project_id.hold_gifts:
             return False, "Sponsorship may have a project with hold gifts"
 
+        if not self.account_debit:
+            return False, "No debit account specified for the gift"
+
         threshold_rule = self.env["gift.threshold.settings"].search(
             [
                 ("gift_type", "=", self.gift_type),
@@ -441,15 +444,22 @@ class SponsorshipGift(models.Model):
             limit=1,
         )
         if threshold_rule:
-            current_rate = threshold_rule.currency_id.rate or 1.0
+            if self.company_id.currency_id != self.invoice_line_ids.move_id.currency_id:
+                current_rate = (
+                    threshold_rule.currency_id.rate
+                    / self.invoice_line_ids.move_id.currency_id.rate
+                )
+            else:
+                current_rate = threshold_rule.currency_id.rate or 1.0
+
             minimum_amount = threshold_rule.min_amount
             maximum_amount = threshold_rule.max_amount
-
             this_amount = self.amount * current_rate
+
             if this_amount < minimum_amount:
                 return (
                     False,
-                    f"""Gift amount is small than minimal amount, Gift amount:
+                    f"""Gift amount is smaller than minimal amount, Gift amount:
                     {round(this_amount, 2)}$,
                 Minimal amount :{round(minimum_amount, 2)}$. """,
                 )

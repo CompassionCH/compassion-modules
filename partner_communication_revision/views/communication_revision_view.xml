@@ -1,20 +1,4 @@
 <odoo>
-    <record model="ir.ui.view" id="revision_simplified_form">
-        <field name="name">communication.revision.simplified.form</field>
-        <field name="model">partner.communication.revision</field>
-        <field name="priority">15</field>
-        <field name="arch" type="xml">
-            <form>
-                <group>
-                    <field name="lang" />
-                    <field name="config_id" invisible="1" />
-                    <field name="state" invisible="1" />
-                    <field name="active_revision_id" />
-                </group>
-            </form>
-        </field>
-    </record>
-
     <record model="ir.ui.view" id="revision_form">
         <field name="name">communication.revision.form</field>
         <field name="model">partner.communication.revision</field>
@@ -36,7 +20,7 @@
                             <field name="subject" />
                         </group>
                         <group>
-                            <field name="raw_subject" widget="text" />
+                            <field name="raw_subject" widget="ace" />
                         </group>
                     </group>
                     <group>
@@ -53,7 +37,7 @@
                         <group>
                             <field
                 name="body_html"
-                widget="text"
+                widget="ace"
                 attrs="{'readonly': [('raw_template_edit_mode','=',True)]}"
               />
                         </group>

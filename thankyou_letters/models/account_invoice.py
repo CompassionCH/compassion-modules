@@ -114,7 +114,7 @@ class AccountInvoice(models.Model):
         )
         for partner in partners.mapped("commercial_partner_id"):
             invoice_lines = self.mapped("invoice_line_ids").filtered(
-                lambda line, partner=partner: line.partner_id == partner
+                lambda line, p_partner=partner: line.partner_id == p_partner
             )
             if invoice_lines:
                 invoice_lines.with_delay().generate_thank_you()

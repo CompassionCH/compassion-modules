@@ -36,6 +36,7 @@
                 <header>
                     <field name="state" invisible="1"/>
                     <field name="translation_status" widget="statusbar" readonly="0"/>
+                    <button name="approve_translation" string="Approve translation" type="object" class="oe_highlight" attrs="{'invisible': [('translation_status', '!=', 'to validate')]}"/>
                     <button name="remove_local_translate" type="object"
                             string="Remove from translation" class="oe_highlight"
                             states="Global Partner translation queue"/>
@@ -87,7 +88,7 @@
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_ids"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -141,7 +142,7 @@
                 <field name="translation_url"/>
                 <field name="translation_priority_name"/>
                 <field name="unread_comments"/>
-                <progressbar field="translation_priority_name" colors="{&quot;High&quot;: &quot;success&quot;, &quot;Very high&quot;: &quot;warning&quot;, &quot;Urgent&quot;: &quot;danger&quot;}"/>
+                <progressbar field="translation_priority" colors='{"2": "success", "3": "warning", "4": "danger"}'/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{(record.unread_comments.raw_value || record.translation_issue.raw_value) ? 'oe_kanban_color_1' : ''}">
@@ -188,6 +189,7 @@
             </field>
             <filter name="state_published" position="after">
                 <filter name="translation_pending" string="In Translation" domain="[('state', '=', 'Global Partner translation queue')]"/>
+                <separator/>
                 <filter name="my_supervision" string="My supervision" domain="[('translation_supervisor_id', '=', uid)]"/>
             </filter>
             <filter name="group_state" position="after">
@@ -211,7 +213,6 @@
     <record id="action_letters_kanban" model="ir.actions.act_window">
         <field name="name">Letter translation pool</field>
         <field name="res_model">correspondence</field>
-        <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form</field>
         <field name="view_id" ref="correspondence_translation_kanban"/>
         <field name="context">{

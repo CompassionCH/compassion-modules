@@ -12,6 +12,7 @@ from random import randint
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -94,15 +95,13 @@ class Correspondence(models.Model):
             if letter.translation_status and letter.translation_status != "to do":
                 raise UserError(
                     _(
-                        "You cannot change the translation language of a letter that "
-                        "is being or already translated."
+                        "You cannot change the translation language of a letter that is being or already translated."
                     )
                 )
-            competence = letter.translation_competence_id
             letter.write(
                 {
-                    "src_translation_lang_id": competence.source_language_id.id,
-                    "translation_language_id": competence.dest_language_id.id,
+                    "src_translation_lang_id": letter.translation_competence_id.source_language_id.id,
+                    "translation_language_id": letter.translation_competence_id.dest_language_id.id,
                 }
             )
 
@@ -126,16 +125,14 @@ class Correspondence(models.Model):
             )
 
     def _inverse_paragraph_ids(self):
-        # If both deletion and creation is made, creation is not working.
-        # I couldn't figure it out...
+        # If both deletion and creation is made, creation is not working. I couldn't figure it out...
         for correspondence in self:
             # Propagate deletions
             (
                 correspondence.page_ids.mapped("paragraph_ids")
                 - correspondence.paragraph_ids
             ).unlink()
-            # Propagate paragraph creation, we must associate it to a page.
-            # We take the last page by default
+            # Propagate paragraph creation, we must associate it to a page. We take the last page by default
             last_page = correspondence.page_ids[-1:]
             if not last_page:
                 last_page = last_page.create({"correspondence_id": correspondence.id})
@@ -157,6 +154,7 @@ class Correspondence(models.Model):
             ("content_inappropriate", _("Inappropriate content")),
             ("wrong_child_name", _("Child name different than expected")),
             ("wrong_sponsor_name", _("Sponsor name different than expected")),
+            ("invalid_layout", _("Wrong translation boxes layout")),
             ("other", _("Other issue")),
         ]
 
@@ -194,7 +192,6 @@ class Correspondence(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def open_full_view(self):
         return {
             "type": "ir.actions.act_window",
@@ -204,7 +201,6 @@ class Correspondence(models.Model):
             "context": {"form_view_ref": "sbc_compassion.view_correspondence_form"},
         }
 
-    @api.multi
     def process_letter(self):
         """Called when B2S letter is Published. Check if translation is
         needed and upload to translation platform."""
@@ -220,7 +216,31 @@ class Correspondence(models.Model):
                 letter.send_local_translate()
         return True
 
-    @api.multi
+    def calculate_translation_priority(self):
+        """
+        Calculate the translation priority based on the scanned date or creation date.
+        :return: string
+        """
+
+        # Dynamically get the list of priority keys from the selection field definition
+        priorities = [
+            int(priority[0]) for priority in self._fields["translation_priority"].selection
+        ]
+
+        # Handle the case where scanned_date is not set
+        letter_date = (
+            self.scanned_date if self.scanned_date else self.create_date.date()
+        )
+
+        # Calculate the difference in weeks between the current date and the scanned date.
+        calculated_priority = min((fields.Date.today() - letter_date).days // 7, len(priorities) - 1)
+
+        # If the user had manually set a higher priority, we stick to it
+        if self.translation_priority and int(self.translation_priority) >= calculated_priority:
+            return self.translation_priority
+
+        return str(calculated_priority)
+
     def send_local_translate(self):
         """
         Sends the letter to the local translation platform.
@@ -235,9 +255,7 @@ class Correspondence(models.Model):
             {
                 "state": "Global Partner translation queue",
                 "src_translation_lang_id": src_lang.id,
-                "translation_priority": str(
-                    min((fields.Date.today() - self.scanned_date).days // 7, 4)
-                ),
+                "translation_priority": self.calculate_translation_priority(),
                 "translation_status": "to do",
                 "translate_date": fields.Datetime.now(),
                 "translate_done": False,
@@ -258,24 +276,24 @@ class Correspondence(models.Model):
         ).unlink()
         return True
 
-    @api.multi
     def assign_supervisor(self):
         """
         This method assigns a supervisor for a letter.
-        Can be inherited to customize by who the letters need to be checked.
+        Can be inherited to customize by whom the letters need to be checked.
         Here it picks one manager randomly.
         """
         manager_group = self.env.ref("sbc_translation.group_manager")
-        supervisors = self.env["res.users"].search(
-            [("groups_id", "=", manager_group.id)]
+        admin = self.env.ref("base.user_admin")
+        supervisors = (
+            self.env["res.users"].sudo().search([("groups_id", "=", manager_group.id)])
+            - admin
         )
-        for letter in self:
+        for letter in self.filtered(lambda l: not l.translation_supervisor_id):
             letter.translation_supervisor_id = supervisors[
                 randint(0, len(supervisors) - 1)
             ]
         return True
 
-    @api.multi
     def raise_translation_issue(self, issue_type, body_html):
         """
         TP API for translator to raise an issue with the letter
@@ -285,17 +303,16 @@ class Correspondence(models.Model):
             {"translation_issue": issue_type, "translation_issue_comments": body_html}
         )
         self.assign_supervisor()
-        template = self.env.ref("sbc_translation.translation_issue_notification")
-        self.message_post_with_template(template.id)
+        # template = self.env.ref("sbc_translation.translation_issue_notification").sudo()
+        # self.sudo().message_post_with_template(template.id, author_id=self.env.user.partner_id.id)
         return True
 
-    @api.multi
     def reply_to_comments(self, body_html):
         """
         TP API for sending to the translator a message regarding his or her comments.
         """
         self.ensure_one()
-        reply_template = self.env.ref("sbc_translation.comments_reply")
+        reply_template = self.env.ref("sbc_translation.comments_reply").sudo()
         self.message_post_with_view(
             reply_template,
             partner_ids=[(4, self.new_translator_id.partner_id.id)],
@@ -305,11 +322,9 @@ class Correspondence(models.Model):
         )
         return self.write({"unread_comments": False})
 
-    @api.multi
     def mark_comments_read(self):
         return self.write({"unread_comments": False})
 
-    @api.multi
     def remove_local_translate(self):
         """
         Remove a letter from local translation platform and change state of
@@ -325,7 +340,6 @@ class Correspondence(models.Model):
             self.with_context(force_publish=True).process_letter()
         return True
 
-    @api.multi
     def save_translation(self, letter_elements, translator_id=None):
         """
         TP API for saving a translation
@@ -335,10 +349,8 @@ class Correspondence(models.Model):
         self.ensure_one()
         page_index = 0
         paragraph_index = 0
-        if not self.page_ids:
-            self.env["correspondence.page"].create({"correspondence_id": self.id})
         current_page = self.page_ids[page_index]
-        if translator_id is None:
+        if not translator_id:
             translator_id = (
                 self.env["translation.user"].search([("user_id", "=", self.env.uid)]).id
             )
@@ -348,14 +360,8 @@ class Correspondence(models.Model):
         }
         for element in letter_elements:
             if element.get("type") == "pageBreak":
-                # Clean existing paragraphs
-                current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
                 page_index += 1
                 paragraph_index = 0
-                if page_index >= len(self.page_ids):
-                    self.env["correspondence.page"].create(
-                        {"correspondence_id": self.id}
-                    )
                 current_page = self.page_ids[page_index]
             elif element.get("type") == "paragraph":
                 paragraph_vals = {
@@ -364,26 +370,16 @@ class Correspondence(models.Model):
                     "translated_text": element.get("content"),
                     "comments": element.get("comments"),
                 }
-                if paragraph_index >= len(current_page.paragraph_ids):
-                    self.env["correspondence.paragraph"].create(paragraph_vals)
-                else:
-                    current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
+                if self.translation_language_id.code_iso == "eng":
+                    # Copy translation text into english text field
+                    paragraph_vals["english_text"] = element.get("content")
+                current_page.paragraph_ids[paragraph_index].write(paragraph_vals)
                 paragraph_index += 1
             if element.get("comments"):
                 letter_vals["unread_comments"] = True
-        current_page.paragraph_ids[paragraph_index:].clear_paragraphs()
-        self.page_ids[page_index + 1 :].mapped("paragraph_ids").clear_paragraphs()
-        self.clear_pages()
         self.write(letter_vals)
         return True
 
-    @api.multi
-    def clear_pages(self):
-        self.page_ids.filtered(
-            lambda p: not (p.original_text or p.english_text or p.translated_text)
-        ).unlink()
-
-    @api.multi
     def submit_translation(self, letter_elements, translator_id=None):
         """
         TP API for saving a translation
@@ -395,26 +391,16 @@ class Correspondence(models.Model):
         user_skill = self.new_translator_id.translation_skills.filtered(
             lambda s: s.competence_id == self.translation_competence_id
         )
-        is_s2b = self.direction == "Supporter To Beneficiary"
-        letter_vals = {
-            "translate_done": fields.Datetime.now(),
-            "translation_status": "done"
-            if user_skill.verified and not self.unread_comments
-            else "to validate",
-            "state": "Received in the system"
-            if is_s2b
-            else "Published to Global Partner",
-        }
-        self.write(letter_vals)
-        self._post_process_translation()
+        if user_skill.verified and not self.unread_comments:
+            self._post_process_translation()
+        else:
+            self.translation_status = "to validate"
         return True
 
-    @api.multi
     def approve_translation(self):
         for letter in self:
             skill_to_validate = letter.new_translator_id.translation_skills.filtered(
-                lambda s, letter=letter: s.competence_id
-                == letter.translation_competence_id
+                lambda s: s.competence_id == letter.translation_competence_id
                 and not s.verified
             )
             if skill_to_validate:
@@ -424,13 +410,12 @@ class Correspondence(models.Model):
                 "translation_issue": False,
                 "translation_issue_comments": False,
                 "translation_supervisor_id": self.env.uid,
-                "translation_status": "done",
+                "unread_comments": False,
             }
         )
         self._post_process_translation()
         return True
 
-    @api.multi
     def resubmit_to_translation(self):
         for letter in self:
             if letter.state != "Translation check unsuccessful":
@@ -447,81 +432,83 @@ class Correspondence(models.Model):
             )
             letter.send_local_translate()
 
-    @api.multi
     def _post_process_translation(self):
-        for letter in self.filtered(lambda letter: letter.translation_status == "done"):
-            if letter.direction == "Supporter To Beneficiary":
-                if self.translation_language_id.code_iso == "eng":
-                    # Copy translation text into english text field
-                    letter.english_text = letter.translated_text
-                # Send to GMC
-                letter.create_commkit()
-            else:
-                # Recompose the letter image and process letter
-                if super(Correspondence, letter).process_letter():
-                    letter.send_communication()
+        self.ensure_one()
+        is_s2b = self.direction == "Supporter To Beneficiary"
+        self.write(
+            {
+                "translate_done": fields.Datetime.now(),
+                "translation_status": "done",
+                "state": "Received in the system"
+                if is_s2b
+                else "Published to Global Partner",
+            }
+        )
+        if is_s2b:
+            # Send to GMC
+            self.sudo().create_commkit()
+        else:
+            # Recompose the letter image and process letter
+            self.sudo().with_context(force_publish=True).process_letter()
 
-    @api.multi
     def list_letters(self):
         """API call to fetch letters to translate"""
         return [letter.get_letter_info() for letter in self.sorted("scanned_date")]
 
-    @api.multi
     def get_letter_info(self):
         """Translation Platform API for fetching letter data."""
         self.ensure_one()
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+        base_url = (
+            request.httprequest.host_url
+            or f"https://{self.env.ref('sbc_translation.translation_website').domain}/"
+        )
+        # Gives access to related objects
+        child = self.child_id.sudo()
+        partner = self.partner_id.sudo()
         return {
             "id": self.id,
-            "status": self.translation_status or "None",
-            "priority": self.translation_priority or "0",
-            "title": self.name,
-            "source": self.src_translation_lang_id.with_context(lang="en_US").name,
-            "target": self.translation_language_id.with_context(lang="en_US").name,
+            "status": self.translate("translation_issue")
+            or self.translate("translation_status")
+            or "None",
+            "priority": self.translation_priority
+            or self._fields["translation_priority"].selection[0][0],
+            "title": self.sudo().name,
+            "source": self.src_translation_lang_id.name,
+            "target": self.translation_language_id.name,
             "unreadComments": self.unread_comments,
             "translatorId": self.new_translator_id.id or "None",
             "lastUpdate": fields.Datetime.to_string(self.write_date),
             "date": fields.Date.to_string(self.scanned_date),
             "translatedElements": self.get_translated_elements() or "None",
+            "translationIssue": self.translation_issue,
             "child": {
-                "preferredName": self.child_id.preferred_name,
-                "fullName": self.child_id.name,
-                "sex": self.child_id.gender,
-                "age": self.child_id.age,
-                "ref": self.child_id.local_id,
+                "preferredName": child.preferred_name,
+                "fullName": child.name,
+                "sex": child.gender,
+                "age": child.age,
+                "ref": child.local_id,
             },
             "sponsor": {
-                "preferredName": self.partner_id.preferred_name,
-                "fullName": self.partner_id.name,
-                "sex": self.partner_id.gmc_gender[0],
-                "age": self.partner_id.age,
-                "ref": self.partner_id.ref,
+                "preferredName": partner.preferred_name,
+                "fullName": partner.name,
+                "sex": partner.title.name,
+                "age": partner.age,
+                "ref": partner.ref,
             },
-            "pdfUrl": f"{base_url}/web/pdf/correspondence/{self.id}",
+            "pdfUrl": f"{base_url}b2s_image?id={self.uuid}&disposition=inline",
         }
 
-    @api.multi
     def get_translated_elements(self):
         res = []
-        last_paragraph_readonly = False
         for page in self.page_ids:
             if res:
-                first_paragraph = page.paragraph_ids[:1]
                 res.append(
                     {
                         "type": "pageBreak",
                         "id": page.id,
-                        "readonly": last_paragraph_readonly
-                        and (
-                            first_paragraph.english_text
-                            or first_paragraph.original_text
-                        ),
                     }
                 )
             for paragraph in page.paragraph_ids:
-                last_paragraph_readonly = bool(
-                    paragraph.english_text or paragraph.original_text
-                )
                 res.append(
                     {
                         "type": "paragraph",
@@ -531,25 +518,47 @@ class Correspondence(models.Model):
                         "source": paragraph.english_text
                         or paragraph.original_text
                         or "",
-                        "readonly": last_paragraph_readonly,
                     }
                 )
         return res
 
     @api.model
-    def increment_priority_cron(self):
+    def update_translation_priority_cron(self):
         """
-        Increment priority of letters to translate, maximum
-        priority is 4.
+        Update the priority of letters to translate if the letter is not already at the highest priority.
+        When the letter is already at the highest priority, it moves it to another suitable pool.
+        :return: None
         """
         letters_to_translate = self.search(
             [("translation_status", "not in", [False, "done"])]
         )
 
+        # Update priority for each letters
         for letter in letters_to_translate:
-            old_priority = int(letter.translation_priority)
-            if old_priority < 4:
-                letter.translation_priority = str(old_priority + 1)
+
+            current_priority = letter.translation_priority
+            new_priority = letter.calculate_translation_priority()
+
+            if current_priority != new_priority:
+                letter.translation_priority = new_priority
+
+            # If the letter is already at the highest priority and has a fallback competence, move it to another pool
+            elif letter.translation_competence_id.fallback_competence_id:
+                letter.with_delay().move_pool()
+
+    def move_pool(self):
+        """
+        Move letter to another common translation pool. This is helpful when a letter is stuck for too long
+        inside a pool, and we want to move it to another one that has more translator resources.
+        """
+        self.ensure_one()
+        if (
+            self.translation_competence_id.fallback_competence_id
+            and self.translation_status == "to do"
+        ):
+            self.translation_competence_id = (
+                self.translation_competence_id.fallback_competence_id
+            )
 
     ##########################################################################
     #                             PRIVATE METHODS                            #

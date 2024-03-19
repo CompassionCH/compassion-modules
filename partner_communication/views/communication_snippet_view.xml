@@ -1,0 +1,38 @@
+<odoo>
+    <record model="ir.ui.view" id="communication_snippet_form">
+        <field name="name">communication.snippet.form</field>
+        <field name="model">communication.snippet</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="snippet_text" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="communication_snippet_tree">
+        <field name="name">communication.snippet.tree</field>
+        <field name="model">communication.snippet</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name" />
+                <field name="snippet_text" />
+                <button
+          name="action_edit_snippet"
+          type="object"
+          string="Edit"
+          icon="fa-external-link"
+        />
+            </tree>
+        </field>
+    </record>
+    <menuitem
+    id="communication_snippet_menu"
+    name="Communication Snippet"
+    parent="partner_communication.menu_communication_config"
+    sequence="10"
+  />
+</odoo>

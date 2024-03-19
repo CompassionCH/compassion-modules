@@ -6,6 +6,7 @@
             <tree editable="bottom">
                 <field name="source_language_id"/>
                 <field name="dest_language_id"/>
+                <field name="fallback_competence_id"/>
                 <field name="number_current_letters"/>
                 <field name="number_translators"/>
             </tree>
@@ -51,16 +52,18 @@
                                 <span>Letters in translation: </span>
                                 <field name="number_current_letters"/>
                             </a>
+                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id, 'search_default_translated_this_year': 1}">
+
+                                <br/>
+                                <span>Translators active this year: </span>
+                                <field name="number_active_translators"/>
+                            </a>
                             <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id}">
                                 <br/>
                                 <span>Total translators: </span>
                                 <field name="number_translators"/>
                             </a>
-                            <a type="action" name="%(sbc_translation.action_compassion_translation_user_form)d" context="{'search_default_search_competence_id': active_id, 'search_default_translated_this_year': 1}">
-                                <br/>
-                                <span>Translators active this year: </span>
-                                <field name="number_active_translators"/>
-                            </a>
+
                         </div>
                     </t>
                 </templates>
@@ -71,7 +74,6 @@
     <record id="action_compassion_translation_competence_form" model="ir.actions.act_window">
         <field name="name">Competences</field>
         <field name="res_model">translation.competence</field>
-        <field name="view_type">form</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
 

@@ -131,7 +131,8 @@ class CommunicationConfig(models.Model):
         string="Custom Configuration",
         readonly=False,
     )
-    forbid_merging = fields.Boolean(help='If selected, disable the automatic merging of communications',
+    forbid_merging = fields.Boolean(
+        help="If selected, disable the automatic merging of communications",
     )
     active = fields.Boolean(default=True)
 
@@ -238,58 +239,18 @@ class CommunicationConfig(models.Model):
         :param send_mode_pref_field string
         :returns: send_mode (physical/digital/False), auto_mode (True/False)
         """
-        # First key is the comm send_mode, second key is the partner send_mode
-        # value is the send_mode that should be selected.
-        send_priority = {
-            "physical": {
-                "none": "none",
-                "physical": "physical",
-                "digital": "physical",
-                "digital_only": "digital",
-                "both": "physical",
-            },
-            "digital": {
-                "none": "none",
-                "physical": "physical" if print_if_not_email else "none",
-                "digital": "digital",
-                "digital_only": "digital",
-                "both": "both" if print_if_not_email else "digital",
-            },
-            "digital_only": {
-                "none": "none",
-                "physical": "digital" if partner.email else "none",
-                "digital": "digital",
-                "digital_only": "digital",
-                "both": "digital",
-            },
-            "both": {
-                "none": "none",
-                "physical": "physical",
-                "digital": "both",
-                "digital_only": "digital",
-                "both": "both",
-            },
-        }
-
+        send_priority = self._get_send_priority(partner, print_if_not_email)
         if communication_send_mode != "partner_preference":
             partner_mode = getattr(
                 partner,
                 send_mode_pref_field or "global_communication_delivery_preference",
                 partner.global_communication_delivery_preference,
             )
+            auto_mode = self._get_auto_mode(partner_mode, communication_send_mode)
             if communication_send_mode == partner_mode:
                 send_mode = communication_send_mode
-                auto_mode = "auto" in send_mode or send_mode == "both"
                 digital_only = "digital_only" in partner_mode
             else:
-                auto_mode = (
-                    "auto" in partner_mode
-                    and "auto" in communication_send_mode
-                    or "auto" in partner_mode
-                    and communication_send_mode == "both"
-                    or "auto" in communication_send_mode
-                    and partner_mode == "both"
-                )
                 comm_mode = communication_send_mode.replace("auto_", "")
                 partner_mode = partner_mode.replace("auto_", "")
                 send_mode = send_priority.get(comm_mode, {}).get(partner_mode, "none")
@@ -324,3 +285,52 @@ class CommunicationConfig(models.Model):
                 send_mode = False
 
         return send_mode, auto_mode
+
+    def _get_send_priority(self, partner, print_if_not_email):
+        # First key is the comm send_mode, second key is the partner send_mode
+        # value is the send_mode that should be selected.
+        return {
+            "physical": {
+                "none": "none",
+                "physical": "physical",
+                "digital": "physical",
+                "digital_only": "digital",
+                "both": "physical",
+            },
+            "digital": {
+                "none": "none",
+                "physical": "physical" if print_if_not_email else "none",
+                "digital": "digital",
+                "digital_only": "digital",
+                "both": "both" if print_if_not_email else "digital",
+            },
+            "digital_only": {
+                "none": "none",
+                "physical": "digital" if partner.email else "none",
+                "digital": "digital",
+                "digital_only": "digital",
+                "both": "digital",
+            },
+            "both": {
+                "none": "none",
+                "physical": "physical",
+                "digital": "both",
+                "digital_only": "digital",
+                "both": "both",
+            },
+        }
+
+    def _get_auto_mode(self, partner_mode, communication_mode):
+        """Gets the computed auto_mode
+        :param partner_mode: auto_mode from the partner preference
+        :param communication_mode: auto_mode from the communication config."""
+        return (
+            "auto" in partner_mode
+            and "auto" in communication_mode
+            or "auto" in partner_mode
+            and communication_mode == "both"
+            or "auto" in communication_mode
+            and partner_mode == "both"
+            or partner_mode == "both"
+            and communication_mode == "both"
+        )

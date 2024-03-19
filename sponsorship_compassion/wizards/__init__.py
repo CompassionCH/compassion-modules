@@ -15,4 +15,5 @@ from . import (
     end_contract_wizard,
     generate_gift_wizard,
     res_config_settings,
+    res_partner_merge,
 )

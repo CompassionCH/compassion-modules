@@ -64,7 +64,7 @@ class CommunicationRevision(models.Model):
     model = fields.Char(related="config_id.model_id.model", readonly=True)
     lang = fields.Selection("select_lang", required=True)
     revision_number = fields.Float(default=0.0)
-    revision_date = fields.Date(default=fields.Date.today())
+    revision_date = fields.Date(default=fields.Date.today, readonly=True)
     state = fields.Selection(
         [
             ("pending", "Pending"),
@@ -100,7 +100,9 @@ class CommunicationRevision(models.Model):
         tracking=True,
         readonly=False,
     )
-    update_user_id = fields.Many2one("res.users", "Modified by", readonly=False)
+    update_user_id = fields.Many2one(
+        "res.users", "Modified by", default=lambda self: self.env.uid, readonly=True
+    )
     proposition_text = fields.Html()
     proposition_correction = fields.Html()
     compare_lang = fields.Selection("select_lang")
@@ -277,7 +279,6 @@ class CommunicationRevision(models.Model):
             return super().write(vals)
 
         for revision in self.filtered("simplified_text"):
-            vals["update_user_id"] = self.env.uid
             super(CommunicationRevision, revision).write(vals)
 
             # 2. Push back the template text
@@ -316,6 +317,7 @@ class CommunicationRevision(models.Model):
         self._create_backup(new_revision_number)
         self.revision_number = new_revision_number
         self.revision_date = fields.Date.today()
+        self.update_user_id = self.env.uid
         return self._open_revision()
 
     def new_revision(self):
@@ -357,6 +359,46 @@ class CommunicationRevision(models.Model):
             [("linked_revision_id", "=", self.id)],
             order="revision_number desc",
             limit=1,
+        )
+
+    def duplicate_revision(self):
+        """
+        Duplicate the current revision by creating a new revision with an incremented
+        revision number.
+
+        This function ensures that only one revision is duplicated at a time.
+        It calculates the new revision number
+        by incrementing the current revision number by 1. It then checks if a revision
+        with the same revision number already exists. If so, it increments the revision
+        number until a unique revision number is found.
+
+        After creating the new revision, it sets the active_revision_id of the current
+        revision to the newly created
+        revision.
+        """
+        self.ensure_one()
+
+        last_revision = self.env["partner.communication.revision.history"].search(
+            [
+                ("linked_revision_id", "=", self.id),
+            ],
+            order="revision_number desc",
+            limit=1,
+        )
+        new_revision_number = int(last_revision.revision_number) + 1
+
+        self.active_revision_id = self.env[
+            "partner.communication.revision.history"
+        ].create(
+            {
+                "revision_number": new_revision_number,
+                "revision_date": fields.Date.today(),
+                "subject": self.subject,
+                "body_html": self.body_html,
+                "linked_revision_id": self.id,
+                "proposition_text": self.proposition_text,
+                "raw_subject": self.raw_subject,
+            }
         )
 
     ##########################################################################
@@ -913,7 +955,6 @@ class CommunicationRevision(models.Model):
             .create(
                 {
                     "revision_number": backup_revision_number,
-                    "revision_date": self.revision_date,
                     "subject": self.subject,
                     "body_html": self.body_html,
                     "linked_revision_id": self.id,
