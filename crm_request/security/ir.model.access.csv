@@ -4,3 +4,4 @@ access_crm_stages,access_crm_stages,model_crm_claim_stage,sales_team.group_sale_
 access_crm_categories,access_crm_categories,model_crm_claim_category,sales_team.group_sale_manager,1,1,1,1
 assign_request_wizard_sec,assign_request_wizard_sec,model_assign_request_wizard,base.group_user,1,1,1,1
 holiday_closure_template_preview_sec,holiday_closure_template_preview,model_holiday_closure_template_preview,base.group_user,1,1,1,1
+access_mail_mail,access_mail_mail,model_mail_mail,base.group_user,1,1,1,0
