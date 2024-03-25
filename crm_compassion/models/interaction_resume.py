@@ -78,9 +78,7 @@ class InteractionResume(models.TransientModel):
         :param full_resume: boolean to define if we limit the interaction
                             on a time period
         :return: True
-        """
 
-        """
         Some comments on the SQL request:
         - It aims to collect all the communication with a partner identified by
          its partner id
