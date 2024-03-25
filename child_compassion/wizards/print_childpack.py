@@ -60,21 +60,17 @@ class PrintChildpack(models.TransientModel):
         children = (
             self.env["compassion.child"]
             .browse(self.env.context.get("active_ids"))
-            .with_context(lang=self.lang)
+            .with_context(lang=self.lang, async_mode=False)
         )
         lang = self.lang
-        lang_code = lang[:2]
-        lang_map = self.env["compassion.project.description"]._supported_languages()
-        desc_field = 'desc_' + lang_code
+        project_lang_map = self.env["compassion.project.description"]._supported_languages()
+        child_lang_map = self.env["compassion.child.description"]._supported_languages()
 
         for child in children:
-            if not getattr(child.project_id, lang_map.get(lang)):
-                if child.project_id.update_informations():
-                    child.project_id = self.env["compassion.project"].search([('id', '=', child.project_id.id)])
-            if not getattr(child, desc_field):
-                child.project_id.get_info()
-                if child.get_infos():
-                    children[child] = self.env["compassion.child"].search([('id', '=', child.id)])
+            if not getattr(child.project_id, project_lang_map.get(lang)):
+                child.project_id.update_informations()
+            if not getattr(child, child_lang_map.get(lang)):
+                child.get_infos()
         return children
 
     def get_report(self):
