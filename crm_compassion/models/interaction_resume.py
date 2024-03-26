@@ -91,9 +91,9 @@ class InteractionResume(models.TransientModel):
                 - mailing_trace
                 - mail_message
                 - partner_log_other_interactions
-        - The phone calls are stored in crm_phonecall as Phone as well as in 
-        partner_communication_job as Email. Only the phone calls from the crm_phone are 
-        collected by the query. 
+        - The phone calls are stored in crm_phonecall as Phone as well as in
+        partner_communication_job as Email. Only the phone calls from the crm_phone are
+        collected by the query.
         - Pay attention some conditions are hard-coded and may introduce some bugs (e.g.
         "WHEN 'in' THEN 'in' ELSE 'out'" in crm_phonecall
         """
@@ -102,7 +102,17 @@ class InteractionResume(models.TransientModel):
         partner_email = original_partner.email
         partner_ids = [partner_id]
         partner_ids += original_partner.mapped("other_contact_ids").ids
-        partner_ids += self.env["res.partner"].search([("email", "!=", False), ("email", "=", partner_email), ("id", "not in", partner_ids)]).ids
+        partner_ids += (
+            self.env["res.partner"]
+            .search(
+                [
+                    ("email", "!=", False),
+                    ("email", "=", partner_email),
+                    ("id", "not in", partner_ids),
+                ]
+            )
+            .ids
+        )
         self.search([("partner_id", "in", partner_ids)]).unlink()
         self.env.cr.execute(
             f"""
@@ -324,7 +334,7 @@ class InteractionResume(models.TransientModel):
             if not email or email not in emails:
                 emails += email
                 filter_res += record
-            elif record.communication_type == 'Phone':
+            elif record.communication_type == "Phone":
                 filter_res += record
         (res - filter_res).unlink()
         return filter_res

@@ -325,7 +325,9 @@ class SponsorshipGift(models.Model):
 
     def _get_gift_from_reversal_invoice_line(self, invoice_line):
         if invoice_line.move_id.move_type in ["out_refund"]:
-            return invoice_line.move_id.reversed_entry_id.invoice_line_ids.mapped("gift_id")
+            return invoice_line.move_id.reversed_entry_id.invoice_line_ids.mapped(
+                "gift_id"
+            )
         else:
             return self.env[self._name]
 
@@ -405,7 +407,9 @@ class SponsorshipGift(models.Model):
                 gift.message_id.state = "postponed"
             return gift
         else:
-            for reversal_gift in self._get_gift_from_reversal_invoice_line(invoice_line):
+            for reversal_gift in self._get_gift_from_reversal_invoice_line(
+                invoice_line
+            ):
                 blend_gift = reversal_gift._blend_in_other_gift(gift_vals)
                 if reversal_gift.state in ["In Progress", "Delivered"]:
                     gifts += blend_gift
@@ -415,7 +419,9 @@ class SponsorshipGift(models.Model):
                     else:
                         gifts += blend_gift
             if invoice_line.move_id.move_type not in ["out_refund"]:
-                return self._search_for_similar_pending_gifts(gift_vals)._blend_in_other_gift(gift_vals)
+                return self._search_for_similar_pending_gifts(
+                    gift_vals
+                )._blend_in_other_gift(gift_vals)
         return gifts
 
     @api.model
