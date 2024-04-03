@@ -834,7 +834,8 @@ class SponsorshipContract(models.Model):
 
     def contract_waiting(self):
         contracts = self.filtered(lambda c: c.type == "O")
-        super().contract_waiting()
+        if contracts:
+            super(SponsorshipContract, contracts).contract_waiting()
         for contract in self - contracts:
             if not contract.start_date:
                 contract.start_date = fields.Datetime.now()
