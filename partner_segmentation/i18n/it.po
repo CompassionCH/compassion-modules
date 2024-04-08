@@ -1,0 +1,999 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_segmentation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-08 13:20+0000\n"
+"PO-Revision-Date: 2024-04-08 13:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_14
+msgid " None of the above"
+msgstr "Nessuno di questi citati"
+
+#. module: partner_segmentation
+#: model:res.partner.segment,personalized_links:partner_segmentation.movement_mobilizers
+msgid ""
+"<div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Join or create a project to raise help for the children in need</h5>\n"
+"                    <a href=\"https://together.compassion.ch/homepage\" target=\"_blank\">TOGETHER</a>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Take a look at our latest updates</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/news/\" target=\"_blank\">https://compassion.ch/news/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">https://compassion.ch/de/neues</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">https://compassion.ch/it/notizie/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"            <h5 class=\"text-uppercase mb-2\" style=\"color: #005eb8;\">Follow us on the social medias</h5>\n"
+"            <div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <p class=\"text-uppercase font-weight-bold\">Facebook</p>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://facebook.com/compassionsuisse/\" target=\"_blank\">https://facebook.com/compassionsuisse/</a></li>\n"
+"                        <li>German: <a href=\"https://facebook.com/compassionschweiz/\" target=\"_blank\">https://facebook.com/compassionschweiz/</a></li>\n"
+"                        <li>Italian: <a href=\"https://www.facebook.com/compassionsvizzera\" target=\"_blank\">https://www.facebook.com/compassionsvizzera</a></li>\n"
+"                    </ul>\n"
+"                    <div class=\"my-2\">\n"
+"                        <a href=\"https://www.instagram.com/compassionswiss/\" class=\"text-uppercase font-weight-bold mb-2\" target=\"_blank\">Instagram</a>\n"
+"                    </div>\n"
+"                    <div class=\"my-2\">\n"
+"                        <a href=\"https://vimeo.com/compassionswitzerland\" class=\"text-uppercase font-weight-bold\" target=\"_blank\">Vimeo</a>\n"
+"                    </div>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <p class=\"text-uppercase font-weight-bold\">Youtube</p>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://www.youtube.com/user/CompassionSuisse\" target=\"_blank\">https://www.youtube.com/user/CompassionSuisse</a></li>\n"
+"                        <li>German: <a href=\"https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ\" target=\"_blank\">https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ</a></li>\n"
+"                        <li>Italian: <a href=\"https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA\" target=\"_blank\">https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"            <div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                     <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Volunteering with Compassion</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/participer/\" target=\"_blank\">https://compassion.ch/participer/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/sich-mehr-engagieren/\" target=\"_blank\">https://compassion.ch/de/sich-mehr-engagieren/</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/participare/\" target=\"_blank\">https://compassion.ch/it/participare/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div class=\"row\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">TOGETHER</h5>\n"
+"        <a href=\"https://together.compassion.ch/it_IT/homepage\" target=\"_blank\">TOGETHER</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Guarda le nostre ultime notizie</h5>\n"
+"            <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">Compassion notizie</a>\n"
+"    </div>\n"
+"</div>\n"
+"<div class=\"row mt-md-4\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase mb-2\">Social media</h5>\n"
+"        <ul>\n"
+"            <li><a href=\"https://www.facebook.com/compassionsvizzera\" target=\"_blank\">Facebook</a></li>\n"
+"            <li><a href=\"https://www.instagram.com/compassionswiss/\" target=\"_blank\">Instagram</a></li>\n"
+"            <li><a href=\"https://vimeo.com/compassionswitzerland\" target=\"_blank\">Vimeo</a></li>\n"
+"            <li><a href=\"https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA\" target=\"_blank\">Youtube</a></li>\n"
+"        </ul>\n"
+"    </div>\n"
+"    \n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Volontariato con Compassion</h5>\n"
+"        <a href=\"https://compassion.ch/it/participare/\" target=\"_blank\">Participare</a>\n"
+"    </div>\n"
+"</div>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,personalized_links:partner_segmentation.compassionate_caregiver
+msgid ""
+"<div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Support one of our funds</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/donations/\" target=\"_blank\">https://compassion.ch/donations/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/spenden/\" target=\"_blank\">https://compassion.ch/de/spenden/</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/donare/\" target=\"_blank\">https://compassion.ch/it/donare/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Get future generations involved in the fight against extreme poverty</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/bienvenue-dans-mon-monde-philippines/\" target=\"_blank\">Step In My Shoes</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/komm-mit/\" target=\"_blank\">Step In My Shoes</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/sonntagschulmaterial//\" target=\"_blank\">Cool</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Take a look at our latest updates</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/news/\" target=\"_blank\">https://compassion.ch/news/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">https://compassion.ch/de/neues</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">https://compassion.ch/it/notizie/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Watch our latest videos</h5>\n"
+"                    <a href=\"https://vimeo.com/compassionswitzerland\" target=\"_blank\">Compassion Videos</a>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div class=\"row\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Compassion Fondi</h5>\n"
+"        <a href=\"https://compassion.ch/it/donare/\" target=\"_blank\">Compassion Fondi</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Le nostre ultime notizie</h5>\n"
+"            <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">Compassion notizie</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6 mt-md-4\">\n"
+"        <h5 class=\"text-uppercase\">Compassion Video</h5>\n"
+"        <a href=\"https://vimeo.com/compassionswitzerland\" target=\"_blank\">Compassion Video</a>\n"
+"    </div>\n"
+"</div>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,personalized_links:partner_segmentation.curious_novices
+msgid ""
+"<div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Support one of our funds</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/donations/\" target=\"_blank\">https://compassion.ch/donations/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/spenden/\" target=\"_blank\">https://compassion.ch/de/spenden/</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/donare/\" target=\"_blank\">https://compassion.ch/it/donare/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Why not take a look at our latest updates?</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/news/\" target=\"_blank\">https://compassion.ch/news/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">https://compassion.ch/de/neues</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">https://compassion.ch/it/notizie/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"            <h5 class=\"text-uppercase mb-2\" style=\"color: #005eb8;\">Follow us on the social medias</h5>\n"
+"            <div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <p class=\"text-uppercase font-weight-bold\">Facebook</p>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://facebook.com/compassionsuisse/\" target=\"_blank\">https://facebook.com/compassionsuisse/</a></li>\n"
+"                        <li>German: <a href=\"https://facebook.com/compassionschweiz/\" target=\"_blank\">https://facebook.com/compassionschweiz/</a></li>\n"
+"                        <li>Italian: <a href=\"https://www.facebook.com/compassionsvizzera\" target=\"_blank\">https://www.facebook.com/compassionsvizzera</a></li>\n"
+"                    </ul>\n"
+"                    <div class=\"my-2\">\n"
+"                        <a href=\"https://www.instagram.com/compassionswiss/\" class=\"text-uppercase font-weight-bold mb-2\" target=\"_blank\">Instagram</a>\n"
+"                    </div>\n"
+"                    <div class=\"my-2\">\n"
+"                        <a href=\"https://vimeo.com/compassionswitzerland\" class=\"text-uppercase font-weight-bold\" target=\"_blank\">Vimeo</a>\n"
+"                    </div>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <p class=\"text-uppercase font-weight-bold\">Youtube</p>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://www.youtube.com/user/CompassionSuisse\" target=\"_blank\">https://www.youtube.com/user/CompassionSuisse</a></li>\n"
+"                        <li>German: <a href=\"https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ\" target=\"_blank\">https://www.youtube.com/channel/UChVNRRvihHG0AYPsdEFfasQ</a></li>\n"
+"                        <li>Italian: <a href=\"https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA\" target=\"_blank\">https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div class=\"row\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Compassion Fondi</h5>\n"
+"        <a href=\"https://compassion.ch/it/donare/\" target=\"_blank\">Compassion Fondi</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Le nostre ultime notizie</h5>\n"
+"        <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">Compassion notizie</a>\n"
+"    </div>\n"
+"</div>\n"
+"<div class=\"row mt-md-4\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase mb-2\">Social media</h5>\n"
+"        <ul>\n"
+"            <li><a href=\"https://www.facebook.com/compassionsvizzera\" target=\"_blank\">Facebook</a></li>\n"
+"            <li><a href=\"https://www.instagram.com/compassionswiss/\" target=\"_blank\">Instagram</a></li>\n"
+"            <li><a href=\"https://vimeo.com/compassionswitzerland\" target=\"_blank\">Vimeo</a></li>\n"
+"            <li><a href=\"https://www.youtube.com/channel/UC61IaMa5EtW_ZEz5r0pv8cA\" target=\"_blank\">Youtube</a></li>\n"
+"        </ul>\n"
+"    </div>\n"
+"</div>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,personalized_links:partner_segmentation.hands_on_helpers
+msgid ""
+"<div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Volunteering with Compassion</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/participer/\" target=\"_blank\">https://compassion.ch/participer/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/sich-mehr-engagieren/\" target=\"_blank\">https://compassion.ch/de/sich-mehr-engagieren/</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/participare/\" target=\"_blank\">https://compassion.ch/it/participare/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Take a look at our latest updates</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/news/\" target=\"_blank\">https://compassion.ch/news/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">https://compassion.ch/de/neues</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">https://compassion.ch/it/notizie/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div class=\"row\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Volontario con Compassion</h5>\n"
+"        <a href=\"https://compassion.ch/it/participare/\" target=\"_blank\">Participare</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Le nostre ultime notizie</h5>\n"
+"        <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">Compassion notizie</a>\n"
+"    </div>\n"
+"</div>\n"
+
+#. module: partner_segmentation
+#: model:res.partner.segment,personalized_links:partner_segmentation.savvy_stewards
+msgid ""
+"<div class=\"row\">\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Why not take a look at our latest updates?</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/news/\" target=\"_blank\">https://compassion.ch/news/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">https://compassion.ch/de/neues</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">https://compassion.ch/it/notizie/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"                <div class=\"col-md-6\">\n"
+"                    <h5 class=\"text-uppercase\" style=\"color: #005eb8;\">Take a look at Compassion’s finances</h5>\n"
+"                    <ul>\n"
+"                        <li>French: <a href=\"https://compassion.ch/finances/\" target=\"_blank\">https://compassion.ch/finances/</a></li>\n"
+"                        <li>German: <a href=\"https://compassion.ch/de/finanzen/\" target=\"_blank\">https://compassion.ch/de/finanzen/</a></li>\n"
+"                        <li>Italian: <a href=\"https://compassion.ch/it/finanze/\" target=\"_blank\">https://compassion.ch/it/finanze/</a></li>\n"
+"                    </ul>\n"
+"                </div>\n"
+"            </div>\n"
+"        "
+msgstr ""
+"<div class=\"row\">\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Le nostre ultime notizie</h5>\n"
+"        <a href=\"https://compassion.ch/it/notizie/\" target=\"_blank\">Compassion notizie/</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6\">\n"
+"        <h5 class=\"text-uppercase\">Compassion Finanze</h5>\n"
+"        <a href=\"https://compassion.ch/it/finanze/\" target=\"_blank\">https://compassion.ch/it/finanze/</a>\n"
+"    </div>\n"
+"    <div class=\"col-md-6 mt-md-4\">\n"
+"        <h5 class=\"text-uppercase\">Compassion Fondi</h5>\n"
+"        <a href=\"https://compassion.ch/it/finanze/\" target=\"_blank\">https://compassion.ch/it/donare/</a>\n"
+"    </div>\n"
+"</div>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:survey.survey,description:partner_segmentation.partner_segmentation_survey
+msgid ""
+"<p>\n"
+"                Thank you for participating in this 5-minute survey that will allow Compassion to better serve supporters like you.\n"
+"            </p>\n"
+"            <p>\n"
+"            Please be assured that this survey is completely confidential, and we will only use this information to improve our service to you. We will never publish or share your personal data with third parties without your permission.\n"
+"            </p>\n"
+"            <p>\n"
+"            So let's get started!\n"
+"            </p>\n"
+"        "
+msgstr ""
+
+#. module: partner_segmentation
+#: model:res.partner.segment,survey_result:partner_segmentation.savvy_stewards
+msgid ""
+"<p>It’s so great that you are interested in getting more facts, information and numbers from us! For about 70 years we at Compassion attach a great deal of importance to the efficiency of invested funds in the fight against extreme poverty and for the childrens’ development.</p>\n"
+"            <p>Thank you for your trust. We commit to informing you about the impact of your support for children in the Global South.</p>\n"
+"            <p>Did you know? We guarantee that at least 80% of sponsorship donations - for gifts to your sponsored child and fund donations up to 100% -  are invested in projects and programmes in the countries of the South. Thank you for the considerable impact you’ve already made.</p>\n"
+"            <p>Thank you for your precious support.</p>\n"
+"        "
+msgstr ""
+"<p>È fantastico che tu sia interessato ad avere più fatti, informazioni e numeri da noi! Da circa 70 anni noi di Compassion diamo molta importanza all'efficienza dei fondi investiti nella lotta contro la povertà estrema e per lo sviluppo dei bambini.\n"
+"</p>\n"
+"            <p>TGrazie per la tua fiducia. Ci impegniamo a informarti sull'impatto del tuo sostegno a favore dei bambini del Sud del mondo.\n"
+"</p>\n"
+"            <p>Lo sapevi? Garantiamo che almeno l'80% delle donazioni del sostegno - per i regali al tuo bambino e le donazioni di fondi fino al 100% - siano investite in progetti e programmi nei paesi del Sud. Grazie per il notevole impatto che hai già avuto.</p>\n"
+"            <p>Grazie per il tuo prezioso supporto.</p>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,survey_result:partner_segmentation.movement_mobilizers
+msgid ""
+"<p>It’s so great that you are passionate about large scale movements and that you’re motivated and ready to invest to bring about a significant change in the fight against extreme poverty.</p>\n"
+"            <p>We are thrilled about your determination to fight injustices. We are so happy to count you as part of the growing number of people who are joining us in the fight against extreme poverty. We commit to providing platforms where you can advocate for children in need and the fight against extreme poverty and inspire others to join you.</p>\n"
+"            <p>Thank you for your precious support.</p>\n"
+"        "
+msgstr ""
+"<p>IÈ così bello che tu sia appassionato di movimenti su larga scala e che tu sia motivato e pronto a investire per portare un cambiamento significativo nella lotta contro la povertà estrema.\n"
+"</p>\n"
+"            <p>Siamo entusiasti della tua determinazione a combattere le ingiustizie. Siamo così felici di includerti come parte del crescente numero di persone che si uniscono a noi nella lotta contro la povertà estrema. Ci impegniamo a fornire piattaforme dove tu possa difendere i bambini bisognosi, la lotta contro la povertà estrema e ispirare altri a unirsi a te.\n"
+"</p>\n"
+"            <p>Grazie per il tuo prezioso supporto.</p>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,survey_result:partner_segmentation.hands_on_helpers
+msgid ""
+"<p>It’s so great that you love to get involved and volunteer your time for those who are less fortunate!</p>\n"
+"            <p>We are so glad to have you as part of the big Compassion community. Thanks to you and around 8000 partner churches in 25 countries we are currently releasing over 2.2 million children from poverty.</p>\n"
+"            <p>Join us by putting our faith into action through engaging and being connected with our volunteer team.</p>\n"
+"            <p>Here are some links you might find useful:</p>\n"
+"            <ul>\n"
+"                <li><a href=\"https://compassion.ch/de/sich-mehr-engagieren/\" target=\"_blank\">Volunteering with Compassion</a></li>\n"
+"                <li><a href=\"https://compassion.ch/de/neues/\" target=\"_blank\">Take a look at our latest updates</a></li>\n"
+"            </ul>\n"
+"            <p>Thank you for your precious support.</p>\n"
+"        "
+msgstr ""
+
+#. module: partner_segmentation
+#: model:res.partner.segment,survey_result:partner_segmentation.compassionate_caregiver
+msgid ""
+"<p>It’s so great that your faith inspires your generous giving. It’s also delightful that you seek to know your sponsored child and Compassion on a deeper, more personal level. Thank you from the bottom of our hearts.\n"
+"Thanks to our holistic approach to child development, we commit to a personal and all-round support to the child on a physical, cognitive, socio-emotional and spiritual level through one of the 8000 Compassion partner churches.\n"
+"</p>\n"
+"            <p>You can join us by making a spiritual impact in the lives of children in need through prayer and even get children in your surroundings involved in this endeavour. </p>\n"
+"            <p>Thank you for your precious support.</p>\n"
+"        "
+msgstr ""
+"<p>È così bello che la tua fede ti ispiri a donare generosamente. È anche ammirevole che cerchi di conoscere il  bambino che sostieni e la missione Compassion ad un livello più profondo e personale. Grazie dal profondo dei nostri cuori.\n"
+"</p>\n"
+"<p>\n"
+"Grazie al nostro approccio olistico per lo sviluppo del bambino, ci impegniamo ad un sostegno personale e completo al bambino a livello fisico, cognitivo, socio-emotivo e spirituale attraverso una delle 8000 chiese partner di Compassion.\n"
+"</p>\n"
+"            <p>Puoi unirti a noi dando un impatto spirituale nella vita dei bambini bisognosi attraverso la preghiera e persino coinvolgere i bambini del tuo ambiente circostante in questo.\n"
+"</p>\n"
+"            <p>Grazie per il tuo prezioso supporto.\n"
+"</p>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:res.partner.segment,survey_result:partner_segmentation.curious_novices
+msgid ""
+"<p>It’s so great to count you as part of the growing number of people who are joining us in the fight against extreme poverty. For about 70 years we at Compassion attach a great deal of importance to the efficiency of invested funds in the fight against extreme poverty and for the childrens’ development. Thank you for your trust and the considerable impact you’ve already made.</p>\n"
+"            <p>We commit to informing you about the impact of your support for children in the Global South.</p>\n"
+"            <p>You can engage with us in flexible and manifold ways.</p>\n"
+"            <p>Thank you for your precious support.</p>\n"
+"        "
+msgstr ""
+"<p>È così bello includerti come parte del crescente numero di persone che si uniscono a noi nella lotta contro la povertà estrema. Da circa 70 anni noi di Compassion diamo molta importanza all'efficienza dei fondi investiti nella lotta contro la povertà estrema e per lo sviluppo dei bambini. Grazie per la tua fiducia e per il notevole impatto a cui hai già contribuito.\n"
+"</p>\n"
+"            <p>Ci impegniamo a informarti sull'impatto del tuo sostegno ai bambini del Sud del mondo.\n"
+"</p>\n"
+"            <p>Puoi impegnarti con noi in modi flessibili e molteplici.</p>\n"
+"            <p>Grazie per il tuo prezioso supporto.\n"
+"</p>\n"
+"        "
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__affinity
+msgid "Affinity"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__segments_affinity_ids
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__segments_affinity_ids
+msgid "Affinity for each segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.survey_question_form
+msgid "Answer (left)"
+msgstr ""
+
+#. module: partner_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.survey_question_form
+msgid "Answer (right)"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_res_partner
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_9
+msgid ""
+"Contacted a politician or government representative to advocate for the "
+"cause"
+msgstr ""
+"Ho contattato un politico o un rappresentante del governo per sostenere la "
+"causa"
+
+#. module: partner_segmentation
+#: model_terms:survey.survey,description_done:partner_segmentation.partner_segmentation_survey
+msgid "Continue"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__create_uid
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__create_date
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_8
+msgid "Created posts and engaged in discussions on social media"
+msgstr ""
+"Ho creato e condiviso post e partecipato a discussioni sui social media"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question_answer__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input__display_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input_line__display_name
+msgid "Display Name"
+msgstr "Visualizza Nome"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_4
+msgid "Donated goods, products, or resources"
+msgstr "Ho donato beni, prodotti o risorse"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_3
+msgid "Donated money on a monthly or regular basis"
+msgstr "Ho donato denaro su base mensile o regolare"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_2
+msgid "Donated money on a one-time basis"
+msgstr "Ho fatto donazioni ogni tanto"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_5
+msgid ""
+"Done a small act of kindness (e.g., cooking a meal for someone in need, offering someone in\n"
+"            need a place to rest)"
+msgstr ""
+"Fatto un piccolo atto di gentilezza (ad esempio, cucinare un pasto per "
+"qualcuno in difficoltà, offrire a qualcuno in difficoltà un posto per "
+"riposare)"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__has_segment
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__has_segment
+msgid "Has Segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value_right:partner_segmentation.pss_q5_labels
+msgid ""
+"I do not personally need to share the gospel with others when helping a "
+"cause"
+msgstr ""
+"Non ho bisogno di condividere personalmente il Vangelo con gli altri quando "
+"aiuto una causa"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q3_labels
+msgid "I give as the opportunity arises"
+msgstr "Dono quando se ne presenta l'occasione"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value_right:partner_segmentation.pss_q3_labels
+msgid "I give on a regular schedule"
+msgstr "Dono in modo regolare"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value_right:partner_segmentation.pss_q4_labels
+msgid "I prefer to make a physical and cognitive impact before anything else"
+msgstr ""
+"Preferisco avere un impatto fisico e cognitivo prima di ogni altra cosa"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q4_labels
+msgid "I prefer to make a spiritual impact before anything else"
+msgstr "Preferisco avere un impatto spirituale prima di ogni altra cosa"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q2_labels
+msgid "I want to travel to see firsthand what those in need are experiencing"
+msgstr "Voglio viaggiare per vedere in prima persona cosa vivono i bisognosi"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value_right:partner_segmentation.pss_q2_labels
+msgid ""
+"I'd rather not travel to see firsthand what those in need are experiencing"
+msgstr ""
+"Preferisco non viaggiare per vedere in prima persona cosa vivono i bisognosi"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question_answer__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input__id
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input_line__id
+msgid "ID"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,comments_message:partner_segmentation.pss_question_1
+#: model:survey.question,comments_message:partner_segmentation.pss_question_6
+#: model:survey.question,comments_message:partner_segmentation.pss_question_7
+msgid "If other, please specify:"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,title:partner_segmentation.pss_question_6
+msgid ""
+"If you were to find a charitable cause you loved or was really important to "
+"you, which of the following would describe you and your role in that cause?"
+msgstr "Quale delle seguenti descriverebbe te ?"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__image
+msgid "Image"
+msgstr "Immagine"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q5_labels
+msgid ""
+"It is critical that I personally play some role in sharing the gospel with "
+"others when I'm helping a cause"
+msgstr ""
+"È fondamentale che io svolga personalmente qualche ruolo nel condividere il "
+"Vangelo con gli altri quando aiuto una causa"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q1_labels
+msgid ""
+"It's nice to receive acknowledgement, however small, when I support a cause"
+msgstr ""
+"È bello ricevere un riconoscimento, per quanto piccolo, quando sostengo una "
+"causa"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question_answer____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input____last_update
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input_line____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__write_uid
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__write_uid
+msgid "Last Updated by"
+msgstr "Ultima modifica di"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__write_date
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__write_date
+msgid "Last Updated on"
+msgstr "Ultima modifica il"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__main_driver
+msgid "Main Driver"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question__max_checked_option
+msgid "Maximum answers"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_name
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__name
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__primary_segment_name
+msgid "Name"
+msgstr "Nome"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_9
+msgid "None of the above"
+msgstr "Nessuno di questi citati"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_12
+msgid "Participated in a charity event (e.g., Walk-a-thon)"
+msgstr "Ho partecipato a un evento di beneficenza"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_7
+msgid "Participated in protests/marches"
+msgstr "Partecipato a proteste/manifestazioni"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__partner_id
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_user_input_line__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_res_partner_segment
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_affinity_form
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_form
+msgid "Partner Segmentation"
+msgstr "Segmentazione Partner"
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_res_partner_segment_affinity
+msgid "Partner segment affinity"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.ui.menu,name:partner_segmentation.menu_partner_segment
+msgid "Partners Segmentation"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.ui.menu,name:partner_segmentation.menu_partner_segment_affinity
+msgid "Partners Segmentation Affinity"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.actions.act_window,name:partner_segmentation.open_view_partner_segmentation
+msgid "Partners segmentation"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.actions.act_window,name:partner_segmentation.open_view_partner_segmentation_affinity
+msgid "Partners segmentation affinity"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__personalized_links
+msgid "Personalized Links"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__primary_partners_ids
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_form
+msgid "Primary Partners"
+msgstr ""
+
+#. module: partner_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.res_partner_compassion_search
+msgid "Primary Segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__primary_segment_id
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__primary_segment_id
+msgid "Primary segmentation category"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value_right:partner_segmentation.pss_q1_labels
+msgid ""
+"Receiving acknowledgement when I support a cause doesn't really matter to me"
+msgstr ""
+"Ricevere un riconoscimento quando sostengo una causa non mi interessa molto"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__secondary_partners_ids
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_form
+msgid "Secondary Partners"
+msgstr ""
+
+#. module: partner_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.res_partner_compassion_search
+msgid "Secondary Segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__secondary_segment_id
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__secondary_segment_id
+msgid "Secondary segmentation category"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment_affinity__segment_id
+msgid "Segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_index
+msgid "Segment Index"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_size
+msgid "Segment Size"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__segment_total
+msgid "Segment Total"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.constraint,message:partner_segmentation.constraint_res_partner_segment_unique_index
+msgid "Segment index must be unique"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.ui.menu,name:partner_segmentation.menu_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.view_partner_form_segmentation
+msgid "Segmentation"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,description:partner_segmentation.pss_question_7
+msgid "Select the answers that apply"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,description:partner_segmentation.pss_question_6
+msgid "Select the best matching answers. Choose up to 3 options."
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_11
+msgid ""
+"Shared my opinion about the cause with those around me (e.g., students, coworkers, friends,\n"
+"            etc.)"
+msgstr ""
+"Ho condiviso la mia opinione sulla causa con coloro che mi circondano (ad "
+"esempio, studenti, colleghi, amici, ecc.)"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_13
+msgid "Signed a petition online"
+msgstr "Firmato una petizione online"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_4
+msgid ""
+"Someone who currently puts their professional skills and expertise to use for the cause, or\n"
+"            plans to use their skills and expertise in the future"
+msgstr ""
+"Qualcuno che attualmente mette le sue abilità e competenze professionali per"
+" la causa, o progetta di usare le sue abilità e competenze in futuro"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_5
+msgid ""
+"Someone who does everything they can to have a positive impact because they've personally\n"
+"            experienced hardships "
+msgstr ""
+"Qualcuno che fa tutto il possibile per avere un impatto positivo perché ha "
+"sperimentato personalmente le difficoltà"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_3
+msgid ""
+"Someone who enjoys the communal aspects of helping a cause and uses the community around\n"
+"            them to connect people to work together to have a positive impact "
+msgstr ""
+"Qualcuno che ama gli aspetti comunitari di aiutare una causa e usa la "
+"comunità che lo circonda per collegare le persone a lavorare insieme per "
+"avere un impatto positivo"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_6
+msgid ""
+"Someone who faithfully gives financially but needs no further engagement"
+msgstr ""
+"Qualcuno che dona fedelmente finanziariamente ma non ha bisogno di altro "
+"impegno"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_7
+msgid ""
+"Someone who gives their resources to others they know will use it most effectively and\n"
+"            efficiently to help those in need"
+msgstr ""
+"Qualcuno che dà le sue risorse ad altri che sa che le useranno nel modo più "
+"efficace ed efficiente per aiutare i bisognosi"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_1
+msgid ""
+"Someone who is gentle, kind, hospitable, generous, and focused on social good as a way to\n"
+"            have a positive impact"
+msgstr ""
+"Qualcuno che è dolce, gentile, ospitale, generoso e concentrato sul bene "
+"sociale come un modo per avere un impatto positivo"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_8
+msgid "Someone who prays for others who tackle this problem"
+msgstr "Qualcuno che prega per gli altri che affrontano questo problema"
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q6_2
+msgid ""
+"Someone who wants to take part in advocacy and political events to seek "
+"change"
+msgstr ""
+"Qualcuno che vuole prendere parte a eventi politici e di advocacy per "
+"cercare il cambiamento"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_survey_question_answer__value_right
+msgid "Suggested value (counter-proposition)"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_survey_question_answer
+msgid "Survey Label"
+msgstr "Etichetta sondaggio"
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_survey_question
+msgid "Survey Question"
+msgstr "Domanda sondaggio"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner_segment__survey_result
+msgid "Survey Result"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_survey_user_input
+msgid "Survey User Input"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model,name:partner_segmentation.model_survey_user_input_line
+msgid "Survey User Input Line"
+msgstr "Riga inserimento utente per sondaggio"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_count
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_count
+msgid "Survey number"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.actions.act_window,name:partner_segmentation.act_partner_survey_input
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_inputs
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_inputs
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.view_partner_form_segmentation
+msgid "Surveys"
+msgstr "Sondaggi"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_partner__survey_input_lines
+#: model:ir.model.fields,field_description:partner_segmentation.field_res_users__survey_input_lines
+msgid "Surveys answers"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_10
+msgid "Talked to my friends about the cause"
+msgstr "Ho parlato della causa ai miei amici"
+
+#. module: partner_segmentation
+#: model_terms:survey.survey,description_done:partner_segmentation.partner_segmentation_survey
+msgid "Thank you so much for taking the time to answer these questions!"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,validation_error_msg:partner_segmentation.pss_question_1
+#: model:survey.question,validation_error_msg:partner_segmentation.pss_question_6
+#: model:survey.question,validation_error_msg:partner_segmentation.pss_question_7
+msgid "The answer you entered has an invalid format."
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question,constr_error_msg:partner_segmentation.pss_question_6
+msgid ""
+"This question require an answer. A maximum of 3 options can be selected."
+msgstr "Puoi scegliere fino a 3 ruoli"
+
+#. module: partner_segmentation
+#: model:survey.question,constr_error_msg:partner_segmentation.pss_question_1
+#: model:survey.question,constr_error_msg:partner_segmentation.pss_question_7
+msgid "This question requires an answer."
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_6
+msgid "Used a talent or skill to raise money and awareness for a cause"
+msgstr "Usato un talento o un'abilità per raccogliere denaro per una causa"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_index
+msgid "Used for segment computation by segmentation engine"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_survey_question_answer__value_right
+msgid "Used in Matrix questions for adding a label at the last column."
+msgstr ""
+
+#. module: partner_segmentation
+#: model:survey.question.answer,value:partner_segmentation.pss_q7_1
+msgid "Volunteered my time"
+msgstr "Ho offerto il mio tempo come volontario"
+
+#. module: partner_segmentation
+#: model:survey.survey,title:partner_segmentation.partner_segmentation_survey
+msgid "Welcome!"
+msgstr "Benvenuto!"
+
+#. module: partner_segmentation
+#: model:survey.question,title:partner_segmentation.pss_question_7
+msgid ""
+"Which of the following actions, if any, have you ever taken to support a charitable\n"
+"            cause or non-profit organization?"
+msgstr ""
+"Quali delle seguenti azioni, se presenti, hai mai intrapreso per sostenere "
+"una causa caritatevole o un'organizzazione no-profit?"
+
+#. module: partner_segmentation
+#: model:survey.question,title:partner_segmentation.pss_question_1
+msgid "Which of the following sentences do you agree more with ?"
+msgstr "Indica con quale delle seguenti affermazioni sei più d’accordo"
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment_affinity__affinity
+msgid "affinity of the partner for this segment (in percentage)."
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_survey_question__max_checked_option
+msgid "if set, maximum number of options allowed for the user"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_size
+msgid "number of partners for whom this is the primary segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__segment_total
+msgid ""
+"percentage of categorized partners for whom this is the primary segment"
+msgstr ""
+
+#. module: partner_segmentation
+#: model:ir.model.fields,help:partner_segmentation.field_res_partner_segment__image
+msgid "segment illustration"
+msgstr ""
+
+#. module: partner_segmentation
+#: model_terms:ir.ui.view,arch_db:partner_segmentation.partner_segmentation_tree
+msgid "segment_total"
+msgstr ""
