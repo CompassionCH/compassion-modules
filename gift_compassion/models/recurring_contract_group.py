@@ -50,20 +50,24 @@ class RecurringContractGroup(models.Model):
                 # The invoice would be empty if we remove the line
                 message = "The invoice has been cancelled "
                 empty_move |= move
-            move.message_post(
-                body=_(
-                    message + "because the payment mode of the <a href=# "
-                    f"data-oe-model={self._name} data-oe-id={group_id.id}>"
-                    f"Payment option ({group_id.ref})</a> has been modified"
-                )
+            # dynamic parts of the message are inserted after the translation marker _(), which prevent name 'self' is not defined error during term extraction.
+            message_template = "{} because the payment mode of the <a href=# data-oe-model={} data-oe-id={}>Payment option ({})</a> has been modified"
+            formatted_message = message_template.format(message, self._name, group_id.id, group_id.ref)
+            move.message_post(body=_(formatted_message))
+
+            # Determine the conditional part of the message first
+            conditional_message = (
+                "Because of the payment method modification on this payment option. "
+                "The <a href=# data-oe-model={} data-oe-id={}>invoice ({})</a> has been cancelled."
+                if "cancelled" in message else
+                " has some lines that were unlinked."
             )
-            group_id.message_post(
-                body=_(
-                    "Because of the payment method modification on this payment option."
-                    f" The <a href=# data-oe-model={move._name} data-oe-id={move.id}>"
-                    f"invoice ({move.name})</a> has been cancelled."
-                    if "cancelled" in message
-                    else " has some line that were unlink."
-                )
-            )
+            # Now format the dynamic content into the message
+            if "cancelled" in message:
+                formatted_message = conditional_message.format(move._name, move.id, move.name)
+            else:
+                formatted_message = conditional_message
+            # Finally, post the message
+            group_id.message_post(body=_(formatted_message))
+
         empty_move.button_cancel()

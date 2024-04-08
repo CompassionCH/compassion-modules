@@ -1,490 +1,479 @@
-# Translation of OpenERP Server.
+# Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* sponsorship_tracking
+# 	* sponsorship_sub_management
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenERP Server 7.0\n"
+"Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-15 15:39+0000\n"
-"PO-Revision-Date: 2015-09-17 15:45+0100\n"
-"Last-Translator: Emanuel Cino <ecino@compassion.ch>\n"
+"POT-Creation-Date: 2024-04-08 06:41+0000\n"
+"PO-Revision-Date: 2024-04-08 06:41+0000\n"
+"Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr_CH\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.4\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:51
-#: code:addons/sponsorship_tracking/model/contracts.py:64
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
+#: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
+#, python-format
+msgid "%s - No SUB"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#, python-format
+msgid "%s - SUB Reject"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
+msgid "<span class=\"fa fa-bars fa-lg\" title=\"fa fa-bars fa-lg\"/>"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__active
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 #, python-format
 msgid "Active"
 msgstr "Actif"
 
-#. module: sponsorship_tracking
-#: view:sds.subsponsorship.wizard:sponsorship_tracking.sub_sponsorship_view
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
+msgid "Active language"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "Cancel"
 msgstr "Annuler"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:59
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__cancel_gifts_on_termination
+msgid "Cancel pending gifts if sponsorship is terminated"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__cancelled
 #, python-format
 msgid "Cancelled"
 msgstr "Annulé"
 
-#. module: sponsorship_tracking
-#: field:sds.subsponsorship.wizard,channel:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__channel
 msgid "Channel"
 msgstr "Canal"
 
-#. module: sponsorship_tracking
-#: field:sds.subsponsorship.wizard,child_id:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__child_id
 msgid "Child"
 msgstr "Enfant"
 
-#. module: sponsorship_tracking
-#: field:recurring.contract,color:0
+#. module: sponsorship_sub_management
+#: model:ir.model,name:sponsorship_sub_management.model_child_hold_wizard
+msgid "Child Hold Wizard"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
+msgid "Choose which user will receive notifications about SUB Sponsorships"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__color
 msgid "Color Index"
 msgstr "Index Couleur"
 
-#. module: sponsorship_tracking
-#: model:ir.model,name:sponsorship_tracking.model_recurring_contract
-msgid "Contract for recurring invoicing"
-msgstr "Contrat à facturation récurrente"
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/wizards/child_hold_wizard.py:0
+#: code:addons/sponsorship_sub_management/wizards/child_hold_wizard.py:0
+#, python-format
+msgid ""
+"Completion date of child is in less than 2 years! Please choose another "
+"child."
+msgstr ""
 
-#. module: sponsorship_tracking
-#: model:ir.actions.act_window,name:sponsorship_tracking.action_create_sub_sponsorship
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-#: view:sds.subsponsorship.wizard:sponsorship_tracking.sub_sponsorship_view
+#. module: sponsorship_sub_management
+#: model:ir.actions.act_window,name:sponsorship_sub_management.action_create_sub_sponsorship
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "Create SUB Sponsorship"
 msgstr "Faire la Reprise"
 
-#. module: sponsorship_tracking
-#: field:install.sds.tracking,create_uid:0
-#: field:sds.subsponsorship.wizard,create_uid:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__create_uid
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__create_uid
 msgid "Created by"
 msgstr "Créé par"
 
-#. module: sponsorship_tracking
-#: field:install.sds.tracking,create_date:0
-#: field:sds.subsponsorship.wizard,create_date:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__create_date
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__create_date
 msgid "Created on"
 msgstr "Créé le"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:34
-#, python-format
-msgid "Doesn't want to take another child right now"
-msgstr "Ne veut pas d'enfants pour l'instant"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__channel__direct
+msgid "Direct"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:48
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_child_hold_wizard__display_name
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_install_sds_tracking__display_name
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__display_name
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__display_name
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__draft
 #, python-format
 msgid "Draft"
 msgstr "Brouillon"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:52
-#, python-format
-msgid "Field memo"
-msgstr "Field memo"
-
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:30
-#, python-format
-msgid "Financial reasons"
-msgstr "Raisons financières"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Finished"
 msgstr "Terminé"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-msgid "Follow contract"
-msgstr "Suivi SDS"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_tree_compassion
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_tree_compassion
 msgid "Follow contracts"
 msgstr "Suivi SDS"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:66
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
+#: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__channel__childpool
 #, python-format
-msgid "Fund Suspended"
-msgstr "Suspension avec Retenue"
+msgid "Global Childpool"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
-msgid "GMC State :"
-msgstr "Etat GMC :"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
-msgid "GMC Update"
-msgstr "Statut GMC"
-
-#. module: sponsorship_tracking
-#: model:ir.actions.act_window,name:sponsorship_tracking.action_follow_gmc
-#: model:ir.ui.menu,name:sponsorship_tracking.menu_follow_gmc
-msgid "GMC Updates"
-msgstr "Statut GMC"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Group By..."
 msgstr "Grouper Par..."
 
-#. module: sponsorship_tracking
-#: field:install.sds.tracking,id:0 field:sds.subsponsorship.wizard,id:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_child_hold_wizard__id
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_install_sds_tracking__id
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__id
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__id
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__id
 msgid "ID"
 msgstr "ID"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:57
-#, python-format
-msgid "Inform No sub"
-msgstr "Informer pas de reprise"
+#. module: sponsorship_sub_management
+#: model:ir.model,name:sponsorship_sub_management.model_install_sds_tracking
+msgid "Install SDS Tracking"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:68
-#, python-format
-msgid "Inform extension"
-msgstr "Susp. Extension à Informer"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__is_other
+msgid "Is Other"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:65
-#, python-format
-msgid "Inform fund suspension"
-msgstr "Suspension à Informer"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,help:sponsorship_sub_management.field_sds_sub_followers__res_lang_id
+msgid "Language for which to be notified (empty for all languages)"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:71
-#, python-format
-msgid "Inform project terminated"
-msgstr "Projet terminé à informer"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_child_hold_wizard____last_update
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_install_sds_tracking____last_update
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract____last_update
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers____last_update
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:67
-#, python-format
-msgid "Inform reactivation"
-msgstr "Informer Réactivation"
-
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:70
-#, python-format
-msgid "Inform suspended and reactivation"
-msgstr "Informer suspension + réactivation"
-
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:31
-#, python-format
-msgid "Is too old to sponsor another child"
-msgstr "Age avancé / Retraite"
-
-#. module: sponsorship_tracking
-#: field:install.sds.tracking,write_uid:0
-#: field:sds.subsponsorship.wizard,write_uid:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__write_uid
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__write_uid
 msgid "Last Updated by"
 msgstr "Modifié par"
 
-#. module: sponsorship_tracking
-#: field:install.sds.tracking,write_date:0
-#: field:sds.subsponsorship.wizard,write_date:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__write_date
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__write_date
 msgid "Last Updated on"
 msgstr "Modifié le"
 
-#. module: sponsorship_tracking
-#. openerp-web
-#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:30
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-#, python-format
-msgid "Mail sent"
-msgstr "Courrier envoyé"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__lifecycle_ids
+msgid "Lifecycle events"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: view:sds.subsponsorship.wizard:sponsorship_tracking.sub_sponsorship_view
+#. module: sponsorship_sub_management
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__child_hold_wizard__return_action__sub
+msgid "Make SUB Sponsorship"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
+msgid "Manage SDS Followers Notifications"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
+msgid "My Sponsorships"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "No SUB"
 msgstr "Pas de Reprise"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:52
-#, python-format
-msgid "No child selected"
-msgstr "Pas d'enfant choisi"
-
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:58
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__no_sub
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 #, python-format
 msgid "No sub"
 msgstr "Pas de reprise"
 
-#. module: sponsorship_tracking
-#: field:recurring.contract,no_sub_reason:0
-#: field:sds.subsponsorship.wizard,no_sub_default_reasons:0
-#: field:sds.subsponsorship.wizard,no_sub_reason:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__no_sub_reason
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__no_sub_default_reasons
 msgid "No sub reason"
 msgstr "Raison non-reprise"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:35
-#, python-format
-msgid "Not given"
-msgstr "Non renseigné"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sub_notes
+msgid "Notes for SUB Sponsorship"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_tracking_contract_form
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_tracking_contract_form
 msgid "Open SDS view"
 msgstr "Ouvrir Suivi SDS"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
 msgid "Open financial view"
 msgstr "Vue financière"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:305
-#, python-format
-msgid "Operation Failure"
-msgstr "Grave erreur"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__no_sub_reason
+msgid "Precisions"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:36
-#, python-format
-msgid "Other..."
-msgstr "Autre..."
+#. module: sponsorship_sub_management
+#: model:ir.model,name:sponsorship_sub_management.model_recurring_contract
+msgid "Recurring contract"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:72
-#, python-format
-msgid "Phase out"
-msgstr "Phase out"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_child_hold_wizard__return_action
+msgid "Return Action"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:53
-#, python-format
-msgid "Please select a child"
-msgstr "Holà ! Il faudrait penser à choisir un enfant..."
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
-msgid "Project :"
-msgstr "Projet :"
-
-#. module: sponsorship_tracking
-#: model:ir.actions.act_window,name:sponsorship_tracking.action_follow_project
-#: model:ir.ui.menu,name:sponsorship_tracking.menu_follow_project
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
-#: field:recurring.contract,project_state:0
-msgid "Project Status"
-msgstr "Statut du Projet"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
-msgid "Project active"
-msgstr "Projet actif"
-
-#. module: sponsorship_tracking
-#. openerp-web
-#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:35
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-#, python-format
-msgid "Project mail sent"
-msgstr "Statut projet informé"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
-msgid "Project not active"
-msgstr "Projet inactif"
-
-#. module: sponsorship_tracking
-#. openerp-web
-#: code:addons/sponsorship_tracking/static/src/js/sponsorship_tracking_kanban.js:39
-#, python-format
-msgid "Reset GMC Status"
-msgstr "RàZ Etat GMC"
-
-#. module: sponsorship_tracking
-#: field:recurring.contract,sds_uid:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_uid
 msgid "SDS Follower"
 msgstr "Personne de suivi"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_sds_follower_settings_form
+msgid "SDS Followers"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model:ir.model,name:sponsorship_sub_management.model_sds_sub_followers
+msgid "SDS SUB Sponsorship Followers"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "SDS State :"
 msgstr "Etat SDS :"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
-#: field:recurring.contract,sds_state:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_state
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "SDS Status"
 msgstr "Statut SDS"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
-#: field:recurring.contract,sds_state_date:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_recurring_contract__sds_state_date
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "SDS state date"
 msgstr "Date Statut SDS"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model:ir.actions.act_window,name:sponsorship_sub_management.sds_sub_followers_act_window
+#: model:ir.ui.menu,name:sponsorship_sub_management.menu_sds_sub_followers_act_window
+msgid "SUB Followers"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_form_compassion
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
+msgid "SUB Reject"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model:ir.actions.act_window,name:sponsorship_sub_management.action_follow_sds
+#: model:ir.ui.menu,name:sponsorship_sub_management.menu_follow_sds
+msgid "SUB Sponsorships"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Search contracts"
 msgstr "Recherche contrats"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:29
-#, python-format
-msgid "Sponsors other children"
-msgstr "Parraine d'autres enfants"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__sequence
+msgid "Sequence"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:49
-#, python-format
-msgid "Start"
-msgstr "Début"
+#. module: sponsorship_sub_management
+#: model:ir.actions.act_window,name:sponsorship_sub_management.action_end_reason
+#: model:ir.ui.menu,name:sponsorship_sub_management.menu_end_reason
+msgid "Sponsorship end reasons"
+msgstr ""
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model:base.automation,name:sponsorship_sub_management.sub_check
+#: model:ir.actions.server,name:sponsorship_sub_management.sub_check_ir_actions_server
+msgid "Sponsorship: Check SUB Accept/Reject after 50 days"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Start date"
 msgstr "Date de création"
 
-#. module: sponsorship_tracking
-#: field:sds.subsponsorship.wizard,state:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_subsponsorship_wizard__state
 msgid "State"
 msgstr "Etat"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_kanban_compassion
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
 msgid "State :"
 msgstr "Etat :"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Status"
 msgstr "Etat"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:54
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub
 #, python-format
 msgid "Sub"
 msgstr "Reprise"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:55
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_accept
 #, python-format
 msgid "Sub Accept"
 msgstr "Sub Accept"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:56
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_reject
 #, python-format
 msgid "Sub Reject"
 msgstr "Sub Reject"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:53
+#. module: sponsorship_sub_management
+#: model:ir.model,name:sponsorship_sub_management.model_sds_subsponsorship_wizard
+msgid "Sub Sponsorship Wizard"
+msgstr "Assistant Reprise parrainage"
+
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,field_description:sponsorship_sub_management.field_sds_sub_followers__user_id
+msgid "Sub sponsorships follower"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__recurring_contract__sds_state__sub_waiting
 #, python-format
 msgid "Sub waiting"
 msgstr "En attente de reprise"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:33
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/wizards/sub_sponsorship_wizard.py:0
 #, python-format
-msgid "Supports another organization"
-msgstr "Soutient une autre association"
+msgid "The sponsor doesn't want a new child."
+msgstr ""
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-msgid "Terminate"
-msgstr "Terminer"
+#. module: sponsorship_sub_management
+#: model:ir.model.constraint,message:sponsorship_sub_management.constraint_sds_sub_followers_unique_user
+msgid "This user is already configured."
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:73
-#, python-format
-msgid "Terminated"
-msgstr "Terminé"
-
-#. module: sponsorship_tracking
-#: model:ir.ui.menu,name:sponsorship_tracking.menu_tracking
+#. module: sponsorship_sub_management
+#: model:ir.ui.menu,name:sponsorship_sub_management.menu_tracking
 msgid "Track sponsorships"
 msgstr "Suivi SDS"
 
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.view_follow_contract_form_compassion
-msgid "Validate"
-msgstr "Valider"
-
-#. module: sponsorship_tracking
-#: view:recurring.contract:sponsorship_tracking.contract_tracking_filter
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.contract_tracking_filter
 msgid "Waiting"
 msgstr "En création"
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:50
-#, python-format
-msgid "Waiting welcome"
-msgstr "Attente Welcome"
+#. module: sponsorship_sub_management
+#: model:ir.model.fields,help:sponsorship_sub_management.field_sds_sub_followers__sequence
+msgid ""
+"When multiple followers match, the one with highest priority(at the top) "
+"will be assigned."
+msgstr ""
 
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/wizard/sub_sponsorship_wizard.py:32
-#, python-format
-msgid "Wants to support with fund donations"
-msgstr "Soutient par dons uniquement"
-
-#. module: sponsorship_tracking
-#: model:ir.actions.act_window,name:sponsorship_tracking.action_follow_sds
-#: model:ir.ui.menu,name:sponsorship_tracking.menu_follow_sds
-msgid "Welcome / SUB"
-msgstr "Welcome / Reprises"
-
-#. module: sponsorship_tracking
-#: code:addons/sponsorship_tracking/model/contracts.py:306
+#. module: sponsorship_sub_management
+#: code:addons/addons-compassion-switzerland/compassion-modules/sponsorship_sub_management/models/contracts.py:0
+#: code:addons/sponsorship_sub_management/models/contracts.py:0
 #, python-format
 msgid "You cannot change the sub sponsorship."
 msgstr "Vous ne pouvez pas changer la reprise."
 
-#. module: sponsorship_tracking
-#: selection:sds.subsponsorship.wizard,state:0
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
+msgid "child"
+msgstr ""
+
+#. module: sponsorship_sub_management
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__no_sub
 msgid "no_sub"
 msgstr "no_sub"
 
-#. module: sponsorship_tracking
-#: view:sds.subsponsorship.wizard:sponsorship_tracking.sub_sponsorship_view
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.sub_sponsorship_view
 msgid "or"
 msgstr "ou"
 
-#. module: sponsorship_tracking
-#: selection:sds.subsponsorship.wizard,state:0
+#. module: sponsorship_sub_management
+#: model:ir.model.fields.selection,name:sponsorship_sub_management.selection__sds_subsponsorship_wizard__state__sub
 msgid "sub"
 msgstr "sub"
 
-#~ msgid "unknown"
-#~ msgstr "unknown"
-
-#~ msgid "í"
-#~ msgstr "í"
-
-#~ msgid "compassion.project"
-#~ msgstr "compassion.project"
-
-#~ msgid "Waiting attribution"
-#~ msgstr "En attente d'Attribution"
-
-#~ msgid "Attributed"
-#~ msgstr "Attribué"
-
-#~ msgid "Project"
-#~ msgstr "Projet"
-
-#~ msgid "install.sds.tracking"
-#~ msgstr "install.sds.tracking"
-
-#~ msgid "sds.subsponsorship.wizard"
-#~ msgstr "sds.subsponsorship.wizard"
+#. module: sponsorship_sub_management
+#: model_terms:ir.ui.view,arch_db:sponsorship_sub_management.view_follow_contract_kanban_compassion
+msgid "user"
+msgstr ""
