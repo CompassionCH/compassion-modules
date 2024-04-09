@@ -56,16 +56,30 @@ class PrintChildpack(models.TransientModel):
     def _compute_module_name(self):
         self.module_name = __name__.split(".")[2]
 
+    def _get_children_datas(self):
+        children = (
+            self.env["compassion.child"]
+            .browse(self.env.context.get("active_ids"))
+            .with_context(lang=self.lang, async_mode=False)
+        )
+        lang = self.lang
+        project_lang_map = self.env["compassion.project.description"]._supported_languages()
+        child_lang_map = self.env["compassion.child.description"]._supported_languages()
+
+        for child in children:
+            if not getattr(child.project_id, project_lang_map.get(lang)):
+                child.project_id.update_informations()
+            if not getattr(child, child_lang_map.get(lang)):
+                child.get_infos()
+        return children
+
     def get_report(self):
         """
         Print selected child dossier
         :return: Generated report
         """
-        children = (
-            self.env["compassion.child"]
-            .browse(self.env.context.get("active_ids"))
-            .with_context(lang=self.lang)
-        )
+        children = self._get_children_datas()
+
         data = {
             "lang": self.lang,
             "doc_ids": children.ids,
