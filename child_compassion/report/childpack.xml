@@ -78,23 +78,17 @@
             <t t-call="child_compassion.childpack_style" />
                 <t t-if="is_pdf">
                     <div class="background">
-                        <img
-            t-attf-src="/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"
-          />
+                        <img t-attf-src="/child_compassion/static/img/#{ type }/1904_dossier_#{ lang }.jpg"/>
                     </div>
                 </t>
                 <t t-if="formMargin">
                     <div class="local_id">
-                        <span>Available until: </span><span
-            t-raw="o.get_date('hold_expiration')"
-            class="due_date"
-          /> <!-- keep space -->
+                        <span>Available until: </span>
+                        <span t-raw="o.get_date('hold_expiration')" class="due_date" /> <!-- keep space -->
                         <span t-field="o.local_id" />
                     </div>
                 </t>
-                <div
-        t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}"
-      >
+                <div t-attf-class="desc #{'boy' if o.gender == 'M' else 'girl'}">
                     <div class="left">
                         <t t-raw="o.description_left" />
                         <h6 t-if="o.project_id.description_left">
@@ -112,10 +106,7 @@
                     </div>
                 </div>
                 <div class="photo">
-                    <img
-          t-if="o.fullshot"
-          t-attf-src="data:image/jpg;base64,{{ o.fullshot }}"
-        />
+                    <img t-if="o.fullshot" t-attf-src="data:image/jpg;base64,{{ o.fullshot }}" />
                 </div>
                 <div class="summary">
                     <p t-field="o.preferred_name" class="summary_field name" />
@@ -124,9 +115,7 @@
                             <span t-esc="o.age" />
                             <span>(</span>
                         </t>
-                        <t
-            t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')"
-          >
+                        <t t-if="o.gender=='F' and o.env.lang in ('fr_CH','it_IT')" >
                             <span>Born (F)</span>
                         </t>
                         <t t-else="">
@@ -182,7 +171,7 @@
                 max-width: 100%;
             }
             .desc .right {
-                width: 65mm;
+                width: 70mm;
                 max-width: 100%;
                 position: absolute;
                 left: 65mm;
@@ -192,7 +181,7 @@
                 width: 60mm;
             }
             .desc .right table {
-                width: 65mm;
+                width: 70mm;
             }
             .desc td {
                 vertical-align: bottom;

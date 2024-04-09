@@ -158,6 +158,15 @@ class Correspondence(models.Model):
             ("other", _("Other issue")),
         ]
 
+    @api.onchange("new_translator_id")
+    def onchange_new_translator_id(self):
+        """
+         When a translator is set, the letter should always be on "in progress" status to ensure that the letter can
+         be found under the translator's saved letters in the Translation Platform.
+        """
+        if self.new_translator_id:
+            self.translation_status = "in progress"
+
     ##########################################################################
     #                              ORM METHODS                               #
     ##########################################################################
