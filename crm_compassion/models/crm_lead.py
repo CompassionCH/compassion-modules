@@ -12,8 +12,6 @@ import datetime
 
 from odoo import api, fields, models
 
-from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
-
 
 class CrmLead(models.Model):
     _inherit = "crm.lead"
@@ -77,10 +75,6 @@ class CrmLead(models.Model):
                 data[field_name] = [(6, 0, self.mapped(field_name).ids)]
 
         return data
-
-    def merge_opportunity(self, user_id=False, team_id=False):
-        CRM_LEAD_FIELDS_TO_MERGE.extend(["phonecall_ids", "meeting_ids"])
-        return super().merge_opportunity(user_id, team_id)
 
     @api.depends("partner_id")
     def _compute_name(self):
