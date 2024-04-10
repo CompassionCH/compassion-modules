@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<!--TODO T1245: delete this view if a better solution is found or this TODO-->
+    <record id="email_template_form" model="ir.ui.view">
+        <field name="model">mail.template</field>
+        <field name="inherit_id" ref="mail.email_template_form" />
+        <field name="arch" type="xml">
+            <field name="reply_to" position="after">
+                <field
+          name="user_signature"
+          string="Author Signature (mass mail only)"
+        />
+            </field>
+        </field>
+    </record>
+</odoo>
