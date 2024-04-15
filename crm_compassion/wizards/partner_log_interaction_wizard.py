@@ -84,6 +84,10 @@ class LogInteractionWizard(models.TransientModel):
         mail_tracking_obj.search([("mail_id", "=", mail.id)]).unlink()
         mail_tracking_obj.sudo().create(vals)
         # constructs the HTML link outside the _() function
-        message_template = "Your new interaction has been created! Click the link to access it: <a href=# data-oe-model={} data-oe-id={}>{}</a>"
+        message_template = (
+            "Your new interaction has been created! "
+            "Click the link to access it: "
+            "<a href=# data-oe-model={} data-oe-id={}>{}</a>"
+        )
         formatted_message = message_template.format(mail._name, mail.id, mail.subject)
         self.partner_id.message_post(body=_(formatted_message))

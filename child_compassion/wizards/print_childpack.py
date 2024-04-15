@@ -63,7 +63,9 @@ class PrintChildpack(models.TransientModel):
             .with_context(lang=self.lang, async_mode=False)
         )
         lang = self.lang
-        project_lang_map = self.env["compassion.project.description"]._supported_languages()
+        project_lang_map = self.env[
+            "compassion.project.description"
+        ]._supported_languages()
         child_lang_map = self.env["compassion.child.description"]._supported_languages()
 
         for child in children:

@@ -304,7 +304,6 @@ class CrmClaim(models.Model):
         )
 
         for req in request_to_notify:
-
             req.activity_schedule(
                 "mail.mail_activity_data_todo",
                 summary=_("A support request requires your attention"),
@@ -313,4 +312,3 @@ class CrmClaim(models.Model):
                 ).format(req.code),
                 user_id=req.user_id.id,
             )
-
