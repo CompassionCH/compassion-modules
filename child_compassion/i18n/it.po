@@ -8983,7 +8983,7 @@ msgid ""
 "The no money hold for child {local_id} is expiring on {old_expiration} and "
 "will not be extended since no sponsorship exists for this child."
 msgstr ""
-"La trattenuta per il bambino {local_id} scade il giorno {vecchia_scadenza} e "
+"La trattenuta per il bambino {local_id} scade il giorno {old_expiration} e "
 "non sarà prorogata poiché non esiste alcuna sponsorizzazione per questo "
 "bambino."
 

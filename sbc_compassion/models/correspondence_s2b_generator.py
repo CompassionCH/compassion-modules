@@ -237,7 +237,6 @@ class CorrespondenceS2bGenerator(models.Model):
 
         return True
 
-
     def open_letters(self):
         letters = self.letter_ids
         return {
