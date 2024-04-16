@@ -228,13 +228,14 @@ class CorrespondenceS2bGenerator(models.Model):
             # If the operation succeeds, notify the user
             message = "Letters have been successfully generated."
             self.env.user.notify_success(message=message)
+            return self.write({"state": "done", "date": fields.Datetime.now()})
 
         except Exception as error:
             # If the operation fails, notify the user with the error message
             error_message = str(error)
             self.env.user.notify_danger(message=error_message)
 
-        return self.write({"state": "done", "date": fields.Datetime.now()})
+        return True
 
 
     def open_letters(self):
