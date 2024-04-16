@@ -230,6 +230,7 @@ class EventCompassion(models.Model):
             ("meeting", _("Meeting")),
             ("sport", _("Sport event")),
             ("tour", _("Sponsor tour")),
+            ("group_visit", _("Group visit")),
         ]
 
     ##########################################################################
