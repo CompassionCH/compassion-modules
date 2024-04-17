@@ -85,7 +85,8 @@
                 </t>
                 <t t-if="formMargin">
                     <div class="local_id">
-                        <span>Available until: </span><span
+                        <span>Available until: </span>
+                        <span
             t-raw="o.get_date('hold_expiration')"
             class="due_date"
           /> <!-- keep space -->
@@ -182,7 +183,7 @@
                 max-width: 100%;
             }
             .desc .right {
-                width: 65mm;
+                width: 70mm;
                 max-width: 100%;
                 position: absolute;
                 left: 65mm;
@@ -192,7 +193,7 @@
                 width: 60mm;
             }
             .desc .right table {
-                width: 65mm;
+                width: 70mm;
             }
             .desc td {
                 vertical-align: bottom;
