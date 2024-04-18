@@ -850,7 +850,7 @@ class SponsorshipContract(models.Model):
                 contract.state = "waiting"
             elif contract.type in ["SC", "SWP"]:
                 # Activate directly correspondence sponsorships
-                contract.contract_active()
+                return contract.contract_active()
         return super().contract_waiting()
 
     @api.multi
