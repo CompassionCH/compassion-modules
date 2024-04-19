@@ -22,7 +22,6 @@ class ResConfigSettings(models.TransientModel):
         readonly=False,
     )
 
-    @api.multi
     def set_values(self):
         super().set_values()
         self.env["ir.config_parameter"].sudo().set_param(
@@ -30,7 +29,6 @@ class ResConfigSettings(models.TransientModel):
             ",".join(list(map(str, self.survival_sponsorship_warn_user_ids.ids))),
         )
 
-    @api.multi
     def get_values(self):
         param_obj = self.env["ir.config_parameter"].sudo()
         res = super().get_values()

@@ -18,7 +18,6 @@ class RecurringContract(models.Model):
 
     type = fields.Selection(selection_add=[('CSP', 'Survival Sponsorship')])
 
-    @api.multi
     def invoice_paid(self, invoice):
         super().invoice_paid(invoice)
         self.filtered(lambda c: c.type == 'CSP').contract_active()

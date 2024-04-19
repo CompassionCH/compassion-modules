@@ -14,7 +14,6 @@ from odoo import api, models
 class RecurringContractGroup(models.Model):
     _inherit = "recurring.contract.group"
 
-    @api.multi
     def _compute_contains_sponsorship(self):
         super()._compute_contains_sponsorship()
         for group in self:
