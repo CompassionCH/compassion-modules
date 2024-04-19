@@ -16,7 +16,7 @@ from odoo import fields, models, api
 class RecurringContract(models.Model):
     _inherit = ["recurring.contract"]
 
-    type = fields.Selection(selection_add=[('CSP', 'Survival Sponsorship')])
+    type = fields.Selection(selection_add=[('CSP', 'Survival Sponsorship')],ondelete={'CSP': 'set default'})
 
     def invoice_paid(self, invoice):
         super().invoice_paid(invoice)
