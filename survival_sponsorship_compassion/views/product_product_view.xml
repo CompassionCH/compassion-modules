@@ -1,0 +1,30 @@
+<odoo>
+    <record id="product_survival_sponsorship_view" model="ir.ui.view">
+        <field name="name">product.survival.sponsorship.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='general_information']" position="after">
+                <page name="survival_sponsorship" string="Survival Sponsorships">
+                    <group>
+                        <field name="survival_sponsorship_sale"/>
+                    </group>
+                    <group attrs="{'invisible':[('survival_sponsorship_sale', '=', False)]}">
+                        <group string="Communications">
+                            <field name="survival_mom_name"/>
+                            <field name="survival_child_name"/>
+                        </group>
+                        <group string="Statistics">
+                            <field name="survival_sponsorship_field_office_id"
+                                   attrs="{'required':[('survival_sponsorship_sale', '=', True)]}"/>
+                            <field name="slot_used" widget="progressbar"/>
+                            <field name="survival_slot_number"/>
+                            <field name="survival_sponsorship_number"/>
+                            <field name="alltime_survival_sponsorship_number"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
