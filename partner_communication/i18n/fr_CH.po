@@ -236,6 +236,12 @@ msgid "Don't inform sponsor"
 msgstr "Ne pas informer la personne"
 
 #. module: partner_communication
+#: code:addons/partner_communication/models/communication_config.py:197
+#, python-format
+msgid "SMS"
+msgstr "SMS"
+
+#. module: partner_communication
 #: help:res.partner,email_only:0
 msgid "Don't send any printed communication"
 msgstr "Ne jamais envoyer de lettre par poste"

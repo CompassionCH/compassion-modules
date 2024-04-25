@@ -194,6 +194,7 @@ class CommunicationConfig(models.Model):
     def get_delivery_preferences(self):
         return [
             ("none", _("Don't inform sponsor")),
+            ("sms", _("SMS")),
             ("auto_digital_only", _("only by e-mail (send automatically)")),
             ("digital_only", _("only by e-mail (send manually)")),
             ("auto_digital", _("Send e-mail automatically")),
@@ -299,6 +300,7 @@ class CommunicationConfig(models.Model):
             },
             "digital": {
                 "none": "none",
+                "sms": "sms",
                 "physical": "physical" if print_if_not_email else "none",
                 "digital": "digital",
                 "digital_only": "digital",
@@ -306,6 +308,7 @@ class CommunicationConfig(models.Model):
             },
             "digital_only": {
                 "none": "none",
+                "sms": "digital" if partner.email else "none",
                 "physical": "digital" if partner.email else "none",
                 "digital": "digital",
                 "digital_only": "digital",
@@ -313,6 +316,7 @@ class CommunicationConfig(models.Model):
             },
             "both": {
                 "none": "none",
+                "sms": "sms",
                 "physical": "physical",
                 "digital": "both",
                 "digital_only": "digital",
