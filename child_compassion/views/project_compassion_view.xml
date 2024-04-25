@@ -90,6 +90,7 @@
                                 <group string="Lifecycle">
                                     <field name="lifecycle_ids">
                                         <tree>
+                                            <field name="create_date" />
                                             <field name="date" />
                                             <field name="type" />
                                         </tree>
