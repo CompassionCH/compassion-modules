@@ -16,7 +16,7 @@ class ProjectLifecycle(models.Model):
     _name = "compassion.project.ile"
     _inherit = ["translatable.model", "compassion.mapped.model"]
     _description = "Project lifecycle event"
-    _order = "date desc, id desc"
+    _order = "id desc"
 
     project_id = fields.Many2one(
         "compassion.project", required=True, ondelete="cascade", readonly=True
