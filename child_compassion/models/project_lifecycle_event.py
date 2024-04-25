@@ -167,6 +167,6 @@ class ProjectLifecycle(models.Model):
     def _compute_days_since_suspension(self):
         for record in self:
             if record.type == 'Suspension' and record.suspension_end_date:
-                record.days_since_suspension = (date.today() - record.suspension_end_date).days
+                record.days_since_suspension = (record.date - record.suspension_end_date).days
             else:
                 record.days_since_suspension = 0

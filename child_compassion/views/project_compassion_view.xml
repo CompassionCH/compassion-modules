@@ -483,6 +483,7 @@
         <field name="model">compassion.project.ile</field>
         <field name="arch" type="xml">
             <tree string="Project Lifecycle Events">
+                <field name="create_date"/>
                 <field name="date"/>
                 <field name="type"/>
                 <field name="project_id" string="FCP"/>
