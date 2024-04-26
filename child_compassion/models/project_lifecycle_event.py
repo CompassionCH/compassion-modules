@@ -43,12 +43,6 @@ class ProjectLifecycle(models.Model):
     suspension_reason_ids = fields.Many2many(
         "fcp.lifecycle.reason", string="Suspension reason", readonly=True
     )
-    # Adding a computed field to calculate days since suspension
-    days_since_suspension = fields.Integer(
-        string="Days Since Suspension",
-        compute="_compute_days_since_suspension",
-        store=True,
-    )
 
     hold_cdsp_funds = fields.Boolean(readonly=True)
     hold_csp_funds = fields.Boolean(readonly=True)
@@ -162,11 +156,3 @@ class ProjectLifecycle(models.Model):
             }
             odoo_data["project_status"] = status_mapping[status]
         return odoo_data
-
-    @api.depends('suspension_end_date', 'type')
-    def _compute_days_since_suspension(self):
-        for record in self:
-            if record.type == 'Suspension' and record.suspension_end_date:
-                record.days_since_suspension = (record.date - record.suspension_end_date).days
-            else:
-                record.days_since_suspension = 0
