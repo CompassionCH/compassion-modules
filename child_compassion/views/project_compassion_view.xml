@@ -514,7 +514,7 @@
                 <filter string="Suspended" name="suspended" domain="[('type', '=', 'Suspension')]"/>
                 <!-- Dynamic filter for projects suspended more than 2 months -->
                 <filter string="Suspended More Than 2 Months" name="suspended_more_than_2_months"
-                        domain="[('days_since_suspension', '>', 60), ('type', '=', 'Suspension')]" />
+                        domain="[('date', '&lt;', datetime.datetime.now()-relativedelta(month=2)),('project_id.status', '=', 'Suspended')]" />
                 <!-- Group by and other filters can be added here -->
             </search>
         </field>
