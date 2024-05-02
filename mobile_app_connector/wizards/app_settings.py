@@ -18,7 +18,6 @@ class DemandPlanningSettings(models.TransientModel):
         "correspondence.template", "Default S2B template", readonly=False
     )
 
-    @api.multi
     def set_values(self):
         super().set_values()
         self.env["ir.config_parameter"].set_param(

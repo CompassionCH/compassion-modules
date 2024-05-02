@@ -46,7 +46,6 @@ class AppWriting(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("active")
     def _compute_state(self):
         for writing in self:
@@ -55,7 +54,6 @@ class AppWriting(models.Model):
             else:
                 writing.state = "used" if writing.print_count else "new"
 
-    @api.multi
     @api.constrains("date_start", "date_stop")
     def _check_dates(self):
         for writing in self:
@@ -84,13 +82,11 @@ class AppWriting(models.Model):
         # Activate current stories
         current_writings.write({"active": True})
 
-    @api.multi
     def mobile_get_templates(self, **params):
         actives = self.env["mobile.app.writing"].search([("active", "=", True)])
 
         return [x.sudo().get_json() for x in actives]
 
-    @api.multi
     def get_json(self):
         self.ensure_one()
         web_base_url = (

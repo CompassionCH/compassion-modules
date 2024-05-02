@@ -28,7 +28,6 @@ class GetPartnerMessage(models.Model):
     ##########################################################################
     #                             PUBLIC METHODS                             #
     ##########################################################################
-    @api.multi
     def send_message(self, message_title, message_body, data=None):
         """
         Filters message by user preferences

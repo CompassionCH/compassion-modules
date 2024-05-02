@@ -61,7 +61,6 @@ class AppBanner(models.Model):
     ##########################################################################
     #                             FIELDS METHODS                             #
     ##########################################################################
-    @api.multi
     @api.depends("active")
     def _compute_state(self):
         for banner in self:
@@ -70,7 +69,6 @@ class AppBanner(models.Model):
             else:
                 banner.state = "used" if banner.print_count else "new"
 
-    @api.multi
     @api.constrains("date_start", "date_stop")
     def _check_dates(self):
         for banner in self:
@@ -99,7 +97,6 @@ class AppBanner(models.Model):
         # Activate current stories
         current_banners.write({"active": True})
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

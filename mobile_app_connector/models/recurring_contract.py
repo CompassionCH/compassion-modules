@@ -20,7 +20,6 @@ class CompassionRecurringContract(models.Model):
 
     _inherit = "recurring.contract"
 
-    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile related a sponsorship row

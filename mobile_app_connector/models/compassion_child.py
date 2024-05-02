@@ -37,7 +37,6 @@ class CompassionChild(models.Model):
                 data.append(child.data_to_json("mobile_app_child"))
         return data
 
-    @api.multi
     def get_app_json(self, multi=False, wrapper=False):
         """
         Called by HUB when data is needed for a tile
@@ -157,7 +156,6 @@ class CompassionChild(models.Model):
             raise ValueError("Required parameter {}".format(key))
         return params[key]
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

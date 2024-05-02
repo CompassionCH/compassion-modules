@@ -42,7 +42,6 @@ class ProductTemplate(models.Model):
 
         return result
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:
@@ -57,7 +56,6 @@ class Product(models.Model):
 
     _inherit = "product.product"
 
-    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile

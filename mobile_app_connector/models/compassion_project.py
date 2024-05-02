@@ -16,7 +16,6 @@ class CompassionProject(models.Model):
     _name = "compassion.project"
     _inherit = ["compassion.project", "compassion.mapped.model"]
 
-    @api.multi
     def get_location_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile
@@ -30,7 +29,6 @@ class CompassionProject(models.Model):
         data = self[:1].data_to_json("mobile_app_project")
         return data
 
-    @api.multi
     def get_weather_json(self, multi=False):
         if not self:
             return {}
@@ -61,7 +59,6 @@ class CompassionProject(models.Model):
             "UserTemperature": self.current_temperature,
         }
 
-    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile
@@ -103,7 +100,6 @@ class CompassionProject(models.Model):
             raise ValueError("Required parameter {}".format(key))
         return params[key]
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

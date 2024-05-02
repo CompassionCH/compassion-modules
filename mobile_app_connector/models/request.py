@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 class CrmClaim(models.Model):
     _inherit = "crm.claim"
 
-    @api.multi
     def mobile_contact_us(self, parameters, **params):
         """
         End point for the "Contact Us" page of the Android and iOS apps.

@@ -26,12 +26,10 @@ class AppMessages(models.Model):
     is_expired = fields.Boolean(compute="_compute_is_expired")
     force_refresh = fields.Boolean(help="Force the hub of sponsor to refresh")
 
-    @api.multi
     def _compute_needs_refresh(self):
         for hub in self:
             hub.needs_refresh = hub.force_refresh or hub.is_expired
 
-    @api.multi
     def _compute_is_expired(self):
         for hub in self:
             if hub.last_refresh_date:
@@ -40,7 +38,6 @@ class AppMessages(models.Model):
             else:
                 hub.is_expired = True
 
-    @api.multi
     def write(self, vals):
         # Reset force refresh hub when it is just refreshed.
         if vals.get("last_refresh_date"):

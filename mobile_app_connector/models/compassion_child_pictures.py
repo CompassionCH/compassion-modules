@@ -22,7 +22,6 @@ class CompassionChildPictures(models.Model):
     _name = "compassion.child.pictures"
     _inherit = ["compassion.child.pictures", "compassion.mapped.model"]
 
-    @api.multi
     def get_app_json(self, multi=False):
         """
         Called by HUB when data is needed for a tile
@@ -40,7 +39,6 @@ class CompassionChildPictures(models.Model):
                 data.append(child.data_to_json("mobile_app_child_pictures"))
         return data
 
-    @api.multi
     def data_to_json(self, mapping_name=None):
         res = super().data_to_json(mapping_name)
         if not res:

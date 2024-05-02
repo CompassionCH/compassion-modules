@@ -58,7 +58,6 @@
     <record id="action_mobile_app_writing" model="ir.actions.act_window">
         <field name="name">Writings</field>
         <field name="res_model">mobile.app.writing</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
 
