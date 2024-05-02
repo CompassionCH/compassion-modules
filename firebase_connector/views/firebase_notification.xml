@@ -1,0 +1,293 @@
+<odoo>
+    <record id="action_view_firebase_notification_statistics_partner" model="ir.actions.act_window">
+        <field name="name">Partner Statistics</field>
+        <field name="res_model">firebase.notification.partner.read</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,tree,form</field>
+        <field name="domain">[('notification_id', '=', active_id), ('opened', '=', True)]</field>
+    </record>
+    <record id="action_view_firebase_notification_statistics_failed" model="ir.actions.act_window">
+        <field name="name">Failed notifications Statistics</field>
+        <field name="res_model">firebase.notification.statistics</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('notification_id', '=', active_id), ('failed', '=', True)]</field>
+    </record>
+    <record id="action_view_firebase_notification_statistics_received" model="ir.actions.act_window">
+        <field name="name">Received notifications Statistics</field>
+        <field name="res_model">firebase.notification.statistics</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('notification_id', '=', active_id), ('delivered', '=', True)]</field>
+    </record>
+
+    <!-- Notification -->
+    <record model="ir.ui.view" id="firebase_notification_form">
+        <field name="name">firebase.notification.form</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="duplicate_to_unread" string="Resend to unread users" type="object" class="oe_stat_button" attrs="{'invisible': [('opened_ratio', '=', 100), ('stage_id', '!=', 4)]}"/>
+                    <button name="schedule" string="Schedule notification" type="object" class="oe_stat_button" icon="fa-paper-plane" attrs="{'invisible': [('stage_id', '!=', 1)]}"/>
+                    <field name="stage_id" widget="statusbar" clickable="True"/>
+                </header>
+                <div class="oe_form_box_info bg-info oe_text_center" attrs="{'invisible': [('stage_id', '!=', 2)]}">
+                    This notification is scheduled for <strong><field name="send_date" class="oe_inline" readonly="1"/></strong>.
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                            <button name="%(action_view_firebase_notification_statistics_partner)d" type="action" icon="fa-envelope-o" class="oe_stat_button o_mass_mailing_button" attrs="{'invisible': [('stage_id', '!=', 4)]}">
+                                <field name="delivered" string="Delivered" widget="statinfo"/>
+                            </button>
+                            <button name="%(action_view_firebase_notification_statistics_received)d" type="action" attrs="{'invisible': [('stage_id', '!=', 4)]}" class="oe_stat_button">
+                                <field name="received_ratio" string="Received" widget="percentpie"/>
+                            </button>
+                            <button name="%(action_view_firebase_notification_statistics_partner)d" type="action" attrs="{'invisible': [('stage_id', '!=', 4)]}" class="oe_stat_button">
+                                <field name="opened_ratio" string="Opened" widget="percentpie"/>
+                            </button>
+                            <button name="%(action_view_firebase_notification_statistics_failed)d" type="action" attrs="{'invisible': [('stage_id', '!=', 4)]}" class="oe_stat_button">
+                                <field name="failed_ratio" string="Failed" widget="percentpie"/>
+                            </button>
+                        </div>
+                    <group>
+                        <field name="title" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="body" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="language" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="send_date" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="send_to_logged_out_devices" attrs="{'readonly': [('sent', '=', True)]}"/>
+                        <field name="test_mode"/>
+                        <field name="sent"/>
+                    </group>
+                    <notebook>
+                        <page string="Partners selection" attrs="{'invisible': [('sent', '=', True)]}">
+                            <field name="partner_ids" widget="many2many" domain="[('firebase_registration_ids', '!=', False)]"/>
+                        </page>
+                        <page string="Sent notifications" attrs="{'invisible': [('read_ids', '=', False)]}">
+                            <field name="read_ids" widget="one2many"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="firebase_notification_tree">
+        <field name="name">firebase.notification.tree</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="test_mode==True"
+                decoration-muted="stage_id==4"
+                default_order="send_date desc">
+                <field name="send_date"/>
+                <field name="title"/>
+                <field name="body"/>
+                <field name="test_mode" invisible="1"/>
+                <field name="stage_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Graph view read partner -->
+    <record id="firebase_notification_read_graph_view" model="ir.ui.view">
+      <field name="name">firebase.notification.partner.read.graph</field>
+      <field name="model">firebase.notification.partner.read</field>
+      <field name="arch" type="xml">
+         <graph type="bar" stacked="True">
+            <field name="read_date" interval="day" />
+         </graph>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_firebase_notification__kanban">
+            <field name="name">firebase.notification.kanban</field>
+            <field name="model">firebase.notification</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="stage_id">
+                    <field name='color'/>
+                    <field name='id'/>
+                    <field name='title'/>
+                    <field name='expected'/>
+                    <field name='failed'/>
+                    <field name='send_date'/>
+                    <field name='sent'/>
+                    <field name='stage_id'/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click oe_kanban_mass_mailing">
+                                <div class="o_dropdown_kanban dropdown">
+                                    <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" data-display="static" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                        <t t-if="widget.deletable">
+                                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                        </t>
+                                    </div>
+                                </div>
+                                 <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <h4 class="card-title" style="text-transform: uppercase;">
+                                               <a type="open">
+                                                  <field name="title"/>
+                                               </a>
+                                            </h4>
+                                            <div class="o_kanban_record_subtitle">
+                                                <p class="card-text" data-toggle="tooltip" data-html="true" t-att-title="record.body.raw_value">
+                                                   <field name="body"/>
+                                                </p>
+                                                    <h5 attrs="{'invisible': [('send_date', '=', False)]}">
+                                                        <field name="send_date"/>
+                                                    </h5>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body" attrs="{'invisible': [('stage_id', '!=', 4)]}">
+                                        <t t-if="record.send_date">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <a name="%(action_view_firebase_notification_statistics_partner)d"
+                                                       type="action">Opened</a>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <field name="opened_ratio"/> %
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <a name="%(action_view_firebase_notification_statistics_failed)d"
+                                                       type="action">Failed</a>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <field name="failed_ratio"/> %
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                   <a name="%(action_view_firebase_notification_statistics_received)d"
+                                                       type="action">Received</a>
+                                                </div>
+                                                <div class="col-4 text-right">
+                                                    <field name="received_ratio"/> %
+                                                </div>
+                                            </div>
+                                            <div class='o_kanban_primary_bottom'>
+                                                <field name="delivered" widget="progressbar" title="Delivered" options="{'current_value': 'delivered', 'max_value': 'expected', 'editable': false}"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="oe_clear"></div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    <record model="ir.ui.view" id="firebase_notification_read_tree">
+        <field name="name">firebase.notification.partner.read.tree</field>
+        <field name="model">firebase.notification.partner.read</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="opened"/>
+                <field name="read_date"/>
+                <field name="partner_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="firebase_notification_statistics_tree">
+        <field name="name">firebase.notification.statistics.tree</field>
+        <field name="model">firebase.notification.statistics</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-muted="code=='NOT_FOUND'"
+                default_order="partner_name">
+                <field name="notification_id"/>
+                <field name="registration_id"/>
+                <field name="partner_name"/>
+                <field name="code"/>
+                <field name="delivered"/>
+                <field name="failed"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Graph view Notification -->
+    <record id="firebase_notification_statistics_graph_view" model="ir.ui.view">
+      <field name="name">firebase.notification.graph</field>
+      <field name="model">firebase.notification</field>
+      <field name="arch" type="xml">
+         <graph type="bar" stacked="True" interval="month">
+            <field name="send_date" interval="month" type="row" />
+             <field name="failed" type="measure"/>
+             <field name="delivered" type="measure"/>
+             <field name="expected" type="measure"/>
+             <field name="opened" type="measure"/>
+         </graph>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="firebase_notification_search">
+        <field name="name">firebase.notification.search</field>
+        <field name="model">firebase.notification</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="title"/>
+                <group expand="0" string="Group By">
+                        <filter string="Stage" name="group_stage"
+                            context="{'group_by': 'stage_id'}"/>
+                    </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  Notification STAGE !-->
+    <record model="ir.ui.view" id="view_firebase_notification_stage_search">
+            <field name="name">firebase.notification.stage.search</field>
+            <field name="model">firebase.notification.stage</field>
+            <field name="arch" type="xml">
+               <search string="Notification">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+    <record id="action_firebase_notification" model="ir.actions.act_window">
+        <field name="name">Firebase Notifications</field>
+        <field name="res_model">firebase.notification</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form,graph</field>
+        <field name="context"></field>
+    </record>
+
+    <record id="action_firebase_notification_stage" model="ir.actions.act_window">
+        <field name="name">Firebase Stages Notification</field>
+        <field name="res_model">firebase.notification.stage</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context"></field>
+    </record>
+
+    <menuitem id="menu_firebase_notification"
+        name="Notifications"
+        parent="mass_mailing.mass_mailing_menu_root"
+        groups="mass_mailing.group_mass_mailing_user"
+        sequence="2"/>
+
+    <menuitem id="menu_firebase_send"
+              name="Send"
+              parent="firebase_connector.menu_firebase_notification"
+              action="firebase_connector.action_firebase_notification"
+              groups="mass_mailing.group_mass_mailing_user"/>
+
+    <menuitem id="menu_firebase_stage"
+              name="Stages"
+              parent="firebase_connector.menu_firebase_notification"
+              action="firebase_connector.action_firebase_notification_stage"
+              groups="mass_mailing.group_mass_mailing_user"/>
+
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <record id="wp_fetch_posts_cron" model="ir.cron">
+            <field name="name">Refresh Wordpress Posts</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('posts')</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="wp_fetch_agendas_cron" model="ir.cron">
+            <field name="name">Refresh Wordpress Agendas</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('agendas')</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="wp_fetch_downloads_cron" model="ir.cron">
+            <field name="name">Refresh Wordpress Download</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="model_wp_post"/>
+            <field name="code">model.fetch_posts('download')</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="activate_banners" model="ir.cron">
+            <field name="name">Activate Mobile App Banners</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="model_mobile_app_banner"/>
+            <field name="code">model.validity_cron()</field>
+            <field name="state">code</field>
+        </record>
+
+        <record id="activate_writings" model="ir.cron">
+            <field name="name">Activate Mobile App Writings</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="model_id" ref="model_mobile_app_writing"/>
+            <field name="code">model.validity_cron()</field>
+            <field name="state">code</field>
+        </record>
+    </data>
+</odoo>
