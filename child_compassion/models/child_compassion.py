@@ -294,7 +294,7 @@ class CompassionChild(models.Model):
 
     # Descriptions
     ##############
-    desc_en = fields.Html("English description", readonly=True)
+    description_en = fields.Html("English description", readonly=True)
 
     description_left = fields.Html(compute="_compute_description")
     description_right = fields.Html(compute="_compute_description")
